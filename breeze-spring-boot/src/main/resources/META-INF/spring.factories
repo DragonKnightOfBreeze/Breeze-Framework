@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
+  com.windea.utility.springboot.data.DataAutoConfiguration,\
+  com.windea.utility.springboot.core.CoreAutoConfiguration,\
+  com.windea.utility.springboot.security.jwt.JwtAutoConfiguration

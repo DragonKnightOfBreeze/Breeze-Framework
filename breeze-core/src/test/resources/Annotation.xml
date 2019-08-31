@@ -1,0 +1,215 @@
+<!--123-->
+<templateSet group="YamlAnnotation">
+  <template name="@NotSure" value="@NotSure"
+            description="注明这项设定是不确定的。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@NotIncluded" value="@NotIncluded"
+            description="注明这项设定不会明确出现在游戏中。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@NotUsable" value="@NotUsable"
+            description="注明这项设定不可为玩家所用。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@NotSuitable" value="@NotSuitable"
+            description="注明这项设定不适用于此世界观。\n例如，不能被此世界观魔法体系解释的魔法。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@ValueToggle" value="@ValueToggle: {value: $value$, condition: $condition$}"
+            description="注明当满足特定条件时，这个属性的值将会被切换。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <variable name="value" expression="" defaultValue="&quot;{value}&quot;" alwaysStopAt="true"/>
+    <variable name="condition" expression="" defaultValue="&quot;……&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@ValueChange" value="@ValueChange: {value: $value$, when: $when$}"
+            description="注明当满足特定条件时，这个属性的值将会发生改变。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <variable name="value" expression="" defaultValue="&quot;{value}&quot;" alwaysStopAt="true"/>
+    <variable name="when" expression="" defaultValue="&quot;……&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@ValueMask" value="@ValueMask"
+            description="注明当满足特定条件时，展示的这个属性的值将会更加接近真实。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+
+  <template name="@OmittedValue" value="@OmittedValue: {summary: $summary$}"
+            description="注明这个属性存在被省略的值，并对其作概述。"
+            toReformat="true" toShortenFQNames="true" useStaticImport="true">
+    <variable name="summary" expression="" defaultValue="&quot;……&quot;" alwaysStopAt="true"/>
+    <context>
+      <option name="CSS" value="false"/>
+      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
+      <option name="CoffeeScript" value="false"/>
+      <option name="DART" value="false"/>
+      <option name="ECMAScript6" value="false"/>
+      <option name="HAML" value="false"/>
+      <option name="HTML" value="false"/>
+      <option name="Handlebars" value="false"/>
+      <option name="JADE" value="false"/>
+      <option name="JAVA_SCRIPT" value="false"/>
+      <option name="JSON" value="false"/>
+      <option name="JSP" value="false"/>
+      <option name="OTHER" value="true"/>
+      <option name="PL/SQL" value="false"/>
+      <option name="REQUEST" value="false"/>
+      <option name="SQL" value="false"/>
+      <option name="TypeScript" value="false"/>
+      <option name="Vue" value="false"/>
+      <option name="XML" value="false"/>
+    </context>
+  </template>
+</templateSet>
