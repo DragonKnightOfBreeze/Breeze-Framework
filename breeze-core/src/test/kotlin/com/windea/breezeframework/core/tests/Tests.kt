@@ -1,10 +1,12 @@
 package com.windea.breezeframework.core.tests
 
+import com.windea.breezeframework.core.enums.LetterCase.*
+import com.windea.breezeframework.core.enums.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import org.junit.*
 
 class Tests {
-	@Test
+	@Test //TESTED
 	fun example() {
 		//true
 		println(arrayOf(1, 2, 3) anyIn arrayOf(3, 4, 5))
@@ -33,5 +35,14 @@ class Tests {
 		    Here also indented.
 		  </element>
 		""".toMultilineText())
+		
+		//abcAbc
+		println("Abc abc".to(camelCase))
+		//AbcAbc
+		println("ABC_ABC".to(PascalCase))
+		//ABC_ABC
+		println("abc-abc".to(SCREAMING_SNAKE_CASE))
+		//a.b[1][2].c[3]
+		println("/a/b/1/2/c/3".to(StandardReference))
 	}
 }

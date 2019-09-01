@@ -25,7 +25,7 @@ infix fun String?.equalsIc(other: String?): Boolean {
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
 infix fun String?.equalsIsc(other: String?): Boolean {
 	if(this == other) return true
-	return this != null && other != null && this.switchBy(this.letterCase, other.letterCase) == other
+	return this != null && other != null && this.switchTo(this.letterCase, other.letterCase) == other
 }
 
 
@@ -231,54 +231,47 @@ fun String.firstCharToLowerCaseOnly(): String {
 }
 
 
-/***将当前字符串分割为单词列表。不检查接受者。*/
+/***将当前字符串分割为单词列表，基于任意长度的空格。不检查接受者。*/
 fun String.splitToWordList(): List<String> {
-	return this.split("\\s+".toRegex())
+	return this.split(" ").map { it.trim() }
 }
 
-/**将当前字符串分割为基于大小写边界，以单个空格分割的单词组成的字符串。不检查接受者。*/
-fun String.splitToWords(): String {
+/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。不检查接受者。*/
+fun String.toWords(): String {
 	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
 }
 
 
 /**得到当前字母的字母显示格式。*/
 val String.letterCase: LetterCase
-	get() = enumValues<LetterCase>().firstOrNull { this matches it.regex } ?: LetterCase.Unknown
-
-/**切换当前字母的字母显示格式。*/
-fun String.switchBy(fromCase: LetterCase, toCase: LetterCase): String {
-	return this.splitBy(fromCase).joinBy(toCase)
-}
-
-/**根据字母显示格式分割当前字符串。*/
-fun String.splitBy(case: LetterCase): List<String> {
-	return if(case == LetterCase.Unknown) listOf(this) else this.substrings(case.regex)
-}
-
-/**根据字母显示格式连接当前字符串列表。*/
-fun List<String>.joinBy(case: LetterCase): String {
-	return case.joinFunction(this)
-}
-
+	get() = enumValues<LetterCase>().first { this matches it.regex }
 
 /**得到当前字符串的引用显示格式。*/
-val String.pathCase: ReferenceCase
-	get() = enumValues<ReferenceCase>().firstOrNull { this matches it.regex } ?: ReferenceCase.Unknown
+val String.referenceCase: ReferenceCase
+	get() = enumValues<ReferenceCase>().first { this matches it.regex }
 
-/**切换当前字符串的引用显示格式。*/
-fun String.switchBy(fromCase: ReferenceCase, toCase: ReferenceCase): String {
+/**根据显示格式分割当前字符串。*/
+fun String.splitBy(case: FormatCase): List<String> {
+	return case.splitFunction(this)
+}
+
+/**根据显示格式连接当前字符串列表，组成完整字符串。*/
+fun List<String>.joinBy(case: FormatCase): String {
+	return case.joinFunction(this)
+}
+
+/**切换当前字符串的显示格式。*/
+fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
 	return this.splitBy(fromCase).joinBy(toCase)
 }
 
-/**根据引用显示格式分割当前字符串，组成完整路径。*/
-fun String.splitBy(case: ReferenceCase): List<String> {
-	return if(case == ReferenceCase.Unknown) listOf(this) else this.substrings(case.regex)
-}
-
-/**根据引用显示格式连接当前字符串列表，组成完整路径。*/
-fun List<String>.joinBy(case: ReferenceCase): String {
-	return case.joinFunction(this)
+/**转化当前字符串的显示格式。*/
+fun String.to(case: FormatCase): String {
+	return when(case) {
+		is LetterCase -> this.splitBy(this.letterCase)
+		is ReferenceCase -> this.splitBy(this.referenceCase)
+		else -> throw IllegalArgumentException("Target case enum do not provide a actual way to get case from string.")
+	}.joinBy(case)
 }
 
 

@@ -5,10 +5,10 @@ import com.windea.breezeframework.core.annotations.marks.*
 /**引用的显示格式。*/
 @NotTested
 enum class ReferenceCase(
-	val regex: Regex = "^$".toRegex(),
-	val joinFunction: (List<String>) -> String = { it.first() }
-) {
-	Unknown,
+	override val regex: Regex,
+	override val splitFunction: (String) -> List<String>,
+	override val joinFunction: (List<String>) -> String
+) : FormatCase {
 	/**
 	 * 标准引用。
 	 *
@@ -18,8 +18,9 @@ enum class ReferenceCase(
 	 */
 	//TODO 支持静态成员/类型 `T(a).b`
 	StandardReference(
-		//option($key|wrapper($index)),(option(wrapper($key)|wrapper($index)))*
-		"^(?:([a-zA-Z_$]+)|(?:\\[(\\d+)]))(?:(?:\\.([a-zA-Z_]+))|(?:\\[(\\d+)]))*$".toRegex(),
+		//allow: $, ., words, [number]
+		"^([a-zA-Z_$]+|\\[(\\d+)])(?:\\.([a-zA-Z_$]+)|\\[(\\d+)])*$".toRegex(),
+		{ it.replace("]", "].").split(".").map { s -> s.removeSurrounding("[", "]") } },
 		{ it.joinToString(".").replace("(\\d+)".toRegex(), "[$1]").replace(".[", "[") }
 	),
 	/**
@@ -30,8 +31,9 @@ enum class ReferenceCase(
 	 * * `[0]` 表示一个列表的元素。
 	 */
 	JsonReference(
-		//prefix(delimiter,option($key|wrapper($index)))*
-		"^\\$(?:\\.(?:([a-zA-Z_]+)|(?:\\[(\\d+)])))*$".toRegex(),
+		//allow: $, ., words, [number]
+		"^\\$(?:\\.(?:([a-zA-Z_]+)|\\[(\\d+)]))*$".toRegex(),
+		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
 		{ it.joinToString(".", "$.").replace("(\\d+)".toRegex(), "[$1]") }
 	),
 	/**
@@ -49,8 +51,10 @@ enum class ReferenceCase(
 	 */
 	//DELAY 严格验证
 	JsonSchemaReference(
-		//prefix(delimiter,$ref)*
+		//allow: #, /, unchecked supPaths
 		"^#?(?:/(.+))+$".toRegex(),
+		{ it.removePrefix("#").removePrefix("/").split("/") },
 		{ it.joinToString("/", "/") }
-	)
+	),
+	Unknown("^(.*)$".toRegex(), { listOf(it) }, { it.joinToString("") });
 }
