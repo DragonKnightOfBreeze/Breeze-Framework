@@ -34,9 +34,15 @@
 * plugins{} & dependencies{}块不能写在allprojects{}里面
 * 插件和依赖请写在子模块中。
 
+依赖类型：
+* implementation 依赖不会进行传递。
+* api 依赖会进行传递。
+* compileOnly 只在编译时使用，不会打包输出，对应provided（+optional？）。
+* runtimeOnly 只在运行时使用，不会添加到编译路径，对应runtime。
+* annotationProcessor 用于注解处理器，与compile对应。
 
-implementation vs compile/api：
-* 前者会隐藏内部使用的库。
+使gradle支持optional依赖：
+* 添加插件`nebula.provided-base`
 
 包含其他模块（在settings.gradle里：
 * include(...)

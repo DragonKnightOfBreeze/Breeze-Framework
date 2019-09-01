@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
-  com.windea.utility.springboot.data.DataAutoConfiguration,\
-  com.windea.utility.springboot.core.CoreAutoConfiguration,\
-  com.windea.utility.springboot.security.jwt.JwtAutoConfiguration
+  com.windea.breezeframework.springboot.data.DataAutoConfiguration,\
+  com.windea.breezeframework.springboot.core.CoreAutoConfiguration,\
+  com.windea.breezeframework.springboot.security.jwt.JwtAutoConfiguration
