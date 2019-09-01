@@ -12,3 +12,18 @@
 * [ ] breeze-spring-cloud：对Spring Cloud的扩展。
 * [x] breeze-text：文本模块。为字符串提供特定领域的扩展和生成器。包括字符串转中文、字符串转英文等。
 * [x] breeze-time：时间模块。为时间提供扩展、内联扩展。允许使用类dsl式语法创建时间。
+
+# 可选依赖
+
+* Kodein-di
+* Spekframework
+* Anko
+* ……
+
+# 参考
+
+* [khronos](https://github.com/hotchemi/khronos)
+* [klutter](https://github.com/kohesive/klutter)
+* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+
+感谢提供思路和灵感！

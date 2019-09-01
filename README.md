@@ -12,3 +12,18 @@ Integrated code framework base on Kotlin,Provide many useful extensions for stan
 * [ ] breeze-spring-cloud: Extensions for Spring Cloud.
 * [x] breeze-text: Text module. Provide specific extensions and generators. e.x, string2chs, string2eng.
 * [x] breeze-time: Temporal module. Provide extensions, inline extensions, dsl-like generators for temporal.
+
+# Optional Dependencies
+
+* Kodein-di
+* Spekframework
+* Anko
+* ……
+
+# References
+
+* [khronos](https://github.com/hotchemi/khronos)
+* [klutter](https://github.com/kohesive/klutter)
+* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+
+Thanks for providing train of thought and ideas!
