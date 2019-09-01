@@ -20,5 +20,6 @@
 * [X] 提供必要的日志对象（包括到最近一次非内联调用处的日志对象）。
 * [X] breeze-time 提取和补充代码。
 * [X] 使类似`TODO()`的方法能够显示正确的日志。
+* [X] 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
 * [ ] breeze-text 提取和补充代码。
 * [ ] 重构`DataLoader`。

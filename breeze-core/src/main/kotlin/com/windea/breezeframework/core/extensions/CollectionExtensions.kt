@@ -144,17 +144,17 @@ inline fun <T, R : Any> Iterable<T>.zipWithFirst(other: Iterable<R>, predicate: 
 }
 
 
-/**根据指定的引用路径得到当前数组中的元素。*/
+/**根据指定的标准引用得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
-	this.toIndexKeyMap().privateDeepGet(path.splitByPathCase(PathCase.ReferencePath))
+	this.toIndexKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
 
-/**根据指定的引用路径得到当前列表中的元素。*/
+/**根据指定的标准引用得到当前列表中的元素。*/
 fun <T> List<T>.deepGet(path: String): Any? =
-	this.toIndexKeyMap().privateDeepGet(path.splitByPathCase(PathCase.ReferencePath))
+	this.toIndexKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
 
-/**根据指定的引用路径得到当前映射中的元素。*/
+/**根据指定的标准引用得到当前映射中的元素。*/
 fun <K, V> Map<K, V>.deepGet(path: String): Any? =
-	this.toStringKeyMap().privateDeepGet(path.splitByPathCase(PathCase.ReferencePath))
+	this.toStringKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
 
 private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): Any? {
 	val currentSubPath = subPaths.first()
@@ -173,49 +173,49 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
 }
 
 
-/**递归平滑映射当前数组，返回路径-值映射，默认使用引用路径[PathCase.ReferencePath]。可以指定层级[hierarchy]，默认为全部层级。*/
-fun <T> Array<out T>.deepFlatten(hierarchy: Int = -1, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
+/**递归平滑映射当前数组，返回路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级[hierarchy]，默认为全部层级。*/
+fun <T> Array<out T>.deepFlatten(hierarchy: Int = -1, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathCase)
 
-/**递归平滑映射当前集合，返回路径-值映射，默认使用引用路径[PathCase.ReferencePath]。可以指定层级[hierarchy]，默认为全部层级。*/
-fun <T> Iterable<T>.deepFlatten(hierarchy: Int = -1, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
+/**递归平滑映射当前集合，返回路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级[hierarchy]，默认为全部层级。*/
+fun <T> Iterable<T>.deepFlatten(hierarchy: Int = -1, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathCase)
 
-/**递归平滑映射当前映射，返回路径-值映射，默认使用引用路径[PathCase.ReferencePath]。可以指定层级[hierarchy]，默认为全部层级。*/
-fun <K, V> Map<K, V>.deepFlatten(hierarchy: Int = -1, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
+/**递归平滑映射当前映射，返回路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级[hierarchy]，默认为全部层级。*/
+fun <K, V> Map<K, V>.deepFlatten(hierarchy: Int = -1, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepFlatten(hierarchy, listOf(), pathCase)
 
-private fun Map<String, Any?>.privateDeepFlatten(hierarchy: Int = -1, preSubPaths: List<String>, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> {
+private fun Map<String, Any?>.privateDeepFlatten(hierarchy: Int = -1, preSubPaths: List<String>, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentHierarchy = if(hierarchy <= 0) hierarchy else hierarchy - 1
 		//每次递归需要创建新的子路径列表
 		val currentPreSubPaths = preSubPaths + key
 		//如果不是集合类型，则拼接成完整路径，与值一同返回
 		val fixedValue = when {
-			currentHierarchy == 0 -> return@flatMap listOf(currentPreSubPaths.joinByPathCase(pathCase) to value)
+			currentHierarchy == 0 -> return@flatMap listOf(currentPreSubPaths.joinBy(pathCase) to value)
 			value is Array<*> -> value.toIndexKeyMap()
 			value is Iterable<*> -> value.toIndexKeyMap()
 			value is Map<*, *> -> value.toStringKeyMap()
-			else -> return@flatMap listOf(currentPreSubPaths.joinByPathCase(pathCase) to value)
+			else -> return@flatMap listOf(currentPreSubPaths.joinBy(pathCase) to value)
 		}
 		return@flatMap fixedValue.privateDeepFlatten(currentHierarchy, currentPreSubPaths, pathCase).toList()
 	}.toMap()
 }
 
 
-/**根据指定的Json路径[PathCase.JsonPath]递归查询当前数组，返回匹配的路径-值映射，默认使用引用路径[PathCase.ReferencePath]*/
-fun <T> Array<out T>.deepQuery(path: String, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepQuery(path.splitByPathCase(PathCase.JsonPath), listOf(), pathCase)
+/**根据指定的Json路径[ReferenceCase.JsonSchemaReference]递归查询当前数组，返回匹配的路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]*/
+fun <T> Array<out T>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), pathCase)
 
-/**根据指定的Json路径[PathCase.JsonPath]递归查询当前集合，返回匹配的路径-值映射，默认使用引用路径[PathCase.ReferencePath]*/
-fun <T> Iterable<T>.deepQuery(path: String, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepQuery(path.splitByPathCase(PathCase.JsonPath), listOf(), pathCase)
+/**根据指定的Json路径[ReferenceCase.JsonSchemaReference]递归查询当前集合，返回匹配的路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]*/
+fun <T> Iterable<T>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), pathCase)
 
-/**根据指定的Json路径[PathCase.JsonPath]递归查询当前映射，返回匹配的路径-值映射，默认使用引用路径[PathCase.ReferencePath]*/
-fun <K, V> Map<K, V>.deepQuery(path: String, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> =
-	this.toStringKeyMap().privateDeepQuery(path.splitByPathCase(PathCase.JsonPath), listOf(), pathCase)
+/**根据指定的Json路径[ReferenceCase.JsonSchemaReference]递归查询当前映射，返回匹配的路径-值映射，默认使用标准引用[ReferenceCase.StandardReference]*/
+fun <K, V> Map<K, V>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toStringKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), pathCase)
 
-private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>, pathCase: PathCase = PathCase.ReferencePath): Map<String, Any?> {
+private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>, pathCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentSubPath = subPaths.first()
 		val currentSubPaths = subPaths.drop(1)
@@ -223,7 +223,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 		val currentPreSubPaths = preSubPaths + key
 		//如果不是集合类型，则拼接成完整路径，与值一同返回
 		val fixedValue = when {
-			currentSubPaths.isEmpty() -> return@flatMap listOf(currentPreSubPaths.joinByPathCase(pathCase) to value).filter {
+			currentSubPaths.isEmpty() -> return@flatMap listOf(currentPreSubPaths.joinBy(pathCase) to value).filter {
 				when {
 					//如果子路径表示一个列表或映射，例如："[]" "-" "{}"
 					currentSubPath in arrayOf("[]", "-", "{}") -> true

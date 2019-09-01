@@ -25,7 +25,7 @@ infix fun String?.equalsIc(other: String?): Boolean {
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
 infix fun String?.equalsIsc(other: String?): Boolean {
 	if(this == other) return true
-	return this != null && other != null && this.switchCase(this.getCase(), other.getCase()) == other
+	return this != null && other != null && this.switchBy(this.letterCase, other.letterCase) == other
 }
 
 
@@ -33,7 +33,7 @@ infix fun String?.equalsIsc(other: String?): Boolean {
 infix fun String.anyIn(other: String): Boolean = this.any { it in other }
 
 /**判断当前字符串是否与另一字符串相像。即，判断是否存在共同的以空格分隔的单词。*/
-infix fun String.like(other: String): Boolean = this.splitByCase(LetterCase.WhiteSpaceCase) anyIn other.splitByCase(LetterCase.WhiteSpaceCase)
+infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn other.splitToWordList()
 
 
 /**判断当前字符串是否以指定前缀开头。*/
@@ -74,43 +74,6 @@ infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
 infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
-
-
-private var enableCrossLine = false
-private var prepareCrossLineSurroundingWith = false
-
-/**执行跨行操作。*/
-fun <R> List<String>.crossLine(block: (List<String>) -> R): R {
-	enableCrossLine = true
-	return this.let(block).also {
-		enableCrossLine = false
-		prepareCrossLineSurroundingWith = false
-	}
-}
-
-/**执行跨行操作。*/
-fun <R> Sequence<String>.crossLine(block: (Sequence<String>) -> R): R {
-	enableCrossLine = true
-	return this.let(block).also {
-		enableCrossLine = false
-		prepareCrossLineSurroundingWith = false
-	}
-}
-
-/**判断当前行是否在指定的跨行前后缀之间。在[crossLine]之中调用这个方法。*/
-fun String.crossLineSurroundsWith(prefix: String, suffix: String, ignoreCase: Boolean = false): Boolean {
-	check(enableCrossLine) { "[ERROR] Cross line operations are not enabled. They are enabled in crossLine { ... } block." }
-	
-	val isBeginBound = this.contains(prefix, ignoreCase)
-	val isEndBound = this.contains(suffix, ignoreCase)
-	if(isBeginBound && !prepareCrossLineSurroundingWith) prepareCrossLineSurroundingWith = true
-	if(isEndBound) prepareCrossLineSurroundingWith = false
-	return !isBeginBound && prepareCrossLineSurroundingWith
-}
-
-/**判断当前行是否在指定的跨行前后缀之间。在[crossLine]之中调用这个方法。*/
-fun String.crossLineSurroundsWith(delimiter: String, ignoreCase: Boolean = false): Boolean =
-	this.crossLineSurroundsWith(delimiter, delimiter, ignoreCase)
 
 
 /**如果当前字符串不为空，则返回转换后的值。推荐仅用于长链式方法调用。*/
@@ -268,98 +231,54 @@ fun String.firstCharToLowerCaseOnly(): String {
 }
 
 
-/**得到当前字母的显示格式。*/
-fun String.getCase(): LetterCase {
-	return when {
-		this matches LetterCase.CamelCase.regex -> LetterCase.CamelCase
-		this matches LetterCase.PascalCase.regex -> LetterCase.PascalCase
-		this matches LetterCase.SnakeCase.regex -> LetterCase.SnakeCase
-		this matches LetterCase.ScreamingSnakeCase.regex -> LetterCase.ScreamingSnakeCase
-		this matches LetterCase.KebabCase.regex -> LetterCase.KebabCase
-		this matches LetterCase.KebabUpperCase.regex -> LetterCase.KebabUpperCase
-		this matches LetterCase.DotCase.regex -> LetterCase.DotCase
-		this matches LetterCase.WhiteSpaceCase.regex -> LetterCase.WhiteSpaceCase
-		else -> LetterCase.Unknown
-	}
+/***将当前字符串分割为单词列表。不检查接受者。*/
+fun String.splitToWordList(): List<String> {
+	return this.split("\\s+".toRegex())
 }
 
-/**切换当前字母的显示格式。*/
-fun String.switchCase(fromCase: LetterCase, toCase: LetterCase): String {
-	return this.splitByCase(fromCase).joinByCase(toCase)
-}
-
-/**根据显示格式分割当前字符串。*/
-fun String.splitByCase(case: LetterCase): List<String> {
-	return when(case) {
-		LetterCase.Unknown -> listOf(this)
-		LetterCase.CamelCase -> this.firstCharToUpperCase().splitWordByWhiteSpace().split(" ")
-		LetterCase.PascalCase -> this.splitWordByWhiteSpace().split(" ")
-		LetterCase.SnakeCase -> this.split("_")
-		LetterCase.ScreamingSnakeCase -> this.split("_")
-		LetterCase.KebabCase -> this.split("-")
-		LetterCase.KebabUpperCase -> this.split("-")
-		LetterCase.DotCase -> this.split(".")
-		LetterCase.WhiteSpaceCase -> this.split("\\s+".toRegex())
-	}
-}
-
-/**根据显示格式连接当前字符串列表。*/
-fun List<String>.joinByCase(case: LetterCase): String {
-	return when(case) {
-		LetterCase.Unknown -> this.first()
-		LetterCase.CamelCase -> this.joinToString("") { it.firstCharToUpperCaseOnly() }.firstCharToLowerCase()
-		LetterCase.PascalCase -> this.joinToString("") { it.firstCharToUpperCaseOnly() }
-		LetterCase.SnakeCase -> this.joinToString("_") { it.toLowerCase() }
-		LetterCase.ScreamingSnakeCase -> this.joinToString("_") { it.toUpperCase() }
-		LetterCase.KebabCase -> this.joinToString("-") { it.toLowerCase() }
-		LetterCase.KebabUpperCase -> this.joinToString("-") { it.toUpperCase() }
-		LetterCase.DotCase -> this.joinToString(".")
-		LetterCase.WhiteSpaceCase -> this.joinToString(" ")
-	}
-}
-
-private fun String.splitWordByWhiteSpace(): String {
+/**将当前字符串分割为基于大小写边界，以单个空格分割的单词组成的字符串。不检查接受者。*/
+fun String.splitToWords(): String {
 	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
 }
 
 
-/**得到当前字符串的路径显示格式。*/
-fun String.getPathCase(): PathCase {
-	return when {
-		this matches PathCase.WindowsPath.regex -> PathCase.WindowsPath
-		this matches PathCase.UnixPath.regex -> PathCase.UnixPath
-		this matches PathCase.ReferencePath.regex -> PathCase.ReferencePath
-		this matches PathCase.JsonPath.regex -> PathCase.JsonPath
-		else -> PathCase.Unknown
-	}
+/**得到当前字母的字母显示格式。*/
+val String.letterCase: LetterCase
+	get() = enumValues<LetterCase>().firstOrNull { this matches it.regex } ?: LetterCase.Unknown
+
+/**切换当前字母的字母显示格式。*/
+fun String.switchBy(fromCase: LetterCase, toCase: LetterCase): String {
+	return this.splitBy(fromCase).joinBy(toCase)
 }
 
-/**切换当前字符串的路径显示格式。*/
-fun String.switchPathCase(fromCase: PathCase, toCase: PathCase): String {
-	return this.splitByPathCase(fromCase).joinByPathCase(toCase)
+/**根据字母显示格式分割当前字符串。*/
+fun String.splitBy(case: LetterCase): List<String> {
+	return if(case == LetterCase.Unknown) listOf(this) else this.substrings(case.regex)
 }
 
-/**根据路径显示格式分割当前字符串，组成完整路径。*/
-fun String.splitByPathCase(case: PathCase): List<String> {
-	val fixedPath = this.removePrefix(".").removePrefix(".").removePrefix("#")
-	return when(case) {
-		PathCase.Unknown -> listOf(this)
-		PathCase.WindowsPath -> fixedPath.split("\\").filterNotEmpty()
-		PathCase.UnixPath -> fixedPath.split("/").filterNotEmpty()
-		PathCase.ReferencePath -> fixedPath.split("[", "]", ".").filterNotEmpty()
-		PathCase.JsonPath -> fixedPath.split("/").filterNotEmpty()
-	}
+/**根据字母显示格式连接当前字符串列表。*/
+fun List<String>.joinBy(case: LetterCase): String {
+	return case.joinFunction(this)
 }
 
-/**根据路径显示格式连接当前字符串列表，组成完整路径。可指定是否为绝对路径，默认为true。*/
-fun List<String>.joinByPathCase(case: PathCase, isAbsolutePath: Boolean = true): String {
-	return when(case) {
-		PathCase.Unknown -> this.first()
-		PathCase.WindowsPath -> this.joinToString("\\").let { if(isAbsolutePath) "\\$it" else it }
-		PathCase.UnixPath -> this.joinToString("/").let { if(isAbsolutePath) "/$it" else it }
-		PathCase.ReferencePath -> this.joinToString(".").replace("^(\\d+)$|\\.?(\\d+)\\.?".toRegex(), "[$1$2]")
-		PathCase.JsonPath -> this.joinToString("/", "/")
-	}
+
+/**得到当前字符串的引用显示格式。*/
+val String.pathCase: ReferenceCase
+	get() = enumValues<ReferenceCase>().firstOrNull { this matches it.regex } ?: ReferenceCase.Unknown
+
+/**切换当前字符串的引用显示格式。*/
+fun String.switchBy(fromCase: ReferenceCase, toCase: ReferenceCase): String {
+	return this.splitBy(fromCase).joinBy(toCase)
+}
+
+/**根据引用显示格式分割当前字符串，组成完整路径。*/
+fun String.splitBy(case: ReferenceCase): List<String> {
+	return if(case == ReferenceCase.Unknown) listOf(this) else this.substrings(case.regex)
+}
+
+/**根据引用显示格式连接当前字符串列表，组成完整路径。可指定是否为绝对路径，默认为true。*/
+fun List<String>.joinBy(case: ReferenceCase, isAbsolutePath: Boolean = true): String {
+	return case.joinFunction(this)
 }
 
 
@@ -367,7 +286,6 @@ fun List<String>.joinByPathCase(case: PathCase, isAbsolutePath: Boolean = true):
 fun CharSequence.substrings(regex: Regex): List<String> {
 	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
 }
-
 
 /**根据以null分割的前置和后置的分隔符，按顺序分割字符串。不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。*/
 fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =

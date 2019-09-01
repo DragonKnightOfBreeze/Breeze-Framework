@@ -36,6 +36,7 @@ subprojects {
 	dependencies {
 		implementation(kotlin("stdlib"))
 		implementation(kotlin("reflect"))
+		implementation(kotlin("script-util"))
 		testImplementation(kotlin("test"))
 		testImplementation(kotlin("test-junit"))
 		

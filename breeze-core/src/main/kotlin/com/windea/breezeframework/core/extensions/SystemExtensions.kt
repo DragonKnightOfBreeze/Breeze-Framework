@@ -39,7 +39,7 @@ class SystemAttributesAccessor internal constructor() : ReadOnlyProperty<Nothing
 }
 
 
-/**执行一段懒加载的脚本。*/
+/**执行一段懒加载的脚本。默认为kts。*/
 inline fun <reified T> eval(extension: String = "kts", lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript()) as? T
 }
@@ -77,3 +77,6 @@ inline fun exac(workDirectory: File? = null, vararg environmentVariables: String
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables.ifEmpty { null }, workDirectory)
 }
 
+fun main() {
+
+}

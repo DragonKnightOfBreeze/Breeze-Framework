@@ -13,11 +13,10 @@ class SystemExtensionsKtTest {
 	@Test
 	fun eval() {
 		println("hello")
-		eval<Unit> {
-			"""
-				print("hello world!")
-			""".trimIndent()
-		}
+		val a = eval<Int>("js") { "2+2" }
+		println(a)
+		val b = eval<Int> { "2+2" }
+		println(b)
 	}
 	
 	@Test
@@ -32,6 +31,6 @@ class SystemExtensionsKtTest {
 	
 	@Suppress("NOTHING_TO_INLINE")
 	inline fun inlineFun() {
-		println(nearestStackTrace())
+		println(nearestStackInfo())
 	}
 }

@@ -44,7 +44,7 @@ inline fun reject(value: Boolean, lazyMessage: () -> Any) {
 
 /**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。。*/
 @PublishedApi
-internal inline fun nearestStackTrace(): StackTraceElement {
+internal inline fun nearestStackInfo(): StackTraceElement {
 	try {
 		throw RuntimeException()
 	} catch(e: RuntimeException) {
@@ -52,9 +52,12 @@ internal inline fun nearestStackTrace(): StackTraceElement {
 	}
 }
 
-/**得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。*/
+/**
+ * 得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。
+ *
+ * NOTE 因为存在内联，显示的行数实际上是不正确的，也不可能手动修正为正确的
+ */
 @PublishedApi
 internal inline fun nearestLogger(): Logger {
-	//TODO 因为存在内联，显示的行数实际上是不正确的
-	return KotlinLogging.logger(nearestStackTrace().toString())
+	return KotlinLogging.logger(nearestStackInfo().toString())
 }
