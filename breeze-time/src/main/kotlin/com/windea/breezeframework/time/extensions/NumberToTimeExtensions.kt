@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.extensions
+package com.windea.breezeframework.time.extensions
 
 import java.time.*
 

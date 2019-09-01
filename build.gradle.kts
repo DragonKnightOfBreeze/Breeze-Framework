@@ -40,6 +40,7 @@ subprojects {
 		testImplementation(kotlin("test-junit"))
 		
 		implementation("io.github.microutils:kotlin-logging:1.6.26")
+		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 	}
 }
 

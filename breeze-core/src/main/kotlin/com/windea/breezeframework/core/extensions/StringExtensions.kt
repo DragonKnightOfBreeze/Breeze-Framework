@@ -4,7 +4,6 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.*
-import com.windea.breezeframework.core.extensions.StringExtensions.logger
 import mu.*
 import java.awt.*
 import java.io.*
@@ -13,18 +12,9 @@ import java.nio.file.*
 import java.text.*
 import java.time.*
 import java.time.format.*
+import java.util.*
 
-object StringExtensions : KLogging()
-
-
-/**@see kotlin.text.repeat*/
-operator fun String.times(n: Int): String = this.repeat(n)
-
-/**@see kotlin.text.chunked*/
-operator fun String.div(n: Int): List<String> = this.chunked(n)
-
-/**@see kotlin.text.substring*/
-operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)
+private val logger = KotlinLogging.logger { }
 
 
 /**判断字符串是否相等。忽略大小写。*/
@@ -512,6 +502,9 @@ internal fun String.toQueryParamMap(): QueryParamMap {
 }
 
 
+/**将当前字符串转化为日期。*/
+fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
+
 /**将当前字符串转化为本地日期。*/
 fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
 	LocalDate.parse(this, formatter)
@@ -554,3 +547,13 @@ fun String.toColor(): Color {
 private fun String.mapPerCharRepeat(n: Int): String {
 	return this.chunked(1).joinToString("") { it.repeat(n) }
 }
+
+
+/**@see kotlin.text.repeat*/
+operator fun String.times(n: Int): String = this.repeat(n)
+
+/**@see kotlin.text.chunked*/
+operator fun String.div(n: Int): List<String> = this.chunked(n)
+
+/**@see kotlin.text.substring*/
+operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)

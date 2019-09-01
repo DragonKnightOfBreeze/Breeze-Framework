@@ -7,5 +7,6 @@ include(
 	"breeze-game",
 	"breeze-spring-boot",
 	"breeze-spring-cloud",
-	"breeze-text"
+	"breeze-text",
+	"breeze-time"
 )

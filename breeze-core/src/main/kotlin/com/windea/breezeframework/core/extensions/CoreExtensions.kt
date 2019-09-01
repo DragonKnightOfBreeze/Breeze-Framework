@@ -2,7 +2,12 @@
 
 package com.windea.breezeframework.core.extensions
 
+import mu.*
+import org.slf4j.*
 import kotlin.contracts.*
+
+private val logger = KotlinLogging.logger { }
+
 
 /**取在指定范围内的夹值。*/
 infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T {
@@ -34,4 +39,22 @@ inline fun reject(value: Boolean, lazyMessage: () -> Any) {
 		val message = lazyMessage()
 		throw UnsupportedOperationException(message.toString())
 	}
+}
+
+
+/**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。。*/
+@PublishedApi
+internal inline fun nearestStackTrace(): StackTraceElement {
+	try {
+		throw RuntimeException()
+	} catch(e: RuntimeException) {
+		return e.stackTrace[0]
+	}
+}
+
+/**得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。*/
+@PublishedApi
+internal inline fun nearestLogger(): Logger {
+	//TODO 因为存在内联，显示的行数实际上是不正确的
+	return KotlinLogging.logger(nearestStackTrace().toString())
 }

@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.core.extensions
 
 import java.io.*
@@ -17,9 +19,6 @@ class SystemAttributesAccessor internal constructor() : ReadOnlyProperty<Nothing
 	
 	/**项目工作环境的用户名。*/
 	val userName: String? = System.getProperty("user.name")
-	
-	/**项目工作环境的用户所在语言环境。*/
-	val userLocale: String? = System.getProperty("user.locale")
 	
 	/**项目工作环境的用户所在国家。*/
 	val userCountry: String? = System.getProperty("user.country")
@@ -77,3 +76,4 @@ inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: 
 inline fun exac(workDirectory: File? = null, vararg environmentVariables: String, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables.ifEmpty { null }, workDirectory)
 }
+

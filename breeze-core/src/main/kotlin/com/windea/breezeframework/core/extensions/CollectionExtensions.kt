@@ -3,20 +3,6 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.enums.*
-import com.windea.breezeframework.core.extensions.CollectionExtensions.logger
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
-
-/**@see kotlin.collections.chunked*/
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
-
-/**@see kotlin.collections.slice*/
-operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
-
-/**@see kotlin.collections.slice*/
-operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
-
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
@@ -321,3 +307,16 @@ inline fun <T> Iterable<IndexedValue<T>>.mapIndices(transform: (Int) -> Int): It
 inline fun <T> Iterable<IndexedValue<T>>.mapValues(transform: (T) -> T): Iterable<IndexedValue<T>> {
 	return this.map { (index, value) -> IndexedValue(index, transform(value)) }
 }
+
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+
+/**@see kotlin.collections.chunked*/
+operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+
+/**@see kotlin.collections.slice*/
+operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+
+/**@see kotlin.collections.slice*/
+operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)

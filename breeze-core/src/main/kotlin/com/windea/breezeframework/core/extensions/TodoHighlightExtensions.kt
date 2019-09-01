@@ -3,28 +3,29 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.extensions.TodoHighlightExtensions.logger
-import mu.*
 
-object TodoHighlightExtensions : KLogging()
+//TODO 追踪目标方法体
+//TODO 让TODO插件能够正确地提供高亮
 
-/**返回一个模拟结果，或者引起一个[DelayImplementedError]，以说明一个方法体推迟了实现。*/
-inline fun <reified T> DELAY(lazyDummyResult: () -> T? = { null }): T =
-	lazyDummyResult().also {
-		logger.warn("An operation is delay-implemented.")
-	}
-	?: throw DelayImplementedError()
+/**表明一个方法体推迟了实现。*/
+inline fun DELAY() = Unit
 
-/**返回一个模拟结果，或者引起一个[DelayImplementedError]，以说明一个方法体推迟了实现，并指定原因。*/
-inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T? = { null }): T =
-	lazyDummyResult().also {
-		logger.warn("An operation is delay-implemented: $reason")
-	} ?: throw DelayImplementedError("An operation is delay-implemented: $reason")
+/**返回一个模拟结果，以表明一个方法体推迟了实现。*/
+inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
+	.also { nearestLogger().warn("An operation is delay-implemented.") }
 
-class DelayImplementedError(message: String = "An operation is delay-implemented.") : Error(message)
+/**返回一个模拟结果，以表明一个方法体推迟了实现，并指定原因。*/
+inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
+	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
+
+
+/**打印一段消息，以表明一个方法体中存在问题。*/
+inline fun ISSUE() = run { nearestLogger().warn("There is an issue in this operation.") }
+
+/**打印一段消息，以表明一个方法体中存在问题。*/
+inline fun ISSUE(message: String) = run { nearestLogger().warn("There is an issue in this operation :$message") }
 
 
 /**为Kotlin文件中的项提供分组。*/
 @NeverFeatureApi
-inline fun REGION(regionName: String = "REGION@${RandomExtensions.uuid()}") {
-}
+inline fun REGION(regionName: String = "REGION@${Randoms.uuid()}") = Unit

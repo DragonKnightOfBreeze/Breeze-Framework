@@ -2,11 +2,10 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.enums.*
-import com.windea.breezeframework.core.extensions.SerializeExtensions.logger
 import mu.*
 import kotlin.reflect.full.*
 
-object SerializeExtensions : KLogging()
+private val logger = KotlinLogging.logger { }
 
 //TODO
 

@@ -56,3 +56,15 @@ class AnnotatedValuesAccessor internal constructor() {
 	
 	operator fun getValue(thisRef: KAnnotatedElement, property: KProperty<*>) = this.apply { target = thisRef }
 }
+
+
+/**访问扩展注解。可以据此为可注解元素添加扩展注解。*/
+val KAnnotatedElement.extendedAnnotations by ExtendedAnnotationContainer()
+
+class ExtendedAnnotationContainer internal constructor() {
+	private val extendedAnnotations: MutableList<Annotation> = mutableListOf()
+	
+	operator fun getValue(kAnnotatedElement: KAnnotatedElement, property: KProperty<*>): MutableList<Annotation> {
+		return this.extendedAnnotations
+	}
+}

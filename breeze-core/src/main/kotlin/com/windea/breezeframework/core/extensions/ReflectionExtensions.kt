@@ -18,7 +18,8 @@ inline fun nameOf(target: Any?): String? {
 		target == null -> null
 		target is KClass<*> -> target.simpleName
 		target is KCallable<*> -> target.name
-		target is KParameter -> target.name //无法直接通过方法的引用得到参数
+		//无法直接通过方法的引用得到参数
+		target is KParameter -> target.name
 		//无法得到局部变量的任何信息
 		else -> target::class.simpleName
 	}

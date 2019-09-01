@@ -3,7 +3,7 @@ package com.windea.breezeframework.core.extensions
 import java.util.*
 import kotlin.random.Random
 
-object RandomExtensions {
+object Randoms {
 	/**得到随机的uuid。*/
 	fun uuid(): String {
 		return UUID.randomUUID().toString()
