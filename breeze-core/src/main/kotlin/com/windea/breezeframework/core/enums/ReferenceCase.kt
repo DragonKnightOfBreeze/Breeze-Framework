@@ -5,10 +5,10 @@ import com.windea.breezeframework.core.annotations.marks.*
 /**引用的显示格式。*/
 @NotTested
 enum class ReferenceCase(
-	val regex: Regex,
-	val joinFunction: (List<String>) -> String
+	val regex: Regex = "^$".toRegex(),
+	val joinFunction: (List<String>) -> String = { it.first() }
 ) {
-	Unknown("^$".toRegex(), { it.first() }),
+	Unknown,
 	/**
 	 * 标准引用。
 	 *
@@ -18,10 +18,11 @@ enum class ReferenceCase(
 	 */
 	//TODO 支持静态成员/类型 `T(a).b`
 	StandardReference(
-		"^([a-zA-Z_])(?:(?:\\.([a-zA-Z_]))|(?:\\[(\\d+)]))*$".toRegex(),
-		{ it.joinToString(".").replace("^(\\d+)$|\\.?(\\d+)\\.?".toRegex(), "[$1$2]") }
+		//option($key|wrapper($index)),(option(wrapper($key)|wrapper($index)))*
+		"^(?:([a-zA-Z_$]+)|(?:\\[(\\d+)]))(?:(?:\\.([a-zA-Z_]+))|(?:\\[(\\d+)]))*$".toRegex(),
+		{ it.joinToString(".").replace("(\\d+)".toRegex(), "[$1]").replace(".[", "[") }
 	),
-	/*
+	/**
 	 * Json引用。
 	 *
 	 * * 示例：`$.Category.[0].Name`。
@@ -29,8 +30,9 @@ enum class ReferenceCase(
 	 * * `[0]` 表示一个列表的元素。
 	 */
 	JsonReference(
-		"^\\$\\.(?:\\.(?:([a-zA-Z_]))|(?:\\[(\\d+)]))*$".toRegex(),
-		{ it.joinToString(".").replace("^(\\d+)$".toRegex(), "[$1]") }
+		//prefix(delimiter,option($key|wrapper($index)))*
+		"^\\$(?:\\.(?:([a-zA-Z_]+)|(?:\\[(\\d+)])))*$".toRegex(),
+		{ it.joinToString(".", "$.").replace("(\\d+)".toRegex(), "[$1]") }
 	),
 	/**
 	 * Json Schema引用。
@@ -45,7 +47,9 @@ enum class ReferenceCase(
 	 * * `regex:.*Name` 表示一个映射的键符合指定正则的键值对。
 	 * * `Name` 表示一个映射的对应键的值。
 	 */
+	//DELAY 严格验证
 	JsonSchemaReference(
+		//prefix(delimiter,$ref)*
 		"^#?(?:/(.+))+$".toRegex(),
 		{ it.joinToString("/", "/") }
 	)

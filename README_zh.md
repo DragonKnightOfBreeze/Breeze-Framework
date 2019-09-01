@@ -4,6 +4,44 @@
 
 基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展功能。
 
+**NOTE:** 项目并未完全实现，且未经过充分测试。
+
+**NOTE:** 尽管如此，这个框架仍然能够为你带来许多便利。
+
+```kotlin
+fun example() {
+    //true
+    println(arrayOf(1, 2, 3) anyIn arrayOf(3, 4, 5))
+    //{[0]=1, [1]=2, [2]=3, [3][0]=4, [3][1]=5, [4].a=6}
+    println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
+    //{0=a, 1=b, 2=c}
+    println(listOf("a", "b", "c").toIndexKeyMap())
+    //[a, b, c, a, b, c, a, b, c]
+    println(listOf("a", "b", "c") * 3)
+    //[b, c]
+    println(listOf("a", "b", "c")[1..2])
+    
+    //true
+    println("Hello world" endsWithIc "World")
+    //[abc, def]
+    println("1abc2def3".substrings("\\d(\\w*)\\d(\\w*)\\d".toRegex()))
+    //1{0}2{1}3{2}
+    println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
+    //**********
+    println("*" * 10)
+    //  <element>
+    //    Here also indented.
+    //  </element>
+    println("""
+      <element>
+        Here also indented.
+      </element>
+    """.toMultilineText())
+}
+```
+
+# 模块
+
 * [x] breeze-core：核心模块。为字符串、集合等提供各种有用的扩展，提供一些通用的生成器、注解、枚举、接口等。
 * [ ] breeze-data：数据模块。为json、yaml、xml、properties等数据类型提供Dsl、读取器和解析器。
 * [x] breeze-dream：白日梦模块。内含众多幻想元素，**你应该用不上。**

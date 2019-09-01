@@ -276,8 +276,8 @@ fun String.splitBy(case: ReferenceCase): List<String> {
 	return if(case == ReferenceCase.Unknown) listOf(this) else this.substrings(case.regex)
 }
 
-/**根据引用显示格式连接当前字符串列表，组成完整路径。可指定是否为绝对路径，默认为true。*/
-fun List<String>.joinBy(case: ReferenceCase, isAbsolutePath: Boolean = true): String {
+/**根据引用显示格式连接当前字符串列表，组成完整路径。*/
+fun List<String>.joinBy(case: ReferenceCase): String {
 	return case.joinFunction(this)
 }
 
@@ -338,7 +338,7 @@ fun String.toBreakLineText(): String {
 /**将当前字符串转化为多行文本。（去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。）*/
 fun String.toMultilineText(): String {
 	val lines = this.lines()
-	val trimmedIndent = lines.last().ifBlank { "" }
+	val trimmedIndent = lines.last().ifEmpty { "" }
 	if(trimmedIndent.isEmpty()) return this.trimIndent()
 	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }

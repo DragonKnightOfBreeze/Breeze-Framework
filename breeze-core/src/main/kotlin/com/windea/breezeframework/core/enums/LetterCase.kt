@@ -12,62 +12,74 @@ enum class LetterCase(
 	Unknown,
 	/**camelCase*/
 	CamelCase(
+		//($abc)($Abc)*
 		"^([a-z]+)([A-Z][a-z]*)*$".toRegex(),
 		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
 	),
 	/**PascalCase*/
 	PascalCase(
-		"^([A-Z][a-z]*)*$".toRegex(),
+		//($Abc)+
+		"^([A-Z][a-z]*)+$".toRegex(),
 		{ it.joinToString("") { s -> s.firstCharToUpperCaseOnly() } }
 	),
 	/**snake_case*/
 	SnakeCase(
+		//($abc)(wrapper(delimiter,$abc))*
 		"^([a-z]+)(?:_([a-z]+))*$".toRegex(),
 		{ it.joinToString("_") { s -> s.toLowerCase() } }
 	),
 	/**SCREAMING_SNAKE_CASE*/
 	ScreamingSnakeCase(
-		"^([A-Z]+)(_(?:[A-Z]+))*$".toRegex(),
+		//($ABC)(wrapper(delimiter,$ABC))*
+		"^([A-Z]+)(?:_([A-Z]+))*$".toRegex(),
 		{ it.joinToString("_") { s -> s.toUpperCase() } }
 	),
 	/**kebab-case*/
 	KebabCase(
+		//($abc)(wrapper(delimiter,$abc))*
 		"^([a-z]+)(?:-([a-z]+))*$".toRegex(),
 		{ it.joinToString("-") { s -> s.toLowerCase() } }
 	),
 	/**KEBAB-UPPERCASE*/
 	KebabUpperCase(
+		//($ABC)(wrapper(delimiter,$ABC))*
 		"^([A-Z]+)(?:-([A-Z]+))*$".toRegex(),
 		{ it.joinToString("-") { s -> s.toUpperCase() } }
 	),
 	/**dot.case*/
 	DotCase(
+		//($AbC)(wrapper(delimiter,$AbC))*
 		"^([a-zA-Z_]+)(?:\\.([a-zA-Z_]+))*$".toRegex(),
 		{ it.joinToString(".") }
 	),
 	/**lowercase*/
 	LowerCase(
-		"^[a-z]+$".toRegex(),
+		//$abc
+		"^([a-z]+)$".toRegex(),
 		{ it.joinToString("") { s -> s.toLowerCase() } }
 	),
 	/**UPPERCASE*/
 	UpperCase(
-		"^[A-Z]+$".toRegex(),
+		//$ABC
+		"^([A-Z]+)$".toRegex(),
 		{ it.joinToString("") { s -> s.toUpperCase() } }
 	),
 	/**lower case words*/
 	LowerCaseWords(
-		"^([a-z]+)(?:(\\s[a-z]+))*\$".toRegex(),
+		//($abc)(wrapper(delimiter,$abc))*
+		"^([a-z]+)(?:\\s+([a-z]+))*$".toRegex(),
 		{ it.joinToString(" ") { s -> s.toLowerCase() } }
 	),
 	/**UPPER CASE WORDS*/
 	UpperCaseWords(
-		"^([a-z]+)(?:(\\s[a-z]+))*\$".toRegex(),
+		//($ABC)(wrapper(delimiter,$ABC))*
+		"^([A-Z]+)(?:\\s+([A-Z]+))*$".toRegex(),
 		{ it.joinToString(" ") { s -> s.toUpperCase() } }
 	),
 	/**Capitalized words*/
 	CapitalizedWords(
-		"^([A-Z][a-z]*)(?:(\\s[a-z]+))*\$".toRegex(),
+		//($Abc)(wrapper(delimiter,$abc))*
+		"^([A-Z][a-z]*)(?:(\\s+[a-z]+))*$".toRegex(),
 		{ it.joinToString("") { s -> s.toLowerCase() }.capitalize() }
 	)
 }

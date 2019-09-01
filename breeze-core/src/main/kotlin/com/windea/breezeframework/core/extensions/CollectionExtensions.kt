@@ -261,7 +261,7 @@ fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 
 /**将当前映射转换成以字符串为键的映射。*/
 fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	return this.mapKeys { it.toString() }
+	return this.mapKeys { (k, _) -> k.toString() }
 }
 
 
