@@ -21,5 +21,6 @@
 * [X] breeze-time 提取和补充代码。
 * [X] 使类似`TODO()`的方法能够显示正确的日志。
 * [X] 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
+* [X] 完成基本的顶层README文档。
 * [ ] breeze-text 提取和补充代码。
 * [ ] 重构`DataLoader`。
