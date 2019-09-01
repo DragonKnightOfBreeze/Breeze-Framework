@@ -6,6 +6,11 @@ import com.windea.breezeframework.core.extensions.*
 import org.junit.*
 
 class Tests {
+	@Test
+	fun test() {
+	
+	}
+	
 	@Test //TESTED
 	fun example() {
 		//true

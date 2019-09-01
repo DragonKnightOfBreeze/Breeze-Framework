@@ -3,7 +3,9 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
+import java.lang.reflect.*
 import kotlin.reflect.*
+import kotlin.reflect.jvm.*
 
 /**得到指定类型的名字。*/
 @ExperimentalStdlibApi
@@ -37,3 +39,29 @@ inline fun <reified T> refOf() {
 inline fun refOf(target: Any?) {
 	TODO()
 }
+
+
+/**得到当前类型的被擦除类型。参考[klutter](https://github.com/kohesive/klutter)。*/
+@Suppress("UNCHECKED_CAST")
+val Type.erasedType: Class<out Any>
+	get() = when(this) {
+		is Class<*> -> this as Class<Any>
+		is ParameterizedType -> this.rawType.erasedType
+		is GenericArrayType -> {
+			// getting the array type is a bit trickier
+			val elementType = this.genericComponentType.erasedType
+			val testArray = java.lang.reflect.Array.newInstance(elementType, 0)
+			testArray.javaClass
+		}
+		is TypeVariable<*> -> {
+			throw IllegalStateException("Not sure what to do here yet.")
+		}
+		is WildcardType -> {
+			this.upperBounds[0].erasedType
+		}
+		else -> throw IllegalStateException("Should not get here.")
+	}
+
+/**得到当前Kotlin类型的被擦除类型。*/
+val KType.erasedType: Class<out Any> get() = this.jvmErasure.java
+

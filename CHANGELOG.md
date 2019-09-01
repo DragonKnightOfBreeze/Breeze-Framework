@@ -19,9 +19,13 @@
 * [X] 提供扩展注解的容器。
 * [X] 提供必要的日志对象（包括到最近一次非内联调用处的日志对象）。
 * [X] breeze-time 提取和补充代码。
-* [X] 使类似`TODO()`的方法能够显示正确的日志。
-* [X] 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
+* [X] breeze-core 使类似`TODO()`的方法能够显示正确的日志。
+* [X] breeze-core 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
 * [X] 完成基本的顶层README文档。
-* [X] 进一步完善`LetterCase`和`ReferenceCase`以及相关代码。
+* [X] breeze-core 进一步完善`LetterCase`和`ReferenceCase`以及相关代码。
+* [X] breeze-core 参考klutter进行部分更新。
+* [ ] breeze-core 实现`addPrefix`等方法，实现`ifStartsWith`等方法？
 * [ ] breeze-text 提取和补充代码。
+* [ ] breeze-text en 序数与数量的转化。
+* [ ] breeze-text en 单数与复数的转化 
 * [ ] 重构`DataLoader`。
