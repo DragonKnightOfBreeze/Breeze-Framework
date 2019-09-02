@@ -9,7 +9,7 @@ import kotlin.annotation.AnnotationTarget.*
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
 @Suppress("SpellCheckingInspection")
-internal annotation class Reference(
+annotation class Reference(
 	/**引用地址。以Markdown地址表示。为了便于转移到文档注释。*/
 	@Language("Markdown")
 	val value: String = "a1231bdljlka"

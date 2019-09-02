@@ -23,7 +23,7 @@ object IdeaConfigGenerator : TextGenerator {
 		<templateSet group="YamlAnnotation">
 		${definitions.joinToString("\n\n") { (templateName, template) ->
 			val description = (template.getOrDefault("description", "") as String).unescape()
-			val params = if("properties" in template) template["properties"] else mapOf()
+			val params = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
 			val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
 			
 			"""
