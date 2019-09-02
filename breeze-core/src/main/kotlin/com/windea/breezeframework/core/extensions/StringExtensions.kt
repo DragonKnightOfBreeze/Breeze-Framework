@@ -232,22 +232,22 @@ fun String.unwrapQuote(): String {
 
 /**将第一个字符转为大写。*/
 fun String.firstCharToUpperCase(): String {
-	return this[0].toUpperCase() + this.substring(1, this.length)
+	return if(this.isNotBlank()) this[0].toUpperCase() + this.substring(1) else this
 }
 
 /**将第一个字符转为大写，将其他字符皆转为小写。*/
 fun String.firstCharToUpperCaseOnly(): String {
-	return this[0].toUpperCase() + this.substring(1, this.length).toLowerCase()
+	return if(this.isNotBlank()) this[0].toUpperCase() + this.substring(1).toLowerCase() else this
 }
 
 /**将第一个字符转为小写。*/
 fun String.firstCharToLowerCase(): String {
-	return this[0].toLowerCase() + this.substring(1, this.length)
+	return if(this.isNotBlank()) this[0].toLowerCase() + this.substring(1) else this
 }
 
-/**将第一个字符转为小写，将其他字符皆转为小写。*/
+/**将第一个字符转为小写，将其他字符皆转为大写。*/
 fun String.firstCharToLowerCaseOnly(): String {
-	return this[0].toLowerCase() + this.substring(1, this.length).toUpperCase()
+	return if(this.isNotBlank()) this[0].toLowerCase() + this.substring(1).toUpperCase() else this
 }
 
 

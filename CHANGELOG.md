@@ -31,7 +31,7 @@
 * [X] breeze-core 为`Sequence`尽可能地、合理地适配`Iterable`的扩展。
 * [X] breeze-data 将`loaders`、`generators`包移动到此。
 * [X] breeze-data 编写`DataSerializer`的相关接口和类，未实现。
-* [ ] breeze-core 扩展`LetterCase`，提供更多的显示格式。
+* [X] breeze-core 扩展`LetterCase`，提供更多的显示格式。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 * [ ] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。

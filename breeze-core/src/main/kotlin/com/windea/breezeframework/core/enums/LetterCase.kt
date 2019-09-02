@@ -13,13 +13,13 @@ enum class LetterCase(
 	override val joinFunction: (List<String>) -> String
 ) : FormatCase {
 	`lowercase`(
-		//allow: only lower words
+		//allow: only lower word
 		"^([a-z]+)$".toRegex(),
 		{ listOf(it) },
 		{ it.joinToString("").toLowerCase() }
 	),
 	`UPPERCASE`(
-		//allow: only upper words
+		//allow: only upper word
 		"^([A-Z]+)$".toRegex(),
 		{ listOf(it) },
 		{ it.joinToString("").toUpperCase() }
@@ -28,25 +28,31 @@ enum class LetterCase(
 		//allow: only capitalized word
 		"^([A-Z][a-z]*)$".toRegex(),
 		{ listOf(it) },
-		{ it.joinToString("").capitalize() }
+		{ it.joinToString("").firstCharToUpperCase() }
 	),
 	`lower case words`(
 		//allow: lower words, blank, `
 		"^([a-z']+)(?:\\s+([a-z']+))+$".toRegex(),
 		{ it.splitToWordList() },
-		{ it.joinToString(" ") { s -> s.toLowerCase() } }
+		{ it.joinToString(" ").toLowerCase() }
 	),
 	`UPPER CASE WORDS`(
 		//allow: lower words, blank, `
 		"^([A-Z']+)(?:\\s+([A-Z']+))+$".toRegex(),
 		{ it.splitToWordList() },
-		{ it.joinToString(" ") { s -> s.toUpperCase() } }
+		{ it.joinToString(" ").toUpperCase() }
 	),
-	`Capitalized words`(
-		//allow: capitalized words, blank, `
+	`First word capitalized`(
+		//allow: first word capitalized, blank, '
 		"^([A-Z][a-z]*)(?:\\s+([a-z]+))+$".toRegex(),
 		{ it.splitToWordList() },
-		{ it.joinToString(" ") { s -> s.toLowerCase() }.capitalize() }
+		{ it.joinToString(" ").firstCharToUpperCase() }
+	),
+	`Capitalized Words`(
+		//allow: capitalized words, blank, '
+		"^([A-Z][a-z]*)(?:\\s+([a-z]+))+$".toRegex(),
+		{ it.splitToWordList() },
+		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } }
 	),
 	`Generic Words`(
 		//allow: just include blank
@@ -73,28 +79,40 @@ enum class LetterCase(
 		{ it.joinToString("") { s -> s.firstCharToUpperCaseOnly() } }
 	),
 	`snake_case`(
-		//allow: words, $
+		//allow: words, $, _
 		"^(\\$?[a-z]+)(?:_(\\$?[a-z]+))*$".toRegex(),
 		{ it.split("_") },
 		{ it.joinToString("_") { s -> s.toLowerCase() } }
 	),
 	`SCREAMING_SNAKE_CASE`(
-		//allow: words, $
+		//allow: words, $, _
 		"^(\\$?[A-Z]+)(?:_(\\$?[A-Z]+))*$".toRegex(),
 		{ it.split("_") },
 		{ it.joinToString("_") { s -> s.toUpperCase() } }
 	),
+	`underscore_Words`(
+		//allow: words, $, _
+		"^(\\$?[a-zA-Z]+)(?:_(\\$?[a-zA-Z]+))*$".toRegex(),
+		{ it.split("_") },
+		{ it.joinToString("_") }
+	),
 	`kebab-case`(
-		//allow: words
-		"^([a-z]+)(?:-([a-z]+))*$".toRegex(),
+		//allow: words, $, _
+		"^(\\$?[a-z]+)(?:-(\\$?[a-z]+))*$".toRegex(),
 		{ it.split("-") },
 		{ it.joinToString("-") { s -> s.toLowerCase() } }
 	),
 	`KEBAB-UPPERCASE`(
-		//allow: words
-		"^([A-Z]+)(?:-([A-Z]+))*$".toRegex(),
+		//allow: words, $, _
+		"^(\\$?[A-Z]+)(?:-(\\$/[A-Z]+))*$".toRegex(),
 		{ it.split("-") },
 		{ it.joinToString("-") { s -> s.toUpperCase() } }
+	),
+	`hyphen-Words`(
+		//allow: words, $, _
+		"^(\\$?[a-zA-Z]+)(?:_(\\$?[a-zA-Z]+))*$".toRegex(),
+		{ it.split("-") },
+		{ it.joinToString("-") }
 	),
 	Unknown("^(.*)$".toRegex(), { listOf(it) }, { it.joinToString("") });
 }
