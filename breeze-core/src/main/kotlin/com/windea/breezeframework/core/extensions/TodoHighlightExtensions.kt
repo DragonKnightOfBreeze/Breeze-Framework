@@ -4,7 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 
-//TODO 追踪目标方法体
+//DONE 追踪目标方法体
 //TODO 让TODO插件能够正确地提供高亮
 
 /**表明一个方法体推迟了实现。*/
@@ -27,5 +27,5 @@ inline fun ISSUE(message: String) = run { nearestLogger().warn("There is an issu
 
 
 /**为Kotlin文件中的项提供分组。*/
-@NeverFeatureApi
+@TrickImplementationApi
 inline fun REGION(regionName: String = "REGION@${Randoms.uuid()}") = Unit

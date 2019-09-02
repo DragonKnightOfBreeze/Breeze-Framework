@@ -36,7 +36,8 @@
 * [X] breeze-core 进一步完善`LetterCase`，通过添加泛用显示格式放松限制。
 * [X] 完善测试中。
 * [X] 参考官方库，将简单的转化方法也改写成内联方法。（为了进行堆栈追踪和日志追踪等）
-* [ ] 添加`ReflectModifierExtensions`。
+* [X] 添加`ReflectModifierExtensions`。
+* [ ] 为有望被标准库实现的实现添加`@OutlookImplementationApi`注解。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 * [ ] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。

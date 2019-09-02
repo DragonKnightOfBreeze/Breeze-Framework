@@ -1,7 +1,8 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.*
 import mu.*
@@ -18,11 +19,13 @@ private val logger = KotlinLogging.logger { }
 
 
 /**判断字符串是否相等。忽略大小写。*/
+@OutlookImplementationApi
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
+@OutlookImplementationApi
 infix fun String?.equalsIlc(other: String?): Boolean {
 	if(this == other) return true
 	return this != null && other != null && this.switchTo(this.letterCase, other.letterCase) == other
@@ -30,6 +33,7 @@ infix fun String?.equalsIlc(other: String?): Boolean {
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
+@OutlookImplementationApi
 infix fun String.anyIn(other: String): Boolean = this.any { it in other }
 
 /**判断当前字符串是否与另一字符串相像。即，判断是否存在共同的以空格分隔的单词。*/
@@ -37,51 +41,61 @@ infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn oth
 
 
 /**判断当前字符串是否以指定前缀开头。*/
+@OutlookImplementationApi
 infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, false)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。*/
+@OutlookImplementationApi
 infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。*/
+@OutlookImplementationApi
 infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, false)
 }
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
+@OutlookImplementationApi
 infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
 	return suffixArray.any { this.endsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
+@OutlookImplementationApi
 infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, true)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
+@OutlookImplementationApi
 infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, true) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
+@OutlookImplementationApi
 infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
+@OutlookImplementationApi
 infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
 
 
-/**如果当前字符串不为空，则返回转换后的值。推荐仅用于长链式方法调用。*/
+/**如果当前字符串不为空，则返回转换后的值。*/
+@OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
 	return if(this.isEmpty()) this else transform(this)
 }
 
-/**如果当前字符串不为空白，则返回转换后的值。推荐仅用于长链式方法调用。*/
+/**如果当前字符串不为空白，则返回转换后的值。*/
+@OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 	return if(this.isBlank()) this else transform(this)
 }
@@ -132,6 +146,7 @@ fun String.messageFormat(vararg args: Any): String {
  *
  * 占位符形如：`{}`, `{index}`, `${}`, `${index}`。
  */
+//TODO
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
@@ -148,6 +163,7 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 
 
 /**添加指定的前缀。可指定是否忽略空字符串，默认为true。*/
+@OutlookImplementationApi
 fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix)) return this
@@ -155,6 +171,7 @@ fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
 }
 
 /**添加指定的后缀。可指定是否忽略空字符串，默认为true。*/
+@OutlookImplementationApi
 fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.endsWith(suffix)) return this
@@ -162,6 +179,7 @@ fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
 }
 
 /**添加指定的前缀和后缀。可指定是否忽略空字符串，默认为true。*/
+@OutlookImplementationApi
 fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
@@ -350,6 +368,7 @@ fun String.toBreakLineText(): String {
 }
 
 /**将当前字符串转化为多行文本。（去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。）*/
+//TODO
 fun String.toMultilineText(): String {
 	val lines = this.lines()
 	val trimmedIndent = lines.last().ifEmpty { "" }
@@ -359,25 +378,32 @@ fun String.toMultilineText(): String {
 
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+@OutlookImplementationApi
 fun String.toIntOrDefault(defaultValue: Int = 0): Int = this.toIntOrDefault(10, defaultValue)
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+@OutlookImplementationApi
 fun String.toIntOrDefault(radix: Int = 10, defaultValue: Int = 0): Int = this.toIntOrNull(radix) ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+@OutlookImplementationApi
 fun String.toLongOrDefault(defaultValue: Long = 0): Long = this.toLongOrDefault(10, defaultValue)
 
 /**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+@OutlookImplementationApi
 fun String.toLongOrDefault(radix: Int = 10, defaultValue: Long = 0): Long = this.toLongOrNull(radix) ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0f。*/
+@OutlookImplementationApi
 fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrNull() ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0。*/
+@OutlookImplementationApi
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
 
 /**将当前字符串转化为对应的枚举常量。*/
+@OutlookImplementationApi
 inline fun <reified T : Enum<T>> String.toEnumValue(): T = enumValueOf(this)
 
 /**将当前字符串转化为对应的枚举常量。*/
@@ -393,16 +419,16 @@ fun String.toEnumValue(type: Class<*>): Any {
 
 
 /**将当前字符串转化为文件。*/
-fun String.toFile(): File = File(this)
+inline fun String.toFile(): File = File(this)
 
 /**将当前字符串转化为路径。*/
-fun String.toPath(): Path = Path.of(this)
+inline fun String.toPath(): Path = Path.of(this)
 
 /**将当前字符串转化为地址。*/
-fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this.trim(), handler)
+inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this.trim(), handler)
 
 /**将当前字符串转化为统一资源定位符。*/
-fun String.toUri(): URI = URI.create(this)
+inline fun String.toUri(): URI = URI.create(this)
 
 
 /**将当前字符串转化为路径信息。*/
@@ -435,18 +461,18 @@ internal fun String.toQueryParamMap(): QueryParamMap {
 
 
 /**将当前字符串转化为日期。*/
-fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
+inline fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
 
 /**将当前字符串转化为本地日期。*/
-fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
+inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
 	LocalDate.parse(this, formatter)
 
 /**将当前字符串转化为本地日期时间。*/
-fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
+inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
 
 /**将当前字符串转化为本地时间。*/
-fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
+inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
 
 
@@ -478,10 +504,13 @@ fun String.toColor(): Color {
 
 
 /**@see kotlin.text.repeat*/
+@OutlookImplementationApi
 operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
+@OutlookImplementationApi
 operator fun String.div(n: Int): List<String> = this.chunked(n)
 
 /**@see kotlin.text.substring*/
+@OutlookImplementationApi
 operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)

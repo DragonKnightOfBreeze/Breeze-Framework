@@ -1,18 +1,22 @@
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.annotations.messages.*
 import java.util.*
 import kotlin.reflect.*
 
 /**得到可注解元素的指定类型的满足指定预测的首个注解。*/
+@OutlookImplementationApi
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotation(predicate: (A) -> Boolean): A? =
 	this.annotations.filterIsInstance<A>().firstOrNull(predicate)
 
 /**得到可注解元素的指定类型的注解列表。*/
+@OutlookImplementationApi
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotations(): List<A> =
 	this.annotations.filterIsInstance<A>()
 
 /**得到可注解元素的指定类型的满足指定预测的注解列表。*/
+@OutlookImplementationApi
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotations(predicate: (A) -> Boolean): List<A> =
 	this.annotations.filterIsInstance<A>().filter(predicate)
 

@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import mu.*
 import org.slf4j.*
 import kotlin.contracts.*
@@ -17,6 +18,7 @@ infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(
 
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
+@OutlookImplementationApi
 @ExperimentalContracts
 inline fun reject(value: Boolean) {
 	contract {
@@ -26,6 +28,7 @@ inline fun reject(value: Boolean) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
+@OutlookImplementationApi
 @ExperimentalContracts
 inline fun reject(value: Boolean, lazyMessage: () -> Any) {
 	contract {

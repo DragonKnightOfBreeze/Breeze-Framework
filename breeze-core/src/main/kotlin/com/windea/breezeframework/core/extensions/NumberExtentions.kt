@@ -2,15 +2,19 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import kotlin.math.*
 
 /**进行乘方运算。*/
+@OutlookImplementationApi
 inline fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
 
 /**进行乘方运算。*/
+@OutlookImplementationApi
 inline fun Int.pow(n: Float): Float = this.toFloat().pow(n)
 
 /**进行乘方运算。*/
+@OutlookImplementationApi
 inline fun Int.pow(n: Double): Double = this.toDouble().pow(n)
 
 

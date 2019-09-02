@@ -1,15 +1,25 @@
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.internal.*
 import java.io.*
+import java.net.*
 
 /**不包含扩展名的文件名。*/
 val File.shotName: String get() = this.nameWithoutExtension
 
-/**判断是否是文本文件。*/
-val File.isTextFile: Boolean get() = TODO()
 
-/**判断是否是图片文件。*/
-val File.isImageFile: Boolean get() = TODO()
+/**得到文件的MIME类型。*/
+val File.mimeType: String? get() = URLConnection.guessContentTypeFromName(this.name)
+
+/**得到文件的真实MIME类型。*/
+@Reference("<https://zhidao.baidu.com/question/2078337860385272108.html>")
+@Reference("<https://www.oschina.net/question/112255_44552>")
+@Reference("<https://www.iteye.com/blog/chinacheng-841270>")
+@Reference("<https://www.cnblogs.com/chenglc/p/7117847.html>")
+@TrickImplementationApi("Performance and accuracy problem.")
+val File.actualMimeType: String?
+	get() = URLConnection.guessContentTypeFromStream(this.inputStream())
 
 
 /**更改当前文件的上一级目录，返回新的文件对象。*/

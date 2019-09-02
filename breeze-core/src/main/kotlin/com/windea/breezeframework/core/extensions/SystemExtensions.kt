@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.marks.*
 import java.io.*
 import javax.script.*
 import kotlin.properties.*
@@ -65,6 +66,7 @@ inline fun <reified T> eval(extension: String = "kts", reader: Reader, bindings:
 }
 
 /**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: ScriptContext): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, context) as? T
 }

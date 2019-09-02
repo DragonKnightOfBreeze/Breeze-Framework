@@ -9,12 +9,14 @@ import kotlin.reflect.*
 import kotlin.reflect.jvm.*
 
 /**得到指定类型的名字。*/
+@TrickImplementationApi("Can never be implemented for all situations.")
 @ExperimentalStdlibApi
 inline fun <reified T> nameOf(): String? {
 	return T::class.simpleName
 }
 
 /**得到指定项的名字。适用于：类型、属性引用、方法引用、实例。不适用于：类型参数，参数，局部变量。*/
+@TrickImplementationApi("Can never be implemented for all situations.")
 @ExperimentalStdlibApi
 inline fun nameOf(target: Any?): String? {
 	return when {
@@ -30,13 +32,13 @@ inline fun nameOf(target: Any?): String? {
 
 
 /**得到指定类型的引用。等同于`this::class`。*/
-@NeverFeatureApi
+@TrickImplementationApi
 inline fun <reified T> refOf() {
 	TODO()
 }
 
 /**得到指定项的引用。参见引用操作符`::`。*/
-@NeverFeatureApi
+@TrickImplementationApi
 inline fun refOf(target: Any?) {
 	TODO()
 }
