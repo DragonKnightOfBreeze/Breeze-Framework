@@ -10,8 +10,6 @@ plugins {
 	kotlin("plugin.jpa") version "1.3.50"
 }
 
-//val optional: Closure<*> by extra
-//fun <T : Any> Closure<*>.toAction(): Action<T> = ConfigureUtil.configureUsing(this)
 val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*>).let { ConfigureUtil.configureUsing(it) }
 
 dependencies {
