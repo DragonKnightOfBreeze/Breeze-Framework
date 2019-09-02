@@ -24,8 +24,6 @@
 * [X] 完成基本的顶层README文档。
 * [X] breeze-core 进一步完善`LetterCase`和`ReferenceCase`以及相关代码。
 * [X] breeze-core 参考klutter更新一部分代码。
-* [ ] DELAY breeze-core Uri构建和编码的扩展。
-* [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [X] breeze-core 实现元素的向下复制和平滑复制的方法。
 * [X] breeze-core 实现`addPrefix`等方法，~~实现`ifStartsWith`等方法~~。
 * [X] breeze-core 为`Sequence`尽可能地、合理地适配`Iterable`的扩展。
@@ -41,7 +39,8 @@
 * [X] breeze-reflect 从breeze-core提取代码。
 * [X] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
+
+* [ ] DELAY breeze-core Uri构建和编码的扩展。
+* [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [ ] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。
-
-hyphen-Words--123
