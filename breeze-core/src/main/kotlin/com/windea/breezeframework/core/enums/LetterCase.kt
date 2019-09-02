@@ -2,15 +2,12 @@
 
 package com.windea.breezeframework.core.enums
 
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 
 /**字母的显示格式。*/
-//DONE 允许非开始位置的数字，视为一个单词进行对待
-//DONE 允许单词开始和结束位置的"$"
-//DONE 允许重复的"_"
-//TODO 允许开始位置的"_"，开始位置的重复的"-"
-@NotTested
+@NotTested("难以进行完整的测试。")
 enum class LetterCase(
 	override val regex: Regex,
 	override val splitFunction: (String) -> List<String>,
@@ -30,7 +27,7 @@ enum class LetterCase(
 	),
 	`Capitalized`(
 		//allow: only capitalized word
-		"^([A-Z][a-z]*)$".toRegex(),
+		"^([A-Z][a-z]+)$".toRegex(),
 		{ listOf(it) },
 		{ it.joinToString("").firstCharToUpperCase() }
 	),
@@ -71,54 +68,66 @@ enum class LetterCase(
 		{ it.joinToString(".") }
 	),
 	`camelCase`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounding a word, numbers
-		"^(\\$?[a-z]+)(?:(\\$?[A-Z][a-z]*)|(\\$?[A-Z]+)|(\\d+))*\\$?$".toRegex(),
+		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers
+		"^(\\$?[a-z]+)(?:(\\$?[A-Z][a-z]+\\$?)|(\\$?[A-Z]+\\$?)|(\\d+))+$".toRegex(),
 		{ it.toWords().splitToWordList() },
 		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
 	),
-	//`camelCase_AllowUnderscore`(),
 	`PascalCase`(
-		//allow: capitalized/upper words , $ surrounding a word, numbers
-		"^(?:(\\$?[A-Z][a-z]*)|(\\$?[A-Z]+)|(\\d+))*$".toRegex(),
+		//allow: capitalized/upper words , $ surrounds a word, numbers
+		"^(?:(\\$?[A-Z][a-z]+)|(\\$?[A-Z]+))(?:(\\$?[A-Z][a-z]+\\$?)|(\\$?[A-Z]+\\$?)|(\\d+))+$".toRegex(),
 		{ it.toWords().splitToWordList() },
 		{ it.joinToString("") { s -> s.firstCharToUpperCaseOnly() } }
 	),
-	//`PamelCase_AllowUnderscore`(),
 	`snake_case`(
-		//allow: lower words, $ surrounding a word, _ may repeat, numbers
-		"^(\\$?[a-z]+)(?:_+(?:(\\$?[a-z]+)|(\\d+)))*$".toRegex(),
-		{ it.split("_").map { s -> s.trim('_') } },
+		//allow: lower words, $ surrounds a word, _, numbers
+		"^(\\$?[a-z]+)(?:_(?:(\\$?[a-z]+\\$?)|(\\d+)))+$".toRegex(),
+		{ it.split("_") },
 		{ it.joinToString("_") { s -> s.toLowerCase() } }
 	),
 	`SCREAMING_SNAKE_CASE`(
-		//allow: upper words, $ surrounding a word, _ may repeat, numbers
-		"^(\\$?[A-Z]+)(?:_+(?:(\\\$?[A-Z]+)|(\\d+)))*$".toRegex(),
-		{ it.split("_").map { s -> s.trim('_') } },
+		//allow: upper words, $ surrounds a word, _, numbers
+		"^(\\$?[A-Z]+)(?:_(?:(\\$?[A-Z]+)|(\\d+)))+$".toRegex(),
+		{ it.split("_") },
 		{ it.joinToString("_") { s -> s.toUpperCase() } }
 	),
 	`underscore_Words`(
-		//allow: words, $ surrounding a word, _ may repeat, numbers
-		"^(\\$?[a-zA-Z]+)(?:_+(?:(\\\$?[a-zA-Z]+)|(\\d+)))*$".toRegex(),
-		{ it.split("_").map { s -> s.trim('_') } },
+		//allow: words, $, _ may repeat and may at begin, numbers
+		"^(?:_*([a-zA-Z$]+))(?:_+(?:([a-zA-Z$]+)|(\\d+)))+$".toRegex(),
+		{ it.splitToWordList('_') },
 		{ it.joinToString("_") }
 	),
 	`kebab-case`(
 		//allow: lower words, -, numbers
-		"^([a-z]+)(?:-(?:([a-z]+)|(\\d+)))*$".toRegex(),
+		"^([a-z]+)(?:-(?:([a-z]+)|(\\d+)))+$".toRegex(),
 		{ it.split("-") },
 		{ it.joinToString("-") { s -> s.toLowerCase() } }
 	),
 	`KEBAB-UPPERCASE`(
-		//allow: upper words, _, numbers
-		"^([A-Z]+)(?:-(?:([A-Z]+)|(\\d+)))*$".toRegex(),
+		//allow: upper words, -, numbers
+		"^([A-Z]+)(?:-(?:([A-Z]+)|(\\d+)))+$".toRegex(),
 		{ it.split("-") },
 		{ it.joinToString("-") { s -> s.toUpperCase() } }
 	),
 	`hyphen-Words`(
-		//allow: words, -, numbers
-		"^([a-zA-Z]+)(?:-(?:([a-zA-Z]+)|(\\d+)))*$".toRegex(),
-		{ it.split("-") },
+		//allow: words, - may repeat and may at begin, numbers
+		"^(?:-*([a-zA-Z]+))(?:-+(?:([a-zA-Z]+)|(\\d+)))+$".toRegex(),
+		{ it.splitToWordList('-') },
 		{ it.joinToString("-") }
+	),
+	@ExplicitApi
+	`camelCase_AllowUnderscore`(
+		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat and may at begin
+		"^(?:_*(\\$?[a-z]+))(?:_*(?:(\\$?[A-Z][a-z]+\\$?)|(\\$?[A-Z]+\\$?)|(\\d+)))+$".toRegex(),
+		{ it.toWords().splitToWordList() },
+		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
+	),
+	@ExplicitApi
+	`PascalCase_AllowUnderscore`(
+		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat and may at begin
+		"^(?:_*(?:(\\$?[A-Z][a-z]+)|(\\$?[A-Z]+)))(?:_*(?:(\\$?[A-Z][a-z]+\\$?)|(\\$?[A-Z]+\\$?)|(\\d+)))+$".toRegex(),
+		{ it.toWords().splitToWordList() },
+		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
 	),
 	Unknown("^(.*)$".toRegex(), { listOf(it) }, { it.joinToString("") });
 }

@@ -8,7 +8,8 @@ import org.junit.*
 class Tests {
 	@Test
 	fun test() {
-	
+		//[, , , abc, , abc]
+		println("___abc__abc".split("_").map { s -> s.trim('_') })
 	}
 	
 	@Test //TESTED

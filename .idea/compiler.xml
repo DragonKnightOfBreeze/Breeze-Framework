@@ -2,12 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="breeze-data_main" target="11" />
-      <module name="breeze-data_test" target="11" />
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
-      <module name="breeze-framework_main" target="11" />
-      <module name="breeze-framework_test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

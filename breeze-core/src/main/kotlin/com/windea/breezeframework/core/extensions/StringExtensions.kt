@@ -251,14 +251,14 @@ fun String.firstCharToLowerCaseOnly(): String {
 }
 
 
-/***将当前字符串分割为单词列表，基于任意长度的空格。不检查接受者。*/
-fun String.splitToWordList(): List<String> {
-	return this.split(" ").map { it.trim() }
+/**将当前字符串分割为单词列表，基于任意长度的指定的分割符，默认为空格。允许位于首尾的分隔符。*/
+//TESTED
+fun String.splitToWordList(delimiter: Char = ' '): List<String> {
+	return this.split(delimiter).filterNotEmpty()
 }
 
-/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。不检查接受者。允许全大写的单词。*/
+/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
 fun String.toWords(): String {
-	//ABCAbc
 	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
 }
 

@@ -6,7 +6,7 @@ Integrated code framework base on Kotlin,Provide many useful extensions for stan
 
 **NOTE:** This project is not fully implemented & tested, and remains to add English document comments.
 
-**NOTE:** Even so, you can still instantly use some of it's useful features.
+**NOTE:** Even so, it should be easy and clear to use, so you can still instantly use some of it's useful features.
 
 ```kotlin
 fun example() {
