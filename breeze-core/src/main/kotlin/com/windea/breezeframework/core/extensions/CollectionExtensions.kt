@@ -90,6 +90,19 @@ fun <T> Iterable<T>.repeat(n: Int): List<T> {
 	return mutableListOf<T>().also { list -> repeat(n) { list += this } }
 }
 
+/**分别重复当前集合中的元素到指定次数，并映射为子列表。*/
+fun <T> Iterable<T>.repeatChunked(n: Int): List<List<T>> {
+	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+	return mutableListOf<List<T>>().also { list -> for(e in this) list += (mutableListOf<T>().also { l -> repeat(n) { l += e } }) }
+}
+
+/**分别平滑重复当前集合中的元素到指定次数。*/
+fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
+	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+	
+	return mutableListOf<T>().also { list -> for(e in this) repeat(n) { list += e } }
+}
+
 
 /**移除指定范围内的元素。*/
 fun <T> MutableList<T>.removeAllAt(indices: IntRange) {

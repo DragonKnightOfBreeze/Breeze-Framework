@@ -25,4 +25,13 @@ class StringExtensionsKtTest {
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".to(JsonReference))
 		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".to(JsonSchemaReference))
 	}
+	
+	@Test
+	fun repeatExtension() {
+		println("abc".repeat(3))
+		println("abc".flatRepeat(3))
+		println(listOf(1, 2, 3).repeat(3))
+		println(listOf(1, 2, 3).flatRepeat(3))
+		println(listOf(1, 2, 3).repeatChunked(3))
+	}
 }

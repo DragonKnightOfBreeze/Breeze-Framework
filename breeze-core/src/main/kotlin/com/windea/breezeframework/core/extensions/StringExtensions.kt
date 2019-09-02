@@ -87,6 +87,14 @@ inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 }
 
 
+/**分别平滑重复当前字符串中的字符到指定次数。*/
+fun String.flatRepeat(n: Int): String {
+	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+	
+	return this.map { it.toString().repeat(n) }.joinToString("")
+}
+
+
 /**将字符串中的指定字符替换成根据索引得到的字符。*/
 fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
@@ -139,14 +147,26 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 }
 
 
-/**根据指定的前缀[prefix]和后缀[suffix]，包围字符串，可指定是否忽略空字符串[ignoreEmpty]，默认为true。*/
-fun String.surrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
-	return if(ignoreEmpty && this.isEmpty()) "" else prefix + this + suffix
+/**添加指定的前缀。可指定是否忽略空字符串，默认为true。*/
+fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
+	if(this.isEmpty() && ignoreEmpty) return this
+	else if(this.startsWith(prefix)) return this
+	return "$prefix$this"
 }
 
-/**根据指定的前后缀[delimiter]，包围字符串，可指定是否忽略空字符串[ignoreEmpty]，默认为true。*/
-fun String.surrounding(delimiter: String, ignoreEmpty: Boolean = true): String =
-	surrounding(delimiter, delimiter, ignoreEmpty)
+/**添加指定的后缀。可指定是否忽略空字符串，默认为true。*/
+fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
+	if(this.isEmpty() && ignoreEmpty) return this
+	else if(this.endsWith(suffix)) return this
+	return "$this$suffix"
+}
+
+/**添加指定的前缀和后缀。可指定是否忽略空字符串，默认为true。*/
+fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
+	if(this.isEmpty() && ignoreEmpty) return this
+	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
+	return "$prefix$this$suffix"
+}
 
 
 /**去除指定字符。*/
@@ -433,9 +453,9 @@ fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.IS
 fun String.toColor(): Color {
 	return when {
 		//#333
-		this startsWith "#" && this.length == 4 -> Color(this.substring(1).mapPerCharRepeat(2).toInt(16))
+		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
 		//#3333
-		this startsWith "#" && this.length == 5 -> Color(this.substring(1).mapPerCharRepeat(2).toInt(16), true)
+		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
 		//#333333
 		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
 		//#33333333
@@ -453,10 +473,6 @@ fun String.toColor(): Color {
 		//white || EXCEPTION
 		else -> Color.getColor(this)
 	}
-}
-
-private fun String.mapPerCharRepeat(n: Int): String {
-	return this.chunked(1).joinToString("") { it.repeat(n) }
 }
 
 
