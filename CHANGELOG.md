@@ -28,7 +28,7 @@
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [X] breeze-core 实现元素的向下复制和平滑复制的方法。（`[1,2]->[[1,1],[2,2]]`和`[1,2]->[1,1,2,2]`，已实现`[1,2]->[1,2,1,2]`）
 * [X] breeze-core 实现`addPrefix`等方法，~~实现`ifStartsWith`等方法~~。
-* [ ] breeze-core 为`Sequence`尽可能地适配`Iterable`的扩展。
+* [ ] breeze-core 为`Sequence`尽可能地、合理地适配`Iterable`的扩展。
 * [ ] breeze-text en 序数与数量的转化。
 * [ ] breeze-text en 单数与复数的转化。
 * [ ] 重构`DataLoader`。
