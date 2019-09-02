@@ -505,12 +505,12 @@ fun String.toColor(): Color {
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
-operator fun String.times(n: Int): String = this.repeat(n)
+inline operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
 @OutlookImplementationApi
-operator fun String.div(n: Int): List<String> = this.chunked(n)
+inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 
 /**@see kotlin.text.substring*/
 @OutlookImplementationApi
-operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)
+inline operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)

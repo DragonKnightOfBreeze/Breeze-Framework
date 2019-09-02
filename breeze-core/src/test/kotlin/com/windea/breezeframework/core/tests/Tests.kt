@@ -20,6 +20,7 @@ class Tests {
 		println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
 		//{0=a, 1=b, 2=c}
 		println(listOf("a", "b", "c").toIndexKeyMap())
+		
 		//[a, b, c, a, b, c, a, b, c]
 		println(listOf("a", "b", "c") * 3)
 		//[b, c]
@@ -33,6 +34,8 @@ class Tests {
 		println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
 		//**********
 		println("*" * 10)
+		//[***, ***, ***]
+		println("*********" / 3)
 		//  <element>
 		//    Here also indented.
 		//  </element>

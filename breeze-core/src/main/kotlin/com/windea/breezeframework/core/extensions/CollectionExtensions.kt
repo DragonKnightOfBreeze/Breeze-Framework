@@ -442,16 +442,24 @@ inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Seque
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+inline operator fun <T> Array<T>.times(n: Int): List<T> = this.toList().repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+inline operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
