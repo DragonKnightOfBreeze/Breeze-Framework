@@ -39,6 +39,7 @@
 * [X] 添加`ReflectModifierExtensions`。
 * [X] 为有望被标准库实现的实现添加`@OutlookImplementationApi`注解。
 * [X] breeze-reflect 从breeze-core提取代码。
+* [ ] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 * [ ] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。

@@ -3,6 +3,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.*
 import mu.*
@@ -146,16 +147,24 @@ fun String.messageFormat(vararg args: Any): String {
  *
  * 占位符形如：`{}`, `{index}`, `${}`, `${index}`。
  */
-//TODO
+@NotTested
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index")
-			this.splitToSequence(prefix, suffix).map { s ->
-				s.replace("^(\\d+)$".toRegex()) { r ->
-					args.getOrNull(r.groupValues[1].toInt())?.toString() ?: r.groupValues[0]
-				}
-			}.joinToString("")
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.unescapeRegex() }
+			this.replace("$prefix(\\d+)$suffix".toRegex()) { r ->
+				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
+			}
+		}
+		"name" in placeholder -> {
+			val argPairs = args.map {
+				require(it is Pair<*, *> && it.first is String)
+				it
+			}.toMap()
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
+			this.replace("$prefix(.*?)$suffix".toRegex()) { r ->
+				argPairs[r.groupValues[1]]?.toString() ?: ""
+			}
 		}
 		else -> this.replaceIndexed(placeholder) { args.getOrNull(it)?.toString() ?: "" }
 	}
@@ -217,6 +226,9 @@ private val escapes = arrayOf("\n", "\r", "\t", "\'", "\"")
 
 private val unescapes = arrayOf("\\n", "\\r", "\\t", "\\'", "\\\"")
 
+//Not for every scope
+private val escapesInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+")
+
 /**转义当前字符串。例如，将`\\n`转换为`\n`。*/
 fun String.escape(): String {
 	return (escapes zip unescapes).fold(this) { str, (escape, unescape) ->
@@ -231,6 +243,11 @@ fun String.unescape(): String {
 	}
 }
 
+private fun String.unescapeRegex(): String {
+	return escapesInRegex.fold(this) { str, escape ->
+		str.replace(escape, "\\$escape")
+	}
+}
 
 private val quotes = arrayOf("\"", "'", "`")
 
@@ -362,16 +379,22 @@ fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 
 
-/**将当前字符串转为折行文本。（去除所有换行符以及每行的首尾空白。）*/
+/**
+ * 将当前字符串转为折行文本。
+ * （去除所有换行符以及每行的首尾空白。）
+ */
 fun String.toBreakLineText(): String {
 	return this.remove("\\s*\\n\\s*".toRegex())
 }
 
-/**将当前字符串转化为多行文本。（去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。）*/
-//TODO
-fun String.toMultilineText(): String {
+/**
+ * 将当前字符串转化为多行文本。可选相对于三引号的缩进，默认为0，-1为制表符。
+ * （去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。）
+ **/
+fun String.toMultilineText(additionalIndentSize: Int = 0): String {
 	val lines = this.lines()
-	val trimmedIndent = lines.last().ifEmpty { "" }
+	val additionalIndent = if(additionalIndentSize < 0) "\t" else " ".repeat(additionalIndentSize)
+	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
 	if(trimmedIndent.isEmpty()) return this.trimIndent()
 	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
