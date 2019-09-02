@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.annotations.marks
 
 import java.lang.annotation.*
 
-/**未实现的项的注解。*/
+/**标注为未实现的项。*/
 @MustBeDocumented
 @Inherited
 annotation class NotImplemented(

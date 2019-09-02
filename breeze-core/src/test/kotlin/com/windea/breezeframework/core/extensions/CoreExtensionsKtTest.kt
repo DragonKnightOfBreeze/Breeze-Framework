@@ -4,28 +4,28 @@ import org.junit.*
 
 //Ignore Tests
 
-class BooleanExtensionsKtTest {
+class CoreExtensionsKtTest {
 	@Test
-	fun toInt() {
+	fun with() {
 	}
 	
 	@Test
-	fun toFloat() {
+	fun clamp() {
 	}
 	
 	@Test
-	fun toDouble() {
+	fun reject() {
 	}
 	
 	@Test
-	fun toOpsInt() {
+	fun reject1() {
 	}
 	
 	@Test
-	fun toOpsFloat() {
+	fun nearestStackInfo() {
 	}
 	
 	@Test
-	fun toOpsDouble() {
+	fun nearestLogger() {
 	}
 }

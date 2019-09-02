@@ -1,15 +1,17 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.core.extensions
 
 import kotlin.math.*
 
 /**进行乘方运算。*/
-fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
+inline fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
 
 /**进行乘方运算。*/
-fun Int.pow(n: Float): Float = this.toFloat().pow(n)
+inline fun Int.pow(n: Float): Float = this.toFloat().pow(n)
 
 /**进行乘方运算。*/
-fun Int.pow(n: Double): Double = this.toDouble().pow(n)
+inline fun Int.pow(n: Double): Double = this.toDouble().pow(n)
 
 
 /**限定在0和1之间。*/

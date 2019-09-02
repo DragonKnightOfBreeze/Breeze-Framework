@@ -8,7 +8,7 @@ infix fun <T> Class<T>.isAssignableFrom(clazz: Class<*>): Boolean = this.isAssig
 
 /**递归判断当前类型是否可从指定类型分配。即，判断当前类型是否是另一类型的父类型。*/
 infix fun <T> Class<T>.isDeepAssignableFrom(clazz: Class<*>): Boolean =
-	this.isAssignableFrom(clazz) || clazz.superclass?.let { this.isDeepAssignableFrom(it) }.orFalse() ||
+	this.isAssignableFrom(clazz) || clazz.superclass?.let { this.isDeepAssignableFrom(it) } ?: false ||
 	clazz.interfaces.any { this.isDeepAssignableFrom(it) }
 
 

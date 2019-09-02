@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.annotations.intelligence
 
 import kotlin.annotation.AnnotationTarget.*
 
-/**可被替换的项的注解。*/
+/**标注为可被替换的项。*/
 @MustBeDocumented
 @Repeatable
 @Target(PROPERTY, FIELD, LOCAL_VARIABLE, FUNCTION)

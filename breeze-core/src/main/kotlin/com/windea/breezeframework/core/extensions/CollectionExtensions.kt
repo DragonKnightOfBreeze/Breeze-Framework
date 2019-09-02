@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 
@@ -81,10 +81,10 @@ infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.fir
 
 
 /**判断当前序列是否为空。*/
-fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
+inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 
 /**判断当前序列是否不为空。*/
-fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
+inline fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
 
 
 /**如果当前数组不为空，则返回转换后的值。*/
@@ -104,7 +104,7 @@ inline fun <T : Map<*, *>> T.ifNotEmpty(transform: (T) -> T): T {
 }
 
 /**如果当前序列不为空，则返回重新生成的值。*/
-fun <T> Sequence<T>.ifNotEmpty(transform: () -> Sequence<T>): Sequence<T> = sequence {
+inline fun <T> Sequence<T>.ifNotEmpty(crossinline transform: () -> Sequence<T>): Sequence<T> = sequence {
 	val iterator = this@ifNotEmpty.iterator()
 	if(iterator.hasNext()) {
 		yieldAll(transform())

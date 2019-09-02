@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.annotations.marks
 
 import java.lang.annotation.*
 
-/**不推荐的项的注解。*/
+/**标注为不推荐的项。*/
 @MustBeDocumented
 @Inherited
 annotation class NotRecommended(
