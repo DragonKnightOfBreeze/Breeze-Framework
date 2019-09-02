@@ -23,7 +23,7 @@ infix fun String?.equalsIc(other: String?): Boolean {
 }
 
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
-infix fun String?.equalsIsc(other: String?): Boolean {
+infix fun String?.equalsIlc(other: String?): Boolean {
 	if(this == other) return true
 	return this != null && other != null && this.switchTo(this.letterCase, other.letterCase) == other
 }
@@ -219,7 +219,7 @@ private val quotes = arrayOf("\"", "'", "`")
 /**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。*/
 fun String.wrapQuote(quote: String = "\""): String {
 	if(quote !in quotes) return this
-	return this.replace(quote, "\\$quote").surrounding(quote, false)
+	return this.replace(quote, "\\$quote").addSurrounding(quote, quote, false)
 }
 
 /**去除当前字符串两侧的双引号/单引号/反引号。*/

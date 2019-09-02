@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.data.loaders.impl
 
+import com.google.gson.*
 import com.windea.breezeframework.data.loaders.*
 import java.io.*
 

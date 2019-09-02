@@ -13,6 +13,6 @@ infix fun <E : Enum<E>> E.nameEqualsIc(other: E): Boolean {
 }
 
 /**判断两个枚举的枚举常量名是否相等。忽略显示格式[LetterCase]。*/
-infix fun <E : Enum<E>> E.nameEqualsIsc(other: E): Boolean {
-	return this.name equalsIsc other.name
+infix fun <E : Enum<E>> E.nameEqualsIlc(other: E): Boolean {
+	return this.name equalsIlc other.name
 }

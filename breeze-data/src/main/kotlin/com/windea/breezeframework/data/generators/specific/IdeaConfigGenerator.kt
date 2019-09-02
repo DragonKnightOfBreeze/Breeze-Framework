@@ -3,6 +3,7 @@
 package com.windea.breezeframework.data.generators.specific
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.generators.*
 import java.io.*
 
@@ -22,7 +23,7 @@ object IdeaConfigGenerator : TextGenerator {
 		<templateSet group="YamlAnnotation">
 		${definitions.joinToString("\n\n") { (templateName, template) ->
 			val description = (template.getOrDefault("description", "") as String).unescape()
-			val params = if("properties" in template) template["properties"] as SchemaMap else mapOf()
+			val params = if("properties" in template) template["properties"] else mapOf()
 			val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
 			
 			"""

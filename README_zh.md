@@ -37,6 +37,15 @@ fun example() {
         Here also indented.
       </element>
     """.toMultilineText())
+    
+    //abcAbc
+    println("Abc abc".to(camelCase))
+    //AbcAbc
+    println("ABC_ABC".to(PascalCase))
+    //ABC_ABC
+    println("abc-abc".to(SCREAMING_SNAKE_CASE))
+    //a.b[1][2].c[3]
+    println("/a/b/1/2/c/3".to(StandardReference))
 }
 ```
 

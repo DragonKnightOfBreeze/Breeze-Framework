@@ -3,6 +3,7 @@
 package com.windea.breezeframework.data.generators.specific
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.generators.*
 import java.io.*
 import java.util.concurrent.*

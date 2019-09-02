@@ -4,7 +4,7 @@
 
 Integrated code framework base on Kotlin,Provide many useful extensions for standard library and some frameworks.
 
-**NOTE:** This project is not fully implemented & tested, and remain to add English document comments.
+**NOTE:** This project is not fully implemented & tested, and remains to add English document comments.
 
 **NOTE:** Even so, you can still instantly use some of it's useful features.
 
@@ -37,6 +37,15 @@ fun example() {
         Here also indented.
       </element>
     """.toMultilineText())
+    	
+    //abcAbc
+    println("Abc abc".to(camelCase))
+    //AbcAbc
+    println("ABC_ABC".to(PascalCase))
+    //ABC_ABC
+    println("abc-abc".to(SCREAMING_SNAKE_CASE))
+    //a.b[1][2].c[3]
+    println("/a/b/1/2/c/3".to(StandardReference))
 }
 ```
 
