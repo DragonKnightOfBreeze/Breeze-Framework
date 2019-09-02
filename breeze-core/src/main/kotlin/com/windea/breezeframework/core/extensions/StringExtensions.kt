@@ -256,8 +256,9 @@ fun String.splitToWordList(): List<String> {
 	return this.split(" ").map { it.trim() }
 }
 
-/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。不检查接受者。*/
+/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。不检查接受者。允许全大写的单词。*/
 fun String.toWords(): String {
+	//ABCAbc
 	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
 }
 

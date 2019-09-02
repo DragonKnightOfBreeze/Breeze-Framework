@@ -1,6 +1,5 @@
 package com.windea.breezeframework.core.annotations.api
 
-/**可能引起无限循环的api。*/
+/**需要显式使用的api。*/
 @MustBeDocumented
-annotation class InfiniteLoopApi
-
+annotation class ExplicitApi
