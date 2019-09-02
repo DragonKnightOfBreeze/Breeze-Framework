@@ -8,22 +8,27 @@ import com.windea.breezeframework.core.annotations.api.*
 //TODO 让TODO插件能够正确地提供高亮
 
 /**表明一个方法体推迟了实现。*/
+@OutlookImplementationApi
 inline fun DELAY() = Unit
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现。*/
+@OutlookImplementationApi
 inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
 	.also { nearestLogger().warn("An operation is delay-implemented.") }
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现，并指定原因。*/
+@OutlookImplementationApi
 inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
 	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
 
 
 /**打印一段消息，以表明一个方法体中存在问题。*/
-inline fun ISSUE() = run { nearestLogger().warn("There is an issue in this operation.") }
+@OutlookImplementationApi
+inline fun FIXME() = run { nearestLogger().warn("There is an issue in this operation.") }
 
 /**打印一段消息，以表明一个方法体中存在问题。*/
-inline fun ISSUE(message: String) = run { nearestLogger().warn("There is an issue in this operation :$message") }
+@OutlookImplementationApi
+inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation :$message") }
 
 
 /**为Kotlin文件中的项提供分组。*/

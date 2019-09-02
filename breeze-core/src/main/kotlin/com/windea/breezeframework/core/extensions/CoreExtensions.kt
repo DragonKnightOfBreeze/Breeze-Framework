@@ -51,9 +51,7 @@ internal inline fun nearestStackInfo(): StackTraceElement {
 	}
 }
 
-/**
- * 得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。显示的行数可能不正确。
- */
+/**得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。显示的行数可能不正确。*/
 @PublishedApi
 internal inline fun nearestLogger(): Logger {
 	return KotlinLogging.logger(nearestStackInfo().toString())
