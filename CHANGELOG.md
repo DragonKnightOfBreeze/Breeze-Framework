@@ -34,6 +34,7 @@
 * [X] breeze-core 扩展`LetterCase`，提供更多的显示格式。
 * [X] 补充api注解。
 * [X] breeze-core 进一步完善`LetterCase`，通过添加泛用显示格式放松限制。
+* [X] 完善测试中。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 * [ ] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。
