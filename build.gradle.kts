@@ -27,6 +27,8 @@ allprojects {
 }
 
 subprojects {
+	apply(plugin = "org.gradle.maven-publish")
+	apply(plugin = "org.jetbrains.dokka")
 	apply(plugin = "org.jetbrains.kotlin.jvm")
 	apply(plugin = "nebula.optional-base")
 	
@@ -49,32 +51,41 @@ subprojects {
 	}
 }
 
-tasks.dokka {
-	outputFormat = "html"
-	outputDirectory = "$buildDir/javadoc"
-}
-
-val dokkaJar by tasks.creating(Jar::class) {
-	classifier = "javadoc"
-	from(tasks.dokka)
-}
-
-val sourcesJar by tasks.creating(Jar::class) {
-	classifier = "source"
-	from(sourceSets.main.get().allSource)
-}
-
-publishing {
-	publications {
-		create<MavenPublication>("default") {
-			from(components["java"])
-			artifact(sourcesJar)
-			artifact(dokkaJar)
-		}
+allprojects {
+	tasks.dokka {
+		outputFormat = "html"
+		outputDirectory = "$buildDir/javadoc"
 	}
-	repositories {
-		maven {
-			url = uri("$buildDir/repository")
+	
+	val dokkaJar by tasks.creating(Jar::class) {
+		classifier = "javadoc"
+		from(tasks.dokka)
+	}
+	
+	val sourcesJar by tasks.creating(Jar::class) {
+		classifier = "source"
+		from(sourceSets.main.get().allSource)
+	}
+	
+	publishing {
+		publications {
+			create<MavenPublication>("default") {
+				from(components["java"])
+				artifact(sourcesJar)
+				artifact(dokkaJar)
+			}
+		}
+		repositories {
+			maven {
+				url = uri("$buildDir/repository")
+			}
+			//maven {
+			//	credentials {
+			//		username = "DragonKnightOfBreeze"
+			//		password = ""
+			//	}
+			//	url = uri("")
+			//}
 		}
 	}
 }

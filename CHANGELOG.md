@@ -45,6 +45,8 @@
 * [X] breeze-reflect 添加`checkClassForName`方法。
 * [X] breeze-core 添加核心扩展方法：`once`。
 
+# 1.0.2
+
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [ ] DELAY breeze-text en 单数与复数的转化。
