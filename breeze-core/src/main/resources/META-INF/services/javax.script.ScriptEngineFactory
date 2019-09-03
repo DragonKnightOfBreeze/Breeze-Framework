@@ -1,3 +1,0 @@
-# use this file to support more script languages, here are the ScriptEngineFactory classpaths.
-# necessary dependencies: kotlin-compiler, kotlin-script-util
-org.jetbrains.kotlin.script.jsr223.KotlinJsr223JvmLocalScriptEngineFactory

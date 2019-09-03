@@ -39,10 +39,10 @@ subprojects {
 		testImplementation(kotlin("test"))
 		testImplementation(kotlin("test-junit"))
 		
-		compile(kotlin("script-runtime"))
-		compile(kotlin("compiler-embeddable"))
-		compile(kotlin("script-util"))
-		runtime(kotlin("scripting-compiler-embeddable"))
+		//compile(kotlin("script-runtime"))
+		//compile(kotlin("compiler-embeddable"))
+		//compile(kotlin("script-util"))
+		//runtime(kotlin("scripting-compiler-embeddable"))
 		
 		implementation("io.github.microutils:kotlin-logging:1.6.26")
 		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")

@@ -62,12 +62,12 @@ inline fun <reified T> eval(extension: String = "kts", reader: Reader): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader) as? T
 }
 
-/**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
+/**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。。*/
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, bindings: Bindings): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, bindings) as? T
 }
 
-/**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
+/**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: ScriptContext): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, context) as? T
 }

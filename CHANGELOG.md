@@ -39,6 +39,7 @@
 * [X] breeze-reflect 从breeze-core提取代码。
 * [X] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
 * [X] 实现已编写的标注为未实现的功能并通过测试。
+* [X] 去除对`kotlin-script`的相关依赖和代码。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
