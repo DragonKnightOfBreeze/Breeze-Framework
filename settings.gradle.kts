@@ -9,5 +9,7 @@ include(
 	"breeze-spring-boot",
 	"breeze-spring-cloud",
 	"breeze-text",
-	"breeze-time"
+	"breeze-time",
+	
+	"breeze-study"
 )

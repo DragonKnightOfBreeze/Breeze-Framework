@@ -12,7 +12,7 @@ enum class ReferenceCase(
 	/**
 	 * 标准引用。
 	 *
-	 * * 示例：`Reference.path[0]`。
+	 * * 示例：`Reference.path[0]`
 	 * * `Reference` 表示一个对象/属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 */
@@ -26,7 +26,7 @@ enum class ReferenceCase(
 	/**
 	 * Json引用。
 	 *
-	 * * 示例：`$.Category.[0].Name`。
+	 * * 示例：`$.Category.[0].Name`
 	 * * `Reference` 表示一个对象/属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 */
@@ -39,8 +39,8 @@ enum class ReferenceCase(
 	/**
 	 * Json Schema引用。
 	 *
-	 * * 示例：`#/{Category}/0/Name`。
-	 * * `[]`或`-` 表示一个列表。
+	 * * 示例：`#/{Category}/0/Name`
+	 * * `[]`, `-` 表示一个列表。
 	 * * '\[WeaponList]' 表示一个注为指定占位符的列表。
 	 * * `1..10` 表示一个列表的指定范围内的元素。
 	 * * `1` 表示一个列表的对应索引的元素。

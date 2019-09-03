@@ -136,7 +136,8 @@ fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValu
 /**
  * 基于[MessageFormat]格式化当前字符串。自动转义单引号。
  *
- * 占位符形如：`{0}`, `{1,number}`, `{2,date,shot}`。
+ * * 占位符格式：`{0}`, `{1,number}`, `{2,date,shot}`
+ * * 示例：`"123{0}123{1}123".messageFormat("a","b")`
  */
 fun String.messageFormat(vararg args: Any): String {
 	return MessageFormat.format(this.replace("'", "''"), *args)
@@ -145,9 +146,11 @@ fun String.messageFormat(vararg args: Any): String {
 /**
  * 基于指定的占位符格式化当前字符串。
  *
- * 占位符形如：`{}`, `{index}`, `${}`, `${index}`。
+ * * 占位符格式：`{}`, `{index}`, `${}`, `${index}`, `${name}`
+ * * 示例：`"1{}2{}3".customFormat("{}","a","b")`
+ * * 示例：`"1{0}2{1}3".customFormat("{index}","a","b")`
+ * * 示例：`"1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b")`
  */
-@NotTested
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
@@ -157,10 +160,7 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 			}
 		}
 		"name" in placeholder -> {
-			val argPairs = args.map {
-				require(it is Pair<*, *> && it.first is String)
-				it
-			}.toMap()
+			val argPairs = args.map { it as Pair<*, *> }.toMap()
 			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
 			this.replace("$prefix(.*?)$suffix".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
@@ -378,6 +378,7 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 
+////////////Convert operations
 
 /**
  * 将当前字符串转为折行文本。
@@ -474,6 +475,7 @@ fun String.toUrlInfo(): UrlInfo {
 
 /**将当前字符串转化为查询参数映射。*/
 internal fun String.toQueryParamMap(): QueryParamMap {
+	//show warns here!!!
 	val map = when {
 		this.isEmpty() -> mapOf()
 		else -> this.split("&").map { s -> s.split("=") }.groupBy({ it[0] }, { it[1] })
@@ -525,6 +527,7 @@ fun String.toColor(): Color {
 	}
 }
 
+/////////////Operator overrides
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi

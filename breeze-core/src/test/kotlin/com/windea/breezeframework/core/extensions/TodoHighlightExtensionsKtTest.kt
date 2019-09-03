@@ -9,13 +9,13 @@ class TodoHighlightExtensionsKtTest {
 	}
 	
 	@Test
-	fun ISSUETest() {
-		ISSUE()
+	fun FixmeTest() {
+		FIXME()
 	}
 	
 	@Test
-	fun ISSUE1Test() {
-		ISSUE("123")
+	fun Fixme1Test() {
+		FIXME("123")
 	}
 	
 	@Test

@@ -45,4 +45,18 @@ class StringExtensionsKtTest {
 		println("abc".repeat(3))
 		println("abc".flatRepeat(3))
 	}
+	
+	@Test //TESTED
+	fun messageFormat() {
+		assertEquals("123a123b123","123{0}123{1}123".messageFormat("a","b"))
+	}
+	
+	@Test //TESTED
+	fun customFormat() {
+		assertEquals("1a2b3","1{}2{}3".customFormat("{}","a","b"))
+		assertEquals("1a2b3","1{0}2{1}3".customFormat("{index}","a","b"))
+		assertEquals("1a2b3","1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b"))
+		
+		assertEquals("1b2a3","1{1}2{0}3".customFormat("{index}","a","b"))
+	}
 }

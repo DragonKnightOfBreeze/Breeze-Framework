@@ -38,9 +38,11 @@
 * [X] 为有望被标准库实现的实现添加`@OutlookImplementationApi`注解。
 * [X] breeze-reflect 从breeze-core提取代码。
 * [X] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
+* [X] 实现已编写的标注为未实现的功能并通过测试。
 * [ ] breeze-data 代理实现`DataSerializer`的相关类。
 
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
-* [ ] DELAY breeze-text en 序数与数量的转化。
+* [X] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。
+* [ ] DELAY breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）

@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MarkdownNavigator.ProfileManager" plain-text-search-scope="Project Files" />
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/breeze-core/src/main/resources/META-INF/services/javax.script.ScriptEngineFactory" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

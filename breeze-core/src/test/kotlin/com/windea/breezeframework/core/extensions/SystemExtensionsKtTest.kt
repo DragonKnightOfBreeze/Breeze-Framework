@@ -15,8 +15,9 @@ class SystemExtensionsKtTest {
 		println("hello")
 		val a = eval<Int>("js") { "2+2" }
 		println(a)
-		val b = eval<Int> { "2+2" }
+		val b = eval<Int> { "2+2" } //why null??
 		println(b)
+		
 	}
 	
 	@Test

@@ -228,6 +228,7 @@ inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
+////////////////Deep operations
 
 /**根据指定的标准引用得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
@@ -345,6 +346,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 	}.toMap()
 }
 
+///////////Convert operations
 
 /**将当前数组转化成以键为值的映射。*/
 @OutlookImplementationApi
@@ -370,6 +372,7 @@ fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
+/////////////Specific operations
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi
@@ -439,6 +442,7 @@ inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Seque
 	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
 }
 
+///////////Operator overrides
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi

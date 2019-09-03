@@ -41,7 +41,7 @@ inline fun reject(value: Boolean, lazyMessage: () -> Any) {
 }
 
 
-/**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。。*/
+/**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
 @PublishedApi
 internal inline fun nearestStackInfo(): StackTraceElement {
 	try {

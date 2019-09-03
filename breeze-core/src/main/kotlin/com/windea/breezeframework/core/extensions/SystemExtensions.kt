@@ -40,33 +40,34 @@ class SystemAttributesAccessor internal constructor() : ReadOnlyProperty<Nothing
 }
 
 
-/**执行一段懒加载的脚本。默认为kts。*/
+//TODO allows `engine.compile()` operation
+/**执行一段懒加载的脚本。默认为kts。默认仅支持js、kts脚本。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript()) as? T
 }
 
-/**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。*/
+/**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
 inline fun <reified T> eval(extension: String = "kts", bindings: Bindings, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), bindings) as? T
 }
 
-/**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。*/
+/**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
 inline fun <reified T> eval(extension: String = "kts", context: ScriptContext, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), context) as? T
 }
 
-/**执行一段读取的脚本。可指定语言后缀，默认为kts。*/
+/**执行一段读取的脚本。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
 inline fun <reified T> eval(extension: String = "kts", reader: Reader): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader) as? T
 }
 
-/**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。*/
+/**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, bindings: Bindings): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, bindings) as? T
 }
 
-/**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。*/
-@NotImplemented
+/**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: ScriptContext): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, context) as? T
 }
@@ -77,8 +78,4 @@ inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: 
 /**执行一段懒加载的命令。可指定工作目录，默认为当前目录；可指定环境变量，默认为空。*/
 inline fun exac(workDirectory: File? = null, vararg environmentVariables: String, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables.ifEmpty { null }, workDirectory)
-}
-
-fun main() {
-
 }

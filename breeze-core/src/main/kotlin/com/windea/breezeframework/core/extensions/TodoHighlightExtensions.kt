@@ -29,8 +29,3 @@ inline fun FIXME() = run { nearestLogger().warn("There is an issue in this opera
 /**打印一段消息，以表明一个方法体中存在问题。*/
 @OutlookImplementationApi
 inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation :$message") }
-
-
-/**为Kotlin文件中的项提供分组。*/
-@TrickImplementationApi
-inline fun REGION(regionName: String = "REGION@${Randoms.uuid()}") = Unit

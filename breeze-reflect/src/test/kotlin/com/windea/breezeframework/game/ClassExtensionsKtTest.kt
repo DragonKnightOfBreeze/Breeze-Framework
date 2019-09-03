@@ -1,5 +1,6 @@
-package com.windea.breezeframework.core.extensions
+package com.windea.breezeframework.game
 
+import com.windea.breezeframework.reflect.extensions.*
 import org.junit.*
 import org.junit.Assert.*
 import java.io.*

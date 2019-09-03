@@ -12,6 +12,14 @@ class Tests {
 		println("___abc__abc".split("_").map { s -> s.trim('_') })
 	}
 	
+	@Test
+	fun test2(){
+		val props = System.getProperties()
+		for(prop in props){
+			println(prop)
+		}
+	}
+	
 	@Test //TESTED
 	fun example() {
 		//true
