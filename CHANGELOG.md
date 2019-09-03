@@ -19,6 +19,7 @@
 * [X] 提供扩展注解的容器。
 * [X] 提供必要的日志对象（包括到最近一次非内联调用处的日志对象）。
 * [X] breeze-time 参考khronos更新一部分代码。
+* [X] breeze-text en 序数与数量的转化。
 * [X] breeze-core 使类似`TODO()`的方法能够显示正确的日志。
 * [X] breeze-core 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
 * [X] 完成基本的顶层README文档。
@@ -46,6 +47,5 @@
 
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
-* [X] DELAY breeze-text en 序数与数量的转化。
 * [ ] DELAY breeze-text en 单数与复数的转化。
 * [ ] DELAY breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）
