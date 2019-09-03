@@ -7,6 +7,7 @@ val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*
 
 dependencies {
 	api(project(":breeze-core"))
+	api(project(":breeze-reflect"))
 	
 	implementation("com.google.code.gson:gson:2.8.5", optional)
 	implementation("com.alibaba:fastjson:1.2.59", optional)

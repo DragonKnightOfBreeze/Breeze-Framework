@@ -7,7 +7,7 @@ import mu.*
 import org.slf4j.*
 import kotlin.contracts.*
 
-private val logger = KotlinLogging.logger { }
+private val logger = KotlinLogging.logger {}
 
 
 /**从二元素元组构造三元素元组。*/
@@ -15,6 +15,11 @@ infix fun <A, B, C> Pair<A, B>.with(third: C): Triple<A, B, C> = Triple(this.fir
 
 /**取在指定范围内的夹值。*/
 infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(range)
+
+
+fun once() {
+	TODO()
+}
 
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/

@@ -5,6 +5,11 @@ package com.windea.breezeframework.reflect.extensions
 import com.windea.breezeframework.core.annotations.api.*
 import kotlin.reflect.*
 
+/**判断指定Class是否在className中。*/
+inline fun checkClassForName(className: String): Boolean {
+	return runCatching { Class.forName(className) }.onFailure { it.printStackTrace() }.isSuccess
+}
+
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Can never be implemented for all situations.")
 @ExperimentalStdlibApi

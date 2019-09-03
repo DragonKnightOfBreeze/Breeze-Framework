@@ -1,14 +1,14 @@
-package com.windea.breezeframework.data.serializers.csv
+package com.windea.breezeframework.data.serializers.json
 
-import com.fasterxml.jackson.dataformat.csv.*
+import com.fasterxml.jackson.databind.json.*
 import java.io.*
 
-class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
-	private val mapper = CsvMapper()
+class JacksonJsonSerializer : JsonSerializer<JacksonJsonSerializer, JsonMapper> {
+	private val mapper = JsonMapper()
 	
 	
 	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (CsvMapper) -> Unit): JacksonCsvSerializer {
+	override fun configure(handler: (JsonMapper) -> Unit): JacksonJsonSerializer {
 		return this.also { handler(mapper) }
 	}
 	

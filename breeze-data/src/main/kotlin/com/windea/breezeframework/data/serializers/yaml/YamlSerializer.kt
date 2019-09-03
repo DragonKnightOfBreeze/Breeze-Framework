@@ -2,20 +2,31 @@ package com.windea.breezeframework.data.serializers.yaml
 
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.json.*
+import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 
-interface YamlSerializer : JsonSerializer, YamlLoader, YamlDumper {
+interface YamlSerializer<S, C> : JsonSerializer<S, C>, YamlLoader, YamlDumper {
 	override val dataType: DataType get() = DataType.Yaml
+	
+	companion object {
+		val instance: YamlSerializer<*, *> by lazy {
+			when {
+				checkClassForName("com.fasterxml.jackson.dataformat.yaml.YAMLMapper") -> JacksonYamlSerializer()
+				checkClassForName("org.yaml.snakeyaml.Yaml") -> SnakeYamlSerializer()
+				else -> throw IllegalStateException("Please contains at least one data serializer impl in classpath.")
+			}
+		}
+	}
 }
 
 interface YamlLoader : JsonLoader {
 	override val dataType: DataType get() = DataType.Yaml
 	
-	fun <T : Any> loadAll(string: String, type: Class<T>): List<T>
+	fun loadAll(string: String): List<Any>
 	
-	fun <T : Any> loadAll(file: File, type: Class<T>): List<T>
+	fun loadAll(file: File): List<Any>
 	
-	fun <T : Any> loadAll(reader: Reader, type: Class<T>): List<T>
+	fun loadAll(reader: Reader): List<Any>
 }
 
 interface YamlDumper : JsonDumper {

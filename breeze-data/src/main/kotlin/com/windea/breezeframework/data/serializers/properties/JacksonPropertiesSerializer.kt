@@ -1,14 +1,15 @@
-package com.windea.breezeframework.data.serializers.csv
+package com.windea.breezeframework.data.serializers.properties
 
-import com.fasterxml.jackson.dataformat.csv.*
+import com.fasterxml.jackson.dataformat.javaprop.*
 import java.io.*
+import java.util.*
 
-class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
-	private val mapper = CsvMapper()
+class JacksonPropertiesSerializer : PropertiesSerializer<JacksonPropertiesSerializer, JavaPropsMapper> {
+	private val mapper = JavaPropsMapper()
 	
 	
 	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (CsvMapper) -> Unit): JacksonCsvSerializer {
+	override fun configure(handler: (JavaPropsMapper) -> Unit): JacksonPropertiesSerializer {
 		return this.also { handler(mapper) }
 	}
 	
@@ -24,6 +25,10 @@ class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
 		return mapper.readValue(reader, type)
 	}
 	
+	override fun <T> load(properties: Properties, type: Class<T>): T {
+		return mapper.readPropertiesAs(properties, type)
+	}
+	
 	override fun <T : Any> dump(data: T): String {
 		return mapper.writeValueAsString(data)
 	}
@@ -34,5 +39,9 @@ class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
 	
 	override fun <T : Any> dump(data: T, writer: Writer) {
 		return mapper.writeValue(writer, data)
+	}
+	
+	override fun <T : Any> dump(data: T, properties: Properties) {
+		properties += mapper.writeValueAsProperties(data)
 	}
 }

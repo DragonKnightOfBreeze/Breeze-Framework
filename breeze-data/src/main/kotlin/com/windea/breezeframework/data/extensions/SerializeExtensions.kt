@@ -1,31 +1,38 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.data.extensions
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.reflect.extensions.*
 import mu.*
 import kotlin.reflect.full.*
 
 private val logger = KotlinLogging.logger { }
 
-//TODO
 
 /**反序列化当前字符串，返回指定泛型的对象。*/
 inline fun <reified T : Any> String.deserialize(dataType: DataType): T {
-	return dataType.loader.fromString(this, T::class.java)
+	return dataType.serializer.load(this, T::class.java)
 }
 
-/**序列化当前对象。*/
-fun <T : Any> T.serialize(dataType: DataType): String {
-	return this.let { dataType.loader.toString(it) }
+/**序列化当前对象，返回序列化后的字符串。*/
+inline fun <T : Any> T.serialize(dataType: DataType): String {
+	return this.let { dataType.serializer.dump(it) }
+}
+
+/**重新序列化当前字符串，返回重新序列化后的字符串。*/
+inline fun String.reserialize(fromDataType: DataType, toDataType: DataType): String {
+	return this.serialize(fromDataType).deserialize(toDataType)
 }
 
 
-/**将当前映射转化为指定类型的对象。可指定是否递归转化[recursive]，默认为false。*/
+/**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
 @NotSuitable("不存在无参构造方法时，转化需要转化元素的数组时。")
 inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T = this.toObject(T::class.java, recursive)
 
-/**将当前映射转化为指定类型的对象。可指定是否递归转化[recursive]，默认为false。*/
+/**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
 @NotSuitable("不存在无参构造方法时，转化需要转化元素的数组时。")
 fun <T> Map<String, Any?>.toObject(type: Class<T>, recursive: Boolean = false): T {
 	val newObject = type.getConstructor().newInstance()
@@ -68,8 +75,7 @@ private fun convertProperty(propertyType: Class<*>, propertyValue: Any?, recursi
 	}
 }
 
-
-/**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化[recursive]，默认为false。*/
+/**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
 @NotSuitable("需要得到扩展属性信息时。")
 fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 	return this::class.memberProperties.associate { it.name to it.call(this) }.let { map ->

@@ -1,78 +1,68 @@
 package com.windea.breezeframework.data.serializers.yaml
 
+import org.yaml.snakeyaml.*
 import java.io.*
 
-class SnakeYamlSerializer : YamlSerializer {
+class SnakeYamlSerializer : YamlSerializer<SnakeYamlSerializer, DumperOptions> {
+	private val dumperOptions = DumperOptions()
+	
+	private val yaml by lazy { Yaml(dumperOptions) }
+	
+	init {
+		dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+	}
+	
+	
+	/**配置持久化选项。这个方法必须首先被调用。*/
+	override fun configure(handler: (options: DumperOptions) -> Unit): SnakeYamlSerializer {
+		return this.also { handler(dumperOptions) }
+	}
+	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
-		TODO("not implemented")
+		return yaml.loadAs(string, type)
 	}
 	
 	override fun <T : Any> load(file: File, type: Class<T>): T {
-		TODO("not implemented")
+		return yaml.loadAs(file.reader(), type)
 	}
 	
 	override fun <T : Any> load(reader: Reader, type: Class<T>): T {
-		TODO("not implemented")
+		return yaml.loadAs(reader, type)
 	}
 	
-	override fun loadList(string: String): List<Any?> {
-		TODO("not implemented")
+	override fun loadAll(string: String): List<Any> {
+		return yaml.loadAll(string).toList()
 	}
 	
-	override fun loadList(file: File): List<Any?> {
-		TODO("not implemented")
+	override fun loadAll(file: File): List<Any> {
+		return yaml.loadAll(file.reader()).toList()
 	}
 	
-	override fun loadList(reader: Reader): List<Any?> {
-		TODO("not implemented")
+	override fun loadAll(reader: Reader): List<Any> {
+		return yaml.loadAll(reader).toList()
 	}
-	
-	override fun loadMap(file: File): Map<String, Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadMap(string: String): Map<String, Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadMap(reader: Reader): Map<String, Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun <T : Any> loadAll(string: String, type: Class<T>): List<T> {
-		TODO("not implemented")
-	}
-	
-	override fun <T : Any> loadAll(file: File, type: Class<T>): List<T> {
-		TODO("not implemented")
-	}
-	
-	override fun <T : Any> loadAll(reader: Reader, type: Class<T>): List<T> {
-		TODO("not implemented")
-	}
-	
 	
 	override fun <T : Any> dump(data: T): String {
-		TODO("not implemented")
+		return yaml.dump(data)
 	}
 	
 	override fun <T : Any> dump(data: T, file: File) {
-		TODO("not implemented")
+		return yaml.dump(data, file.writer())
 	}
 	
 	override fun <T : Any> dump(data: T, writer: Writer) {
-		TODO("not implemented")
+		return yaml.dump(data, writer)
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>): String {
-		TODO("not implemented")
+		return yaml.dumpAll(data.iterator())
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>, file: File) {
-		TODO("not implemented")
+		return yaml.dumpAll(data.iterator(), file.writer())
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>, writer: Writer) {
-		TODO("not implemented")
+		return yaml.dumpAll(data.iterator(), writer)
 	}
 }

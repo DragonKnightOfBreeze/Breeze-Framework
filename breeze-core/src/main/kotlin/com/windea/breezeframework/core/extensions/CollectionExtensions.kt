@@ -356,19 +356,22 @@ fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
 
 /**将当前集合转化成以键为值的映射。*/
 @OutlookImplementationApi
-fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前映射转换成以字符串为键的映射。*/
 @OutlookImplementationApi
-fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	return this.mapKeys { (k, _) -> k.toString() }
+inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
+	return this.mapKeys { (k, _) ->
+		//once: if(k is String) return this@toStringKeyMap as Map<String, V>
+		k.toString()
+	}
 }
 
 /**将当前序列转化成以键为值的映射。*/
 @OutlookImplementationApi
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 

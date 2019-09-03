@@ -3,7 +3,6 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.*
 import mu.*
@@ -222,12 +221,11 @@ fun String.removeBlank(): String {
 }
 
 
-private val escapes = arrayOf("\n", "\r", "\t", "\'", "\"")
+private val escapes = arrayOf("\t", "\b", "\n", "\r", "\'", "\"") //not for every language, ignore "\\" and "\$"
 
-private val unescapes = arrayOf("\\n", "\\r", "\\t", "\\'", "\\\"")
+private val unescapes = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
 
-//Not for every scope
-private val escapesInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+")
+private val escapesInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+") //not for every scope
 
 /**转义当前字符串。例如，将`\\n`转换为`\n`。*/
 fun String.escape(): String {
@@ -248,6 +246,7 @@ private fun String.unescapeRegex(): String {
 		str.replace(escape, "\\$escape")
 	}
 }
+
 
 private val quotes = arrayOf("\"", "'", "`")
 
@@ -287,7 +286,6 @@ fun String.firstCharToLowerCaseOnly(): String {
 
 
 /**将当前字符串分割为单词列表，基于任意长度的指定的分割符，默认为空格。允许位于首尾的分隔符。*/
-//TESTED
 fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 	return this.split(delimiter).filterNotEmpty()
 }

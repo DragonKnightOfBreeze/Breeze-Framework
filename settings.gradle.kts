@@ -11,5 +11,5 @@ include(
 	"breeze-text",
 	"breeze-time",
 	
-	"breeze-study"
+	"learn-kotlin"
 )

@@ -1,54 +1,46 @@
 package com.windea.breezeframework.data.serializers.json
 
+import com.google.gson.*
 import java.io.*
 
-class GsonJsonSerializer : JsonSerializer {
+class GsonJsonSerializer : JsonSerializer<GsonJsonSerializer, GsonBuilder> {
+	private val gsonBuilder = GsonBuilder()
+	
+	private val gson by lazy { gsonBuilder.create() }
+	
+	init {
+		gsonBuilder.setPrettyPrinting()
+	}
+	
+	
+	/**配置持久化选项。这个方法必须首先被调用。*/
+	override fun configure(handler: (GsonBuilder) -> Unit): GsonJsonSerializer {
+		return this.also { handler(gsonBuilder) }
+	}
+	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
-		TODO("not implemented")
+		return gson.fromJson(string, type)
 	}
 	
 	override fun <T : Any> load(file: File, type: Class<T>): T {
-		TODO("not implemented")
+		return gson.fromJson(file.reader(), type)
 	}
 	
 	override fun <T : Any> load(reader: Reader, type: Class<T>): T {
-		TODO("not implemented")
-	}
-	
-	override fun loadList(string: String): List<Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadList(file: File): List<Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadList(reader: Reader): List<Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadMap(file: File): Map<String, Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadMap(string: String): Map<String, Any?> {
-		TODO("not implemented")
-	}
-	
-	override fun loadMap(reader: Reader): Map<String, Any?> {
-		TODO("not implemented")
+		return gson.fromJson(reader, type)
 	}
 	
 	override fun <T : Any> dump(data: T): String {
-		TODO("not implemented")
+		return gson.toJson(data)
 	}
 	
 	override fun <T : Any> dump(data: T, file: File) {
-		TODO("not implemented")
+		//Do not use gson.toJson(Any, Appendable)
+		gson.toJson(data).let { file.writeText(it) }
 	}
 	
 	override fun <T : Any> dump(data: T, writer: Writer) {
-		TODO("not implemented")
+		//Do not use gson.toJson(Any, Appendable)
+		gson.toJson(data).let { writer.write(it) }
 	}
-	
 }
