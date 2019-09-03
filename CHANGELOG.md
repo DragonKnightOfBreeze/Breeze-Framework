@@ -42,7 +42,7 @@
 * [X] 去除对`kotlin-script`的相关依赖和代码。
 * [X] breeze-data 代理实现`DataSerializer`的相关类。
 * [X] breeze-reflect 添加`checkClassForName`方法。
-* [ ] breeze-core 添加核心扩展方法：`once`。
+* [X] breeze-core 添加核心扩展方法：`once`。
 
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。

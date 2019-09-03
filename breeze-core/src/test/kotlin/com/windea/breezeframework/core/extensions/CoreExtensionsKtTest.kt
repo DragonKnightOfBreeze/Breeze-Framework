@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 import org.junit.*
+import kotlin.contracts.*
 
 //Ignore Tests
 
@@ -27,5 +28,16 @@ class CoreExtensionsKtTest {
 	
 	@Test
 	fun nearestLogger() {
+	}
+	
+	@ExperimentalContracts
+	@Test //TESTED
+	fun onceTest() {
+		//a, a
+		once { println("a") }
+		once { println("b") }
+		once { println("c") }
+		once(true) { println("a") }
+		once { println("b") }
 	}
 }
