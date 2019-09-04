@@ -20,7 +20,7 @@ allprojects {
 	
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.1"
+	version = "1.0.2"
 	
 	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
 	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
@@ -122,7 +122,7 @@ allprojects {
 					pkg.vcsUrl = gitUrl
 					pkg.setLabels("kotlin", "framework")
 					pkg.setLicenses("MIT")
-					pkg.version.name = "1.0.1"
+					pkg.version.name = "1.0.2"
 					pkg.version.vcsTag = "1.0.x"
 				}
 			}

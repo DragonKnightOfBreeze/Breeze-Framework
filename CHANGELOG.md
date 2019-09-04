@@ -47,15 +47,14 @@
 
 ### 1.0.2
 
-* ……
+* [X] 更新版本号。
+* [ ] DELAY breeze-core Uri构建和编码的扩展。
+* [ ] DELAY breeze-core 利用反射的类型转换的扩展。
+* [ ] DELAY breeze-text en 单数与复数的转化。
+* [ ] DELAY breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）
 
 
 * [X] TODO 上传到Github。
 * [X] TODO 同步项目到Bintray。
 * [ ] DELAY 发布项目到JCenter。
 * [ ] TODO 完善各个模块的`README.md`文档。
-
-* [ ] DELAY breeze-core Uri构建和编码的扩展。
-* [ ] DELAY breeze-core 利用反射的类型转换的扩展。
-* [ ] DELAY breeze-text en 单数与复数的转化。
-* [ ] DELAY breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）
