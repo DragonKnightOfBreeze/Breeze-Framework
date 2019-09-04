@@ -26,7 +26,7 @@ class StringExtensionsKtTest {
 		assertEquals("abc-abc-abc", "ABC_ABC_ABC".to(`kebab-case`))
 		assertEquals("ABC_ABC_ABC", "abc-abc-abc".to(SCREAMING_SNAKE_CASE))
 		assertEquals("abc abc", "AbcAbc".to(`lower case words`))
-		assertEquals("Abc abc", "abcAbc".to(`Capitalized Words`))
+		assertEquals("Abc Abc", "abcAbc".to(`Capitalized Words`))
 		assertEquals("abcAbc", "Abc Abc".to(camelCase))
 		assertEquals("abcabc", "AbcAbc".to(lowercase))
 		assertEquals("ABCABC", "ABcABc".to(UPPERCASE))
@@ -34,7 +34,7 @@ class StringExtensionsKtTest {
 	
 	@Test //TESTED ALMOST
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "AbcAbc".to(StandardReference))
+		assertEquals("Abc.Abc", "Abc.Abc".to(StandardReference))
 		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".to(StandardReference))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".to(JsonReference))
 		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".to(JsonSchemaReference))

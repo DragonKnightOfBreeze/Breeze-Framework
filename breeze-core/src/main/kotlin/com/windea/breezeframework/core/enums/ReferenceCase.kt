@@ -54,7 +54,7 @@ enum class ReferenceCase(
 		//allow: #, /, unchecked supPaths
 		"^#?(?:/(.+))+$".toRegex(),
 		{ it.removePrefix("#").removePrefix("/").split("/") },
-		{ it.joinToString("/", "/") }
+		{ it.joinToString("/", "#/") }
 	),
 	Unknown("^(.*)$".toRegex(), { listOf(it) }, { it.joinToString("") });
 }
