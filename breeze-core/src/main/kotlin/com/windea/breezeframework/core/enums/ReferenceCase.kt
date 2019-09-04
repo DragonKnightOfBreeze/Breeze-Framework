@@ -3,7 +3,7 @@ package com.windea.breezeframework.core.enums
 import com.windea.breezeframework.core.annotations.marks.*
 
 /**引用的显示格式。*/
-@NotTested
+@NotTested("难以进行完整的测试。")
 enum class ReferenceCase(
 	override val regex: Regex,
 	override val splitFunction: (String) -> List<String>,

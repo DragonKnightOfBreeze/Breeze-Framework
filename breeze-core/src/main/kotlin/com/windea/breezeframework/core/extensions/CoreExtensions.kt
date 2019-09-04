@@ -20,15 +20,14 @@ infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(
 @PublishedApi internal var enableOnce = false
 
 /**执行且仅执行一次操作。可指定是否重置单次状态。*/
-//public inline fun <R> run(block: () -> R): R
-//public inline fun <T, R> T.run(block: T.() -> R): R
 @OutlookImplementationApi
 @ExperimentalContracts
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
-	if(enableOnce && !resetStatus) return
+	if(resetStatus) enableOnce = false
+	if(enableOnce) return
 	enableOnce = true
 	block()
 }

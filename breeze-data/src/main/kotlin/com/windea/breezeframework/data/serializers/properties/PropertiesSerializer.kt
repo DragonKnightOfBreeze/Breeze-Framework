@@ -23,10 +23,13 @@ interface PropertiesSerializer<S, C> : DataSerializer<S, C>, PropertiesLoader, P
 interface PropertiesLoader : DataLoader {
 	override val dataType: DataType get() = DataType.Properties
 	
+	/**从指定Java属性对象读取指定类型的数据。*/
 	fun <T> load(properties: Properties, type: Class<T>): T
 	
+	/**从指定Java属性对象读取列表类型的数据。*/
 	fun loadAsList(properties: Properties): List<Any?> = load(properties, List::class.java)
 	
+	/**从指定Java属性对象读取映射类型的数据。*/
 	fun loadAsMap(properties: Properties): Map<String, Any?> = load(properties, Map::class.java).toStringKeyMap()
 }
 
@@ -34,5 +37,6 @@ interface PropertiesLoader : DataLoader {
 interface PropertiesDumper : DataDumper {
 	override val dataType: DataType get() = DataType.Properties
 	
+	/**转储所有数据到Java属性对象。*/
 	fun <T : Any> dump(data: T, properties: Properties)
 }

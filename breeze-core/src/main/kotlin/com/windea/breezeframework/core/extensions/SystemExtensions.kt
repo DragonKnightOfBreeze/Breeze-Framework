@@ -40,34 +40,39 @@ class SystemAttributesAccessor internal constructor() : ReadOnlyProperty<Nothing
 }
 
 
-//TODO allows `engine.compile()` operation
-/**执行一段懒加载的脚本。默认为kts。默认仅支持js、kts脚本。*/
+//TODO 允许进行`engine.compile()`操作
+/**执行一段懒加载的脚本。默认为kts。需要自行提供脚本语言支持。*/
 @NotImplemented
 inline fun <reified T> eval(extension: String = "kts", lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript()) as? T
 }
 
-/**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
+/**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", bindings: Bindings, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), bindings) as? T
 }
 
-/**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
+/**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", context: ScriptContext, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), context) as? T
 }
 
-/**执行一段读取的脚本。可指定语言后缀，默认为kts。默认仅支持js、kts脚本。*/
+/**执行一段读取的脚本。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", reader: Reader): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader) as? T
 }
 
 /**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, bindings: Bindings): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, bindings) as? T
 }
 
 /**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
+@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: ScriptContext): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, context) as? T
 }

@@ -48,6 +48,7 @@
 ### 1.0.2
 
 * [X] 更新版本号。
+* [X] breeze-data 补充注释，搁置测试。
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [ ] DELAY breeze-text en 单数与复数的转化。
