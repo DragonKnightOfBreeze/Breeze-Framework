@@ -472,6 +472,7 @@ fun String.toUrlInfo(): UrlInfo {
 }
 
 /**将当前字符串转化为查询参数映射。*/
+@Suppress("IMPLICIT_CAST_TO_ANY")
 internal fun String.toQueryParamMap(): QueryParamMap {
 	//show warns here!!!
 	val map = when {

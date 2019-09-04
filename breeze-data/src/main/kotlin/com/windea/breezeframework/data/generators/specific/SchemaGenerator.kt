@@ -65,10 +65,10 @@ object SchemaGenerator : TextGenerator {
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
 	fun generateExtendedSchema(inputText: String, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml): String {
-		val rawInputMap = inputType.serializer.fromString(inputText)
+		val rawInputMap = inputType.serializer.loadAsMap(inputText)
 		val inputMap = rawInputMap as MutableMap<String, Any?>
 		convertRules(inputMap)
-		return outputType.serializer.toString(inputMap)
+		return outputType.serializer.dump(inputMap)
 	}
 	
 	/**

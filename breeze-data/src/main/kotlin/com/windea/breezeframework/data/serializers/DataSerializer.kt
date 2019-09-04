@@ -5,7 +5,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import java.io.*
 
-//TODO
+//TODO Remain to add comments
 //TODO 允许读取指定泛型类型的数据
 
 /**通用数据持久化器的接口。实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
