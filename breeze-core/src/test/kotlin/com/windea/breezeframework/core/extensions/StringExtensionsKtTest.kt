@@ -59,4 +59,12 @@ class StringExtensionsKtTest {
 		
 		assertEquals("1b2a3","1{1}2{0}3".customFormat("{index}","a","b"))
 	}
+	
+	@Test
+	fun likeTest(){
+		assertTrue("abc ab a" like "abc ab")
+		assertTrue("abc ab a" like "abc")
+		assertTrue("abc ab a" like "abc abc a")
+		assertTrue("abc ab a" like  "bcd bc a")
+	}
 }
