@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger { }
 
 /**判断字符串是否相等。忽略大小写。*/
 @OutlookImplementationApi
-infix fun String?.equalsIc(other: String?): Boolean {
+inline infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
@@ -34,7 +34,7 @@ infix fun String?.equalsIlc(other: String?): Boolean {
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
 @OutlookImplementationApi
-infix fun String.anyIn(other: String): Boolean = this.any { it in other }
+inline infix fun String.anyIn(other: String): Boolean = this.any { it in other }
 
 /**判断当前字符串是否与另一字符串相像。即，判断是否存在共同的以空格分隔的单词。*/
 infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn other.splitToWordList()
@@ -42,49 +42,49 @@ infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn oth
 
 /**判断当前字符串是否以指定前缀开头。*/
 @OutlookImplementationApi
-infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
+inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, false)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。*/
 @OutlookImplementationApi
-infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
+inline infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。*/
 @OutlookImplementationApi
-infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
+inline infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, false)
 }
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
 @OutlookImplementationApi
-infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
+inline infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
 	return suffixArray.any { this.endsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
 @OutlookImplementationApi
-infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
+inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, true)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
 @OutlookImplementationApi
-infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
+inline infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, true) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
 @OutlookImplementationApi
-infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
+inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
 @OutlookImplementationApi
-infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
+inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
 
 
@@ -196,27 +196,27 @@ fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean =
 
 
 /**去除指定字符。*/
-fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
+inline fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
 	return this.replace(oldChar.toString(), "", ignoreCase)
 }
 
 /**去除指定字符串。*/
-fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
+inline fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 	return this.replace(oldValue, "", ignoreCase)
 }
 
 /**去除指定正则表达式的字符串。*/
-fun String.remove(regex: Regex): String {
+inline fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
 
 /**去除所有空格。*/
-fun String.removeWhiteSpace(): String {
+inline fun String.removeWhiteSpace(): String {
 	return this.replace(" ", "")
 }
 
 /**去除所有空白。*/
-fun String.removeBlank(): String {
+inline fun String.removeBlank(): String {
 	return this.replace("\\s+".toRegex(), "")
 }
 
@@ -392,11 +392,12 @@ fun String.toBreakLineText(): String {
  **/
 fun String.toMultilineText(additionalIndentSize: Int = 0): String {
 	val lines = this.lines()
-	val additionalIndent = if(additionalIndentSize < 0) "\t" else " ".repeat(additionalIndentSize)
+	val additionalIndent = if(additionalIndentSize < 0) "\t" else " " * additionalIndentSize
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
 	if(trimmedIndent.isEmpty()) return this.trimIndent()
 	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
+
 
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
@@ -528,6 +529,10 @@ fun String.toColor(): Color {
 
 /////////////Operator overrides
 
+/**@see kotlin.text.slice*/
+@OutlookImplementationApi
+inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
 inline operator fun String.times(n: Int): String = this.repeat(n)
@@ -535,7 +540,3 @@ inline operator fun String.times(n: Int): String = this.repeat(n)
 /**@see kotlin.text.chunked*/
 @OutlookImplementationApi
 inline operator fun String.div(n: Int): List<String> = this.chunked(n)
-
-/**@see kotlin.text.substring*/
-@OutlookImplementationApi
-inline operator fun String.get(indexRange: IntRange): String = this.substring(indexRange)
