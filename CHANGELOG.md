@@ -44,7 +44,6 @@
 * [X] breeze-data 代理实现`DataSerializer`的相关类。
 * [X] breeze-reflect 添加`checkClassForName`方法。
 * [X] breeze-core 添加核心扩展方法：`once`。
-* [X] breeze-core 添加函数式扩展方法的示例：`curried`、`parial`
 
 ### 1.0.2
 
@@ -53,6 +52,7 @@
 * [X] breeze-core 移除Range的中缀扩展，因为可能返回`ClosedRange<T>`或`Pair`。
 * [X] breeze-core 将更多简单的扩展方法标为内联。（为了完全消除性能影响）
 * [X] breeze-data 完成一个更好的Xml Dsl示例。
+* [X] breeze-core 添加函数式扩展方法的示例：`curried`、`partial`。
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [ ] DELAY breeze-text en 单数与复数的转化。
