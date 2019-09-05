@@ -380,24 +380,29 @@ fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 
 /**
  * 将当前字符串转为折行文本。
- * （去除所有换行符以及每行的首尾空白。）
+ *
+ * 去除所有换行符以及每行的首尾空白。
  */
 fun String.toBreakLineText(): String {
 	return this.remove("\\s*\\n\\s*".toRegex())
 }
 
 /**
- * 将当前字符串转化为多行文本。可选相对于三引号的缩进，默认为0，-1为制表符。
- * （去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。）
+ * 将当前字符串转化为多行文本。可选相对缩进，默认为0，-1为制表符。
+ *
+ * 去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。
  **/
-fun String.toMultilineText(additionalIndentSize: Int = 0): String {
+fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 	val lines = this.lines()
-	val additionalIndent = if(additionalIndentSize < 0) "\t" else " " * additionalIndentSize
+	val additionalIndent = when {
+		relativeIndentSize == 0 -> ""
+		relativeIndentSize > 0 -> " " * relativeIndentSize.coerceIn(-2, 8)
+		else -> "\t" * relativeIndentSize.coerceIn(-2, 8)
+	}
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
 	if(trimmedIndent.isEmpty()) return this.trimIndent()
 	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
-
 
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。*/

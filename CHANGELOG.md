@@ -51,6 +51,7 @@
 * [X] breeze-data 补充注释，搁置测试。
 * [X] breeze-core 移除Range的中缀扩展，因为可能返回`ClosedRange<T>`或`Pair`。
 * [X] breeze-core 将更多简单的扩展方法标为内联。（为了完全消除性能影响）
+* [X] breeze-data 完成一个更好的Xml Dsl示例。
 * [ ] 尝试提供线程安全（双重校验锁）的单例模式接口。
     * （kotlin的object实现的是懒汉式的单例，但提供对于方法的`@Synchronized`注解）
 * [ ] DELAY breeze-core Uri构建和编码的扩展。

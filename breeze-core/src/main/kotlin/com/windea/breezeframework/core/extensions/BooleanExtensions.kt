@@ -4,12 +4,10 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 
-/**如果为null，则返回true，否则返回本身。*/
-@OutlookImplementationApi
+/**如果为null，则返回true，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orTrue(): Boolean = this ?: true
 
-/**如果为null，则返回false，否则返回本身。*/
-@OutlookImplementationApi
+/**如果为null，则返回false，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 
 

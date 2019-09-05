@@ -14,12 +14,19 @@
 * Jvm签名不包含方法的返回值，所有当方法的名称一致，参数一致时，返回类型必须一致。
     * 在kotlin中可以通过`@JvmName`解决这类冲突。
 * `allopen`、`noArg`插件都可以应用在data class上。（需要添加标记注解。）
+* 常见的作用域函数：`with`,`run`,`with`,`apply`,`also`,`use`。
+* 柯里化(curried)：由一个多参数的函数转化为返回多层嵌套单参数的函数的过程。即，`f(a,b,c) -> f(a)(b)(c)`
+* 偏函数(partial)：对于一个柯里化函数的返回结果传入数层但未满层的参数后，得到的多层嵌套函数。即，`f(a,b,c)-> f(a)(b)`。
 
 * 如何使用kotlin实现线程安全（双重校验锁）的单例模式？？？
 
+
 # 灵感
 
-
+* ［不确定必要性］扩展方法： `FunctionN.curried()`，`FunctionN.uncurried()`
+    * 所属文件：FunctionalExtensions.kt
+    * 使用示例：`::f.curried()(a)(b)(c)`。
+* ［不确定］扩展方法：`Function2+.partialN()`
 
 # 特性请求
 

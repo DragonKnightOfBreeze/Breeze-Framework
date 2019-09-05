@@ -276,6 +276,7 @@ fun <K, V> Map<K, V>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase
 fun <T> Sequence<T>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
 
+//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepFlatten(hierarchy: Int = -1, preSubPaths: List<String>, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentHierarchy = if(hierarchy <= 0) hierarchy else hierarchy - 1
@@ -311,6 +312,7 @@ fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
 fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
 
+//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentSubPath = subPaths.first()
