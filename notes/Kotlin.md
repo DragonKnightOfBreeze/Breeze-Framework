@@ -36,3 +36,14 @@
 * 允许对返回值为Boolean的中缀方法使用非运算符。如`"abc" !startsWith "a"`。
 * 标准库应当提供更多的TODO方法，并允许用户自定义TODO注解和方法。
 * 允许可重复的`SOURCE`以外的注解。
+
+class SingletonHungary {
+	private static SingletonHungary singletonHungary = new SingletonHungary();
+	//将构造器设置为private禁止通过new进行实例化
+	private SingletonHungary() {
+		
+	}
+	public static SingletonHungary getInstance() {
+		return singletonHungary;
+	}
+}

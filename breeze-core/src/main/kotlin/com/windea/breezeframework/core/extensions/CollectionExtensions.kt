@@ -350,6 +350,13 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 
 ///////////Convert operations
 
+/**将当前键值对数组转化为可变映射。*/
+fun <K, V> Array<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+
+/**将当前键值对列表转化为可变映射。*/
+fun <K, V> List<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+
+
 /**将当前数组转化成以键为值的映射。*/
 @OutlookImplementationApi
 fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
