@@ -54,11 +54,12 @@
 * [X] breeze-data 完成一个更好的Xml Dsl示例。
 * [X] breeze-core 添加函数式扩展方法的示例：`curried`、`partial`。
 * [X] breeze-core 提供通用的`@AllOpen`和`@NoArg`注解。
+* [X] breeze-data 更新扩展。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
-    * （至少为前者的graph，后者的state graph提供Dsl。后者的语法根本不是人玩的。）
+    * 至少为前者的graph，后者的state graph提供Dsl。后者的语法根本不是人玩的。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
 * [ ] breeze-data DELAY 提供更多图形语言的Dsl。
-    * （主要是sequence和flow）。
+    * 主要是sequence和flow。
 * [ ] breeze-core DELAY Uri构建和编码的扩展。
 * [ ] breeze-core DELAY 利用反射的类型转换的扩展。
 * [ ] breeze-text DELAY en 单数与复数的转化。
