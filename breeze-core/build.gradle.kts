@@ -1,5 +1,18 @@
 @file:Suppress("SpellCheckingInspection")
 
+plugins {
+	kotlin("plugin.noarg") version "1.3.50"
+	kotlin("plugin.allopen") version "1.3.50"
+}
+
+noArg {
+	annotation("com.windea.breezeframework.core.annotations.NoArg")
+}
+
+allOpen {
+	annotation("com.windea.breezeframework.core.annotations.AllOpen")
+}
+
 dependencies {
 	//compile(kotlin("script-runtime"))
 	//compile(kotlin("compiler-embeddable"))

@@ -53,6 +53,7 @@
 * [X] breeze-core 将更多简单的扩展方法标为内联。（为了完全消除性能影响）
 * [X] breeze-data 完成一个更好的Xml Dsl示例。
 * [X] breeze-core 添加函数式扩展方法的示例：`curried`、`partial`。
+* [X] breeze-core 提供通用的`@AllOpen`和`@NoArg`注解。
 * [ ] DELAY breeze-core Uri构建和编码的扩展。
 * [ ] DELAY breeze-core 利用反射的类型转换的扩展。
 * [ ] DELAY breeze-text en 单数与复数的转化。
