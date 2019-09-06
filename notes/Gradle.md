@@ -47,3 +47,22 @@
 包含其他模块（在settings.gradle里：
 * include(...)
 * xxx.include(...)
+
+发布到JCenter：
+* 创建bintray帐号（可从bintray创建）
+* 创建一个属于自己的组织
+* 在该组织中创建一个新的仓库
+* 在`build.gradle.kts`中配置相关选项。在`publishing.repositories.bintray`块下。
+* 需要配置正确的`user`和`key`。（bintray用户名和api key）
+    * 可从gradle启动任务时的`-Pxxx=xxx`形式的命令参数获取。
+    * 可从外部属性文件中获取。
+    * 可从系统环境变量中获取。（可能需要重新启动电脑）
+* 需要配置正确的`pkg.userOrg`、`pkg.repo`和`pkg.name`，其中仓库必须是预先存在的。
+* 如何立即使用：
+    * 添加自定义仓库`maven("https://dl.bintray.com/breeze-knights/breeze-framework")`
+    * 添加自定义依赖`implementation("com.windea:breeze-framework:1.0.1")`
+* 如何同步到JCenter：
+    * 通过<https://bintray.com/breeze-knights/breeze-framework>可以打开JCenter仓库。
+    * 然后点击Actions>Include My Package即可添加自己的库。
+    * 需要配置是否是pom项目。
+    * 点击Send，等待审核通过后，即可通过JCenter引用自己的库。

@@ -5,7 +5,7 @@ import java.io.*
 
 class FastJsonSerializer : JsonSerializer<FastJsonSerializer, Any> {
 	override fun configure(handler: (Any) -> Unit): FastJsonSerializer {
-		TODO("not implemented")
+		throw UnsupportedOperationException("Can not configure this serializer.")
 	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {

@@ -9,4 +9,13 @@ class CollectionExtensionsKtTest {
 		println(listOf(1, 2, 3).flatRepeat(3))
 		println(listOf(1, 2, 3).repeatChunked(3))
 	}
+	
+	@Test
+	fun dropBlankTest() {
+		println(listOf("123").dropBlank())
+		println(listOf("", "123").dropBlank())
+		println(listOf("", "", "123").dropBlank())
+		println(listOf("123", "", "123").dropBlank())
+		println(listOf("", "123", "", "123").dropBlank())
+	}
 }

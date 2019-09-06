@@ -1,15 +1,14 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package com.windea.breezeframework.data.dsl.data
+package com.windea.breezeframework.data.dsl.deprecated.data
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.*
-import com.windea.breezeframework.data.dsl.data.XmlDslConfig.defaultName
-import com.windea.breezeframework.data.dsl.data.XmlDslConfig.defaultRootName
-import com.windea.breezeframework.data.dsl.data.XmlDslConfig.indent
-import com.windea.breezeframework.data.dsl.data.XmlDslConfig.preferAutoClosedTag
-import com.windea.breezeframework.data.dsl.data.XmlDslConfig.quote
-import java.lang.annotation.*
+import com.windea.breezeframework.data.dsl.deprecated.*
+import com.windea.breezeframework.data.dsl.deprecated.data.XmlDslConfig.defaultName
+import com.windea.breezeframework.data.dsl.deprecated.data.XmlDslConfig.defaultRootName
+import com.windea.breezeframework.data.dsl.deprecated.data.XmlDslConfig.indent
+import com.windea.breezeframework.data.dsl.deprecated.data.XmlDslConfig.preferAutoClosedTag
+import com.windea.breezeframework.data.dsl.deprecated.data.XmlDslConfig.quote
 
 /**Xml Dsl。*/
 data class XmlDsl @PublishedApi internal constructor(
@@ -27,14 +26,13 @@ data class XmlDsl @PublishedApi internal constructor(
 object XmlDslConfig : DslConfig {
 	const val defaultName: String = "xml"
 	const val defaultRootName: String = "root"
+	
 	var indentSize: Int = 2
-		set(value) {
-			field = value.coerceIn(2, 8)
-		}
+		set(value) = run { field = value.coerceIn(2, 8) }
 	var preferDoubleQuote: Boolean = true
 	var preferAutoClosedTag: Boolean = false
 	
-	internal val indent get() = " ".repeat(indentSize)
+	internal val indent get() = " " * indentSize
 	internal val quote get() = if(preferDoubleQuote) "\"" else "'"
 }
 
@@ -45,7 +43,6 @@ internal annotation class XmlDslMarker
 
 /**Xml Dsl的扩展功能。*/
 @MustBeDocumented
-@Inherited
 internal annotation class ExtendedXmlFeature
 
 

@@ -3,12 +3,11 @@ package com.windea.breezeframework.core.annotations.messages
 import com.windea.breezeframework.core.domain.*
 import org.intellij.lang.annotations.*
 import org.jetbrains.annotations.*
-import java.lang.annotation.*
 
 /**本地化概述。*/
 @MustBeDocumented
 @Repeatable
-@Inherited
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Summary(
 	@Language("Markdown")
 	@Nls

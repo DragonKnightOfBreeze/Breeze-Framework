@@ -1,11 +1,11 @@
-package com.windea.breezeframework.data.dsl.data
+package com.windea.breezeframework.data.dsl.deprecated.data
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.*
-import com.windea.breezeframework.data.dsl.data.JsonDslConfig.defaultName
-import com.windea.breezeframework.data.dsl.data.JsonDslConfig.indent
-import com.windea.breezeframework.data.dsl.data.JsonDslConfig.quote
+import com.windea.breezeframework.data.dsl.deprecated.*
+import com.windea.breezeframework.data.dsl.deprecated.data.JsonDslConfig.defaultName
+import com.windea.breezeframework.data.dsl.deprecated.data.JsonDslConfig.indent
+import com.windea.breezeframework.data.dsl.deprecated.data.JsonDslConfig.quote
 import java.lang.annotation.*
 
 /**Json Dsl。*/

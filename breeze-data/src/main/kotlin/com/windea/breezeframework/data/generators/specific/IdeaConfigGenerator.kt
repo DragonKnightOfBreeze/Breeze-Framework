@@ -15,7 +15,7 @@ object IdeaConfigGenerator : TextGenerator {
 	 * 输入文本的格式：Json Schema。
 	 */
 	fun generateYamlAnnotation(inputText: String, inputType: DataType): String {
-		val rawInputMap = inputType.serializer.fromString(inputText)
+		val rawInputMap = inputType.serializer.loadAsMap(inputText)
 		val inputMap = rawInputMap as SchemaDefinitionMap
 		val definitions = inputMap["definitions"] as SchemaMap
 		

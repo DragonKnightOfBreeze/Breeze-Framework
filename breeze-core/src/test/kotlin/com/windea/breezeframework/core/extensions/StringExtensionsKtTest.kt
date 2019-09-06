@@ -26,7 +26,7 @@ class StringExtensionsKtTest {
 		assertEquals("abc-abc-abc", "ABC_ABC_ABC".to(`kebab-case`))
 		assertEquals("ABC_ABC_ABC", "abc-abc-abc".to(SCREAMING_SNAKE_CASE))
 		assertEquals("abc abc", "AbcAbc".to(`lower case words`))
-		assertEquals("Abc abc", "abcAbc".to(`Capitalized Words`))
+		assertEquals("Abc Abc", "abcAbc".to(`Capitalized Words`))
 		assertEquals("abcAbc", "Abc Abc".to(camelCase))
 		assertEquals("abcabc", "AbcAbc".to(lowercase))
 		assertEquals("ABCABC", "ABcABc".to(UPPERCASE))
@@ -34,7 +34,7 @@ class StringExtensionsKtTest {
 	
 	@Test //TESTED ALMOST
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "AbcAbc".to(StandardReference))
+		assertEquals("Abc.Abc", "Abc.Abc".to(StandardReference))
 		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".to(StandardReference))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".to(JsonReference))
 		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".to(JsonSchemaReference))
@@ -58,5 +58,13 @@ class StringExtensionsKtTest {
 		assertEquals("1a2b3","1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b"))
 		
 		assertEquals("1b2a3","1{1}2{0}3".customFormat("{index}","a","b"))
+	}
+	
+	@Test
+	fun likeTest(){
+		assertTrue("abc ab a" like "abc ab")
+		assertTrue("abc ab a" like "abc")
+		assertTrue("abc ab a" like "abc abc a")
+		assertTrue("abc ab a" like  "bcd bc a")
 	}
 }

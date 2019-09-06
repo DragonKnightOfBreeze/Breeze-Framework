@@ -5,7 +5,7 @@ package com.windea.breezeframework.reflect.extensions
 import com.windea.breezeframework.core.annotations.internal.*
 import java.lang.reflect.*
 
-//Remain to add comments
+//TODO Remain to add comments
 
 val Executable?.isAbstract: Boolean get() = this?.modifiers?.let { Modifier.isAbstract(it) } ?: false
 

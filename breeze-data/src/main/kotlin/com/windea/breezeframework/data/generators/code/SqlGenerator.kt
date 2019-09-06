@@ -15,7 +15,7 @@ object SqlGenerator : TextGenerator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val rawInputMap = inputType.serializer.fromString(inputText)
+		val rawInputMap = inputType.serializer.loadAsMap(inputText)
 		val inputMap = rawInputMap as SqlDataMap
 		val databaseName = inputMap.keys.first()
 		val database = inputMap.values.first()

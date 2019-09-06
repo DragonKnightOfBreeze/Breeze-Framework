@@ -20,18 +20,23 @@ infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(
 @PublishedApi internal var enableOnce = false
 
 /**执行且仅执行一次操作。可指定是否重置单次状态。*/
-//public inline fun <R> run(block: () -> R): R
-//public inline fun <T, R> T.run(block: T.() -> R): R
-@OutlookImplementationApi
 @ExperimentalContracts
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
-	if(enableOnce && !resetStatus) return
+	if(resetStatus) enableOnce = false
+	if(enableOnce) return
 	enableOnce = true
 	block()
 }
+
+
+/**转化为指定类型，或者抛出异常。用于链式调用。*/
+inline fun <reified R> Any?.cast() = this as R
+
+/**转化为指定类型，或者返回null。用于链式调用。*/
+inline fun <reified R> Any?.castOrNull() = this as? R
 
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/

@@ -10,12 +10,12 @@ import kotlin.reflect.*
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotation(predicate: (A) -> Boolean): A? =
 	this.annotations.filterIsInstance<A>().firstOrNull(predicate)
 
-/**得到可注解元素的指定类型的注解列表。*/
+/**得到可注解元素的指定类型的注解列表。注意：Kotlin目前只能使用SOURCE级别的可重复注解。*/
 @OutlookImplementationApi
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotations(): List<A> =
 	this.annotations.filterIsInstance<A>()
 
-/**得到可注解元素的指定类型的满足指定预测的注解列表。*/
+/**得到可注解元素的指定类型的满足指定预测的注解列表。注意：Kotlin目前只能使用SOURCE级别的可重复注解。*/
 @OutlookImplementationApi
 inline fun <reified A : Annotation> KAnnotatedElement.findAnnotations(predicate: (A) -> Boolean): List<A> =
 	this.annotations.filterIsInstance<A>().filter(predicate)
@@ -30,16 +30,16 @@ class AnnotatedValuesAccessor internal constructor() {
 	private var currentLocale: String = Locale.getDefault().toString()
 	
 	/**得到目标的本地化名字的文本-语言环境对。*/
-	val namePairs: List<Pair<String, String>> = target.findAnnotations<Name>().map { it.text to it.locale }
+	val namePairs: List<Pair<String, String>> by lazy { target.findAnnotations<Name>().map { it.text to it.locale } }
 	
 	/**得到目标的本地化标签的文本-语言环境对。*/
-	val tagsPairs: List<Pair<List<String>, String>> = target.findAnnotations<Tags>().map { it.text.toList() to it.locale }
+	val tagsPairs: List<Pair<List<String>, String>> by lazy { target.findAnnotations<Tags>().map { it.text.toList() to it.locale } }
 	
 	/**得到目标的本地化概述的文本-语言环境对。*/
-	val summaryPairs: List<Pair<String, String>> = target.findAnnotations<Summary>().map { it.text to it.locale }
+	val summaryPairs: List<Pair<String, String>> by lazy { target.findAnnotations<Summary>().map { it.text to it.locale } }
 	
 	/**得到目标的本地化描述的文本-语言环境对。*/
-	val descriptionPairs: List<Pair<String, String>> = target.findAnnotations<Description>().map { it.text.toMultilineText() to it.locale }
+	val descriptionPairs: List<Pair<String, String>> by lazy { target.findAnnotations<Description>().map { it.text.toMultilineText() to it.locale } }
 	
 	
 	/**得到目标的本地化名字。可指定语言环境，默认为默认语言环境。可以指定索引，默认为第1个。*/

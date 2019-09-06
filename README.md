@@ -1,6 +1,9 @@
 # Summary
 
-[Breeze-Framework](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
+Breeze-Framework
+
+[Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
+[Bintray](https://bintray.com/breeze-knights/breeze-framework)
 
 Integrated code framework base on Kotlin, provide many useful extensions for standard library and some frameworks.
 

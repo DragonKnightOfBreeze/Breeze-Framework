@@ -26,70 +26,70 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 
 /**判断当前数组中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
-infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+inline infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
 
 /**判断当前数组中的任意元素是否被另一集合包含。*/
 @OutlookImplementationApi
-infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+inline infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前数组中的任意元素是否被另一序列包含。*/
 @OutlookImplementationApi
-infix fun <T> Array<out T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+inline infix fun <T> Array<out T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
 
 /**判断当前集合中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
-infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+inline infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
 
 /**判断当前集合中的任意元素是否被另一集合包含。*/
 @OutlookImplementationApi
-infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+inline infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前集合中的任意元素是否被另一序列包含。*/
 @OutlookImplementationApi
-infix fun <T> Iterable<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+inline infix fun <T> Iterable<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
 
 /**判断当前序列中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
-infix fun <T> Sequence<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+inline infix fun <T> Sequence<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
 
 /**判断当前序列中的任意元素是否被另一集合包含。*/
 @OutlookImplementationApi
-infix fun <T> Sequence<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+inline infix fun <T> Sequence<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前序列中的任意元素是否被另一序列包含。*/
 @OutlookImplementationApi
-infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+inline infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
 
 
 /**判断当前数组是否以指定元素开始。*/
-infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素开始。*/
-infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前数组是否以指定元素结束。*/
-infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素结束。*/
-infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素开始。*/
-infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素开始。*/
-infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素结束。*/
-infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素结束。*/
-infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前序列是否以指定元素开始。*/
-infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前序列是否以任意指定元素开始。*/
-infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 
 /**判断当前序列是否为空。*/
@@ -134,11 +134,11 @@ inline fun <T> Sequence<T>.ifNotEmpty(crossinline transform: () -> Sequence<T>):
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
 
 
 /**重复当前集合中的元素到指定次数。*/
@@ -276,6 +276,7 @@ fun <K, V> Map<K, V>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase
 fun <T> Sequence<T>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
 
+//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepFlatten(hierarchy: Int = -1, preSubPaths: List<String>, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentHierarchy = if(hierarchy <= 0) hierarchy else hierarchy - 1
@@ -311,6 +312,7 @@ fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
 fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
 
+//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentSubPath = subPaths.first()
@@ -347,6 +349,13 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 }
 
 ///////////Convert operations
+
+/**将当前键值对数组转化为可变映射。*/
+fun <K, V> Array<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+
+/**将当前键值对列表转化为可变映射。*/
+fun <K, V> List<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+
 
 /**将当前数组转化成以键为值的映射。*/
 @OutlookImplementationApi
@@ -386,45 +395,45 @@ fun <T : CharSequence> Array<T>.getOrEmpty(index: Int): String = this.getOrNull(
 fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 
-/**去除第一行空白行。*/
-fun <T : CharSequence> Array<out T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
+/**去除起始的空白行。*/
+inline fun <T : CharSequence> Array<out T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
 
-/**去除最后一行空白行。*/
-fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
+/**去除尾随的空白行。*/
+inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
 
-/**去除第一行空白行。*/
-fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
+/**去除起始的空白行。*/
+inline fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
 
-/**去除最后一行空白行。*/
-fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
+/**去除尾随的空白行。*/
+inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
 
-/**去除第一行空白行。*/
-fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
+/**去除起始的空白行。*/
+inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
 
-
-/**过滤空字符串。*/
-@OutlookImplementationApi
-fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
-
-/**过滤空白字符串。*/
-@OutlookImplementationApi
-fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+
+/**过滤空字符串。*/
+@OutlookImplementationApi
+inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
+
+/**过滤空白字符串。*/
+@OutlookImplementationApi
+inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotEmpty() }
 
 
 /**将当前数组映射为转化索引后的索引-值对集合。*/
@@ -447,14 +456,6 @@ inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Seque
 
 ///////////Operator overrides
 
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-@OutlookImplementationApi
-inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
-
-/**@see kotlin.collections.chunked*/
-@OutlookImplementationApi
-inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
-
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
 inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
@@ -470,3 +471,11 @@ inline operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chun
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
 inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
