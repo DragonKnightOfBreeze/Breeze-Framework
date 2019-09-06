@@ -1,5 +1,6 @@
 package com.windea.breezeframework.core.tests
 
+import com.windea.breezeframework.core.annotations.*
 import org.junit.*
 
 class StudyTests {
@@ -20,10 +21,19 @@ class StudyTests {
 	fun test2() {
 	}
 	
-}
-
-object Singleton {
-	@Synchronized
-	fun a() {
+	@Test
+	fun testNoArg() {
+		val p = PersonA::class.java.newInstance()
+		println(p)
 	}
 }
+
+
+@NoArg
+interface IPerson
+
+@NoArg
+class PersonA(
+	val username: String,
+	val password: String
+) : IPerson

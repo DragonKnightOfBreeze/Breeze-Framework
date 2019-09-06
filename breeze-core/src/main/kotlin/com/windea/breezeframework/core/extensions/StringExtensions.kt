@@ -405,27 +405,27 @@ fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 }
 
 
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。*/
 @OutlookImplementationApi
 fun String.toIntOrDefault(defaultValue: Int = 0): Int = this.toIntOrDefault(10, defaultValue)
 
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
 @OutlookImplementationApi
 fun String.toIntOrDefault(radix: Int = 10, defaultValue: Int = 0): Int = this.toIntOrNull(radix) ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。*/
 @OutlookImplementationApi
 fun String.toLongOrDefault(defaultValue: Long = 0): Long = this.toLongOrDefault(10, defaultValue)
 
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
 @OutlookImplementationApi
 fun String.toLongOrDefault(radix: Int = 10, defaultValue: Long = 0): Long = this.toLongOrNull(radix) ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0f。*/
+/**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值，默认为0.0f。*/
 @OutlookImplementationApi
 fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrNull() ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0。*/
+/**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值，默认为0.0。*/
 @OutlookImplementationApi
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 

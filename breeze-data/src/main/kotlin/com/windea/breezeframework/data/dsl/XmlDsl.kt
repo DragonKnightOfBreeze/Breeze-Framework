@@ -12,12 +12,41 @@ import com.windea.breezeframework.data.dsl.XmlConfig.quote
 //////////Portal extensions
 
 /**开始生成Xml。*/
-fun Dsl.Companion.xml(builder: Xml.() -> Unit) = Xml.create(builder)
+fun Dsl.Companion.xml(builder: Xml.() -> Unit) = Xml().builder()
 
 /**开始配置Xml。*/
 fun DslConfig.Companion.xml(builder: XmlConfig.() -> Unit) = XmlConfig.builder()
 
-//////////Config object
+//////////Main class & Config object
+
+/**Xml文件。*/
+class Xml @PublishedApi internal constructor(
+	/**注释列表。*/
+	val comments: MutableList<XmlComment> = mutableListOf(),
+	/**根元素。*/
+	var rootElement: XmlElement = XmlElement(defaultRootName),
+	override var wrapContent: Boolean = true
+) : Dsl, XmlDslElement, CanWrapContent {
+	override fun toString(): String {
+		val commentsSnippet = if(wrapContent) comments.joinToString("\n") else comments.joinToString("")
+		val wrapSnippet = if(wrapContent) "\n" else ""
+		return "$commentsSnippet$wrapSnippet$rootElement"
+	}
+	
+	/**添加注释。*/
+	inline fun comment(comment: String) = XmlComment.create(comment).also { comments += it }
+	
+	/**添加元素。*/
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		XmlElement.create(name, *attributes, builder = builder).also { rootElement = it }
+	
+	/**添加注释。*/
+	inline operator fun String.unaryMinus() = comment(this)
+	
+	/**添加元素。*/
+	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		element(this, *attributes, builder = builder)
+}
 
 /**Xml配置。*/
 object XmlConfig : DslConfig {
@@ -49,40 +78,6 @@ interface XmlDslElement
 interface XmlNode : XmlDslElement
 
 ////////////Dsl elements & build functions
-
-/**Xml文件。*/
-class Xml @PublishedApi internal constructor(
-	/**注释列表。*/
-	val comments: MutableList<XmlComment> = mutableListOf(),
-	/**根元素。*/
-	var rootElement: XmlElement = XmlElement(defaultRootName),
-	override var wrapContent: Boolean = true
-) : Dsl, XmlDslElement, CanWrapContent {
-	override fun toString(): String {
-		val commentsSnippet = if(wrapContent) comments.joinToString("\n") else comments.joinToString("")
-		val wrapSnippet = if(wrapContent) "\n" else ""
-		return "$commentsSnippet$wrapSnippet$rootElement"
-	}
-	
-	companion object {
-		@PublishedApi
-		internal inline fun create(builder: Xml.() -> Unit) = Xml().also(builder)
-	}
-	
-	/**添加注释。*/
-	inline fun comment(comment: String) = XmlComment.create(comment).also { comments += it }
-	
-	/**添加元素。*/
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement.create(name, *attributes, builder = builder).also { rootElement = it }
-	
-	/**添加注释。*/
-	inline operator fun String.unaryMinus() = comment(this)
-	
-	/**添加元素。*/
-	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		element(this, *attributes, builder = builder)
-}
 
 /**Xml元素。*/
 class XmlElement @PublishedApi internal constructor(
