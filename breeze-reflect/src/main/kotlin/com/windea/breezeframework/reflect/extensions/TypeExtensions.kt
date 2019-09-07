@@ -5,9 +5,7 @@ import java.lang.reflect.*
 import kotlin.reflect.*
 import kotlin.reflect.jvm.*
 
-/**
- * 得到当前类型的被擦除类型。
- */
+/**得到当前类型的被擦除类型。*/
 @Reference("[klutter](https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/TypeErasure.kt)")
 @Suppress("UNCHECKED_CAST")
 val Type.erasedType: Class<out Any>

@@ -27,19 +27,27 @@ val KAnnotatedElement.annotatedValues by AnnotatedValuesAccessor()
 class AnnotatedValuesAccessor internal constructor() {
 	private lateinit var target: KAnnotatedElement
 	
-	private var currentLocale: String = Locale.getDefault().toString()
+	private val currentLocale: String = Locale.getDefault().toString()
 	
 	/**得到目标的本地化名字的文本-语言环境对。*/
-	val namePairs: List<Pair<String, String>> by lazy { target.findAnnotations<Name>().map { it.text to it.locale } }
+	private val namePairs: List<Pair<String, String>> by lazy {
+		target.findAnnotations<Name>().map { it.text to it.locale }
+	}
 	
 	/**得到目标的本地化标签的文本-语言环境对。*/
-	val tagsPairs: List<Pair<List<String>, String>> by lazy { target.findAnnotations<Tags>().map { it.text.toList() to it.locale } }
+	private val tagsPairs: List<Pair<List<String>, String>> by lazy {
+		target.findAnnotations<Tags>().map { it.text.toList() to it.locale }
+	}
 	
 	/**得到目标的本地化概述的文本-语言环境对。*/
-	val summaryPairs: List<Pair<String, String>> by lazy { target.findAnnotations<Summary>().map { it.text to it.locale } }
+	private val summaryPairs: List<Pair<String, String>> by lazy {
+		target.findAnnotations<Summary>().map { it.text to it.locale }
+	}
 	
 	/**得到目标的本地化描述的文本-语言环境对。*/
-	val descriptionPairs: List<Pair<String, String>> by lazy { target.findAnnotations<Description>().map { it.text.toMultilineText() to it.locale } }
+	private val descriptionPairs: List<Pair<String, String>> by lazy {
+		target.findAnnotations<Description>().map { it.text.toMultilineText() to it.locale }
+	}
 	
 	
 	/**得到目标的本地化名字。可指定语言环境，默认为默认语言环境。可以指定索引，默认为第1个。*/
