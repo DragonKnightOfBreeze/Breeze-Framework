@@ -5,7 +5,7 @@ package com.windea.breezeframework.data.extensions
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
-import com.windea.breezeframework.reflect.extensions.*
+import com.windea.breezeframework.reflect.extensions.java.*
 import mu.*
 import java.io.*
 import kotlin.reflect.full.*

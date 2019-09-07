@@ -56,7 +56,7 @@
 * [X] breeze-core 提供通用的`@AllOpen`和`@NoArg`注解。
 * [X] breeze-data 更新扩展。
 * [X] breeze-reflect 为`memberProperties`添加一步到位的得到指定属性的扩展。`memberFunctions`同理。
-* [ ] breeze-reflect TODO 将代码按照扩展kotlin反射还是java反射进行明确的分类。 
+* [X] breeze-reflect 将代码按照扩展kotlin反射还是java反射进行明确的分类。 
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * 至少为前者的graph，后者的state graph提供Dsl。后者的语法根本不是人玩的。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

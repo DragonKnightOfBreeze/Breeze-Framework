@@ -1,9 +1,7 @@
-package com.windea.breezeframework.reflect.extensions
+package com.windea.breezeframework.reflect.extensions.java
 
 import com.windea.breezeframework.core.annotations.internal.*
 import java.lang.reflect.*
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
 
 /**得到当前类型的被擦除类型。*/
 @Reference("[klutter](https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/TypeErasure.kt)")
@@ -26,6 +24,3 @@ val Type.erasedType: Class<out Any>
 		}
 		else -> throw IllegalStateException("Should not get here.")
 	}
-
-/**得到当前Kotlin类型的被擦除类型。*/
-val KType.erasedType: Class<out Any> get() = this.jvmErasure.java
