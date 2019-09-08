@@ -60,6 +60,7 @@
 * [X] breeze-core 重构涉及正则表达式的代码。用于`matches`方法的正则不需要包含`^``$`和捕捉分组，正则可用原始字符串表示。
 * [X] breeze-core 重构annotations，明确保留级别。
 * [X] breeze-core 添加并完善函数式扩展的示例。
+* [X] breeze-core 为最多6个参数的函数提供扩展。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] TODO 提供plantUml state graph的Dsl。
