@@ -6,7 +6,6 @@ import org.jetbrains.annotations.*
 /**本地化名字。*/
 @MustBeDocumented
 @Repeatable
-@Retention(AnnotationRetention.RUNTIME)
 annotation class Name(
 	@Nls
 	val text: String,

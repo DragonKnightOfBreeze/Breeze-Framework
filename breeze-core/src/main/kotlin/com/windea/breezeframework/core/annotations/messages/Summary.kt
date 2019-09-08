@@ -7,7 +7,6 @@ import org.jetbrains.annotations.*
 /**本地化概述。*/
 @MustBeDocumented
 @Repeatable
-@Retention(AnnotationRetention.RUNTIME)
 annotation class Summary(
 	@Language("Markdown")
 	@Nls

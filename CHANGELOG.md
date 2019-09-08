@@ -58,6 +58,7 @@
 * [X] breeze-reflect 为`memberProperties`添加一步到位的得到指定属性的扩展。`memberFunctions`同理。
 * [X] breeze-reflect 将代码按照扩展kotlin反射还是java反射进行明确的分类。 
 * [X] breeze-core 重构涉及正则表达式的代码。用于`matches`方法的正则不需要包含`^``$`和捕捉分组，正则可用原始字符串表示。
+* [X] breeze-core 重构annotations，明确保留级别。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] TODO 提供plantUml state graph的Dsl。

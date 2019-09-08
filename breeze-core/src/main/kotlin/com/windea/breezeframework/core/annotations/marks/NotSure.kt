@@ -3,8 +3,9 @@ package com.windea.breezeframework.core.annotations.marks
 import kotlin.annotation.AnnotationTarget.*
 
 /**标注为未确定的项。*/
-@Target(CLASS, PROPERTY, FUNCTION, FILE)
 @MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotSure(
-	val message: String = "Not sure."
+	val value: String = "Not sure."
 )

@@ -3,8 +3,9 @@ package com.windea.breezeframework.core.annotations.marks
 import kotlin.annotation.AnnotationTarget.*
 
 /**标注为未测试/未通过测试的项。*/
-@Target(CLASS, PROPERTY, FUNCTION, FILE)
 @MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotTested(
-	val message: String = "Not tested."
+	val value: String = "Not tested."
 )

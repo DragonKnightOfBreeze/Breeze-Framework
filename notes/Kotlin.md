@@ -49,11 +49,21 @@
 * `@UnsafeVariance`：：当泛型参数/返回值的协变与逆变有冲突时注上。
 * 星投影：取最通用的类型。`out Any?`和`in Nothing`。传入泛型实参的地方不能用星投影。
 
-## Kotlin和Java互操作。
+## Kotlin和Java互操作
 
 * Kotlin中可以用一个lambda表示Java中的函数式接口（只有一个抽象方法的接口）。
 * Kotlin中得到字符串中匹配正则的所有匹配结果：`regex.findAll()`。
 * Kotlin中使用`regex.matches()`时，正则前后不需要加`^`和`$`。正则仅用于匹配时，也不需要捕捉分组。
+
+## Kotlin脚本
+
+* 后缀名为`.kts`，可以通过IDEA运行，也可以通过kotlinc运行，也可以作为Gradle构建脚本。
+* 需要的依赖：`kotlin-script-util`。额外包含一些用于构建脚本的注解。
+
+## Kotlin Android
+
+* Gradle插件：`kotlin-android`，`kotlin-android-extensions`
+* 需要的依赖：`anko`。
 
 # 灵感
 
