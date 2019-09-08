@@ -59,16 +59,17 @@
 * [X] breeze-reflect 将代码按照扩展kotlin反射还是java反射进行明确的分类。 
 * [X] breeze-core 重构涉及正则表达式的代码。用于`matches`方法的正则不需要包含`^``$`和捕捉分组，正则可用原始字符串表示。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
-    * 至少为前者的graph，后者的state graph提供Dsl。后者的语法根本不是人玩的。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
+    * [ ] TODO 提供plantUml state graph的Dsl。
 * [ ] breeze-data DELAY 提供更多图形语言的Dsl。
-    * 主要是sequence和flow。
+    * [ ] DELAY 提供sequence的Dsl。
+    * [ ] DELAY 提供flow的Dsl。
 * [ ] breeze-core DELAY Uri构建和编码的扩展。
 * [ ] breeze-core DELAY 利用反射的类型转换的扩展。
-* [ ] breeze-text DELAY en 单数与复数的转化。
+* [ ] breeze-text DELAY 英文单数与复数的转化。
 * [ ] breeze-text DELAY 数字的简化表示的转化。（1000->1k, 1000->1千）
 
 * [X] TODO 上传到Github。
 * [X] TODO 同步项目到Bintray。
 * [ ] DELAY 发布项目到JCenter。
-* [ ] TODO 完善各个模块的`README.md`文档。
+* [ ] DELAY 完善各个模块的`README.md`文档。
