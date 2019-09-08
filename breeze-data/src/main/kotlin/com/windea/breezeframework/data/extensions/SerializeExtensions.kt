@@ -92,7 +92,7 @@ private fun convertProperty(propertyType: Class<*>, propertyValue: Any?, recursi
 }
 
 /**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
-@NotSuitable("需要得到扩展属性信息时。")
+@NotSuitable("需要得到成员扩展属性信息时。")
 fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 	return this::class.memberProperties.associate { it.name to it.call(this) }.let { map ->
 		if(recursive) {

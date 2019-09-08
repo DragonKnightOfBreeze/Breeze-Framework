@@ -1,29 +1,49 @@
+@file:NotSure
+
 package com.windea.breezeframework.text.extensions
 
-private var enableCrossLine = false
-private var prepareCrossLineSurroundingWith = false
+import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.text.extensions.CrossLineState.prepareCrossLineSurroundingWith
+import kotlin.contracts.*
 
-/**执行跨行操作。*/
-fun <R> List<String>.crossLine(block: (List<String>) -> R): R {
-	enableCrossLine = true
-	return this.let(block).also {
-		enableCrossLine = false
+@PublishedApi internal var enableCrossLine = false
+
+@PublishedApi
+internal object CrossLineState {
+	var prepareCrossLineSurroundingWith = false
+	
+	fun resetState() {
 		prepareCrossLineSurroundingWith = false
 	}
 }
 
 /**执行跨行操作。*/
-fun <R> Sequence<String>.crossLine(block: (Sequence<String>) -> R): R {
-	enableCrossLine = true
-	return this.let(block).also {
-		enableCrossLine = false
-		prepareCrossLineSurroundingWith = false
+@ExperimentalContracts
+inline fun <R> List<String>.crossLine(block: List<String>.() -> R): R {
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
+	return this.also {
+		enableCrossLine = true
+		CrossLineState.resetState()
+	}.let(block).also {
+		enableCrossLine = false
+		CrossLineState.resetState()
+	}
+}
+
+/**执行跨行操作。*/
+@ExperimentalContracts
+inline fun <R> Sequence<String>.crossLine(block: Sequence<String>.() -> R): R {
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+	}
+	return this.also { enableCrossLine = true }.let(block).also { enableCrossLine = false }
 }
 
 /**判断当前行是否在指定的跨行前后缀之间。在[crossLine]之中调用这个方法。*/
 fun String.crossLineSurroundsWith(prefix: String, suffix: String, ignoreCase: Boolean = false): Boolean {
-	check(enableCrossLine) { "[ERROR] Cross line operations are not enabled. They are enabled in crossLine { ... } block." }
+	checkEnableCrossLine()
 	
 	val isBeginBound = this.contains(prefix, ignoreCase)
 	val isEndBound = this.contains(suffix, ignoreCase)
@@ -32,6 +52,6 @@ fun String.crossLineSurroundsWith(prefix: String, suffix: String, ignoreCase: Bo
 	return !isBeginBound && prepareCrossLineSurroundingWith
 }
 
-/**判断当前行是否在指定的跨行前后缀之间。在[crossLine]之中调用这个方法。*/
-fun String.crossLineSurroundsWith(delimiter: String, ignoreCase: Boolean = false): Boolean =
-	this.crossLineSurroundsWith(delimiter, delimiter, ignoreCase)
+private fun checkEnableCrossLine() {
+	check(enableCrossLine) { "[ERROR] Cross line operations are not enabled. They are enabled in crossLine { ... } block." }
+}

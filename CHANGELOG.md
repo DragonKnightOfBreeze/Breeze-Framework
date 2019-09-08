@@ -63,7 +63,7 @@
 * [X] breeze-core 为最多6个参数的函数提供扩展。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
-    * [ ] TODO 提供plantUml state graph的Dsl。
+    * [ ] UPDATING 提供plantUml state graph的Dsl。
 * [ ] breeze-data DELAY 提供更多图形语言的Dsl。
     * [ ] DELAY 提供sequence的Dsl。
     * [ ] DELAY 提供flow的Dsl。

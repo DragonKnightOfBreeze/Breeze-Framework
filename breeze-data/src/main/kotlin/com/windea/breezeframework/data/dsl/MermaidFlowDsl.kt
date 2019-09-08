@@ -29,11 +29,11 @@ class MermaidFlow(
 ) : Dsl, MermaidFlowGraph {
 	override fun toString(): String {
 		val contentSnippet = buildString {
-			append(nodes.joinToString("\n", "\n"))
-			append(links.joinToString("\n", "\n"))
-			append(styles.joinToString("\n", "\n"))
-			append(linkStyles.joinToString("\n", "\n"))
-			append(classDefs.joinToString("\n", "\n"))
+			append(nodes.joinToString("\n", "\n\n"))
+			append(links.joinToString("\n", "\n\n"))
+			append(styles.joinToString("\n", "\n\n"))
+			append(linkStyles.joinToString("\n", "\n\n"))
+			append(classDefs.joinToString("\n", "\n\n"))
 			append(classes.joinToString("\n"))
 		}
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet

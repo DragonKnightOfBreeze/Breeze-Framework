@@ -1,6 +1,6 @@
 @file:Reference("[Humanizer](https://github.com/MehdiK/Humanizer.jvm/blob/master/src/main/kotlin/org/humanizer/jvm/Ordinalize.kt)")
 
-package com.windea.breezeframework.text.extensions
+package com.windea.breezeframework.text.extensions.eng
 
 import com.windea.breezeframework.core.annotations.internal.*
 
