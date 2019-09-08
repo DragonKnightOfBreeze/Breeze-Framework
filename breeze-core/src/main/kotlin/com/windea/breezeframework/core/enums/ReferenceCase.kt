@@ -19,9 +19,9 @@ enum class ReferenceCase(
 	//TODO 支持静态成员/类型 `T(a).b`
 	StandardReference(
 		//allow: $, ., words, [number]
-		"^([a-zA-Z_$]+|\\[(\\d+)])(?:\\.([a-zA-Z_$]+)|\\[(\\d+)])*$".toRegex(),
+		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex(),
 		{ it.replace("]", "].").split(".").map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".").replace("(\\d+)".toRegex(), "[$1]").replace(".[", "[") }
+		{ it.joinToString(".").replace("""(\d+)""".toRegex(), "[$1]").replace(".[", "[") }
 	),
 	/**
 	 * Json引用。
@@ -32,9 +32,9 @@ enum class ReferenceCase(
 	 */
 	JsonReference(
 		//allow: $, ., words, [number]
-		"^\\$(?:\\.(?:([a-zA-Z_]+)|\\[(\\d+)]))*$".toRegex(),
+		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex(),
 		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".", "$.").replace("(\\d+)".toRegex(), "[$1]") }
+		{ it.joinToString(".", "$.").replace("""(\d+)""".toRegex(), "[$1]") }
 	),
 	/**
 	 * Json Schema引用。
@@ -52,9 +52,9 @@ enum class ReferenceCase(
 	//DELAY 严格验证
 	JsonSchemaReference(
 		//allow: #, /, unchecked supPaths
-		"^#?(?:/(.+))+$".toRegex(),
+		"""#?(?:/.+)+""".toRegex(),
 		{ it.removePrefix("#").removePrefix("/").split("/") },
 		{ it.joinToString("/", "#/") }
 	),
-	Unknown("^(.*)$".toRegex(), { listOf(it) }, { it.joinToString("") });
+	Unknown(".*".toRegex(), { listOf(it) }, { it.joinToString("") });
 }

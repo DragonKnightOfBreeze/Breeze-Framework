@@ -72,6 +72,15 @@ class StudyTests {
 		//419000  0.0004s
 		measureNanoTime { Foo::class.java.declaredFields.first().also { it.isAccessible = true }.get(foo) }.let(::println)
 	}
+	
+	@Test
+	fun testRegex() {
+		println("abc123abc" matches "\\d+".toRegex())
+		println("abc123abc" matches "abc\\d+abc".toRegex())
+		println("abc123abc" matches "^\\d+$".toRegex())
+		println("abc123abc" matches "^abc\\d+abc$".toRegex())
+		println("\\d+".toRegex().find("abc123abc")?.groupValues?.forEach { println(it) })
+	}
 }
 
 

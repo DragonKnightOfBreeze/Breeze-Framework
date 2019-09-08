@@ -38,6 +38,23 @@
 * `person.class`和`person.javaClass.kotlin`的区别：前者有协变，返回的是`KClass<out T>`，后者则是`KClass<T>`。
 * Kotlin反射的性能要比原生java反射的性能低很多。
 
+## 泛型
+
+* 泛型：泛化的类型或者类型的抽象。
+* 真泛型：C#，伪泛型：Java，Kotlin。
+* 伪泛型：编译之后泛型会被擦除。在真正运行时不能得到泛型的类型。
+* Java为什么要用伪泛型：为了向前兼容。
+* Kotlin的具象化泛型：`inline fun <reified T> test()`，可以得到运行时类型。部分实现。
+* 协变与逆变：`out`用于返回值，返回值可为其子类；`in`用于传入参数，传入参数可为其父类/接口。其泛型类拥有对应的继承关系。
+* `@UnsafeVariance`：：当泛型参数/返回值的协变与逆变有冲突时注上。
+* 星投影：取最通用的类型。`out Any?`和`in Nothing`。传入泛型实参的地方不能用星投影。
+
+## Kotlin和Java互操作。
+
+* Kotlin中可以用一个lambda表示Java中的函数式接口（只有一个抽象方法的接口）。
+* Kotlin中得到字符串中匹配正则的所有匹配结果：`regex.findAll()`。
+* Kotlin中使用`regex.matches()`时，正则前后不需要加`^`和`$`。正则仅用于匹配时，也不需要捕捉分组。
+
 # 灵感
 
 * ［不确定必要性］扩展方法： `FunctionN.curried()`，`FunctionN.uncurried()`
@@ -54,14 +71,3 @@
 * 允许对返回值为Boolean的中缀方法使用非运算符。如`"abc" !startsWith "a"`。
 * 标准库应当提供更多的TODO方法，并允许用户自定义TODO注解和方法。
 * 允许可重复的`SOURCE`以外的注解。
-
-class SingletonHungary {
-	private static SingletonHungary singletonHungary = new SingletonHungary();
-	//将构造器设置为private禁止通过new进行实例化
-	private SingletonHungary() {
-		
-	}
-	public static SingletonHungary getInstance() {
-		return singletonHungary;
-	}
-}

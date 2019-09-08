@@ -154,14 +154,14 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
 			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.unescapeRegex() }
-			this.replace("$prefix(\\d+)$suffix".toRegex()) { r ->
+			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
 			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
-			this.replace("$prefix(.*?)$suffix".toRegex()) { r ->
+			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
 			}
 		}
@@ -217,7 +217,7 @@ inline fun String.removeWhiteSpace(): String {
 
 /**去除所有空白。*/
 inline fun String.removeBlank(): String {
-	return this.replace("\\s+".toRegex(), "")
+	return this.replace("""\s+""".toRegex(), "")
 }
 
 
@@ -292,7 +292,7 @@ fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 
 /**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
 fun String.toWords(): String {
-	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
+	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }
 
 
@@ -384,7 +384,7 @@ fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
  * 去除所有换行符以及每行的首尾空白。
  */
 fun String.toBreakLineText(): String {
-	return this.remove("\\s*\\n\\s*".toRegex())
+	return this.remove("""\s*\n\s*""".toRegex())
 }
 
 /**
