@@ -4,8 +4,10 @@ import kotlin.annotation.AnnotationTarget.*
 
 /**标注为未确定的项。*/
 @MustBeDocumented
-@Retention(AnnotationRetention.BINARY)
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotSure(
-	val value: String = "Not sure."
+	/**备注信息。*/
+	val value: String = ""
 )

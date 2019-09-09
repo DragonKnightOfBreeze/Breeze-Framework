@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.annotations.core.*
 import org.junit.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
@@ -26,6 +26,7 @@ class StudyTests {
 	
 	@Test
 	fun testNoArg() {
+		@Suppress("DEPRECATION")
 		val p = PersonA::class.java.newInstance()
 		println(p)
 	}

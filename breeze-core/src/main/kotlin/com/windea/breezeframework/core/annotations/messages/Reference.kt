@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.annotations.internal
+package com.windea.breezeframework.core.annotations.messages
 
 import org.intellij.lang.annotations.*
 import kotlin.annotation.AnnotationTarget.*
@@ -7,9 +7,9 @@ import kotlin.annotation.AnnotationTarget.*
 @MustBeDocumented
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(FILE, PROPERTY, FUNCTION)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class Reference(
-	/**引用地址。以Markdown地址表示。为了便于转移到文档注释。*/
+	/**引用地址。*/
 	@Language("Markdown")
 	val value: String
 )

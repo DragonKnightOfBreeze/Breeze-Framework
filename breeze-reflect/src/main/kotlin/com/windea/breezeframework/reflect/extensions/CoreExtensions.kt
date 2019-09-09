@@ -32,16 +32,3 @@ inline fun nameOf(target: Any?): String? {
 		else -> target::class.simpleName
 	}
 }
-
-
-/**得到指定类型的引用。等同于`this::class`。*/
-@TrickImplementationApi
-inline fun <reified T> refOf() {
-	TODO()
-}
-
-/**得到指定项的引用。参见引用操作符`::`。*/
-@TrickImplementationApi
-inline fun refOf(target: Any?) {
-	TODO()
-}

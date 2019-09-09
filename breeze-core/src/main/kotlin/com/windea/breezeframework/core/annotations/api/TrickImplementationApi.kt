@@ -4,5 +4,6 @@ package com.windea.breezeframework.core.annotations.api
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
 annotation class TrickImplementationApi(
-	val value: String = "Can never implemented."
+	/**备注信息。*/
+	val value: String = ""
 )

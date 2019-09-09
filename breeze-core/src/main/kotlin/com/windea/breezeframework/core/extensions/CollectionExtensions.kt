@@ -3,7 +3,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.enums.*
+import com.windea.breezeframework.core.enums.core.*
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 @OutlookImplementationApi

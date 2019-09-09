@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.enums
+package com.windea.breezeframework.core.enums.core
 
 /**显示格式。*/
 interface FormatCase {

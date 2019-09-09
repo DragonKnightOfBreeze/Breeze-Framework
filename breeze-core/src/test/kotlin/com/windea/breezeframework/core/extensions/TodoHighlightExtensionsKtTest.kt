@@ -6,6 +6,7 @@ class TodoHighlightExtensionsKtTest {
 	@Test
 	fun DELAYTest() {
 		val abc = DELAY { "abc" }
+		println(abc)
 	}
 	
 	@Test

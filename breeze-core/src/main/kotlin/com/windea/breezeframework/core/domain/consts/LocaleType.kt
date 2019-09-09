@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.domain.consts
 
 /**
  * 语言环境类型。另见[java.util.Locale]。

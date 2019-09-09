@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.enums
+package com.windea.breezeframework.core.enums.core
 
 import com.windea.breezeframework.core.annotations.marks.*
 

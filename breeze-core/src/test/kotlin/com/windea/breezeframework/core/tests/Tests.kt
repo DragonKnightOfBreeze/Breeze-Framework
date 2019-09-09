@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.enums.LetterCase.*
-import com.windea.breezeframework.core.enums.ReferenceCase.*
+import com.windea.breezeframework.core.enums.core.LetterCase.*
+import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import org.junit.*
 
@@ -13,9 +13,9 @@ class Tests {
 	}
 	
 	@Test
-	fun test2(){
+	fun test2() {
 		val props = System.getProperties()
-		for(prop in props){
+		for(prop in props) {
 			println(prop)
 		}
 	}

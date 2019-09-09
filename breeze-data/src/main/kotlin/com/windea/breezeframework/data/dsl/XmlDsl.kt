@@ -26,7 +26,7 @@ class Xml @PublishedApi internal constructor(
 	/**根元素。*/
 	var rootElement: XmlElement = XmlElement(defaultRootName),
 	override var wrapContent: Boolean = true
-) : Dsl, XmlDslElement, CanWrapContent {
+) : XmlDslElement, Dsl, CanWrapContent {
 	override fun toString(): String {
 		val commentsSnippet = if(wrapContent) comments.joinToString("\n") else comments.joinToString("")
 		val wrapSnippet = if(wrapContent) "\n" else ""

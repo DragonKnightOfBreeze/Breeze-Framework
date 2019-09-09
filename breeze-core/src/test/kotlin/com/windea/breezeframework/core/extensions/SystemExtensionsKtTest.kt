@@ -5,9 +5,9 @@ import org.junit.*
 class SystemExtensionsKtTest {
 	@Test //TESTED
 	fun getSystemAttributes() {
-		println(systemAttributes.userName)
-		println(systemAttributes.userCountry)
-		println(systemAttributes.userLanguage)
+		println(systemProperties.userName)
+		println(systemProperties.userCountry)
+		println(systemProperties.userLanguage)
 	}
 	
 	@Test

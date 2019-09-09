@@ -4,8 +4,10 @@ import kotlin.annotation.AnnotationTarget.*
 
 /**标注为不适用的项。*/
 @MustBeDocumented
-@Retention(AnnotationRetention.BINARY)
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotSuitable(
-	val value: String = "Not suitable."
+	/**备注信息。*/
+	val value: String = ""
 )

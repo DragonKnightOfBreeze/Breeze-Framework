@@ -4,7 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
-import com.windea.breezeframework.core.enums.*
+import com.windea.breezeframework.core.enums.core.*
 import mu.*
 import java.awt.*
 import java.io.*
@@ -453,7 +453,7 @@ inline fun String.toFile(): File = File(this)
 inline fun String.toPath(): Path = Path.of(this)
 
 /**将当前字符串转化为地址。*/
-inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this.trim(), handler)
+inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
 /**将当前字符串转化为统一资源定位符。*/
 inline fun String.toUri(): URI = URI.create(this)

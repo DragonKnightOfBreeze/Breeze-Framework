@@ -1,10 +1,10 @@
-@file:Reference("[Mermaid](https://mermaidjs.github.io)")
+@file:Reference(value = "[Mermaid](https://mermaidjs.github.io)")
 @file:NotImplemented
 
 package com.windea.breezeframework.data.dsl
 
-import com.windea.breezeframework.core.annotations.internal.*
 import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.messages.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.dsl.MermaidFlowConfig.indent
 import com.windea.breezeframework.data.dsl.MermaidFlowConfig.quote
@@ -17,16 +17,16 @@ fun DslConfig.Companion.mermaidGraph(builder: MermaidFlowConfig.() -> Unit) = Me
 
 //////////Main class & Config object
 
-class MermaidFlow(
+class MermaidFlow @PublishedApi internal constructor(
 	val direction: MermaidFlowDirection,
-	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf(),
-	val links: MutableSet<MermaidFlowLink> = mutableSetOf(),
+	override val nodes: MutableSet<MermaidFlowNode> = mutableSetOf(),
+	override val links: MutableSet<MermaidFlowLink> = mutableSetOf(),
 	val styles: MutableList<MermaidFlowNodeStyle> = mutableListOf(),
 	val linkStyles: MutableList<MermaidFlowLinkStyle> = mutableListOf(),
 	val classDefs: MutableSet<MermaidFlowClassDef> = mutableSetOf(),
 	val classes: MutableSet<MermaidFlowClass> = mutableSetOf(),
 	override var indentContent: Boolean = true
-) : Dsl, MermaidFlowGraph {
+) : MermaidFlowGraph, Dsl {
 	override fun toString(): String {
 		val contentSnippet = buildString {
 			append(nodes.joinToString("\n", "\n\n"))
@@ -38,6 +38,22 @@ class MermaidFlow(
 		}
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "graph ${direction.text}\n$indentedSnippet"
+	}
+	
+	fun style() {
+		TODO()
+	}
+	
+	fun linkStyle() {
+		TODO()
+	}
+	
+	fun classDef() {
+		TODO()
+	}
+	
+	fun classRef() {
+		TODO()
 	}
 }
 
@@ -57,29 +73,41 @@ object MermaidFlowConfig : DslConfig {
 @DslMarker
 annotation class MermaidFlowDsl
 
+@MermaidFlowDsl
 interface MermaidFlowDslElement
 
-interface MermaidFlowGraph : CanIndentContent
+interface MermaidFlowGraph : CanIndentContent {
+	val nodes: MutableSet<MermaidFlowNode>
+	val links: MutableSet<MermaidFlowLink>
+	
+	fun node() {
+		TODO()
+	}
+	
+	fun link() {
+		TODO()
+	}
+}
 
 ////////////Dsl elements & build functions
 
-class MermaidFlowSubGraph(
+class MermaidFlowSubGraph @PublishedApi internal constructor(
 	val name: String,
-	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf(),
-	//TODO
+	override val nodes: MutableSet<MermaidFlowNode>,
+	override val links: MutableSet<MermaidFlowLink>,
 	override var indentContent: Boolean = true
 ) : MermaidFlowGraph {
 	override fun toString(): String {
-		//TODO
 		val contentSnippet = buildString {
-			append(nodes.joinToString("\n"))
+			append(nodes.joinToString("\n", "\n\n"))
+			append(links.joinToString("\n"))
 		}
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "subgraph $name\n$indentedSnippet\nend"
 	}
 }
 
-class MermaidFlowNode(
+class MermaidFlowNode @PublishedApi internal constructor(
 	val id: String,
 	val text: String?,
 	val shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
@@ -87,11 +115,11 @@ class MermaidFlowNode(
 	//TODO omit text, no double quote surround text if not necessary
 	override fun toString(): String {
 		val textSnippet = (text ?: id).let { "$quote$it$quote" }
-		return "$id${shape.prefix}$textSnippet${shape.suffix};"
+		return "$id${shape.prefix}$textSnippet${shape.suffix}"
 	}
 }
 
-class MermaidFlowLink(
+class MermaidFlowLink @PublishedApi internal constructor(
 	val sourceNode: MermaidFlowNode,
 	val targetNode: MermaidFlowNode,
 	val linkText: String?,
@@ -102,47 +130,47 @@ class MermaidFlowLink(
 		val sourceSnippet = sourceNode.text?.let { sourceNode.toString() } ?: sourceNode.id
 		val targetSnippet = targetNode.text?.let { targetNode.toString() } ?: targetNode.id
 		val linkSnippet = linkText?.let { "${linkShape.prefix} $linkText ${linkShape.suffix}" } ?: linkShape.delimiter
-		return "$sourceSnippet $linkSnippet $targetSnippet;"
+		return "$sourceSnippet $linkSnippet $targetSnippet"
 	}
 }
 
-class MermaidFlowNodeStyle(
+class MermaidFlowNodeStyle @PublishedApi internal constructor(
 	val nodeId: String,
 	val styleMap: Map<String, String> = mapOf()
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
 		val styleMapSnippet = styleMap.joinToString { (k, v) -> "$k: $v" }
-		return "style $nodeId $styleMapSnippet;"
+		return "style $nodeId $styleMapSnippet"
 	}
 }
 
-class MermaidFlowLinkStyle(
+class MermaidFlowLinkStyle @PublishedApi internal constructor(
 	val linkOrder: Int,
 	val styleMap: Map<String, String> = mapOf()
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
 		val styleMapSnippet = styleMap.joinToString { (k, v) -> "$k: $v" }
-		return "style $linkOrder $styleMapSnippet;"
+		return "style $linkOrder $styleMapSnippet"
 	}
 }
 
-class MermaidFlowClassDef(
+class MermaidFlowClassDef @PublishedApi internal constructor(
 	val className: String,
 	val styleMap: Map<String, String> = mapOf()
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
 		val styleMapSnippet = styleMap.joinToString { (k, v) -> "$k: $v" }
-		return "classDef $className $styleMapSnippet;"
+		return "classDef $className $styleMapSnippet"
 	}
 }
 
-class MermaidFlowClass(
+class MermaidFlowClass @PublishedApi internal constructor(
 	val nodeIds: Set<String>,
 	val className: String
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
 		val nodeIdsSnippet = nodeIds.joinToString()
-		return "class $nodeIdsSnippet $className;"
+		return "class $nodeIdsSnippet $className"
 	}
 }
 
@@ -180,8 +208,3 @@ enum class MermaidFlowLinkShape(
 	Dotted("-.->", "-.", ".->"),
 	Thick("==>", "==", "==>")
 }
-
-//////////TODO Param handler extensions
-
-@PublishedApi
-internal fun String.fixMermaidFlowNodeId() = this.removeBlank()

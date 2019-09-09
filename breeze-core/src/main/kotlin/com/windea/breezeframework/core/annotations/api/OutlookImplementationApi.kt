@@ -4,5 +4,6 @@ package com.windea.breezeframework.core.annotations.api
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
 annotation class OutlookImplementationApi(
-	val value: String = "Stdlib"
+	/**备注信息。*/
+	val value: String = ""
 )

@@ -4,8 +4,10 @@ import kotlin.annotation.AnnotationTarget.*
 
 /**标注为未包含的项。*/
 @MustBeDocumented
-@Retention(AnnotationRetention.BINARY)
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotIncluded(
-	val value: String = "Not included."
+	/**备注信息。*/
+	val value: String = ""
 )

@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.enums.LetterCase.*
-import com.windea.breezeframework.core.enums.ReferenceCase.*
+import com.windea.breezeframework.core.enums.core.LetterCase.*
+import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import kotlin.test.*
 
 class StringExtensionsKtTest {

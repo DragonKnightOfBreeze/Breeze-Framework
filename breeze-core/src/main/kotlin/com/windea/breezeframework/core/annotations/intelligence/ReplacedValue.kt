@@ -7,6 +7,8 @@ import kotlin.annotation.AnnotationTarget.*
 @Repeatable
 @Target(PROPERTY, FIELD, LOCAL_VARIABLE, FUNCTION)
 annotation class ReplacedValue(
+	/**值表达式。*/
 	val valueExpression: String,
-	val message: String = "Replaced value."
+	/**条件。*/
+	val condition: String
 )

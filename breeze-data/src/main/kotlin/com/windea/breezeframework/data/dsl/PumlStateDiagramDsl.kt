@@ -1,11 +1,11 @@
-@file:Reference("[PlantUml](http://plantuml.com)")
-@file:Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
+@file:Reference(value = "[PlantUml](http://plantuml.com)")
+@file:Reference(value = "[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @file:NotImplemented
 
 package com.windea.breezeframework.data.dsl
 
-import com.windea.breezeframework.core.annotations.internal.*
 import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.messages.*
 import com.windea.breezeframework.core.extensions.*
 
 //////////Portal extensions
@@ -41,11 +41,14 @@ object PumlStateDiagramConfig : DslConfig {
 @DslMarker
 internal annotation class PumlStateDiagramDsl
 
+@PumlStateDiagramDsl
 interface PumlStateDiagramDslElement
 
 ////////////Dsl elements & build functions
 
-open class PumlStateDiagramState : PumlStateDiagramDslElement
+abstract class PumlStateDiagramState : PumlStateDiagramDslElement
+
+class PumlStateDiagramSimpleState : PumlStateDiagramState()
 
 class PumlStateDiagramCompositedState : PumlStateDiagramState()
 

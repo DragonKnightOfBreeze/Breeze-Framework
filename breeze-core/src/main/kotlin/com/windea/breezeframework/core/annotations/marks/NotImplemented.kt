@@ -4,8 +4,10 @@ import kotlin.annotation.AnnotationTarget.*
 
 /**标注为未实现的项。*/
 @MustBeDocumented
-@Retention(AnnotationRetention.BINARY)
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotImplemented(
-	val value: String = "Not implemented."
+	/**备注信息。*/
+	val value: String = ""
 )
