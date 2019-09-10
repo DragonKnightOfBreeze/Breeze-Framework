@@ -67,6 +67,7 @@
 ### 1.0.3
 
 * [X] 更新版本号。
+* [X] 重命名`String.to(FormatCase)`方法为`String.switchTo(FormatCase)`。（为了规避方法名冲突）
 
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

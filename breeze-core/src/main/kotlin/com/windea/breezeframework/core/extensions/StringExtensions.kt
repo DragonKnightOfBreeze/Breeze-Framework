@@ -319,12 +319,12 @@ fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
 	return this.splitBy(fromCase).joinBy(toCase)
 }
 
-/**转化当前字符串的显示格式。*/
-fun String.to(case: FormatCase): String {
+/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。*/
+fun String.switchTo(case: FormatCase): String {
 	return when(case) {
 		is LetterCase -> this.splitBy(this.letterCase)
 		is ReferenceCase -> this.splitBy(this.referenceCase)
-		else -> throw IllegalArgumentException("Target case enum do not provide a actual way to get case from string.")
+		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
 	}.joinBy(case)
 }
 

@@ -21,23 +21,23 @@ class StringExtensionsKtTest {
 	
 	@Test //TESTED
 	fun letterCaseTest() {
-		assertEquals("abcAbcAbc", "AbcAbcAbc".to(camelCase))
-		assertEquals("AbcAbcAbc", "abcAbcAbc".to(PascalCase))
-		assertEquals("abc-abc-abc", "ABC_ABC_ABC".to(`kebab-case`))
-		assertEquals("ABC_ABC_ABC", "abc-abc-abc".to(SCREAMING_SNAKE_CASE))
-		assertEquals("abc abc", "AbcAbc".to(`lower case words`))
-		assertEquals("Abc Abc", "abcAbc".to(`Capitalized Words`))
-		assertEquals("abcAbc", "Abc Abc".to(camelCase))
-		assertEquals("abcabc", "AbcAbc".to(lowercase))
-		assertEquals("ABCABC", "ABcABc".to(UPPERCASE))
+		assertEquals("abcAbcAbc", "AbcAbcAbc".switchTo(camelCase))
+		assertEquals("AbcAbcAbc", "abcAbcAbc".switchTo(PascalCase))
+		assertEquals("abc-abc-abc", "ABC_ABC_ABC".switchTo(`kebab-case`))
+		assertEquals("ABC_ABC_ABC", "abc-abc-abc".switchTo(SCREAMING_SNAKE_CASE))
+		assertEquals("abc abc", "AbcAbc".switchTo(`lower case words`))
+		assertEquals("Abc Abc", "abcAbc".switchTo(`Capitalized Words`))
+		assertEquals("abcAbc", "Abc Abc".switchTo(camelCase))
+		assertEquals("abcabc", "AbcAbc".switchTo(lowercase))
+		assertEquals("ABCABC", "ABcABc".switchTo(UPPERCASE))
 	}
 	
 	@Test //TESTED ALMOST
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "Abc.Abc".to(StandardReference))
-		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".to(StandardReference))
-		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".to(JsonReference))
-		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".to(JsonSchemaReference))
+		assertEquals("Abc.Abc", "Abc.Abc".switchTo(StandardReference))
+		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchTo(StandardReference))
+		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchTo(JsonReference))
+		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchTo(JsonSchemaReference))
 	}
 	
 	@Test //TESTED
