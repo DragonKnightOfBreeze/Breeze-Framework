@@ -63,14 +63,14 @@ private fun Date.assign(): Date {
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
 
 
-/**@see Calendar.add。*/
+/**@see Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, calendarField.amount)
 	return calendar.time
 }
 
-/**@see Calendar.add。*/
+/**@see Calendar.add*/
 operator fun Date.minus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, -calendarField.amount)

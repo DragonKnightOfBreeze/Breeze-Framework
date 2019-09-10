@@ -78,8 +78,10 @@ class StudyTests {
 	fun testRegex() {
 		println("abc123abc" matches "\\d+".toRegex())
 		println("abc123abc" matches "abc\\d+abc".toRegex())
+		println("abc\nabc123abc\nabc" matches "abc\\d+abc".toRegex())
 		println("abc123abc" matches "^\\d+$".toRegex())
 		println("abc123abc" matches "^abc\\d+abc$".toRegex())
+		println("abc\nabc123abc\nabc" matches "^abc\\d+abc$".toRegex())
 		println("\\d+".toRegex().find("abc123abc")?.groupValues?.forEach { println(it) })
 	}
 }

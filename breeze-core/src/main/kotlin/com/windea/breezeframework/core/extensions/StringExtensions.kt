@@ -88,6 +88,16 @@ inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): 
 	suffixArray.any { this.endsWith(it, true) }
 
 
+/**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
+inline fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
+
+/**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
+inline fun CharSequence.isNumeric() = this matches "[1-9]+".toRegex()
+
+/**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
+inline fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
+
+
 /**如果当前字符串不为空，则返回转换后的值。*/
 @OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
