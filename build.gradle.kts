@@ -1,5 +1,3 @@
-@file:Suppress("SpellCheckingInspection")
-
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.*
 
@@ -25,7 +23,7 @@ allprojects {
 	
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.2"
+	version = "1.0.3"
 	
 	//在这里放置常量和扩展参数
 	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"

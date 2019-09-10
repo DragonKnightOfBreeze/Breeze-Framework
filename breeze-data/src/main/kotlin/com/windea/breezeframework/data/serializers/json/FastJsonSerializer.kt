@@ -3,11 +3,7 @@ package com.windea.breezeframework.data.serializers.json
 import com.alibaba.fastjson.*
 import java.io.*
 
-class FastJsonSerializer : JsonSerializer<FastJsonSerializer, Any> {
-	override fun configure(handler: (Any) -> Unit): FastJsonSerializer {
-		throw UnsupportedOperationException("Can not configure this serializer.")
-	}
-	
+object FastJsonSerializer : JsonSerializer {
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return JSON.parseObject(string, type)
 	}

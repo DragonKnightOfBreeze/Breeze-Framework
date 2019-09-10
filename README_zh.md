@@ -39,19 +39,19 @@ fun example() {
     """.toMultilineText())
     
     //abcAbc
-    println("Abc abc".to(camelCase))
+    println("Abc abc".switchTo(camelCase))
     //AbcAbc
-    println("ABC_ABC".to(PascalCase))
+    println("ABC_ABC".switchTo(PascalCase))
     //ABC_ABC
-    println("abc-abc".to(SCREAMING_SNAKE_CASE))
+    println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
     //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".to(StandardReference))
+    println("/a/b/1/2/c/3".switchTo(StandardReference))
 }
 ```
 
 # 模块
 
-* [x] breeze-core：核心模块。为字符串、集合等提供各种有用的扩展，提供一些通用的生成器、注解、枚举、接口等。
+* [x] breeze-core：核心模块。为字符串、集合等提供各种有用的扩展，提供一些通用的注解、枚举、接口等。
 * [ ] breeze-data：数据模块。为json、yaml、xml、properties等数据类型提供Dsl、读取器和解析器。
 * [x] breeze-dream：白日梦模块。内含众多幻想元素，**你应该用不上。**
 * [ ] breeze-game：游戏模块。为游戏应用提供一些不依赖于平台的功能实现。

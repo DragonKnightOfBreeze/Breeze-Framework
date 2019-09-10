@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.enums.LetterCase.*
-import com.windea.breezeframework.core.enums.ReferenceCase.*
+import com.windea.breezeframework.core.enums.core.LetterCase.*
+import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import org.junit.*
 
@@ -13,9 +13,9 @@ class Tests {
 	}
 	
 	@Test
-	fun test2(){
+	fun test2() {
 		val props = System.getProperties()
-		for(prop in props){
+		for(prop in props) {
 			println(prop)
 		}
 	}
@@ -37,7 +37,7 @@ class Tests {
 		//true
 		println("Hello world" endsWithIc "World")
 		//[abc, def]
-		println("1abc2def3".substrings("\\d(\\w*)\\d(\\w*)\\d".toRegex()))
+		println("1abc2def3".substrings("""\d(\w*)\d(\w*)\d""".toRegex()))
 		//1{0}2{1}3{2}
 		println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
 		//**********
@@ -54,12 +54,12 @@ class Tests {
 		""".toMultilineText())
 		
 		//abcAbc
-		println("Abc abc".to(camelCase))
+		println("Abc abc".switchTo(camelCase))
 		//AbcAbc
-		println("ABC_ABC".to(PascalCase))
+		println("ABC_ABC".switchTo(PascalCase))
 		//ABC_ABC
-		println("abc-abc".to(SCREAMING_SNAKE_CASE))
+		println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
 		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".to(StandardReference))
+		println("/a/b/1/2/c/3".switchTo(StandardReference))
 	}
 }

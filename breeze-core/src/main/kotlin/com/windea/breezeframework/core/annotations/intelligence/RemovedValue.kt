@@ -7,6 +7,8 @@ import kotlin.annotation.AnnotationTarget.*
 @Repeatable
 @Target(PROPERTY, FIELD, LOCAL_VARIABLE, FUNCTION)
 annotation class RemovedValue(
+	/**值表达式。*/
 	val valueExpression: String,
-	val message: String = "Removed value."
+	/**条件。*/
+	val condition: String
 )

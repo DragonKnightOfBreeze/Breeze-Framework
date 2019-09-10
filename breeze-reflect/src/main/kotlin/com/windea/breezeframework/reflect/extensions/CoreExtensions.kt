@@ -10,6 +10,7 @@ inline fun checkClassForName(className: String): Boolean {
 	return runCatching { Class.forName(className) }.onFailure { it.printStackTrace() }.isSuccess
 }
 
+
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Can never be implemented for all situations.")
 @ExperimentalStdlibApi
@@ -30,17 +31,4 @@ inline fun nameOf(target: Any?): String? {
 		//无法得到局部变量的任何信息
 		else -> target::class.simpleName
 	}
-}
-
-
-/**得到指定类型的引用。等同于`this::class`。*/
-@TrickImplementationApi
-inline fun <reified T> refOf() {
-	TODO()
-}
-
-/**得到指定项的引用。参见引用操作符`::`。*/
-@TrickImplementationApi
-inline fun refOf(target: Any?) {
-	TODO()
 }

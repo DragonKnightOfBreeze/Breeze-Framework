@@ -3,14 +3,9 @@ package com.windea.breezeframework.data.serializers.xml
 import com.fasterxml.jackson.dataformat.xml.*
 import java.io.*
 
-class JacksonXmlSerializer : XmlSerializer<JacksonXmlSerializer, XmlMapper> {
-	private val mapper = XmlMapper()
+object JacksonXmlSerializer : XmlSerializer {
+	@PublishedApi internal val mapper = XmlMapper()
 	
-	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (XmlMapper) -> Unit): JacksonXmlSerializer {
-		return this.also { handler(mapper) }
-	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -35,4 +30,8 @@ class JacksonXmlSerializer : XmlSerializer<JacksonXmlSerializer, XmlMapper> {
 	override fun <T : Any> dump(data: T, writer: Writer) {
 		return mapper.writeValue(writer, data)
 	}
+}
+
+object JacksonXmlSerializerConfig : XmlSerializerConfig {
+	inline operator fun invoke(builder: (XmlMapper) -> Unit) = builder(JacksonXmlSerializer.mapper)
 }

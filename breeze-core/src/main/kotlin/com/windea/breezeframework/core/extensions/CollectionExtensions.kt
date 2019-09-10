@@ -3,7 +3,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.enums.*
+import com.windea.breezeframework.core.enums.core.*
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 @OutlookImplementationApi
@@ -327,13 +327,13 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 					//如果子路径表示一个列表或映射，例如："[]" "-" "{}"
 					currentSubPath in arrayOf("[]", "-", "{}") -> true
 					//如果子路径表示一个列表占位符，例如："[WeaponList]"
-					currentSubPath matches "\\[.+]".toRegex() -> true
+					currentSubPath matches """\[.+]""".toRegex() -> true
 					//如果子路径表示一个范围，例如："1..10" "a..b"
-					currentSubPath matches "^\\d+\\.\\.\\d+$".toRegex() -> key in currentSubPath.split("..").let { it[0]..it[1] }
+					currentSubPath matches """\d+\.\.\d+""".toRegex() -> key in currentSubPath.split("..").let { it[0]..it[1] }
 					//如果子路径表示一个映射占位符，例如："{Category}"
-					currentSubPath matches "\\{.+}".toRegex() -> true
+					currentSubPath matches """\{.+}""".toRegex() -> true
 					//如果子路径表示一个正则表达式，例如："regex.*Name"
-					currentSubPath startsWith "regex:" -> key matches "^${currentSubPath.removePrefix("regex:")}$".toRegex()
+					currentSubPath startsWith "regex:" -> key matches currentSubPath.substring(6).toRegex()
 					//如果子路径表示一个索引或键，例如："1" "Name"`
 					else -> key == currentSubPath
 				}
@@ -458,24 +458,24 @@ inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Seque
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-inline operator fun <T> Array<T>.times(n: Int): List<T> = this.toList().repeat(n)
+operator fun <T> Array<T>.times(n: Int): List<T> = this.toList().repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-inline operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)

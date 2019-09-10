@@ -12,3 +12,24 @@ Future plan:
 * [ ] Fully adapt to kotlinx-serialization.
 * [ ] Provide own-implemented, tiny and flexible implementations.
 * [ ] Link each dsl to corresponding loader and dumper.	
+
+# Struct
+
+* annotations
+* domain
+* dsl
+    * specific
+    * string
+    * text
+* enums
+* extensions
+* generators
+    * specific
+    * string
+    * text
+* serializers
+    * csv
+    * json
+    * properties
+    * xml
+    * yaml

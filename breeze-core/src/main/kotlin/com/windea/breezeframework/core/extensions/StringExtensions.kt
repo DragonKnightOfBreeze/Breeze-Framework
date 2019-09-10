@@ -4,7 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
-import com.windea.breezeframework.core.enums.*
+import com.windea.breezeframework.core.enums.core.*
 import mu.*
 import java.awt.*
 import java.io.*
@@ -154,14 +154,14 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
 			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.unescapeRegex() }
-			this.replace("$prefix(\\d+)$suffix".toRegex()) { r ->
+			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
 			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
-			this.replace("$prefix(.*?)$suffix".toRegex()) { r ->
+			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
 			}
 		}
@@ -217,7 +217,7 @@ inline fun String.removeWhiteSpace(): String {
 
 /**去除所有空白。*/
 inline fun String.removeBlank(): String {
-	return this.replace("\\s+".toRegex(), "")
+	return this.replace("""\s+""".toRegex(), "")
 }
 
 
@@ -292,7 +292,7 @@ fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 
 /**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
 fun String.toWords(): String {
-	return this.replace("\\B([A-Z][a-z_$])".toRegex(), " $1")
+	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }
 
 
@@ -319,12 +319,12 @@ fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
 	return this.splitBy(fromCase).joinBy(toCase)
 }
 
-/**转化当前字符串的显示格式。*/
-fun String.to(case: FormatCase): String {
+/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。*/
+fun String.switchTo(case: FormatCase): String {
 	return when(case) {
 		is LetterCase -> this.splitBy(this.letterCase)
 		is ReferenceCase -> this.splitBy(this.referenceCase)
-		else -> throw IllegalArgumentException("Target case enum do not provide a actual way to get case from string.")
+		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
 	}.joinBy(case)
 }
 
@@ -384,7 +384,7 @@ fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
  * 去除所有换行符以及每行的首尾空白。
  */
 fun String.toBreakLineText(): String {
-	return this.remove("\\s*\\n\\s*".toRegex())
+	return this.remove("""\s*\n\s*""".toRegex())
 }
 
 /**
@@ -405,27 +405,27 @@ fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 }
 
 
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。*/
 @OutlookImplementationApi
 fun String.toIntOrDefault(defaultValue: Int = 0): Int = this.toIntOrDefault(10, defaultValue)
 
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
 @OutlookImplementationApi
 fun String.toIntOrDefault(radix: Int = 10, defaultValue: Int = 0): Int = this.toIntOrNull(radix) ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。*/
+/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。*/
 @OutlookImplementationApi
 fun String.toLongOrDefault(defaultValue: Long = 0): Long = this.toLongOrDefault(10, defaultValue)
 
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值[defaultValue]，默认为0。可指定进制[radix]，默认为十进制。*/
+/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
 @OutlookImplementationApi
 fun String.toLongOrDefault(radix: Int = 10, defaultValue: Long = 0): Long = this.toLongOrNull(radix) ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0f。*/
+/**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值，默认为0.0f。*/
 @OutlookImplementationApi
 fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrNull() ?: defaultValue
 
-/**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值[defaultValue]，默认为0.0。*/
+/**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值，默认为0.0。*/
 @OutlookImplementationApi
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
@@ -453,7 +453,7 @@ inline fun String.toFile(): File = File(this)
 inline fun String.toPath(): Path = Path.of(this)
 
 /**将当前字符串转化为地址。*/
-inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this.trim(), handler)
+inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
 /**将当前字符串转化为统一资源定位符。*/
 inline fun String.toUri(): URI = URI.create(this)
@@ -536,12 +536,12 @@ fun String.toColor(): Color {
 
 /**@see kotlin.text.slice*/
 @OutlookImplementationApi
-inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
-inline operator fun String.times(n: Int): String = this.repeat(n)
+operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
 @OutlookImplementationApi
-inline operator fun String.div(n: Int): List<String> = this.chunked(n)
+operator fun String.div(n: Int): List<String> = this.chunked(n)

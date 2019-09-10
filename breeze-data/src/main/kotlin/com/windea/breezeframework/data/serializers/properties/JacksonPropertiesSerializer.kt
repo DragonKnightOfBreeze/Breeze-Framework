@@ -4,12 +4,12 @@ import com.fasterxml.jackson.dataformat.javaprop.*
 import java.io.*
 import java.util.*
 
-class JacksonPropertiesSerializer : PropertiesSerializer<JacksonPropertiesSerializer, JavaPropsMapper> {
-	private val mapper = JavaPropsMapper()
+object JacksonPropertiesSerializer : PropertiesSerializer {
+	@PublishedApi internal val mapper = JavaPropsMapper()
 	
 	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (JavaPropsMapper) -> Unit): JacksonPropertiesSerializer {
+	/**配置序列化选项。这个方法必须首先被调用。*/
+	fun configure(handler: (JavaPropsMapper) -> Unit): JacksonPropertiesSerializer {
 		return this.also { handler(mapper) }
 	}
 	
@@ -44,4 +44,8 @@ class JacksonPropertiesSerializer : PropertiesSerializer<JacksonPropertiesSerial
 	override fun <T : Any> dump(data: T, properties: Properties) {
 		properties += mapper.writeValueAsProperties(data)
 	}
+}
+
+object JacksonPropertiesSerializerConfig : PropertiesSerializerConfig {
+	inline operator fun invoke(builder: (JavaPropsMapper) -> Unit) = builder(JacksonPropertiesSerializer.mapper)
 }

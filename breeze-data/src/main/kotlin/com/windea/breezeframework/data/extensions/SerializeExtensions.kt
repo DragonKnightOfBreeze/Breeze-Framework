@@ -5,26 +5,42 @@ package com.windea.breezeframework.data.extensions
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
-import com.windea.breezeframework.reflect.extensions.*
+import com.windea.breezeframework.reflect.extensions.java.*
 import mu.*
+import java.io.*
 import kotlin.reflect.full.*
 
 private val logger = KotlinLogging.logger { }
 
+
+/**序列化当前对象，返回序列化后的字符串。*/
+inline fun <T : Any> T.serialize(dataType: DataType): String {
+	return dataType.serializer.dump(this)
+}
 
 /**反序列化当前字符串，返回指定泛型的对象。*/
 inline fun <reified T : Any> String.deserialize(dataType: DataType): T {
 	return dataType.serializer.load(this, T::class.java)
 }
 
-/**序列化当前对象，返回序列化后的字符串。*/
-inline fun <T : Any> T.serialize(dataType: DataType): String {
-	return this.let { dataType.serializer.dump(it) }
+/**序列化当前对象，将序列化后的字符串写入指定文件。*/
+inline fun <T : Any> T.serialize(dataType: DataType, file: File) {
+	dataType.serializer.dump(this, file)
 }
 
-/**重新序列化当前字符串，返回重新序列化后的字符串。*/
-inline fun String.reserialize(fromDataType: DataType, toDataType: DataType): String {
-	return this.serialize(fromDataType).deserialize(toDataType)
+/**反序列化当前文件中文本，返回指定泛型的对象。*/
+inline fun <reified T : Any> File.deserialize(dataType: DataType): T {
+	return dataType.serializer.load(this, T::class.java)
+}
+
+/**序列化当前对象，将序列化后的字符串写入指定写入器。*/
+inline fun <T : Any> T.serialize(dataType: DataType, writer: Writer) {
+	return dataType.serializer.dump(this, writer)
+}
+
+/**反序列化当前读取器中文本，返回指定泛型的对象。*/
+inline fun <reified T : Any> Reader.deserialize(dataType: DataType): T {
+	return dataType.serializer.load(this, T::class.java)
 }
 
 
@@ -76,7 +92,7 @@ private fun convertProperty(propertyType: Class<*>, propertyValue: Any?, recursi
 }
 
 /**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
-@NotSuitable("需要得到扩展属性信息时。")
+@NotSuitable("需要得到成员扩展属性信息时。")
 fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 	return this::class.memberProperties.associate { it.name to it.call(this) }.let { map ->
 		if(recursive) {

@@ -8,7 +8,7 @@ import com.windea.breezeframework.data.generators.*
 import java.io.*
 
 /**Intellij IDEA配置文件文本的生成器。*/
-object IdeaConfigGenerator : TextGenerator {
+object IdeaConfigGenerator : Generator {
 	/**
 	 * 根据输入文本和输入数据类型，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml类型。
 	 *

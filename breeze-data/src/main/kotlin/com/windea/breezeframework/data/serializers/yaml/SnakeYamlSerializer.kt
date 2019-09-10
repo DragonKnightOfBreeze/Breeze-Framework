@@ -1,22 +1,20 @@
 package com.windea.breezeframework.data.serializers.yaml
 
 import org.yaml.snakeyaml.*
+import org.yaml.snakeyaml.constructor.*
+import org.yaml.snakeyaml.representer.*
 import java.io.*
 
-class SnakeYamlSerializer : YamlSerializer<SnakeYamlSerializer, DumperOptions> {
-	private val dumperOptions = DumperOptions()
+object SnakeYamlSerializer : YamlSerializer {
+	@PublishedApi internal val loaderOptions = LoaderOptions()
+	@PublishedApi internal val dumperOptions = DumperOptions()
 	
-	private val yaml by lazy { Yaml(dumperOptions) }
+	private val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
 	
 	init {
 		dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 	}
 	
-	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (options: DumperOptions) -> Unit): SnakeYamlSerializer {
-		return this.also { handler(dumperOptions) }
-	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return yaml.loadAs(string, type)
@@ -65,4 +63,9 @@ class SnakeYamlSerializer : YamlSerializer<SnakeYamlSerializer, DumperOptions> {
 	override fun <T : Any> dumpAll(data: List<T>, writer: Writer) {
 		return yaml.dumpAll(data.iterator(), writer)
 	}
+}
+
+object SnakeYamlSerializerConfig : YamlSerializerConfig {
+	inline operator fun invoke(builder: (LoaderOptions, DumperOptions) -> Unit) =
+		builder(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 }

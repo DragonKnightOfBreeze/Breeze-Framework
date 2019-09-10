@@ -8,17 +8,13 @@ import com.windea.breezeframework.data.generators.*
 import java.io.*
 import java.util.concurrent.*
 
-/**Json Schema的生成器。*/
-object SchemaGenerator : TextGenerator {
-	/**
-	 * 默认扩展规则：
-	 * * $ref: string
-	 * * $gen: string
-	 * * language: string
-	 * * deprecated: string | boolean
-	 * * enumConsts: {value: string, description: string}
-	 */
-	val defaultRuleMap = mapOf<String, SchemaRule>(
+/**Json Schema生成器。*/
+object SchemaGenerator : Generator {
+	private val multiSchemaRuleNames = listOf("oneOf", "allOf", "anyOf")
+	
+	internal val dataMap = mutableMapOf<String, Any?>()
+	
+	internal val extendedRuleMap = mutableMapOf<String, SchemaRule>(
 		"\$ref" to { (_, value) ->
 			//将对yaml schema文件的引用改为对json schema文件的引用
 			val newValue = (value as String).replace(".yml", ".json").replace(".yaml", ".json")
@@ -54,10 +50,6 @@ object SchemaGenerator : TextGenerator {
 		}
 	)
 	
-	private val multiSchemaRuleNames = listOf("oneOf", "allOf", "anyOf")
-	private val dataMap = mutableMapOf<String, Any?>()
-	private val ruleMap = defaultRuleMap.toMutableMap()
-	
 	
 	/**
 	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
@@ -72,16 +64,6 @@ object SchemaGenerator : TextGenerator {
 	}
 	
 	/**
-	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。允许进行额外的配置。
-	 *
-	 * 输入文本的格式：扩展的Json Schema。
-	 */
-	fun generateExtendedSchema(inputText: String, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml, options: SchemaGeneratorConfig.() -> Unit): String {
-		SchemaGeneratorConfig().options()
-		return generateExtendedSchema(inputText, inputType, outputType)
-	}
-	
-	/**
 	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
@@ -89,16 +71,6 @@ object SchemaGenerator : TextGenerator {
 	fun generateExtendedSchema(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml) {
 		val outputText = generateExtendedSchema(inputFile.readText(), inputType, outputType)
 		outputFile.writeText(outputText)
-	}
-	
-	/**
-	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。允许进行额外的配置。
-	 *
-	 * 输入文本的格式：扩展的Json Schema。
-	 */
-	fun generateExtendedSchema(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml, options: SchemaGeneratorConfig.() -> Unit) {
-		SchemaGeneratorConfig().options()
-		generateExtendedSchema(inputFile, outputFile, inputType, outputType)
 	}
 	
 	private fun convertRules(map: MutableMap<String, Any?>) {
@@ -115,7 +87,7 @@ object SchemaGenerator : TextGenerator {
 					convertRules(elem)
 				}
 				//如果找到了对应规则名的规则，则执行规则并替换
-				else -> ruleMap[key]?.let {
+				else -> extendedRuleMap[key]?.let {
 					val newRule = it(key to value)
 					//居然还能直接这样写？
 					map -= key
@@ -124,19 +96,29 @@ object SchemaGenerator : TextGenerator {
 			}
 		}
 	}
-	
-	
-	/**扩展Json Schema的配置选项。*/
-	class SchemaGeneratorConfig : TextGeneratorConfig {
-		/**设置数据映射。先前的数据映射会被清空。*/
-		fun setDataMap(dataMap: Map<String, Any?>) {
-			SchemaGenerator.dataMap.clear()
-			SchemaGenerator.dataMap += dataMap
-		}
-		
-		/**添加约束规则。先前添加的约束规则不会被清空。*/
-		fun addRules(ruleMap: Map<String, SchemaRule>) {
-			SchemaGenerator.ruleMap += ruleMap
-		}
+}
+
+/**Json Schema生成器的配置。*/
+object SchemaGeneratorConfig : GeneratorConfig {
+	/**配置数据映射。先前的数据映射会被清空。*/
+	fun setDataMap(dataMap: Map<String, Any?>) {
+		SchemaGenerator.dataMap.clear()
+		SchemaGenerator.dataMap += dataMap
 	}
+	
+	/**
+	 * 添加扩展约束规则。
+	 *
+	 * 默认的扩展约束规则：
+	 * * $ref: string
+	 * * $gen: string
+	 * * language: string
+	 * * deprecated: string | boolean
+	 * * enumConsts: {value: string, description: string}
+	 * */
+	fun addExtendedRules(vararg rules: Pair<String, SchemaRule>) {
+		SchemaGenerator.extendedRuleMap += rules
+	}
+	
+	inline operator fun invoke(builder: SchemaGeneratorConfig.() -> Unit) = this.builder()
 }

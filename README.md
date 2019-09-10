@@ -42,21 +42,20 @@ fun example() {
     """.toMultilineText())
     	
     //abcAbc
-    println("Abc abc".to(camelCase))
+    println("Abc abc".switchTo(camelCase))
     //AbcAbc
-    println("ABC_ABC".to(PascalCase))
+    println("ABC_ABC".switchTo(PascalCase))
     //ABC_ABC
-    println("abc-abc".to(SCREAMING_SNAKE_CASE))
+    println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
     //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".to(StandardReference))
+    println("/a/b/1/2/c/3".switchTo(StandardReference))
 }
 ```
 
 # Modules
 
-* breeze-core: Core module. Provide extensions for strings, collections and so on, 
-  provide basic generators, annotations, enums and interfaces. 
-* breeze-data: Data module. Provide dsls,wrapped loaders & dumpers for json, yaml, xml, properties and so on.  
+* breeze-core: Core module. Provide extensions for strings, collections and so on, provide basic annotations, enums and interfaces. 
+* breeze-data: Data module. Provide dsls, wrapped loaders & dumpers for json, yaml, xml, properties and so on.  
 * breeze-dream: Daydream module. Include many fantasy elements, you shall have no chance to use it. 
 * breeze-game: Game-basics module. Provide some platform-independent implementations for game applications
 * breeze-spring-boot: Extensions for Spring Boot.

@@ -2,79 +2,65 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.marks.*
 import java.io.*
+import java.util.*
 import javax.script.*
-import kotlin.properties.*
-import kotlin.reflect.*
 
-/**访问系统参数。*/
-val systemAttributes by SystemAttributesAccessor()
-
-class SystemAttributesAccessor internal constructor() : ReadOnlyProperty<Nothing?, SystemAttributesAccessor> {
-	/**项目的实际工作路径。*/
-	val workDirectory: String? = System.getProperty("user.dir")
+/**访问系统属性。*/
+object SystemProperties {
+	private val properties: Properties = System.getProperties()
 	
-	/**项目的实际工作平台名。例如：Windows 10。*/
-	val platformName: String? = System.getProperty("os.name")
+	/**操作系统名。*/
+	val osName: String? = this["os.name"]
+	/**用户名。*/
+	val userName: String? = this["user.name"]
+	/**用户首页目录。*/
+	val userHome: String? = this["user.home"]
+	/**用户目录。即，项目的当前工作路径。*/
+	val userDir: String? = this["user.dir"]
+	/**用户所属国家。*/
+	val userCountry: String? = this["user.country"]
+	/**用户所用语言。*/
+	val userLanguage: String? = this["user.language"]
+	/**文件分隔符。*/
+	val fileSeparator: String? = this["file.separator"]
+	/**文件编码。*/
+	val fileEncoding: String? = this["file.encoding"]
+	/**行分隔符。*/
+	val lineSeparator: String? = this["line.separator"]
 	
-	/**项目工作环境的用户名。*/
-	val userName: String? = System.getProperty("user.name")
-	
-	/**项目工作环境的用户所在国家。*/
-	val userCountry: String? = System.getProperty("user.country")
-	
-	/**项目工作环境的用户所用语言。*/
-	val userLanguage: String? = System.getProperty("user.language")
-	
-	/**项目工作环境的文件分隔符。*/
-	val fileSeparator: String? = System.getProperty("file.separator")
-	
-	/**项目工作环境的文件编码。*/
-	val fileEncoding: String? = System.getProperty("file.encoding")
-	
-	/**项目工作环境的行分隔符。*/
-	val lineSeparator: String? = System.getProperty("line.separator")
-	
-	override fun getValue(thisRef: Nothing?, property: KProperty<*>) = this
+	/**得到指定的系统属性。*/
+	operator fun get(name: String): String? = properties.getProperty(name)
 }
 
 
-//TODO 允许进行`engine.compile()`操作
+/**访问环境变量。*/
+object EnvironmentVariables {
+	private val env = System.getenv()
+	
+	/**得到Java Home。*/
+	val javaHome: String? = this["JAVA_HOME"]
+	/**得到Kotlin Home。*/
+	val kotlinHome: String? = this["KOTLIN_HOME"]
+	
+	/**得到指定的环境变量。*/
+	operator fun get(name: String): String? = env[name]
+}
+
+
 /**执行一段懒加载的脚本。默认为kts。需要自行提供脚本语言支持。*/
-@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript()) as? T
 }
 
 /**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", bindings: Bindings, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), bindings) as? T
 }
 
 /**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-@NotImplemented
 inline fun <reified T> eval(extension: String = "kts", context: ScriptContext, lazyScript: () -> String): T? {
 	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), context) as? T
-}
-
-/**执行一段读取的脚本。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-@NotImplemented
-inline fun <reified T> eval(extension: String = "kts", reader: Reader): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader) as? T
-}
-
-/**执行一段读取的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。。*/
-@NotImplemented
-inline fun <reified T> eval(extension: String = "kts", reader: Reader, bindings: Bindings): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, bindings) as? T
-}
-
-/**执行一段读取的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-@NotImplemented
-inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: ScriptContext): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(reader, context) as? T
 }
 
 @PublishedApi internal val scriptEngineManager by lazy { ScriptEngineManager() }
@@ -82,5 +68,5 @@ inline fun <reified T> eval(extension: String = "kts", reader: Reader, context: 
 
 /**执行一段懒加载的命令。可指定工作目录，默认为当前目录；可指定环境变量，默认为空。*/
 inline fun exac(workDirectory: File? = null, vararg environmentVariables: String, lazyCommand: () -> String): Process {
-	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables.ifEmpty { null }, workDirectory)
+	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory)
 }
