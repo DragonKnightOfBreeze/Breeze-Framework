@@ -3,35 +3,61 @@
 package com.windea.breezeframework.core.extensions
 
 import java.io.*
+import java.util.*
 import javax.script.*
 
 /**访问系统属性。*/
 val systemProperties by lazy { SystemProperties() }
 
 class SystemProperties internal constructor() {
-	/**项目的实际工作路径。*/
-	val workDirectory: String? = System.getProperty("user.dir")
+	private val properties: Properties = System.getProperties()
 	
-	/**项目的实际工作平台名。例如：Windows 10。*/
-	val platformName: String? = System.getProperty("os.name")
+	/**操作系统名。*/
+	val osName: String? = this["os.name"]
 	
-	/**项目工作环境的用户名。*/
-	val userName: String? = System.getProperty("user.name")
+	/**用户名。*/
+	val userName: String? = this["user.name"]
 	
-	/**项目工作环境的用户所在国家。*/
-	val userCountry: String? = System.getProperty("user.country")
+	/**用户首页目录。*/
+	val userHome: String? = this["user.home"]
 	
-	/**项目工作环境的用户所用语言。*/
-	val userLanguage: String? = System.getProperty("user.language")
+	/**用户目录。即，项目的实际工作路径。*/
+	val userDir: String? = this["user.dir"]
 	
-	/**项目工作环境的文件分隔符。*/
-	val fileSeparator: String? = System.getProperty("file.separator")
+	/**用户所属国家。*/
+	val userCountry: String? = this["user.country"]
 	
-	/**项目工作环境的文件编码。*/
-	val fileEncoding: String? = System.getProperty("file.encoding")
+	/**用户所用语言。*/
+	val userLanguage: String? = this["user.language"]
 	
-	/**项目工作环境的行分隔符。*/
-	val lineSeparator: String? = System.getProperty("line.separator")
+	/**文件分隔符。*/
+	val fileSeparator: String? = this["file.separator"]
+	
+	/**文件编码。*/
+	val fileEncoding: String? = this["file.encoding"]
+	
+	/**行分隔符。*/
+	val lineSeparator: String? = this["line.separator"]
+	
+	/**得到指定的系统属性。*/
+	operator fun get(name: String): String? = properties.getProperty(name)
+}
+
+
+/**访问环境变量。*/
+val environmentVariables by lazy { EnvironmentVariables() }
+
+class EnvironmentVariables internal constructor() {
+	private val env = System.getenv()
+	
+	/**得到Java Home。*/
+	val javaHome: String? = this["JAVA_HOME"]
+	
+	/**得到Kotlin Home。*/
+	val kotlinHome: String? = this["KOTLIN_HOME"]
+	
+	/**得到指定的环境变量。*/
+	operator fun get(name: String): String? = env[name]
 }
 
 

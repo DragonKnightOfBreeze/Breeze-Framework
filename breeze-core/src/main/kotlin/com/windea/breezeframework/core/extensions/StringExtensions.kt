@@ -536,12 +536,12 @@ fun String.toColor(): Color {
 
 /**@see kotlin.text.slice*/
 @OutlookImplementationApi
-inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
-inline operator fun String.times(n: Int): String = this.repeat(n)
+operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
 @OutlookImplementationApi
-inline operator fun String.div(n: Int): List<String> = this.chunked(n)
+operator fun String.div(n: Int): List<String> = this.chunked(n)

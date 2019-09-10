@@ -62,6 +62,7 @@
 * [X] breeze-core 添加并完善函数式扩展的示例。
 * [X] breeze-core 为最多6个参数的函数提供扩展。
 * [X] breeze-core 更注解以及注解相关扩展。（目前版本的Kotlin无法标注重复的可在运行时得到的注解）
+* [X] breeze-core 更新System扩展。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] UPDATING 提供plantUml state graph的Dsl。
