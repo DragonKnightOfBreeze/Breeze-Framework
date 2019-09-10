@@ -1,6 +1,5 @@
-@file:Suppress("SpellCheckingInspection")
-
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
