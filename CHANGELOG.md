@@ -67,7 +67,9 @@
 ### 1.0.3
 
 * [X] 更新版本号。
-* [X] 重命名`String.to(FormatCase)`方法为`String.switchTo(FormatCase)`。（为了规避方法名冲突）
+* [X] breeze-core 重命名`String.to(FormatCase)`方法为`String.switchTo(FormatCase)`。（为了规避方法名冲突）
+* [X] breeze-data 重构：将Dsl入口方法移至顶层，为Config接口声明`invoke`方法。取消懒加载。
+* [X] breeze-core 更改函数式扩展中的pipe方法的逻辑，将函数作为接受者，而非参数。
 
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

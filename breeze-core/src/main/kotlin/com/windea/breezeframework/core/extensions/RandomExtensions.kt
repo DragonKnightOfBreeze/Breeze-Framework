@@ -3,7 +3,8 @@ package com.windea.breezeframework.core.extensions
 import java.util.*
 import kotlin.random.Random
 
-object Randoms {
+/**访问随机值。*/
+object RandomValues {
 	/**得到随机的uuid。*/
 	fun uuid(): String {
 		return UUID.randomUUID().toString()
@@ -18,7 +19,6 @@ object Randoms {
 	/**得到0到指定范围内的随机数。包含上下限。*/
 	fun range(max: Int): Int = range(0, max)
 	
-	
 	/**得到指定范围内的随机数。包含上下限。*/
 	fun range(min: Long, max: Long): Long {
 		return Random.nextLong(min, max + 1L)
@@ -26,7 +26,6 @@ object Randoms {
 	
 	/**得到0到指定范围内的随机数。包含上下限。*/
 	fun range(max: Long): Long = range(0L, max)
-	
 	
 	/**得到指定范围内的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun range(min: Float, max: Float, precision: Int = 2): Float {
@@ -43,7 +42,6 @@ object Randoms {
 	
 	/**得到-1到1的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun rangeAbs1(precision: Int = 2): Float = range(-1f, 1f, precision)
-	
 	
 	/**得到指定范围内的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun range(min: Double, max: Double, precision: Int = 2): Double {
@@ -64,7 +62,6 @@ object Randoms {
 	/**得到以指定数值为中心的浮动范围内的随机数。包含上下限。*/
 	fun delta(number: Int, limit: Int): Int = delta(number, limit, limit)
 	
-	
 	/**得到以指定数值为中心的浮动范围内的随机数。包含上下限。*/
 	fun delta(number: Long, lowerLimit: Long, upperLimit: Long): Long {
 		return number - lowerLimit + range(lowerLimit, upperLimit)
@@ -72,7 +69,6 @@ object Randoms {
 	
 	/**得到以指定数值为中心的浮动范围内的随机数。包含上下限。*/
 	fun delta(number: Long, limit: Long): Long = delta(number, limit, limit)
-	
 	
 	/**得到以指定数值为中心的浮动范围内的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun delta(number: Float, lowerLimit: Float, upperLimit: Float, precision: Int = 2): Float {
@@ -84,7 +80,6 @@ object Randoms {
 	
 	/**得到以指定数值为中心的以1为浮动范围的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun deltaAbs1(number: Float, precision: Int = 2) = delta(number, -1f, 1f, precision)
-	
 	
 	/**得到以指定数值为中心的浮动范围内的随机数。包含上下限。可指定0-10的精确度[precision]，默认为2。*/
 	fun delta(number: Double, lowerLimit: Double, upperLimit: Double, precision: Int = 2): Double {

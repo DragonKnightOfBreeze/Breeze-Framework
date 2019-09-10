@@ -3,14 +3,9 @@ package com.windea.breezeframework.data.serializers.csv
 import com.fasterxml.jackson.dataformat.csv.*
 import java.io.*
 
-class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
-	private val mapper = CsvMapper()
+object JacksonCsvSerializer : CsvSerializer {
+	@PublishedApi internal val mapper = CsvMapper()
 	
-	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (CsvMapper) -> Unit): JacksonCsvSerializer {
-		return this.also { handler(mapper) }
-	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -35,4 +30,8 @@ class JacksonCsvSerializer : CsvSerializer<JacksonCsvSerializer, CsvMapper> {
 	override fun <T : Any> dump(data: T, writer: Writer) {
 		return mapper.writeValue(writer, data)
 	}
+}
+
+object JacksonCsvSerializerConfig : CsvSerializerConfig {
+	inline operator fun invoke(builder: (CsvMapper) -> Unit) = builder(JacksonCsvSerializer.mapper)
 }

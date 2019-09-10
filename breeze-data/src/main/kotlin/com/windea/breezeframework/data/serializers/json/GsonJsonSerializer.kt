@@ -3,8 +3,8 @@ package com.windea.breezeframework.data.serializers.json
 import com.google.gson.*
 import java.io.*
 
-class GsonJsonSerializer : JsonSerializer<GsonJsonSerializer, GsonBuilder> {
-	private val gsonBuilder = GsonBuilder()
+object GsonJsonSerializer : JsonSerializer {
+	@PublishedApi internal val gsonBuilder = GsonBuilder()
 	
 	private val gson by lazy { gsonBuilder.create() }
 	
@@ -12,11 +12,6 @@ class GsonJsonSerializer : JsonSerializer<GsonJsonSerializer, GsonBuilder> {
 		gsonBuilder.setPrettyPrinting()
 	}
 	
-	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (GsonBuilder) -> Unit): GsonJsonSerializer {
-		return this.also { handler(gsonBuilder) }
-	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return gson.fromJson(string, type)
@@ -43,4 +38,8 @@ class GsonJsonSerializer : JsonSerializer<GsonJsonSerializer, GsonBuilder> {
 		//Do not use gson.toJson(Any, Appendable)
 		gson.toJson(data).let { writer.write(it) }
 	}
+}
+
+object GsonJsonSerializerConfig : JsonSerializerConfig {
+	inline operator fun invoke(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
 }

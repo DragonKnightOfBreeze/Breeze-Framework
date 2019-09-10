@@ -1,8 +1,9 @@
+@file:NotTested
+
 package com.windea.breezeframework.data.serializers
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.enums.*
 import java.io.*
 
 //TODO Remain to add comments
@@ -10,18 +11,10 @@ import java.io.*
 //TODO 考虑编写自己的简洁而灵活的实现
 //TODO 考虑使用扩展库`kotlinx-serialization`，但是缺少具体的对于yaml、xml等格式的实现
 
-/**通用数据持久化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
-@NotTested
-interface DataSerializer<S, C> : DataLoader, DataDumper {
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	fun configure(handler: (C) -> Unit): S
-}
+/////////////Top interfaces
 
-/**通用数据读取器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
-interface DataLoader {
-	/**可处理的数据类型。*/
-	val dataType: DataType
-	
+/**序列化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
+interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
 	fun <T : Any> load(string: String, type: Class<T>): T
 	
@@ -48,12 +41,6 @@ interface DataLoader {
 	
 	/**从指定读取器读取映射类型的数据。*/
 	fun loadAsMap(reader: Reader): Map<String, Any?> = load(reader, Map::class.java).toStringKeyMap()
-}
-
-/**通用数据转储器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
-interface DataDumper {
-	/**可处理的数据类型。*/
-	val dataType: DataType
 	
 	/**转储数据到字符串。*/
 	fun <T : Any> dump(data: T): String
@@ -64,3 +51,6 @@ interface DataDumper {
 	/**转储数据到写入器。*/
 	fun <T : Any> dump(data: T, writer: Writer)
 }
+
+/**序列化器的配置。*/
+interface SerializerConfig

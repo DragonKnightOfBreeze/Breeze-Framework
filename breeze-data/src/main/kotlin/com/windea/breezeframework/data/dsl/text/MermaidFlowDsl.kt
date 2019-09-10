@@ -1,21 +1,41 @@
 @file:Reference(value = "[Mermaid](https://mermaidjs.github.io)")
 @file:NotImplemented
 
-package com.windea.breezeframework.data.dsl
+package com.windea.breezeframework.data.dsl.text
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.annotations.messages.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.MermaidFlowConfig.indent
-import com.windea.breezeframework.data.dsl.MermaidFlowConfig.quote
+import com.windea.breezeframework.data.dsl.*
+import com.windea.breezeframework.data.dsl.text.MermaidFlowConfig.indent
+import com.windea.breezeframework.data.dsl.text.MermaidFlowConfig.quote
 
-//////////Portal extensions
+//////////Portal function
 
-fun Dsl.Companion.mermaidGraph(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) = MermaidFlow(direction).builder()
+fun mermaidGraph(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) = MermaidFlow(direction).builder()
 
-fun DslConfig.Companion.mermaidGraph(builder: MermaidFlowConfig.() -> Unit) = MermaidFlowConfig.builder()
+///////////////Dsl marker annotations & Dsl element interfaces
 
-//////////Main class & Config object
+@DslMarker
+annotation class MermaidFlowDsl
+
+@MermaidFlowDsl
+interface MermaidFlowDslElement
+
+interface MermaidFlowGraph : CanIndentContent {
+	val nodes: MutableSet<MermaidFlowNode>
+	val links: MutableSet<MermaidFlowLink>
+	
+	fun node() {
+		TODO()
+	}
+	
+	fun link() {
+		TODO()
+	}
+}
+
+////////////Dsl elements & build functions
 
 class MermaidFlow @PublishedApi internal constructor(
 	val direction: MermaidFlowDirection,
@@ -56,40 +76,6 @@ class MermaidFlow @PublishedApi internal constructor(
 		TODO()
 	}
 }
-
-object MermaidFlowConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
-
-///////////////Dsl marker annotations & Dsl element interfaces
-
-@DslMarker
-annotation class MermaidFlowDsl
-
-@MermaidFlowDsl
-interface MermaidFlowDslElement
-
-interface MermaidFlowGraph : CanIndentContent {
-	val nodes: MutableSet<MermaidFlowNode>
-	val links: MutableSet<MermaidFlowLink>
-	
-	fun node() {
-		TODO()
-	}
-	
-	fun link() {
-		TODO()
-	}
-}
-
-////////////Dsl elements & build functions
 
 class MermaidFlowSubGraph @PublishedApi internal constructor(
 	val name: String,
@@ -207,4 +193,22 @@ enum class MermaidFlowLinkShape(
 	Arrow("-->", "--", "-->"),
 	Dotted("-.->", "-.", ".->"),
 	Thick("==>", "==", "==>")
+}
+
+//////////TODO Param handler extensions
+
+
+//////////Config object
+
+object MermaidFlowConfig : DslConfig {
+	/**缩进长度。*/
+	var indentSize = 2
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**是否使用双引号。*/
+	var useDoubleQuote: Boolean = true
+	
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	
+	inline operator fun invoke(builder: MermaidFlowConfig.() -> Unit) = this.builder()
 }

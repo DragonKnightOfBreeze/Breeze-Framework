@@ -3,7 +3,7 @@ package com.windea.breezeframework.data.generators.string
 import com.windea.breezeframework.data.generators.*
 
 /**地址生成器。*/
-object UrlGenerator : TextGenerator {
+object UrlGenerator : Generator {
 	/**根据指定参数生成Html链接。*/
 	fun generateHtmlUrl(name: String, url: String, title: String? = null, doubleQuote: Boolean = true): String {
 		val quote = if(doubleQuote) "\"" else "'"

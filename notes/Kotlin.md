@@ -71,7 +71,6 @@
     * 所属文件：FunctionalExtensions.kt
     * 使用示例：`::f.curried()(a)(b)(c)`。
 * ［不确定］扩展方法：`Function2+.partialN()`
-* 如何使用kotlin实现线程安全（双重校验锁）的单例模式？？？
 
 # 特性请求
 

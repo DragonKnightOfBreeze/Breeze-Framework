@@ -1,11 +1,12 @@
 package com.windea.breezeframework.data.dsl
 
+import com.windea.breezeframework.data.dsl.text.*
 import kotlin.test.*
 
 class XmlDslKtTest {
 	@Test //TESTED VERY NICE!
 	fun test() {
-		val xml = Dsl.xml {
+		val xml = xml {
 			-"comment"
 			-"""
 				comment

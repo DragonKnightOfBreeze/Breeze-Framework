@@ -5,14 +5,10 @@ package com.windea.breezeframework.data.dsl
 /////////////Top interfaces
 
 /**Dsl。即，领域专用语言。*/
-interface Dsl {
-	companion object
-}
+interface Dsl
 
 /**Dsl的配置。*/
-interface DslConfig {
-	companion object
-}
+interface DslConfig
 
 //////////////General Dsl interfaces and related extensions
 

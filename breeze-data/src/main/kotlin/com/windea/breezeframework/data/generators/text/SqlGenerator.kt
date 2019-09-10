@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.data.generators.code
+package com.windea.breezeframework.data.generators.text
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
@@ -8,7 +8,7 @@ import com.windea.breezeframework.data.generators.*
 import java.io.*
 
 /**Sql语句的生成器。*/
-object SqlGenerator : TextGenerator {
+object SqlGenerator : Generator {
 	/**
 	 * 根据输入文本和输入数据类型，生成Sql数据。默认使用Yaml类型。
 	 *

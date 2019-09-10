@@ -54,9 +54,8 @@ fun example() {
 
 # Modules
 
-* breeze-core: Core module. Provide extensions for strings, collections and so on, 
-  provide basic generators, annotations, enums and interfaces. 
-* breeze-data: Data module. Provide dsls,wrapped loaders & dumpers for json, yaml, xml, properties and so on.  
+* breeze-core: Core module. Provide extensions for strings, collections and so on, provide basic annotations, enums and interfaces. 
+* breeze-data: Data module. Provide dsls, wrapped loaders & dumpers for json, yaml, xml, properties and so on.  
 * breeze-dream: Daydream module. Include many fantasy elements, you shall have no chance to use it. 
 * breeze-game: Game-basics module. Provide some platform-independent implementations for game applications
 * breeze-spring-boot: Extensions for Spring Boot.

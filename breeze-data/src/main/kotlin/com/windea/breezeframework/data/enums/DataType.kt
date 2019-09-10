@@ -10,11 +10,11 @@ import com.windea.breezeframework.data.serializers.yaml.*
 /**数据类型。*/
 enum class DataType(
 	val extension: String,
-	val serializer: DataSerializer<*, *>
+	val serializer: Serializer
 ) {
-	Json("json", GsonJsonSerializer()),
-	Yaml("yml", SnakeYamlSerializer()),
-	Xml("xml", JacksonXmlSerializer()),
-	Properties("properties", JacksonPropertiesSerializer()),
-	Csv("csv", JacksonCsvSerializer())
+	Json("json", JsonSerializer.instance),
+	Yaml("yml", YamlSerializer.instance),
+	Xml("xml", XmlSerializer.instance),
+	Properties("properties", PropertiesSerializer.instance),
+	Csv("csv", CsvSerializer.instance)
 }

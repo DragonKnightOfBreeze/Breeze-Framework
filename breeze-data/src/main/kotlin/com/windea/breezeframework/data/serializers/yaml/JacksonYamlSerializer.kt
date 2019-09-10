@@ -3,14 +3,10 @@ package com.windea.breezeframework.data.serializers.yaml
 import com.fasterxml.jackson.dataformat.yaml.*
 import java.io.*
 
-class JacksonYamlSerializer : YamlSerializer<JacksonYamlSerializer, YAMLMapper> {
-	private val mapper = YAMLMapper()
+
+object JacksonYamlSerializer : YamlSerializer {
+	@PublishedApi internal val mapper = YAMLMapper()
 	
-	
-	/**配置持久化选项。这个方法必须首先被调用。*/
-	override fun configure(handler: (YAMLMapper) -> Unit): JacksonYamlSerializer {
-		return this.also { handler(mapper) }
-	}
 	
 	override fun <T : Any> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -25,15 +21,15 @@ class JacksonYamlSerializer : YamlSerializer<JacksonYamlSerializer, YAMLMapper> 
 	}
 	
 	override fun loadAll(string: String): List<Any> {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 	
 	override fun loadAll(file: File): List<Any> {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 	
 	override fun loadAll(reader: Reader): List<Any> {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 	
 	override fun <T : Any> dump(data: T): String {
@@ -49,14 +45,18 @@ class JacksonYamlSerializer : YamlSerializer<JacksonYamlSerializer, YAMLMapper> 
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>): String {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>, file: File) {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 	
 	override fun <T : Any> dumpAll(data: List<T>, writer: Writer) {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate in yamlMapper.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
+}
+
+object JacksonYamlSerializerConfig : YamlSerializerConfig {
+	inline operator fun invoke(builder: (YAMLMapper) -> Unit) = builder(JacksonYamlSerializer.mapper)
 }

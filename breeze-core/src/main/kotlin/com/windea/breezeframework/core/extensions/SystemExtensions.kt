@@ -7,35 +7,25 @@ import java.util.*
 import javax.script.*
 
 /**访问系统属性。*/
-val systemProperties by lazy { SystemProperties() }
-
-class SystemProperties internal constructor() {
+object SystemProperties {
 	private val properties: Properties = System.getProperties()
 	
 	/**操作系统名。*/
 	val osName: String? = this["os.name"]
-	
 	/**用户名。*/
 	val userName: String? = this["user.name"]
-	
 	/**用户首页目录。*/
 	val userHome: String? = this["user.home"]
-	
-	/**用户目录。即，项目的实际工作路径。*/
+	/**用户目录。即，项目的当前工作路径。*/
 	val userDir: String? = this["user.dir"]
-	
 	/**用户所属国家。*/
 	val userCountry: String? = this["user.country"]
-	
 	/**用户所用语言。*/
 	val userLanguage: String? = this["user.language"]
-	
 	/**文件分隔符。*/
 	val fileSeparator: String? = this["file.separator"]
-	
 	/**文件编码。*/
 	val fileEncoding: String? = this["file.encoding"]
-	
 	/**行分隔符。*/
 	val lineSeparator: String? = this["line.separator"]
 	
@@ -45,14 +35,11 @@ class SystemProperties internal constructor() {
 
 
 /**访问环境变量。*/
-val environmentVariables by lazy { EnvironmentVariables() }
-
-class EnvironmentVariables internal constructor() {
+object EnvironmentVariables {
 	private val env = System.getenv()
 	
 	/**得到Java Home。*/
 	val javaHome: String? = this["JAVA_HOME"]
-	
 	/**得到Kotlin Home。*/
 	val kotlinHome: String? = this["KOTLIN_HOME"]
 	

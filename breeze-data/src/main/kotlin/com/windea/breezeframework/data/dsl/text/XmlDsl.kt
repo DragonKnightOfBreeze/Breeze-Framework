@@ -1,23 +1,33 @@
 @file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST")
 
-package com.windea.breezeframework.data.dsl
+package com.windea.breezeframework.data.dsl.text
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.XmlConfig.autoCloseTag
-import com.windea.breezeframework.data.dsl.XmlConfig.defaultRootName
-import com.windea.breezeframework.data.dsl.XmlConfig.indent
-import com.windea.breezeframework.data.dsl.XmlConfig.indentSize
-import com.windea.breezeframework.data.dsl.XmlConfig.quote
+import com.windea.breezeframework.data.dsl.*
+import com.windea.breezeframework.data.dsl.text.XmlConfig.autoCloseTag
+import com.windea.breezeframework.data.dsl.text.XmlConfig.defaultRootName
+import com.windea.breezeframework.data.dsl.text.XmlConfig.indent
+import com.windea.breezeframework.data.dsl.text.XmlConfig.indentSize
+import com.windea.breezeframework.data.dsl.text.XmlConfig.quote
 
-//////////Portal extensions
+//////////Portal function
 
-/**开始生成Xml。*/
-fun Dsl.Companion.xml(builder: Xml.() -> Unit) = Xml().builder()
+/**构建Xml。*/
+fun xml(builder: Xml.() -> Unit) = Xml().builder()
 
-/**开始配置Xml。*/
-fun DslConfig.Companion.xml(builder: XmlConfig.() -> Unit) = XmlConfig.builder()
+///////////////Dsl marker annotations & Dsl element interfaces
 
-//////////Main class & Config object
+@DslMarker
+internal annotation class XmlDsl
+
+/**Xml Dsl元素。*/
+@XmlDsl
+interface XmlDslElement
+
+/**Xml结点。*/
+interface XmlNode : XmlDslElement
+
+////////////Dsl elements & Build functions
 
 /**Xml文件。*/
 class Xml @PublishedApi internal constructor(
@@ -47,37 +57,6 @@ class Xml @PublishedApi internal constructor(
 	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 		element(this, *attributes, builder = builder)
 }
-
-/**Xml配置。*/
-object XmlConfig : DslConfig {
-	/**默认根元素名。*/
-	var defaultRootName: String = "root"
-		set(value) = run { field = value.ifBlank { "root" } }
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	/**是否自关闭标签。*/
-	var autoCloseTag: Boolean = false
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
-
-///////////////Dsl marker annotations & Dsl element interfaces
-
-@DslMarker
-internal annotation class XmlDsl
-
-/**Xml Dsl元素。*/
-@XmlDsl
-interface XmlDslElement
-
-/**Xml结点。*/
-interface XmlNode : XmlDslElement
-
-////////////Dsl elements & build functions
 
 /**Xml元素。*/
 class XmlElement @PublishedApi internal constructor(
@@ -119,7 +98,7 @@ class XmlElement @PublishedApi internal constructor(
 	
 	/**添加元素。*/
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement.create(name, *attributes, builder = builder).also { nodes += it }
+		create(name, *attributes, builder = builder).also { nodes += it }
 	
 	/**设置属性。*/
 	inline fun attribute(key: String, value: String) = run { this.attributes[key] = value }
@@ -187,3 +166,24 @@ internal fun Map<String, Any?>.fixXmlElementAttributes() = this.mapKeys { (k, _)
 
 @PublishedApi
 internal fun String.fixXmlText() = this.replace("<", "&lt;").replace(">", "&gt;")
+
+//////////Config object
+
+/**Xml配置。*/
+object XmlConfig : DslConfig {
+	/**默认根元素名。*/
+	var defaultRootName: String = "root"
+		set(value) = run { field = value.ifBlank { "root" } }
+	/**缩进长度。*/
+	var indentSize = 2
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**是否使用双引号。*/
+	var useDoubleQuote: Boolean = true
+	/**是否自关闭标签。*/
+	var autoCloseTag: Boolean = false
+	
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	
+	inline operator fun invoke(builder: XmlConfig.() -> Unit) = this.builder()
+}
