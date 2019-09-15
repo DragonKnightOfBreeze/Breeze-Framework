@@ -72,6 +72,7 @@
 * [X] breeze-core 更改函数式扩展中的pipe方法的逻辑，将函数作为接受者，而非参数。
 * [X] breeze-core 添加字符串扩展：`isAlphabetic`、`isNumeric`、`isAlphanumeric`。
 * [X] breeze-core 提供阶乘和累加的扩展。
+* [X] breeze-time 去除标准库已提供的扩展。
 
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
