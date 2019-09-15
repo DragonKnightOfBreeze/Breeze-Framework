@@ -1,5 +1,3 @@
-@file:Suppress("SpellCheckingInspection")
-
 import groovy.lang.*
 import org.gradle.util.*
 

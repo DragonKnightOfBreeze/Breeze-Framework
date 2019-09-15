@@ -228,6 +228,7 @@ inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
+
 ////////////////Deep operations
 
 /**根据指定的标准引用得到当前数组中的元素。*/
@@ -355,6 +356,9 @@ fun <K, V> Array<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
 
 /**将当前键值对列表转化为可变映射。*/
 fun <K, V> List<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+
+/**将当前键值对序列转化为可变映射。*/
+fun <K, V> Sequence<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
 
 
 /**将当前数组转化成以键为值的映射。*/
