@@ -1,8 +1,8 @@
-@file:Reference(value = "[funKTionale](https://github.com/MarioAriasC/funKTionale)")
+@file:Reference("[funKTionale](https://github.com/MarioAriasC/funKTionale)")
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.messages.*
+import com.windea.breezeframework.core.annotations.marks.*
 
 //////////curried & uncurried
 

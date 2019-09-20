@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.annotations.messages.*
+import com.windea.breezeframework.core.annotations.marks.*
 import java.io.*
 import java.net.*
 

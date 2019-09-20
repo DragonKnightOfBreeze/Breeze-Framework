@@ -13,14 +13,12 @@ inline fun checkClassForName(className: String): Boolean {
 
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Can never be implemented for all situations.")
-@ExperimentalStdlibApi
 inline fun <reified T> nameOf(): String? {
 	return T::class.simpleName
 }
 
 /**得到指定项的名字。适用于：类型、属性引用、方法引用、实例。不适用于：类型参数，参数，局部变量。*/
 @TrickImplementationApi("Can never be implemented for all situations.")
-@ExperimentalStdlibApi
 inline fun nameOf(target: Any?): String? {
 	return when {
 		target == null -> null

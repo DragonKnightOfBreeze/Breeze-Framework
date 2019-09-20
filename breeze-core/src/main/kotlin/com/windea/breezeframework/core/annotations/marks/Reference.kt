@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.annotations.messages
+package com.windea.breezeframework.core.annotations.marks
 
 import org.intellij.lang.annotations.*
 import kotlin.annotation.AnnotationTarget.*

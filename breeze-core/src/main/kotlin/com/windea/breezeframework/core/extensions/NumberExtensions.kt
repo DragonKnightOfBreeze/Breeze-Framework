@@ -23,6 +23,21 @@ inline fun Float.pow(x: Double): Double = this.toDouble().pow(x)
 inline fun Double.pow(x: Float): Double = this.pow(x.toDouble())
 
 
+/**精确到指定位数，适用四舍五入。*/
+fun Float.round(precision: Int): Float {
+	require(precision > 0)
+	val ratio = 10.pow(precision)
+	return (this * ratio).roundToInt().toFloat() / ratio
+}
+
+/**精确到指定位数，适用四舍五入。*/
+fun Double.round(precision: Int): Double {
+	require(precision > 0)
+	val ratio = 10.pow(precision)
+	return (this * ratio).roundToLong().toDouble() / ratio
+}
+
+
 /**限定在0和1之间。*/
 inline fun Float.coerceIn(): Float = this.coerceIn(0f, 1f)
 

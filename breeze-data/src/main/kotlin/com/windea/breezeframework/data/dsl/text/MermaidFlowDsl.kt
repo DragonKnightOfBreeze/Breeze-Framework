@@ -1,10 +1,9 @@
-@file:Reference(value = "[Mermaid](https://mermaidjs.github.io)")
+@file:Reference("[Mermaid](https://mermaidjs.github.io)")
 @file:NotImplemented
 
 package com.windea.breezeframework.data.dsl.text
 
 import com.windea.breezeframework.core.annotations.marks.*
-import com.windea.breezeframework.core.annotations.messages.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.dsl.*
 import com.windea.breezeframework.data.dsl.text.MermaidFlowConfig.indent

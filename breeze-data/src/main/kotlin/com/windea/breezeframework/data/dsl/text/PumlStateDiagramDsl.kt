@@ -1,11 +1,10 @@
-@file:Reference(value = "[PlantUml](http://plantuml.com)")
-@file:Reference(value = "[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
+@file:Reference("[PlantUml](http://plantuml.com)")
+@file:Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @file:NotImplemented
 
 package com.windea.breezeframework.data.dsl.text
 
 import com.windea.breezeframework.core.annotations.marks.*
-import com.windea.breezeframework.core.annotations.messages.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.dsl.*
 

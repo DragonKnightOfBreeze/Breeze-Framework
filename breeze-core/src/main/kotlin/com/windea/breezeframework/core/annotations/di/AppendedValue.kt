@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.annotations.intelligence
+package com.windea.breezeframework.core.annotations.di
 
 import kotlin.annotation.AnnotationTarget.*
 
