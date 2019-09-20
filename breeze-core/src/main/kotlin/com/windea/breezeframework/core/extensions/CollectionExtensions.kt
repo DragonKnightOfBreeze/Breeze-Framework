@@ -466,11 +466,11 @@ operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(in
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-operator fun <T> Array<T>.times(n: Int): List<T> = this.toList().repeat(n)
+operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi

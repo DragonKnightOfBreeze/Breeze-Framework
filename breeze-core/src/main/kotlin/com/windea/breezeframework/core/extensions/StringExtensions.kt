@@ -489,7 +489,6 @@ fun String.toUrlInfo(): UrlInfo {
 /**将当前字符串转化为查询参数映射。*/
 @Suppress("IMPLICIT_CAST_TO_ANY")
 internal fun String.toQueryParamMap(): QueryParamMap {
-	//show warns here!!!
 	val map = when {
 		this.isEmpty() -> mapOf()
 		else -> this.split("&").map { s -> s.split("=") }.groupBy({ it[0] }, { it[1] })
@@ -515,7 +514,7 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeForma
 	LocalDateTime.parse(this, formatter)
 
 
-/**将当前字符串转化为颜色。*/
+///**将当前字符串转化为颜色。*/
 //fun String.toColor(): Color {
 //	return when {
 //		//#333
@@ -546,6 +545,10 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeForma
 /**@see kotlin.text.slice*/
 @OutlookImplementationApi
 operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.remove*/
+@OutlookImplementationApi
+operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
