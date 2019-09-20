@@ -74,6 +74,7 @@
 * [X] breeze-core 提供阶乘和累加的扩展。
 * [X] breeze-time 去除标准库已提供的扩展。
 * [X] breeze-core 重构随机数扩展，由对象改为扩展方法。
+
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] UPDATING 提供plantUml state graph的Dsl。
@@ -84,6 +85,8 @@
 * [ ] breeze-core DELAY 利用反射的类型转换的扩展。
 * [ ] breeze-text DELAY 英文单数与复数的转化。
 * [ ] breeze-text DELAY 数字的简化表示的转化。（1000->1k, 1000->1千）
+
+# 长期
 
 * [X] TODO 上传到Github。
 * [X] TODO 同步项目到Bintray。
