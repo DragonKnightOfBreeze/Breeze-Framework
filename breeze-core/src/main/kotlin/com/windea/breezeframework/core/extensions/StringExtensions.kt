@@ -6,7 +6,6 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.core.*
 import mu.*
-import java.awt.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
@@ -517,30 +516,30 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeForma
 
 
 /**将当前字符串转化为颜色。*/
-fun String.toColor(): Color {
-	return when {
-		//#333
-		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
-		//#3333
-		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
-		//#333333
-		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
-		//#33333333
-		this startsWith "#" && this.length == 9 -> Color(this.substring(1).toInt(16), true)
-		//rgb(0,0,0)
-		this startsWith "rgb(" -> {
-			val (r, g, b) = this.substring(4, this.length - 1).split(",").map { it.trim().toInt(16) }
-			Color(r, g, b)
-		}
-		//rgba(0,0,0,255)
-		this startsWith "rgba(" -> {
-			val (r, g, b, a) = this.substring(5, this.length - 1).split(",").map { it.trim().toInt(16) }
-			Color(r, g, b, a)
-		}
-		//white || EXCEPTION
-		else -> Color.getColor(this)
-	}
-}
+//fun String.toColor(): Color {
+//	return when {
+//		//#333
+//		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
+//		//#3333
+//		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
+//		//#333333
+//		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
+//		//#33333333
+//		this startsWith "#" && this.length == 9 -> Color(this.substring(1).toInt(16), true)
+//		//rgb(0,0,0)
+//		this startsWith "rgb(" -> {
+//			val (r, g, b) = this.substring(4, this.length - 1).split(",").map { it.trim().toInt(16) }
+//			Color(r, g, b)
+//		}
+//		//rgba(0,0,0,255)
+//		this startsWith "rgba(" -> {
+//			val (r, g, b, a) = this.substring(5, this.length - 1).split(",").map { it.trim().toInt(16) }
+//			Color(r, g, b, a)
+//		}
+//		//white || EXCEPTION
+//		else -> Color.getColor(this)
+//	}
+//}
 
 /////////////Operator overrides
 

@@ -81,7 +81,7 @@ fun <P1, P2, R> ((Pair<P1, P2>) -> R).unpaired() = fun(p1: P1, p2: P2) = this(p1
 fun <P1, P2, P3, R> ((P1, P2, P3) -> R).tripled() = fun(triple: Triple<P1, P2, P3>) = this(triple.first, triple.second, triple.third)
 
 /**解绑当前函数的参数。即，`fun((a,b,c)) -> fun(a,b,c)`。*/
-fun <P1, P2, P3, R> ((Triple<P1, P2, P3>) -> R).untripled() = fun(p1: P1, p2: P2, p3: P3) = this(p1 to p2 and p3)
+fun <P1, P2, P3, R> ((Triple<P1, P2, P3>) -> R).untripled() = fun(p1: P1, p2: P2, p3: P3) = this(p1 to p2 andTo p3)
 
 //////////partial & partialLast
 

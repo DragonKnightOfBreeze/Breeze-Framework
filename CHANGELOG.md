@@ -73,7 +73,7 @@
 * [X] breeze-core 添加字符串扩展：`isAlphabetic`、`isNumeric`、`isAlphanumeric`。
 * [X] breeze-core 提供阶乘和累加的扩展。
 * [X] breeze-time 去除标准库已提供的扩展。
-
+* [X] breeze-core 重构随机数扩展，由对象改为扩展方法。
 * [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] UPDATING 提供plantUml state graph的Dsl。

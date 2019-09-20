@@ -62,4 +62,15 @@ class Tests {
 		//a.b[1][2].c[3]
 		println("/a/b/1/2/c/3".switchTo(StandardReference))
 	}
+	
+	@Test
+	fun testRange() {
+		(1..10).forEach(::println)
+	}
+	
+	//@Test
+	//fun testIntToChar(){
+	//	println(0.toChar())
+	//	println(25.toChar())
+	//}
 }

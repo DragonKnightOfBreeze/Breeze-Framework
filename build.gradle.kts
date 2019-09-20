@@ -3,22 +3,21 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
-	`build-scan`
 	`maven-publish`
+	kotlin("jvm") version "1.3.50"
 	id("nebula.optional-base") version "3.0.3"
 	id("com.jfrog.bintray") version "1.8.4"
 	id("org.jetbrains.dokka") version "0.9.18"
-	kotlin("jvm") version "1.3.50"
 }
 
 allprojects {
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
+		plugin("org.jetbrains.kotlin.jvm")
 		plugin("nebula.optional-base")
 		plugin("com.jfrog.bintray")
 		plugin("org.jetbrains.dokka")
-		plugin("org.jetbrains.kotlin.jvm")
 	}
 	
 	//version需要写到allprojects里面
@@ -36,10 +35,6 @@ allprojects {
 		mavenCentral()
 		jcenter()
 	}
-	
-	//配置源码路径，如此配置以消除"java"空文件夹
-	sourceSets["main"].java.setSrcDirs(setOf("src/main/kotlin"))
-	sourceSets["test"].java.setSrcDirs(setOf("src/main/kotlin"))
 	
 	//配置依赖，implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
 	//optional只能依靠插件实现
@@ -68,10 +63,9 @@ allprojects {
 	}
 	
 	//构建javadoc jar
-	val javdocJar by tasks.creating(Jar::class) {
+	val javadocJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("javadoc")
 		group = JavaBasePlugin.DOCUMENTATION_GROUP
-		description = "Kotlin documents of Breeze Framework."
 		from(tasks.dokka)
 	}
 	
@@ -83,7 +77,7 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifact(sourcesJar)
-				artifact(javdocJar)
+				artifact(javadocJar)
 				//生成的pom文件的配置
 				pom {
 					name.set("Breeze Framework")
@@ -132,7 +126,7 @@ allprojects {
 					pkg.vcsUrl = gitUrl
 					pkg.setLabels("kotlin", "framework")
 					pkg.setLicenses("MIT")
-					pkg.version.name = "1.0.2"
+					pkg.version.name = "1.0.3"
 					pkg.version.vcsTag = "1.0.x"
 				}
 			}
