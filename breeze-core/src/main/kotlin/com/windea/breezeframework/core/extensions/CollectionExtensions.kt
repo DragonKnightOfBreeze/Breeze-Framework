@@ -227,6 +227,51 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 }
 
 
+/**按照类型以及附加条件过滤数组。*/
+inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤列表。*/
+inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤集。*/
+inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤集，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤序列。*/
+inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> Boolean): Sequence<R> {
+	return this.filterIsInstance<R>().filter(predicate)
+}
+
+/**按照类型以及附加条件过滤序列，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+
 /**绑定当前数组中的元素以及另一个数组中满足指定预测的首个元素。过滤总是不满足的情况。*/
 @OutlookImplementationApi
 inline fun <T, R : Any> Array<out T>.zipWithFirst(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
@@ -256,7 +301,6 @@ inline fun <T, R : Any> Iterable<T>.zipWithFirst(other: Iterable<R>, predicate: 
 inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
-
 
 ////////////////Deep operations
 

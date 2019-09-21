@@ -474,6 +474,7 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	
 	val enumConstants = type.enumConstants
 	return try {
 		enumConstants.first { it.toString().equals(this, ignoreCase) }
@@ -487,6 +488,7 @@ fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
 	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	
 	val enumConstants = type.enumConstants
 	return try {
 		enumConstants.first { it.toString().equals(this, ignoreCase) }
