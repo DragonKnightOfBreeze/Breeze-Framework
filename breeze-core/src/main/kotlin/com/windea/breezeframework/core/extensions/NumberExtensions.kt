@@ -1,10 +1,37 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
 
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import java.math.*
 import kotlin.math.*
+
+/**进行乘方运算。*/
+inline infix fun Int.`^`(n: Int) = this.pow(n)
+
+/**进行乘方运算。*/
+inline infix fun Int.`^`(x: Float) = this.pow(x)
+
+/**进行乘方运算。*/
+inline infix fun Int.`^`(x: Double) = this.pow(x)
+
+/**进行乘方运算。*/
+inline infix fun Float.`^`(n: Int) = this.pow(n)
+
+/**进行乘方运算。*/
+inline infix fun Float.`^`(x: Float) = this.pow(x)
+
+/**进行乘方运算。*/
+inline infix fun Float.`^`(x: Double) = this.pow(x)
+
+/**进行乘方运算。*/
+inline infix fun Double.`^`(n: Int) = this.pow(n)
+
+/**进行乘方运算。*/
+inline infix fun Double.`^`(x: Float) = this.pow(x)
+
+/**进行乘方运算。*/
+inline infix fun Double.`^`(x: Double) = this.pow(x)
 
 
 /**进行整乘运算。*/
@@ -58,19 +85,19 @@ inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
 /**进行乘方运算。*/
-inline fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
+fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
 
 /**进行乘方运算。*/
-inline fun Int.pow(x: Float): Float = this.toFloat().pow(x)
+fun Int.pow(x: Float): Float = this.toFloat().pow(x)
 
 /**进行乘方运算。*/
-inline fun Int.pow(x: Double): Double = this.toDouble().pow(x)
+fun Int.pow(x: Double): Double = this.toDouble().pow(x)
 
 /**进行乘方运算。*/
-inline fun Float.pow(x: Double): Double = this.toDouble().pow(x)
+fun Float.pow(x: Double): Double = this.toDouble().pow(x)
 
 /**进行乘方运算。*/
-inline fun Double.pow(x: Float): Double = this.pow(x.toDouble())
+fun Double.pow(x: Float): Double = this.pow(x.toDouble())
 
 
 /**精确到指定位数，适用四舍五入。*/
