@@ -1,5 +1,3 @@
-@file:Suppress("SpellCheckingInspection")
-
 plugins {
 	kotlin("plugin.noarg") version "1.3.50"
 	kotlin("plugin.allopen") version "1.3.50"

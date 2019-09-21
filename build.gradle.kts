@@ -10,7 +10,6 @@ plugins {
 	id("org.jetbrains.dokka") version "0.9.18"
 }
 
-
 allprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
