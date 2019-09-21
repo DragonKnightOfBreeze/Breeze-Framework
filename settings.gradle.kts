@@ -4,6 +4,7 @@ include(
 	"breeze-core",
 	"breeze-data",
 	"breeze-dream",
+	"breeze-functional",
 	"breeze-fxgl",
 	"breeze-game",
 	"breeze-javafx",

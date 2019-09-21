@@ -78,6 +78,7 @@
 * [X] breeze-core 添加整乘、整除、转化为并发集合的扩展。
 * [X] breeze-fxgl 协助翻译简体和繁体中文文本。
 * [X] breeze-core 继续添加一些有用的扩展（如，整数/字符串转枚举值）。
+* [X] breeze-core 将函数式扩展移到单独的模块。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
