@@ -369,7 +369,7 @@ fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) ->
 
 /**根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。不包含分隔符时，加入基于索引和剩余字符串得到的默认值。*/
 inline fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
-	require(delimiters.count { it == null } <= 1) { "[ERROR] There should be at most one null value as separator in delimiters." }
+	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 	
 	var rawString = this
 	val fixedDelimiters = delimiters.filterNotNull()
@@ -459,18 +459,40 @@ fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrN
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
 
-/**将当前字符串转化为对应的枚举常量。*/
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
 @OutlookImplementationApi
-inline fun <reified T : Enum<T>> String.toEnumValue(): T = enumValueOf(this)
+inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase: Boolean = false): T =
+	enumValues<T>().let { enumValues -> enumValues.firstOrNull { it.name.equals(this, ignoreCase) } ?: enumValues.first() }
 
-/**将当前字符串转化为对应的枚举常量。*/
-fun String.toEnumValue(type: Class<*>): Any {
-	requireNotNull(type.isEnum) { "[ERROR] $type is not an enum class!" }
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
+@OutlookImplementationApi
+inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = false): T? =
+	enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
+
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
+@Suppress("DEPRECATION")
+@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
+fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
+	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	val enumConstants = type.enumConstants
 	return try {
-		type.enumConstants.first { it.toString() == this }
+		enumConstants.first { it.toString().equals(this, ignoreCase) }
 	} catch(e: Exception) {
-		logger.warn("No matched enum const found. Convert to default.")
-		type.enumConstants.first()
+		logger.warn("No matched enum value found. Convert to null.")
+		enumConstants.first()
+	}
+}
+
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
+@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
+fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
+	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	val enumConstants = type.enumConstants
+	return try {
+		enumConstants.first { it.toString().equals(this, ignoreCase) }
+	} catch(e: Exception) {
+		logger.warn("No matched enum value found. Convert to null.")
+		null
 	}
 }
 

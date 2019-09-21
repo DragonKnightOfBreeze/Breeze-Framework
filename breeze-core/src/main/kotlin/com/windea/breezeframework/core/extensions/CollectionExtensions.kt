@@ -284,7 +284,7 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
 		value is Iterable<*> -> value.toIndexKeyMap()
 		value is Map<*, *> -> value.toStringKeyMap()
 		value is Sequence<*> -> value.toIndexKeyMap()
-		else -> throw IllegalArgumentException("[ERROR] There is not a value related to this reference path.")
+		else -> throw IllegalArgumentException("There is not a value related to this reference path.")
 	}
 	return fixedValue.privateDeepGet(currentSubPaths)
 }

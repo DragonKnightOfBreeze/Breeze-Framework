@@ -171,3 +171,11 @@ private tailrec fun BigInteger.privateCumulative(result: BigInteger = 1.toBigInt
 	if(this == 1.toBigInteger()) return result
 	return (this - 1.toBigInteger()).privateCumulative(this + result)
 }
+
+////////////Convert operations
+
+/**将当前整数转化为对应的枚举值。如果转化失败，则转化为默认值。*/
+inline fun <reified T : Enum<T>> Int.toEnumValue(): T = enumValues<T>().getOrDefault(this, enumValues<T>().first())
+
+/**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
+inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? = enumValues<T>().getOrNull(this)

@@ -53,5 +53,5 @@ fun String.crossLineSurroundsWith(prefix: String, suffix: String, ignoreCase: Bo
 }
 
 private fun checkEnableCrossLine() {
-	check(enableCrossLine) { "[ERROR] Cross line operations are not enabled. They are enabled in crossLine { ... } block." }
+	check(enableCrossLine) { "Cross line operations are not enabled. They are enabled in crossLine { ... } block." }
 }
