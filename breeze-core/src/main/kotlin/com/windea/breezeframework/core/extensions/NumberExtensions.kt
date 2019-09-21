@@ -7,6 +7,56 @@ import java.math.*
 import kotlin.math.*
 
 
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
+
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Long): Int = this.times(other).toInt()
+
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
+
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Int): Long = this.times(other)
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Long): Long = this.times(other)
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
+
+
+/**进行整除运算。*/
+inline infix fun Int.exactDiv(other: Int): Int = this.div(other)
+
+/**进行整除运算。*/
+inline infix fun Int.exactDiv(other: Long): Int = this.div(other).toInt()
+
+/**进行整除运算。*/
+inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
+
+/**进行整除运算。*/
+inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
+
+/**进行整除运算。*/
+inline infix fun Long.exactDiv(other: Int): Long = this.div(other)
+
+/**进行整除运算。*/
+inline infix fun Long.exactDiv(other: Long): Long = this.div(other)
+
+/**进行整除运算。*/
+inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
+
+/**进行整除运算。*/
+inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
+
+
 /**进行乘方运算。*/
 inline fun Int.pow(n: Int): Int = this.toFloat().pow(n).toInt()
 
@@ -21,32 +71,6 @@ inline fun Float.pow(x: Double): Double = this.toDouble().pow(x)
 
 /**进行乘方运算。*/
 inline fun Double.pow(x: Float): Double = this.pow(x.toDouble())
-
-
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
-
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
-
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
-
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
-
-
-/**进行整除操作。*/
-inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
-
-/**进行整除操作。*/
-inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
-
-/**进行整除操作。*/
-inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
-
-/**进行整除操作。*/
-inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
 /**精确到指定位数，适用四舍五入。*/
