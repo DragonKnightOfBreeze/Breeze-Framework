@@ -52,12 +52,6 @@ allprojects {
 		kotlinOptions.jvmTarget = "11"
 	}
 	
-	//配置dokka
-	tasks.dokka {
-		outputFormat = "html"
-		outputDirectory = "$buildDir/javadoc"
-	}
-	
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
