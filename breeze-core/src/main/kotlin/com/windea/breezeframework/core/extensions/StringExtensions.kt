@@ -17,6 +17,26 @@ import java.util.*
 private val logger = KotlinLogging.logger { }
 
 
+/////////////Operator overrides
+
+/**@see kotlin.text.slice*/
+@OutlookImplementationApi
+operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.remove*/
+@OutlookImplementationApi
+operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
+
+/**@see kotlin.text.repeat*/
+@OutlookImplementationApi
+operator fun String.times(n: Int): String = this.repeat(n)
+
+/**@see kotlin.text.chunked*/
+@OutlookImplementationApi
+operator fun String.div(n: Int): List<String> = this.chunked(n)
+
+////////Common functions
+
 /**判断字符串是否相等。忽略大小写。*/
 @OutlookImplementationApi
 inline infix fun String?.equalsIc(other: String?): Boolean {
@@ -539,21 +559,3 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeForma
 //		else -> Color.getColor(this)
 //	}
 //}
-
-/////////////Operator overrides
-
-/**@see kotlin.text.slice*/
-@OutlookImplementationApi
-operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
-
-/**@see com.windea.breezeframework.core.extensions.remove*/
-@OutlookImplementationApi
-operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
-
-/**@see kotlin.text.repeat*/
-@OutlookImplementationApi
-operator fun String.times(n: Int): String = this.repeat(n)
-
-/**@see kotlin.text.chunked*/
-@OutlookImplementationApi
-operator fun String.div(n: Int): List<String> = this.chunked(n)

@@ -75,6 +75,7 @@
 * [X] breeze-time 去除标准库已提供的扩展。
 * [X] breeze-core 重构随机数扩展，由对象改为扩展方法。
 * [X] breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）
+* [X] breeze-core 添加整乘、整除、转化为并发集合的扩展。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

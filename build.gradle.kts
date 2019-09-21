@@ -40,9 +40,10 @@ allprojects {
 	//optional只能依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
-		implementation(kotlin("reflect"))
-		testImplementation(kotlin("test"))
 		testImplementation(kotlin("test-junit"))
+		
+		implementation("io.github.microutils:kotlin-logging:1.6.26")
+		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 	}
 	
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置

@@ -23,6 +23,32 @@ inline fun Float.pow(x: Double): Double = this.toDouble().pow(x)
 inline fun Double.pow(x: Float): Double = this.pow(x.toDouble())
 
 
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
+
+/**进行整乘运算。*/
+inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
+
+/**进行整乘运算。*/
+inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
+
+
+/**进行整除操作。*/
+inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
+
+/**进行整除操作。*/
+inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
+
+/**进行整除操作。*/
+inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
+
+/**进行整除操作。*/
+inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
+
+
 /**精确到指定位数，适用四舍五入。*/
 fun Float.round(precision: Int): Float {
 	require(precision > 0)

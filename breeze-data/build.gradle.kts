@@ -18,4 +18,3 @@ dependencies {
 	implementation("com.fasterxml.jackson:jackson-dataformat-csv:0.5.0", optional)
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformats-text:2.10.0.pr2", optional)
 }
-

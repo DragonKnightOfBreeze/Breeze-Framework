@@ -4,6 +4,35 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
+import java.util.concurrent.*
+
+///////////Operator overrides
+
+/**@see kotlin.collections.slice*/
+@OutlookImplementationApi
+operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+
+/**@see kotlin.collections.slice*/
+@OutlookImplementationApi
+operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+
+//////////Common functions
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 @OutlookImplementationApi
@@ -351,40 +380,45 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 
 ///////////Convert operations
 
+/**将当前列表转化为并发列表。*/
+fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
+
+/**将当前集转化为并发集。*/
+fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
+
+/**将当前映射转化为并发映射。*/
+fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
+
+
 /**将当前键值对数组转化为可变映射。*/
-fun <K, V> Array<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+fun <K, V> Array<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 /**将当前键值对列表转化为可变映射。*/
-fun <K, V> List<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 /**将当前键值对序列转化为可变映射。*/
-fun <K, V> Sequence<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 
 /**将当前数组转化成以键为值的映射。*/
-@OutlookImplementationApi
 fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前集合转化成以键为值的映射。*/
-@OutlookImplementationApi
-inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前映射转换成以字符串为键的映射。*/
-@OutlookImplementationApi
-inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	return this.mapKeys { (k, _) ->
-		//once: if(k is String) return this@toStringKeyMap as Map<String, V>
-		k.toString()
-	}
+fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
+	//return this if key is String
+	if(this.keys.firstOrNull() is String) return this as Map<String, V>
+	return this.mapKeys { (k, _) -> k.toString() }
 }
 
 /**将当前序列转化成以键为值的映射。*/
-@OutlookImplementationApi
-inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
@@ -392,11 +426,11 @@ inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Array<T>.getOrEmpty(index: Int): String = this.getOrNull(index)?.toString() ?: ""
+inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi
-fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+inline fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 
 /**去除起始的空白行。*/
@@ -457,29 +491,3 @@ inline fun <T> Iterable<T>.withIndex(transform: (Int) -> Int): Iterable<IndexedV
 inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Sequence<IndexedValue<T>> {
 	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
 }
-
-///////////Operator overrides
-
-/**@see kotlin.collections.slice*/
-@OutlookImplementationApi
-operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-@OutlookImplementationApi
-operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
-
-/**@see kotlin.collections.chunked*/
-@OutlookImplementationApi
-operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
-
-/**@see kotlin.collections.slice*/
-@OutlookImplementationApi
-operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-@OutlookImplementationApi
-operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
-
-/**@see kotlin.collections.chunked*/
-@OutlookImplementationApi
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
