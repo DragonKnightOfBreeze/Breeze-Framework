@@ -80,6 +80,10 @@
 * [X] breeze-core 继续添加一些有用的扩展（如，整数/字符串转枚举值）。
 * [X] breeze-core 将函数式扩展移到单独的模块。
 
+### 1.0.4
+
+* [X] 更新版本号。
+
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
     * [ ] UPDATING 提供plantUml state graph的Dsl。

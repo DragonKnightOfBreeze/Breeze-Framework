@@ -10,7 +10,16 @@ plugins {
 	id("org.jetbrains.dokka") version "0.9.18"
 }
 
+
 allprojects {
+	//version需要写到allprojects里面
+	group = "com.windea.breezeframework"
+	version = "1.0.4"
+	
+	//在这里放置常量和扩展参数
+	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+	
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
@@ -19,14 +28,6 @@ allprojects {
 		plugin("com.jfrog.bintray")
 		plugin("org.jetbrains.dokka")
 	}
-	
-	//version需要写到allprojects里面
-	group = "com.windea.breezeframework"
-	version = "1.0.3"
-	
-	//在这里放置常量和扩展参数
-	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
 	
 	//配置依赖仓库
 	repositories {
@@ -111,28 +112,30 @@ allprojects {
 			//配置上传到的仓库
 			repositories {
 				//maven本地仓库
-				maven {
-					url = uri("$buildDir/repository")
-				}
-				//bintray远程公共仓库，可间接上传到jcenter
-				bintray {
-					//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
-					user = System.getenv("BINTRAY_USER")
-					key = System.getenv("BINTRAY_API_KEY")
-					setPublications("maven")
-					pkg.userOrg = "breeze-knights"
-					pkg.repo = rootProject.name
-					pkg.name = project.name
-					pkg.websiteUrl = siteUrl
-					pkg.vcsUrl = gitUrl
-					pkg.setLabels("kotlin", "framework")
-					pkg.setLicenses("MIT")
-					pkg.version.name = "1.0.3"
-					pkg.version.vcsTag = "1.0.x"
-				}
+				maven("$buildDir/repository")
 			}
 		}
 	}
+	
+	//bintray远程公共仓库，可间接上传到jcenter
+	bintray {
+		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
+		user = System.getenv("BINTRAY_USER")
+		key = System.getenv("BINTRAY_API_KEY")
+		setPublications("maven")
+		pkg.userOrg = "breeze-knights"
+		pkg.repo = rootProject.name
+		pkg.name = project.name
+		pkg.websiteUrl = siteUrl
+		pkg.vcsUrl = gitUrl
+		pkg.setLabels("kotlin", "framework")
+		pkg.setLicenses("MIT")
+		pkg.version.name = version.toString()
+		pkg.version.vcsTag = version.toString()
+	}
 }
+
+
+
 
 
