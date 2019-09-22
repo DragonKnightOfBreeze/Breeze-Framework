@@ -5,25 +5,102 @@ package com.windea.breezeframework.core.extensions
 import java.io.*
 import javax.script.*
 
-/**执行一段懒加载的脚本。默认为kts。需要自行提供脚本语言支持。*/
-inline fun <reified T> eval(extension: String = "kts", lazyScript: () -> String): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript()) as? T
+/**访问系统属性。*/
+object SystemProperties {
+	private val properties = System.getProperties()
+	
+	/**操作系统名。*/
+	val osName: String? by lazy { properties.getProperty("os.name") }
+	/**用户名。*/
+	val userName: String? by lazy { properties.getProperty("user.name") }
+	/**用户首页目录。*/
+	val userHome: String? by lazy { properties.getProperty("user.home") }
+	/**用户目录。即，项目的当前工作路径。*/
+	val userDir: String? by lazy { properties.getProperty("user.dir") }
+	/**用户所属国家。*/
+	val userCountry: String? by lazy { properties.getProperty("user.country") }
+	/**用户所用语言。*/
+	val userLanguage: String? by lazy { properties.getProperty("user.language") }
+	/**文件分隔符。*/
+	val fileSeparator: String? by lazy { properties.getProperty("file.separator") }
+	/**文件编码。*/
+	val fileEncoding: String? by lazy { properties.getProperty("file.encoding") }
+	/**行分隔符。*/
+	val lineSeparator: String? by lazy { properties.getProperty("line.separator") }
+	
+	/**得到指定的系统属性。*/
+	operator fun get(name: String): String? = properties.getProperty(name)
 }
 
-/**执行一段懒加载的脚本。绑定一组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-inline fun <reified T> eval(extension: String = "kts", bindings: Bindings, lazyScript: () -> String): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), bindings) as? T
+
+/**访问环境变量。*/
+object EnvironmentVariables {
+	private val env = System.getenv()
+	
+	/**得到Java Home。*/
+	val javaHome: String? by lazy { env["JAVA_HOME"] }
+	/**得到Kotlin Home。*/
+	val kotlinHome: String? by lazy { env["KOTLIN_HOME"] }
+	
+	/**得到指定的环境变量。*/
+	operator fun get(name: String): String? = env[name]
 }
 
-/**执行一段懒加载的脚本。绑定多组属性。可指定语言后缀，默认为kts。需要自行提供脚本语言支持。*/
-inline fun <reified T> eval(extension: String = "kts", context: ScriptContext, lazyScript: () -> String): T? {
-	return scriptEngineManager.getEngineByExtension(extension)?.eval(lazyScript(), context) as? T
+
+/**访问脚本引擎。*/
+object ScriptEngines {
+	private val engineManager = ScriptEngineManager()
+	
+	/**
+	 * 得到kotlinScript的脚本引擎。
+	 *
+	 * 注意：其实现依赖于外部库，如：`kotlin-main-kts。
+	 */
+	val kotlinScript: ScriptEngine by lazy { engineManager.getEngineByExtension("kts") }
+	/**
+	 * 得到javaScript的脚本引擎。
+	 */
+	val javaScript: ScriptEngine by lazy { engineManager.getEngineByExtension("js") }
+	/**
+	 * 得到typeScript的脚本引擎。
+	 *
+	 * 注意：其实现依赖于外部库。
+	 */
+	val typeScript: ScriptEngine by lazy { engineManager.getEngineByExtension("ts") }
+	/**
+	 * 得到python的脚本引擎。
+	 *
+	 * 注意：其实现依赖于外部库。
+	 */
+	val python: ScriptEngine by lazy { engineManager.getEngineByExtension("py") }
+	/**
+	 * 得到lua的脚本引擎。
+	 *
+	 * 注意：其实现依赖于外部库。
+	 */
+	val lua: ScriptEngine by lazy { engineManager.getEngineByExtension("lua") }
+	
+	/**得到指定扩展名的脚本引擎。*/
+	operator fun get(extension: String): ScriptEngine? = engineManager.getEngineByExtension(extension)
 }
 
-@PublishedApi internal val scriptEngineManager by lazy { ScriptEngineManager() }
+/**执行一段懒加载的脚本。*/
+inline fun <reified T> ScriptEngine.eval(lazyScript: () -> String): T? {
+	return this.eval(lazyScript()) as? T
+}
+
+/**绑定一组属性，执行一段懒加载的脚本。*/
+inline fun <reified T> ScriptEngine.eval(bindings: Bindings, lazyScript: () -> String): T? {
+	return this.eval(lazyScript(), bindings) as? T
+}
+
+/**绑定多组属性，执行一段懒加载的脚本。*/
+inline fun <reified T> ScriptEngine.eval(context: ScriptContext, lazyScript: () -> String): T? {
+	return this.eval(lazyScript(), context) as? T
+}
 
 
 /**执行一段懒加载的命令。可指定工作目录，默认为当前目录；可指定环境变量，默认为空。*/
-inline fun exac(workDirectory: File? = null, vararg environmentVariables: String, lazyCommand: () -> String): Process {
+inline fun exac(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory)
 }

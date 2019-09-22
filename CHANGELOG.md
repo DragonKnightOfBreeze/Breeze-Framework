@@ -84,6 +84,7 @@
 
 * [X] 更新版本号。
 * [X] breeze-core 添加`Collection.randomOrNull()`扩展。
+* [X] breeze-core 重构系统扩展。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
