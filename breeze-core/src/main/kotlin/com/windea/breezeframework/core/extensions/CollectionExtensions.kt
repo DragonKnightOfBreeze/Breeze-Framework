@@ -5,6 +5,7 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
 import java.util.concurrent.*
+import kotlin.random.*
 
 ///////////Operator overrides
 
@@ -163,11 +164,28 @@ inline fun <T> Sequence<T>.ifNotEmpty(crossinline transform: () -> Sequence<T>):
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
+	return this.getOrElse(index) { defaultValue }
+}
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
+	return this.getOrElse(index) { defaultValue }
+}
+
+
+/**得到随机元素。如果数组为空，则返回null。*/
+fun <T> Array<out T>.randomOrNull(random: Random = Random): T? {
+	if(this.isEmpty()) return null
+	return this[random.nextInt(size)]
+}
+
+/**得到随机元素。如果集合为空，则返回null。*/
+fun <T> Collection<T>.randomOrNull(random: Random = Random): T? {
+	if(this.isEmpty()) return null
+	return this[random.nextInt(size)]
+}
 
 
 /**重复当前集合中的元素到指定次数。*/
