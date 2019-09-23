@@ -100,10 +100,6 @@ inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): 
 	suffixArray.any { this.endsWith(it, true) }
 
 
-/**判断当前字符串是否包含空白。*/
-fun CharSequence.containsBlank() = this.contains("""\s""".toRegex())
-
-
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
 fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
 
@@ -132,6 +128,31 @@ fun String.flatRepeat(n: Int): String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 	
 	return this.map { it.toString().repeat(n) }.joinToString("")
+}
+
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByChar")
+fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
+	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByString")
+fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
+	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByChar")
+fun String.replaceAll(charPairList: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
+	return charPairList.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByString")
+fun String.replaceAll(valuePairList: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
+	return valuePairList.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
 
@@ -179,14 +200,14 @@ fun String.messageFormat(vararg args: Any): String {
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.unescapeRegex() }
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escapeRegex() }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escapeRegex() }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
 			}
@@ -247,42 +268,39 @@ inline fun String.removeBlank(): String {
 }
 
 
-private val escapes = arrayOf("\t", "\b", "\n", "\r", "\'", "\"") //not for every language, ignore "\\" and "\$"
+//not for every language, ignore "\\" and "\$"
+private val escapeStrings = arrayOf("\t", "\b", "\n", "\r", "\'", "\"")
+private val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
 
-private val unescapes = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
+//not for every scope
+private val escapeStringsInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+")
+private val escapedStringsInRegex = arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "\\?", "\\+")
 
-private val escapesInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+") //not for every scope
+private val escapeStringsInXml = arrayOf("<", ">", "&", "'", "\"")
+private val escapedStringsInXml = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "quot;")
 
-/**转义当前字符串。例如，将`\\n`转换为`\n`。*/
-fun String.escape(): String {
-	return (escapes zip unescapes).fold(this) { str, (escape, unescape) ->
-		str.replace(unescape, escape)
-	}
-}
+/**转义当前字符串。例如，将`\n`转换为`\\n`。*/
+fun String.escape(): String = this.replaceAll(escapeStrings zip escapedStrings)
 
-/**反转义当前字符串。例如，将`\n`转换为`\\n`。*/
-fun String.unescape(): String {
-	return (escapes zip unescapes).fold(this) { str, (escape, unescape) ->
-		str.replace(escape, unescape)
-	}
-}
+/**反转义当前字符串。例如，将`\\n`转换为`\n`。*/
+fun String.unescape(): String = this.replaceAll(escapedStrings zip escapeStrings)
 
-private fun String.unescapeRegex(): String {
-	return escapesInRegex.fold(this) { str, escape ->
-		str.replace(escape, "\\$escape")
-	}
-}
+/**转义当前正则表达式字符串。*/
+fun String.escapeRegex(): String = this.replaceAll(escapeStringsInRegex zip escapedStringsInRegex)
+
+/**转义当前Xml字符串。*/
+fun String.escapeXml(): String = this.replaceAll(escapeStringsInXml zip escapedStringsInXml)
 
 
 private val quotes = arrayOf("\"", "'", "`")
 
-/**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。*/
+/**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。同时转义其中的引号。*/
 fun String.wrapQuote(quote: String = "\""): String {
 	if(quote !in quotes) return this
 	return this.replace(quote, "\\$quote").addSurrounding(quote, quote, false)
 }
 
-/**去除当前字符串两侧的双引号/单引号/反引号。*/
+/**去除当前字符串两侧的双引号/单引号/反引号。同时反转义对应的引号。*/
 fun String.unwrapQuote(): String {
 	val quote = this.first().toString()
 	if(quote !in quotes) return this

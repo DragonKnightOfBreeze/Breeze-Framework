@@ -3,6 +3,7 @@
 package com.windea.breezeframework.data.dsl
 
 //规定：
+//所有的Dsl元素的构造方法都必须是@Published internal
 //所有的Dsl元素和Dsl构建方法都必须添加对应的slMarker注解
 //所有的Dsl构建方法都要尽可能地写成内联形式和X表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
 //所有的Dsl元素的属性都不应该声明在构造方法之内，因为可能需要对输入参数进行处理。

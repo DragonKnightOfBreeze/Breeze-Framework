@@ -22,7 +22,7 @@ object IdeaConfigGenerator : Generator {
 		return """
 		<templateSet group="YamlAnnotation">
 		${definitions.joinToString("\n\n") { (templateName, template) ->
-			val description = (template.getOrDefault("description", "") as String).unescape()
+			val description = (template.getOrDefault("description", "") as String).escape()
 			val params = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
 			val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
 			
@@ -31,7 +31,7 @@ object IdeaConfigGenerator : Generator {
 		                description="$description"
 		                toReformat="true" toShortenFQNames="true" useStaticImport="true">${
 			params.joinToString("\n") { (paramName, param) ->
-				val defaultValue = (param.getOrDefault("default", "") as String).unescape()
+				val defaultValue = (param.getOrDefault("default", "") as String).escape()
 				
 				"""    <variable name="$paramName" expression="" defaultValue="&quot;$defaultValue&quot;" alwaysStopAt="true"/>"""
 			}.ifNotEmpty { "\n$it" }}

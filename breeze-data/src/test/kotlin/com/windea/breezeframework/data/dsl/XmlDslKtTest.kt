@@ -3,8 +3,10 @@ package com.windea.breezeframework.data.dsl
 import com.windea.breezeframework.data.dsl.text.*
 import kotlin.test.*
 
+//TESTED VERY NICE!
+
 class XmlDslKtTest {
-	@Test //TESTED VERY NICE!
+	@Test
 	fun test() {
 		val xml = xml {
 			-"comment"
@@ -12,7 +14,7 @@ class XmlDslKtTest {
 				comment
 				second line
 			""".trimIndent() wrap true
-			"       element"{
+			"element"{
 				//"attr1"("value1")
 				
 				-"comment"
@@ -24,7 +26,7 @@ class XmlDslKtTest {
 				element("elem") {
 					text("element text")
 				}
-				"element"("a" to "b", "c  " to "d") {
+				"element"("a" to "b", "c" to "d") {
 					+"text"
 				}
 				comment("""

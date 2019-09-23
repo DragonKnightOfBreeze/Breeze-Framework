@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST", "SimpleRedundantLet")
+@file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST", "SimpleRedundantLet", "CanBePrimaryConstructorProperty")
 
 package com.windea.breezeframework.data.dsl.text
 
@@ -32,6 +32,10 @@ fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 /**Xml文件。*/
 @XmlDsl
 class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, DslBuilder {
+	/**声明列表。*/
+	val statements: MutableList<XmlStatement> = mutableListOf(
+		XmlStatement("xml", "version" to "1.0", "encoding" to "UTF-8")
+	)
 	/**注释列表。*/
 	val comments: MutableList<XmlComment> = mutableListOf()
 	/**根元素。*/
@@ -40,11 +44,18 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
-		val commentsSnippet = if(wrapContent) comments.joinToString("\n") else comments.joinToString("")
-		val wrapSnippet = if(wrapContent) "\n" else ""
-		return "$commentsSnippet$wrapSnippet$rootElement"
+		val n = if(wrapContent) "\n" else ""
+		return arrayOf(
+			statements.joinToString(n),
+			comments.joinToString(n),
+			rootElement.toString()
+		).filterNotEmpty().joinToString(n)
 	}
 	
+	
+	/**添加声明。*/
+	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
+		XmlStatement(name, *attributes).also { statements += it }
 	
 	/**添加注释。*/
 	@XmlDsl
@@ -61,8 +72,27 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	
 	/**@see Xml.element*/
 	@XmlDsl
-	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
 		element(this, *attributes) { builder() }
+}
+
+/**Xml声明。*/
+class XmlStatement @PublishedApi internal constructor(
+	name: String,
+	vararg attributes: Pair<String, Any?>
+) : XmlDslElement {
+	/**名字。*/
+	val name: String = name //NOTE do not ensure argument is valid
+	/**属性。*/
+	val attributes: Map<String, String> = attributes.toMap().toStringValueMap() //NOTE do not ensure argument is valid
+	
+	override fun toString(): String {
+		val attributesSnippet = when {
+			attributes.isEmpty() -> ""
+			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		}
+		return "<?$name$attributesSnippet?>"
+	}
 }
 
 /**Xml元素。*/
@@ -72,9 +102,9 @@ class XmlElement @PublishedApi internal constructor(
 	vararg attributes: Pair<String, Any?>
 ) : XmlNode, CanWrapContent, CanIndentContent {
 	/**名字。*/
-	val name: String = name //NOTE do not ensure that argument is valid
+	val name = name //NOTE do not ensure argument is valid
 	/**属性。*/
-	val attributes: Map<String, Any?> = attributes.toMap() //NOTE do not ensure that argument is valid
+	val attributes: Map<String, String> = attributes.toMap().toStringValueMap() //NOTE do not ensure argument is valid
 	/**子结点列表。*/
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
@@ -82,7 +112,10 @@ class XmlElement @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToString(" ") { (k, v) -> "$k=${v.toString().wrapQuote(quote)}" }
+		val attributesSnippet = when {
+			attributes.isEmpty() -> ""
+			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		}
 		val elementsSnippet = if(wrapContent) nodes.joinToString("\n") else nodes.joinToString("")
 		val indentedElementsSnippet = if(indentContent) elementsSnippet.prependIndent(indent) else elementsSnippet
 		val wrappedElementsSnippet = when {
@@ -107,7 +140,7 @@ class XmlElement @PublishedApi internal constructor(
 	
 	/**添加元素。*/
 	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
 		XmlElement(name, *attributes).also { it.builder() }.also { nodes += it }
 	
 	/**@see XmlElement.text*/
@@ -120,7 +153,7 @@ class XmlElement @PublishedApi internal constructor(
 	
 	/**@see XmlElement.element*/
 	@XmlDsl
-	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
 		element(this, *attributes) { builder() }
 }
 
@@ -130,9 +163,8 @@ class XmlText @PublishedApi internal constructor(
 	text: String
 ) : XmlNode {
 	/**文本。*/
-	var text: String = text.let {
-		it.replace("<", "&lt;").replace(">", "&gt;") //NOTE do not ensure that argument is valid
-	}
+	var text: String = text.escapeXml() //NOTE do not ensure argument is valid
+	
 	
 	override fun toString(): String {
 		return text
@@ -145,9 +177,7 @@ class XmlComment @PublishedApi internal constructor(
 	comment: String
 ) : XmlNode, CanWrapContent, CanIndentContent {
 	/**注释。*/
-	var comment: String = comment.let {
-		it.replace("<", "&lt;").replace(">", "&gt;") //NOTE do not ensure that argument is valid
-	}
+	var comment: String = comment.escapeXml() //NOTE do not ensure argument is valid
 	
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = false

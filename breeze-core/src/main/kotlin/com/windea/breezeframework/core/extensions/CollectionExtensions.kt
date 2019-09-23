@@ -479,6 +479,12 @@ fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 
+/**将当前映射转换成以字符串为值的映射。*/
+fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
+	//assume V is Any? or Any
+	return this.mapValues { (_, v) -> v.toString() }
+}
+
 /**将当前序列转化成以键为值的映射。*/
 fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }

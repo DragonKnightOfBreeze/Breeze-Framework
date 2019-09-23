@@ -87,6 +87,7 @@
 * [X] breeze-core 重构系统扩展。
 * [X] breeze-core 重构与重新格式化代码。
 * [X] breeze-data 重构XmlDsl和MermaidFlowDsl。
+* [X] breeze-core&breeze-data 修复一些不合理的代码逻辑，完善XmlDsl和MermaidFlowDsl。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

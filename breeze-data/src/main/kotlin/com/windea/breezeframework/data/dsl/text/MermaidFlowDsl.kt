@@ -1,6 +1,5 @@
 @file:Reference("[Mermaid](https://mermaidjs.github.io)")
-@file:NotImplemented
-@file:Suppress("CanBePrimaryConstructorProperty", "SimpleRedundantLet", "NOTHING_TO_INLINE")
+@file:Suppress("CanBePrimaryConstructorProperty", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.data.dsl.text
 
@@ -23,7 +22,9 @@ interface MermaidFlowDslElement
 abstract class MermaidFlowGraph : CanIndentContent {
 	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
 	val links: MutableSet<MermaidFlowLink> = mutableSetOf()
+	val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
 	
+	override var indentContent: Boolean = true
 	
 	@MermaidFlowDsl
 	inline fun node(id: String, text: String? = null, shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect) =
@@ -34,23 +35,20 @@ abstract class MermaidFlowGraph : CanIndentContent {
 		MermaidFlowLink(sourceNodeId, targetNodeId, linkShape, linkText).also { links += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) = run {
-		if(sourceNode !in nodes) nodes += sourceNode
+	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) =
 		MermaidFlowLink(sourceNode.id, targetNodeId, linkShape, linkText).also { links += it }
-	}
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) = run {
-		if(targetNode !in nodes) nodes += targetNode
+	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) =
 		MermaidFlowLink(sourceNodeId, targetNode.id, linkShape, linkText).also { links += it }
-	}
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) = run {
-		if(sourceNode !in nodes) nodes += sourceNode
-		if(targetNode !in nodes) nodes += targetNode
+	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow, linkText: String? = null) =
 		MermaidFlowLink(sourceNode.id, targetNode.id, linkShape, linkText).also { links += it }
-	}
+	
+	@MermaidFlowDsl
+	inline fun subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
+		MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
 }
 
 //REGION Dsl elements & build functions
@@ -72,14 +70,15 @@ class MermaidFlow @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = buildString {
-			append(nodes.joinToString("\n", "\n\n"))
-			append(links.joinToString("\n", "\n\n"))
-			append(styles.joinToString("\n", "\n\n"))
-			append(linkStyles.joinToString("\n", "\n\n"))
-			append(classDefs.joinToString("\n", "\n\n"))
-			append(classRefs.joinToString("\n"))
-		}
+		val contentSnippet = arrayOf(
+			nodes.joinToString("\n"),
+			links.joinToString("\n"),
+			subGraphs.joinToString("\n"),
+			styles.joinToString("\n"),
+			linkStyles.joinToString("\n"),
+			classDefs.joinToString("\n"),
+			classRefs.joinToString("\n")
+		).filterNotEmpty().joinToString("\n\n")
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "graph ${direction.text}\n$indentedSnippet"
 	}
@@ -106,15 +105,16 @@ class MermaidFlow @PublishedApi internal constructor(
 class MermaidFlowSubGraph @PublishedApi internal constructor(
 	name: String
 ) : MermaidFlowGraph() {
-	val name: String = name //NOTE do not ensure that argument is valid
+	val name: String = name //NOTE do not ensure argument is valid
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = buildString {
-			append(nodes.joinToString("\n", "\n\n"))
-			append(links.joinToString("\n"))
-		}
+		val contentSnippet = arrayOf(
+			nodes.joinToString("\n"),
+			links.joinToString("\n"),
+			subGraphs.joinToString("\n")
+		).filterNotEmpty().joinToString("\n\n")
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "subgraph $name\n$indentedSnippet\nend"
 	}
@@ -126,8 +126,8 @@ class MermaidFlowNode @PublishedApi internal constructor(
 	text: String? = null,
 	shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
 ) : MermaidFlowDslElement {
-	val id: String = id //NOTE do not ensure that argument is valid
-	val text: String? = text //NOTE do not ensure that argument is valid
+	val id: String = id //NOTE do not ensure argument is valid
+	val text: String? = text //NOTE do not ensure argument is valid
 	val shape: MermaidFlowNodeShape = shape
 	
 	//TODO omit text, no double quote surround text if not necessary
@@ -144,10 +144,10 @@ class MermaidFlowLink @PublishedApi internal constructor(
 	linkShape: MermaidFlowLinkShape = MermaidFlowLinkShape.Arrow,
 	linkText: String? = null
 ) : MermaidFlowDslElement {
-	val sourceNodeId: String = sourceNodeId //NOTE do not ensure that argument is valid
-	val targetNodeId: String = targetNodeId //NOTE do not ensure that argument is valid
+	val sourceNodeId: String = sourceNodeId //NOTE do not ensure argument is valid
+	val targetNodeId: String = targetNodeId //NOTE do not ensure argument is valid
 	val linkShape: MermaidFlowLinkShape = linkShape
-	val linkText: String? = linkText //NOTE do not ensure that argument is valid
+	val linkText: String? = linkText //NOTE do not ensure argument is valid
 	
 	//TODO escape if necessary
 	override fun toString(): String {
@@ -162,8 +162,8 @@ class MermaidFlowNodeStyle @PublishedApi internal constructor(
 	nodeId: String,
 	vararg styles: Pair<String, String>
 ) : MermaidFlowDslElement {
-	val nodeId: String = nodeId //NOTE do not ensure that argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure that argument is valid
+	val nodeId: String = nodeId //NOTE do not ensure argument is valid
+	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
 	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -176,8 +176,8 @@ class MermaidFlowLinkStyle @PublishedApi internal constructor(
 	linkOrder: Int,
 	vararg styles: Pair<String, String>
 ) : MermaidFlowDslElement {
-	val linkOrder: Int = linkOrder //NOTE do not ensure that argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure that argument is valid
+	val linkOrder: Int = linkOrder //NOTE do not ensure argument is valid
+	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
 	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -190,8 +190,8 @@ class MermaidFlowClassDef @PublishedApi internal constructor(
 	className: String,
 	vararg styles: Pair<String, String>
 ) : MermaidFlowDslElement {
-	val className: String = className //NOTE do not ensure that argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure that argument is valid
+	val className: String = className //NOTE do not ensure argument is valid
+	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
 	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -204,8 +204,8 @@ class MermaidFlowClassRef @PublishedApi internal constructor(
 	vararg nodeIds: String,
 	className: String
 ) : MermaidFlowDslElement {
-	val nodeIds = nodeIds.toSet() //NOTE do not ensure that argument is valid
-	val className = className //NOTE do not ensure that argument is valid
+	val nodeIds = nodeIds.toSet() //NOTE do not ensure argument is valid
+	val className = className //NOTE do not ensure argument is valid
 	
 	override fun toString(): String {
 		val nodeIdSetSnippet = nodeIds.joinToString()

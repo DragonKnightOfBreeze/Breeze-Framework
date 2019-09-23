@@ -96,7 +96,7 @@ data class JsonString @PublishedApi internal constructor(
 	override val value: String
 ) : JsonItem<String>(value) {
 	override fun toString(): String {
-		return "$quote${value.unescape()}$quote"
+		return "$quote${value.escape()}$quote"
 	}
 }
 
