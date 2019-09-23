@@ -1,21 +1,20 @@
 @file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST", "SimpleRedundantLet", "CanBePrimaryConstructorProperty")
 
-package com.windea.breezeframework.data.dsl.text
+package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.*
-import com.windea.breezeframework.data.dsl.text.XmlConfig.autoCloseTag
-import com.windea.breezeframework.data.dsl.text.XmlConfig.defaultRootName
-import com.windea.breezeframework.data.dsl.text.XmlConfig.indent
-import com.windea.breezeframework.data.dsl.text.XmlConfig.indentSize
-import com.windea.breezeframework.data.dsl.text.XmlConfig.quote
+import com.windea.breezeframework.dsl.XmlConfig.autoCloseTag
+import com.windea.breezeframework.dsl.XmlConfig.defaultRootName
+import com.windea.breezeframework.dsl.XmlConfig.indent
+import com.windea.breezeframework.dsl.XmlConfig.indentSize
+import com.windea.breezeframework.dsl.XmlConfig.quote
 
 //REGION Dsl marker annotations & Dsl element interfaces
 
 @DslMarker
 internal annotation class XmlDsl
 
-/**Xml Dsl元素。*/
+/**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement
 
@@ -31,7 +30,7 @@ fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 
 /**Xml文件。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, DslBuilder {
+class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, Dsl {
 	/**声明列表。*/
 	val statements: MutableList<XmlStatement> = mutableListOf(
 		XmlStatement("xml", "version" to "1.0", "encoding" to "UTF-8")
@@ -59,7 +58,7 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	
 	/**添加注释。*/
 	@XmlDsl
-	inline fun comment(comment: String) = XmlComment(comment).also { comments += it }
+	inline fun comment(text: String) = XmlComment(text).also { comments += it }
 	
 	/**添加元素。*/
 	@XmlDsl
@@ -136,7 +135,7 @@ class XmlElement @PublishedApi internal constructor(
 	
 	/**添加注释。*/
 	@XmlDsl
-	inline fun comment(comment: String) = XmlComment(comment).also { nodes += it }
+	inline fun comment(text: String) = XmlComment(text).also { nodes += it }
 	
 	/**添加元素。*/
 	@XmlDsl
@@ -174,10 +173,10 @@ class XmlText @PublishedApi internal constructor(
 /**Xml注释。*/
 @XmlDsl
 class XmlComment @PublishedApi internal constructor(
-	comment: String
+	text: String
 ) : XmlNode, CanWrapContent, CanIndentContent {
 	/**注释。*/
-	var comment: String = comment.escapeXml() //NOTE do not ensure argument is valid
+	var comment: String = text.escapeXml() //NOTE do not ensure argument is valid
 	
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = false

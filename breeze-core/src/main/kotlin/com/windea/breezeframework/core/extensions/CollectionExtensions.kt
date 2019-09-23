@@ -176,13 +176,19 @@ inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 
 
 /**得到随机元素。如果数组为空，则返回null。*/
-inline fun <T> Array<out T>.randomOrNull(random: Random = Random): T? {
+inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
+
+/**得到随机元素。如果数组为空，则返回null。*/
+inline fun <T> Array<out T>.randomOrNull(random: Random): T? {
 	if(this.isEmpty()) return null
 	return this[random.nextInt(size)]
 }
 
 /**得到随机元素。如果集合为空，则返回null。*/
-inline fun <T> Collection<T>.randomOrNull(random: Random = Random): T? {
+inline fun <T> Collection<T>.randomOrNull(): T? = this.randomOrNull(Random)
+
+/**得到随机元素。如果集合为空，则返回null。*/
+inline fun <T> Collection<T>.randomOrNull(random: Random): T? {
 	if(this.isEmpty()) return null
 	return this.elementAt(random.nextInt(size))
 }

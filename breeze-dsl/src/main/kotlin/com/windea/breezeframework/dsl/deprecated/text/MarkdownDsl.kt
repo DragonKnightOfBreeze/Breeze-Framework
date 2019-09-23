@@ -1,19 +1,20 @@
-package com.windea.breezeframework.data.dsl.deprecated.text
+package com.windea.breezeframework.dsl.deprecated.text
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.dsl.deprecated.*
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.addTrailingBreakSpaces
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.addTrailingHeaderMarkers
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.defaultName
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.indent
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.indentSize
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.initialMarker
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.listIndentSize
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.quote
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.quoteIndentSize
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.repeatableMarkerSize
-import com.windea.breezeframework.data.dsl.deprecated.text.MarkdownDslConfig.truncated
+import com.windea.breezeframework.dsl.deprecated.*
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.addTrailingBreakSpaces
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.addTrailingHeaderMarkers
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.defaultName
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.indent
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.indentSize
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.initialMarker
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.listIndentSize
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.quote
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.quoteIndentSize
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.repeatableMarkerSize
+import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.truncated
 import java.lang.annotation.*
 
 //TODO 关联Html标签

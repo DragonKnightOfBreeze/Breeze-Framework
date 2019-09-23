@@ -1,4 +1,4 @@
-package com.windea.breezeframework.data.dsl.deprecated
+package com.windea.breezeframework.dsl.deprecated
 
 /**
  * Dsl（领域专用语言）。

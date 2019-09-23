@@ -1,6 +1,8 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.data.dsl
+package com.windea.breezeframework.dsl
+
+import com.windea.breezeframework.core.extensions.*
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal
@@ -13,8 +15,8 @@ package com.windea.breezeframework.data.dsl
 @DslMarker
 internal annotation class GeneralDsl
 
-/**Dsl的构建器。*/
-interface DslBuilder
+/**Dsl。即，领域专用语言。*/
+interface Dsl
 
 /**Dsl的配置。*/
 interface DslConfig
@@ -56,3 +58,9 @@ inline fun <T> T.indent(): T where T : CanIndentContent = this.indent(true)
 /**不缩进内容。*/
 @GeneralDsl
 inline fun <T> T.unindent(): T where T : CanIndentContent = this.indent(false)
+
+//REGION Useful extensions for argument handling
+
+/**将`\n` `\r`替换成`<br>`。*/
+@PublishedApi
+internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")

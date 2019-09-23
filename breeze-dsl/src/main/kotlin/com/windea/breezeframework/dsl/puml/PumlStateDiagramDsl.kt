@@ -2,11 +2,11 @@
 @file:Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @file:NotImplemented
 
-package com.windea.breezeframework.data.dsl.text
+package com.windea.breezeframework.dsl.puml
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.*
+import com.windea.breezeframework.dsl.*
 
 //REGION Portal function
 
@@ -26,7 +26,7 @@ interface PumlStateDiagramState : PumlStateDiagramDslElement
 
 class PumlStateDiagram(
 	override var indentContent: Boolean = true
-) : DslBuilder, PumlStateDiagramDslElement, CanIndentContent {
+) : Dsl, PumlStateDiagramDslElement, CanIndentContent {
 	override fun toString(): String {
 		val snippet = ""
 		return "@startuml\n\n$snippet\n\n@enduml"
