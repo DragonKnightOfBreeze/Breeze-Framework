@@ -4,7 +4,7 @@ package com.windea.breezeframework.functional
 
 import com.windea.breezeframework.core.annotations.marks.*
 
-//////////curried & uncurried
+//REGION curried & uncurried
 
 /**柯里化当前函数。即，`fun(a,b,c) -> fun(a)(b)(c)`。*/
 fun <P1, P2, R> ((P1, P2) -> R).curried() =
@@ -47,7 +47,7 @@ fun <P1, P2, P3, P4, P5, R> ((P1) -> (P2) -> (P3) -> (P4) -> (P5) -> R).uncurrie
 fun <P1, P2, P3, P4, P5, P6, R> ((P1) -> (P2) -> (P3) -> (P4) -> (P5) -> (P6) -> R).uncurried() =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6) = this(p1)(p2)(p3)(p4)(p5)(p6)
 
-///////////reversed
+//REGION reversed
 
 /**反转当前函数的参数。即，`fun(a,b,c) -> fun(c,b,a)`。*/
 fun <P1, P2, R> ((P1, P2) -> R).reversed() =
@@ -69,7 +69,7 @@ fun <P1, P2, P3, P4, P5, R> ((P1, P2, P3, P4, P5) -> R).reversed() =
 fun <P1, P2, P3, P4, P5, P6, R> ((P1, P2, P3, P4, P5, P6) -> R).reversed() =
 	fun(p6: P6, p5: P5, p4: P4, p3: P3, p2: P2, p1: P1) = this(p1, p2, p3, p4, p5, p6)
 
-///////////paired & unpaired & tripled & untripled
+//REGION paired & unpaired & tripled & untripled
 
 /**绑定当前函数的参数。即，`fun(a,b,c) -> fun((a,b,c))`。*/
 fun <P1, P2, R> ((P1, P2) -> R).paired() = fun(pair: Pair<P1, P2>) = this(pair.first, pair.second)
@@ -83,7 +83,7 @@ fun <P1, P2, P3, R> ((P1, P2, P3) -> R).tripled() = fun(triple: Triple<P1, P2, P
 /**解绑当前函数的参数。即，`fun((a,b,c)) -> fun(a,b,c)`。*/
 fun <P1, P2, P3, R> ((Triple<P1, P2, P3>) -> R).untripled() = fun(p1: P1, p2: P2, p3: P3) = this(Triple(p1, p2, p3))
 
-//////////partial & partialLast
+//REGION partial & partialLast
 
 /**传入第一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & a -> fun(b)(c)`。*/
 infix fun <P1, P2, R> ((P1, P2) -> R).partial(param: P1) =
@@ -126,7 +126,7 @@ infix fun <P1, P2, P3, P4, P5, R> ((P1, P2, P3, P4, P5) -> R).partialLast(param:
 infix fun <P1, P2, P3, P4, P5, P6, R> ((P1, P2, P3, P4, P5, P6) -> R).partialLast(param: P6) =
 	fun(p1: P1) = fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = this(p1, p2, p3, p4, p5, param)
 
-///////////////pipe & pipeLast
+//REGION pipe & pipeLast
 
 /**传入第一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & a -> fun(b,c)`。*/
 infix fun <P1, P2, R> ((P1, P2) -> R).pipe(param: P1) =
@@ -169,7 +169,7 @@ infix fun <P1, P2, P3, P4, P5, R> ((P1, P2, P3, P4, P5) -> R).pipeLast(param: P5
 infix fun <P1, P2, P3, P4, P5, P6, R> ((P1, P2, P3, P4, P5, P6) -> R).pipeLast(param: P6) =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5) = this(p1, p2, p3, p4, p5, param)
 
-////////////compose
+//REGION compose
 
 /**组合当前函数和另一个函数。即，`fun(a,b) & fun(b,c) -> fun(a,c)`。*/
 infix fun <P, I, R> ((P) -> I).compose(other: (I) -> R) = fun(p: P) = other(this(p))

@@ -7,33 +7,33 @@ import com.windea.breezeframework.core.enums.core.*
 import java.util.concurrent.*
 import kotlin.random.*
 
-///////////Operator overrides
+//REGION Operator overrides
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+inline operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+inline operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
 @OutlookImplementationApi
-operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 @OutlookImplementationApi
-operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**@see kotlin.collections.chunked*/
 @OutlookImplementationApi
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 
-//////////Common functions
+//REGION Common functions
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 @OutlookImplementationApi
@@ -176,15 +176,15 @@ inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 
 
 /**得到随机元素。如果数组为空，则返回null。*/
-fun <T> Array<out T>.randomOrNull(random: Random = Random): T? {
+inline fun <T> Array<out T>.randomOrNull(random: Random = Random): T? {
 	if(this.isEmpty()) return null
 	return this[random.nextInt(size)]
 }
 
 /**得到随机元素。如果集合为空，则返回null。*/
-fun <T> Collection<T>.randomOrNull(random: Random = Random): T? {
+inline fun <T> Collection<T>.randomOrNull(random: Random = Random): T? {
 	if(this.isEmpty()) return null
-	return this[random.nextInt(size)]
+	return this.elementAt(random.nextInt(size))
 }
 
 
@@ -320,7 +320,7 @@ inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-////////////////Deep operations
+//REGION Deep operations
 
 /**根据指定的标准引用得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
@@ -440,7 +440,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 	}.toMap()
 }
 
-///////////Convert operations
+//REGION Convert extensions
 
 /**将当前列表转化为并发列表。*/
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
@@ -484,7 +484,7 @@ fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
-/////////////Specific operations
+//REGION Specific operations
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi

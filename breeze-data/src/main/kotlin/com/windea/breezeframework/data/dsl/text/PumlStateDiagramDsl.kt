@@ -8,11 +8,11 @@ import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.dsl.*
 
-//////////Portal function
+//REGION Portal function
 
 fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().builder()
 
-///////////////Dsl marker annotations & Dsl element interfaces
+//REGION Dsl marker annotations & Dsl element interfaces
 
 @DslMarker
 internal annotation class PumlStateDiagramDsl
@@ -22,11 +22,11 @@ interface PumlStateDiagramDslElement
 
 interface PumlStateDiagramState : PumlStateDiagramDslElement
 
-////////////Dsl elements & Build functions
+//REGION Dsl elements & Build functions
 
 class PumlStateDiagram(
 	override var indentContent: Boolean = true
-) : Dsl, PumlStateDiagramDslElement, CanIndentContent {
+) : DslBuilder, PumlStateDiagramDslElement, CanIndentContent {
 	override fun toString(): String {
 		val snippet = ""
 		return "@startuml\n\n$snippet\n\n@enduml"
@@ -45,10 +45,10 @@ class PumlStateDiagramNote : PumlStateDiagramDslElement
 
 class PumlStateDiagramSkinParam : PumlStateDiagramDslElement
 
-//////////TODO Param handler extensions
+//REGION TODO Param handler extensions
 
 
-//////////Config object
+//REGION Config object
 
 object PumlStateDiagramConfig : DslConfig {
 	/**缩进长度。*/

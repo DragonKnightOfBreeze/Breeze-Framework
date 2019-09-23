@@ -13,7 +13,7 @@ class XmlDslKtTest {
 				second line
 			""".trimIndent() wrap true
 			"       element"{
-				"attr1"("value1")
+				//"attr1"("value1")
 				
 				-"comment"
 				+"text"
@@ -21,6 +21,9 @@ class XmlDslKtTest {
 					text
 					text
 				""".trimIndent()
+				element("elem") {
+					text("element text")
+				}
 				"element"("a" to "b", "c  " to "d") {
 					+"text"
 				}

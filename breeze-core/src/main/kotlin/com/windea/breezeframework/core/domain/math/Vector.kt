@@ -1,6 +1,8 @@
 package com.windea.breezeframework.core.domain.math
 
-interface Vector<T : Vector<T>> {
+import java.io.*
+
+interface Vector<T : Vector<T>> : Serializable {
 	/**模长*/
 	val length: Float
 	/**单位向量。*/

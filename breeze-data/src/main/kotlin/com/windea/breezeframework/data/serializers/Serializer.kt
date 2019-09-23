@@ -11,7 +11,7 @@ import java.io.*
 //TODO 考虑编写自己的简洁而灵活的实现
 //TODO 考虑使用扩展库`kotlinx-serialization`，但是缺少具体的对于yaml、xml等格式的实现
 
-/////////////Top interfaces
+//REGION Top interfaces
 
 /**序列化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
 interface Serializer {

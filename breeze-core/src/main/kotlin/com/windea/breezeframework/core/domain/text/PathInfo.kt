@@ -1,5 +1,6 @@
 package com.windea.breezeframework.core.domain.text
 
+import java.io.*
 import java.nio.file.*
 
 /**路径信息。相比[Path]更加轻量，同时也能进行解构。*/
@@ -16,7 +17,7 @@ data class PathInfo(
 	val fileShotName: String,
 	/**包含"."的文件扩展名。*/
 	val fileExtension: String
-) {
+) : Serializable {
 	/**是否存在上一级文件夹。*/
 	val hasFileDirectory = parent.isNotEmpty()
 	/**是否存在文件扩展名。*/

@@ -172,7 +172,7 @@ private tailrec fun BigInteger.privateCumulative(result: BigInteger = 1.toBigInt
 	return (this - 1.toBigInteger()).privateCumulative(this + result)
 }
 
-////////////Convert operations
+//REGION Convert extensions
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为默认值。*/
 inline fun <reified T : Enum<T>> Int.toEnumValue(): T = enumValues<T>().getOrDefault(this, enumValues<T>().first())

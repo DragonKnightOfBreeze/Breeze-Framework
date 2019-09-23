@@ -10,36 +10,32 @@ import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.text.*
-import java.time.*
-import java.time.format.*
-import java.util.*
 
 private val logger = KotlinLogging.logger { }
 
-
-/////////////Operator overrides
+//REGION Operator overrides
 
 /**@see kotlin.text.slice*/
 @OutlookImplementationApi
-operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
 
 /**@see com.windea.breezeframework.core.extensions.remove*/
 @OutlookImplementationApi
-operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
+inline operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**@see kotlin.text.repeat*/
 @OutlookImplementationApi
-operator fun String.times(n: Int): String = this.repeat(n)
+inline operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
 @OutlookImplementationApi
-operator fun String.div(n: Int): List<String> = this.chunked(n)
+inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 
-////////Common functions
+//REGION Common functions
 
 /**判断字符串是否相等。忽略大小写。*/
 @OutlookImplementationApi
-inline infix fun String?.equalsIc(other: String?): Boolean {
+infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
@@ -54,9 +50,6 @@ infix fun String?.equalsIlc(other: String?): Boolean {
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
 @OutlookImplementationApi
 inline infix fun String.anyIn(other: String): Boolean = this.any { it in other }
-
-/**判断当前字符串是否与另一字符串相像。即，判断是否存在共同的以空格分隔的单词。*/
-infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn other.splitToWordList()
 
 
 /**判断当前字符串是否以指定前缀开头。*/
@@ -107,14 +100,18 @@ inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): 
 	suffixArray.any { this.endsWith(it, true) }
 
 
+/**判断当前字符串是否包含空白。*/
+fun CharSequence.containsBlank() = this.contains("""\s""".toRegex())
+
+
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
-inline fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
+fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
 
 /**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
-inline fun CharSequence.isNumeric() = this matches "[1-9]+".toRegex()
+fun CharSequence.isNumeric() = this matches "[1-9]+".toRegex()
 
 /**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
-inline fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
+fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
 
 
 /**如果当前字符串不为空，则返回转换后的值。*/
@@ -405,7 +402,7 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 
-////////////Convert operations
+//REGION Convert extensions
 
 /**
  * 将当前字符串转为折行文本。
@@ -540,23 +537,6 @@ internal fun String.toQueryParamMap(): QueryParamMap {
 	}
 	return QueryParamMap(map)
 }
-
-
-/**将当前字符串转化为日期。*/
-inline fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
-
-/**将当前字符串转化为本地日期。*/
-inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
-	LocalDate.parse(this, formatter)
-
-/**将当前字符串转化为本地日期时间。*/
-inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
-	LocalDateTime.parse(this, formatter)
-
-/**将当前字符串转化为本地时间。*/
-inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
-	LocalDateTime.parse(this, formatter)
-
 
 ///**将当前字符串转化为颜色。*/
 //fun String.toColor(): Color {
