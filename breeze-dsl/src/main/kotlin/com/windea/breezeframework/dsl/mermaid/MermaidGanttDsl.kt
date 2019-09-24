@@ -6,10 +6,8 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidGanttConfig.indent
+import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import java.time.*
-
-//TODO 允许输入时间类型的参数
 
 //REGION Dsl annotations
 
@@ -76,35 +74,6 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	@MermaidGanttDsl
 	inline fun task(name: String, isCrit: Boolean = false, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
 		MermaidGanttTask(name, isCrit, status).also { tasks += it }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.alias(alias: String) = this.also { it.alias = alias }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.initialAt(time: String) = this.also { it.initialTime = time }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.finishAt(time: String) = this.also { it.finishTime = time }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.initialAt(time: LocalDate) = this.also { it.initialTime = time.toString() }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.finishAt(time: LocalDate) = this.also { it.finishTime = time.toString() }
-	
-	//LocalDateTime format causes error
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.previousTask(taskName: String) = this.also { it.initialTime = "after $taskName" }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.duration(duration: String) = this.also { it.finishTime = duration }
-	
-	@MermaidGanttDsl
-	inline infix fun MermaidGanttTask.duration(duration: Duration) = this.also {
-		//the output string format is "PTnHnMnS", but mermaid use "xd"/"xh"
-		it.finishTime = duration.toString().drop(2).toLowerCase()
-	}
 }
 
 /**Mermaid甘特图任务。*/
@@ -131,21 +100,42 @@ class MermaidGanttTask @PublishedApi internal constructor(
 			.filterNotNull().joinToString()
 		return "$name: $paramsSnippet"
 	}
+	
+	
+	@MermaidGanttDsl
+	inline infix fun alias(alias: String) = this.also { it.alias = alias }
+	
+	@MermaidGanttDsl
+	inline infix fun initialAt(time: String) = this.also { it.initialTime = time }
+	
+	@MermaidGanttDsl
+	inline infix fun finishAt(time: String) = this.also { it.finishTime = time }
+	
+	@MermaidGanttDsl
+	inline infix fun initialAt(time: LocalDate) = this.also { it.initialTime = time.toString() }
+	
+	@MermaidGanttDsl
+	inline infix fun finishAt(time: LocalDate) = this.also { it.finishTime = time.toString() }
+	
+	//LocalDateTime format causes error
+	
+	@MermaidGanttDsl
+	inline infix fun previousTask(taskName: String) = this.also { it.initialTime = "after $taskName" }
+	
+	@MermaidGanttDsl
+	inline infix fun duration(duration: String) = this.also { it.finishTime = duration }
+	
+	@MermaidGanttDsl
+	inline infix fun duration(duration: Duration) = this.also {
+		//the output string format is "PTnHnMnS", but mermaid use "xd"/"xh"
+		it.finishTime = duration.toString().drop(2).toLowerCase()
+	}
 }
 
 //REGION Enumerations and constants
 
 /**Mermaid甘特图任务的状态。*/
-enum class MermaidGanttTaskStatus(
-	val text: String?
-) {
-	ToDo(null),
-	Done("done"),
-	Active("active")
+enum class MermaidGanttTaskStatus(val text: String?) {
+	ToDo(null), Done("done"), Active("active")
 }
-
-//REGION Config object
-
-/**Mermaid序列图的配置。*/
-object MermaidGanttConfig : MermaidConfig()
 

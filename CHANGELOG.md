@@ -92,13 +92,9 @@
 * [X] breeze-dsl 完成MermaidGanttDsl。
 * [X] breeze-data 提供equals、hashcode、toString方法的构建方法。
 * [X] breeze-data 完善equals、hashcode、toString方法的构建方法。
+* [X] breeze-dsl 更新PumlDsl和PumlStateDiagramDsl中。
 
-* [ ] breeze-data 提供mermaid和plantUml的Dsl。
-    * [ ] UPDATING 提供mermaid flow chart的Dsl。
-    * [ ] UPDATING 提供plantUml state graph的Dsl。
-* [ ] breeze-data 提供更多图形语言的Dsl。
-    * [ ] 提供sequence的Dsl。
-    * [ ] 提供flow的Dsl。
+* [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。

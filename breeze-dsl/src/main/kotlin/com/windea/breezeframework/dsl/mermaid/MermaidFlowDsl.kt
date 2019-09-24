@@ -6,8 +6,8 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowConfig.indent
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowConfig.quote
+import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
+import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //REGION Dsl annotations
 
@@ -56,20 +56,20 @@ sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 		MermaidFlowNode(id, text, shape).also { nodes += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNodeId: String, linkText: String? = null, linkArrow: MermaidFlowLinkArrow = MermaidFlowLinkArrow.Arrow) =
-		MermaidFlowLink(sourceNodeId, targetNodeId, linkText, linkArrow).also { links += it }
+	inline fun link(sourceNodeId: String, targetNodeId: String, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
+		MermaidFlowLink(sourceNodeId, targetNodeId, text, arrowShape).also { links += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, linkText: String? = null, linkArrow: MermaidFlowLinkArrow = MermaidFlowLinkArrow.Arrow) =
-		MermaidFlowLink(sourceNode.id, targetNodeId, linkText, linkArrow).also { links += it }
+	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
+		MermaidFlowLink(sourceNode.id, targetNodeId, text, arrowShape).also { links += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, linkText: String? = null, linkArrow: MermaidFlowLinkArrow = MermaidFlowLinkArrow.Arrow) =
-		MermaidFlowLink(sourceNodeId, targetNode.id, linkText, linkArrow).also { links += it }
+	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
+		MermaidFlowLink(sourceNodeId, targetNode.id, text, arrowShape).also { links += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, linkText: String? = null, linkArrow: MermaidFlowLinkArrow = MermaidFlowLinkArrow.Arrow) =
-		MermaidFlowLink(sourceNode.id, targetNode.id, linkText, linkArrow).also { links += it }
+	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
+		MermaidFlowLink(sourceNode.id, targetNode.id, text, arrowShape).also { links += it }
 	
 	@MermaidFlowDsl
 	inline fun subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
@@ -117,13 +117,9 @@ class MermaidFlowNode @PublishedApi internal constructor(
 	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
 	val shape: MermaidFlowNodeShape = shape
 	
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is MermaidFlowNode && other.id == id)
-	}
+	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.id == id)
 	
-	override fun hashCode(): Int {
-		return id.hashCode()
-	}
+	override fun hashCode() = id.hashCode()
 	
 	//TODO omit text, no double quote surround text if not necessary
 	override fun toString(): String {
@@ -137,19 +133,19 @@ class MermaidFlowNode @PublishedApi internal constructor(
 class MermaidFlowLink @PublishedApi internal constructor(
 	sourceNodeId: String,
 	targetNodeId: String,
-	linkText: String? = null,
-	linkArrow: MermaidFlowLinkArrow = MermaidFlowLinkArrow.Arrow
+	text: String? = null,
+	arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow
 ) : MermaidFlowDslElement {
 	val sourceNodeId: String = sourceNodeId //NOTE do not ensure argument is valid
 	val targetNodeId: String = targetNodeId //NOTE do not ensure argument is valid
-	val linkText: String? = linkText?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val linkArrow: MermaidFlowLinkArrow = linkArrow
+	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
+	val arrowShape: MermaidFlowLinkArrowShape = arrowShape
 	
 	//TODO escape if necessary
 	override fun toString(): String {
-		val linkSnippet = linkArrow.text
-		val linkTextSnippet = linkText?.let { "|$linkText|" } ?: ""
-		return "$sourceNodeId $linkSnippet$linkTextSnippet $targetNodeId"
+		val arrowSnippet = arrowShape.text
+		val textSnippet = text?.let { "|$text|" } ?: ""
+		return "$sourceNodeId $arrowSnippet$textSnippet $targetNodeId"
 	}
 }
 
@@ -230,17 +226,12 @@ class MermaidFlowClassRef @PublishedApi internal constructor(
 //REGION Enumerations and constants
 
 /**Mermaid流程图的方向。*/
-enum class MermaidFlowDirection(
-	val text: String
-) {
+enum class MermaidFlowDirection(val text: String) {
 	TB("TB"), BT("BT"), LR("LR"), RL("RL")
 }
 
 /**Mermaid流程图节点的形状。*/
-enum class MermaidFlowNodeShape(
-	val prefix: String,
-	val suffix: String
-) {
+enum class MermaidFlowNodeShape(val prefix: String, val suffix: String) {
 	/**矩形。*/
 	Rect("[", "]"),
 	/**圆角矩形。*/
@@ -253,19 +244,7 @@ enum class MermaidFlowNodeShape(
 	Rhombus("{", "}")
 }
 
-/**Mermaid流程图连接的箭头类型。*/
-enum class MermaidFlowLinkArrow(
-	val text: String
-) {
-	Arrow("-->"),
-	DottedArrow("-.->"),
-	BoldArrow("==>"),
-	Line("---"),
-	DottedLine("-.-"),
-	BoldLine("===")
+/**Mermaid流程图连接的箭头形状。*/
+enum class MermaidFlowLinkArrowShape(val text: String) {
+	Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 }
-
-//REGION Config object
-
-/**Mermaid流程图的配置。*/
-object MermaidFlowConfig : MermaidConfig()

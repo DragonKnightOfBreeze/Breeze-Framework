@@ -10,57 +10,62 @@ import com.windea.breezeframework.core.extensions.*
 //所有的Dsl构建方法都要尽可能地写成内联形式和X表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
 //所有的Dsl元素的属性都不应该声明在构造方法之内，因为可能需要对输入参数进行处理。
 
-//REGION Top interfaces
+//REGION Dsl annotations
 
 @DslMarker
 internal annotation class GeneralDsl
 
+//REGION Top interfaces
+
 /**Dsl。即，领域专用语言。*/
+@GeneralDsl
 interface Dsl
 
 /**Dsl的元素。*/
+@GeneralDsl
 interface DslElement
 
 /**Dsl的配置。*/
 interface DslConfig
 
-//REGION General Dsl interfaces and related extensions
+//REGION General Dsl elements and related extensions
 
 /**可换行内容。*/
+@GeneralDsl
 interface CanWrapContent {
 	var wrapContent: Boolean
 }
 
+/**设置是否换行内容。*/
+@GeneralDsl
+inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
+
+/**换行内容。*/
+@GeneralDsl
+inline fun <T : CanWrapContent> T.wrap() = this.wrap(true)
+
+/**不换行内容。*/
+@GeneralDsl
+inline fun <T : CanWrapContent> T.unwrap() = this.wrap(false)
+
+
 /**可缩进内容。*/
+@GeneralDsl
 interface CanIndentContent {
 	var indentContent: Boolean
 }
 
-
-/**设置是否换行内容。*/
-@GeneralDsl
-inline infix fun <T> T.wrap(value: Boolean): T where T : CanWrapContent = this.also { wrapContent = value }
-
 /**设置是否缩进内容。*/
 @GeneralDsl
-inline infix fun <T> T.indent(value: Boolean): T where T : CanIndentContent = this.also { indentContent = value }
-
-
-/**换行内容。*/
-@GeneralDsl
-inline fun <T> T.wrap(): T where T : CanWrapContent = this.wrap(true)
-
-/**不换行内容。*/
-@GeneralDsl
-inline fun <T> T.unwrap(): T where T : CanWrapContent = this.wrap(false)
+inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 /**缩进内容。*/
 @GeneralDsl
-inline fun <T> T.indent(): T where T : CanIndentContent = this.indent(true)
+inline fun <T : CanIndentContent> T.indent() = this.indent(true)
 
 /**不缩进内容。*/
 @GeneralDsl
-inline fun <T> T.unindent(): T where T : CanIndentContent = this.indent(false)
+inline fun <T : CanIndentContent> T.unindent() = this.indent(false)
 
 //REGION Useful extensions for argument handling
 

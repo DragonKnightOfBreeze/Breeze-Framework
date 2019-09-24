@@ -2,7 +2,7 @@ package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidFlowDirection.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowLinkArrow.*
+import com.windea.breezeframework.dsl.mermaid.MermaidFlowLinkArrowShape.*
 import kotlin.test.*
 
 //TESTED VERY NICE!

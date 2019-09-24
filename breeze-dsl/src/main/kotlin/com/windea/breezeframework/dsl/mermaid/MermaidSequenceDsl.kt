@@ -6,7 +6,7 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidSequenceConfig.indent
+import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
 //REGION Dsl annotations
 
@@ -26,7 +26,7 @@ interface MermaidSequenceDslElement : MermaidDslElement
 /**抽象的Mermaid序列图。*/
 @MermaidSequenceDsl
 sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentContent {
-	val actors: MutableSet<MermaidSequenceActor> = mutableSetOf()
+	val actors: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
 	val messages: MutableList<MermaidSequenceMessage> = mutableListOf()
 	val notes: MutableList<MermaidSequenceNote> = mutableListOf()
 	val scopes: MutableList<MermaidSequenceScope> = mutableListOf()
@@ -44,34 +44,15 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 	
 	
 	@MermaidSequenceDsl
-	inline fun actor(name: String) =
-		MermaidSequenceActor(name).also { actors += it }
-	
-	@MermaidSequenceDsl
-	inline infix fun MermaidSequenceActor.alias(alias: String) = this.also { it.alias = alias }
+	inline fun participant(name: String) =
+		MermaidSequenceParticipant(name).also { actors += it }
 	
 	@MermaidSequenceDsl
 	inline fun message(fromActorName: String, toActorName: String, messageText: String, messageArrow: MermaidSequenceMessageArrow = MermaidSequenceMessageArrow.Arrow) =
 		MermaidSequenceMessage(fromActorName, toActorName, messageText, messageArrow).also { messages += it }
 	
 	@MermaidSequenceDsl
-	inline infix fun MermaidSequenceMessage.activate(status: Boolean) = this.also { it.activateStatus = status }
-	
-	@MermaidSequenceDsl
 	inline fun note(text: String) = MermaidSequenceNote(text).also { notes += it }
-	
-	@MermaidSequenceDsl
-	inline infix fun MermaidSequenceNote.leftOf(actorName: String) =
-		this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorName = actorName }
-	
-	@MermaidSequenceDsl
-	inline infix fun MermaidSequenceNote.rightOf(actorName: String) =
-		this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorName = actorName }
-	
-	@MermaidSequenceDsl
-	inline infix fun MermaidSequenceNote.over(actorNamePair: Pair<String, String>) =
-		this.also { it.position = MermaidSequenceNodePosition.RightOf }
-			.also { it.targetActorName = actorNamePair.first }.also { it.targetActor2Name = actorNamePair.second }
 	
 	@MermaidSequenceDsl
 	inline fun loop(text: String, builder: MermaidSequenceLoop.() -> Unit) =
@@ -88,6 +69,9 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 	@MermaidSequenceDsl
 	inline fun highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
 		MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
+	
+	@MermaidSequenceDsl
+	inline operator fun String.unaryMinus() = note(this)
 }
 
 /**Mermaid序列图。*/
@@ -100,9 +84,9 @@ class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequ
 	}
 }
 
-/**Mermaid序列图角色。*/
+/**Mermaid序列图参与者。*/
 @MermaidSequenceDsl
-class MermaidSequenceActor @PublishedApi internal constructor(
+class MermaidSequenceParticipant @PublishedApi internal constructor(
 	name: String
 ) : MermaidSequenceDslElement {
 	val name: String = name //NOTE do not ensure argument is valid
@@ -110,7 +94,7 @@ class MermaidSequenceActor @PublishedApi internal constructor(
 	var alias: String? = null //NOTE do not ensure argument is valid
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || (other is MermaidSequenceActor && other.name == name)
+		return this === other || (other is MermaidSequenceParticipant && other.name == name)
 	}
 	
 	override fun hashCode(): Int {
@@ -121,6 +105,10 @@ class MermaidSequenceActor @PublishedApi internal constructor(
 		val aliasSnippet = if(alias.isNullOrEmpty()) "" else "$alias as "
 		return "participant $aliasSnippet$name"
 	}
+	
+	
+	@MermaidSequenceDsl
+	inline infix fun alias(alias: String) = this.also { it.alias = alias }
 }
 
 /**Mermaid序列图消息。*/
@@ -143,6 +131,10 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 		val activateSnippet = activateStatus?.let { if(it) "+ " else "- " } ?: ""
 		return "$fromActorName ${messageArrow.text} $activateSnippet$toActorName: $messageText"
 	}
+	
+	
+	@MermaidSequenceDsl
+	inline infix fun activate(status: Boolean) = this.also { it.activateStatus = status }
 }
 
 /**Mermaid序列图注释。*/
@@ -161,6 +153,20 @@ class MermaidSequenceNote @PublishedApi internal constructor(
 		val targetActor2NameSnippet = targetActor2Name?.let { ", $it" } ?: ""
 		return "note $position $targetActorName$targetActor2NameSnippet: $text"
 	}
+	
+	
+	@MermaidSequenceDsl
+	inline infix fun leftOf(actorName: String) =
+		this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorName = actorName }
+	
+	@MermaidSequenceDsl
+	inline infix fun rightOf(actorName: String) =
+		this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorName = actorName }
+	
+	@MermaidSequenceDsl
+	inline infix fun over(actorNamePair: Pair<String, String>) =
+		this.also { it.position = MermaidSequenceNodePosition.RightOf }
+			.also { it.targetActorName = actorNamePair.first }.also { it.targetActor2Name = actorNamePair.second }
 }
 
 /**Mermaid序列图作用域。*/
@@ -226,27 +232,12 @@ class MermaidSequenceHighlight @PublishedApi internal constructor(
 //REGION Enumerations and constants
 
 /**Mermaid序列图消息的箭头类型。*/
-enum class MermaidSequenceMessageArrow(
-	val text: String
-) {
-	Arrow("->>"),
-	DottedArrow("-->>"),
-	Line("->"),
-	DottedLine("-->"),
-	Cross("-x"),
-	DottedCross("--x")
+enum class MermaidSequenceMessageArrow(val text: String) {
+	Arrow("->>"), DottedArrow("-->>"), Line("->"), DottedLine("-->"), Cross("-x"), DottedCross("--x")
 }
 
 /**Mermaid序列图注释的位置。*/
-enum class MermaidSequenceNodePosition(
-	val text: String
-) {
-	RightOf("right of"),
-	LeftOf("left of"),
-	Over("over")
+enum class MermaidSequenceNodePosition(val text: String) {
+	RightOf("right of"), LeftOf("left of"), Over("over")
 }
 
-//REGION Config object
-
-/**Mermaid序列图的配置。*/
-object MermaidSequenceConfig : MermaidConfig()

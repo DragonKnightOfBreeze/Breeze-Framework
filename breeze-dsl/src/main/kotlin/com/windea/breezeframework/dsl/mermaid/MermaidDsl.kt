@@ -6,14 +6,23 @@ import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
+//REGION Dsl annotations
+
+@DslMarker
+annotation class MermaidDsl
+
+//REGION Top interfaces
+
 /**Mermaid Dsl。*/
+@MermaidDsl
 interface Mermaid : Dsl
 
 /**Mermaid Dsl的元素。*/
+@MermaidDsl
 interface MermaidDslElement : DslElement
 
 /**Mermaid Dsl的配置。*/
-abstract class MermaidConfig : DslConfig {
+object MermaidConfig : DslConfig {
 	/**缩进长度。*/
 	var indentSize = 4
 		set(value) = run { field = value.coerceIn(-2, 8) }
