@@ -1,5 +1,6 @@
 package com.windea.breezeframework.dsl
 
+import com.windea.breezeframework.dsl.markup.*
 import kotlin.test.*
 
 //TESTED VERY NICE!

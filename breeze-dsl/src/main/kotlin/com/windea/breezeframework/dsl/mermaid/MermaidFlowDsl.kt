@@ -23,11 +23,11 @@ fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit
 
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowDsl
-interface MermaidFlowDslElement
+interface MermaidFlowDslElement : MermaidDslElement
 
 /**抽象的Mermaid流程图。*/
 @MermaidFlowDsl
-abstract class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
+sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
 	val links: MutableSet<MermaidFlowLink> = mutableSetOf()
 	val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
@@ -96,7 +96,7 @@ abstract class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 @MermaidFlowDsl
 class MermaidFlow @PublishedApi internal constructor(
 	direction: MermaidFlowDirection
-) : AbstractMermaidFlow(), Dsl {
+) : AbstractMermaidFlow(), Mermaid {
 	val direction: MermaidFlowDirection = direction
 	
 	override fun toString(): String {
@@ -260,13 +260,4 @@ enum class MermaidFlowLinkArrow(
 //REGION Config object
 
 /**Mermaid流程图的配置。*/
-object MermaidFlowConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
+object MermaidFlowConfig : MermaidConfig()

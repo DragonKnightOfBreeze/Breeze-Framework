@@ -1,26 +1,19 @@
 @file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST", "SimpleRedundantLet", "CanBePrimaryConstructorProperty")
 
-package com.windea.breezeframework.dsl
+package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.XmlConfig.autoCloseTag
-import com.windea.breezeframework.dsl.XmlConfig.defaultRootName
-import com.windea.breezeframework.dsl.XmlConfig.indent
-import com.windea.breezeframework.dsl.XmlConfig.indentSize
-import com.windea.breezeframework.dsl.XmlConfig.quote
+import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.markup.XmlConfig.autoCloseTag
+import com.windea.breezeframework.dsl.markup.XmlConfig.defaultRootName
+import com.windea.breezeframework.dsl.markup.XmlConfig.indent
+import com.windea.breezeframework.dsl.markup.XmlConfig.indentSize
+import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
-//REGION Dsl marker annotations & Dsl element interfaces
+//REGION Dsl annotations
 
 @DslMarker
 internal annotation class XmlDsl
-
-/**Xml Dsl的元素。*/
-@XmlDsl
-interface XmlDslElement
-
-/**Xml结点。*/
-@XmlDsl
-interface XmlNode : XmlDslElement
 
 //REGION Dsl elements & Build functions
 
@@ -28,7 +21,15 @@ interface XmlNode : XmlDslElement
 @XmlDsl
 fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 
-/**Xml文件。*/
+/**Xml Dsl的元素。*/
+@XmlDsl
+interface XmlDslElement : DslElement
+
+/**Xml结点。*/
+@XmlDsl
+sealed class XmlNode : XmlDslElement
+
+/**Xml。*/
 @XmlDsl
 class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, Dsl {
 	/**声明列表。*/
@@ -99,7 +100,7 @@ class XmlStatement @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	name: String,
 	vararg attributes: Pair<String, Any?>
-) : XmlNode, CanWrapContent, CanIndentContent {
+) : XmlNode(), CanWrapContent, CanIndentContent {
 	/**名字。*/
 	val name = name //NOTE do not ensure argument is valid
 	/**属性。*/
@@ -160,7 +161,7 @@ class XmlElement @PublishedApi internal constructor(
 @XmlDsl
 class XmlText @PublishedApi internal constructor(
 	text: String
-) : XmlNode {
+) : XmlNode() {
 	/**文本。*/
 	var text: String = text.escapeXml() //NOTE do not ensure argument is valid
 	
@@ -174,7 +175,7 @@ class XmlText @PublishedApi internal constructor(
 @XmlDsl
 class XmlComment @PublishedApi internal constructor(
 	text: String
-) : XmlNode, CanWrapContent, CanIndentContent {
+) : XmlNode(), CanWrapContent, CanIndentContent {
 	/**注释。*/
 	var comment: String = text.escapeXml() //NOTE do not ensure argument is valid
 	

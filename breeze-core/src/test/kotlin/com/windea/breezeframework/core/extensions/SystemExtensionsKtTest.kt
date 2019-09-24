@@ -10,15 +10,14 @@ class SystemExtensionsKtTest {
 		println(SystemProperties.userLanguage)
 	}
 	
-	@Test
-	fun eval() {
-		println("hello")
-		val a = eval<Int>("js") { "2+2" }
-		println(a)
-		val b = eval<Int> { "2+2" } //why null??
-		println(b)
-		
-	}
+	//@Test
+	//fun eval() {
+	//	println("hello")
+	//	val a = eval<Int>("js") { "2+2" }
+	//	println(a)
+	//	val b = eval<Int> { "2+2" } //why null??
+	//	println(b)
+	//}
 	
 	@Test
 	fun exac() {

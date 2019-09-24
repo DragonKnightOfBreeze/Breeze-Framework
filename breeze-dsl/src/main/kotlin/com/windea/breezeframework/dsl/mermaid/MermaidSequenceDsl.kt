@@ -21,11 +21,11 @@ fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().als
 
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDsl
-interface MermaidSequenceDslElement
+interface MermaidSequenceDslElement : MermaidDslElement
 
 /**抽象的Mermaid序列图。*/
 @MermaidSequenceDsl
-abstract class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentContent {
+sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentContent {
 	val actors: MutableSet<MermaidSequenceActor> = mutableSetOf()
 	val messages: MutableList<MermaidSequenceMessage> = mutableListOf()
 	val notes: MutableList<MermaidSequenceNote> = mutableListOf()
@@ -92,7 +92,7 @@ abstract class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentCon
 
 /**Mermaid序列图。*/
 @MermaidSequenceDsl
-class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequence(), Dsl {
+class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequence(), Mermaid {
 	override fun toString(): String {
 		val contentSnippet = super.toString()
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
@@ -241,13 +241,4 @@ enum class MermaidSequenceNodePosition(
 //REGION Config object
 
 /**Mermaid序列图的配置。*/
-object MermaidSequenceConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
+object MermaidSequenceConfig : MermaidConfig()

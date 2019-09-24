@@ -89,6 +89,7 @@
 * [X] breeze-data 重构XmlDsl和MermaidFlowDsl。
 * [X] breeze-core&breeze-data 修复一些不合理的代码逻辑，完善XmlDsl和MermaidFlowDsl。
 * [X] breeze-dsl 将Dsl相关代码移到单独模块，完善MermaidFlowDsl，完成MermaidSequenceDsl。
+* [X] breeze-dsl 完成MermaidGanttDsl。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。

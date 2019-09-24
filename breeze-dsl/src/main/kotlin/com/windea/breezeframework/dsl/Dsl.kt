@@ -18,6 +18,9 @@ internal annotation class GeneralDsl
 /**Dsl。即，领域专用语言。*/
 interface Dsl
 
+/**Dsl的元素。*/
+interface DslElement
+
 /**Dsl的配置。*/
 interface DslConfig
 
@@ -61,6 +64,6 @@ inline fun <T> T.unindent(): T where T : CanIndentContent = this.indent(false)
 
 //REGION Useful extensions for argument handling
 
-/**将`\n` `\r`替换成`<br>`。*/
+/**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
 internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")
