@@ -4,6 +4,40 @@ import com.windea.breezeframework.time.domain.*
 import java.text.*
 import java.util.*
 
+//REGION Factory extensions
+
+object Dates {
+	/**今天。*/
+	val today = Date()
+	/**明天。*/
+	val tomorrow = getDate(1)
+	/**昨天。*/
+	val yesterday = getDate(-1)
+	
+	private fun getDate(amount: Int): Date {
+		calendar.time = Date()
+		calendar.add(Calendar.DATE, amount)
+		return calendar.time
+	}
+}
+
+//REGION Operator overrides
+
+/**@see Calendar.add*/
+operator fun Date.plus(calendarField: CalendarField): Date {
+	calendar.time = this
+	calendar.add(calendarField.field, calendarField.amount)
+	return calendar.time
+}
+
+/**@see Calendar.add*/
+operator fun Date.minus(calendarField: CalendarField): Date {
+	calendar.time = this
+	calendar.add(calendarField.field, -calendarField.amount)
+	return calendar.time
+}
+
+//REGION Common extensions
 
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 
@@ -54,25 +88,9 @@ fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, 
 	return calendar.time
 }
 
-private fun Date.assign(): Date {
+private fun Date.assign(): Date = this.also {
 	calendar.time = this
-	return this
 }
 
 /**将当前日期转化为格式化的字符串。*/
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
-
-
-/**@see Calendar.add。*/
-operator fun Date.plus(calendarField: CalendarField): Date {
-	calendar.time = this
-	calendar.add(calendarField.field, calendarField.amount)
-	return calendar.time
-}
-
-/**@see Calendar.add。*/
-operator fun Date.minus(calendarField: CalendarField): Date {
-	calendar.time = this
-	calendar.add(calendarField.field, -calendarField.amount)
-	return calendar.time
-}

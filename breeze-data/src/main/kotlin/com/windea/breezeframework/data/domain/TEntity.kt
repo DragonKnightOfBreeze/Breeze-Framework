@@ -1,26 +1,21 @@
 package com.windea.breezeframework.data.domain
 
-import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.extensions.*
 import java.io.*
-import java.util.*
 
-/**泛型实体类。此类的子类应当是开放的。*/
-@Deprecated("使用`list.distinct{ it.id }`保证唯一性，使用`entity.toPropertyMap()`得到属性信息。")
+/**泛型实体类。此类的子类应当是开放的。不提供[toString]方法的默认实现。*/
 abstract class TEntity<ID> : Serializable {
 	open var id: ID? = null
 	
-	
-	@Suppress("DEPRECATION")
 	override fun equals(other: Any?): Boolean {
-		return (this === other) || (other is TEntity<*> && this::class.java == other::class.java && this.id == other.id)
+		if(this === other) return true
+		if(javaClass != other?.javaClass) return false
+		
+		other as TEntity<*>
+		if(id != other.id) return false
+		return true
 	}
 	
 	override fun hashCode(): Int {
-		return Objects.hash(super.hashCode(), this.id.hashCode())
-	}
-	
-	override fun toString(): String {
-		return this.toPropertyMap().joinToString(", ", "${this::class.java.name}[", "]") { (k, v) -> "$k=$v" }
+		return id?.hashCode() ?: 0
 	}
 }

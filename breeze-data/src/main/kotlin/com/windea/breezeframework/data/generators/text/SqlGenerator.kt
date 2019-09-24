@@ -30,7 +30,7 @@ object SqlGenerator : Generator {
 			insert into $tableName ($columnNamesSnippet) values
 			${table.joinToString(",\n", "", ";\n") { data ->
 				val columnsSnippet = data.values.joinToString {
-					it.toString().wrapQuote("'").unescape()
+					it.toString().wrapQuote("'").escape()
 				}
 				
 				"""  ($columnsSnippet)"""

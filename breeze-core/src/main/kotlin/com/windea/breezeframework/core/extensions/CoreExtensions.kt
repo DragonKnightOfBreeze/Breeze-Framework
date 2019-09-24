@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
 
 package com.windea.breezeframework.core.extensions
 
@@ -9,19 +9,38 @@ import kotlin.contracts.*
 
 private val logger = KotlinLogging.logger {}
 
+//REGION Global extensions
 
 /**转化为指定类型，或者抛出异常。用于链式调用。*/
-inline fun <reified R> Any?.cast() = this as R
+inline fun <reified R> Any?.cast(): R = this as R
 
 /**转化为指定类型，或者返回null。用于链式调用。*/
-inline fun <reified R> Any?.castOrNull() = this as? R
+inline fun <reified R> Any?.castOrNull(): R? = this as? R
+
+//REGION Standard.kt extensions
+
+/**表明一个方法体推迟了实现。*/
+@OutlookImplementationApi
+inline fun DELAY() = Unit
+
+/**返回一个模拟结果，以表明一个方法体推迟了实现。*/
+@OutlookImplementationApi
+inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
+	.also { nearestLogger().warn("An operation is delay-implemented.") }
+
+/**返回一个模拟结果，以表明一个方法体推迟了实现，并指定原因。*/
+@OutlookImplementationApi
+inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
+	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
 
 
-/**从二元素元组构造三元素元组。*/
-infix fun <A, B, C> Pair<A, B>.and(that: C): Triple<A, B, C> = Triple(this.first, this.second, that)
+/**打印一段消息，以表明一个方法体中存在问题。*/
+@OutlookImplementationApi
+inline fun FIXME() = run { nearestLogger().warn("There is an issue in this operation.") }
 
-/**取在指定范围内的夹值。*/
-infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(range)
+/**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
+@OutlookImplementationApi
+inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
 
 
 @PublishedApi internal var enableOnce = false
@@ -38,6 +57,7 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	block()
 }
 
+//REGION Precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 @OutlookImplementationApi

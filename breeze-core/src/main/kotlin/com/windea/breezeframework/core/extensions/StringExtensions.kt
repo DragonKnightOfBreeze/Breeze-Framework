@@ -6,21 +6,36 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.core.*
 import mu.*
-import java.awt.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
 import java.text.*
-import java.time.*
-import java.time.format.*
-import java.util.*
 
 private val logger = KotlinLogging.logger { }
 
+//REGION Operator overrides
+
+/**@see kotlin.text.slice*/
+@OutlookImplementationApi
+inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.remove*/
+@OutlookImplementationApi
+inline operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
+
+/**@see kotlin.text.repeat*/
+@OutlookImplementationApi
+inline operator fun String.times(n: Int): String = this.repeat(n)
+
+/**@see kotlin.text.chunked*/
+@OutlookImplementationApi
+inline operator fun String.div(n: Int): List<String> = this.chunked(n)
+
+//REGION Common functions
 
 /**判断字符串是否相等。忽略大小写。*/
 @OutlookImplementationApi
-inline infix fun String?.equalsIc(other: String?): Boolean {
+infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
@@ -35,9 +50,6 @@ infix fun String?.equalsIlc(other: String?): Boolean {
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
 @OutlookImplementationApi
 inline infix fun String.anyIn(other: String): Boolean = this.any { it in other }
-
-/**判断当前字符串是否与另一字符串相像。即，判断是否存在共同的以空格分隔的单词。*/
-infix fun String.like(other: String): Boolean = this.splitToWordList() anyIn other.splitToWordList()
 
 
 /**判断当前字符串是否以指定前缀开头。*/
@@ -88,6 +100,16 @@ inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): 
 	suffixArray.any { this.endsWith(it, true) }
 
 
+/**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
+fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
+
+/**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
+fun CharSequence.isNumeric() = this matches "[1-9]+".toRegex()
+
+/**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
+fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
+
+
 /**如果当前字符串不为空，则返回转换后的值。*/
 @OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
@@ -106,6 +128,31 @@ fun String.flatRepeat(n: Int): String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 	
 	return this.map { it.toString().repeat(n) }.joinToString("")
+}
+
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByChar")
+fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
+	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByString")
+fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
+	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByChar")
+fun String.replaceAll(charPairList: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
+	return charPairList.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByString")
+fun String.replaceAll(valuePairList: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
+	return valuePairList.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
 
@@ -153,14 +200,14 @@ fun String.messageFormat(vararg args: Any): String {
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.unescapeRegex() }
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escapeRegex() }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.unescapeRegex() }
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escapeRegex() }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
 			}
@@ -221,42 +268,39 @@ inline fun String.removeBlank(): String {
 }
 
 
-private val escapes = arrayOf("\t", "\b", "\n", "\r", "\'", "\"") //not for every language, ignore "\\" and "\$"
+//not for every language, ignore "\\" and "\$"
+private val escapeStrings = arrayOf("\t", "\b", "\n", "\r", "\'", "\"")
+private val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
 
-private val unescapes = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
+//not for every scope
+private val escapeStringsInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+")
+private val escapedStringsInRegex = arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "\\?", "\\+")
 
-private val escapesInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+") //not for every scope
+private val escapeStringsInXml = arrayOf("<", ">", "&", "'", "\"")
+private val escapedStringsInXml = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "quot;")
 
-/**转义当前字符串。例如，将`\\n`转换为`\n`。*/
-fun String.escape(): String {
-	return (escapes zip unescapes).fold(this) { str, (escape, unescape) ->
-		str.replace(unescape, escape)
-	}
-}
+/**转义当前字符串。例如，将`\n`转换为`\\n`。*/
+fun String.escape(): String = this.replaceAll(escapeStrings zip escapedStrings)
 
-/**反转义当前字符串。例如，将`\n`转换为`\\n`。*/
-fun String.unescape(): String {
-	return (escapes zip unescapes).fold(this) { str, (escape, unescape) ->
-		str.replace(escape, unescape)
-	}
-}
+/**反转义当前字符串。例如，将`\\n`转换为`\n`。*/
+fun String.unescape(): String = this.replaceAll(escapedStrings zip escapeStrings)
 
-private fun String.unescapeRegex(): String {
-	return escapesInRegex.fold(this) { str, escape ->
-		str.replace(escape, "\\$escape")
-	}
-}
+/**转义当前正则表达式字符串。*/
+fun String.escapeRegex(): String = this.replaceAll(escapeStringsInRegex zip escapedStringsInRegex)
+
+/**转义当前Xml字符串。*/
+fun String.escapeXml(): String = this.replaceAll(escapeStringsInXml zip escapedStringsInXml)
 
 
 private val quotes = arrayOf("\"", "'", "`")
 
-/**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。*/
+/**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。同时转义其中的引号。*/
 fun String.wrapQuote(quote: String = "\""): String {
 	if(quote !in quotes) return this
 	return this.replace(quote, "\\$quote").addSurrounding(quote, quote, false)
 }
 
-/**去除当前字符串两侧的双引号/单引号/反引号。*/
+/**去除当前字符串两侧的双引号/单引号/反引号。同时反转义对应的引号。*/
 fun String.unwrapQuote(): String {
 	val quote = this.first().toString()
 	if(quote !in quotes) return this
@@ -340,7 +384,7 @@ fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) ->
 
 /**根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。不包含分隔符时，加入基于索引和剩余字符串得到的默认值。*/
 inline fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
-	require(delimiters.count { it == null } <= 1) { "[ERROR] There should be at most one null value as separator in delimiters." }
+	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 	
 	var rawString = this
 	val fixedDelimiters = delimiters.filterNotNull()
@@ -376,7 +420,7 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 
-////////////Convert operations
+//REGION Convert extensions
 
 /**
  * 将当前字符串转为折行文本。
@@ -430,18 +474,42 @@ fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrN
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
 
-/**将当前字符串转化为对应的枚举常量。*/
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
 @OutlookImplementationApi
-inline fun <reified T : Enum<T>> String.toEnumValue(): T = enumValueOf(this)
+inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase: Boolean = false): T =
+	enumValues<T>().let { enumValues -> enumValues.firstOrNull { it.name.equals(this, ignoreCase) } ?: enumValues.first() }
 
-/**将当前字符串转化为对应的枚举常量。*/
-fun String.toEnumValue(type: Class<*>): Any {
-	requireNotNull(type.isEnum) { "[ERROR] $type is not an enum class!" }
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
+@OutlookImplementationApi
+inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = false): T? =
+	enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
+
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
+@Suppress("DEPRECATION")
+@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
+fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
+	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	
+	val enumConstants = type.enumConstants
 	return try {
-		type.enumConstants.first { it.toString() == this }
+		enumConstants.first { it.toString().equals(this, ignoreCase) }
 	} catch(e: Exception) {
-		logger.warn("No matched enum const found. Convert to default.")
-		type.enumConstants.first()
+		logger.warn("No matched enum value found. Convert to null.")
+		enumConstants.first()
+	}
+}
+
+/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
+@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
+fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
+	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	
+	val enumConstants = type.enumConstants
+	return try {
+		enumConstants.first { it.toString().equals(this, ignoreCase) }
+	} catch(e: Exception) {
+		logger.warn("No matched enum value found. Convert to null.")
+		null
 	}
 }
 
@@ -480,7 +548,6 @@ fun String.toUrlInfo(): UrlInfo {
 /**将当前字符串转化为查询参数映射。*/
 @Suppress("IMPLICIT_CAST_TO_ANY")
 internal fun String.toQueryParamMap(): QueryParamMap {
-	//show warns here!!!
 	val map = when {
 		this.isEmpty() -> mapOf()
 		else -> this.split("&").map { s -> s.split("=") }.groupBy({ it[0] }, { it[1] })
@@ -489,59 +556,28 @@ internal fun String.toQueryParamMap(): QueryParamMap {
 	return QueryParamMap(map)
 }
 
-
-/**将当前字符串转化为日期。*/
-inline fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
-
-/**将当前字符串转化为本地日期。*/
-inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
-	LocalDate.parse(this, formatter)
-
-/**将当前字符串转化为本地日期时间。*/
-inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
-	LocalDateTime.parse(this, formatter)
-
-/**将当前字符串转化为本地时间。*/
-inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
-	LocalDateTime.parse(this, formatter)
-
-
-/**将当前字符串转化为颜色。*/
-fun String.toColor(): Color {
-	return when {
-		//#333
-		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
-		//#3333
-		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
-		//#333333
-		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
-		//#33333333
-		this startsWith "#" && this.length == 9 -> Color(this.substring(1).toInt(16), true)
-		//rgb(0,0,0)
-		this startsWith "rgb(" -> {
-			val (r, g, b) = this.substring(4, this.length - 1).split(",").map { it.trim().toInt(16) }
-			Color(r, g, b)
-		}
-		//rgba(0,0,0,255)
-		this startsWith "rgba(" -> {
-			val (r, g, b, a) = this.substring(5, this.length - 1).split(",").map { it.trim().toInt(16) }
-			Color(r, g, b, a)
-		}
-		//white || EXCEPTION
-		else -> Color.getColor(this)
-	}
-}
-
-/////////////Operator overrides
-
-/**@see kotlin.text.slice*/
-@OutlookImplementationApi
-operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
-
-/**@see kotlin.text.repeat*/
-@OutlookImplementationApi
-operator fun String.times(n: Int): String = this.repeat(n)
-
-/**@see kotlin.text.chunked*/
-@OutlookImplementationApi
-operator fun String.div(n: Int): List<String> = this.chunked(n)
+///**将当前字符串转化为颜色。*/
+//fun String.toColor(): Color {
+//	return when {
+//		//#333
+//		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
+//		//#3333
+//		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
+//		//#333333
+//		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
+//		//#33333333
+//		this startsWith "#" && this.length == 9 -> Color(this.substring(1).toInt(16), true)
+//		//rgb(0,0,0)
+//		this startsWith "rgb(" -> {
+//			val (r, g, b) = this.substring(4, this.length - 1).split(",").map { it.trim().toInt(16) }
+//			Color(r, g, b)
+//		}
+//		//rgba(0,0,0,255)
+//		this startsWith "rgba(" -> {
+//			val (r, g, b, a) = this.substring(5, this.length - 1).split(",").map { it.trim().toInt(16) }
+//			Color(r, g, b, a)
+//		}
+//		//white || EXCEPTION
+//		else -> Color.getColor(this)
+//	}
+//}

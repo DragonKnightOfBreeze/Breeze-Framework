@@ -70,19 +70,38 @@
 * [X] breeze-core 重命名`String.to(FormatCase)`方法为`String.switchTo(FormatCase)`。（为了规避方法名冲突）
 * [X] breeze-data 重构：将Dsl入口方法移至顶层，为Config接口声明`invoke`方法。取消懒加载。
 * [X] breeze-core 更改函数式扩展中的pipe方法的逻辑，将函数作为接受者，而非参数。
+* [X] breeze-core 添加字符串扩展：`isAlphabetic`、`isNumeric`、`isAlphanumeric`。
+* [X] breeze-core 提供阶乘和累加的扩展。
+* [X] breeze-time 去除标准库已提供的扩展。
+* [X] breeze-core 重构随机数扩展，由对象改为扩展方法。
+* [X] breeze-text 数字的简化表示的转化。（1000->1k, 1000->1千）
+* [X] breeze-core 添加整乘、整除、转化为并发集合的扩展。
+* [X] breeze-fxgl 协助翻译简体和繁体中文文本。
+* [X] breeze-core 继续添加一些有用的扩展（如，整数/字符串转枚举值）。
+* [X] breeze-core 将函数式扩展移到单独的模块。
 
-* [ ] breeze-data TODO 提供mermaid和plantUml的Dsl。
-    * [ ] UPDATING 提供mermaid flow chart的Dsl。
-    * [ ] UPDATING 提供plantUml state graph的Dsl。
-* [ ] breeze-data DELAY 提供更多图形语言的Dsl。
-    * [ ] DELAY 提供sequence的Dsl。
-    * [ ] DELAY 提供flow的Dsl。
-* [ ] breeze-core DELAY Uri构建和编码的扩展。
-* [ ] breeze-core DELAY 利用反射的类型转换的扩展。
-* [ ] breeze-text DELAY 英文单数与复数的转化。
-* [ ] breeze-text DELAY 数字的简化表示的转化。（1000->1k, 1000->1千）
+### 1.0.4
 
-* [X] TODO 上传到Github。
-* [X] TODO 同步项目到Bintray。
-* [ ] DELAY 发布项目到JCenter。
-* [ ] DELAY 完善各个模块的`README.md`文档。
+* [X] 更新版本号。
+* [X] breeze-core 添加`Collection.randomOrNull()`扩展。
+* [X] breeze-core 重构系统扩展。
+* [X] breeze-core 重构与重新格式化代码。
+* [X] breeze-data 重构XmlDsl和MermaidFlowDsl。
+* [X] breeze-core&breeze-data 修复一些不合理的代码逻辑，完善XmlDsl和MermaidFlowDsl。
+* [X] breeze-dsl 将Dsl相关代码移到单独模块，完善MermaidFlowDsl，完成MermaidSequenceDsl。
+* [X] breeze-dsl 完成MermaidGanttDsl。
+* [X] breeze-data 提供equals、hashcode、toString方法的构建方法。
+* [X] breeze-data 完善equals、hashcode、toString方法的构建方法。
+* [X] breeze-dsl 更新PumlDsl和PumlStateDiagramDsl中。
+
+* [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
+* [ ] breeze-core Uri构建和编码的扩展。
+* [ ] breeze-core 利用反射的类型转换的扩展。
+* [ ] breeze-text 英文单数与复数的转化。
+
+# 长期
+
+* [X] 上传到Github。
+* [X] 同步项目到Bintray。
+* [ ] 发布项目到JCenter。
+* [ ] 完善各个模块的`README.md`文档。

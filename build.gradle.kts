@@ -3,31 +3,30 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
-	`build-scan`
 	`maven-publish`
+	kotlin("jvm") version "1.3.50"
 	id("nebula.optional-base") version "3.0.3"
 	id("com.jfrog.bintray") version "1.8.4"
 	id("org.jetbrains.dokka") version "0.9.18"
-	kotlin("jvm") version "1.3.50"
 }
 
 allprojects {
-	//应用插件
-	apply {
-		plugin("org.gradle.maven-publish")
-		plugin("nebula.optional-base")
-		plugin("com.jfrog.bintray")
-		plugin("org.jetbrains.dokka")
-		plugin("org.jetbrains.kotlin.jvm")
-	}
-	
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.3"
+	version = "1.0.4"
 	
 	//在这里放置常量和扩展参数
 	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
 	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+	
+	//应用插件
+	apply {
+		plugin("org.gradle.maven-publish")
+		plugin("org.jetbrains.kotlin.jvm")
+		plugin("nebula.optional-base")
+		plugin("com.jfrog.bintray")
+		plugin("org.jetbrains.dokka")
+	}
 	
 	//配置依赖仓库
 	repositories {
@@ -37,28 +36,19 @@ allprojects {
 		jcenter()
 	}
 	
-	//配置源码路径，如此配置以消除"java"空文件夹
-	sourceSets["main"].java.setSrcDirs(setOf("src/main/kotlin"))
-	sourceSets["test"].java.setSrcDirs(setOf("src/main/kotlin"))
-	
 	//配置依赖，implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
 	//optional只能依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
-		implementation(kotlin("reflect"))
-		testImplementation(kotlin("test"))
 		testImplementation(kotlin("test-junit"))
+		
+		implementation("io.github.microutils:kotlin-logging:1.6.26")
+		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 	}
 	
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置
 	tasks.withType<KotlinCompile> {
 		kotlinOptions.jvmTarget = "11"
-	}
-	
-	//配置dokka
-	tasks.dokka {
-		outputFormat = "html"
-		outputDirectory = "$buildDir/javadoc"
 	}
 	
 	//构建source jar
@@ -68,10 +58,9 @@ allprojects {
 	}
 	
 	//构建javadoc jar
-	val javdocJar by tasks.creating(Jar::class) {
+	val javadocJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("javadoc")
 		group = JavaBasePlugin.DOCUMENTATION_GROUP
-		description = "Kotlin documents of Breeze Framework."
 		from(tasks.dokka)
 	}
 	
@@ -83,7 +72,7 @@ allprojects {
 			create<MavenPublication>("maven") {
 				from(components["java"])
 				artifact(sourcesJar)
-				artifact(javdocJar)
+				artifact(javadocJar)
 				//生成的pom文件的配置
 				pom {
 					name.set("Breeze Framework")
@@ -116,28 +105,30 @@ allprojects {
 			//配置上传到的仓库
 			repositories {
 				//maven本地仓库
-				maven {
-					url = uri("$buildDir/repository")
-				}
-				//bintray远程公共仓库，可间接上传到jcenter
-				bintray {
-					//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
-					user = System.getenv("BINTRAY_USER")
-					key = System.getenv("BINTRAY_API_KEY")
-					setPublications("maven")
-					pkg.userOrg = "breeze-knights"
-					pkg.repo = rootProject.name
-					pkg.name = project.name
-					pkg.websiteUrl = siteUrl
-					pkg.vcsUrl = gitUrl
-					pkg.setLabels("kotlin", "framework")
-					pkg.setLicenses("MIT")
-					pkg.version.name = "1.0.2"
-					pkg.version.vcsTag = "1.0.x"
-				}
+				maven("$buildDir/repository")
 			}
 		}
 	}
+	
+	//bintray远程公共仓库，可间接上传到jcenter
+	bintray {
+		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
+		user = System.getenv("BINTRAY_USER")
+		key = System.getenv("BINTRAY_API_KEY")
+		setPublications("maven")
+		pkg.userOrg = "breeze-knights"
+		pkg.repo = rootProject.name
+		pkg.name = project.name
+		pkg.websiteUrl = siteUrl
+		pkg.vcsUrl = gitUrl
+		pkg.setLabels("kotlin", "framework")
+		pkg.setLicenses("MIT")
+		pkg.version.name = version.toString()
+		pkg.version.vcsTag = version.toString()
+	}
 }
+
+
+
 
 

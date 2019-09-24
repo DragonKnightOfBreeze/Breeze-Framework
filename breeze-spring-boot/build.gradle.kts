@@ -1,10 +1,7 @@
-@file:Suppress("SpellCheckingInspection")
-
 import groovy.lang.*
 import org.gradle.util.*
 
 plugins {
-	id("org.springframework.boot") version "2.1.7.RELEASE"
 	id("io.spring.dependency-management") version "1.0.8.RELEASE"
 	kotlin("plugin.spring") version "1.3.50"
 	kotlin("plugin.jpa") version "1.3.50"

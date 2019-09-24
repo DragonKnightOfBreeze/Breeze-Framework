@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.domain.text
 
 import com.windea.breezeframework.core.extensions.*
+import java.io.*
 import java.net.*
 
 
@@ -20,7 +21,7 @@ data class UrlInfo(
 	val path: String,
 	/**查询参数。*/
 	val query: String
-) {
+) : Serializable {
 	/**是否存在查询参数。*/
 	val hasQueryParam = query.isNotEmpty()
 	

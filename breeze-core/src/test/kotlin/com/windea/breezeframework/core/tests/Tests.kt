@@ -4,6 +4,7 @@ import com.windea.breezeframework.core.enums.core.LetterCase.*
 import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import org.junit.*
+import java.time.*
 
 class Tests {
 	@Test
@@ -61,5 +62,24 @@ class Tests {
 		println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
 		//a.b[1][2].c[3]
 		println("/a/b/1/2/c/3".switchTo(StandardReference))
+	}
+	
+	@Test
+	fun testRange() {
+		(1..10).forEach(::println)
+	}
+	
+	//@Test
+	//fun testIntToChar(){
+	//	println(0.toChar())
+	//	println(25.toChar())
+	//}
+	
+	@Test
+	fun testToString() {
+		println(LocalDate.parse("2014-01-06")) //2014-01-06 OK
+		//PTnHnMnS
+		println(Duration.ofDays(1)) //PT24H
+		println(Duration.ofHours(20)) //PT20H
 	}
 }

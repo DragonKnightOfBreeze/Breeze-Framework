@@ -1,6 +1,6 @@
 package com.windea.breezeframework.data.generators
 
-/////////////Top interfaces
+//REGION Top interfaces
 
 /**生成器。*/
 interface Generator
@@ -8,7 +8,7 @@ interface Generator
 /**生成器的配置。*/
 interface GeneratorConfig
 
-////////////Type aliases
+//REGION Type aliases
 
 typealias SchemaDefinitionMap = Map<String, SchemaMap>
 typealias SchemaMap = Map<String, Map<String, Any>>

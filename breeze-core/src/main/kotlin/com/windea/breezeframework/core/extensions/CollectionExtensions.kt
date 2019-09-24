@@ -4,6 +4,36 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
+import java.util.concurrent.*
+import kotlin.random.*
+
+//REGION Operator overrides
+
+/**@see kotlin.collections.slice*/
+@OutlookImplementationApi
+inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+inline operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+inline operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+
+/**@see kotlin.collections.slice*/
+@OutlookImplementationApi
+inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
+@OutlookImplementationApi
+inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+
+/**@see kotlin.collections.chunked*/
+@OutlookImplementationApi
+inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+
+//REGION Common functions
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 @OutlookImplementationApi
@@ -134,11 +164,34 @@ inline fun <T> Sequence<T>.ifNotEmpty(crossinline transform: () -> Sequence<T>):
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
+	return this.getOrElse(index) { defaultValue }
+}
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
 @OutlookImplementationApi
-inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T = this.getOrElse(index) { defaultValue }
+inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
+	return this.getOrElse(index) { defaultValue }
+}
+
+
+/**得到随机元素。如果数组为空，则返回null。*/
+inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
+
+/**得到随机元素。如果数组为空，则返回null。*/
+inline fun <T> Array<out T>.randomOrNull(random: Random): T? {
+	if(this.isEmpty()) return null
+	return this[random.nextInt(size)]
+}
+
+/**得到随机元素。如果集合为空，则返回null。*/
+inline fun <T> Collection<T>.randomOrNull(): T? = this.randomOrNull(Random)
+
+/**得到随机元素。如果集合为空，则返回null。*/
+inline fun <T> Collection<T>.randomOrNull(random: Random): T? {
+	if(this.isEmpty()) return null
+	return this.elementAt(random.nextInt(size))
+}
 
 
 /**重复当前集合中的元素到指定次数。*/
@@ -198,6 +251,51 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 }
 
 
+/**按照类型以及附加条件过滤数组。*/
+inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤列表。*/
+inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤集。*/
+inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
+	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
+}
+
+/**按照类型以及附加条件过滤集，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+/**按照类型以及附加条件过滤序列。*/
+inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> Boolean): Sequence<R> {
+	return this.filterIsInstance<R>().filter(predicate)
+}
+
+/**按照类型以及附加条件过滤序列，然后置入指定的集合。*/
+inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+	for(element in this) if(element is R && predicate(element)) destination.add(element)
+	return destination
+}
+
+
 /**绑定当前数组中的元素以及另一个数组中满足指定预测的首个元素。过滤总是不满足的情况。*/
 @OutlookImplementationApi
 inline fun <T, R : Any> Array<out T>.zipWithFirst(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
@@ -228,7 +326,7 @@ inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-////////////////Deep operations
+//REGION Deep operations
 
 /**根据指定的标准引用得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
@@ -254,7 +352,7 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
 		value is Iterable<*> -> value.toIndexKeyMap()
 		value is Map<*, *> -> value.toStringKeyMap()
 		value is Sequence<*> -> value.toIndexKeyMap()
-		else -> throw IllegalArgumentException("[ERROR] There is not a value related to this reference path.")
+		else -> throw IllegalArgumentException("There is not a value related to this reference path.")
 	}
 	return fixedValue.privateDeepGet(currentSubPaths)
 }
@@ -348,51 +446,65 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 	}.toMap()
 }
 
-///////////Convert operations
+//REGION Convert extensions
+
+/**将当前列表转化为并发列表。*/
+fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
+
+/**将当前集转化为并发集。*/
+fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
+
+/**将当前映射转化为并发映射。*/
+fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
+
 
 /**将当前键值对数组转化为可变映射。*/
-fun <K, V> Array<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+fun <K, V> Array<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 /**将当前键值对列表转化为可变映射。*/
-fun <K, V> List<Pair<K, V>>.toMutableMap() = this.toMap().toMutableMap()
+fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+
+/**将当前键值对序列转化为可变映射。*/
+fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 
 /**将当前数组转化成以键为值的映射。*/
-@OutlookImplementationApi
 fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前集合转化成以键为值的映射。*/
-@OutlookImplementationApi
-inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前映射转换成以字符串为键的映射。*/
-@OutlookImplementationApi
-inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	return this.mapKeys { (k, _) ->
-		//once: if(k is String) return this@toStringKeyMap as Map<String, V>
-		k.toString()
-	}
+fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
+	//return this if key is String
+	if(this.keys.firstOrNull() is String) return this as Map<String, V>
+	return this.mapKeys { (k, _) -> k.toString() }
+}
+
+/**将当前映射转换成以字符串为值的映射。*/
+fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
+	//assume V is Any? or Any
+	return this.mapValues { (_, v) -> v.toString() }
 }
 
 /**将当前序列转化成以键为值的映射。*/
-@OutlookImplementationApi
-inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
-/////////////Specific operations
+//REGION Specific operations
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi
-fun <T : CharSequence> Array<T>.getOrEmpty(index: Int): String = this.getOrNull(index)?.toString() ?: ""
+inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 @OutlookImplementationApi
-fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+inline fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 
 /**去除起始的空白行。*/
@@ -453,29 +565,3 @@ inline fun <T> Iterable<T>.withIndex(transform: (Int) -> Int): Iterable<IndexedV
 inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Sequence<IndexedValue<T>> {
 	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
 }
-
-///////////Operator overrides
-
-/**@see kotlin.collections.slice*/
-@OutlookImplementationApi
-operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-@OutlookImplementationApi
-operator fun <T> Array<T>.times(n: Int): List<T> = this.toList().repeat(n)
-
-/**@see kotlin.collections.chunked*/
-@OutlookImplementationApi
-operator fun <T> Array<T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
-
-/**@see kotlin.collections.slice*/
-@OutlookImplementationApi
-operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-@OutlookImplementationApi
-operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
-
-/**@see kotlin.collections.chunked*/
-@OutlookImplementationApi
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
