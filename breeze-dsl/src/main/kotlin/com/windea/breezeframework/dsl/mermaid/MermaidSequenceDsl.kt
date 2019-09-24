@@ -109,6 +109,14 @@ class MermaidSequenceActor @PublishedApi internal constructor(
 	
 	var alias: String? = null //NOTE do not ensure argument is valid
 	
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is MermaidSequenceActor && other.name == name)
+	}
+	
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
+	
 	override fun toString(): String {
 		val aliasSnippet = if(alias.isNullOrEmpty()) "" else "$alias as "
 		return "participant $aliasSnippet$name"

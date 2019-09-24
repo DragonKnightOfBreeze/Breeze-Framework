@@ -29,7 +29,7 @@ interface MermaidFlowDslElement : MermaidDslElement
 @MermaidFlowDsl
 sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
-	val links: MutableSet<MermaidFlowLink> = mutableSetOf()
+	val links: MutableList<MermaidFlowLink> = mutableListOf()
 	val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
 	val styles: MutableList<MermaidFlowNodeStyle> = mutableListOf()
 	val linkStyles: MutableList<MermaidFlowLinkStyle> = mutableListOf()
@@ -116,6 +116,14 @@ class MermaidFlowNode @PublishedApi internal constructor(
 	val id: String = id //NOTE do not ensure argument is valid
 	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
 	val shape: MermaidFlowNodeShape = shape
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is MermaidFlowNode && other.id == id)
+	}
+	
+	override fun hashCode(): Int {
+		return id.hashCode()
+	}
 	
 	//TODO omit text, no double quote surround text if not necessary
 	override fun toString(): String {
