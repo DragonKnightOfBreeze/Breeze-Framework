@@ -91,6 +91,7 @@
 * [X] breeze-dsl 将Dsl相关代码移到单独模块，完善MermaidFlowDsl，完成MermaidSequenceDsl。
 * [X] breeze-dsl 完成MermaidGanttDsl。
 * [X] breeze-data 提供equals、hashcode、toString方法的构建方法。
+* [X] breeze-data 完善equals、hashcode、toString方法的构建方法。
 
 * [ ] breeze-data 提供mermaid和plantUml的Dsl。
     * [ ] UPDATING 提供mermaid flow chart的Dsl。
