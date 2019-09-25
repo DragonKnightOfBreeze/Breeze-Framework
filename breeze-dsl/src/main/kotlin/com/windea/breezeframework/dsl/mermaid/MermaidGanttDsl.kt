@@ -1,4 +1,3 @@
-@file:Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
@@ -25,6 +24,7 @@ fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.bu
 interface MermaidGanttDslElement : MermaidDslElement
 
 /**Mermaid甘特图。*/
+@Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
 class MermaidGantt @PublishedApi internal constructor() : MermaidGanttDslElement, CanIndentContent, Mermaid {
 	var title: MermaidGanttTitle? = null

@@ -1,4 +1,3 @@
-@file:Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
@@ -11,7 +10,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 //REGION Dsl annotations
 
 @DslMarker
-annotation class MermaidSequenceDsl
+internal annotation class MermaidSequenceDsl
 
 //REGION Dsl elements & build functions
 
@@ -84,6 +83,7 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 }
 
 /**Mermaid序列图。*/
+@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDsl
 class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequence(), Mermaid {
 	override fun toString(): String {

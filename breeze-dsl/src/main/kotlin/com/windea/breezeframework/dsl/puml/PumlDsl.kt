@@ -1,4 +1,3 @@
-@file:Reference("[PlantUml](http://plantuml.com)")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.puml
@@ -13,11 +12,12 @@ import org.intellij.lang.annotations.*
 //REGION Dsl annotations
 
 @DslMarker
-annotation class PumlDsl
+internal annotation class PumlDsl
 
 //REGION Top interfaces
 
 /**PlantUml Dsl.*/
+@Reference("[PlantUml](http://plantuml.com)")
 @PumlDsl
 interface Puml : Dsl {
 	var title: PumlTitle?

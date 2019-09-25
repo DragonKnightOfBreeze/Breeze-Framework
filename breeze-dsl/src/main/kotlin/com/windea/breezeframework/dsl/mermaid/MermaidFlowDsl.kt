@@ -1,4 +1,3 @@
-@file:Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
@@ -12,7 +11,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 //REGION Dsl annotations
 
 @DslMarker
-annotation class MermaidFlowDsl
+internal annotation class MermaidFlowDsl
 
 //REGION Dsl elements & build functions
 
@@ -92,6 +91,7 @@ sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 }
 
 /**Mermaid流程图。*/
+@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @MermaidFlowDsl
 class MermaidFlow @PublishedApi internal constructor(
 	val direction: MermaidFlowDirection

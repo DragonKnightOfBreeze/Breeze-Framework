@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "RemoveRedundantQualifierName", "UNCHECKED_CAST", "SimpleRedundantLet", "CanBePrimaryConstructorProperty")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 
 package com.windea.breezeframework.dsl.markup
 

@@ -1,4 +1,3 @@
-@file:Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
 
 package com.windea.breezeframework.dsl.puml
@@ -68,6 +67,7 @@ sealed class AbstractPumlStateDiagram : PumlStateDiagramDslElement {
 }
 
 /**PlantUml状态图。*/
+@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @PumlStateDiagramDsl
 class PumlStateDiagram @PublishedApi internal constructor() : AbstractPumlStateDiagram(), Puml by PumlDelegate() {
 	override fun toString(): String {
