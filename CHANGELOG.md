@@ -93,6 +93,7 @@
 * [X] breeze-data 提供equals、hashcode、toString方法的构建方法。
 * [X] breeze-data 完善equals、hashcode、toString方法的构建方法。
 * [X] breeze-dsl 更新PumlDsl和PumlStateDiagramDsl中。
+* [X] breeze-text Base64的相关扩展。
 
 * [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
