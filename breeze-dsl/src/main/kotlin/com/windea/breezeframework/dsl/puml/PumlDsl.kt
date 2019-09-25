@@ -1,5 +1,5 @@
 @file:Reference("[PlantUml](http://plantuml.com)")
-@file:Suppress("CanBePrimaryConstructorProperty", "NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.puml
 
@@ -53,7 +53,7 @@ object PumlConfig : DslConfig {
 
 /**Puml的默认代理实现。*/
 @PumlDsl
-open class PumlDelegate : Puml {
+open class PumlDelegate @PublishedApi internal constructor() : Puml {
 	override var title: PumlTitle? = null
 	override var legend: PumlLegend? = null
 	override var header: PumlHeader? = null
@@ -67,6 +67,8 @@ open class PumlDelegate : Puml {
 	override fun getPrefixString(): String = TODO()
 	
 	override fun getSuffixString(): String = TODO()
+	
+	override fun toString(): String = TODO()
 }
 
 @PumlDsl
@@ -91,7 +93,7 @@ inline fun <T : Puml> T.caption(text: String) = PumlCaption(text).also { caption
 inline fun <T : Puml> T.note(text: String) = PumlNote(text).also { notes += it }
 
 @PumlDsl
-inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.also { it.builder() }
+inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.builder()
 
 
 /**PlantUml顶级元素。*/
@@ -125,25 +127,25 @@ sealed class PumlTopElement(
 
 /**PlantUml标题。*/
 @PumlDsl
-class PumlTitle(
+class PumlTitle @PublishedApi internal constructor(
 	text: String
 ) : PumlTopElement("title", text)
 
 /**PlantUml图例说明。*/
 @PumlDsl
-class PumlLegend(
+class PumlLegend @PublishedApi internal constructor(
 	text: String
 ) : PumlTopElement("legend", text)
 
 /**PlantUml页眉。*/
 @PumlDsl
-class PumlHeader(
+class PumlHeader @PublishedApi internal constructor(
 	text: String
 ) : PumlTopElement("header", text)
 
 /**PlantUml页脚。*/
 @PumlDsl
-class PumlFooter(
+class PumlFooter @PublishedApi internal constructor(
 	text: String
 ) : PumlTopElement("footer", text)
 
@@ -151,7 +153,7 @@ class PumlFooter(
 //TODO Better api
 /**PlantUml缩放。*/
 @PumlDsl
-class PumlScale(
+class PumlScale @PublishedApi internal constructor(
 	val expression: String
 ) : PumlDslElement {
 	override fun toString(): String {
@@ -160,7 +162,7 @@ class PumlScale(
 }
 
 /**PlantUml图片标题。*/
-class PumlCaption(
+class PumlCaption @PublishedApi internal constructor(
 	val text: String
 ) : PumlDslElement {
 	override fun toString(): String {
@@ -173,17 +175,22 @@ class PumlCaption(
  * PlantUml注释。
  *
  * 语法示例：
- * * note right of Target: text can\n wrap line.
- * * note "text" as Note
- * * note right of Target
+ * ```
+ * note right of Target: text can\n wrap line.
+ *
+ * note "text" as Note
+ *
+ * note right of Target
  *     (multiline text.)
- *   end note
- * * note as Note
+ * end note
+ *
+ * note as Note
  *     (multiline text.)
- *   end note
+ * end note
+ * ```
  */
 @PumlDsl
-class PumlNote(
+class PumlNote @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
 ) : PumlStateDiagramDslElement, CanIndentContent, CanWrapContent {
@@ -241,7 +248,8 @@ class PumlNote(
 //TODO
 /**PlantUml显示参数。*/
 @PumlDsl
-class PumlSkinParams : PumlDslElement, MutableMap<String, Any> by HashMap() {
+class PumlSkinParams @PublishedApi internal constructor() :
+	PumlDslElement, MutableMap<String, Any> by HashMap() {
 	override fun toString(): String {
 		return joinToString("\n") { (k, v) -> "skinparam $k $v" }
 	}
@@ -277,7 +285,8 @@ class PumlSkinParams : PumlDslElement, MutableMap<String, Any> by HashMap() {
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams : PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() :
+	PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {

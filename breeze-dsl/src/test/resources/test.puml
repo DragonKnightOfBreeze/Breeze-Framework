@@ -1,4 +1,15 @@
 @startuml
-state A
-A -> B__B__B
+[*] --> Active
+
+state Active {
+  [*] -> NumLockOff
+  NumLockOff --> NumLockOn : EvNumLockPressed
+  NumLockOn --> NumLockOff : EvNumLockPressed
+  state Activ {
+    [*] -> NumLockOf
+    NumLockOf --> NumLockO : EvNumLockPressed
+    NumLockO --> NumLockOf : EvNumLockPressed
+  }
+}
+state Active: 123
 @enduml

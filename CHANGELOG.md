@@ -95,6 +95,7 @@
 * [X] breeze-dsl 更新PumlDsl和PumlStateDiagramDsl中。
 * [X] breeze-text Base64的相关扩展。
 * [X] breeze-dsl 完善各种DSL，基本完成PumlStateDiagramDsl。 
+* [X] breeze-dsl 完成PumlStateDiagramDsl，并将公共Dsl提取到PumlDsl。（puml的语法真的是面向人类的吗？）
 
 * [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。

@@ -1,4 +1,5 @@
 @file:Reference("[Mermaid](https://mermaidjs.github.io)")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
 

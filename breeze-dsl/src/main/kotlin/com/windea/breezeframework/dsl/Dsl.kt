@@ -9,6 +9,7 @@ import com.windea.breezeframework.core.extensions.*
 //所有的Dsl元素和Dsl构建方法都必须添加对应的slMarker注解
 //所有的Dsl构建方法都要尽可能地写成内联形式和表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
 //运算符重载规则：`+"text"`表示文本，`-"text"`表示注释，`"text" { } `表示唯一子级元素。
+//文本属性以外的默认属性通过内联中缀方法构建。
 
 //REGION Dsl annotations
 
@@ -19,11 +20,15 @@ internal annotation class GeneralDsl
 
 /**Dsl。即，领域专用语言。*/
 @GeneralDsl
-interface Dsl
+interface Dsl {
+	override fun toString(): String
+}
 
 /**Dsl的元素。*/
 @GeneralDsl
-interface DslElement
+interface DslElement {
+	override fun toString(): String
+}
 
 /**Dsl的配置。*/
 interface DslConfig

@@ -1,5 +1,5 @@
 @file:Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
-@file:Suppress("CanBePrimaryConstructorProperty", "NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
 
