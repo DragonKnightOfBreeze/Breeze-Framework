@@ -7,6 +7,7 @@ import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.indent
+import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
 //REGION Dsl annotations
@@ -25,10 +26,11 @@ interface Puml : Dsl {
 	var footer: PumlFooter?
 	var scale: PumlScale?
 	var caption: PumlCaption?
+	val notes: MutableSet<PumlNote>
 	val skinParams: PumlSkinParams
 	
-	val prefixString: String get() = ""
-	val suffixString: String get() = ""
+	fun getPrefixString(): String
+	fun getSuffixString(): String
 }
 
 /**PlantUml Dsl的元素。*/
@@ -51,43 +53,42 @@ object PumlConfig : DslConfig {
 
 /**Puml的默认代理实现。*/
 @PumlDsl
-class PumlDelegate : Puml {
+open class PumlDelegate : Puml {
 	override var title: PumlTitle? = null
 	override var legend: PumlLegend? = null
 	override var header: PumlHeader? = null
 	override var footer: PumlFooter? = null
 	override var scale: PumlScale? = null
 	override var caption: PumlCaption? = null
+	override val notes: MutableSet<PumlNote> = mutableSetOf()
 	override val skinParams: PumlSkinParams = PumlSkinParams()
 	
-	override val prefixString: String
-		get() = TODO()
+	//TODO need to generate alias for no-alias notes
+	override fun getPrefixString(): String = TODO()
 	
-	override val suffixString: String
-		get() = TODO()
+	override fun getSuffixString(): String = TODO()
 }
 
 @PumlDsl
-inline fun <T : Puml> T.title(text: String, position: PumlDslElementPosition? = null) =
-	PumlTitle(text, position).also { title = it }
+inline fun <T : Puml> T.title(text: String) = PumlTitle(text).also { title = it }
 
 @PumlDsl
-inline fun <T : Puml> T.legend(text: String, position: PumlDslElementPosition? = null) =
-	PumlLegend(text, position).also { legend = it }
+inline fun <T : Puml> T.legend(text: String) = PumlLegend(text).also { legend = it }
 
 @PumlDsl
-inline fun <T : Puml> T.header(text: String, position: PumlDslElementPosition? = null) =
-	PumlHeader(text, position).also { header = it }
+inline fun <T : Puml> T.header(text: String) = PumlHeader(text).also { header = it }
 
 @PumlDsl
-inline fun <T : Puml> T.footer(text: String, position: PumlDslElementPosition? = null) =
-	PumlFooter(text, position).also { footer = it }
+inline fun <T : Puml> T.footer(text: String) = PumlFooter(text).also { footer = it }
 
 @PumlDsl
 inline fun <T : Puml> T.scale(expression: String) = PumlScale(expression).also { scale = it }
 
 @PumlDsl
 inline fun <T : Puml> T.caption(text: String) = PumlCaption(text).also { caption = it }
+
+@PumlDsl
+inline fun <T : Puml> T.note(text: String) = PumlNote(text).also { notes += it }
 
 @PumlDsl
 inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.also { it.builder() }
@@ -97,18 +98,13 @@ inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinPar
 @PumlDsl
 sealed class PumlTopElement(
 	val type: String,
-	text: String,
-	position: PumlDslElementPosition? = null
-) : PumlDslElement, CanIndentContent, CanWrapContent {
 	@Language("Html")
-	val text: String = text.also {
-		//wrap when necessary
-		if("\n" in it) wrapContent = true
-	}
-	val position: PumlDslElementPosition? = position
+	val text: String
+) : PumlDslElement, CanIndentContent, CanWrapContent {
+	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
-	override var wrapContent: Boolean = false
+	override var wrapContent: Boolean = "\n" in text || "\r" in text//wrap content when necessary
 	
 	override fun toString(): String {
 		val positionSnippet = position?.let { "$it " } ?: ""
@@ -117,49 +113,47 @@ sealed class PumlTopElement(
 			"$positionSnippet$type\n$indentedTextSnippet\nend $type"
 		} else {
 			//unescape "\n" if necessary
-			val textSnippet = text.replace("\n", "\\n")
+			val textSnippet = text.replaceWithEscapedWrap()
 			"$positionSnippet$type $textSnippet"
 		}
 	}
+	
+	
+	@PumlDsl
+	inline infix fun at(position: PumlTopElementPosition) = this.also { it.position = position }
 }
 
 /**PlantUml标题。*/
 @PumlDsl
 class PumlTitle(
-	text: String,
-	position: PumlDslElementPosition? = null
-) : PumlTopElement("title", text, position)
+	text: String
+) : PumlTopElement("title", text)
 
 /**PlantUml图例说明。*/
 @PumlDsl
 class PumlLegend(
-	text: String,
-	position: PumlDslElementPosition? = null
-) : PumlTopElement("legend", text, position)
+	text: String
+) : PumlTopElement("legend", text)
 
 /**PlantUml页眉。*/
 @PumlDsl
 class PumlHeader(
-	text: String,
-	position: PumlDslElementPosition? = null
-) : PumlTopElement("header", text, position)
+	text: String
+) : PumlTopElement("header", text)
 
 /**PlantUml页脚。*/
 @PumlDsl
 class PumlFooter(
-	text: String,
-	position: PumlDslElementPosition? = null
-) : PumlTopElement("footer", text, position)
+	text: String
+) : PumlTopElement("footer", text)
 
 
 //TODO Better api
 /**PlantUml缩放。*/
 @PumlDsl
 class PumlScale(
-	expression: String
+	val expression: String
 ) : PumlDslElement {
-	val expression: String = expression
-	
 	override fun toString(): String {
 		return "scale $expression"
 	}
@@ -167,13 +161,80 @@ class PumlScale(
 
 /**PlantUml图片标题。*/
 class PumlCaption(
-	text: String
+	val text: String
 ) : PumlDslElement {
-	val text: String = text
-	
 	override fun toString(): String {
 		return "caption $text"
 	}
+}
+
+
+/**
+ * PlantUml注释。
+ *
+ * 语法示例：
+ * * note right of Target: text can\n wrap line.
+ * * note "text" as Note
+ * * note right of Target
+ *     (multiline text.)
+ *   end note
+ * * note as Note
+ *     (multiline text.)
+ *   end note
+ */
+@PumlDsl
+class PumlNote(
+	@Language("Creole")
+	val text: String //NOTE can wrap by "\n"
+) : PumlStateDiagramDslElement, CanIndentContent, CanWrapContent {
+	//must: alias or (position & targetStateName), position win first.
+	var alias: String? = null
+	var position: PumlNotePosition? = null
+	var targetId: String? = null
+	
+	override var indentContent: Boolean = true
+	override var wrapContent: Boolean = "\n" in text || "\r" in text //wrap content when necessary
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is PumlNote && other.alias == alias)
+	}
+	
+	override fun hashCode(): Int {
+		return alias.hashCode()
+	}
+	
+	override fun toString(): String {
+		val aliasSnippet = if(position == null) " as $alias" else ""
+		val positionSnippet = position?.let { " ${it.text} $targetId" } ?: ""
+		return if(wrapContent) {
+			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
+			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
+		} else {
+			val textSnippet = text.replaceWithEscapedWrap()
+			if(position == null) "note ${textSnippet.wrapQuote(quote)} as $alias"
+			else "note$positionSnippet: $textSnippet"
+		}
+	}
+	
+	
+	@PumlStateDiagramDsl
+	inline infix fun alias(alias: String) = this.also { it.alias = alias }
+	
+	@PumlStateDiagramDsl
+	inline infix fun leftOf(targetId: String) = this.also { it.targetId = targetId }
+		.also { it.position = PumlNotePosition.LeftOf }
+	
+	@PumlStateDiagramDsl
+	inline infix fun rightOf(targetId: String) = this.also { it.targetId = targetId }
+		.also { it.position = PumlNotePosition.RightOf }
+	
+	@PumlStateDiagramDsl
+	inline infix fun topOf(targetId: String) = this.also { it.targetId = targetId }
+		.also { it.position = PumlNotePosition.TopOf }
+	
+	@PumlStateDiagramDsl
+	inline infix fun bottomOf(targetId: String) = this.also { it.targetId = targetId }
+		.also { it.position = PumlNotePosition.BottomOf }
 }
 
 
@@ -229,9 +290,24 @@ class PumlNestedSkinParams : PumlDslElement, CanIndentContent, MutableMap<String
 
 //REGION Enumerations and constants
 
-/**PlantUml Dsl元素位置。*/
-enum class PumlDslElementPosition(
+/**PlantUml顶级元素的位置。*/
+enum class PumlTopElementPosition(
 	val text: String
 ) {
 	Right("right"), Left("left"), Center("center")
+}
+
+/**PlantUml箭头的形状。*/
+enum class PumlArrowShape(val text: String) {
+	Dotted("dotted"), Dashed("dashed"), Bold("bold"), Hidden("hidden")
+}
+
+/**PlantUml箭头的方向。*/
+enum class PumlArrowDirection(val text: String) {
+	Down("down"), Up("up"), Left("left"), Right("right")
+}
+
+/**PlantUml注释的位置。*/
+enum class PumlNotePosition(val text: String) {
+	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }

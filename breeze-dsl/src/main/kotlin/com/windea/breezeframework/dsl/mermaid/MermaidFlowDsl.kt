@@ -52,24 +52,23 @@ sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 	
 	
 	@MermaidFlowDsl
-	inline fun node(id: String, text: String? = null, shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect) =
-		MermaidFlowNode(id, text, shape).also { nodes += it }
+	inline fun node(name: String, text: String? = null) = MermaidFlowNode(name, text).also { nodes += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNodeId: String, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
-		MermaidFlowLink(sourceNodeId, targetNodeId, text, arrowShape).also { links += it }
+	inline fun link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
+		MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
-		MermaidFlowLink(sourceNode.id, targetNodeId, text, arrowShape).also { links += it }
+	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
+		link(sourceNode.name, targetNodeId, text)
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
-		MermaidFlowLink(sourceNodeId, targetNode.id, text, arrowShape).also { links += it }
+	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
+		link(sourceNodeId, targetNode.name, text)
 	
 	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null, arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow) =
-		MermaidFlowLink(sourceNode.id, targetNode.id, text, arrowShape).also { links += it }
+	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
+		link(sourceNode.name, targetNode.name, text)
 	
 	@MermaidFlowDsl
 	inline fun subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
@@ -77,28 +76,26 @@ sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 	
 	@MermaidFlowDsl
 	inline fun style(nodeId: String, vararg styles: Pair<String, String>) =
-		MermaidFlowNodeStyle(nodeId, *styles).also { this@AbstractMermaidFlow.styles += it }
+		MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this@AbstractMermaidFlow.styles += it }
 	
 	@MermaidFlowDsl
 	inline fun linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
-		MermaidFlowLinkStyle(linkOrder, *styles).also { linkStyles += it }
+		MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
 	
 	@MermaidFlowDsl
 	inline fun classDef(className: String, vararg styles: Pair<String, String>) =
-		MermaidFlowClassDef(className, *styles).also { classDefs += it }
+		MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
 	
 	@MermaidFlowDsl
 	inline fun classRef(vararg nodeIds: String, className: String) =
-		MermaidFlowClassRef(*nodeIds, className = className).also { classRefs += it }
+		MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
 }
 
 /**Mermaid流程图。*/
 @MermaidFlowDsl
 class MermaidFlow @PublishedApi internal constructor(
-	direction: MermaidFlowDirection
+	val direction: MermaidFlowDirection
 ) : AbstractMermaidFlow(), Mermaid {
-	val direction: MermaidFlowDirection = direction
-	
 	override fun toString(): String {
 		val contentSnippet = super.toString()
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
@@ -109,53 +106,51 @@ class MermaidFlow @PublishedApi internal constructor(
 /**Mermaid流程图节点。*/
 @MermaidFlowDsl
 class MermaidFlowNode @PublishedApi internal constructor(
-	id: String,
-	text: String? = null,
-	shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
+	val name: String,
+	val text: String? = null //NOTE can wrap by "<br>"
 ) : MermaidFlowDslElement {
-	val id: String = id //NOTE do not ensure argument is valid
-	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val shape: MermaidFlowNodeShape = shape
+	var shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
 	
-	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.id == id)
+	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.name == name)
 	
-	override fun hashCode() = id.hashCode()
+	override fun hashCode() = name.hashCode()
 	
 	//TODO omit text, no double quote surround text if not necessary
 	override fun toString(): String {
-		val textSnippet = (text ?: id).wrapQuote(quote)
-		return "$id${shape.prefix}$textSnippet${shape.suffix}"
+		val textSnippet = (text?.replaceWithEscapedWrap() ?: name).wrapQuote(quote)
+		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
+	
+	
+	inline infix fun shape(shape: MermaidFlowNodeShape) = this.also { it.shape = shape }
 }
 
 /**Mermaid流程图连接。*/
 @MermaidFlowDsl
 class MermaidFlowLink @PublishedApi internal constructor(
-	sourceNodeId: String,
-	targetNodeId: String,
-	text: String? = null,
-	arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow
+	val sourceNodeId: String,
+	val targetNodeId: String,
+	val text: String? = null //NOTE can wrap by "<br>"
 ) : MermaidFlowDslElement {
-	val sourceNodeId: String = sourceNodeId //NOTE do not ensure argument is valid
-	val targetNodeId: String = targetNodeId //NOTE do not ensure argument is valid
-	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val arrowShape: MermaidFlowLinkArrowShape = arrowShape
+	var arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow
 	
 	//TODO escape if necessary
 	override fun toString(): String {
 		val arrowSnippet = arrowShape.text
-		val textSnippet = text?.let { "|$text|" } ?: ""
+		val textSnippet = text?.let { "|${text.replaceWithHtmlWrap()}|" } ?: ""
 		return "$sourceNodeId $arrowSnippet$textSnippet $targetNodeId"
 	}
+	
+	
+	@MermaidFlowDsl
+	inline infix fun arrowShape(arrowShape: MermaidFlowLinkArrowShape) = this.also { it.arrowShape = arrowShape }
 }
 
 /**Mermaid流程图的子图。*/
 @MermaidFlowDsl
 class MermaidFlowSubGraph @PublishedApi internal constructor(
-	name: String
+	val name: String
 ) : AbstractMermaidFlow() {
-	val name: String = name //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val contentSnippet = super.toString()
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
@@ -166,12 +161,9 @@ class MermaidFlowSubGraph @PublishedApi internal constructor(
 /**Mermaid流程图节点风格。*/
 @MermaidFlowDsl
 class MermaidFlowNodeStyle @PublishedApi internal constructor(
-	nodeId: String,
-	vararg styles: Pair<String, String>
+	val nodeId: String,
+	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
-	val nodeId: String = nodeId //NOTE do not ensure argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "style $nodeId $styleMapSnippet"
@@ -181,12 +173,9 @@ class MermaidFlowNodeStyle @PublishedApi internal constructor(
 /**Mermaid流程图连接风格。*/
 @MermaidFlowDsl
 class MermaidFlowLinkStyle @PublishedApi internal constructor(
-	linkOrder: Int,
-	vararg styles: Pair<String, String>
+	val linkOrder: Int,
+	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
-	val linkOrder: Int = linkOrder //NOTE do not ensure argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "style $linkOrder $styleMapSnippet"
@@ -196,12 +185,9 @@ class MermaidFlowLinkStyle @PublishedApi internal constructor(
 /**Mermaid流程图类定义。*/
 @MermaidFlowDsl
 class MermaidFlowClassDef @PublishedApi internal constructor(
-	className: String,
-	vararg styles: Pair<String, String>
+	val className: String,
+	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
-	val className: String = className //NOTE do not ensure argument is valid
-	val styles: Map<String, String> = styles.toMap() //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "classDef $className $styleMapSnippet"
@@ -211,12 +197,9 @@ class MermaidFlowClassDef @PublishedApi internal constructor(
 /**Mermaid流程图类引用。*/
 @MermaidFlowDsl
 class MermaidFlowClassRef @PublishedApi internal constructor(
-	vararg nodeIds: String,
-	className: String
+	val nodeIds: Set<String>,
+	val className: String
 ) : MermaidFlowDslElement {
-	val nodeIds = nodeIds.toSet() //NOTE do not ensure argument is valid
-	val className = className //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val nodeIdSetSnippet = nodeIds.joinToString()
 		return "class $nodeIdSetSnippet $className"

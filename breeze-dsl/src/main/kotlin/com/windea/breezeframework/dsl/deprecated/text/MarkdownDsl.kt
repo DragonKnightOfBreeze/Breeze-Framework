@@ -2,7 +2,6 @@ package com.windea.breezeframework.dsl.deprecated.text
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.deprecated.*
 import com.windea.breezeframework.dsl.deprecated.*
 import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.addTrailingBreakSpaces
 import com.windea.breezeframework.dsl.deprecated.text.MarkdownDslConfig.addTrailingHeaderMarkers

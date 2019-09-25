@@ -2,7 +2,6 @@ package com.windea.breezeframework.dsl.deprecated.data
 
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.dsl.deprecated.*
 import com.windea.breezeframework.dsl.deprecated.*
 import com.windea.breezeframework.dsl.deprecated.data.JsonDslConfig.defaultName
 import com.windea.breezeframework.dsl.deprecated.data.JsonDslConfig.indent

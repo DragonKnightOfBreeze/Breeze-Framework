@@ -1,5 +1,4 @@
 @file:Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
-@file:NotImplemented
 @file:Suppress("CanBePrimaryConstructorProperty", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.puml
@@ -7,7 +6,6 @@ package com.windea.breezeframework.dsl.puml
 import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
@@ -18,68 +16,85 @@ internal annotation class PumlStateDiagramDsl
 
 //REGION Dsl elements & Build functions
 
-/**构建Puml状态图。*/
+/**构建PlantUml状态图。*/
 @PumlStateDiagramDsl
 fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
 
-/**Puml状态图的元素。*/
+/**PlantUml状态图的元素。*/
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslElement : PumlDslElement
 
-/**Puml状态图。*/
+/**PlantUml状态图。*/
 @PumlStateDiagramDsl
 class PumlStateDiagram : PumlStateDiagramDslElement, Puml by PumlDelegate() {
-	var nodeIndex: Int = 0
+	val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
+	val links: MutableList<PumlStateDiagramLink> = mutableListOf()
 	
 	override fun toString(): String {
-		val snippet = ""
-		return "@startuml\n\n$snippet\n\n@enduml"
+		val statesSnippet = states.joinToString("\n")
+		val linksSnippet = links.joinToString("\n")
+		val contentSnippet = "$statesSnippet\n\n$linksSnippet"
+		return "@startuml\n${getPrefixString()}\n\n$contentSnippet\n\n${getSuffixString()}\n@enduml"
 	}
+	
+	
+	@PumlStateDiagramDsl
+	inline fun state(name: String, text: String = "") = PumlStateDiagramState(name, text).also { states += it }
+	
+	@PumlStateDiagramDsl
+	inline fun link(sourceStateId: String, targetStateId: String, text: String = "") =
+		PumlStateDiagramLink(sourceStateId, targetStateId, text).also { links += it }
+	
+	@PumlStateDiagramDsl
+	inline fun link(sourceState: PumlStateDiagramState, targetStateId: String, text: String = "") =
+		link(sourceState.alias ?: sourceState.name, targetStateId, text)
+	
+	@PumlStateDiagramDsl
+	inline fun link(sourceStateId: String, targetState: PumlStateDiagramState, text: String = "") =
+		link(sourceStateId, targetState.alias ?: targetState.name, text)
+	
+	@PumlStateDiagramDsl
+	inline fun link(sourceState: PumlStateDiagramState, targetState: PumlStateDiagramState, text: String = "") =
+		link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
 }
 
+//TODO 提取到公共Dsl（tag、color）
+/**
+ * PlantUml状态图状态。
+ *
+ * 语法示例：
+ * * `state A: text can\n wrap line.`
+ * * `state A<<Tag>> #333: state with tag and color.`
+ * * `state "Long name" as A: state with long name.`
+ */
 @PumlStateDiagramDsl
-open class PumlStateDiagramState : PumlStateDiagramDslElement
-
-@PumlStateDiagramDsl
-class PumlStateDiagramCompositedState : PumlStateDiagramState()
-
-@PumlStateDiagramDsl
-class PumlStateDiagramConcurrentState : PumlStateDiagramState()
-
-@PumlStateDiagramDsl
-class PumlStateDiagramLink : PumlStateDiagramDslElement
-
-/**Mermaid状态图注释。*/
-@PumlStateDiagramDsl
-class PumlStateDiagramNote(
-	text: String,
-	alias: String //necessary for simple api
-) : PumlStateDiagramDslElement, CanIndentContent, CanWrapContent {
-	@Language("MarkUp")
-	val text: String = text.also {
-		//wrap when necessary
-		if("\n" in it) wrapContent = true
+class PumlStateDiagramState(
+	@Language("Creole")
+	val name: String, //NOTE can wrap by "\n" if alias is not null
+	@Language("Creole")
+	val text: String = "" //NOTE can wrap by "\n"
+) : PumlStateDiagramDslElement {
+	var alias: String? = null
+	var tag: String? = null
+	var color: String? = null
+	
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is PumlStateDiagramState && (other.alias == alias || other.name == name))
 	}
 	
-	override var indentContent: Boolean = true
-	override var wrapContent: Boolean = false
-	
-	//must: alias or (position & targetStateName), position win first.
-	var alias: String = alias
-	var position: PumlStateDiagramNotePosition? = null
-	var targetStateName: String? = null
+	override fun hashCode(): Int {
+		return alias?.hashCode() ?: name.hashCode()
+	}
 	
 	override fun toString(): String {
-		val aliasSnippet = if(position == null) " $alias" else ""
-		val positionSnippet = position?.let { " ${it.text} $targetStateName" } ?: ""
-		return if(wrapContent) {
-			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
-			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
+		val textSnippet = text.replaceWithEscapedWrap()
+		val tagSnippet = tag?.let { "<<$it>>" } ?: ""
+		val colorSnippet = color?.let { " ${it.addPrefix("#")}" } ?: ""
+		return if(alias == null) {
+			"state $name$tagSnippet$colorSnippet: $textSnippet"
 		} else {
-			//unescape "\n" if necessary
-			val textSnippet = text.replace("\n", "\\n")
-			if(position == null) "note ${textSnippet.wrapQuote(quote)} as $alias"
-			else "note$positionSnippet: $textSnippet"
+			val nameSnippet = name.replaceWithEscapedWrap().wrapQuote(quote) //only escaped with an existing alias
+			"state $nameSnippet as $alias$tagSnippet$colorSnippet: $textSnippet"
 		}
 	}
 	
@@ -88,35 +103,63 @@ class PumlStateDiagramNote(
 	inline infix fun alias(alias: String) = this.also { it.alias = alias }
 	
 	@PumlStateDiagramDsl
-	inline infix fun leftOf(targetStateName: String) = this.also { it.targetStateName = targetStateName }
-		.also { it.position = PumlStateDiagramNotePosition.LeftOf }
+	inline infix fun tag(tag: String) = this.also { it.tag = tag }
 	
 	@PumlStateDiagramDsl
-	inline infix fun rightOf(targetStateName: String) = this.also { it.targetStateName = targetStateName }
-		.also { it.position = PumlStateDiagramNotePosition.RightOf }
+	inline infix fun color(color: String) = this.also { it.color = color }
+}
+
+//@PumlStateDiagramDsl
+//class PumlStateDiagramCompositedState : PumlStateDiagramState()
+//
+//@PumlStateDiagramDsl
+//class PumlStateDiagramConcurrentState : PumlStateDiagramState()
+
+/**
+ * PlantUml状态图连接。
+ *
+ * 语法示例：
+ * * `A -> B`
+ * * `A -> B: text can\n wrap line.`
+ * * `A --> B: arrow can be longer.`
+ * * `A -[#333,dotted]right-> B: arrow with color, shape and direction.`
+ */
+@PumlStateDiagramDsl
+class PumlStateDiagramLink(
+	@Language("Creole")
+	val sourceStateId: String,
+	@Language("Creole")
+	val targetStateId: String,
+	@Language("Creole")
+	val text: String = "" //NOTE can wrap by "\n"
+) : PumlStateDiagramDslElement {
+	var arrowColor: String? = null
+	var arrowShape: PumlArrowShape? = null
+	var arrowDirection: PumlArrowDirection? = null
+	var arrowLength: Int = 1
+	
+	override fun toString(): String {
+		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
+		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowShape?.text).filterNotNull().let {
+			if(it.isEmpty()) "" else it.joinToString(",", "[", "]")
+		}
+		val arrowDirectionSnippet = arrowDirection ?: ""
+		val arrowLengthSnippet = "-" * (arrowLength - 1)
+		val arrowSnippet = "-$arrowParamsSnippet$arrowDirectionSnippet$arrowLengthSnippet>"
+		return "$sourceStateId $arrowSnippet $targetStateId$textSnippet"
+	}
+	
 	
 	@PumlStateDiagramDsl
-	inline infix fun topOf(targetStateName: String) = this.also { it.targetStateName = targetStateName }
-		.also { it.position = PumlStateDiagramNotePosition.TopOf }
+	inline infix fun arrowColor(arrowColor: String) = this.also { it.arrowColor = arrowColor }
 	
 	@PumlStateDiagramDsl
-	inline infix fun bottomOf(targetStateName: String) = this.also { it.targetStateName = targetStateName }
-		.also { it.position = PumlStateDiagramNotePosition.BottomOf }
+	inline infix fun arrowShape(arrowShape: PumlArrowShape) = this.also { it.arrowShape = arrowShape }
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowDirection(arrowDirection: PumlArrowDirection) = this.also { it.arrowDirection = arrowDirection }
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowLength(arrowLength: Int) = this.also { it.arrowLength = arrowLength.coerceIn(1, 8) }
 }
 
-//REGION Enumerations and constants
-
-/**Puml状态图连接的箭头形状。*/
-enum class PumlStateDiagramLinkArrowShape(val text: String) {
-	Dotted("dotted"), Dashed("dashed"), Bold("bold") //and more?
-}
-
-/**Puml状态图连接的箭头方向。*/
-enum class PumlStateDiagramLinkArrowDirection(val text: String) {
-	Down("down"), Up("up"), Left("left"), Right("right")
-}
-
-/**Puml状态图连接的注释位置。*/
-enum class PumlStateDiagramNotePosition(val text: String) {
-	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
-}

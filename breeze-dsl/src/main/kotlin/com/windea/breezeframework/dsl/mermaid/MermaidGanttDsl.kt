@@ -18,8 +18,7 @@ internal annotation class MermaidGanttDsl
 
 /**构建Mermaid甘特图。*/
 @MermaidGanttDsl
-fun mermaidGantt(title: String, dataFormat: String = "YYYY-MM-DD", builder: MermaidGantt.() -> Unit) =
-	MermaidGantt(title, dataFormat).also { it.builder() }
+fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.builder() }
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
@@ -27,19 +26,16 @@ interface MermaidGanttDslElement : MermaidDslElement
 
 /**Mermaid甘特图。*/
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor(
-	title: String,
-	dataFormat: String = "YYYY-MM-DD"
-) : MermaidGanttDslElement, CanIndentContent, Mermaid {
-	val title: String = title.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val dataFormat: String = dataFormat //NOTE do not ensure argument is valid
+class MermaidGantt @PublishedApi internal constructor() : MermaidGanttDslElement, CanIndentContent, Mermaid {
+	var title: MermaidGanttTitle? = null
+	var dataFormat: MermaidGanttDateFormat? = null
 	val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			"title $title\ndataFormat $dataFormat",
+			arrayOf(title, dataFormat).filterNotNull().joinToString("\n"),
 			sections.joinToString("\n\n")
 		).filterNotEmpty().joinToString("\n\n")
 		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
@@ -52,12 +48,31 @@ class MermaidGantt @PublishedApi internal constructor(
 		MermaidGanttSection(name).also { it.builder() }.also { sections += it }
 }
 
+/**Mermaid甘特图标题。*/
+@MermaidGanttDsl
+class MermaidGanttTitle @PublishedApi internal constructor(
+	val name: String
+) : MermaidGanttDslElement {
+	override fun toString(): String {
+		return "title $name"
+	}
+}
+
+/**Mermaid甘特图日期格式。*/
+@MermaidGanttDsl
+class MermaidGanttDateFormat @PublishedApi internal constructor(
+	val expression: String = "YYYY-MM-DD"
+) : MermaidGanttDslElement {
+	override fun toString(): String {
+		return "dateFormat $expression"
+	}
+}
+
 /**Mermaid甘特图章节。*/
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
-	name: String
+	val name: String
 ) : MermaidGanttDslElement, CanIndentContent {
-	val name: String = name.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false
@@ -79,14 +94,10 @@ class MermaidGanttSection @PublishedApi internal constructor(
 /**Mermaid甘特图任务。*/
 @MermaidGanttDsl
 class MermaidGanttTask @PublishedApi internal constructor(
-	name: String,
-	isCrit: Boolean = false,
-	status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo
+	val name: String,
+	val isCrit: Boolean = false,
+	val status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo
 ) : MermaidGanttDslElement {
-	val name: String = name.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val isCrit: Boolean = isCrit
-	val status: MermaidGanttTaskStatus = status
-	
 	var alias: String? = null
 	//LocalDate format or "after $alias" format
 	var initialTime: String? = null
@@ -120,7 +131,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	//LocalDateTime format causes error
 	
 	@MermaidGanttDsl
-	inline infix fun previousTask(taskName: String) = this.also { it.initialTime = "after $taskName" }
+	inline infix fun previousTask(taskId: String) = this.also { it.initialTime = "after $taskId" }
 	
 	@MermaidGanttDsl
 	inline infix fun duration(duration: String) = this.also { it.finishTime = duration }

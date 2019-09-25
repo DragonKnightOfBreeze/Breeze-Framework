@@ -1,9 +1,4 @@
 @startuml
-hide empty description
-[*] --> A
-A --> B
-A -[dashed]-> C
-A -[dotted]-> D
-A -[#333][bold]-> E
-
+state A
+A -> B__B__B
 @enduml

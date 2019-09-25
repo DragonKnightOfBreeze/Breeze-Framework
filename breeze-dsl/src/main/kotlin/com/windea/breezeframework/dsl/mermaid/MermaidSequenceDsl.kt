@@ -48,8 +48,20 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 		MermaidSequenceParticipant(name).also { actors += it }
 	
 	@MermaidSequenceDsl
-	inline fun message(fromActorName: String, toActorName: String, messageText: String, messageArrow: MermaidSequenceMessageArrow = MermaidSequenceMessageArrow.Arrow) =
-		MermaidSequenceMessage(fromActorName, toActorName, messageText, messageArrow).also { messages += it }
+	inline fun message(fromActorId: String, toActorId: String, text: String) =
+		MermaidSequenceMessage(fromActorId, toActorId, text).also { messages += it }
+	
+	@MermaidSequenceDsl
+	inline fun message(fromActor: MermaidSequenceParticipant, toActorId: String, text: String) =
+		message(fromActor.alias ?: fromActor.name, toActorId, text)
+	
+	@MermaidSequenceDsl
+	inline fun message(fromActorId: String, toActor: MermaidSequenceParticipant, text: String) =
+		message(fromActorId, toActor.alias ?: toActor.name, text)
+	
+	@MermaidSequenceDsl
+	inline fun message(fromActor: MermaidSequenceParticipant, toActor: MermaidSequenceParticipant, text: String) =
+		message(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
 	
 	@MermaidSequenceDsl
 	inline fun note(text: String) = MermaidSequenceNote(text).also { notes += it }
@@ -69,9 +81,6 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 	@MermaidSequenceDsl
 	inline fun highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
 		MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
-	
-	@MermaidSequenceDsl
-	inline operator fun String.unaryMinus() = note(this)
 }
 
 /**Mermaid序列图。*/
@@ -87,18 +96,16 @@ class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequ
 /**Mermaid序列图参与者。*/
 @MermaidSequenceDsl
 class MermaidSequenceParticipant @PublishedApi internal constructor(
-	name: String
+	val name: String
 ) : MermaidSequenceDslElement {
-	val name: String = name //NOTE do not ensure argument is valid
-	
-	var alias: String? = null //NOTE do not ensure argument is valid
+	var alias: String? = null
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || (other is MermaidSequenceParticipant && other.name == name)
+		return this === other || (other is MermaidSequenceParticipant && (other.alias == alias || other.name == name))
 	}
 	
 	override fun hashCode(): Int {
-		return name.hashCode()
+		return alias?.hashCode() ?: name.hashCode()
 	}
 	
 	override fun toString(): String {
@@ -114,24 +121,22 @@ class MermaidSequenceParticipant @PublishedApi internal constructor(
 /**Mermaid序列图消息。*/
 @MermaidSequenceDsl
 class MermaidSequenceMessage @PublishedApi internal constructor(
-	fromActorName: String,
-	toActorName: String,
-	messageText: String,
-	messageArrow: MermaidSequenceMessageArrow = MermaidSequenceMessageArrow.Arrow
+	val fromActorId: String,
+	val toActorId: String,
+	val text: String
 ) : MermaidSequenceDslElement {
-	val fromActorName: String = fromActorName //NOTE do not ensure argument is valid
-	val toActorName: String = toActorName //NOTE do not ensure argument is valid
-	val messageText: String = messageText.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	val messageArrow: MermaidSequenceMessageArrow = messageArrow
-	
+	var arrowShape: MermaidSequenceMessageArrowShape = MermaidSequenceMessageArrowShape.Arrow
 	var activateStatus: Boolean? = null
 	
 	//TODO multiline & escaped message text
 	override fun toString(): String {
 		val activateSnippet = activateStatus?.let { if(it) "+ " else "- " } ?: ""
-		return "$fromActorName ${messageArrow.text} $activateSnippet$toActorName: $messageText"
+		return "$fromActorId ${arrowShape.text} $activateSnippet$toActorId: $text"
 	}
 	
+	
+	@MermaidSequenceDsl
+	inline infix fun arrowShape(arrowShape: MermaidSequenceMessageArrowShape) = this.also { it.arrowShape = arrowShape }
 	
 	@MermaidSequenceDsl
 	inline infix fun activate(status: Boolean) = this.also { it.activateStatus = status }
@@ -140,43 +145,40 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 /**Mermaid序列图注释。*/
 @MermaidSequenceDsl
 class MermaidSequenceNote @PublishedApi internal constructor(
-	text: String
+	val text: String //NOTE can wrap by "<br>"
 ) : MermaidSequenceDslElement {
-	val text: String = text.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	
 	var position: MermaidSequenceNodePosition = MermaidSequenceNodePosition.RightOf
-	var targetActorName: String = "Default"
-	var targetActor2Name: String? = null
+	var targetActorId: String = "Default"
+	var targetActor2Id: String? = null
 	
 	//TODO multiline & escaped message text
 	override fun toString(): String {
-		val targetActor2NameSnippet = targetActor2Name?.let { ", $it" } ?: ""
-		return "note $position $targetActorName$targetActor2NameSnippet: $text"
+		val textSnippet = text.replaceWithHtmlWrap()
+		val targetActor2NameSnippet = targetActor2Id?.let { ", $it" } ?: ""
+		return "note $position $targetActorId$targetActor2NameSnippet: $textSnippet"
 	}
 	
 	
 	@MermaidSequenceDsl
-	inline infix fun leftOf(actorName: String) =
-		this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorName = actorName }
+	inline infix fun leftOf(actorId: String) =
+		this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorId = actorId }
 	
 	@MermaidSequenceDsl
-	inline infix fun rightOf(actorName: String) =
-		this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorName = actorName }
+	inline infix fun rightOf(actorId: String) =
+		this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorId = actorId }
 	
 	@MermaidSequenceDsl
-	inline infix fun over(actorNamePair: Pair<String, String>) =
+	inline infix fun over(actorIdPair: Pair<String, String>) =
 		this.also { it.position = MermaidSequenceNodePosition.RightOf }
-			.also { it.targetActorName = actorNamePair.first }.also { it.targetActor2Name = actorNamePair.second }
+			.also { it.targetActorId = actorIdPair.first }.also { it.targetActor2Id = actorIdPair.second }
 }
 
 /**Mermaid序列图作用域。*/
 @MermaidSequenceDsl
 abstract class MermaidSequenceScope @PublishedApi internal constructor(
 	val type: String,
-	text: String?
+	val text: String?
 ) : AbstractMermaidSequence() {
-	val text: String? = text?.replaceWithHtmlWrap() //NOTE do not ensure argument is valid
-	
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" } ?: ""
 		val contentSnippet = super.toString()
@@ -231,8 +233,8 @@ class MermaidSequenceHighlight @PublishedApi internal constructor(
 
 //REGION Enumerations and constants
 
-/**Mermaid序列图消息的箭头类型。*/
-enum class MermaidSequenceMessageArrow(val text: String) {
+/**Mermaid序列图消息的箭头形状。*/
+enum class MermaidSequenceMessageArrowShape(val text: String) {
 	Arrow("->>"), DottedArrow("-->>"), Line("->"), DottedLine("-->"), Cross("-x"), DottedCross("--x")
 }
 

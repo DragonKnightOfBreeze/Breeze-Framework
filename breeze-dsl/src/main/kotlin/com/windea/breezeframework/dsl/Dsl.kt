@@ -7,8 +7,8 @@ import com.windea.breezeframework.core.extensions.*
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal
 //所有的Dsl元素和Dsl构建方法都必须添加对应的slMarker注解
-//所有的Dsl构建方法都要尽可能地写成内联形式和X表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
-//所有的Dsl元素的属性都不应该声明在构造方法之内，因为可能需要对输入参数进行处理。
+//所有的Dsl构建方法都要尽可能地写成内联形式和表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
+//运算符重载规则：`+"text"`表示文本，`-"text"`表示注释，`"text" { } `表示唯一子级元素。
 
 //REGION Dsl annotations
 
@@ -40,14 +40,6 @@ interface CanWrapContent {
 @GeneralDsl
 inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
 
-/**换行内容。*/
-@GeneralDsl
-inline fun <T : CanWrapContent> T.wrap() = this.wrap(true)
-
-/**不换行内容。*/
-@GeneralDsl
-inline fun <T : CanWrapContent> T.unwrap() = this.wrap(false)
-
 
 /**可缩进内容。*/
 @GeneralDsl
@@ -59,16 +51,23 @@ interface CanIndentContent {
 @GeneralDsl
 inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
-/**缩进内容。*/
-@GeneralDsl
-inline fun <T : CanIndentContent> T.indent() = this.indent(true)
 
-/**不缩进内容。*/
+/**可内联内容。即，可将内容直接写入字符串模版中。*/
 @GeneralDsl
-inline fun <T : CanIndentContent> T.unindent() = this.indent(false)
+interface CanInlineContent {
+	var inlineContent: Boolean
+}
+
+/**内联内容。*/
+@GeneralDsl
+inline infix fun <T : CanInlineContent> T.inline(value: Boolean) = this.also { inlineContent = value }
 
 //REGION Useful extensions for argument handling
 
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
 internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")
+
+/**将`\n`或`\r`替换成`\\n`和`\\r`。*/
+@PublishedApi
+internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")

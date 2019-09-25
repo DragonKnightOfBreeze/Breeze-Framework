@@ -34,7 +34,7 @@ sealed class XmlNode : XmlDslElement
 class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, Dsl {
 	/**声明列表。*/
 	val statements: MutableList<XmlStatement> = mutableListOf(
-		XmlStatement("xml", "version" to "1.0", "encoding" to "UTF-8")
+		XmlStatement("xml", mapOf("version" to "1.0", "encoding" to "UTF-8"))
 	)
 	/**注释列表。*/
 	val comments: MutableList<XmlComment> = mutableListOf()
@@ -55,7 +55,7 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	
 	/**添加声明。*/
 	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlStatement(name, *attributes).also { statements += it }
+		XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
 	
 	/**添加注释。*/
 	@XmlDsl
@@ -64,7 +64,7 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
-		XmlElement(name, *attributes).also { it.builder() }.also { rootElement = it }
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 	
 	/**@see Xml.comment*/
 	@XmlDsl
@@ -78,14 +78,11 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 
 /**Xml声明。*/
 class XmlStatement @PublishedApi internal constructor(
-	name: String,
-	vararg attributes: Pair<String, Any?>
-) : XmlDslElement {
 	/**名字。*/
-	val name: String = name //NOTE do not ensure argument is valid
+	val name: String,
 	/**属性。*/
-	val attributes: Map<String, String> = attributes.toMap().toStringValueMap() //NOTE do not ensure argument is valid
-	
+	val attributes: Map<String, String> = mapOf()
+) : XmlDslElement {
 	override fun toString(): String {
 		val attributesSnippet = when {
 			attributes.isEmpty() -> ""
@@ -98,13 +95,11 @@ class XmlStatement @PublishedApi internal constructor(
 /**Xml元素。*/
 @XmlDsl
 class XmlElement @PublishedApi internal constructor(
-	name: String,
-	vararg attributes: Pair<String, Any?>
-) : XmlNode(), CanWrapContent, CanIndentContent {
 	/**名字。*/
-	val name = name //NOTE do not ensure argument is valid
+	val name: String,
 	/**属性。*/
-	val attributes: Map<String, String> = attributes.toMap().toStringValueMap() //NOTE do not ensure argument is valid
+	val attributes: Map<String, String> = mapOf()
+) : XmlNode(), CanWrapContent, CanIndentContent {
 	/**子结点列表。*/
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
@@ -141,7 +136,7 @@ class XmlElement @PublishedApi internal constructor(
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
-		XmlElement(name, *attributes).also { it.builder() }.also { nodes += it }
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
 	
 	/**@see XmlElement.text*/
 	@XmlDsl
@@ -160,37 +155,33 @@ class XmlElement @PublishedApi internal constructor(
 /**Xml文本。*/
 @XmlDsl
 class XmlText @PublishedApi internal constructor(
-	text: String
-) : XmlNode() {
 	/**文本。*/
-	var text: String = text.escapeXml() //NOTE do not ensure argument is valid
-	
-	
+	val text: String
+) : XmlNode() {
 	override fun toString(): String {
-		return text
+		return text.escapeXml()
 	}
 }
 
 /**Xml注释。*/
 @XmlDsl
 class XmlComment @PublishedApi internal constructor(
-	text: String
+	/**注释文本。*/
+	val text: String
 ) : XmlNode(), CanWrapContent, CanIndentContent {
-	/**注释。*/
-	var comment: String = text.escapeXml() //NOTE do not ensure argument is valid
-	
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = false
 	
 	override fun toString(): String {
-		val indentedCommentSnippet = if(indentContent) comment.prependIndent(indent) else comment
-		val wrappedCommentSnippet = when {
-			wrapContent -> "\n$indentedCommentSnippet\n"
+		val textSnippet = text.escapeXml()
+		val indentedTextSnippet = if(indentContent) textSnippet.prependIndent(indent) else textSnippet
+		val wrappedTextSnippet = when {
+			wrapContent -> "\n$indentedTextSnippet\n"
 			//when no wrap with indent, trim first indent string.
-			!wrapContent && indentContent -> indentedCommentSnippet.drop(indentSize)
-			else -> indentedCommentSnippet
+			!wrapContent && indentContent -> indentedTextSnippet.drop(indentSize)
+			else -> indentedTextSnippet
 		}
-		return "<!--$wrappedCommentSnippet-->"
+		return "<!--$wrappedTextSnippet-->"
 	}
 }
 
