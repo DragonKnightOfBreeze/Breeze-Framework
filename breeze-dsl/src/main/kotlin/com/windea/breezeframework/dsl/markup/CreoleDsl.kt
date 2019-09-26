@@ -22,7 +22,7 @@ class Creole : DslElement, Dsl {
 
 
 @CreoleDsl
-interface CreoleRichText : CreoleDslElement, InlineContent
+interface CreoleRichText : CreoleDslElement
 
 @CreoleDsl
 class CreoleBoldText
@@ -44,9 +44,7 @@ class CreoleWavedText
 
 
 @CreoleDsl
-class CreoleIcon : CreoleDslElement, InlineContent {
-	override var inlineContent: Boolean = true
-	
+class CreoleIcon : CreoleDslElement {
 	override fun toString(): String = TODO("not implemented")
 }
 
