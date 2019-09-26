@@ -20,13 +20,24 @@ internal annotation class PumlStateDiagramDsl
 @PumlStateDiagramDsl
 fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
 
+/**PlantUml状态图。*/
+@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
+@PumlStateDiagramDsl
+class PumlStateDiagram @PublishedApi internal constructor() : AbstractPumlStateDiagram(), Puml by PumlDelegate() {
+	override fun toString(): String {
+		val contentSnippet = super.toString()
+		return "@startuml\n${getPrefixString()}\n\n$contentSnippet\n\n${getSuffixString()}\n@enduml"
+	}
+}
+
+
 /**PlantUml状态图的元素。*/
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslElement : PumlDslElement
 
 /**抽象的PlantUml状态图。*/
 @PumlStateDiagramDsl
-sealed class AbstractPumlStateDiagram : PumlStateDiagramDslElement {
+sealed class AbstractPumlStateDiagram {
 	val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	val links: MutableList<PumlStateDiagramLink> = mutableListOf()
 	
@@ -40,6 +51,12 @@ sealed class AbstractPumlStateDiagram : PumlStateDiagramDslElement {
 	
 	@PumlStateDiagramDsl
 	inline fun state(name: String, text: String = "") = PumlStateDiagramSimpleState(name, text).also { states += it }
+	
+	@PumlStateDiagramDsl
+	inline fun initState() = state("[*]")
+	
+	@PumlStateDiagramDsl
+	inline fun finishState() = state("[*]")
 	
 	@PumlStateDiagramDsl
 	inline fun state(name: String, text: String = "", builder: PumlStateDiagramCompositedState.() -> Unit) =
@@ -66,15 +83,6 @@ sealed class AbstractPumlStateDiagram : PumlStateDiagramDslElement {
 		link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
 }
 
-/**PlantUml状态图。*/
-@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
-@PumlStateDiagramDsl
-class PumlStateDiagram @PublishedApi internal constructor() : AbstractPumlStateDiagram(), Puml by PumlDelegate() {
-	override fun toString(): String {
-		val contentSnippet = super.toString()
-		return "@startuml\n${getPrefixString()}\n\n$contentSnippet\n\n${getSuffixString()}\n@enduml"
-	}
-}
 
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
@@ -160,14 +168,13 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramCompositedState @PublishedApi internal constructor(
-	name: String,
-	text: String = ""
+	name: String, text: String = ""
 ) : AbstractPumlStateDiagram(), PumlStateDiagramState by PumlStateDiagramSimpleState(name, text), CanIndentContent {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = super.toString()
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
 		val extraSnippetWithText = when {
@@ -175,7 +182,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 			text.isNotEmpty() && extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithHtmlWrap()}"
 			else -> "$extraSnippet: ${text.replaceWithHtmlWrap()}"
 		}
-		return "state $nameSnippet {\n$indentedSnippet\n}$extraSnippetWithText"
+		return "state $nameSnippet {\n$indentedContentSnippet\n}$extraSnippetWithText"
 	}
 }
 
@@ -192,8 +199,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
-	name: String,
-	text: String = ""
+	name: String, text: String = ""
 ) : PumlStateDiagramState by PumlStateDiagramSimpleState(name, text), CanIndentContent {
 	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
@@ -205,7 +211,7 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 			states.joinToString("\n"),
 			sections.joinToString("\n---\n")
 		).filterNotEmpty().joinToString("\n\n")
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
 		val extraSnippetWithText = when {
@@ -213,7 +219,7 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 			text.isNotEmpty() && extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithHtmlWrap()}"
 			else -> "$extraSnippet: ${text.replaceWithHtmlWrap()}"
 		}
-		return "state $nameSnippet {\n$indentedSnippet\n}$extraSnippetWithText"
+		return "state $nameSnippet {\n$indentedContentSnippet\n}$extraSnippetWithText"
 	}
 	
 	
@@ -228,6 +234,7 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 /**Puml状态图并发状态部分。*/
 @PumlStateDiagramDsl
 class PumlStateDiagramConcurrentSection : AbstractPumlStateDiagram()
+
 
 /**
  * PlantUml状态图连接。

@@ -1,5 +1,6 @@
 package com.windea.breezeframework.dsl.markup
 
+import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.dsl.*
 
 //TODO
@@ -13,54 +14,81 @@ internal annotation class CreoleDsl
 @CreoleDsl
 interface CreoleDslElement : DslElement
 
+@Reference("[Creole](http://plantuml.com/zh/creole)")
+@CreoleDsl
 class Creole : DslElement, Dsl {
 	override fun toString(): String = TODO()
 }
 
 
-interface CreoleRichText : CreoleDslElement, CanInlineContent
+@CreoleDsl
+interface CreoleRichText : CreoleDslElement, InlineContent
 
+@CreoleDsl
 class CreoleBoldText
 
+@CreoleDsl
 class CreoleItalicText
 
+@CreoleDsl
 class CreoleMonospacedText
 
+@CreoleDsl
 class CreoleStrokedText
 
+@CreoleDsl
 class CreoleUnderlinedText
 
+@CreoleDsl
 class CreoleWavedText
 
 
+@CreoleDsl
+class CreoleIcon : CreoleDslElement, InlineContent {
+	override var inlineContent: Boolean = true
+	
+	override fun toString(): String = TODO("not implemented")
+}
+
+
+@CreoleDsl
 interface CreoleList
 
+@CreoleDsl
 class CreoleUnorderedList
 
+@CreoleDsl
 class CreoleOrderedList
 
 
+@CreoleDsl
 class CreoleHorizontalLine
 
 
+@CreoleDsl
 interface CreoleHeader
 
+@CreoleDsl
 class CreoleHeader1
 
+@CreoleDsl
 class CreoleHeader2
 
+@CreoleDsl
 class CreoleHeader3
 
+@CreoleDsl
 class CreoleHeader4
 
 
+@CreoleDsl
 class CreoleTable
 
 
+@CreoleDsl
 class CreoleTree
 
 
-class CreoleIcon
 
 //REGION Enumerations and constants
 

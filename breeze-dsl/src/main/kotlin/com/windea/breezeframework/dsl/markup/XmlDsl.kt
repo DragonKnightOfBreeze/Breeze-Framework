@@ -31,7 +31,7 @@ sealed class XmlNode : XmlDslElement
 
 /**Xml。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, Dsl {
+class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentContent<XmlComment>, BlockContent<XmlElement> {
 	/**声明列表。*/
 	val statements: MutableList<XmlStatement> = mutableListOf(
 		XmlStatement("xml", mapOf("version" to "1.0", "encoding" to "UTF-8"))
@@ -66,14 +66,15 @@ class Xml @PublishedApi internal constructor() : XmlDslElement, CanWrapContent, 
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
 		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 	
-	/**@see Xml.comment*/
 	@XmlDsl
-	inline operator fun String.unaryMinus() = comment(this)
+	override fun String.not() = comment(this)
 	
-	/**@see Xml.element*/
 	@XmlDsl
-	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
-		element(this, *attributes) { builder() }
+	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
+	
+	@XmlDsl
+	override fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		element(this, *args, builder = builder)
 }
 
 /**Xml声明。*/
@@ -99,7 +100,8 @@ class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	/**属性。*/
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), CanWrapContent, CanIndentContent {
+) : XmlNode(), CanWrapContent, CanIndentContent, InlineContent<XmlText>,
+	CommentContent<XmlComment>, BlockContent<XmlElement> {
 	/**子结点列表。*/
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
@@ -125,42 +127,34 @@ class XmlElement @PublishedApi internal constructor(
 	}
 	
 	
-	/**添加文本。*/
-	@XmlDsl
-	inline fun text(text: String) = XmlText(text).also { nodes += it }
-	
 	/**添加注释。*/
 	@XmlDsl
 	inline fun comment(text: String) = XmlComment(text).also { nodes += it }
+	
+	/**添加文本。*/
+	@XmlDsl
+	inline fun text(text: String) = XmlText(text).also { nodes += it }
 	
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
 		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
 	
-	/**@see XmlElement.text*/
 	@XmlDsl
-	inline operator fun String.unaryPlus() = text(this)
+	override fun String.not() = comment(this)
 	
-	/**@see XmlElement.comment*/
 	@XmlDsl
-	inline operator fun String.unaryMinus() = comment(this)
+	override fun String.unaryPlus() = text(this)
 	
-	/**@see XmlElement.element*/
 	@XmlDsl
-	inline operator fun String.invoke(vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit = {}) =
-		element(this, *attributes) { builder() }
-}
-
-/**Xml文本。*/
-@XmlDsl
-class XmlText @PublishedApi internal constructor(
-	/**文本。*/
-	val text: String
-) : XmlNode() {
-	override fun toString(): String {
-		return text.escapeXml()
-	}
+	override fun String.unaryMinus() = XmlText(this).also { nodes.clear() }.also { nodes += it }
+	
+	@XmlDsl
+	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
+	
+	@XmlDsl
+	override fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		element(this, *args, builder = builder)
 }
 
 /**Xml注释。*/
@@ -182,6 +176,17 @@ class XmlComment @PublishedApi internal constructor(
 			else -> indentedTextSnippet
 		}
 		return "<!--$wrappedTextSnippet-->"
+	}
+}
+
+/**Xml文本。*/
+@XmlDsl
+class XmlText @PublishedApi internal constructor(
+	/**文本。*/
+	val text: String
+) : XmlNode() {
+	override fun toString(): String {
+		return text.escapeXml()
 	}
 }
 

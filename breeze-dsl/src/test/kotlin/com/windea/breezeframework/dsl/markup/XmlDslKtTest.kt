@@ -9,15 +9,14 @@ class XmlDslKtTest {
 	@Test
 	fun test() {
 		val xml = xml {
-			-"comment"
-			-"""
+			comment("comment")
+			comment("""
 				comment
 				second line
-			""".trimIndent() wrap true
+			""".trimIndent()) wrap true
 			"element"{
 				//"attr1"("value1")
 				
-				-"comment"
 				+"text"
 				+"""
 					text

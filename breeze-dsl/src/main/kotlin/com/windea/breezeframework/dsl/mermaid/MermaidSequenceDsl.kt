@@ -18,13 +18,25 @@ internal annotation class MermaidSequenceDsl
 @MermaidSequenceDsl
 fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().also { it.builder() }
 
+/**Mermaid序列图。*/
+@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
+@MermaidSequenceDsl
+class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequence(), Mermaid {
+	override fun toString(): String {
+		val contentSnippet = super.toString()
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		return "sequenceDiagram\n$indentedContentSnippet"
+	}
+}
+
+
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDsl
 interface MermaidSequenceDslElement : MermaidDslElement
 
 /**抽象的Mermaid序列图。*/
 @MermaidSequenceDsl
-sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentContent {
+sealed class AbstractMermaidSequence : CanIndentContent, CommentContent<MermaidSequenceNote> {
 	val actors: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
 	val messages: MutableList<MermaidSequenceMessage> = mutableListOf()
 	val notes: MutableList<MermaidSequenceNote> = mutableListOf()
@@ -80,24 +92,16 @@ sealed class AbstractMermaidSequence : MermaidSequenceDslElement, CanIndentConte
 	@MermaidSequenceDsl
 	inline fun highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
 		MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
-}
-
-/**Mermaid序列图。*/
-@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
-@MermaidSequenceDsl
-class MermaidSequence @PublishedApi internal constructor() : AbstractMermaidSequence(), Mermaid {
-	override fun toString(): String {
-		val contentSnippet = super.toString()
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "sequenceDiagram\n$indentedSnippet"
-	}
+	
+	@MermaidSequenceDsl
+	override fun String.not() = note(this)
 }
 
 /**Mermaid序列图参与者。*/
 @MermaidSequenceDsl
 class MermaidSequenceParticipant @PublishedApi internal constructor(
 	val name: String
-) : MermaidSequenceDslElement {
+) : MermaidSequenceDslElement, UniqueDslElement {
 	var alias: String? = null
 	
 	override fun equals(other: Any?): Boolean {
@@ -173,17 +177,18 @@ class MermaidSequenceNote @PublishedApi internal constructor(
 			.also { it.targetActorId = actorIdPair.first }.also { it.targetActor2Id = actorIdPair.second }
 }
 
+
 /**Mermaid序列图作用域。*/
 @MermaidSequenceDsl
-abstract class MermaidSequenceScope @PublishedApi internal constructor(
+sealed class MermaidSequenceScope(
 	val type: String,
 	val text: String?
-) : AbstractMermaidSequence() {
+) : AbstractMermaidSequence(), MermaidSequenceDslElement {
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" } ?: ""
 		val contentSnippet = super.toString()
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "$type$textSnippet\n$indentedSnippet\nend"
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		return "$type$textSnippet\n$indentedContentSnippet\nend"
 	}
 }
 

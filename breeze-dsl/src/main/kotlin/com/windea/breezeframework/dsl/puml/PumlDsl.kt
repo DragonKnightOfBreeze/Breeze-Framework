@@ -14,12 +14,12 @@ import org.intellij.lang.annotations.*
 @DslMarker
 internal annotation class PumlDsl
 
-//REGION Top interfaces
+//REGION Dsl elements & build functions
 
 /**PlantUml Dsl.*/
 @Reference("[PlantUml](http://plantuml.com)")
 @PumlDsl
-interface Puml : Dsl {
+interface Puml : Dsl, CommentContent<PumlNote> {
 	var title: PumlTitle?
 	var legend: PumlLegend?
 	var header: PumlHeader?
@@ -31,44 +31,9 @@ interface Puml : Dsl {
 	
 	fun getPrefixString(): String
 	fun getSuffixString(): String
-}
-
-/**PlantUml Dsl的元素。*/
-@PumlDsl
-interface PumlDslElement : DslElement
-
-/**PlantUml Dsl的配置。*/
-object PumlConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
 	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
-
-//REGION General Dsl elements and related extensions
-
-/**Puml的默认代理实现。*/
-@PumlDsl
-open class PumlDelegate @PublishedApi internal constructor() : Puml {
-	override var title: PumlTitle? = null
-	override var legend: PumlLegend? = null
-	override var header: PumlHeader? = null
-	override var footer: PumlFooter? = null
-	override var scale: PumlScale? = null
-	override var caption: PumlCaption? = null
-	override val notes: MutableSet<PumlNote> = mutableSetOf()
-	override val skinParams: PumlSkinParams = PumlSkinParams()
-	
-	//TODO need to generate alias for no-alias notes
-	override fun getPrefixString(): String = TODO()
-	
-	override fun getSuffixString(): String = TODO()
-	
-	override fun toString(): String = TODO()
+	@PumlDsl
+	override fun String.not() = note(this)
 }
 
 @PumlDsl
@@ -95,11 +60,36 @@ inline fun <T : Puml> T.note(text: String) = PumlNote(text).also { notes += it }
 @PumlDsl
 inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.builder()
 
+/**Puml的默认代理实现。*/
+@PumlDsl
+class PumlDelegate @PublishedApi internal constructor() : Puml {
+	override var title: PumlTitle? = null
+	override var legend: PumlLegend? = null
+	override var header: PumlHeader? = null
+	override var footer: PumlFooter? = null
+	override var scale: PumlScale? = null
+	override var caption: PumlCaption? = null
+	override val notes: MutableSet<PumlNote> = mutableSetOf()
+	override val skinParams: PumlSkinParams = PumlSkinParams()
+	
+	//TODO need to generate alias for no-alias notes
+	override fun getPrefixString(): String = TODO()
+	
+	override fun getSuffixString(): String = TODO()
+	
+	override fun toString(): String = TODO()
+}
+
+
+/**PlantUml Dsl的元素。*/
+@PumlDsl
+interface PumlDslElement : DslElement
+
 
 /**PlantUml顶级元素。*/
 @PumlDsl
 sealed class PumlTopElement(
-	val type: String,
+	protected val type: String,
 	@Language("Html")
 	val text: String
 ) : PumlDslElement, CanIndentContent, CanWrapContent {
@@ -127,30 +117,21 @@ sealed class PumlTopElement(
 
 /**PlantUml标题。*/
 @PumlDsl
-class PumlTitle @PublishedApi internal constructor(
-	text: String
-) : PumlTopElement("title", text)
+class PumlTitle @PublishedApi internal constructor(text: String) : PumlTopElement("title", text)
 
 /**PlantUml图例说明。*/
 @PumlDsl
-class PumlLegend @PublishedApi internal constructor(
-	text: String
-) : PumlTopElement("legend", text)
+class PumlLegend @PublishedApi internal constructor(text: String) : PumlTopElement("legend", text)
 
 /**PlantUml页眉。*/
 @PumlDsl
-class PumlHeader @PublishedApi internal constructor(
-	text: String
-) : PumlTopElement("header", text)
+class PumlHeader @PublishedApi internal constructor(text: String) : PumlTopElement("header", text)
 
 /**PlantUml页脚。*/
 @PumlDsl
-class PumlFooter @PublishedApi internal constructor(
-	text: String
-) : PumlTopElement("footer", text)
+class PumlFooter @PublishedApi internal constructor(text: String) : PumlTopElement("footer", text)
 
 
-//TODO Better api
 /**PlantUml缩放。*/
 @PumlDsl
 class PumlScale @PublishedApi internal constructor(
@@ -248,8 +229,7 @@ class PumlNote @PublishedApi internal constructor(
 //TODO
 /**PlantUml显示参数。*/
 @PumlDsl
-class PumlSkinParams @PublishedApi internal constructor() :
-	PumlDslElement, MutableMap<String, Any> by HashMap() {
+class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, MutableMap<String, Any> by HashMap() {
 	override fun toString(): String {
 		return joinToString("\n") { (k, v) -> "skinparam $k $v" }
 	}
@@ -285,15 +265,14 @@ class PumlSkinParams @PublishedApi internal constructor() :
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() :
-	PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		if(isEmpty()) return "{}"
 		val paramsSnippet = joinToString("\n") { (k, v) -> "skinparam $k $v" }
-		val indentedSnippet = if(indentContent) paramsSnippet.prependIndent(indent) else paramsSnippet
-		return "{\n$indentedSnippet\n}"
+		val indentedContentSnippet = if(indentContent) paramsSnippet.prependIndent(indent) else paramsSnippet
+		return "{\n$indentedContentSnippet\n}"
 	}
 }
 
@@ -319,4 +298,18 @@ enum class PumlArrowDirection(val text: String) {
 /**PlantUml注释的位置。*/
 enum class PumlNotePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
+}
+
+//REGION Config object
+
+/**PlantUml Dsl的配置。*/
+object PumlConfig : DslConfig {
+	/**缩进长度。*/
+	var indentSize = 4
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**是否使用双引号。*/
+	var useDoubleQuote: Boolean = true
+	
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }

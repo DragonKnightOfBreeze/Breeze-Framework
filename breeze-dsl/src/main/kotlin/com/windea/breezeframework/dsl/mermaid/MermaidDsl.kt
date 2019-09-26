@@ -11,7 +11,7 @@ import com.windea.breezeframework.dsl.*
 @DslMarker
 internal annotation class MermaidDsl
 
-//REGION Top interfaces
+//REGION Dsl elements & build functions
 
 /**Mermaid Dsl。*/
 @Reference("[Mermaid](https://mermaidjs.github.io)")
@@ -21,6 +21,8 @@ interface Mermaid : Dsl
 /**Mermaid Dsl的元素。*/
 @MermaidDsl
 interface MermaidDslElement : DslElement
+
+//REGION Config object
 
 /**Mermaid Dsl的配置。*/
 object MermaidConfig : DslConfig {

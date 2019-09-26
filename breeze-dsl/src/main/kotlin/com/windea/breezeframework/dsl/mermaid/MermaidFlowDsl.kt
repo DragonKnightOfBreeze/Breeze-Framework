@@ -20,13 +20,27 @@ internal annotation class MermaidFlowDsl
 fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
 	MermaidFlow(direction).also { it.builder() }
 
+/**Mermaid流程图。*/
+@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
+@MermaidFlowDsl
+class MermaidFlow @PublishedApi internal constructor(
+	val direction: MermaidFlowDirection
+) : AbstractMermaidFlow(), Mermaid {
+	override fun toString(): String {
+		val contentSnippet = super.toString()
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		return "graph ${direction.text}\n$indentedContentSnippet"
+	}
+}
+
+
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowDsl
 interface MermaidFlowDslElement : MermaidDslElement
 
 /**抽象的Mermaid流程图。*/
 @MermaidFlowDsl
-sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
+sealed class AbstractMermaidFlow : CanIndentContent, BlockContent<MermaidFlowSubGraph> {
 	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
 	val links: MutableList<MermaidFlowLink> = mutableListOf()
 	val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
@@ -88,19 +102,9 @@ sealed class AbstractMermaidFlow : MermaidFlowDslElement, CanIndentContent {
 	@MermaidFlowDsl
 	inline fun classRef(vararg nodeIds: String, className: String) =
 		MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
-}
-
-/**Mermaid流程图。*/
-@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
-@MermaidFlowDsl
-class MermaidFlow @PublishedApi internal constructor(
-	val direction: MermaidFlowDirection
-) : AbstractMermaidFlow(), Mermaid {
-	override fun toString(): String {
-		val contentSnippet = super.toString()
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "graph ${direction.text}\n$indentedSnippet"
-	}
+	
+	@MermaidFlowDsl
+	override fun String.invoke(builder: MermaidFlowSubGraph.() -> Unit) = subGraph(this, builder)
 }
 
 /**Mermaid流程图节点。*/
@@ -108,7 +112,7 @@ class MermaidFlow @PublishedApi internal constructor(
 class MermaidFlowNode @PublishedApi internal constructor(
 	val name: String,
 	val text: String? = null //NOTE can wrap by "<br>"
-) : MermaidFlowDslElement {
+) : MermaidFlowDslElement, UniqueDslElement {
 	var shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
 	
 	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.name == name)
@@ -150,13 +154,14 @@ class MermaidFlowLink @PublishedApi internal constructor(
 @MermaidFlowDsl
 class MermaidFlowSubGraph @PublishedApi internal constructor(
 	val name: String
-) : AbstractMermaidFlow() {
+) : AbstractMermaidFlow(), MermaidDslElement {
 	override fun toString(): String {
 		val contentSnippet = super.toString()
-		val indentedSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "subgraph $name\n$indentedSnippet\nend"
+		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+		return "subgraph $name\n$indentedContentSnippet\nend"
 	}
 }
+
 
 /**Mermaid流程图节点风格。*/
 @MermaidFlowDsl
