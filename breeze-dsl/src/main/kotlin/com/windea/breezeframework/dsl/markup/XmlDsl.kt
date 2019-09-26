@@ -52,8 +52,8 @@ class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentCon
 		).filterNotEmpty().joinToString(n)
 	}
 	
-	
 	/**添加声明。*/
+	@XmlDsl
 	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
 		XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
 	
@@ -125,7 +125,6 @@ class XmlElement @PublishedApi internal constructor(
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"
 		return "$prefixSnippet$wrappedElementsSnippet$suffixSnippet"
 	}
-	
 	
 	/**添加注释。*/
 	@XmlDsl

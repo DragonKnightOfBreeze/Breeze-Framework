@@ -16,7 +16,7 @@ internal annotation class MermaidDsl
 /**Mermaid Dsl。*/
 @Reference("[Mermaid](https://mermaidjs.github.io)")
 @MermaidDsl
-interface Mermaid : Dsl
+abstract class Mermaid : Dsl
 
 /**Mermaid Dsl的元素。*/
 @MermaidDsl

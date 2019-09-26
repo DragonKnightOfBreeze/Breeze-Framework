@@ -2,7 +2,6 @@ package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.deprecated.text.*
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.indent
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.indentSize
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.initialMarker
@@ -26,13 +25,17 @@ internal annotation class MarkdownDslExtendedFeature
 /**Markdown。*/
 @MarkdownDsl
 class Markdown @PublishedApi internal constructor() : Dsl {
-	val content: MutableList<MarkdownBlockElement> = mutableListOf()
+	val content: MutableList<MarkdownTopElement> = mutableListOf()
 	
 	override fun toString(): String {
 		TODO("not implemented")
 	}
 }
 
+/**Markdown Dsl的入口。*/
+interface MarkdownDslEntry {
+	//TODO
+}
 
 /**Markdown Dsl的元素。*/
 @MarkdownDsl
@@ -44,7 +47,7 @@ interface MarkdownInlineElement : MarkdownDslElement
 
 /**Markdown单行元素。*/
 @MarkdownDsl
-interface MarkdownLineElement : MarkdownBlockElement, InlineContent<MarkdownText> {
+interface MarkdownLineElement : MarkdownTopElement, InlineContent<MarkdownText> {
 	val inlineContent: MutableList<MarkdownInlineElement>
 	
 	@MarkdownDsl
@@ -54,9 +57,9 @@ interface MarkdownLineElement : MarkdownBlockElement, InlineContent<MarkdownText
 	override fun String.unaryMinus() = TODO()
 }
 
-/**Markdown块元素。（可以位于Markdown文档顶层）*/
+/**Markdown顶级元素。*/
 @MarkdownDsl
-interface MarkdownBlockElement : MarkdownDslElement
+interface MarkdownTopElement : MarkdownDslElement
 
 /**Markdown引用元素。*/
 @MarkdownDsl
@@ -353,7 +356,7 @@ class MarkdownHorizontalLine @PublishedApi internal constructor() : MarkdownLine
 @MarkdownDsl
 class MarkdownList @PublishedApi internal constructor(
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
-) : MarkdownBlockElement {
+) : MarkdownTopElement {
 	override fun toString() = nodes.joinToString("\n")
 }
 
@@ -400,7 +403,7 @@ class MarkdownTaskListNode @PublishedApi internal constructor(
 class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String,
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
-) : MarkdownBlockElement {
+) : MarkdownTopElement {
 	override fun toString(): String {
 		require(nodes.isNotEmpty()) { "Definition node size must be greater than 0." }
 		
@@ -426,7 +429,7 @@ class MarkdownDefinitionNode(
 //TODO pretty format
 /**Markdown表格。*/
 @MarkdownDsl
-class MarkdownTable @PublishedApi internal constructor() : MarkdownBlockElement {
+class MarkdownTable @PublishedApi internal constructor() : MarkdownTopElement {
 	var headerRow: MarkdownTableRow? = null
 	val rows: MutableList<MarkdownTableRow> = mutableListOf()
 	
@@ -466,8 +469,8 @@ class MarkdownTableColumn @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownQuote(
 	val prefixMarker: String
-) : MarkdownBlockElement {
-	val content: MutableList<MarkdownBlockElement> = mutableListOf()
+) : MarkdownTopElement {
+	val content: MutableList<MarkdownTopElement> = mutableListOf()
 	
 	override fun toString(): String {
 		return content.joinToString("\n").prependIndent("$prefixMarker ")
@@ -504,7 +507,7 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 	val language: String,
 	override val text: String
 	//TODO extended classes and properties
-) : MarkdownBlockElement, MarkdownCode {
+) : MarkdownTopElement, MarkdownCode {
 	override fun toString() = "```$language\n$text\n```"
 }
 
@@ -527,7 +530,7 @@ class MarkdownInlineMath @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownMultilineMath @PublishedApi internal constructor(
 	override val text: String
-) : MarkdownBlockElement, MarkdownMath {
+) : MarkdownTopElement, MarkdownMath {
 	override fun toString() = "$$\n$text\n$$"
 }
 
@@ -539,8 +542,8 @@ class MarkdownAlertBox @PublishedApi internal constructor(
 	val type: MarkdownAlertBoxType,
 	val qualifier: String,
 	val title: String,
-	val content: MutableList<MarkdownBlockElement> = mutableListOf()
-) : MarkdownBlockElement {
+	val content: MutableList<MarkdownTopElement> = mutableListOf()
+) : MarkdownTopElement {
 	override fun toString(): String {
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 		
@@ -557,14 +560,14 @@ class MarkdownAlertBox @PublishedApi internal constructor(
 class MarkdownFrontMatter @PublishedApi internal constructor(
 	@Language("Yaml")
 	val text: String
-) : MarkdownBlockElement {
+) : MarkdownDslElement {
 	override fun toString() = "---\n$text\n---"
 }
 
 /**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownToc @PublishedApi internal constructor() : MarkdownBlockElement {
+class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement {
 	override fun toString() = "[TOC]"
 }
 
@@ -575,7 +578,7 @@ class MarkdownToc @PublishedApi internal constructor() : MarkdownBlockElement {
 class MarkdownImport @PublishedApi internal constructor(
 	val url: String
 	//TODO extended classes and properties
-) : MarkdownBlockElement {
+) : MarkdownTopElement {
 	override fun toString(): String {
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet"
@@ -588,7 +591,7 @@ class MarkdownImport @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
-) : MarkdownBlockElement {
+) : MarkdownTopElement {
 	override fun toString() = "<<< $name >>>"
 }
 
@@ -597,8 +600,8 @@ class MarkdownMacros @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	val name: String,
-	val content: MutableList<MarkdownBlockElement> = mutableListOf()
-) : MarkdownBlockElement {
+	val content: MutableList<MarkdownTopElement> = mutableListOf()
+) : MarkdownTopElement {
 	override fun toString(): String {
 		val contentSnippet = content.joinToString("\n")
 		return ">>> $name\n$contentSnippet\n<<<"

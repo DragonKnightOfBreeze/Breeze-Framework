@@ -23,89 +23,101 @@ fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().
 /**PlantUml状态图。*/
 @Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @PumlStateDiagramDsl
-class PumlStateDiagram @PublishedApi internal constructor() : AbstractPumlStateDiagram(), Puml by PumlDelegate() {
+class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateDiagramDslEntry {
+	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
+	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
+	
 	override fun toString(): String {
-		val contentSnippet = super.toString()
-		return "@startuml\n${getPrefixString()}\n\n$contentSnippet\n\n${getSuffixString()}\n@enduml"
+		val prefixSnippet = getPrefixString()
+		val contentSnippet = getString()
+		val suffixSnippet = getSuffixString()
+		return "@startuml\n$prefixSnippet\n\n$contentSnippet\n\n$suffixSnippet\n@enduml"
 	}
 }
 
-
-/**PlantUml状态图的元素。*/
+/**PlantUml状态图Dsl的入口。*/
 @PumlStateDiagramDsl
-interface PumlStateDiagramDslElement : PumlDslElement
-
-/**抽象的PlantUml状态图。*/
-@PumlStateDiagramDsl
-sealed class AbstractPumlStateDiagram {
-	val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
-	val links: MutableList<PumlStateDiagramLink> = mutableListOf()
+interface PumlStateDiagramDslEntry {
+	val states: MutableSet<PumlStateDiagramState>
+	val links: MutableList<PumlStateDiagramLink>
 	
-	override fun toString(): String {
+	fun getString(): String {
 		return arrayOf(
 			states.joinToString("\n"),
 			links.joinToString("\n")
 		).filterNotEmpty().joinToString("\n\n")
 	}
-	
-	
-	@PumlStateDiagramDsl
-	inline fun state(name: String, text: String = "") = PumlStateDiagramSimpleState(name, text).also { states += it }
-	
-	@PumlStateDiagramDsl
-	inline fun initState() = state("[*]")
-	
-	@PumlStateDiagramDsl
-	inline fun finishState() = state("[*]")
-	
-	@PumlStateDiagramDsl
-	inline fun state(name: String, text: String = "", builder: PumlStateDiagramCompositedState.() -> Unit) =
-		PumlStateDiagramCompositedState(name, text).also { it.builder() }.also { states += it }
-	
-	@PumlStateDiagramDsl
-	inline fun concurrentState(name: String, text: String = "", builder: PumlStateDiagramConcurrentState.() -> Unit) =
-		PumlStateDiagramConcurrentState(name, text).also { it.builder() }.also { states += it }
-	
-	@PumlStateDiagramDsl
-	inline fun link(sourceStateId: String, targetStateId: String, text: String = "") =
-		PumlStateDiagramLink(sourceStateId, targetStateId, text).also { links += it }
-	
-	@PumlStateDiagramDsl
-	inline fun link(sourceState: PumlStateDiagramSimpleState, targetStateId: String, text: String = "") =
-		link(sourceState.alias ?: sourceState.name, targetStateId, text)
-	
-	@PumlStateDiagramDsl
-	inline fun link(sourceStateId: String, targetState: PumlStateDiagramSimpleState, text: String = "") =
-		link(sourceStateId, targetState.alias ?: targetState.name, text)
-	
-	@PumlStateDiagramDsl
-	inline fun link(sourceState: PumlStateDiagramSimpleState, targetState: PumlStateDiagramSimpleState, text: String = "") =
-		link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
 }
 
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "") =
+	PumlStateDiagramSimpleState(name, text).also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.initState() = state("[*]")
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.finishState() = state("[*]")
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "", builder: PumlStateDiagramCompositedState.() -> Unit) =
+	PumlStateDiagramCompositedState(name, text).also { it.builder() }.also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.concurrentState(name: String, text: String = "", builder: PumlStateDiagramConcurrentState.() -> Unit) =
+	PumlStateDiagramConcurrentState(name, text).also { it.builder() }.also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetStateId: String, text: String = "") =
+	PumlStateDiagramLink(sourceStateId, targetStateId, text).also { links += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetStateId: String, text: String = "") =
+	link(sourceState.alias ?: sourceState.name, targetStateId, text)
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetState: PumlStateDiagramSimpleState, text: String = "") =
+	link(sourceStateId, targetState.alias ?: targetState.name, text)
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetState: PumlStateDiagramSimpleState, text: String = "") =
+	link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
+
+
+/**PlantUml状态图Dsl的元素。*/
+@PumlStateDiagramDsl
+interface PumlStateDiagramDslElement : PumlDslElement
 
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
-interface PumlStateDiagramState : PumlStateDiagramDslElement {
-	val name: String
-	val text: String
-	var alias: String?
-	var tag: String?
-	var color: String?
+sealed class PumlStateDiagramState(
+	@Language("Creole")
+	val name: String, //NOTE can wrap by "\n" if alias is not null
+	@Language("Creole")
+	val text: String //NOTE can wrap by "\n"
+) : PumlStateDiagramDslElement, UniqueDslElement {
+	var alias: String? = null
+	var tag: String? = null
+	var color: String? = null
 	
-	override fun equals(other: Any?): Boolean
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is PumlStateDiagramSimpleState && (other.alias == alias || other.name == name))
+	}
 	
-	override fun hashCode(): Int
+	override fun hashCode(): Int {
+		return alias?.hashCode() ?: name.hashCode()
+	}
+	
+	
+	@PumlStateDiagramDsl
+	inline infix fun color(color: String) = this.also { it.color = color }
+	
+	@PumlStateDiagramDsl
+	inline infix fun tag(tag: String) = this.also { it.tag = tag }
+	
+	@PumlStateDiagramDsl
+	inline infix fun alias(alias: String) = this.also { it.alias = alias }
 }
-
-@PumlStateDiagramDsl
-inline infix fun <T : PumlStateDiagramState> T.color(color: String) = this.also { it.color = color }
-
-@PumlStateDiagramDsl
-inline infix fun <T : PumlStateDiagramState> T.tag(tag: String) = this.also { it.tag = tag }
-
-@PumlStateDiagramDsl
-inline infix fun <T : PumlStateDiagramState> T.alias(alias: String) = this.also { it.alias = alias }
 
 /**
  * PlantUml状态图简单状态。
@@ -121,23 +133,8 @@ inline infix fun <T : PumlStateDiagramState> T.alias(alias: String) = this.also 
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramSimpleState @PublishedApi internal constructor(
-	@Language("Creole")
-	override val name: String, //NOTE can wrap by "\n" if alias is not null
-	@Language("Creole")
-	override val text: String = "" //NOTE can wrap by "\n"
-) : PumlStateDiagramState {
-	override var alias: String? = null
-	override var tag: String? = null
-	override var color: String? = null
-	
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is PumlStateDiagramSimpleState && (other.alias == alias || other.name == name))
-	}
-	
-	override fun hashCode(): Int {
-		return alias?.hashCode() ?: name.hashCode()
-	}
-	
+	name: String, text: String = ""
+) : PumlStateDiagramState(name, text) {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()
 		val tagSnippet = tag?.let { "<<$it>>" } ?: ""
@@ -169,11 +166,14 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 @PumlStateDiagramDsl
 class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 	name: String, text: String = ""
-) : AbstractPumlStateDiagram(), PumlStateDiagramState by PumlStateDiagramSimpleState(name, text), CanIndentContent {
+) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, CanIndentContent {
+	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
+	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
+	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = super.toString()
+		val contentSnippet = getString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
@@ -200,7 +200,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 @PumlStateDiagramDsl
 class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String, text: String = ""
-) : PumlStateDiagramState by PumlStateDiagramSimpleState(name, text), CanIndentContent {
+) : PumlStateDiagramState(name, text), CanIndentContent {
 	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
 	
@@ -233,8 +233,12 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 
 /**Puml状态图并发状态部分。*/
 @PumlStateDiagramDsl
-class PumlStateDiagramConcurrentSection : AbstractPumlStateDiagram()
-
+class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
+	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
+	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
+	
+	override fun toString() = getString()
+}
 
 /**
  * PlantUml状态图连接。

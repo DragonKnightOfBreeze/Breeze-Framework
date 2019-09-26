@@ -19,65 +19,48 @@ internal annotation class PumlDsl
 /**PlantUml Dsl.*/
 @Reference("[PlantUml](http://plantuml.com)")
 @PumlDsl
-interface Puml : Dsl, CommentContent<PumlNote> {
-	var title: PumlTitle?
-	var legend: PumlLegend?
-	var header: PumlHeader?
-	var footer: PumlFooter?
-	var scale: PumlScale?
-	var caption: PumlCaption?
-	val notes: MutableSet<PumlNote>
-	val skinParams: PumlSkinParams
+abstract class Puml : Dsl, CommentContent<PumlNote> {
+	var title: PumlTitle? = null
+	var legend: PumlLegend? = null
+	var header: PumlHeader? = null
+	var footer: PumlFooter? = null
+	var scale: PumlScale? = null
+	var caption: PumlCaption? = null
+	val notes: MutableSet<PumlNote> = mutableSetOf()
+	val skinParams: PumlSkinParams = PumlSkinParams()
 	
-	fun getPrefixString(): String
-	fun getSuffixString(): String
+	//TODO need to generate alias for no-alias notes
+	fun getPrefixString(): String = TODO()
+	
+	fun getSuffixString(): String = TODO()
+	
+	
+	@PumlDsl
+	inline fun title(text: String) = PumlTitle(text).also { title = it }
+	
+	@PumlDsl
+	inline fun legend(text: String) = PumlLegend(text).also { legend = it }
+	
+	@PumlDsl
+	inline fun header(text: String) = PumlHeader(text).also { header = it }
+	
+	@PumlDsl
+	inline fun footer(text: String) = PumlFooter(text).also { footer = it }
+	
+	@PumlDsl
+	inline fun scale(expression: String) = PumlScale(expression).also { scale = it }
+	
+	@PumlDsl
+	inline fun caption(text: String) = PumlCaption(text).also { caption = it }
+	
+	@PumlDsl
+	inline fun note(text: String) = PumlNote(text).also { notes += it }
+	
+	@PumlDsl
+	inline fun skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.builder()
 	
 	@PumlDsl
 	override fun String.not() = note(this)
-}
-
-@PumlDsl
-inline fun <T : Puml> T.title(text: String) = PumlTitle(text).also { title = it }
-
-@PumlDsl
-inline fun <T : Puml> T.legend(text: String) = PumlLegend(text).also { legend = it }
-
-@PumlDsl
-inline fun <T : Puml> T.header(text: String) = PumlHeader(text).also { header = it }
-
-@PumlDsl
-inline fun <T : Puml> T.footer(text: String) = PumlFooter(text).also { footer = it }
-
-@PumlDsl
-inline fun <T : Puml> T.scale(expression: String) = PumlScale(expression).also { scale = it }
-
-@PumlDsl
-inline fun <T : Puml> T.caption(text: String) = PumlCaption(text).also { caption = it }
-
-@PumlDsl
-inline fun <T : Puml> T.note(text: String) = PumlNote(text).also { notes += it }
-
-@PumlDsl
-inline fun <T : Puml> T.skinParams(builder: PumlSkinParams.() -> Unit) = skinParams.builder()
-
-/**Puml的默认代理实现。*/
-@PumlDsl
-class PumlDelegate @PublishedApi internal constructor() : Puml {
-	override var title: PumlTitle? = null
-	override var legend: PumlLegend? = null
-	override var header: PumlHeader? = null
-	override var footer: PumlFooter? = null
-	override var scale: PumlScale? = null
-	override var caption: PumlCaption? = null
-	override val notes: MutableSet<PumlNote> = mutableSetOf()
-	override val skinParams: PumlSkinParams = PumlSkinParams()
-	
-	//TODO need to generate alias for no-alias notes
-	override fun getPrefixString(): String = TODO()
-	
-	override fun getSuffixString(): String = TODO()
-	
-	override fun toString(): String = TODO()
 }
 
 
@@ -86,9 +69,9 @@ class PumlDelegate @PublishedApi internal constructor() : Puml {
 interface PumlDslElement : DslElement
 
 
-/**PlantUml顶级元素。*/
+/**PlantUml元素。*/
 @PumlDsl
-sealed class PumlTopElement(
+sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
@@ -117,19 +100,19 @@ sealed class PumlTopElement(
 
 /**PlantUml标题。*/
 @PumlDsl
-class PumlTitle @PublishedApi internal constructor(text: String) : PumlTopElement("title", text)
+class PumlTitle @PublishedApi internal constructor(text: String) : PumlElement("title", text)
 
 /**PlantUml图例说明。*/
 @PumlDsl
-class PumlLegend @PublishedApi internal constructor(text: String) : PumlTopElement("legend", text)
+class PumlLegend @PublishedApi internal constructor(text: String) : PumlElement("legend", text)
 
 /**PlantUml页眉。*/
 @PumlDsl
-class PumlHeader @PublishedApi internal constructor(text: String) : PumlTopElement("header", text)
+class PumlHeader @PublishedApi internal constructor(text: String) : PumlElement("header", text)
 
 /**PlantUml页脚。*/
 @PumlDsl
-class PumlFooter @PublishedApi internal constructor(text: String) : PumlTopElement("footer", text)
+class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement("footer", text)
 
 
 /**PlantUml缩放。*/

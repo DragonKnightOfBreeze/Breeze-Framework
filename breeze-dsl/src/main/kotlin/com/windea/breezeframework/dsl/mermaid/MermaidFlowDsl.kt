@@ -25,33 +25,36 @@ fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit
 @MermaidFlowDsl
 class MermaidFlow @PublishedApi internal constructor(
 	val direction: MermaidFlowDirection
-) : AbstractMermaidFlow(), Mermaid {
+) : Mermaid(), MermaidFlowDslEntry {
+	override val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
+	override val links: MutableList<MermaidFlowLink> = mutableListOf()
+	override val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
+	override val styles: MutableList<MermaidFlowNodeStyle> = mutableListOf()
+	override val linkStyles: MutableList<MermaidFlowLinkStyle> = mutableListOf()
+	override val classDefs: MutableSet<MermaidFlowClassDef> = mutableSetOf()
+	override val classRefs: MutableSet<MermaidFlowClassRef> = mutableSetOf()
+	
+	override var indentContent: Boolean = true
+	
 	override fun toString(): String {
-		val contentSnippet = super.toString()
+		val contentSnippet = getString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "graph ${direction.text}\n$indentedContentSnippet"
 	}
 }
 
-
-/**Mermaid流程图Dsl的元素。*/
+/**Mermaid流程图Dsl的入口。*/
 @MermaidFlowDsl
-interface MermaidFlowDslElement : MermaidDslElement
-
-/**抽象的Mermaid流程图。*/
-@MermaidFlowDsl
-sealed class AbstractMermaidFlow : CanIndentContent, BlockContent<MermaidFlowSubGraph> {
-	val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
-	val links: MutableList<MermaidFlowLink> = mutableListOf()
-	val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
-	val styles: MutableList<MermaidFlowNodeStyle> = mutableListOf()
-	val linkStyles: MutableList<MermaidFlowLinkStyle> = mutableListOf()
-	val classDefs: MutableSet<MermaidFlowClassDef> = mutableSetOf()
-	val classRefs: MutableSet<MermaidFlowClassRef> = mutableSetOf()
+interface MermaidFlowDslEntry : CanIndentContent, BlockContent<MermaidFlowSubGraph> {
+	val nodes: MutableSet<MermaidFlowNode>
+	val links: MutableList<MermaidFlowLink>
+	val subGraphs: MutableList<MermaidFlowSubGraph>
+	val styles: MutableList<MermaidFlowNodeStyle>
+	val linkStyles: MutableList<MermaidFlowLinkStyle>
+	val classDefs: MutableSet<MermaidFlowClassDef>
+	val classRefs: MutableSet<MermaidFlowClassRef>
 	
-	override var indentContent: Boolean = true
-	
-	override fun toString(): String {
+	fun getString(): String {
 		return arrayOf(
 			nodes.joinToString("\n"),
 			links.joinToString("\n"),
@@ -63,49 +66,53 @@ sealed class AbstractMermaidFlow : CanIndentContent, BlockContent<MermaidFlowSub
 		).filterNotEmpty().joinToString("\n\n")
 	}
 	
-	
-	@MermaidFlowDsl
-	inline fun node(name: String, text: String? = null) = MermaidFlowNode(name, text).also { nodes += it }
-	
-	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
-		MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
-	
-	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
-		link(sourceNode.name, targetNodeId, text)
-	
-	@MermaidFlowDsl
-	inline fun link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
-		link(sourceNodeId, targetNode.name, text)
-	
-	@MermaidFlowDsl
-	inline fun link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
-		link(sourceNode.name, targetNode.name, text)
-	
-	@MermaidFlowDsl
-	inline fun subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
-		MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
-	
-	@MermaidFlowDsl
-	inline fun style(nodeId: String, vararg styles: Pair<String, String>) =
-		MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this@AbstractMermaidFlow.styles += it }
-	
-	@MermaidFlowDsl
-	inline fun linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
-		MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
-	
-	@MermaidFlowDsl
-	inline fun classDef(className: String, vararg styles: Pair<String, String>) =
-		MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
-	
-	@MermaidFlowDsl
-	inline fun classRef(vararg nodeIds: String, className: String) =
-		MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
-	
 	@MermaidFlowDsl
 	override fun String.invoke(builder: MermaidFlowSubGraph.() -> Unit) = subGraph(this, builder)
 }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) = MermaidFlowNode(name, text).also { nodes += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
+	MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
+	link(sourceNode.name, targetNodeId, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNodeId, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNode.name, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
+	MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.style(nodeId: String, vararg styles: Pair<String, String>) =
+	MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this.styles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
+	MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<String, String>) =
+	MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
+	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
+
+
+/**Mermaid流程图Dsl的元素。*/
+@MermaidFlowDsl
+interface MermaidFlowDslElement : MermaidDslElement
 
 /**Mermaid流程图节点。*/
 @MermaidFlowDsl
@@ -154,14 +161,23 @@ class MermaidFlowLink @PublishedApi internal constructor(
 @MermaidFlowDsl
 class MermaidFlowSubGraph @PublishedApi internal constructor(
 	val name: String
-) : AbstractMermaidFlow(), MermaidDslElement {
+) : MermaidDslElement, MermaidFlowDslEntry {
+	override val nodes: MutableSet<MermaidFlowNode> = mutableSetOf()
+	override val links: MutableList<MermaidFlowLink> = mutableListOf()
+	override val subGraphs: MutableList<MermaidFlowSubGraph> = mutableListOf()
+	override val styles: MutableList<MermaidFlowNodeStyle> = mutableListOf()
+	override val linkStyles: MutableList<MermaidFlowLinkStyle> = mutableListOf()
+	override val classDefs: MutableSet<MermaidFlowClassDef> = mutableSetOf()
+	override val classRefs: MutableSet<MermaidFlowClassRef> = mutableSetOf()
+	
+	override var indentContent: Boolean = true
+	
 	override fun toString(): String {
-		val contentSnippet = super.toString()
+		val contentSnippet = getString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "subgraph $name\n$indentedContentSnippet\nend"
 	}
 }
-
 
 /**Mermaid流程图节点风格。*/
 @MermaidFlowDsl

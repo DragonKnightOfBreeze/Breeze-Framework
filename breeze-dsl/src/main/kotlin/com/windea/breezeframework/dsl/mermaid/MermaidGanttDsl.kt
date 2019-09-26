@@ -22,7 +22,7 @@ fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.bu
 /**Mermaid甘特图。*/
 @Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid, CanIndentContent, BlockContent<MermaidGanttSection> {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentContent, BlockContent<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null
 	var dataFormat: MermaidGanttDateFormat? = null
 	val sections: MutableList<MermaidGanttSection> = mutableListOf()
@@ -37,7 +37,6 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid, CanIndentCont
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "gantt\n$indentedContentSnippet"
 	}
-	
 	
 	@MermaidGanttDsl
 	inline fun section(name: String, builder: MermaidGanttSection.() -> Unit) =
@@ -89,7 +88,6 @@ class MermaidGanttSection @PublishedApi internal constructor(
 		return "section $name\n$indentedContentSnippet"
 	}
 	
-	
 	@MermaidGanttDsl
 	inline fun task(name: String, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
 		MermaidGanttTask(name, status).also { tasks += it }
@@ -118,7 +116,6 @@ class MermaidGanttTask @PublishedApi internal constructor(
 			.filterNotNull().joinToString()
 		return "$name: $paramsSnippet"
 	}
-	
 	
 	@MermaidGanttDsl
 	inline infix fun alias(alias: String) = this.also { it.alias = alias }
