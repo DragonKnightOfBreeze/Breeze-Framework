@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
@@ -10,7 +12,7 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCoun
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
 import org.intellij.lang.annotations.*
 
-//TODO
+//TODO 太复杂了……
 
 //REGION Dsl annotations
 
@@ -20,12 +22,15 @@ internal annotation class MarkdownDsl
 @MustBeDocumented
 internal annotation class MarkdownDslExtendedFeature
 
-//REGION Dsl elements & Build functions
+//REGION Dsl & Dsl elements & Dsl config
 
 /**Markdown。*/
 @MarkdownDsl
-class Markdown @PublishedApi internal constructor() : Dsl {
-	val content: MutableList<MarkdownTopElement> = mutableListOf()
+class Markdown @PublishedApi internal constructor() : Dsl, MarkdownDslEntry {
+	var frontMatter: MarkdownFrontMatter? = null
+	var toc: MarkdownToc? = null
+	override val content: MutableList<MarkdownTopElement> = mutableListOf()
+	val references: MutableList<String> = mutableListOf()
 	
 	override fun toString(): String {
 		TODO("not implemented")
@@ -34,7 +39,7 @@ class Markdown @PublishedApi internal constructor() : Dsl {
 
 /**Markdown Dsl的入口。*/
 interface MarkdownDslEntry {
-	//TODO
+	val content: MutableList<MarkdownTopElement>
 }
 
 /**Markdown Dsl的元素。*/
@@ -70,9 +75,9 @@ interface MarkdownReferenceElement : MarkdownDslElement {
 
 /**Markdown文本块。*/
 @MarkdownDsl
-class MarkdownTextBlock @PublishedApi internal constructor(
-	override val inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownLineElement {
+class MarkdownTextBlock @PublishedApi internal constructor() : MarkdownLineElement {
+	override val inlineContent: MutableList<MarkdownInlineElement> = mutableListOf()
+	
 	override fun toString() = inlineContent.joinToString("")
 }
 
@@ -279,15 +284,14 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 /**Markdown标题。*/
 @MarkdownDsl
 sealed class MarkdownHeader(
-	protected val headerLevel: Int,
-	override val inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownLineElement
+	protected val headerLevel: Int
+) : MarkdownLineElement {
+	override val inlineContent: MutableList<MarkdownInlineElement> = mutableListOf()
+}
 
 /**Setext风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownSetextHeader(
-	headerLevel: Int, inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownHeader(headerLevel, inlineContent) {
+sealed class MarkdownSetextHeader(headerLevel: Int) : MarkdownHeader(headerLevel) {
 	override fun toString(): String {
 		val contentSnippet = inlineContent.joinToString("")
 		val suffixMarkers = (if(headerLevel == 1) "=" else "-") * repeatableMarkerCount
@@ -297,21 +301,15 @@ sealed class MarkdownSetextHeader(
 
 /**Markdown主标题。*/
 @MarkdownDsl
-class MarkdownMainHeader @PublishedApi internal constructor(
-	inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownSetextHeader(1, inlineContent)
+class MarkdownMainHeader @PublishedApi internal constructor() : MarkdownSetextHeader(1)
 
 /**Markdown副标题。*/
 @MarkdownDsl
-class MarkdownSubHeader @PublishedApi internal constructor(
-	inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownSetextHeader(2, inlineContent)
+class MarkdownSubHeader @PublishedApi internal constructor() : MarkdownSetextHeader(2)
 
 /**Atx风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownAtxHeader(
-	headerLevel: Int, inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownHeader(headerLevel, inlineContent) {
+sealed class MarkdownAtxHeader(headerLevel: Int) : MarkdownHeader(headerLevel) {
 	override fun toString(): String {
 		val contentSnippet = inlineContent.joinToString("")
 		val prefixMarkers = "#" * headerLevel
@@ -321,27 +319,27 @@ sealed class MarkdownAtxHeader(
 
 /**Markdown一级标题。*/
 @MarkdownDsl
-class MarkdownHeader1(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(1, inlineContent)
+class MarkdownHeader1 : MarkdownAtxHeader(1)
 
 /**Markdown二级标题。*/
 @MarkdownDsl
-class MarkdownHeader2(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(2, inlineContent)
+class MarkdownHeader2 : MarkdownAtxHeader(2)
 
 /**Markdown三级标题。*/
 @MarkdownDsl
-class MarkdownHeader3(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(3, inlineContent)
+class MarkdownHeader3 : MarkdownAtxHeader(3)
 
 /**Markdown四级标题。*/
 @MarkdownDsl
-class MarkdownHeader4(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(4, inlineContent)
+class MarkdownHeader4 : MarkdownAtxHeader(4)
 
 /**Markdown五级标题。*/
 @MarkdownDsl
-class MarkdownHeader5(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(5, inlineContent)
+class MarkdownHeader5 : MarkdownAtxHeader(5)
 
 /**Markdown六级标题。*/
 @MarkdownDsl
-class MarkdownHeader6(inlineContent: MutableList<MarkdownInlineElement>) : MarkdownAtxHeader(6, inlineContent)
+class MarkdownHeader6 : MarkdownAtxHeader(6)
 
 /**Markdown水平分割线。*/
 @MarkdownDsl
@@ -363,10 +361,11 @@ class MarkdownList @PublishedApi internal constructor(
 /**Markdown列表节点。*/
 @MarkdownDsl
 sealed class MarkdownListNode(
-	protected val prefixMarker: String,
-	override val inlineContent: MutableList<MarkdownInlineElement>,
-	val nodes: MutableList<MarkdownListNode>
+	protected val prefixMarker: String
 ) : MarkdownLineElement {
+	override val inlineContent: MutableList<MarkdownInlineElement> = mutableListOf()
+	val nodes: MutableList<MarkdownListNode> = mutableListOf()
+	
 	override fun toString(): String {
 		val contentSnippet = inlineContent.joinToString("")
 		val lineSnippet = "$prefixMarker $contentSnippet"
@@ -380,30 +379,27 @@ sealed class MarkdownListNode(
 /**Markdown有序列表节点。*/
 @MarkdownDsl
 class MarkdownOrderedListNode @PublishedApi internal constructor(
-	val order: String,
-	inlineContent: MutableList<MarkdownInlineElement>, nodes: MutableList<MarkdownListNode> = mutableListOf()
-) : MarkdownListNode("$order.", inlineContent, nodes)
+	val order: String
+) : MarkdownListNode("$order.")
 
 /**Markdown无序列表节点。*/
 @MarkdownDsl
-class MarkdownUnorderedListNode @PublishedApi internal constructor(
-	inlineContent: MutableList<MarkdownInlineElement>, nodes: MutableList<MarkdownListNode> = mutableListOf()
-) : MarkdownListNode(initialMarker, inlineContent, nodes)
+class MarkdownUnorderedListNode @PublishedApi internal constructor() : MarkdownListNode(initialMarker)
 
 /**Markdown任务列表节点。*/
 @MarkdownDsl
 class MarkdownTaskListNode @PublishedApi internal constructor(
-	val completeStatus: Boolean,
-	inlineContent: MutableList<MarkdownInlineElement>, nodes: MutableList<MarkdownListNode> = mutableListOf()
-) : MarkdownListNode("$initialMarker [${if(completeStatus) "X" else " "}]", inlineContent, nodes)
+	val completeStatus: Boolean
+) : MarkdownListNode("$initialMarker [${if(completeStatus) "X" else " "}]")
 
 
 /**Markdown定义列表。*/
 @MarkdownDsl
 class MarkdownDefinition @PublishedApi internal constructor(
-	val title: String,
-	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
+	val title: String
 ) : MarkdownTopElement {
+	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
+	
 	override fun toString(): String {
 		require(nodes.isNotEmpty()) { "Definition node size must be greater than 0." }
 		
@@ -415,9 +411,9 @@ class MarkdownDefinition @PublishedApi internal constructor(
 
 /**Markdown定义列表节点。*/
 @MarkdownDsl
-class MarkdownDefinitionNode(
-	override val inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownLineElement {
+class MarkdownDefinitionNode @PublishedApi internal constructor() : MarkdownLineElement {
+	override val inlineContent: MutableList<MarkdownInlineElement> = mutableListOf()
+	
 	override fun toString(): String {
 		val contentSnippet = inlineContent.joinToString("")
 		val indentedContentSnippet = contentSnippet.prependIndent(" " * indentSize)
@@ -458,9 +454,9 @@ class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslElement
 
 /**Markdown表格列。*/
 @MarkdownDsl
-class MarkdownTableColumn @PublishedApi internal constructor(
-	override val inlineContent: MutableList<MarkdownInlineElement>
-) : MarkdownLineElement {
+class MarkdownTableColumn @PublishedApi internal constructor() : MarkdownLineElement {
+	override val inlineContent: MutableList<MarkdownInlineElement> = mutableListOf()
+	
 	override fun toString() = inlineContent.joinToString("")
 }
 
@@ -469,8 +465,8 @@ class MarkdownTableColumn @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownQuote(
 	val prefixMarker: String
-) : MarkdownTopElement {
-	val content: MutableList<MarkdownTopElement> = mutableListOf()
+) : MarkdownTopElement, MarkdownDslEntry {
+	override val content: MutableList<MarkdownTopElement> = mutableListOf()
 	
 	override fun toString(): String {
 		return content.joinToString("\n").prependIndent("$prefixMarker ")
@@ -553,7 +549,6 @@ class MarkdownAlertBox @PublishedApi internal constructor(
 	}
 }
 
-
 /**Front Matter。只能位于Markdown文档顶部。用于配置当前的Markdown文档。使用Yaml格式。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -570,7 +565,6 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement {
 	override fun toString() = "[TOC]"
 }
-
 
 /**Markdown导入。用于导入相对路径的图片或文本。*/
 @MarkdownDsl
@@ -599,18 +593,40 @@ class MarkdownMacros @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownMacrosSnippet @PublishedApi internal constructor(
-	val name: String,
-	val content: MutableList<MarkdownTopElement> = mutableListOf()
-) : MarkdownTopElement {
+	val name: String
+) : MarkdownTopElement, MarkdownDslEntry {
+	override val content: MutableList<MarkdownTopElement> = mutableListOf()
+	
 	override fun toString(): String {
 		val contentSnippet = content.joinToString("\n")
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }
 
+
+/**Markdown配置。*/
+@MarkdownDsl
+object MarkdownConfig : DslConfig {
+	/**缩进长度。*/
+	var indentSize = 4
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**可重复标记的个数。*/
+	var repeatableMarkerCount = 6
+		set(value) = run { field = value.coerceIn(3, 6) }
+	var truncated = "..."
+	var preferDoubleQuote: Boolean = true
+	var preferAsteriskMaker: Boolean = true
+	
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(preferDoubleQuote) "\"" else "'"
+	internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
+	
+}
+
 //REGION Enumerations and constants
 
 /**Markdown警告框的类型。*/
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 enum class MarkdownAlertBoxType(
 	val prefixMarkers: String
@@ -619,6 +635,7 @@ enum class MarkdownAlertBoxType(
 }
 
 /**Markdown警告框的限定符。*/
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 enum class MarkdownAlertBoxQualifier(
 	val style: String, val text: String
@@ -637,22 +654,75 @@ enum class MarkdownAlertBoxQualifier(
 	Warning("warning", "warning"), Caution("warning", "caution"), Attention("warning", "attention")
 }
 
-//REGION Config object
+//TODO Build extensions
 
-/**Markdown配置。*/
-object MarkdownConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**可重复标记的个数。*/
-	var repeatableMarkerCount = 6
-		set(value) = run { field = value.coerceIn(3, 6) }
-	var truncated = "..."
-	var preferDoubleQuote: Boolean = true
-	var preferAsteriskMaker: Boolean = true
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(preferDoubleQuote) "\"" else "'"
-	internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
-	
-}
+/**构建Markdown。*/
+@MarkdownDsl
+inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
+
+
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun Markdown.frontMatter(lazyText: () -> String) =
+	MarkdownFrontMatter(lazyText()).also { frontMatter = it }
+
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun Markdown.toc() =
+	MarkdownToc().also { toc = it }
+
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.mainHeader(builder: MarkdownMainHeader.() -> Unit) =
+	MarkdownMainHeader().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.subHeader(builder: MarkdownSubHeader.() -> Unit) =
+	MarkdownSubHeader().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.textBlock(builder: MarkdownTextBlock.() -> Unit) =
+	MarkdownTextBlock().also { it.builder() }.also { content += it }
+
+
+@MarkdownDsl
+inline fun MarkdownList.ol(order: String, builder: MarkdownOrderedListNode.() -> Unit) =
+	MarkdownOrderedListNode(order).also { it.builder() }.also { nodes += it }
+
+@MarkdownDsl
+inline fun MarkdownList.ul(builder: MarkdownUnorderedListNode.() -> Unit) =
+	MarkdownUnorderedListNode().also { it.builder() }.also { nodes += it }
+
+@MarkdownDsl
+inline fun MarkdownList.task(status: Boolean, builder: MarkdownTaskListNode.() -> Unit) =
+	MarkdownTaskListNode(status).also { it.builder() }.also { nodes += it }
+
+@MarkdownDsl
+inline fun MarkdownListNode.ol(order: String, builder: MarkdownOrderedListNode.() -> Unit) =
+	MarkdownOrderedListNode(order).also { it.builder() }.also { nodes += it }
+
+@MarkdownDsl
+inline fun MarkdownListNode.ul(builder: MarkdownUnorderedListNode.() -> Unit) =
+	MarkdownUnorderedListNode().also { it.builder() }.also { nodes += it }
+
+@MarkdownDsl
+inline fun MarkdownListNode.task(status: Boolean, builder: MarkdownTaskListNode.() -> Unit) =
+	MarkdownTaskListNode(status).also { it.builder() }.also { nodes += it }
+
+
+@MarkdownDsl
+inline fun MarkdownDefinition.node(builder: MarkdownDefinitionNode.() -> Unit) =
+	MarkdownDefinitionNode().also { it.builder() }.also { nodes += it }
+
+
+@MarkdownDsl
+inline fun MarkdownTable.header(builder: MarkdownTableRow.() -> Unit) =
+	MarkdownTableRow().also { it.builder() }.also { headerRow = it }
+
+@MarkdownDsl
+inline fun MarkdownTable.row(builder: MarkdownTableRow.() -> Unit) =
+	MarkdownTableRow().also { it.builder() }.also { rows += it }
+
+@MarkdownDsl
+inline fun MarkdownTableRow.column(builder: MarkdownTableColumn.() -> Unit) =
+	MarkdownTableColumn().also { it.builder() }.also { columns += it }

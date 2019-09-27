@@ -12,11 +12,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 @DslMarker
 internal annotation class MermaidSequenceDsl
 
-//REGION Dsl elements & build functions
-
-/**构建Mermaid序列图。*/
-@MermaidSequenceDsl
-fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().also { it.builder() }
+//REGION Dsl & Dsl elements & Dsl config
 
 /**Mermaid序列图。*/
 @Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
@@ -59,46 +55,6 @@ interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequ
 	override fun String.not() = note(this)
 }
 
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.participant(name: String) =
-	MermaidSequenceParticipant(name).also { actors += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.message(fromActorId: String, toActorId: String, text: String) =
-	MermaidSequenceMessage(fromActorId, toActorId, text).also { messages += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.message(fromActor: MermaidSequenceParticipant, toActorId: String, text: String) =
-	message(fromActor.alias ?: fromActor.name, toActorId, text)
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.message(fromActorId: String, toActor: MermaidSequenceParticipant, text: String) =
-	message(fromActorId, toActor.alias ?: toActor.name, text)
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.message(fromActor: MermaidSequenceParticipant, toActor: MermaidSequenceParticipant, text: String) =
-	message(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.note(text: String) = MermaidSequenceNote(text).also { notes += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.loop(text: String, builder: MermaidSequenceLoop.() -> Unit) =
-	MermaidSequenceLoop(text).also { it.builder() }.also { scopes += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.opt(text: String, builder: MermaidSequenceOptional.() -> Unit) =
-	MermaidSequenceOptional(text).also { it.builder() }.also { scopes += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.alt(text: String, builder: MermaidSequenceAlternative.() -> Unit) =
-	MermaidSequenceAlternative(text).also { it.builder() }.also { scopes += it }
-
-@MermaidSequenceDsl
-inline fun MermaidSequenceDslEntry.highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
-	MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
-
-
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDsl
 interface MermaidSequenceDslElement : MermaidDslElement
@@ -122,9 +78,6 @@ class MermaidSequenceParticipant @PublishedApi internal constructor(
 		val aliasSnippet = if(alias.isNullOrEmpty()) "" else "$alias as "
 		return "participant $aliasSnippet$name"
 	}
-	
-	@MermaidSequenceDsl
-	inline infix fun alias(alias: String) = this.also { it.alias = alias }
 }
 
 /**Mermaid序列图消息。*/
@@ -137,17 +90,10 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 	var arrowShape: MermaidSequenceMessageArrowShape = MermaidSequenceMessageArrowShape.Arrow
 	var activateStatus: Boolean? = null
 	
-	//TODO multiline & escaped message text
 	override fun toString(): String {
 		val activateSnippet = activateStatus?.let { if(it) "+ " else "- " } ?: ""
 		return "$fromActorId ${arrowShape.text} $activateSnippet$toActorId: $text"
 	}
-	
-	@MermaidSequenceDsl
-	inline infix fun arrowShape(arrowShape: MermaidSequenceMessageArrowShape) = this.also { it.arrowShape = arrowShape }
-	
-	@MermaidSequenceDsl
-	inline infix fun activate(status: Boolean) = this.also { it.activateStatus = status }
 }
 
 /**Mermaid序列图注释。*/
@@ -159,27 +105,12 @@ class MermaidSequenceNote @PublishedApi internal constructor(
 	var targetActorId: String = "Default"
 	var targetActor2Id: String? = null
 	
-	//TODO multiline & escaped message text
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()
 		val targetActor2NameSnippet = targetActor2Id?.let { ", $it" } ?: ""
 		return "note $position $targetActorId$targetActor2NameSnippet: $textSnippet"
 	}
-	
-	@MermaidSequenceDsl
-	inline infix fun leftOf(actorId: String) =
-		this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorId = actorId }
-	
-	@MermaidSequenceDsl
-	inline infix fun rightOf(actorId: String) =
-		this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorId = actorId }
-	
-	@MermaidSequenceDsl
-	inline infix fun over(actorIdPair: Pair<String, String>) =
-		this.also { it.position = MermaidSequenceNodePosition.RightOf }
-			.also { it.targetActorId = actorIdPair.first }.also { it.targetActor2Id = actorIdPair.second }
 }
-
 
 /**Mermaid序列图作用域。*/
 @MermaidSequenceDsl
@@ -220,12 +151,6 @@ class MermaidSequenceAlternative @PublishedApi internal constructor(text: String
 		val elseScopesSnippet = elseScopes.joinToString("\n").ifNotEmpty { "\n$it" }
 		return "$contentSnippet$elseScopesSnippet"
 	}
-	
-	@MermaidSequenceDsl
-	inline fun `else`(text: String) = MermaidSequenceElse(text).also { elseScopes += it }
-	
-	@MermaidSequenceDsl
-	inline fun `else`() = MermaidSequenceElse().also { elseScopes += it }
 }
 
 /**Mermaid序列图其余作用域。*/
@@ -239,12 +164,91 @@ class MermaidSequenceHighlight @PublishedApi internal constructor(colorText: Str
 //REGION Enumerations and constants
 
 /**Mermaid序列图消息的箭头形状。*/
+@MermaidSequenceDsl
 enum class MermaidSequenceMessageArrowShape(val text: String) {
 	Arrow("->>"), DottedArrow("-->>"), Line("->"), DottedLine("-->"), Cross("-x"), DottedCross("--x")
 }
 
 /**Mermaid序列图注释的位置。*/
+@MermaidSequenceDsl
 enum class MermaidSequenceNodePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), Over("over")
 }
 
+//REGION Build extensions
+
+/**构建Mermaid序列图。*/
+@MermaidSequenceDsl
+fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().also { it.builder() }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.participant(name: String) =
+	MermaidSequenceParticipant(name).also { actors += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.message(fromActorId: String, toActorId: String, text: String) =
+	MermaidSequenceMessage(fromActorId, toActorId, text).also { messages += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.message(fromActor: MermaidSequenceParticipant, toActorId: String, text: String) =
+	message(fromActor.alias ?: fromActor.name, toActorId, text)
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.message(fromActorId: String, toActor: MermaidSequenceParticipant, text: String) =
+	message(fromActorId, toActor.alias ?: toActor.name, text)
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.message(fromActor: MermaidSequenceParticipant, toActor: MermaidSequenceParticipant, text: String) =
+	message(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.note(text: String) = MermaidSequenceNote(text).also { notes += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.loop(text: String, builder: MermaidSequenceLoop.() -> Unit) =
+	MermaidSequenceLoop(text).also { it.builder() }.also { scopes += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.opt(text: String, builder: MermaidSequenceOptional.() -> Unit) =
+	MermaidSequenceOptional(text).also { it.builder() }.also { scopes += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.alt(text: String, builder: MermaidSequenceAlternative.() -> Unit) =
+	MermaidSequenceAlternative(text).also { it.builder() }.also { scopes += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceDslEntry.highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
+	MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceParticipant.alias(alias: String) =
+	this.also { it.alias = alias }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceMessage.arrowShape(arrowShape: MermaidSequenceMessageArrowShape) =
+	this.also { it.arrowShape = arrowShape }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceMessage.activate(status: Boolean) =
+	this.also { it.activateStatus = status }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceNote.leftOf(actorId: String) =
+	this.also { it.position = MermaidSequenceNodePosition.LeftOf }.also { it.targetActorId = actorId }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceNote.rightOf(actorId: String) =
+	this.also { it.position = MermaidSequenceNodePosition.RightOf }.also { it.targetActorId = actorId }
+
+@MermaidSequenceDsl
+inline infix fun MermaidSequenceNote.over(actorIdPair: Pair<String, String>) =
+	this.also { it.position = MermaidSequenceNodePosition.RightOf }
+		.also { it.targetActorId = actorIdPair.first }.also { it.targetActor2Id = actorIdPair.second }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceAlternative.`else`(text: String) =
+	MermaidSequenceElse(text).also { elseScopes += it }
+
+@MermaidSequenceDsl
+inline fun MermaidSequenceAlternative.`else`() =
+	MermaidSequenceElse().also { elseScopes += it }

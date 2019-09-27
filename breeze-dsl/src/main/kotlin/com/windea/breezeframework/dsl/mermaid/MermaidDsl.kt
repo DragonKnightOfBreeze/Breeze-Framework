@@ -11,7 +11,7 @@ import com.windea.breezeframework.dsl.*
 @DslMarker
 internal annotation class MermaidDsl
 
-//REGION Dsl elements & build functions
+//REGION Dsl & Dsl elements & Dsl config
 
 /**Mermaid Dsl。*/
 @Reference("[Mermaid](https://mermaidjs.github.io)")
@@ -22,9 +22,8 @@ abstract class Mermaid : Dsl
 @MermaidDsl
 interface MermaidDslElement : DslElement
 
-//REGION Config object
-
 /**Mermaid Dsl的配置。*/
+@MermaidDsl
 object MermaidConfig : DslConfig {
 	/**缩进长度。*/
 	var indentSize = 4

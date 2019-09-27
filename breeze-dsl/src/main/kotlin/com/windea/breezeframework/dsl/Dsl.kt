@@ -16,14 +16,13 @@ import com.windea.breezeframework.core.extensions.*
 @DslMarker
 internal annotation class GeneralDsl
 
-//REGION Dsl elements & build functions
+//REGION Dsl & Dsl elements & Dsl config
 
 /**Dsl。即，领域专用语言。*/
 @GeneralDsl
 interface Dsl {
 	override fun toString(): String
 }
-
 
 /**Dsl的元素。*/
 @GeneralDsl
@@ -39,26 +38,17 @@ interface UniqueDslElement : DslElement {
 	override fun hashCode(): Int
 }
 
-
 /**包含可换行内容。*/
 @GeneralDsl
 interface CanWrapContent {
 	var wrapContent: Boolean
 }
 
-/**设置是否换行内容。*/
-@GeneralDsl
-inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
-
 /**包含可缩进内容。*/
 @GeneralDsl
 interface CanIndentContent {
 	var indentContent: Boolean
 }
-
-/**设置是否缩进内容。*/
-@GeneralDsl
-inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 /**包含（可被视为的）注释内容。*/
 @GeneralDsl
@@ -82,10 +72,21 @@ interface InlineContent<T : DslElement> {
 interface BlockContent<T : DslElement> {
 	/**添加主要的块子元素为子元素。*/
 	operator fun String.invoke(builder: T.() -> Unit): T
-	
-	/**传入可变参数，添加主要的块子元素为子元素。*/
-	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: T.() -> Unit): T = throw UnsupportedOperationException()
 }
+
+/**Dsl的配置。*/
+@GeneralDsl
+interface DslConfig
+
+//REGION Build extensions
+
+/**设置是否换行内容。*/
+@GeneralDsl
+inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
+
+/**设置是否缩进内容。*/
+@GeneralDsl
+inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 //REGION Useful extensions for argument handling
 
@@ -96,8 +97,3 @@ internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r"
 /**将`\n`或`\r`替换成`\\n`和`\\r`。*/
 @PublishedApi
 internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
-
-//REGION Config object
-
-/**Dsl的配置。*/
-interface DslConfig

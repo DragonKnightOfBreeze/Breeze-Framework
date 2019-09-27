@@ -13,12 +13,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 @DslMarker
 internal annotation class MermaidFlowDsl
 
-//REGION Dsl elements & build functions
-
-/**构建Mermaid流程图。*/
-@MermaidFlowDsl
-fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
-	MermaidFlow(direction).also { it.builder() }
+//REGION Dsl & Dsl elements & Dsl config
 
 /**Mermaid流程图。*/
 @Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
@@ -45,7 +40,7 @@ class MermaidFlow @PublishedApi internal constructor(
 
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowDsl
-interface MermaidFlowDslEntry : CanIndentContent, BlockContent<MermaidFlowSubGraph> {
+interface MermaidFlowDslEntry : CanIndentContent {
 	val nodes: MutableSet<MermaidFlowNode>
 	val links: MutableList<MermaidFlowLink>
 	val subGraphs: MutableList<MermaidFlowSubGraph>
@@ -65,50 +60,7 @@ interface MermaidFlowDslEntry : CanIndentContent, BlockContent<MermaidFlowSubGra
 			classRefs.joinToString("\n")
 		).filterNotEmpty().joinToString("\n\n")
 	}
-	
-	@MermaidFlowDsl
-	override fun String.invoke(builder: MermaidFlowSubGraph.() -> Unit) = subGraph(this, builder)
 }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) = MermaidFlowNode(name, text).also { nodes += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
-	MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
-	link(sourceNode.name, targetNodeId, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
-	link(sourceNodeId, targetNode.name, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
-	link(sourceNode.name, targetNode.name, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
-	MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.style(nodeId: String, vararg styles: Pair<String, String>) =
-	MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this.styles += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
-	MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<String, String>) =
-	MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
-	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
-
 
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowDsl
@@ -126,14 +78,10 @@ class MermaidFlowNode @PublishedApi internal constructor(
 	
 	override fun hashCode() = name.hashCode()
 	
-	//TODO omit text, no double quote surround text if not necessary
 	override fun toString(): String {
 		val textSnippet = (text?.replaceWithEscapedWrap() ?: name).wrapQuote(quote)
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
-	
-	
-	inline infix fun shape(shape: MermaidFlowNodeShape) = this.also { it.shape = shape }
 }
 
 /**Mermaid流程图连接。*/
@@ -145,16 +93,11 @@ class MermaidFlowLink @PublishedApi internal constructor(
 ) : MermaidFlowDslElement {
 	var arrowShape: MermaidFlowLinkArrowShape = MermaidFlowLinkArrowShape.Arrow
 	
-	//TODO escape if necessary
 	override fun toString(): String {
 		val arrowSnippet = arrowShape.text
 		val textSnippet = text?.let { "|${text.replaceWithHtmlWrap()}|" } ?: ""
 		return "$sourceNodeId $arrowSnippet$textSnippet $targetNodeId"
 	}
-	
-	
-	@MermaidFlowDsl
-	inline infix fun arrowShape(arrowShape: MermaidFlowLinkArrowShape) = this.also { it.arrowShape = arrowShape }
 }
 
 /**Mermaid流程图的子图。*/
@@ -230,11 +173,13 @@ class MermaidFlowClassRef @PublishedApi internal constructor(
 //REGION Enumerations and constants
 
 /**Mermaid流程图的方向。*/
+@MermaidFlowDsl
 enum class MermaidFlowDirection(val text: String) {
 	TB("TB"), BT("BT"), LR("LR"), RL("RL")
 }
 
 /**Mermaid流程图节点的形状。*/
+@MermaidFlowDsl
 enum class MermaidFlowNodeShape(val prefix: String, val suffix: String) {
 	/**矩形。*/
 	Rect("[", "]"),
@@ -249,6 +194,62 @@ enum class MermaidFlowNodeShape(val prefix: String, val suffix: String) {
 }
 
 /**Mermaid流程图连接的箭头形状。*/
+@MermaidFlowDsl
 enum class MermaidFlowLinkArrowShape(val text: String) {
 	Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 }
+
+//REGION Build extensions
+
+/**构建Mermaid流程图。*/
+@MermaidFlowDsl
+inline fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
+	MermaidFlow(direction).also { it.builder() }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) =
+	MermaidFlowNode(name, text).also { nodes += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
+	MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
+	link(sourceNode.name, targetNodeId, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNodeId, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNode.name, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
+	MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.style(nodeId: String, vararg styles: Pair<String, String>) =
+	MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this.styles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
+	MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<String, String>) =
+	MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
+	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
+
+@MermaidFlowDsl
+inline infix fun MermaidFlowNode.shape(shape: MermaidFlowNodeShape) =
+	this.also { it.shape = shape }
+
+@MermaidFlowDsl
+inline infix fun MermaidFlowLink.arrowShape(arrowShape: MermaidFlowLinkArrowShape) =
+	this.also { it.arrowShape = arrowShape }

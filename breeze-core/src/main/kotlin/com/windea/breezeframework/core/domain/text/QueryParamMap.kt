@@ -3,7 +3,7 @@ package com.windea.breezeframework.core.domain.text
 /**查询参数映射。*/
 class QueryParamMap(
 	map: Map<String, Any>
-) : HashMap<String, Any>(map) {
+) : Map<String, Any> by map {
 	/**得到指定名字的单个查询参数。*/
 	fun getParam(name: String): String? {
 		return this[name]?.let { (if(it is Iterable<*>) it.first() else it) as String }
