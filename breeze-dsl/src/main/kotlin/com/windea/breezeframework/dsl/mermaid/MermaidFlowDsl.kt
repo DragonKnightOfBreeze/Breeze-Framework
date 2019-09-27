@@ -32,7 +32,7 @@ class MermaidFlow @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = getString()
+		val contentSnippet = getContentString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "graph ${direction.text}\n$indentedContentSnippet"
 	}
@@ -49,7 +49,7 @@ interface MermaidFlowDslEntry : CanIndentContent {
 	val classDefs: MutableSet<MermaidFlowClassDef>
 	val classRefs: MutableSet<MermaidFlowClassRef>
 	
-	fun getString(): String {
+	fun getContentString(): String {
 		return arrayOf(
 			nodes.joinToString("\n"),
 			links.joinToString("\n"),
@@ -116,7 +116,7 @@ class MermaidFlowSubGraph @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = getString()
+		val contentSnippet = getContentString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "subgraph $name\n$indentedContentSnippet\nend"
 	}

@@ -38,16 +38,21 @@ interface UniqueDslElement : DslElement {
 	override fun hashCode(): Int
 }
 
-/**包含可换行内容。*/
+/**包含可换行的内容。*/
 @GeneralDsl
 interface CanWrapContent {
 	var wrapContent: Boolean
 }
 
-/**包含可缩进内容。*/
+/**包含可缩进的内容。*/
 @GeneralDsl
 interface CanIndentContent {
 	var indentContent: Boolean
+}
+
+/**包好（可能替换原始文本的）可生成的内容。*/
+interface CanGenerateContent {
+	var generateContent: Boolean
 }
 
 /**包含（可被视为的）注释内容。*/
@@ -87,6 +92,10 @@ inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapC
 /**设置是否缩进内容。*/
 @GeneralDsl
 inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
+
+/**设置是否生成内容。*/
+@GeneralDsl
+inline infix fun <T : CanGenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
 //REGION Useful extensions for argument handling
 

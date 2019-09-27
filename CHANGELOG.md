@@ -98,7 +98,8 @@
 * [X] breeze-dsl 完成PumlStateDiagramDsl，并将公共Dsl提取到PumlDsl。（puml的语法真的是面向人类的吗？）
 * [X] breeze-dsl 完善各种Dsl，更新MarkdownDsl中。
 * [X] breeze-dsl 更新MarkdownDsl中。
-* [ ] breeze-dsl 重构：提取各种DslContainer（能够包含Dsl顶级元素的能力），但不声明顶级的DslContainer。
+* [X] breeze-dsl 重构：提取各种DslEntry（能够包含Dsl顶级元素的能力），但不声明顶级的DslEntry。
+* [X] breeze-dsl 初步完成MarkdownDsl（真复杂）。
 
 * [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。

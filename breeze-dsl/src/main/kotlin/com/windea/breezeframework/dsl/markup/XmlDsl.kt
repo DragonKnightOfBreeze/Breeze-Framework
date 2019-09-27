@@ -112,7 +112,7 @@ class XmlElement @PublishedApi internal constructor(
 	override fun String.unaryPlus() = text(this)
 	
 	@XmlDsl
-	override fun String.unaryMinus() = XmlText(this).also { nodes.clear() }.also { nodes += it }
+	override fun String.unaryMinus() = run { nodes.clear();text(this) }
 	
 	@XmlDsl
 	override fun String.not() = comment(this)
