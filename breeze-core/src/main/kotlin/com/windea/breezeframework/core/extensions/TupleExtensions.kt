@@ -2,6 +2,17 @@ package com.windea.breezeframework.core.extensions
 
 import java.io.*
 
+//REGION Type alias
+
+/**单一元素类型的二元素元组。*/
+typealias Tuple2<T> = Pair<T, T>
+
+/**单一元素类型的三元素元组。*/
+typealias Tuple3<T> = Triple<T, T, T>
+
+/**单一元素类型的四元素元组。*/
+typealias Tuple4<T> = Quadruple<T, T, T, T>
+
 //REGION Quadruple class and extensions (necessary for Quaternion)
 
 /**四元数元组。*/

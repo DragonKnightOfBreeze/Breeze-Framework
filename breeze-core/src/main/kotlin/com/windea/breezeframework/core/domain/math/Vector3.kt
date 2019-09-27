@@ -10,13 +10,10 @@ data class Vector3(
 	val y: Float,
 	val z: Float
 ) : Vector<Vector3> {
-	/**模长。*/
-	override val length = sqrt(x.pow(2) + y.pow(2) + z.pow(2))
-	/**单位向量。*/
+	override val lengthSquared: Float = x * x + y * y + z * z
+	override val length: Float = sqrt(lengthSquared)
 	override val unitVector = this / length
-	/**是否是零向量。*/
 	override val isOriginVector = x == 0f && y == 0f && z == 0f
-	/**是否是单位向量。*/
 	override val isUnitVector = length == 1f
 	
 	
@@ -47,6 +44,17 @@ data class Vector3(
 	operator fun unaryMinus() = Vector3(-x, -y, -z)
 	
 	
+	/**得到两个向量之间的距离的平方。*/
+	infix fun distanceSquared(other: Vector3): Float {
+		val distanceX = other.x - x
+		val distanceY = other.y - y
+		val distanceZ = other.z - z
+		return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
+	}
+	
+	/**得到两个向量之间的距离。*/
+	infix fun distance(other: Vector3): Float = sqrt(this distance other)
+	
 	/**得到两个向量的数量积。*/
 	infix fun dotProduct(other: Vector2): Float = length * other.length
 	
@@ -54,11 +62,13 @@ data class Vector3(
 	infix fun dotProduct(other: Vector3): Float = length * other.length
 	
 	/**得到两个向量的向量积。*/
-	infix fun vectorProduct(other: Vector3): Vector3 = Vector3(
-		y * other.z - z * other.y,
-		z * other.x - x * other.z,
-		x * other.y - y * other.x
-	)
+	infix fun vectorProduct(other: Vector3): Vector3 {
+		return Vector3(
+			y * other.z - z * other.y,
+			z * other.x - x * other.z,
+			x * other.y - y * other.x
+		)
+	}
 	
 	/**得到两个向量的向量积。*/
 	infix fun vectorProduct(other: Vector2) = this.vectorProduct(other.toVector3())
