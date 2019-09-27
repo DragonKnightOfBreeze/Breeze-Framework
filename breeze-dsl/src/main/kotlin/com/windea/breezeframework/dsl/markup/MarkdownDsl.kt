@@ -681,6 +681,34 @@ inline fun MarkdownDslEntry.subHeader(builder: MarkdownSubHeader.() -> Unit) =
 	MarkdownSubHeader().also { it.builder() }.also { content += it }
 
 @MarkdownDsl
+inline fun MarkdownDslEntry.h1(builder: MarkdownHeader1.() -> Unit) =
+	MarkdownHeader1().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.h2(builder: MarkdownHeader2.() -> Unit) =
+	MarkdownHeader2().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.h3(builder: MarkdownHeader3.() -> Unit) =
+	MarkdownHeader3().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.h4(builder: MarkdownHeader4.() -> Unit) =
+	MarkdownHeader4().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.h5(builder: MarkdownHeader5.() -> Unit) =
+	MarkdownHeader5().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.h6(builder: MarkdownHeader6.() -> Unit) =
+	MarkdownHeader6().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
+inline fun MarkdownDslEntry.hr(builder: MarkdownHorizontalLine.() -> Unit) =
+	MarkdownHorizontalLine().also { it.builder() }.also { content += it }
+
+@MarkdownDsl
 inline fun MarkdownDslEntry.textBlock(builder: MarkdownTextBlock.() -> Unit) =
 	MarkdownTextBlock().also { it.builder() }.also { content += it }
 
