@@ -486,8 +486,8 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownTopElement {
 		require(rows.isNotEmpty()) { "Table row size must be greater than 0." }
 		
 		val columnSize = rows.first().columns.size
-		val headerRowSnippet = headerRow?.toString() ?: (1..columnSize).joinToString(" | ", "| ", " |") { " " }
-		val delimiterSnippet = (1..columnSize).joinToString("-|-", "|-", "-|") { "-" }
+		val headerRowSnippet = headerRow?.toString() ?: List(columnSize) { " " }.joinToString(" | ", "| ", " |")
+		val delimiterSnippet = List(columnSize) { "-" }.joinToString("-|-", "|-", "-|")
 		val rowsSnippet = rows.joinToString("\n")
 		return "$headerRowSnippet\n$delimiterSnippet\n$rowsSnippet"
 	}

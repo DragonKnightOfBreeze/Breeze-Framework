@@ -7,6 +7,26 @@ import com.windea.breezeframework.core.enums.core.*
 import java.util.concurrent.*
 import kotlin.random.*
 
+//REGION Portal extensions
+
+/**构建线程安全的并发列表。*/
+inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
+
+/**构建线程安全的并发列表。*/
+inline fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
+
+/**构建线程安全的并发集。*/
+inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
+
+/**构建线程安全的并发集。*/
+inline fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
+
+/**构建线程安全的并发映射。*/
+inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
+
+/**构建线程安全的并发映射。*/
+inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = ConcurrentHashMap(pairs.toMap())
+
 //REGION Operator overrides
 
 /**@see kotlin.collections.slice*/

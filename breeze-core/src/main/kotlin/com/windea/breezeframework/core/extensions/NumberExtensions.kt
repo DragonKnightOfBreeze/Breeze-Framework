@@ -83,6 +83,16 @@ inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
 /**进行整除运算。*/
 inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
+
+/**判断是否约等于另一个数，可指定精确度。*/
+fun Number?.nearlyEqualsTo(other: Number?, precision: Float = 0.1f): Boolean {
+	return when {
+		this == null && other == null -> true
+		this == null || other == null -> false
+		else -> abs(this.toFloat() - other.toFloat()) <= precision
+	}
+}
+
 //REGION Convert extensions
 
 /**转化为指定的数字类型。*/

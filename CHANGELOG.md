@@ -101,6 +101,7 @@
 * [X] breeze-dsl 重构：提取各种DslEntry（能够包含Dsl顶级元素的能力），但不声明顶级的DslEntry。
 * [X] breeze-dsl 初步完成MarkdownDsl（真复杂）。
 * [X] breeze-core,breeze-javafx 更新一些javafx的扩展，元组的扩展和数学的扩展。
+* [X] breeze-core 提供约等于、构建并发集合的扩展。
 
 * [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
