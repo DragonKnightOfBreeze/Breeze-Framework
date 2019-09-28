@@ -90,13 +90,6 @@ class Tests {
 		foo1.list += 3
 		println(foo1.size)
 	}
-	
-	@Test
-	fun testListGet() {
-		//val list = mutableListOf(1, 1, 1)
-		//list[5] = 5
-		//println(list)
-	}
 }
 
 class Foo1 {

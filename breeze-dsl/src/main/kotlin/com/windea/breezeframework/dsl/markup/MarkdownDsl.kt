@@ -768,12 +768,12 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		val columnsSnippet = when {
 			columnSize == null || columnSize == columns.size -> columns
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
-			else -> columns.map { it.toString() }.fillToSize(emptyColumnText, columnSize!!)
+			else -> columns.map { it.toString() }.toMutableList().fillToSize(emptyColumnText, columnSize!!)
 		}.joinToString(" | ", "| ", " |")
 		val delimitersSnippet = when {
 			columnSize == null || columnSize == columns.size -> columns.toDelimiters()
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!).toDelimiters()
-			else -> columns.toDelimiters().fillToSize("-" * emptyColumnSize, columnSize!!)
+			else -> columns.toDelimiters().toMutableList().fillToSize("-" * emptyColumnSize, columnSize!!)
 		}.joinToString(" | ", "| ", " |")
 		return "$columnsSnippet\n$delimitersSnippet"
 	}
@@ -806,7 +806,7 @@ class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslElement
 		return when {
 			columnSize == null || columnSize == columns.size -> columns
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
-			else -> columns.map { it.toString() }.fillToSize(emptyColumnText, columnSize!!)
+			else -> columns.map { it.toString() }.toMutableList().fillToSize(emptyColumnText, columnSize!!)
 		}.joinToString(" | ", "| ", " |")
 	}
 	

@@ -265,7 +265,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement 
 		return when {
 			columnSize == null || columnSize == columns.size -> columns
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
-			else -> columns.map { it.toString() }.fillToSize(emptyColumnText, columnSize!!)
+			else -> columns.map { it.toString() }.toMutableList().fillToSize(emptyColumnText, columnSize!!)
 		}.joinToString(" | ", "| ", " |")
 	}
 }
@@ -283,7 +283,7 @@ class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElement {
 		return when {
 			columnSize == null || columnSize == columns.size -> columns
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
-			else -> columns.map { it.toString() }.fillToSize(emptyColumnText, columnSize!!)
+			else -> columns.map { it.toString() }.toMutableList().fillToSize(emptyColumnText, columnSize!!)
 		}.joinToString(" | ", "| ", " |")
 	}
 }

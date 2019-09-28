@@ -239,9 +239,9 @@ fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
 
 /**填充指定的元素到当前列表，直到指定长度。如果指定长度比当前长度小，则会返回当前列表。*/
 @OutlookImplementationApi
-fun <T> List<T>.fillToSize(element: T, size: Int): List<T> {
+fun <T> MutableList<T>.fillToSize(element: T, size: Int): MutableList<T> {
 	return when {
-		this.size < size -> this.toMutableList().also { list -> repeat(size - this.size) { list += element } }
+		this.size < size -> this.also { list -> repeat(size - this.size) { list += element } }
 		else -> this
 	}
 }
