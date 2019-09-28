@@ -33,7 +33,7 @@ inline fun <R> List<String>.crossLine(block: List<String>.() -> R): R {
 }
 
 /**执行跨行操作。*/
-@ExperimentalContracts
+@UseExperimental(ExperimentalContracts::class)
 inline fun <R> Sequence<String>.crossLine(block: Sequence<String>.() -> R): R {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)

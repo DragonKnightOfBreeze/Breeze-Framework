@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import kotlin.math.*
 
 //REGION Operator overrides & infix extensions
@@ -84,7 +85,7 @@ inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
 inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
-/**判断是否约等于另一个数，可指定精确度。*/
+/**判断是否约等于另一个数，可指定精确度。默认为0.1。*/
 fun Number?.nearlyEqualsTo(other: Number?, precision: Float = 0.1f): Boolean {
 	return when {
 		this == null && other == null -> true
@@ -94,6 +95,19 @@ fun Number?.nearlyEqualsTo(other: Number?, precision: Float = 0.1f): Boolean {
 }
 
 //REGION Convert extensions
+
+/**转化为二进制字符串。*/
+@OutlookImplementationApi
+inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
+
+/**转化为八进制字符串。*/
+@OutlookImplementationApi
+inline fun Int.toHexString(): String = Integer.toHexString(this)
+
+/**转化为十六进制字符串。*/
+@OutlookImplementationApi
+inline fun Int.toOctalString(): String = Integer.toOctalString(this)
+
 
 /**转化为指定的数字类型。*/
 inline fun <reified T : Number> Number.to(): T {
