@@ -18,4 +18,12 @@ class CollectionExtensionsKtTest {
 		println(listOf("123", "", "123").dropBlank())
 		println(listOf("", "123", "", "123").dropBlank())
 	}
+	
+	@Test //TESTED
+	fun fillToSize() {
+		val list = mutableListOf("1", "1", "1")
+		println(list.fillToSize("1", 2))
+		println(list.fillToSize("1", 3))
+		println(list.fillToSize("1", 4))
+	}
 }

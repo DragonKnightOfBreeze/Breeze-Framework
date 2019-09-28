@@ -17,6 +17,10 @@ internal annotation class XmlDsl
 
 //REGION Dsl & Dsl elements & Dsl config
 
+/**构建Xml。*/
+@XmlDsl
+inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
+
 /**Xml。*/
 @XmlDsl
 class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentContent<XmlComment>, BlockContent<XmlElement> {
@@ -40,6 +44,22 @@ class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentCon
 		).filterNotEmpty().joinToString(n)
 	}
 	
+	
+	/**添加声明。*/
+	@XmlDsl
+	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
+		XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
+	
+	/**添加注释。*/
+	@XmlDsl
+	inline fun comment(text: String) =
+		XmlComment(text).also { comments += it }
+	
+	/**添加元素。*/
+	@XmlDsl
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
+	
 	@XmlDsl
 	override fun String.not() = comment(this)
 	
@@ -47,8 +67,9 @@ class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentCon
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
 	
 	@XmlDsl
-	fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
+	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
 }
+
 
 /**Xml Dsl的元素。*/
 @XmlDsl
@@ -108,6 +129,22 @@ class XmlElement @PublishedApi internal constructor(
 		return "$prefixSnippet$wrappedElementsSnippet$suffixSnippet"
 	}
 	
+	
+	/**添加文本。*/
+	@XmlDsl
+	inline fun text(text: String) =
+		XmlText(text).also { nodes += it }
+	
+	/**添加注释。*/
+	@XmlDsl
+	inline fun comment(text: String) =
+		XmlComment(text).also { nodes += it }
+	
+	/**添加元素。*/
+	@XmlDsl
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
+	
 	@XmlDsl
 	override fun String.unaryPlus() = text(this)
 	
@@ -121,7 +158,7 @@ class XmlElement @PublishedApi internal constructor(
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
 	
 	@XmlDsl
-	fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
+	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
 }
 
 /**Xml注释。*/
@@ -175,38 +212,16 @@ object XmlConfig : DslConfig {
 	internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
 
-//REGION Build extensions
 
-/**构建Xml。*/
-@XmlDsl
-inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 
-/**添加声明。*/
-@XmlDsl
-inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
-	XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
 
-/**添加注释。*/
-@XmlDsl
-inline fun Xml.comment(text: String) =
-	XmlComment(text).also { comments += it }
 
-/**添加元素。*/
-@XmlDsl
-inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 
-/**添加文本。*/
-@XmlDsl
-inline fun XmlElement.text(text: String) =
-	XmlText(text).also { nodes += it }
 
-/**添加注释。*/
-@XmlDsl
-inline fun XmlElement.comment(text: String) =
-	XmlComment(text).also { nodes += it }
 
-/**添加元素。*/
-@XmlDsl
-inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
+
+
+
+
+
+

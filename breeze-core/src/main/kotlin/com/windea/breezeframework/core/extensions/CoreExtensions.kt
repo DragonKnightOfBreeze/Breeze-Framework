@@ -39,7 +39,6 @@ inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issu
 
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
-@UseExperimental(ExperimentalContracts::class)
 inline fun tryCatching(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -52,7 +51,6 @@ inline fun tryCatching(block: () -> Unit) {
 }
 
 /**尝试执行一段代码，并忽略异常。*/
-@UseExperimental(ExperimentalContracts::class)
 inline fun tryIgnored(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -66,7 +64,6 @@ inline fun tryIgnored(block: () -> Unit) {
 @PublishedApi internal var enableOnce = false
 
 /**执行一段代码且仅执行一次。可指定是否重置单次状态。*/
-@UseExperimental(ExperimentalContracts::class)
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -75,30 +72,52 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	if(enableOnce) return
 	enableOnce = true
 	block()
+	require(true)
 }
 
 //REGION Precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 @OutlookImplementationApi
-@UseExperimental(ExperimentalContracts::class)
-inline fun reject(value: Boolean) {
+inline fun accept(value: Boolean) {
 	contract {
 		returns() implies value
 	}
-	reject(value) { "Unsupported operation." }
+	accept(value) { "Unsupported operation." }
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
 @OutlookImplementationApi
-@UseExperimental(ExperimentalContracts::class)
-inline fun reject(value: Boolean, lazyMessage: () -> Any) {
+inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 	contract {
 		returns() implies value
 	}
 	if(!value) {
 		val message = lazyMessage()
 		throw UnsupportedOperationException(message.toString())
+	}
+}
+
+/**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
+@OutlookImplementationApi
+inline fun <T> acceptNotNull(value: T?) {
+	contract {
+		returns() implies (value != null)
+	}
+	acceptNotNull(value) { "Unsupported operation." }
+}
+
+/**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
+@OutlookImplementationApi
+inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
+	contract {
+		returns() implies (value != null)
+	}
+	if(value == null) {
+		val message = lazyMessage()
+		throw UnsupportedOperationException(message.toString())
+	} else {
+		return value
 	}
 }
 

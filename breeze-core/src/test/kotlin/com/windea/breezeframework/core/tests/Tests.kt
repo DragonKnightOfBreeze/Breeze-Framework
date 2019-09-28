@@ -82,4 +82,24 @@ class Tests {
 		println(Duration.ofDays(1)) //PT24H
 		println(Duration.ofHours(20)) //PT20H
 	}
+	
+	@Test
+	fun testCollectionSize() {
+		val foo1 = Foo1()
+		println(foo1.size)
+		foo1.list += 3
+		println(foo1.size)
+	}
+	
+	@Test
+	fun testListGet() {
+		//val list = mutableListOf(1, 1, 1)
+		//list[5] = 5
+		//println(list)
+	}
+}
+
+class Foo1 {
+	val list = mutableListOf<Int>(1, 2)
+	val size = list.size
 }

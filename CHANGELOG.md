@@ -103,7 +103,7 @@
 * [X] breeze-core,breeze-javafx 更新一些javafx的扩展，元组的扩展和数学的扩展。
 * [X] breeze-core 提供约等于、构建并发集合的扩展。
 * [X] breeze-core 添加一些委托自Integer类的扩展，添加`tryCatching`、`tryIgnored`扩展。
-* [ ] breeze-dsl 完成CreoleDsl的扩展。
+* [X] breeze-dsl 初步完成CreoleDsl。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-game 初步完成实体&组件的规范。
