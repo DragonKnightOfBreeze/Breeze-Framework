@@ -30,7 +30,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = getContentString()
+		val contentSnippet = toContentString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "sequenceDiagram\n$indentedContentSnippet"
 	}
@@ -46,7 +46,7 @@ interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequ
 	
 	override var indentContent: Boolean
 	
-	fun getContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			actors.joinToString("\n"),
 			messages.joinToString("\n"),
@@ -199,7 +199,7 @@ sealed class MermaidSequenceScope(
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" } ?: ""
-		val contentSnippet = getContentString()
+		val contentSnippet = toContentString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		return "$type$textSnippet\n$indentedContentSnippet\nend"
 	}
@@ -219,7 +219,7 @@ class MermaidSequenceAlternative @PublishedApi internal constructor(text: String
 	val elseScopes: MutableList<MermaidSequenceElse> = mutableListOf()
 	
 	override fun toString(): String {
-		val contentSnippet = getContentString()
+		val contentSnippet = toContentString()
 		val elseScopesSnippet = elseScopes.joinToString("\n").ifNotEmpty { "\n$it" }
 		return "$contentSnippet$elseScopesSnippet"
 	}

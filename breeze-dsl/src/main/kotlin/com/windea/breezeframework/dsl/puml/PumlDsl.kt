@@ -30,9 +30,9 @@ abstract class Puml : Dsl, CommentContent<PumlNote> {
 	val skinParams: PumlSkinParams = PumlSkinParams()
 	
 	//TODO need to generate alias for no-alias notes
-	fun getPrefixString(): String = TODO()
+	fun toPrefixString(): String = TODO()
 	
-	fun getSuffixString(): String = TODO()
+	fun toSuffixString(): String = TODO()
 	
 	
 	@PumlDsl

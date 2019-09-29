@@ -24,9 +24,9 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
 	
 	override fun toString(): String {
-		val prefixSnippet = getPrefixString()
-		val contentSnippet = getContentString()
-		val suffixSnippet = getSuffixString()
+		val prefixSnippet = toPrefixString()
+		val contentSnippet = toContentString()
+		val suffixSnippet = toSuffixString()
 		return "@startuml\n$prefixSnippet\n\n$contentSnippet\n\n$suffixSnippet\n@enduml"
 	}
 }
@@ -37,7 +37,7 @@ interface PumlStateDiagramDslEntry {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramLink>
 	
-	fun getContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			states.joinToString("\n"),
 			links.joinToString("\n")
@@ -124,7 +124,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = getContentString()
+		val contentSnippet = toContentString()
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
@@ -180,7 +180,7 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
 	
-	override fun toString() = getContentString()
+	override fun toString() = toContentString()
 }
 
 /**
