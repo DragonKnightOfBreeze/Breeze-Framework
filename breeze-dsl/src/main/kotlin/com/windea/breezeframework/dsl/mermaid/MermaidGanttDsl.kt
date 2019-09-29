@@ -13,7 +13,7 @@ import java.time.*
 @DslMarker
 internal annotation class MermaidGanttDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
 
 /**构建Mermaid甘特图。*/
 @MermaidGanttDsl
@@ -40,8 +40,15 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentCo
 	
 	
 	@MermaidGanttDsl
+	inline fun section(name: String) =
+		MermaidGanttSection(name).also { sections += it }
+	
+	@MermaidGanttDsl
 	inline fun section(name: String, builder: MermaidGanttSection.() -> Unit) =
 		MermaidGanttSection(name).also { it.builder() }.also { sections += it }
+	
+	@MermaidGanttDsl
+	override fun String.invoke() = section(this)
 	
 	@MermaidGanttDsl
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
@@ -51,6 +58,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentCo
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
 interface MermaidGanttDslElement : MermaidDslElement
+
 
 /**Mermaid甘特图标题。*/
 @MermaidGanttDsl
@@ -76,7 +84,7 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndentContent, InlineContent<MermaidGanttTask> {
+) : MermaidGanttDslElement, CanIndentContent, TextContent<MermaidGanttTask> {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false

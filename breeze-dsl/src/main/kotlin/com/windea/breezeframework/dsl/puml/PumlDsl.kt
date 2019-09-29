@@ -14,12 +14,12 @@ import org.intellij.lang.annotations.*
 @DslMarker
 internal annotation class PumlDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml Dsl.*/
 @Reference("[PlantUml](http://plantuml.com)")
 @PumlDsl
-abstract class Puml : Dsl, CommentContent<PumlNote> {
+abstract class Puml : DslBuilder, CommentContent<PumlNote> {
 	var title: PumlTitle? = null
 	var legend: PumlLegend? = null
 	var header: PumlHeader? = null
@@ -68,13 +68,27 @@ abstract class Puml : Dsl, CommentContent<PumlNote> {
 		skinParams.builder()
 	
 	@PumlDsl
-	override fun String.not() = note(this)
+	override fun String.unaryMinus() = note(this)
+}
+
+/**PlantUml Dsl的配置。*/
+@PumlDsl
+object PumlConfig : DslConfig {
+	/**缩进长度。*/
+	var indentSize = 4
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**是否使用双引号。*/
+	var useDoubleQuote: Boolean = true
+	
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
 
 
 /**PlantUml Dsl的元素。*/
 @PumlDsl
 interface PumlDslElement : DslElement
+
 
 /**PlantUml元素。*/
 @PumlDsl
@@ -122,6 +136,7 @@ class PumlHeader @PublishedApi internal constructor(text: String) : PumlElement(
 @PumlDsl
 class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement("footer", text)
 
+
 /**PlantUml缩放。*/
 @PumlDsl
 class PumlScale @PublishedApi internal constructor(
@@ -137,6 +152,7 @@ class PumlCaption @PublishedApi internal constructor(
 ) : PumlDslElement {
 	override fun toString() = "caption $text"
 }
+
 
 /**
  * PlantUml注释。
@@ -211,6 +227,7 @@ class PumlNote @PublishedApi internal constructor(
 		.also { it.position = PumlNotePosition.BottomOf }
 }
 
+
 //TODO
 /**PlantUml显示参数。*/
 @PumlDsl
@@ -258,20 +275,6 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 		val indentedContentSnippet = if(indentContent) paramsSnippet.prependIndent(indent) else paramsSnippet
 		return "{\n$indentedContentSnippet\n}"
 	}
-}
-
-
-/**PlantUml Dsl的配置。*/
-@PumlDsl
-object PumlConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
 
 //REGION Enumerations and constants

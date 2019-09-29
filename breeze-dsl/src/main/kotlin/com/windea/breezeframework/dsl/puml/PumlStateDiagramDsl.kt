@@ -14,7 +14,11 @@ import org.intellij.lang.annotations.*
 @DslMarker
 internal annotation class PumlStateDiagramDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
+
+/**构建PlantUml状态图。*/
+@PumlStateDiagramDsl
+inline fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
 
 /**PlantUml状态图。*/
 @Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
@@ -31,8 +35,7 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	}
 }
 
-/**PlantUml状态图Dsl的入口。*/
-@PumlStateDiagramDsl
+
 interface PumlStateDiagramDslEntry {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramLink>
@@ -45,9 +48,45 @@ interface PumlStateDiagramDslEntry {
 	}
 }
 
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "") =
+	PumlStateDiagramSimpleState(name, text).also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.initState() = state("[*]")
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.finishState() = state("[*]")
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "", builder: PumlStateDiagramCompositedState.() -> Unit) =
+	PumlStateDiagramCompositedState(name, text).also { it.builder() }.also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.concurrentState(name: String, text: String = "", builder: PumlStateDiagramConcurrentState.() -> Unit) =
+	PumlStateDiagramConcurrentState(name, text).also { it.builder() }.also { states += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetStateId: String, text: String = "") =
+	PumlStateDiagramLink(sourceStateId, targetStateId, text).also { links += it }
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetStateId: String, text: String = "") =
+	link(sourceState.alias ?: sourceState.name, targetStateId, text)
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetState: PumlStateDiagramSimpleState, text: String = "") =
+	link(sourceStateId, targetState.alias ?: targetState.name, text)
+
+@PumlStateDiagramDsl
+inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetState: PumlStateDiagramSimpleState, text: String = "") =
+	link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
+
+
 /**PlantUml状态图Dsl的元素。*/
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslElement : PumlDslElement
+
 
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
@@ -56,7 +95,7 @@ sealed class PumlStateDiagramState(
 	val name: String, //NOTE can wrap by "\n" if alias is not null
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
-) : PumlStateDiagramDslElement, UniqueDslElement {
+) : PumlStateDiagramDslElement {
 	var alias: String? = null
 	var tag: String? = null
 	var color: String? = null
@@ -68,6 +107,19 @@ sealed class PumlStateDiagramState(
 	override fun hashCode(): Int {
 		return alias?.hashCode() ?: name.hashCode()
 	}
+	
+	
+	@PumlStateDiagramDsl
+	inline infix fun color(color: String) =
+		this.also { it.color = color }
+	
+	@PumlStateDiagramDsl
+	inline infix fun tag(tag: String) =
+		this.also { it.tag = tag }
+	
+	@PumlStateDiagramDsl
+	inline infix fun alias(alias: String) =
+		this.also { it.alias = alias }
 }
 
 /**
@@ -172,6 +224,15 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 		}
 		return "state $nameSnippet {\n$indentedContentSnippet\n}$extraSnippetWithText"
 	}
+	
+	
+	@PumlStateDiagramDsl
+	inline fun state(name: String, text: String = "") =
+		PumlStateDiagramSimpleState(name, text).also { states += it }
+	
+	@PumlStateDiagramDsl
+	inline fun section(builder: PumlStateDiagramConcurrentSection.() -> Unit) =
+		PumlStateDiagramConcurrentSection().also { it.builder() }.also { sections += it }
 }
 
 /**Puml状态图并发状态部分。*/
@@ -216,80 +277,21 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 		val arrowSnippet = "-$arrowParamsSnippet$arrowDirectionSnippet$arrowLengthSnippet>"
 		return "$sourceStateId $arrowSnippet $targetStateId$textSnippet"
 	}
+	
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowColor(arrowColor: String) =
+		this.also { it.arrowColor = arrowColor }
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowShape(arrowShape: PumlArrowShape) =
+		this.also { it.arrowShape = arrowShape }
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowDirection(arrowDirection: PumlArrowDirection) =
+		this.also { it.arrowDirection = arrowDirection }
+	
+	@PumlStateDiagramDsl
+	inline infix fun arrowLength(arrowLength: Int) =
+		this.also { it.arrowLength = arrowLength.coerceIn(1, 8) }
 }
-
-//REGION Build extensions
-
-/**构建PlantUml状态图。*/
-@PumlStateDiagramDsl
-inline fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "") =
-	PumlStateDiagramSimpleState(name, text).also { states += it }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.initState() = state("[*]")
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.finishState() = state("[*]")
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "", builder: PumlStateDiagramCompositedState.() -> Unit) =
-	PumlStateDiagramCompositedState(name, text).also { it.builder() }.also { states += it }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.concurrentState(name: String, text: String = "", builder: PumlStateDiagramConcurrentState.() -> Unit) =
-	PumlStateDiagramConcurrentState(name, text).also { it.builder() }.also { states += it }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetStateId: String, text: String = "") =
-	PumlStateDiagramLink(sourceStateId, targetStateId, text).also { links += it }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetStateId: String, text: String = "") =
-	link(sourceState.alias ?: sourceState.name, targetStateId, text)
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.link(sourceStateId: String, targetState: PumlStateDiagramSimpleState, text: String = "") =
-	link(sourceStateId, targetState.alias ?: targetState.name, text)
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleState, targetState: PumlStateDiagramSimpleState, text: String = "") =
-	link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramState.color(color: String) =
-	this.also { it.color = color }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramState.tag(tag: String) =
-	this.also { it.tag = tag }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramState.alias(alias: String) =
-	this.also { it.alias = alias }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramConcurrentState.state(name: String, text: String = "") =
-	PumlStateDiagramSimpleState(name, text).also { states += it }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramConcurrentState.section(builder: PumlStateDiagramConcurrentSection.() -> Unit) =
-	PumlStateDiagramConcurrentSection().also { it.builder() }.also { sections += it }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramLink.arrowColor(arrowColor: String) =
-	this.also { it.arrowColor = arrowColor }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramLink.arrowShape(arrowShape: PumlArrowShape) =
-	this.also { it.arrowShape = arrowShape }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramLink.arrowDirection(arrowDirection: PumlArrowDirection) =
-	this.also { it.arrowDirection = arrowDirection }
-
-@PumlStateDiagramDsl
-inline infix fun PumlStateDiagramLink.arrowLength(arrowLength: Int) =
-	this.also { it.arrowLength = arrowLength.coerceIn(1, 8) }

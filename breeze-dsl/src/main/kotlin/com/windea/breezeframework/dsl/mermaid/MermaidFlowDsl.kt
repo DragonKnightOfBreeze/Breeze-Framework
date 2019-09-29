@@ -13,7 +13,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 @DslMarker
 internal annotation class MermaidFlowDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
 
 /**构建Mermaid流程图。*/
 @MermaidFlowDsl
@@ -43,8 +43,7 @@ class MermaidFlow @PublishedApi internal constructor(
 	}
 }
 
-/**Mermaid流程图Dsl的入口。*/
-@MermaidFlowDsl
+
 interface MermaidFlowDslEntry : CanIndentContent {
 	val nodes: MutableSet<MermaidFlowNode>
 	val links: MutableList<MermaidFlowLink>
@@ -112,12 +111,13 @@ inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: Strin
 @MermaidFlowDsl
 interface MermaidFlowDslElement : MermaidDslElement
 
+
 /**Mermaid流程图节点。*/
 @MermaidFlowDsl
 class MermaidFlowNode @PublishedApi internal constructor(
 	val name: String,
 	val text: String? = null //NOTE can wrap by "<br>"
-) : MermaidFlowDslElement, UniqueDslElement {
+) : MermaidFlowDslElement {
 	var shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
 	
 	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.name == name)

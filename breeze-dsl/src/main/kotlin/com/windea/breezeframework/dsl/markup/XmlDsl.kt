@@ -15,7 +15,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 @DslMarker
 internal annotation class XmlDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
 
 /**构建Xml。*/
 @XmlDsl
@@ -23,8 +23,7 @@ inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 
 /**Xml。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentContent<XmlComment>, BlockContent<XmlElement> {
-	/**声明列表。*/
+class Xml @PublishedApi internal constructor() : DslBuilder, CanWrapContent, CommentContent<XmlComment>, BlockContent<XmlElement> {
 	val statements: MutableList<XmlStatement> = mutableListOf(
 		XmlStatement("xml", mapOf("version" to "1.0", "encoding" to "UTF-8"))
 	)
@@ -57,11 +56,19 @@ class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentCon
 	
 	/**添加元素。*/
 	@XmlDsl
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { rootElement = it }
+	
+	/**添加元素。*/
+	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 	
 	@XmlDsl
-	override fun String.not() = comment(this)
+	override fun String.unaryMinus() = comment(this)
+	
+	@XmlDsl
+	override fun String.invoke(): XmlElement = element(this)
 	
 	@XmlDsl
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
@@ -70,10 +77,29 @@ class Xml @PublishedApi internal constructor() : Dsl, CanWrapContent, CommentCon
 	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
 }
 
+/**Xml配置。*/
+@XmlDsl
+object XmlConfig : DslConfig {
+	/**默认根元素名。*/
+	var defaultRootName: String = "root"
+		set(value) = run { field = value.ifBlank { "root" } }
+	
+	/**缩进长度。*/
+	var indentSize = 2
+		set(value) = run { field = value.coerceIn(-2, 8) }
+	/**是否使用双引号。*/
+	var useDoubleQuote: Boolean = true
+	/**是否自关闭标签。*/
+	var autoCloseTag: Boolean = false
+	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+}
+
 
 /**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement : DslElement
+
 
 /**Xml声明。*/
 @XmlDsl
@@ -103,8 +129,7 @@ class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	/**属性。*/
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), CanWrapContent, CanIndentContent, InlineContent<XmlText>,
-	CommentContent<XmlComment>, BlockContent<XmlElement> {
+) : XmlNode(), CanWrapContent, CanIndentContent, TextContent<XmlText>, CommentContent<XmlComment>, InlineContent<XmlText>, BlockContent<XmlElement> {
 	/**子结点列表。*/
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
@@ -130,15 +155,20 @@ class XmlElement @PublishedApi internal constructor(
 	}
 	
 	
+	/**添加注释。*/
+	@XmlDsl
+	inline fun comment(text: String) =
+		XmlComment(text).also { nodes += it }
+	
 	/**添加文本。*/
 	@XmlDsl
 	inline fun text(text: String) =
 		XmlText(text).also { nodes += it }
 	
-	/**添加注释。*/
+	/**添加元素。*/
 	@XmlDsl
-	inline fun comment(text: String) =
-		XmlComment(text).also { nodes += it }
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { nodes += it }
 	
 	/**添加元素。*/
 	@XmlDsl
@@ -146,13 +176,16 @@ class XmlElement @PublishedApi internal constructor(
 		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
 	
 	@XmlDsl
+	override fun String.unaryMinus() = comment(this)
+	
+	@XmlDsl
 	override fun String.unaryPlus() = text(this)
 	
 	@XmlDsl
-	override fun String.unaryMinus() = run { nodes.clear();text(this) }
+	override fun String.not() = run { nodes.clear();text(this) }
 	
 	@XmlDsl
-	override fun String.not() = comment(this)
+	override fun String.invoke() = element(this)
 	
 	@XmlDsl
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
@@ -192,24 +225,6 @@ class XmlText @PublishedApi internal constructor(
 	override fun toString(): String {
 		return text.escapeXml()
 	}
-}
-
-/**Xml配置。*/
-@XmlDsl
-object XmlConfig : DslConfig {
-	/**默认根元素名。*/
-	var defaultRootName: String = "root"
-		set(value) = run { field = value.ifBlank { "root" } }
-	
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
-	/**是否自关闭标签。*/
-	var autoCloseTag: Boolean = false
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
 
 

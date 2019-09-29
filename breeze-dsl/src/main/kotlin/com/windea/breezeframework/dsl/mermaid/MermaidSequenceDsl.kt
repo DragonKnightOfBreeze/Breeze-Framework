@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 @DslMarker
 internal annotation class MermaidSequenceDsl
 
-//REGION Dsl & Dsl elements & Dsl config
+//REGION Dsl & Dsl config & Dsl elements
 
 /**构建Mermaid序列图。*/
 @MermaidSequenceDsl
@@ -36,8 +36,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	}
 }
 
-/**Mermaid序列图Dsl的入口。*/
-@MermaidSequenceDsl
+
 interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequenceNote> {
 	val actors: MutableSet<MermaidSequenceParticipant>
 	val messages: MutableList<MermaidSequenceMessage>
@@ -56,7 +55,7 @@ interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequ
 	}
 	
 	@MermaidSequenceDsl
-	override fun String.not() = note(this)
+	override fun String.unaryMinus() = note(this)
 }
 
 @MermaidSequenceDsl
@@ -103,11 +102,12 @@ inline fun MermaidSequenceDslEntry.highlight(text: String, builder: MermaidSeque
 @MermaidSequenceDsl
 interface MermaidSequenceDslElement : MermaidDslElement
 
+
 /**Mermaid序列图参与者。*/
 @MermaidSequenceDsl
 class MermaidSequenceParticipant @PublishedApi internal constructor(
 	val name: String
-) : MermaidSequenceDslElement, UniqueDslElement {
+) : MermaidSequenceDslElement {
 	var alias: String? = null
 	
 	override fun equals(other: Any?): Boolean {
