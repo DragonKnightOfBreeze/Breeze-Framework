@@ -17,7 +17,7 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
-//REGION Standard.kt extensions
+//REGION Standard.kt extensions (TODOs)
 
 /**表明一个方法体推迟了实现。*/
 inline fun DELAY() = Unit
@@ -30,13 +30,13 @@ inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
 inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
 	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
 
-
 /**打印一段消息，以表明一个方法体中存在问题。*/
 inline fun FIXME() = run { nearestLogger().warn("There is an issue in this operation.") }
 
 /**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
 inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
 
+//REGION Standard.kt extensions (Scope functions)
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 inline fun tryCatching(block: () -> Unit) {
@@ -121,6 +121,7 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	}
 }
 
+//REGION Internal functions
 
 /**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
 @PublishedApi

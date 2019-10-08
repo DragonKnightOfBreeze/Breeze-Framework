@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class MermaidSequenceDsl
+private annotation class MermaidSequenceDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
@@ -22,7 +22,7 @@ fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().als
 @Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDsl
 class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDslEntry {
-	override val actors: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
+	override val participants: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceScope> = mutableListOf()
@@ -38,7 +38,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 
 
 interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequenceNote> {
-	val actors: MutableSet<MermaidSequenceParticipant>
+	val participants: MutableSet<MermaidSequenceParticipant>
 	val messages: MutableList<MermaidSequenceMessage>
 	val notes: MutableList<MermaidSequenceNote>
 	val scopes: MutableList<MermaidSequenceScope>
@@ -47,7 +47,7 @@ interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequ
 	
 	fun toContentString(): String {
 		return arrayOf(
-			actors.joinToString("\n"),
+			participants.joinToString("\n"),
 			messages.joinToString("\n"),
 			notes.joinToString("\n"),
 			scopes.joinToString("\n")
@@ -60,7 +60,7 @@ interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequ
 
 @MermaidSequenceDsl
 inline fun MermaidSequenceDslEntry.participant(name: String) =
-	MermaidSequenceParticipant(name).also { actors += it }
+	MermaidSequenceParticipant(name).also { participants += it }
 
 @MermaidSequenceDsl
 inline fun MermaidSequenceDslEntry.message(fromActorId: String, toActorId: String, text: String) =
@@ -137,10 +137,10 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 	val text: String
 ) : MermaidSequenceDslElement {
 	var arrowShape: MermaidSequenceMessageArrowShape = MermaidSequenceMessageArrowShape.Arrow
-	var activateStatus: Boolean? = null
+	var isActivated: Boolean? = null
 	
 	override fun toString(): String {
-		val activateSnippet = activateStatus?.let { if(it) "+ " else "- " } ?: ""
+		val activateSnippet = isActivated?.let { if(it) "+ " else "- " } ?: ""
 		return "$fromActorId ${arrowShape.text} $activateSnippet$toActorId: $text"
 	}
 	
@@ -150,8 +150,8 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 		this.also { it.arrowShape = arrowShape }
 	
 	@MermaidSequenceDsl
-	inline infix fun activate(status: Boolean) =
-		this.also { it.activateStatus = status }
+	inline infix fun activate(isActivated: Boolean) =
+		this.also { it.isActivated = isActivated }
 }
 
 /**Mermaid序列图注释。*/
@@ -190,7 +190,7 @@ sealed class MermaidSequenceScope(
 	val type: String,
 	val text: String?
 ) : MermaidSequenceDslElement, MermaidSequenceDslEntry {
-	override val actors: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
+	override val participants: MutableSet<MermaidSequenceParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceScope> = mutableListOf()

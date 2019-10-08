@@ -518,6 +518,7 @@ fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 /**将当前映射转换成以字符串为值的映射。*/
 fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
 	//assume V is Any? or Any
+	if(this.values.firstOrNull() is String) return this as Map<K, String>
 	return this.mapValues { (_, v) -> v.toString() }
 }
 
@@ -553,29 +554,51 @@ inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWh
 inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
 
 
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrim(): Sequence<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrimStart(): Sequence<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrimEnd(): Sequence<CharSequence> = this.map { it.trimEnd() }
+
+
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
 
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
 
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
 
 
 /**将当前数组映射为转化索引后的索引-值对集合。*/

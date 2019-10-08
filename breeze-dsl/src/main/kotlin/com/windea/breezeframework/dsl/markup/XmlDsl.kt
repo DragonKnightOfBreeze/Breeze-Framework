@@ -13,7 +13,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class XmlDsl
+private annotation class XmlDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

@@ -14,10 +14,10 @@ import com.windea.breezeframework.core.extensions.*
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class Dsl
+private annotation class Dsl
 
 @DslMarker
-internal annotation class InlineDsl
+private annotation class InlineDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

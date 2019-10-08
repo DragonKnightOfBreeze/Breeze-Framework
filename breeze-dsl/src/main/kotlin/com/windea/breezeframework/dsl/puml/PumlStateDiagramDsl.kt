@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.*
 //REGION Dsl marker annotations & Dsl element interfaces
 
 @DslMarker
-internal annotation class PumlStateDiagramDsl
+private annotation class PumlStateDiagramDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
@@ -255,21 +255,19 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramLink @PublishedApi internal constructor(
-	@Language("Creole")
 	val sourceStateId: String,
-	@Language("Creole")
 	val targetStateId: String,
 	@Language("Creole")
 	val text: String = "" //NOTE can wrap by "\n"
 ) : PumlStateDiagramDslElement {
 	var arrowColor: String? = null
-	var arrowShape: PumlArrowShape? = null
+	var arrowStyle: PumlArrowStyle? = null
 	var arrowDirection: PumlArrowDirection? = null
 	var arrowLength: Int = 1
 	
 	override fun toString(): String {
 		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
-		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowShape?.text).filterNotNull().let {
+		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowStyle?.text).filterNotNull().let {
 			if(it.isEmpty()) "" else it.joinToString(",", "[", "]")
 		}
 		val arrowDirectionSnippet = arrowDirection ?: ""
@@ -284,8 +282,8 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 		this.also { it.arrowColor = arrowColor }
 	
 	@PumlStateDiagramDsl
-	inline infix fun arrowShape(arrowShape: PumlArrowShape) =
-		this.also { it.arrowShape = arrowShape }
+	inline infix fun arrowStyle(arrowShape: PumlArrowStyle) =
+		this.also { it.arrowStyle = arrowShape }
 	
 	@PumlStateDiagramDsl
 	inline infix fun arrowDirection(arrowDirection: PumlArrowDirection) =

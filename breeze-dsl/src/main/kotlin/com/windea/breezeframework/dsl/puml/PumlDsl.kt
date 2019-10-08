@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.*
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class PumlDsl
+private annotation class PumlDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
@@ -287,9 +287,9 @@ enum class PumlTopElementPosition(
 	Right("right"), Left("left"), Center("center")
 }
 
-/**PlantUml箭头的形状。*/
+/**PlantUml箭头的风格。*/
 @PumlDsl
-enum class PumlArrowShape(val text: String) {
+enum class PumlArrowStyle(val text: String) {
 	Dotted("dotted"), Dashed("dashed"), Bold("bold"), Hidden("hidden")
 }
 

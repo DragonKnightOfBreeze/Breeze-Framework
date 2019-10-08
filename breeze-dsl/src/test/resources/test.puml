@@ -1,6 +1,5 @@
 @startuml
-[*] --> Active
-note as N1
-  ---1---
-end note
+autonumber
+Bob -> Alice : Authentication Request
+Alice<->Bob : Authentication Response
 @enduml

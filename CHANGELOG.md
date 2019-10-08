@@ -106,15 +106,21 @@
 * [X] breeze-dsl 初步完成CreoleDsl。
 * [X] breeze-dsl 完成CreoleDsl。
 * [X] breeze-dsl 完善各种Dsl。
+
+### 1.05
+
+* [X] 更新版本号。
+* [X] breeze-core,breeze-dsl 一些更新，更新PumlSequenceDsl中。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 区分DslElement和InlineDslElement，只允许通过字符串模版插入InlineDslElement。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-game 初步完成实体&组件的规范。
-
+* [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。
+* [ ] breeze-emmx 对于MindMaster的增强，例如json/yaml与emmx文档的相互转化。
 
 # 长期
 

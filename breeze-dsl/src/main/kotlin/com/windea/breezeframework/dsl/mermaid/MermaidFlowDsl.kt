@@ -11,7 +11,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class MermaidFlowDsl
+private annotation class MermaidFlowDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

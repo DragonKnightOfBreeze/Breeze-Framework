@@ -11,7 +11,7 @@ import java.time.*
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class MermaidGanttDsl
+private annotation class MermaidGanttDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

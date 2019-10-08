@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.*
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class MermaidDsl
+private annotation class MermaidDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

@@ -11,10 +11,10 @@ import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class CreoleDsl
+private annotation class CreoleDsl
 
 @DslMarker
-internal annotation class InlineCreoleDsl
+private annotation class InlineCreoleDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 

@@ -18,13 +18,13 @@ import org.intellij.lang.annotations.*
 //REGION Dsl annotations
 
 @DslMarker
-internal annotation class MarkdownDsl
+private annotation class MarkdownDsl
 
 @DslMarker
-internal annotation class InlineMarkdownDsl
+private annotation class InlineMarkdownDsl
 
 @MustBeDocumented
-internal annotation class MarkdownDslExtendedFeature
+private annotation class MarkdownDslExtendedFeature
 
 //REGION Dsl & Dsl config & Dsl elements
 

@@ -1,7 +1,7 @@
 package com.windea.breezeframework.dream.enums.property
 
 import com.windea.breezeframework.core.annotations.messages.*
-import com.windea.breezeframework.core.domain.consts.Locales.SimpleChinese
+import com.windea.breezeframework.core.consts.Locales.SimpleChinese
 
 /**作用属性。*/
 @Name("作用属性", SimpleChinese)

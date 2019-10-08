@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.domain.consts
+package com.windea.breezeframework.core.consts
 
 /**
  * 语言环境。

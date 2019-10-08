@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.enums.normal
 
 import com.windea.breezeframework.core.annotations.messages.*
-import com.windea.breezeframework.core.domain.consts.Locales.SimpleChinese
+import com.windea.breezeframework.core.consts.Locales.SimpleChinese
 
 /**维度。*/
 @Name("维度", SimpleChinese)

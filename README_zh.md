@@ -72,5 +72,7 @@ fun example() {
 * [khronos](https://github.com/hotchemi/khronos)
 * [klutter](https://github.com/kohesive/klutter)
 * [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+* [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [Google Guava](https://github.com/google/guava)
 
 感谢提供思路和灵感！
