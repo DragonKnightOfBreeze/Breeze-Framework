@@ -363,7 +363,7 @@ fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
 	return this.splitBy(fromCase).joinBy(toCase)
 }
 
-/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。*/
+/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。某些显示格式需要显式指定。*/
 fun String.switchTo(case: FormatCase): String {
 	return when(case) {
 		is LetterCase -> this.splitBy(this.letterCase)
@@ -378,12 +378,20 @@ fun CharSequence.substrings(regex: Regex): List<String> {
 	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
 }
 
-/**根据以null分割的前置和后置的分隔符，按顺序分割字符串。不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。*/
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ *
+ * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。
+ */
 fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =
 	substringsOrElse(*delimiters) { index, str -> defaultValue(index, str).getOrEmpty(index) }
 
-/**根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。不包含分隔符时，加入基于索引和剩余字符串得到的默认值。*/
-inline fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ *
+ * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
+ */
+fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 	
 	var rawString = this
@@ -412,11 +420,19 @@ inline fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (In
 	return result
 }
 
-/**根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。不包含分隔符时，加入空字符串。*/
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ *
+ * 不包含分隔符时，加入空字符串。
+ */
 fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, _ -> "" }
 
-/**根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。不包含分隔符时，加入剩余字符串。*/
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ *
+ * 不包含分隔符时，加入剩余字符串。
+ */
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 

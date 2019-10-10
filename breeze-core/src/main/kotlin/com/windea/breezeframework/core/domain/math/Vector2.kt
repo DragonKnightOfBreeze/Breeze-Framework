@@ -9,14 +9,12 @@ data class Vector2(
 	val x: Float,
 	val y: Float
 ) : Vector<Vector2> {
-	/**模长。*/
-	override val length = sqrt(x.pow(2) + y.pow(2))
-	/**单位向量。*/
-	override val unitVector = this / length
-	/**是否是零向量。*/
-	override val isOriginVector = x == 0f && y == 0f
-	/**是否是单位向量。*/
-	override val isUnitVector = length == 1f
+	override val lengthSquared: Float = x * x + y * y
+	override val length: Float = sqrt(lengthSquared)
+	override val unitVector: Vector2 = this / length
+	override val isOriginVector: Boolean = x == 0f && y == 0f
+	override val isUnitVector: Boolean = length == 1f
+	
 	/**基于(0, 0)的角度。返回弧度。*/
 	val radian = this includedRadian Vector2(0f, 0f)
 	
@@ -48,6 +46,16 @@ data class Vector2(
 	operator fun unaryMinus() = Vector2(-x, -y)
 	
 	
+	/**得到两个向量之间的距离的平方。*/
+	infix fun distanceSquared(other: Vector2): Float {
+		val distanceX = other.x - x
+		val distanceY = other.y - y
+		return distanceX * distanceX + distanceY * distanceY
+	}
+	
+	/**得到两个向量之间的距离。*/
+	infix fun distance(other: Vector2): Float = sqrt(this distance other)
+	
 	/**得到两个向量的数量积。*/
 	infix fun dotProduct(other: Vector2): Float = length * other.length
 	
@@ -59,6 +67,11 @@ data class Vector2(
 	
 	/**得到两个向量的向量积。*/
 	infix fun vectorProduct(other: Vector3): Vector3 = this.toVector3().vectorProduct(other)
+	
+	/**得到两个向量的夹角。结果在-180到180之间。返回弧度。*/
+	infix fun includedAngle(other: Vector2): Float {
+		return Math.toDegrees((this includedRadian other).toDouble()).toFloat()
+	}
 	
 	/**得到两个向量的夹角。结果在-PI到PI之间。返回弧度。*/
 	infix fun includedRadian(other: Vector2): Float {

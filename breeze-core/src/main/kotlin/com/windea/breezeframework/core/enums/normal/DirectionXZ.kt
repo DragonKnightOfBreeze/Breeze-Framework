@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.enums.normal
 
 import com.windea.breezeframework.core.annotations.messages.*
-import com.windea.breezeframework.core.domain.consts.LocaleType.SimpleChinese
+import com.windea.breezeframework.core.consts.Locales.SimpleChinese
 import com.windea.breezeframework.core.enums.normal.Dimension.*
 
 /**基于XZ轴的二维方向。*/

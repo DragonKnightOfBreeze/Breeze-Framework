@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 import org.junit.*
+import kotlin.system.*
 
 class NumberExtensionsKtTest {
 	@Test
@@ -25,5 +26,22 @@ class NumberExtensionsKtTest {
 		println(1.55555f.round(2))
 		println(1.50000f.round(2))
 		println(1.99999f.round(2))
+	}
+	
+	@Test //TESTED
+	fun toNumber() {
+		println(1.to<Byte>())
+		println(1.to<Short>())
+		println(1.to<Int>())
+		println(1.to<Long>())
+		println(1.to<Float>())
+		println(1.to<Double>())
+		
+		var a = 0L
+		var b = 0L
+		repeat(1000) { a += measureNanoTime { 1.0.toInt() } }
+		repeat(1000) { b += measureNanoTime { 1.0.to<Int>() } }
+		println(a)
+		println(b)
 	}
 }

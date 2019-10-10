@@ -49,6 +49,7 @@ allprojects {
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置
 	tasks.withType<KotlinCompile> {
 		kotlinOptions.jvmTarget = "11"
+		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 	}
 	
 	//构建source jar

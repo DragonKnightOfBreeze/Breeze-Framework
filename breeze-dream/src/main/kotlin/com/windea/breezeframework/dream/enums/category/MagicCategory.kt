@@ -1,7 +1,7 @@
 package com.windea.breezeframework.dream.enums.category
 
 import com.windea.breezeframework.core.annotations.messages.*
-import com.windea.breezeframework.core.domain.consts.LocaleType.SimpleChinese
+import com.windea.breezeframework.core.consts.Locales.SimpleChinese
 import com.windea.breezeframework.dream.enums.category.MagicSuperCategory.*
 
 /**魔法分类。*/

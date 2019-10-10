@@ -77,5 +77,6 @@ fun example() {
 * [klutter](https://github.com/kohesive/klutter)
 * [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [Google Guava](https://github.com/google/guava)
 
 Thanks for providing train of thought and ideas!

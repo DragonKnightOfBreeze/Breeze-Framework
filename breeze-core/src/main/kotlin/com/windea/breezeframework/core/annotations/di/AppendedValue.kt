@@ -7,8 +7,8 @@ import kotlin.annotation.AnnotationTarget.*
 @Repeatable
 @Target(PROPERTY, FIELD, LOCAL_VARIABLE, FUNCTION)
 annotation class AppendedValue(
-	/**值表达式。*/
-	val valueExpression: String,
-	/**条件。*/
+	/**值（表达式）。*/
+	val value: String,
+	/**条件（表达式）。*/
 	val condition: String
 )

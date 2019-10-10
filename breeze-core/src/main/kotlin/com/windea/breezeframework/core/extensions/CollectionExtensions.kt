@@ -7,6 +7,26 @@ import com.windea.breezeframework.core.enums.core.*
 import java.util.concurrent.*
 import kotlin.random.*
 
+//REGION Portal extensions
+
+/**构建线程安全的并发列表。*/
+inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
+
+/**构建线程安全的并发列表。*/
+inline fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
+
+/**构建线程安全的并发集。*/
+inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
+
+/**构建线程安全的并发集。*/
+inline fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
+
+/**构建线程安全的并发映射。*/
+inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
+
+/**构建线程安全的并发映射。*/
+inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = ConcurrentHashMap(pairs.toMap())
+
 //REGION Operator overrides
 
 /**@see kotlin.collections.slice*/
@@ -217,21 +237,35 @@ fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
 }
 
 
+/**填充指定索引范围内的元素为指定元素。如果索引超出当前列表的长度，或为负数，则忽略。返回填充后的列表。*/
+fun <T> List<T>.fillAt(value: T, indices: IntRange): List<T> {
+	val fromIndex = indices.first.coerceIn(0, this.size)
+	val toIndex = indices.last.coerceIn(fromIndex, this.size)
+	return this.toMutableList().also { list -> for(index in fromIndex..toIndex) list[index] = value }
+}
+
+/**填充指定的元素到当前列表，直到指定长度。如果指定长度比当前长度小，则忽略。返回填充后的列表。*/
+fun <T> List<T>.fillToSize(value: T, size: Int): List<T> {
+	if(this.size < size) return this
+	return this.toMutableList().also { list -> repeat(size - this.size) { list += value } }
+}
+
+
 /**移除指定范围内的元素。*/
 @OutlookImplementationApi
 fun <T> MutableList<T>.removeAllAt(indices: IntRange) {
 	for(index in indices.reversed()) this.removeAt(index)
 }
 
-/**将指定索引的元素插入到另一索引处。后者为移动前的索引，而非移动后的索引。*/
-fun <T> MutableList<T>.move(fromIndices: Int, toIndex: Int): T {
-	val element = this[fromIndices]
+/**将指定索引的元素插入到另一索引处。注意后者为移动前的索引，而非移动后的索引。*/
+fun <T> MutableList<T>.moveAt(fromIndex: Int, toIndex: Int): T {
+	val element = this[fromIndex]
 	this.add(toIndex, element)
-	return this.removeAt(fromIndices)
+	return this.removeAt(fromIndex)
 }
 
-/**将指定索引范围内的元素插入到以另一索引为起点处。后者为移动前的索引，而非移动后的索引。*/
-fun <T> MutableList<T>.moveAll(fromIndices: IntRange, toIndex: Int) {
+/**将指定索引范围内的元素插入到以另一索引为起点处。注意后者为移动前的索引，而非移动后的索引。*/
+fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 	val elements = this.slice(fromIndices)
 	this.addAll(toIndex, elements)
 	this.removeAllAt(fromIndices)
@@ -359,25 +393,25 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
 
 
 /**递归平滑映射当前数组，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Array<out T>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
+fun <T> Array<out T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
 /**递归平滑映射当前集合，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Iterable<T>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
+fun <T> Iterable<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
 /**递归平滑映射当前映射，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <K, V> Map<K, V>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toStringKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
+fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toStringKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
 /**递归平滑映射当前序列，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Sequence<T>.deepFlatten(hierarchy: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepFlatten(hierarchy, listOf(), pathFormatCase)
+fun <T> Sequence<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
 //TODO 尝试写成能够尾递归的形式
-private fun Map<String, Any?>.privateDeepFlatten(hierarchy: Int = -1, preSubPaths: List<String>, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> {
+private fun Map<String, Any?>.privateDeepFlatten(depth: Int = -1, preSubPaths: List<String>, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
-		val currentHierarchy = if(hierarchy <= 0) hierarchy else hierarchy - 1
+		val currentHierarchy = if(depth <= 0) depth else depth - 1
 		//每次递归需要创建新的子路径列表
 		val currentPreSubPaths = preSubPaths + key
 		//如果不是集合类型，则拼接成完整路径，与值一同返回
@@ -449,12 +483,15 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 //REGION Convert extensions
 
 /**将当前列表转化为并发列表。*/
+@OutlookImplementationApi
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
 
 /**将当前集转化为并发集。*/
+@OutlookImplementationApi
 fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
 
 /**将当前映射转化为并发映射。*/
+@OutlookImplementationApi
 fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
 
 
@@ -469,25 +506,26 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().
 
 
 /**将当前数组转化成以键为值的映射。*/
-fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前集合转化成以键为值的映射。*/
-fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
 /**将当前映射转换成以字符串为键的映射。*/
-fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
+inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	//return this if key is String
 	if(this.keys.firstOrNull() is String) return this as Map<String, V>
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 
 /**将当前映射转换成以字符串为值的映射。*/
-fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
+inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
 	//assume V is Any? or Any
+	if(this.values.firstOrNull() is String) return this as Map<K, String>
 	return this.mapValues { (_, v) -> v.toString() }
 }
 
@@ -523,29 +561,51 @@ inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWh
 inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
 
 
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrim(): Sequence<CharSequence> = this.map { it.trim() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrimStart(): Sequence<CharSequence> = this.map { it.trimStart() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Array<out T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> List<T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
+
+/**去除首尾的空白。*/
+inline fun <T : CharSequence> Sequence<T>.mapTrimEnd(): Sequence<CharSequence> = this.map { it.trimEnd() }
+
+
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
 
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
 
 /**过滤空字符串。*/
-@OutlookImplementationApi
 inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
 
 /**过滤空白字符串。*/
-@OutlookImplementationApi
-inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
 
 
 /**将当前数组映射为转化索引后的索引-值对集合。*/

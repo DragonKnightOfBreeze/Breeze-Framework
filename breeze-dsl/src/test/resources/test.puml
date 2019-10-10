@@ -1,9 +1,5 @@
 @startuml
-hide empty description
-[*] --> A
-A --> B
-A -[dashed]-> C
-A -[dotted]-> D
-A -[#333][bold]-> E
-
+autonumber
+Bob -> Alice : Authentication Request
+Alice<->Bob : Authentication Response
 @enduml

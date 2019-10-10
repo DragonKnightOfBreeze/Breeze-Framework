@@ -1,11 +1,11 @@
-package com.windea.breezeframework.core.domain.consts
+package com.windea.breezeframework.core.consts
 
 /**
- * 语言环境类型。
+ * 语言环境。
  *
  * 为了能够自定义语言环境，不应当使用枚举表示。
  */
-object LocaleType {
+object Locales {
 	const val English: String = "en"
 	const val French: String = "fr"
 	const val German: String = "de"

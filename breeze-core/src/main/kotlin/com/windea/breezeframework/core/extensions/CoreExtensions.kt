@@ -17,62 +17,78 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
-//REGION Standard.kt extensions
+//REGION Standard.kt extensions (TODOs)
 
 /**表明一个方法体推迟了实现。*/
-@OutlookImplementationApi
 inline fun DELAY() = Unit
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现。*/
-@OutlookImplementationApi
 inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
 	.also { nearestLogger().warn("An operation is delay-implemented.") }
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现，并指定原因。*/
-@OutlookImplementationApi
 inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
 	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
 
-
 /**打印一段消息，以表明一个方法体中存在问题。*/
-@OutlookImplementationApi
 inline fun FIXME() = run { nearestLogger().warn("There is an issue in this operation.") }
 
 /**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
-@OutlookImplementationApi
 inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
 
+//REGION Standard.kt extensions (Scope functions)
+
+/**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
+inline fun tryCatching(block: () -> Unit) {
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+	}
+	try {
+		block()
+	} catch(e: Exception) {
+		e.printStackTrace()
+	}
+}
+
+/**尝试执行一段代码，并忽略异常。*/
+inline fun tryIgnored(block: () -> Unit) {
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+	}
+	try {
+		block()
+	} catch(e: Exception) {
+	}
+}
 
 @PublishedApi internal var enableOnce = false
 
-/**执行且仅执行一次操作。可指定是否重置单次状态。*/
-@ExperimentalContracts
+/**执行一段代码且仅执行一次。可指定是否重置单次状态。*/
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
-		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
 	}
 	if(resetStatus) enableOnce = false
 	if(enableOnce) return
 	enableOnce = true
 	block()
+	require(true)
 }
 
 //REGION Precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 @OutlookImplementationApi
-@ExperimentalContracts
-inline fun reject(value: Boolean) {
+inline fun accept(value: Boolean) {
 	contract {
 		returns() implies value
 	}
-	reject(value) { "Unsupported operation." }
+	accept(value) { "Unsupported operation." }
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
 @OutlookImplementationApi
-@ExperimentalContracts
-inline fun reject(value: Boolean, lazyMessage: () -> Any) {
+inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 	contract {
 		returns() implies value
 	}
@@ -82,6 +98,30 @@ inline fun reject(value: Boolean, lazyMessage: () -> Any) {
 	}
 }
 
+/**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
+@OutlookImplementationApi
+inline fun <T> acceptNotNull(value: T?) {
+	contract {
+		returns() implies (value != null)
+	}
+	acceptNotNull(value) { "Unsupported operation." }
+}
+
+/**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
+@OutlookImplementationApi
+inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
+	contract {
+		returns() implies (value != null)
+	}
+	if(value == null) {
+		val message = lazyMessage()
+		throw UnsupportedOperationException(message.toString())
+	} else {
+		return value
+	}
+}
+
+//REGION Internal functions
 
 /**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
 @PublishedApi

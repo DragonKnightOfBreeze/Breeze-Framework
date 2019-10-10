@@ -3,6 +3,8 @@ package com.windea.breezeframework.core.domain.math
 import java.io.*
 
 interface Vector<T : Vector<T>> : Serializable {
+	/**模长的平方*/
+	val lengthSquared: Float
 	/**模长*/
 	val length: Float
 	/**单位向量。*/

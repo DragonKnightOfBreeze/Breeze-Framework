@@ -1,4 +1,4 @@
-@file:Reference("[Mermaid](https://mermaidjs.github.io)")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl.mermaid
 
@@ -9,19 +9,21 @@ import com.windea.breezeframework.dsl.*
 //REGION Dsl annotations
 
 @DslMarker
-annotation class MermaidDsl
+private annotation class MermaidDsl
 
-//REGION Top interfaces
+//REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid Dsl。*/
+@Reference("[Mermaid](https://mermaidjs.github.io)")
 @MermaidDsl
-interface Mermaid : Dsl
+abstract class Mermaid : DslBuilder
 
 /**Mermaid Dsl的元素。*/
 @MermaidDsl
 interface MermaidDslElement : DslElement
 
 /**Mermaid Dsl的配置。*/
+@MermaidDsl
 object MermaidConfig : DslConfig {
 	/**缩进长度。*/
 	var indentSize = 4
