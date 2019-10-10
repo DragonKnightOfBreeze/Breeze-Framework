@@ -74,6 +74,10 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 }
 
 
+/**判断当前集合中的所有元素是否被另一集合包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Collection<T>.allIn(other: Collection<T>) = other.containsAll(this)
+
 /**判断当前数组中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
 inline infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
