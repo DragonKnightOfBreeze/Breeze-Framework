@@ -1,10 +1,10 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.data.generators.text
+package com.windea.breezeframework.generator.text
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
-import com.windea.breezeframework.data.generators.*
+import com.windea.breezeframework.generator.*
 import java.io.*
 
 /**Sql语句的生成器。*/
@@ -15,8 +15,21 @@ object SqlGenerator : Generator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val rawInputMap = inputType.serializer.loadAsMap(inputText)
-		val inputMap = rawInputMap as SqlDataMap
+		val inputMap = inputType.serializer.loadAsMap(inputText) as SqlDataMap
+		return getSqlDataString(inputMap)
+	}
+	
+	/**
+	 * 根据输入文件和输入数据类型，生成Sql数据到指定输出文件。默认使用Yaml类型。
+	 *
+	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
+	 */
+	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
+		val inputMap = inputType.serializer.loadAsMap(inputFile) as SqlDataMap
+		outputFile.writeText(getSqlDataString(inputMap))
+	}
+	
+	private fun getSqlDataString(inputMap: SqlDataMap): String {
 		val databaseName = inputMap.keys.first()
 		val database = inputMap.values.first()
 		
@@ -38,15 +51,5 @@ object SqlGenerator : Generator {
 			""".toMultilineText()
 		}}
 		""".toMultilineText()
-	}
-	
-	/**
-	 * 根据输入文件和输入数据类型，生成Sql数据到指定输出文件。默认使用Yaml类型。
-	 *
-	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
-	 */
-	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val outputText = generateSqlData(inputFile.readText(), inputType)
-		outputFile.writeText(outputText)
 	}
 }

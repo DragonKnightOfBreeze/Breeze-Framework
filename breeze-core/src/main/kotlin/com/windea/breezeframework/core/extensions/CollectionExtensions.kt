@@ -22,10 +22,10 @@ inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
 inline fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
 
 /**构建线程安全的并发映射。*/
-inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
+inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
 
 /**构建线程安全的并发映射。*/
-inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = ConcurrentHashMap(pairs.toMap())
+inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 
 //REGION Operator overrides
 
@@ -74,6 +74,26 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 }
 
 
+/**判断当前数组中的所有元素是否被另一数组包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+
+/**判断当前数组中的所有元素是否被另一集合包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+
+/**判断当前集合中的所有元素是否被另一数组包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+
+/**判断当前集合中的所有元素是否被另一集合包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+
+/**判断当前序列中的所有元素是否被另一序列包含。*/
+@OutlookImplementationApi
+inline infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
+
 /**判断当前数组中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
 inline infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
@@ -82,10 +102,6 @@ inline infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any
 @OutlookImplementationApi
 inline infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
-/**判断当前数组中的任意元素是否被另一序列包含。*/
-@OutlookImplementationApi
-inline infix fun <T> Array<out T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
-
 /**判断当前集合中的任意元素是否被另一数组包含。*/
 @OutlookImplementationApi
 inline infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
@@ -93,18 +109,6 @@ inline infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any 
 /**判断当前集合中的任意元素是否被另一集合包含。*/
 @OutlookImplementationApi
 inline infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
-
-/**判断当前集合中的任意元素是否被另一序列包含。*/
-@OutlookImplementationApi
-inline infix fun <T> Iterable<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
-
-/**判断当前序列中的任意元素是否被另一数组包含。*/
-@OutlookImplementationApi
-inline infix fun <T> Sequence<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
-
-/**判断当前序列中的任意元素是否被另一集合包含。*/
-@OutlookImplementationApi
-inline infix fun <T> Sequence<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前序列中的任意元素是否被另一序列包含。*/
 @OutlookImplementationApi
@@ -517,16 +521,14 @@ inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 
 /**将当前映射转换成以字符串为键的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	//return this if key is String
-	if(this.keys.firstOrNull() is String) return this as Map<String, V>
-	return this.mapKeys { (k, _) -> k.toString() }
+	//try cast
+	return this as? Map<String, V> ?: this.mapKeys { (k, _) -> k.toString() }
 }
 
-/**将当前映射转换成以字符串为值的映射。*/
-inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
-	//assume V is Any? or Any
-	if(this.values.firstOrNull() is String) return this as Map<K, String>
-	return this.mapValues { (_, v) -> v.toString() }
+/**将当前映射转换成以字符串为键和值的映射。*/
+inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
+	//try cast
+	return this as? Map<String, String> ?: this.map { (k, v) -> k.toString() to v.toString() }.toMap()
 }
 
 /**将当前序列转化成以键为值的映射。*/

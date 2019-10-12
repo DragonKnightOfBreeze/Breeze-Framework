@@ -72,7 +72,6 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	if(enableOnce) return
 	enableOnce = true
 	block()
-	require(true)
 }
 
 //REGION Precondition.kt extensions
