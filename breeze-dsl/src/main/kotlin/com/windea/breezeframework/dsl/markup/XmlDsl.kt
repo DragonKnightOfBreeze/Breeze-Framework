@@ -47,7 +47,7 @@ class Xml @PublishedApi internal constructor() : DslBuilder, CanWrapContent, Com
 	/**添加声明。*/
 	@XmlDsl
 	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
+		XmlStatement(name, attributes.toMap().toStringKeyValueMap()).also { statements += it }
 	
 	/**添加注释。*/
 	@XmlDsl
@@ -57,12 +57,12 @@ class Xml @PublishedApi internal constructor() : DslBuilder, CanWrapContent, Com
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { rootElement = it }
+		XmlElement(name, attributes.toMap().toStringKeyValueMap()).also { rootElement = it }
 	
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
+		XmlElement(name, attributes.toMap().toStringKeyValueMap()).also { it.builder() }.also { rootElement = it }
 	
 	@XmlDsl
 	override fun String.unaryMinus() = comment(this)
@@ -168,12 +168,12 @@ class XmlElement @PublishedApi internal constructor(
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { nodes += it }
+		XmlElement(name, attributes.toMap().toStringKeyValueMap()).also { nodes += it }
 	
 	/**添加元素。*/
 	@XmlDsl
 	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
+		XmlElement(name, attributes.toMap().toStringKeyValueMap()).also { it.builder() }.also { nodes += it }
 	
 	@XmlDsl
 	override fun String.unaryMinus() = comment(this)

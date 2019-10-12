@@ -1,10 +1,10 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.data.generators.specific
+package com.windea.breezeframework.generator.specific
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
-import com.windea.breezeframework.data.generators.*
+import com.windea.breezeframework.generator.*
 import java.io.*
 
 /**Intellij IDEA配置文件文本的生成器。*/
@@ -14,11 +14,23 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputText: String, inputType: DataType): String {
-		val rawInputMap = inputType.serializer.loadAsMap(inputText)
-		val inputMap = rawInputMap as SchemaDefinitionMap
+	fun generateYamlAnnotation(inputText: String, inputType: DataType = DataType.Yaml): String {
+		val inputMap = inputType.serializer.loadAsMap(inputText) as SchemaDefinitionMap
+		return getYamlAnnotationString(inputMap)
+	}
+	
+	/**
+	 * 根据输入文件和输入数据类型，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml类型。
+	 *
+	 * 输入文本的格式：Json Schema。
+	 */
+	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
+		val inputMap = inputType.serializer.loadAsMap(inputFile) as SchemaDefinitionMap
+		outputFile.writeText(getYamlAnnotationString(inputMap))
+	}
+	
+	private fun getYamlAnnotationString(inputMap: SchemaDefinitionMap): String {
 		val definitions = inputMap["definitions"] as SchemaMap
-		
 		return """
 		<templateSet group="YamlAnnotation">
 		${definitions.joinToString("\n\n") { (templateName, template) ->
@@ -61,15 +73,5 @@ object IdeaConfigGenerator : Generator {
 		}}
 		</templateSet>
 		""".toMultilineText()
-	}
-	
-	/**
-	 * 根据输入文件和输入数据类型，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml类型。
-	 *
-	 * 输入文本的格式：Json Schema。
-	 */
-	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val outputText = generateYamlAnnotation(inputFile.readText(), inputType)
-		outputFile.writeText(outputText)
 	}
 }

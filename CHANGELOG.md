@@ -113,6 +113,7 @@
 * [X] breeze-core,breeze-dsl 一些更新，更新PumlSequenceDsl中。
 * [X] breeze-core 添加`.editorconfig`，修改`fillAt`、`fillToSize`等扩展的逻辑。
 * [X] breeze-core 为集合提供足够而必要的的`allIn`扩展。
+* [X] 更新README。添加额外的模块`breeze-logger`、`breeze-generator`。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 区分DslElement和InlineDslElement，只允许通过字符串模版插入InlineDslElement。
 * [ ] breeze-game 初步完成有限状态机的规范。

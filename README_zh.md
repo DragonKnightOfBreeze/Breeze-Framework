@@ -1,12 +1,52 @@
 # 概述
 
-[Breeze-Framework](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
+Breeze-Framework
 
-基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展功能。
+[Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
+[Bintray](https://bintray.com/breeze-knights/breeze-framework)
 
-**NOTE:** 项目并未完全实现，且未经过充分测试。
+基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
 
-**NOTE:** 尽管如此，这个框架仍然能够为你带来许多便利。
+**NOTE**
+* 这个框架并未完全实现其功能，且未经过充分的测试。尽管它现在已经具备了许多有用的功能。
+* 这个框架是为Kotlin设计的，而非Java。尽管你自然可以在Java中使用它。
+* 这个框架正在更新中，未来会提供更多的模块和功能。
+
+# 模块
+
+* **breeze-core**
+* **breeze-data**
+* **breeze-dream**
+* **breeze-dsl**
+* **breeze-functional**
+* **breeze-fxgl**
+* **breeze-game**
+* **breeze-javafx**
+* **breeze-reflect**
+* **breeze-spring-boot**
+* **breeze-spring-cloud**
+* **breeze-text**
+* **breeze-time**
+
+# 可选依赖
+
+* Kodein-di
+* Spekframework
+* Anko
+* SpringBoot
+* SpringCloud
+
+# 参考
+
+* [khronos](https://github.com/hotchemi/khronos)
+* [klutter](https://github.com/kohesive/klutter)
+* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+* [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [Google Guava](https://github.com/google/guava)
+
+感谢提供思路和灵感！
+
+# 示例
 
 ```kotlin
 fun example() {
@@ -48,31 +88,3 @@ fun example() {
     println("/a/b/1/2/c/3".switchTo(StandardReference))
 }
 ```
-
-# 模块
-
-* [x] breeze-core：核心模块。为字符串、集合等提供各种有用的扩展，提供一些通用的注解、枚举、接口等。
-* [ ] breeze-data：数据模块。为json、yaml、xml、properties等数据类型提供Dsl、读取器和解析器。
-* [x] breeze-dream：白日梦模块。内含众多幻想元素，**你应该用不上。**
-* [ ] breeze-game：游戏模块。为游戏应用提供一些不依赖于平台的功能实现。
-* [x] breeze-spring-boot：对Spring Boot的扩展。
-* [ ] breeze-spring-cloud：对Spring Cloud的扩展。
-* [x] breeze-text：文本模块。为字符串提供特定领域的扩展和生成器。包括字符串转中文、字符串转英文等。
-* [x] breeze-time：时间模块。为时间提供扩展、内联扩展。允许使用类dsl式语法创建时间。
-
-# 可选依赖
-
-* Kodein-di
-* Spekframework
-* Anko
-* ……
-
-# 参考
-
-* [khronos](https://github.com/hotchemi/khronos)
-* [klutter](https://github.com/kohesive/klutter)
-* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
-* [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
-* [Google Guava](https://github.com/google/guava)
-
-感谢提供思路和灵感！
