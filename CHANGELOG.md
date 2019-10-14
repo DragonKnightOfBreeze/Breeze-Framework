@@ -115,9 +115,10 @@
 * [X] breeze-core 为集合提供足够而必要的的`allIn`扩展。
 * [X] 更新README。添加额外的模块`breeze-logger`、`breeze-generator`。
 * [X] breeze-core 添加`checkChance`扩展。
+* [X] breeze-dsl 完善MarkdownDsl。添加特性支持。重新实现内联dsl。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
-* [ ] breeze-dsl 区分DslElement和InlineDslElement，只允许通过字符串模版插入InlineDslElement。
+* [ ] breeze-dsl 区分DslElement和DslElement，只允许通过字符串模版插入DslElement。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-game 初步完成实体&组件的规范。
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。

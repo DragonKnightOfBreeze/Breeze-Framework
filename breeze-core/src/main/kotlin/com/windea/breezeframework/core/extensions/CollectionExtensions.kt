@@ -521,13 +521,16 @@ inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 
 /**将当前映射转换成以字符串为键的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	//try cast
 	return this as? Map<String, V> ?: this.mapKeys { (k, _) -> k.toString() }
+}
+
+/**将当前映射转换成以字符串为值的映射。*/
+inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
+	return this as? Map<K, String> ?: this.mapValues { (_, v) -> v.toString() }
 }
 
 /**将当前映射转换成以字符串为键和值的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
-	//try cast
 	return this as? Map<String, String> ?: this.map { (k, v) -> k.toString() to v.toString() }.toMap()
 }
 

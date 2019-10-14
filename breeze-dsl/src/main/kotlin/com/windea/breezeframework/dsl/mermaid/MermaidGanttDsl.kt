@@ -22,7 +22,7 @@ inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also 
 /**Mermaid甘特图。*/
 @Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentContent, BlockContent<MermaidGanttSection> {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentContent, WithBlock<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null
 	var dataFormat: MermaidGanttDateFormat? = null
 	val sections: MutableList<MermaidGanttSection> = mutableListOf()
@@ -84,7 +84,7 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndentContent, TextContent<MermaidGanttTask> {
+) : MermaidGanttDslElement, IndentContent, WithText<MermaidGanttTask> {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false

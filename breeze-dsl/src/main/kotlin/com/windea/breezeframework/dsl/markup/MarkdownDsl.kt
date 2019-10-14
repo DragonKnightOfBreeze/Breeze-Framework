@@ -14,14 +14,13 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
 import org.intellij.lang.annotations.*
 
 //TODO list prefix marker can also be "+"
+//TODO add MarkdownAttribute and it's subclasses
+//TODO add attribute support for all MarkdownDslElement, and related infix extensions
 
 //REGION Dsl annotations
 
 @DslMarker
 private annotation class MarkdownDsl
-
-@DslMarker
-private annotation class InlineMarkdownDsl
 
 @MustBeDocumented
 private annotation class MarkdownDslExtendedFeature
@@ -34,7 +33,7 @@ inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder
 
 /**Markdown。*/
 @MarkdownDsl
-class Markdown @PublishedApi internal constructor() : DslBuilder, InlineMarkdownDslEntry, MarkdownDslEntry {
+class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEntry {
 	var frontMatter: MarkdownFrontMatter? = null
 	var toc: MarkdownToc? = null
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
@@ -75,7 +74,6 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, InlineMarkdown
 		MarkdownLinkReference(reference, url, title).also { references += it }
 }
 
-
 /**Markdown配置。*/
 @MarkdownDsl
 object MarkdownConfig : DslConfig {
@@ -90,106 +88,118 @@ object MarkdownConfig : DslConfig {
 	var preferAsteriskMaker: Boolean = true
 	var emptyColumnSize: Int = 4
 	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(preferDoubleQuote) "\"" else "'"
-	internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) "\"" else "'"
+	@PublishedApi internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
 	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
 }
 
 
-interface InlineMarkdownDslEntry
+object MarkdownInlineBuilder {
+	@MarkdownDsl
+	inline fun text(text: String) = MarkdownText(text)
+	
+	@MarkdownDsl
+	inline fun icon(text: String) = MarkdownIcon(text)
+	
+	@MarkdownDsl
+	inline fun footNote(reference: String) = MarkdownFootNote(reference)
+	
+	@MarkdownDsl
+	inline fun b(text: String) = MarkdownBoldText(text)
+	
+	@MarkdownDsl
+	inline fun i(text: String) = MarkdownItalicText(text)
+	
+	@MarkdownDsl
+	inline fun s(text: String) = MarkdownStrokedText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun u(text: String) = MarkdownUnderlinedText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun em(text: String) = MarkdownHighlightText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun sup(text: String) = MarkdownSuperscriptText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun sub(text: String) = MarkdownSubscriptText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun cmAppend(text: String) = CriticMarkupAppendedText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun cmDelete(text: String) = CriticMarkupDeletedText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun cmReplace(text: String, replacedText: String) = CriticMarkupReplacedText(text, replacedText)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun cmComment(text: String) = CriticMarkupCommentText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun cmHighlight(text: String) = CriticMarkupHighlightText(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun autoLink(url: String) = MarkdownAutoLink(url)
+	
+	@MarkdownDsl
+	inline fun link(name: String, url: String, title: String? = null) = MarkdownInlineLink(name, url, title)
+	
+	@MarkdownDsl
+	inline fun image(name: String, url: String, title: String? = null) = MarkdownInlineImageLink(name, url, title)
+	
+	@MarkdownDsl
+	inline fun refLink(reference: String, name: String? = null) = MarkdownReferenceLink(reference, name)
+	
+	@MarkdownDsl
+	inline fun refImage(reference: String, name: String? = null) = MarkdownReferenceImageLink(reference, name)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
+	
+	@MarkdownDsl
+	inline fun code(text: String) = MarkdownInlineCode(text)
+	
+	@MarkdownDsl
+	inline fun math(text: String) = MarkdownInlineMath(text)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes().also { it += attributes }
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun id(name: String) = MarkdownIdAttribute(name)
+	
+	@MarkdownDsl
+	@MarkdownDslExtendedFeature
+	inline fun `class`(name: String) = MarkdownClassAttribute(name)
+	
+	@MarkdownDslExtendedFeature
+	inline fun prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
+}
 
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.text(text: String) = MarkdownText(text)
 
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.icon(text: String) = MarkdownIcon(text)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.footNote(reference: String) = MarkdownFootNote(reference)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.b(text: String) = MarkdownBoldText(text)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.i(text: String) = MarkdownItalicText(text)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.s(text: String) = MarkdownStrokedText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.u(text: String) = MarkdownUnderlinedText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.h(text: String) = MarkdownHighlightText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.sup(text: String) = MarkdownSuperscriptText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.sub(text: String) = MarkdownSubscriptText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.cmAppend(text: String) = CriticMarkupAppendedText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.cmDelete(text: String) = CriticMarkupDeletedText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.cmReplace(text: String, replacedText: String) = CriticMarkupReplacedText(text, replacedText)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.cmComment(text: String) = CriticMarkupCommentText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.cmHighlight(text: String) = CriticMarkupHighlightText(text)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.autoLink(url: String) = MarkdownAutoLink(url)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.link(name: String, url: String, title: String? = null) = MarkdownInlineLink(name, url, title)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.image(name: String, url: String, title: String? = null) = MarkdownInlineImageLink(name, url, title)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.refLink(reference: String, name: String? = null) = MarkdownReferenceLink(reference, name)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.refImage(reference: String, name: String? = null) = MarkdownReferenceImageLink(reference, name)
-
-@InlineMarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun InlineMarkdownDslEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.code(text: String) = MarkdownInlineCode(text)
-
-@InlineMarkdownDsl
-inline fun InlineMarkdownDslEntry.math(text: String) = MarkdownInlineMath(text)
-
-
-interface MarkdownDslEntry : TextContent<MarkdownTextBlock>, InlineContent<MarkdownTextBlock> {
+interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
 	fun toContentString() = content.joinToString("\n\n")
 	
 	@MarkdownDsl
 	override fun String.unaryPlus() = textBlock { this@unaryPlus }
-	
-	@MarkdownDsl
-	override fun String.not() = textBlock { this@MarkdownDslEntry.content.clear();this@not }
 }
 
 @MarkdownDsl
@@ -269,8 +279,9 @@ inline fun MarkdownDslEntry.multilineMath(lazyText: () -> String) =
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.alertBox(qualifier: MarkdownAlertBoxQualifier, title: String = "", type: MarkdownAlertBoxType = MarkdownAlertBoxType.Normal) =
-	MarkdownAlertBox(qualifier, title, type).also { content += it }
+inline fun MarkdownDslEntry.admonition(qualifier: MarkdownAdmonitionQualifier, title: String = "",
+	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal) =
+	MarkdownAdmonition(qualifier, title, type).also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -289,12 +300,12 @@ inline fun MarkdownDslEntry.macrosSnippet(name: String, builder: MarkdownMacrosS
 
 
 /**内联的Markdown Dsl的元素。*/
-@InlineMarkdownDsl
-interface InlineMarkdownElement : InlineDslElement
+@MarkdownDsl
+interface MarkdownDslElement : DslElement
 
 /**Markdown Dsl的元素。*/
 @MarkdownDsl
-interface MarkdownDslElement : DslElement, InlineMarkdownDslEntry
+interface MarkdownDslInlineElement : MarkdownDslElement
 
 /**Markdown Dsl的顶级元素。*/
 @MarkdownDsl
@@ -302,98 +313,98 @@ interface MarkdownDslTopElement : MarkdownDslElement
 
 
 /**Markdown文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownText @PublishedApi internal constructor(
 	val text: String
-) : InlineMarkdownElement {
+) : MarkdownDslInlineElement {
 	override fun toString() = text
 }
 
 /**Markdown图标。可以使用font awesome和emoji图标。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownIcon @PublishedApi internal constructor(
 	val name: String
-) : InlineMarkdownElement {
+) : MarkdownDslInlineElement {
 	override fun toString() = ":$name:"
 }
 
 /**Markdown脚注。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownFootNote @PublishedApi internal constructor(
 	val reference: String
-) : InlineMarkdownElement {
+) : MarkdownDslInlineElement {
 	override fun toString() = "[^$reference]"
 }
 
 
 /**Markdown富文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 sealed class MarkdownRichText(
 	protected val markers: String,
 	val text: String
-) : InlineMarkdownElement {
+) : MarkdownDslInlineElement {
 	override fun toString() = "$markers$text$markers"
 }
 
 /**Markdown加粗文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownBoldText @PublishedApi internal constructor(text: String) : MarkdownRichText("**", text)
 
 /**Markdown斜体文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownItalicText @PublishedApi internal constructor(text: String) : MarkdownRichText("*", text)
 
 /**Markdown删除文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownStrokedText @PublishedApi internal constructor(text: String) : MarkdownRichText("~~", text)
 
 /**Markdown下划线文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownUnderlinedText @PublishedApi internal constructor(text: String) : MarkdownRichText("++", text)
 
 /**Markdown高亮文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownHighlightText @PublishedApi internal constructor(text: String) : MarkdownRichText("==", text)
 
 /**Markdown上标文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownSuperscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText("^", text)
 
 /**Markdown下标文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownSubscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText(text, "~")
 
 
 //TODO remove out as "CriticMarkupDsl"
 /**Critic Markup文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 sealed class CriticMarkupText(
 	protected val prefixMarkers: String,
 	val text: String,
 	protected val suffixMarkers: String
-) : InlineMarkdownElement {
+) : MarkdownDslInlineElement {
 	override fun toString() = "$prefixMarkers $text $suffixMarkers"
 }
 
 /**Critic Markup添加文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class CriticMarkupAppendedText @PublishedApi internal constructor(text: String) : CriticMarkupText("{++", text, "++}")
 
 /**Critic Markup添加文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class CriticMarkupDeletedText @PublishedApi internal constructor(text: String) : CriticMarkupText("{--", text, "--}")
 
 /**Critic Markup替换文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class CriticMarkupReplacedText @PublishedApi internal constructor(
 	text: String,
@@ -405,31 +416,31 @@ class CriticMarkupReplacedText @PublishedApi internal constructor(
 }
 
 /**Critic Markup注释文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class CriticMarkupCommentText @PublishedApi internal constructor(text: String) : CriticMarkupText("{>>", text, "<<}")
 
 /**Critic Markup高亮文本。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class CriticMarkupHighlightText @PublishedApi internal constructor(text: String) : CriticMarkupText("{==", text, "==}")
 
 
 /**Markdown链接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 sealed class MarkdownLink(
 	val url: String
-) : InlineMarkdownElement
+) : MarkdownDslInlineElement
 
 /**Markdown自动链接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownAutoLink @PublishedApi internal constructor(url: String) : MarkdownLink(url) {
 	override fun toString() = "<$url>"
 }
 
 /**Markdown行内链接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 open class MarkdownInlineLink @PublishedApi internal constructor(
 	val name: String,
 	url: String,
@@ -442,7 +453,7 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 }
 
 /**Markdown行内图片链接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownInlineImageLink @PublishedApi internal constructor(
 	name: String, url: String, title: String? = null
 ) : MarkdownInlineLink(name, url, title) {
@@ -450,7 +461,7 @@ class MarkdownInlineImageLink @PublishedApi internal constructor(
 }
 
 /**Markdown引用连接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 open class MarkdownReferenceLink @PublishedApi internal constructor(
 	val reference: String,
 	val name: String? = null
@@ -462,7 +473,7 @@ open class MarkdownReferenceLink @PublishedApi internal constructor(
 }
 
 /**Markdown引用图片连接。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 class MarkdownReferenceImageLink @PublishedApi internal constructor(
 	reference: String, name: String? = null
 ) : MarkdownReferenceLink(reference, name) {
@@ -470,7 +481,7 @@ class MarkdownReferenceImageLink @PublishedApi internal constructor(
 }
 
 /**Markdown维基链接。采用Github风格，标题在前，地址在后。*/
-@InlineMarkdownDsl
+@MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownWikiLink @PublishedApi internal constructor(
 	val name: String,
@@ -595,7 +606,9 @@ sealed class MarkdownListNode(
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 	
 	override fun toString(): String {
-		val nodesSnippet = if(nodes.isEmpty()) "" else nodes.joinToString("\n", "\n") { it.toString().prependIndent(indent) }
+		val nodesSnippet = if(nodes.isEmpty()) "" else nodes.joinToString("\n", "\n") {
+			it.toString().prependIndent(indent)
+		}
 		return "$prefixMarker $text$nodesSnippet"
 	}
 	
@@ -713,7 +726,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 
 /**Markdown表格头部。*/
 @MarkdownDsl
-class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElement, TextContent<MarkdownTableColumn> {
+class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElement, WithText<MarkdownTableColumn> {
 	val columns: MutableList<MarkdownTableColumn> = mutableListOf()
 	var columnSize: Int? = null
 	
@@ -749,7 +762,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 
 /**Markdown表格行。*/
 @MarkdownDsl
-open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslElement, TextContent<MarkdownTableColumn> {
+open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslElement, WithText<MarkdownTableColumn> {
 	val columns: MutableList<MarkdownTableColumn> = mutableListOf()
 	var columnSize: Int? = null
 	
@@ -825,38 +838,39 @@ class MarkdownSideBlock @PublishedApi internal constructor() : MarkdownQuote("|"
 
 /**Markdown代码。*/
 @MarkdownDsl
-interface MarkdownCode : MarkdownDslElement {
+interface MarkdownCode {
 	val text: String
 }
 
 /**Markdown行内代码。*/
 @MarkdownDsl
-class MarkdownInlineCode @PublishedApi internal constructor(text: String) : MarkdownRichText("`", text)
+class MarkdownInlineCode @PublishedApi internal constructor(text: String) : MarkdownRichText("`", text), MarkdownCode
 
 /**Markdown代码块。*/
 @MarkdownDsl
 class MarkdownCodeFence @PublishedApi internal constructor(
 	val language: String,
 	override val text: String
-	//TODO extended classes and properties
 ) : MarkdownDslTopElement, MarkdownCode {
-	override fun toString() = "```$language\n$text\n```"
+	//DONE extended classes and properties
+	val attributes: MarkdownAttributes = MarkdownAttributes()
+	
+	override fun toString(): String {
+		val attributesSnippet = attributes.toString().ifNotEmpty { " $it" }
+		return "```$language$attributesSnippet\n$text\n``s`"
+	}
 }
 
 
 /**Markdown数学表达式。*/
 @MarkdownDsl
-interface MarkdownMath : MarkdownDslElement {
+interface MarkdownMath {
 	val text: String
 }
 
 /**Markdown行内数学表达式。*/
 @MarkdownDsl
-class MarkdownInlineMath @PublishedApi internal constructor(
-	override val text: String
-) : InlineMarkdownElement, MarkdownMath {
-	override fun toString() = "$$text$"
-}
+class MarkdownInlineMath @PublishedApi internal constructor(text: String) : MarkdownRichText("$", text), MarkdownMath
 
 /**Markdown多行数学表达式。*/
 @MarkdownDsl
@@ -866,13 +880,14 @@ class MarkdownMultilineMath @PublishedApi internal constructor(
 	override fun toString() = "$$\n$text\n$$"
 }
 
+
 /**Markdown警告框。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownAlertBox @PublishedApi internal constructor(
-	val qualifier: MarkdownAlertBoxQualifier,
+class MarkdownAdmonition @PublishedApi internal constructor(
+	val qualifier: MarkdownAdmonitionQualifier,
 	val title: String = "",
-	val type: MarkdownAlertBoxType = MarkdownAlertBoxType.Normal
+	val type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal
 ) : MarkdownDslTopElement, MarkdownDslEntry {
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
@@ -885,13 +900,6 @@ class MarkdownAlertBox @PublishedApi internal constructor(
 	}
 }
 
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-enum class MarkdownAlertBoxType(
-	val text: String
-) {
-	Normal("!!!"), Collapsed("???"), Opened("!!!+")
-}
 
 /**Front Matter。只能位于Markdown文档顶部。用于配置当前的Markdown文档。使用Yaml格式。*/
 @MarkdownDsl
@@ -906,11 +914,12 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 /**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerateContent {
+class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, GenerateContent {
 	override var generateContent: Boolean = false //TODO
 	
 	override fun toString() = "[TOC]"
 }
+
 
 /**Markdown导入。用于导入相对路径的图片或文本。*/
 @MarkdownDsl
@@ -918,7 +927,7 @@ class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, Can
 class MarkdownImport @PublishedApi internal constructor(
 	val url: String
 	//TODO extended classes and properties
-) : MarkdownDslTopElement, CanGenerateContent {
+) : MarkdownDslTopElement, GenerateContent {
 	override var generateContent: Boolean = false //TODO
 	
 	override fun toString(): String {
@@ -932,7 +941,7 @@ class MarkdownImport @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
-) : MarkdownDslTopElement, CanGenerateContent {
+) : MarkdownDslTopElement, GenerateContent {
 	override var generateContent: Boolean = false //TODO
 	
 	override fun toString() = "<<< $name >>>"
@@ -996,6 +1005,49 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	}
 }
 
+
+/**Markdown特性组。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+class MarkdownAttributes : MarkdownDslElement, MutableSet<MarkdownAttribute> by HashSet() {
+	override fun toString(): String {
+		return if(this.isEmpty()) "" else this.joinToString("", " {", "}")
+	}
+}
+
+/**Markdown特性。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+sealed class MarkdownAttribute : MarkdownDslElement
+
+/**Markdown css id特性。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+class MarkdownIdAttribute(
+	val name: String
+) : MarkdownAttribute() {
+	override fun toString() = "#$name"
+}
+
+/**Markdown css class特性。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+class MarkdownClassAttribute(
+	val name: String
+) : MarkdownAttribute() {
+	override fun toString() = ".$name"
+}
+
+/**Markdown属性特性。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+class MarkdownPropertyAttribute(
+	val name: String,
+	val value: String
+) : MarkdownAttribute() {
+	override fun toString() = "$name=${value.wrapQuote()}"
+}
+
 //REGION Enumerations and constants
 
 /**Markdown表格的对齐方式。*/
@@ -1006,10 +1058,19 @@ enum class MarkdownTableAlignment(
 	None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 }
 
+/**Markdown警告框的类型。*/
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+enum class MarkdownAdmonitionType(
+	val text: String
+) {
+	Normal("!!!"), Collapsed("???"), Opened("!!!+")
+}
+
 /**Markdown警告框的限定符。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-enum class MarkdownAlertBoxQualifier(
+enum class MarkdownAdmonitionQualifier(
 	val style: String, val text: String
 ) {
 	Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
@@ -1025,3 +1086,4 @@ enum class MarkdownAlertBoxQualifier(
 	Tip("tip", "tip"), Hint("tip", "hint"), Important("tip", "important"),
 	Warning("warning", "warning"), Caution("warning", "caution"), Attention("warning", "attention")
 }
+

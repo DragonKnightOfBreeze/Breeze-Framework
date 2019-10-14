@@ -169,7 +169,7 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 @PumlStateDiagramDsl
 class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 	name: String, text: String = ""
-) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, CanIndentContent {
+) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, IndentContent {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramLink> = mutableListOf()
 	
@@ -203,7 +203,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 @PumlStateDiagramDsl
 class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String, text: String = ""
-) : PumlStateDiagramState(name, text), CanIndentContent {
+) : PumlStateDiagramState(name, text), IndentContent {
 	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
 	

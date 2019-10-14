@@ -37,7 +37,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 }
 
 
-interface MermaidSequenceDslEntry : CanIndentContent, CommentContent<MermaidSequenceNote> {
+interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNote> {
 	val participants: MutableSet<MermaidSequenceParticipant>
 	val messages: MutableList<MermaidSequenceMessage>
 	val notes: MutableList<MermaidSequenceNote>

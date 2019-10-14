@@ -16,9 +16,6 @@ import com.windea.breezeframework.core.extensions.*
 @DslMarker
 private annotation class Dsl
 
-@DslMarker
-private annotation class InlineDsl
-
 //REGION Dsl & Dsl config & Dsl elements
 
 /**Dsl的构建器。*/
@@ -31,73 +28,62 @@ interface DslBuilder {
 @Dsl
 interface DslConfig
 
-/**内联的Dsl的元素。需要通过字符串模版插入到Dsl文本元素。其构建方法不会自动将其添加到父级元素。*/
-@InlineDsl
-interface InlineDslElement {
-	override fun toString(): String
-}
-
 /**Dsl的元素。其构建方法会自动将其添加到父级元素。*/
 @Dsl
 interface DslElement {
 	override fun toString(): String
 }
 
+//REGION Interfaces
 
 /**包含可换行的内容。*/
 @Dsl
-interface CanWrapContent {
+interface WrapContent {
 	var wrapContent: Boolean
+}
+
+/**包含可缩进的内容。*/
+@Dsl
+interface IndentContent {
+	var indentContent: Boolean
+}
+
+/**包含可生成的内容。可能替换原始文本。*/
+@Dsl
+interface GenerateContent {
+	var generateContent: Boolean
 }
 
 /**设置是否换行内容。*/
 @Dsl
-inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
-
-/**包含可缩进的内容。*/
-@Dsl
-interface CanIndentContent {
-	var indentContent: Boolean
-}
+inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
 
 /**设置是否缩进内容。*/
 @Dsl
-inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
-
-/**包好（可能替换原始文本的）可生成的内容。*/
-@Dsl
-interface CanGenerateContent {
-	var generateContent: Boolean
-}
+inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 /**设置是否生成内容。*/
 @Dsl
-inline infix fun <T : CanGenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
+inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
-/**包含可被视为注释的内容。*/
-@Dsl
-interface CommentContent<T : DslElement> {
-	/**添加注释元素为子元素。*/
-	operator fun String.unaryMinus(): T
-}
 
 /**包含（唯一主要的）可被视为文本的内容。*/
 @Dsl
-interface TextContent<T : DslElement> {
+interface WithText<T : DslElement> {
 	/**添加主要的文本元素为子元素。*/
 	operator fun String.unaryPlus(): T
 }
 
-/**包含内联内容。*/
+/**包含（唯一主要的）可被视为注释的内容。*/
 @Dsl
-interface InlineContent<T : DslElement> {
-	/**以内联方式添加文本元素为子元素。允许将内容直接写入字符串模版中。将会清空之前的所有子元素。*/
-	operator fun String.not(): T
+interface WithComment<T : DslElement> {
+	/**添加注释元素为子元素。*/
+	operator fun String.unaryMinus(): T
 }
 
 /**包含（唯一主要的）可被视为块的内容。*/
 @Dsl
-interface BlockContent<T : DslElement> {
+interface WithBlock<T : DslElement> {
 	/**添加主要的块元素为子元素。*/
 	operator fun String.invoke(): T
 	
