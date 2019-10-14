@@ -85,12 +85,15 @@ inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
 inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
-/**判断是否约等于另一个数，可指定精确度。默认为0.1。*/
-fun Number?.nearlyEqualsTo(other: Number?, precision: Float = 0.1f): Boolean {
+/**判断是否约等于另一个数。对应小数部分的精确度默认为0.001。当差值的绝对值小于此精确度时，认为两数近似相等。*/
+infix fun Number?.nearlyEquals(other: Number?): Boolean = this.nearlyEquals(other, 0.001f)
+
+/**判断是否约等于另一个数。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
+fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 	return when {
 		this == null && other == null -> true
 		this == null || other == null -> false
-		else -> abs(this.toFloat() - other.toFloat()) <= precision
+		else -> abs(this.toFloat() - other.toFloat()) < precision
 	}
 }
 

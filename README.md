@@ -17,7 +17,7 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 ## breeze-core
 
 * Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`, etc. (e.g, `toFile`, `anyIn`.)
-* Provide global extensions missing in stdlib. (e.g, `FIXME`, ``, `tryCatching`, `accept`.)
+* Provide global extensions missing in stdlib. (e.g, `FIXME`, `tryCatching`, `accept`.)
 * Provide basic annotations, consts, enums and interfaces.
 
 ## breeze-data
@@ -57,11 +57,11 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 
 ## breeze-javafx
 
-* [ ] Provide some useful extensions for javafx.
+* Provide some useful extensions for javafx.
 
 ## breeze-logger
 
-* Provide lightweight, individual, and powerful logger for Kotlin.
+* [ ] Provide lightweight, individual, and powerful logger for Kotlin.
 
 ## breeze-reflect
 
