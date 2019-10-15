@@ -118,6 +118,7 @@
 * [X] breeze-dsl 完善MarkdownDsl。添加特性支持。重新实现内联dsl。
 * [X] breeze-core 添加`toStringOrEmpty`扩展。
 * [X] breeze-core 添加`Colors`，提供标准颜色常量集。
+* [X] breeze-dsl 提取`CriticMarkupDsl`。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。

@@ -1,4 +1,4 @@
-package com.windea.breezeframework.generator.string
+package com.windea.breezeframework.generator.text
 
 import com.windea.breezeframework.generator.*
 

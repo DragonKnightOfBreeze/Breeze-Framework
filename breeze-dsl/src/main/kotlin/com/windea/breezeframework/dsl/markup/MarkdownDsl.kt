@@ -72,7 +72,7 @@ interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 	fun toContentString() = content.joinToString("\n\n")
 	
 	@MarkdownDsl
-	override fun String.unaryPlus() = textBlock { this@unaryPlus }
+	override fun String.unaryPlus() = textBlock(this)
 }
 
 interface WithMarkdownAttributes {
@@ -80,11 +80,11 @@ interface WithMarkdownAttributes {
 }
 
 
-/**内联的Markdown Dsl的元素。*/
+/**Markdown Dsl的元素。*/
 @MarkdownDsl
 interface MarkdownDslElement : DslElement
 
-/**Markdown Dsl的元素。*/
+/**Markdown Dsl的内联元素。*/
 @MarkdownDsl
 interface MarkdownDslInlineElement : MarkdownDslElement
 
@@ -160,51 +160,6 @@ class MarkdownSuperscriptText @PublishedApi internal constructor(text: String) :
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownSubscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText(text, "~")
-
-
-//TODO remove out as "CriticMarkupDsl"
-/**Critic Markup文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-sealed class CriticMarkupText(
-	protected val prefixMarkers: String,
-	val text: String,
-	protected val suffixMarkers: String
-) : MarkdownDslInlineElement {
-	override fun toString() = "$prefixMarkers $text $suffixMarkers"
-}
-
-/**Critic Markup添加文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class CriticMarkupAppendedText @PublishedApi internal constructor(text: String) : CriticMarkupText("{++", text, "++}")
-
-/**Critic Markup添加文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class CriticMarkupDeletedText @PublishedApi internal constructor(text: String) : CriticMarkupText("{--", text, "--}")
-
-/**Critic Markup替换文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class CriticMarkupReplacedText @PublishedApi internal constructor(
-	text: String,
-	val replacedText: String
-) : CriticMarkupText("{--", text, "--}") {
-	private val infixMarkers: String = "~>"
-	
-	override fun toString() = "$prefixMarkers $text $infixMarkers $replacedText $suffixMarkers"
-}
-
-/**Critic Markup注释文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class CriticMarkupCommentText @PublishedApi internal constructor(text: String) : CriticMarkupText("{>>", text, "<<}")
-
-/**Critic Markup高亮文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class CriticMarkupHighlightText @PublishedApi internal constructor(text: String) : CriticMarkupText("{==", text, "==}")
 
 
 /**Markdown链接。*/
@@ -821,26 +776,6 @@ object MarkdownInlineBuilder {
 	
 	@MarkdownDsl
 	@MarkdownDslExtendedFeature
-	inline fun cmAppend(text: String) = CriticMarkupAppendedText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun cmDelete(text: String) = CriticMarkupDeletedText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun cmReplace(text: String, replacedText: String) = CriticMarkupReplacedText(text, replacedText)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun cmComment(text: String) = CriticMarkupCommentText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun cmHighlight(text: String) = CriticMarkupHighlightText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
 	inline fun autoLink(url: String) = MarkdownAutoLink(url)
 	
 	@MarkdownDsl
@@ -885,7 +820,6 @@ object MarkdownInlineBuilder {
 @MarkdownDsl
 inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
 
-
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun Markdown.frontMatter(lazyText: () -> String) =
@@ -912,8 +846,8 @@ inline fun Markdown.linkRef(reference: String, url: String, title: String? = nul
 
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.textBlock(lazyText: () -> String) =
-	MarkdownTextBlock(lazyText()).also { content += it }
+inline fun MarkdownDslEntry.textBlock(text: String) =
+	MarkdownTextBlock(text).also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.mainHeading(text: String) =

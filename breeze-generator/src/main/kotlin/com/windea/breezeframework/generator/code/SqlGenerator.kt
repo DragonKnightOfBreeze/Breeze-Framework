@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.generator.text
+package com.windea.breezeframework.generator.code
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*

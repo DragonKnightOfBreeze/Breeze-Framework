@@ -1,19 +1,19 @@
 package com.windea.breezeframework.core.enums.normal
 
 import com.windea.breezeframework.core.annotations.messages.*
-import com.windea.breezeframework.core.consts.Locales.SimpleChinese
+import com.windea.breezeframework.core.consts.Locales.simpleChinese
 
 /**地理方向。不包含斜向。*/
-@Name("地理方向", SimpleChinese)
+@Name("地理方向", simpleChinese)
 enum class GeographyDirection4 {
-	@Name("原点", SimpleChinese)
+	@Name("原点", simpleChinese)
 	Origin,
-	@Name("东", SimpleChinese)
+	@Name("东", simpleChinese)
 	East,
-	@Name("南", SimpleChinese)
+	@Name("南", simpleChinese)
 	South,
-	@Name("西", SimpleChinese)
+	@Name("西", simpleChinese)
 	West,
-	@Name("北", SimpleChinese)
+	@Name("北", simpleChinese)
 	North
 }

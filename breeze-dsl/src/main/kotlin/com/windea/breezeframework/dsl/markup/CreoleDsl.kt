@@ -21,7 +21,7 @@ private annotation class CreoleDsl
 class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
 	
-	override fun toString(): String = content.joinToString("\n\n")
+	override fun toString() = content.joinToString("\n\n")
 }
 
 /**Creole配置。*/
@@ -47,16 +47,19 @@ interface CreoleDslEntry : WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
 	@CreoleDsl
-	override fun String.unaryPlus() = textBlock { this }
+	override fun String.unaryPlus() = textBlock(this)
 }
 
 
+/**Creole Dsl的元素。*/
 @CreoleDsl
 interface CreoleDslElement : DslElement
 
+/**Creole Dsl的内联元素。*/
 @CreoleDsl
 interface CreoleDslInlineElement : CreoleDslElement
 
+/**Creole Dsl的顶级元素。*/
 @CreoleDsl
 interface CreoleDslTopElement : CreoleDslElement
 
@@ -397,8 +400,8 @@ inline fun creole(builder: Creole.() -> Unit) =
 
 
 @CreoleDsl
-inline fun CreoleDslEntry.textBlock(lazyText: () -> String) =
-	CreoleTextBlock(lazyText()).also { content += it }
+inline fun CreoleDslEntry.textBlock(text: String) =
+	CreoleTextBlock(text).also { content += it }
 
 @CreoleDsl
 inline fun CreoleDslEntry.list(builder: CreoleList.() -> Unit) =
@@ -499,7 +502,7 @@ inline infix fun CreoleTable.columnSize(size: Int) =
 	this.also { this.columnSize = size }
 
 @CreoleDsl
-inline fun CreoleTableHeader.column(text: String) =
+inline fun CreoleTableHeader.column(text: String = emptyColumnText) =
 	CreoleTableColumn(text).also { columns += it }
 
 @CreoleDsl
