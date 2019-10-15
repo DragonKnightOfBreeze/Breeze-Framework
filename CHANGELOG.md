@@ -116,6 +116,7 @@
 * [X] 更新README。添加额外的模块`breeze-logger`、`breeze-generator`。
 * [X] breeze-core 添加`checkChance`扩展。
 * [X] breeze-dsl 完善MarkdownDsl。添加特性支持。重新实现内联dsl。
+* [X] breeze-core 添加`toStringOrEmpty`扩展。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-dsl 区分DslElement和DslElement，只允许通过字符串模版插入DslElement。

@@ -17,6 +17,9 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
+/**转化为字符串。如果为空，则转化为空字符串。*/
+inline fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
+
 //REGION Standard.kt extensions (TODOs)
 
 /**表明一个方法体推迟了实现。*/
