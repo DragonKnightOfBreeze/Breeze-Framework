@@ -38,9 +38,10 @@ inline fun Random.nextOpsDouble(limit: Double = 1.0): Double = this.nextDouble(-
 fun Random.nextUUID(): String = UUID.randomUUID().toString()
 
 
-/**检查一个几率发生的事件是否发生。对应小数部分的精确度默认为0.001。*/
+/**检查一个几率发生的事件是否发生。*/
 fun Random.checkChance(chance: Float): Boolean {
 	require(chance in 0f..1f) { "Chance must in range 0.0..1.0, but it is $chance." }
+	
 	return when {
 		chance == 1f -> true
 		chance == 0f -> false
@@ -48,8 +49,8 @@ fun Random.checkChance(chance: Float): Boolean {
 	}
 }
 
-/**检查一个几率发生的事件是否发生，附带额外条件。对应小数部分的精确度默认为0.001。*/
+/**检查一个几率发生的事件是否发生，附带额外条件。*/
 fun Random.checkChance(chance: Float, extraCondition: Boolean): Boolean = checkChance(chance) && extraCondition
 
-/**检查一个几率发生的事件是否发生，附带额外条件。对应小数部分的精确度默认为0.001。*/
+/**检查一个几率发生的事件是否发生，附带额外条件。*/
 fun Random.checkChance(chance: Float, extraPredicate: () -> Boolean): Boolean = checkChance(chance) && extraPredicate()

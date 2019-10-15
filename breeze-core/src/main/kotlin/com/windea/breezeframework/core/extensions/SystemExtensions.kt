@@ -54,7 +54,7 @@ object ScriptEngines {
 	/**
 	 * 得到kotlinScript的脚本引擎。
 	 *
-	 * 注意：其实现依赖于外部库，如：`kotlin-main-kts。
+	 * 注意：其实现依赖于外部库，如：`kotlin-main-kts`。
 	 */
 	val kotlinScript: ScriptEngine by lazy { engineManager.getEngineByExtension("kts") }
 	/**

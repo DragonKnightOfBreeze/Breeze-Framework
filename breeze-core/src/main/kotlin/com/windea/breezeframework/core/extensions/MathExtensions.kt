@@ -25,6 +25,7 @@ fun Double.pow(x: Float): Double = this.pow(x.toDouble())
 /**精确到指定位数，适用四舍五入。*/
 fun Float.round(precision: Int): Float {
 	require(precision > 0) { "Precision for round operation must be positive, but was $precision" }
+	
 	val ratio = 10.pow(precision)
 	return (this * ratio).roundToInt().toFloat() / ratio
 }
@@ -32,6 +33,7 @@ fun Float.round(precision: Int): Float {
 /**精确到指定位数，适用四舍五入。*/
 fun Double.round(precision: Int): Double {
 	require(precision > 0) { "Precision for round operation must be positive, but was $precision" }
+	
 	val ratio = 10.pow(precision)
 	return (this * ratio).roundToLong().toDouble() / ratio
 }
@@ -51,6 +53,7 @@ fun BigInteger.factorial(): BigInteger = this.privateFactorial()
 
 private tailrec fun BigInteger.privateFactorial(result: BigInteger = 1.toBigInteger()): BigInteger {
 	require(this > 0.toBigInteger()) { "Number for factorial operation must be positive, but was $this" }
+	
 	if(this == 1.toBigInteger()) return result
 	return (this - 1.toBigInteger()).privateFactorial(this * result)
 }
@@ -70,6 +73,7 @@ fun BigInteger.cumulative(): BigInteger = this.privateCumulative()
 
 private tailrec fun BigInteger.privateCumulative(result: BigInteger = 1.toBigInteger()): BigInteger {
 	require(this > 0.toBigInteger()) { "Number for cumulative operation must be positive, but was $this" }
+	
 	if(this == 1.toBigInteger()) return result
 	return (this - 1.toBigInteger()).privateCumulative(this + result)
 }
