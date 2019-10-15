@@ -34,39 +34,6 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	
 	fun toSuffixString(): String = TODO()
 	
-	
-	@PumlDsl
-	inline fun title(text: String) =
-		PumlTitle(text).also { title = it }
-	
-	@PumlDsl
-	inline fun legend(text: String) =
-		PumlLegend(text).also { legend = it }
-	
-	@PumlDsl
-	inline fun header(text: String) =
-		PumlHeader(text).also { header = it }
-	
-	@PumlDsl
-	inline fun footer(text: String) =
-		PumlFooter(text).also { footer = it }
-	
-	@PumlDsl
-	inline fun scale(expression: String) =
-		PumlScale(expression).also { scale = it }
-	
-	@PumlDsl
-	inline fun caption(text: String) =
-		PumlCaption(text).also { caption = it }
-	
-	@PumlDsl
-	inline fun note(text: String) =
-		PumlNote(text).also { notes += it }
-	
-	@PumlDsl
-	inline fun skinParams(builder: PumlSkinParams.() -> Unit) =
-		skinParams.builder()
-	
 	@PumlDsl
 	override fun String.unaryMinus() = note(this)
 }
@@ -80,8 +47,8 @@ object PumlConfig : DslConfig {
 	/**是否使用双引号。*/
 	var useDoubleQuote: Boolean = true
 	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
 
 
@@ -113,11 +80,6 @@ sealed class PumlElement(
 			"$positionSnippet$type $textSnippet"
 		}
 	}
-	
-	
-	@PumlDsl
-	inline infix fun at(position: PumlTopElementPosition) =
-		this.also { it.position = position }
 }
 
 /**PlantUml标题。*/
@@ -207,24 +169,6 @@ class PumlNote @PublishedApi internal constructor(
 	}
 	
 	
-	@PumlDsl
-	inline infix fun alias(alias: String) = this.also { it.alias = alias }
-	
-	@PumlDsl
-	inline infix fun leftOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.LeftOf }
-	
-	@PumlDsl
-	inline infix fun rightOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.RightOf }
-	
-	@PumlDsl
-	inline infix fun topOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.TopOf }
-	
-	@PumlDsl
-	inline infix fun bottomOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.BottomOf }
 }
 
 
@@ -304,3 +248,63 @@ enum class PumlArrowDirection(val text: String) {
 enum class PumlNotePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
+
+//REGION Build extensions
+
+@PumlDsl
+inline fun Puml.title(text: String) =
+	PumlTitle(text).also { title = it }
+
+@PumlDsl
+inline fun Puml.legend(text: String) =
+	PumlLegend(text).also { legend = it }
+
+@PumlDsl
+inline fun Puml.header(text: String) =
+	PumlHeader(text).also { header = it }
+
+@PumlDsl
+inline fun Puml.footer(text: String) =
+	PumlFooter(text).also { footer = it }
+
+@PumlDsl
+inline fun Puml.scale(expression: String) =
+	PumlScale(expression).also { scale = it }
+
+@PumlDsl
+inline fun Puml.caption(text: String) =
+	PumlCaption(text).also { caption = it }
+
+@PumlDsl
+inline fun Puml.note(text: String) =
+	PumlNote(text).also { notes += it }
+
+@PumlDsl
+inline fun Puml.skinParams(builder: PumlSkinParams.() -> Unit) =
+	skinParams.builder()
+
+
+@PumlDsl
+inline infix fun PumlElement.at(position: PumlTopElementPosition) =
+	this.also { it.position = position }
+
+
+@PumlDsl
+inline infix fun PumlNote.alias(alias: String) =
+	this.also { it.alias = alias }
+
+@PumlDsl
+inline infix fun PumlNote.leftOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.LeftOf }
+
+@PumlDsl
+inline infix fun PumlNote.rightOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.RightOf }
+
+@PumlDsl
+inline infix fun PumlNote.topOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.TopOf }
+
+@PumlDsl
+inline infix fun PumlNote.bottomOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }

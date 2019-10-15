@@ -48,23 +48,17 @@ interface IndentContent {
 	var indentContent: Boolean
 }
 
+/**包含可内联的内容。即，可以通过模版字符串构建的内容。在倾向内联的情况下默认内联。*/
+@Dsl
+interface InlineContent {
+	var inlineContent: Boolean
+}
+
 /**包含可生成的内容。可能替换原始文本。*/
 @Dsl
 interface GenerateContent {
 	var generateContent: Boolean
 }
-
-/**设置是否换行内容。*/
-@Dsl
-inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
-
-/**设置是否缩进内容。*/
-@Dsl
-inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
-
-/**设置是否生成内容。*/
-@Dsl
-inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
 
 /**包含（唯一主要的）可被视为文本的内容。*/
@@ -90,6 +84,24 @@ interface WithBlock<T : DslElement> {
 	/**添加主要的块元素为子元素。*/
 	operator fun String.invoke(builder: T.() -> Unit): T
 }
+
+//REGION Build extensions
+
+/**设置是否换行内容。*/
+@Dsl
+inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
+
+/**设置是否缩进内容。*/
+@Dsl
+inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
+
+/**设置是否内联内容。*/
+@Dsl
+inline infix fun <T : InlineContent> T.inline(value: Boolean) = this.also { inlineContent = value }
+
+/**设置是否生成内容。*/
+@Dsl
+inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
 //REGION Useful extensions for argument handling
 

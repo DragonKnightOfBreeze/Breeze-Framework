@@ -18,10 +18,6 @@ private annotation class MermaidDsl
 @MermaidDsl
 abstract class Mermaid : DslBuilder
 
-/**Mermaid Dsl的元素。*/
-@MermaidDsl
-interface MermaidDslElement : DslElement
-
 /**Mermaid Dsl的配置。*/
 @MermaidDsl
 object MermaidConfig : DslConfig {
@@ -31,6 +27,10 @@ object MermaidConfig : DslConfig {
 	/**是否使用双引号。*/
 	var useDoubleQuote: Boolean = true
 	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
+
+/**Mermaid Dsl的元素。*/
+@MermaidDsl
+interface MermaidDslElement : DslElement

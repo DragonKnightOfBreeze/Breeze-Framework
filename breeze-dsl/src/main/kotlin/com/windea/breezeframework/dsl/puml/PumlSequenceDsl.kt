@@ -15,9 +15,6 @@ private annotation class PumlSequenceDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
-@PumlSequenceDsl
-inline fun pumlSequence(builder: PumlSequence.() -> Unit) = PumlSequence().also { it.builder() }
-
 /**PlantUml序列图。*/
 @Reference("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @PumlSequenceDsl
@@ -64,19 +61,6 @@ class PumlSequenceParticipant @PublishedApi internal constructor(
 			"$shape $nameSnippet as $alias$orderSnippet$colorSnippet"
 		}
 	}
-	
-	
-	@PumlSequenceDsl
-	inline infix fun alias(alias: String) = this.also { it.alias = alias }
-	
-	@PumlSequenceDsl
-	inline infix fun order(order: Int) = this.also { it.order = order }
-	
-	@PumlSequenceDsl
-	inline infix fun color(color: String) = this.also { it.color = color }
-	
-	@PumlSequenceDsl
-	inline infix fun shape(shape: PumlSequenceParticipantShape) = this.also { it.shape = shape }
 }
 
 /**PlantUml序列图消息。*/
@@ -104,14 +88,6 @@ class PumlSequenceMessage @PublishedApi internal constructor(
 	}
 	
 	
-	@PumlSequenceDsl
-	inline infix fun arrowColor(arrowColor: String) = this.also { it.arrowColor = arrowColor }
-	
-	@PumlSequenceDsl
-	inline infix fun arrowShape(arrowShape: PumlSequenceMessageArrowShape) = this.also { it.arrowShape = arrowShape }
-	
-	@PumlSequenceDsl
-	inline infix fun post(isPosted: Boolean) = this.also { it.isPosted = isPosted }
 }
 
 //REGION Enumerations and constants
@@ -131,3 +107,39 @@ enum class PumlSequenceMessageArrowShape(val prefix: String, val suffix: String)
 	DottedArrow("<-", "->"), DottedUpArrow("/-", "-\\"), DottedDownArrow("\\-", "-/"),
 	DottedThinArrow("<<-", "->>"), DottedThinUpArrow("//-", "-\\\\"), DottedThinDownArrow("\\\\-", "-//")
 }
+
+//REGION Build extensions
+
+@PumlSequenceDsl
+inline fun pumlSequence(builder: PumlSequence.() -> Unit) =
+	PumlSequence().also { it.builder() }
+
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceParticipant.alias(alias: String) =
+	this.also { it.alias = alias }
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceParticipant.order(order: Int) =
+	this.also { it.order = order }
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceParticipant.color(color: String) =
+	this.also { it.color = color }
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceParticipant.shape(shape: PumlSequenceParticipantShape) =
+	this.also { it.shape = shape }
+
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceMessage.arrowColor(arrowColor: String) =
+	this.also { it.arrowColor = arrowColor }
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceMessage.arrowShape(arrowShape: PumlSequenceMessageArrowShape) =
+	this.also { it.arrowShape = arrowShape }
+
+@PumlSequenceDsl
+inline infix fun PumlSequenceMessage.post(isPosted: Boolean) =
+	this.also { it.isPosted = isPosted }

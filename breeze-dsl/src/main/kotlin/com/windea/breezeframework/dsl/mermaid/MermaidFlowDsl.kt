@@ -15,11 +15,6 @@ private annotation class MermaidFlowDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
-/**构建Mermaid流程图。*/
-@MermaidFlowDsl
-inline fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
-	MermaidFlow(direction).also { it.builder() }
-
 /**Mermaid流程图。*/
 @Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @MermaidFlowDsl
@@ -66,46 +61,6 @@ interface MermaidFlowDslEntry : IndentContent {
 	}
 }
 
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) =
-	MermaidFlowNode(name, text).also { nodes += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
-	MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
-	link(sourceNode.name, targetNodeId, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
-	link(sourceNodeId, targetNode.name, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
-	link(sourceNode.name, targetNode.name, text)
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
-	MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.style(nodeId: String, vararg styles: Pair<String, String>) =
-	MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this.styles += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
-	MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<String, String>) =
-	MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
-
-@MermaidFlowDsl
-inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
-	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
-
 
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowDsl
@@ -128,11 +83,6 @@ class MermaidFlowNode @PublishedApi internal constructor(
 		val textSnippet = (text?.replaceWithEscapedWrap() ?: name).wrapQuote(quote)
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
-	
-	
-	@MermaidFlowDsl
-	inline infix fun shape(shape: MermaidFlowNodeShape) =
-		this.also { it.shape = shape }
 }
 
 /**Mermaid流程图连接。*/
@@ -151,9 +101,6 @@ class MermaidFlowLink @PublishedApi internal constructor(
 	}
 	
 	
-	@MermaidFlowDsl
-	inline infix fun arrowShape(arrowShape: MermaidFlowLinkArrowShape) =
-		this.also { it.arrowShape = arrowShape }
 }
 
 /**Mermaid流程图的子图。*/
@@ -254,3 +201,59 @@ enum class MermaidFlowNodeShape(val prefix: String, val suffix: String) {
 enum class MermaidFlowLinkArrowShape(val text: String) {
 	Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 }
+
+//REGION Build extensions
+
+@MermaidFlowDsl
+inline fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
+	MermaidFlow(direction).also { it.builder() }
+
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) =
+	MermaidFlowNode(name, text).also { nodes += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNodeId: String, text: String? = null) =
+	MermaidFlowLink(sourceNodeId, targetNodeId, text).also { links += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNodeId: String, text: String? = null) =
+	link(sourceNode.name, targetNodeId, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNodeId, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.link(sourceNode: MermaidFlowNode, targetNode: MermaidFlowNode, text: String? = null) =
+	link(sourceNode.name, targetNode.name, text)
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.subGraph(name: String, builder: MermaidFlowSubGraph.() -> Unit) =
+	MermaidFlowSubGraph(name).also { it.builder() }.also { subGraphs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.style(nodeId: String, vararg styles: Pair<String, String>) =
+	MermaidFlowNodeStyle(nodeId, styles.toMap()).also { this.styles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.linkStyle(linkOrder: Int, vararg styles: Pair<String, String>) =
+	MermaidFlowLinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<String, String>) =
+	MermaidFlowClassDef(className, styles.toMap()).also { classDefs += it }
+
+@MermaidFlowDsl
+inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
+	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
+
+
+@MermaidFlowDsl
+inline infix fun MermaidFlowNode.shape(shape: MermaidFlowNodeShape) =
+	this.also { it.shape = shape }
+
+@MermaidFlowDsl
+inline infix fun MermaidFlowLink.arrowShape(arrowShape: MermaidFlowLinkArrowShape) =
+	this.also { it.arrowShape = arrowShape }

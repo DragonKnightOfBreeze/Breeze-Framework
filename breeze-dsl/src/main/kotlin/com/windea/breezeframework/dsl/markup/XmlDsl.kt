@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
 
 package com.windea.breezeframework.dsl.markup
 
@@ -17,10 +17,6 @@ private annotation class XmlDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
-/**构建Xml。*/
-@XmlDsl
-inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
-
 /**Xml。*/
 @XmlDsl
 class Xml @PublishedApi internal constructor() : DslBuilder, WrapContent, WithComment<XmlComment>, WithBlock<XmlElement> {
@@ -33,32 +29,14 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WrapContent, WithCo
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
-		return when {
-			wrapContent -> arrayOf(
-				statements.joinToString("\n"), comments.joinToString("\n"), rootElement.toString()
-			).filterNotEmpty().joinToString("\n")
-			else -> arrayOf(
-				statements.joinToString(""), comments.joinToString(""), rootElement.toString()
-			).filterNotEmpty().joinToString("")
+		return if(wrapContent) {
+			arrayOf(statements.joinToString("\n"), comments.joinToString("\n"), rootElement.toString())
+				.filterNotEmpty().joinToString("\n")
+		} else {
+			arrayOf(statements.joinToString(""), comments.joinToString(""), rootElement.toString())
+				.filterNotEmpty().joinToString("")
 		}
 	}
-	
-	
-	@XmlDsl
-	inline fun statement(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
-	
-	@XmlDsl
-	inline fun comment(text: String) =
-		XmlComment(text).also { comments += it }
-	
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { rootElement = it }
-	
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 	
 	@XmlDsl
 	override fun String.unaryMinus() = comment(this)
@@ -68,6 +46,9 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WrapContent, WithCo
 	
 	@XmlDsl
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
+	
+	@XmlDsl
+	operator fun String.invoke(vararg args: Pair<String, Any?>) = element(this, *args)
 	
 	@XmlDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
@@ -90,17 +71,6 @@ object XmlConfig : DslConfig {
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
-}
-
-
-object XmlInlineBuilder {
-	@XmlDsl
-	inline fun elem(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap())
-	
-	@XmlDsl
-	inline fun elem(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }
 }
 
 
@@ -165,11 +135,12 @@ class XmlComment @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), WrapContent, IndentContent, WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
+) : XmlNode(), WrapContent, IndentContent, InlineContent, WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
 	override var indentContent: Boolean = true
+	override var inlineContent: Boolean = false
 	
 	override fun toString(): String {
 		val attributesSnippet = when {
@@ -177,6 +148,7 @@ class XmlElement @PublishedApi internal constructor(
 			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
 		}
 		val contentSnippet = when {
+			inlineContent -> nodes.last().toString()
 			wrapContent -> nodes.joinToString("\n")
 			else -> nodes.joinToString("")
 		}
@@ -197,22 +169,6 @@ class XmlElement @PublishedApi internal constructor(
 	
 	
 	@XmlDsl
-	inline fun text(text: String) =
-		XmlText(text).also { nodes += it }
-	
-	@XmlDsl
-	inline fun comment(text: String) =
-		XmlComment(text).also { nodes += it }
-	
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { nodes += it }
-	
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
-	
-	@XmlDsl
 	override fun String.unaryPlus() = text(this)
 	
 	@XmlDsl
@@ -225,20 +181,46 @@ class XmlElement @PublishedApi internal constructor(
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
 	
 	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>,
-		builder: XmlElement.() -> Unit) = element(this, *args, builder = builder)
+	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		element(this, *args, builder = builder)
 }
 
+//REGION Build extensions
+
+@XmlDsl
+inline fun xml(builder: Xml.() -> Unit) =
+	Xml().also { it.builder() }
 
 
+@XmlDsl
+inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
+	XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
+
+@XmlDsl
+inline fun Xml.comment(text: String) =
+	XmlComment(text).also { comments += it }
+
+@XmlDsl
+inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { rootElement = it }
+
+@XmlDsl
+inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 
 
+@XmlDsl
+inline fun XmlElement.text(text: String) =
+	XmlText(text).also { nodes += it }
 
+@XmlDsl
+inline fun XmlElement.comment(text: String) =
+	XmlComment(text).also { nodes += it }
 
+@XmlDsl
+inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { nodes += it }
 
-
-
-
-
-
-
+@XmlDsl
+inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
