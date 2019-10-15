@@ -20,5 +20,5 @@ fun <T> QueryByExampleExecutor<T>.findOneOrNull(example: Example<T>): T? = this.
 /**根据Jpa Specification查询一个结果，返回一个可空对象。*/
 fun <T> JpaSpecificationExecutor<T>.findOneOrNull(spec: Specification<T>): T? = this.findOne(spec).orElse(null)
 
-/**根据Querydsl Predicate查询一个结果，返回一个可空对象。*/
+/**根据QueryDsl Predicate查询一个结果，返回一个可空对象。*/
 fun <T> QuerydslJpaPredicateExecutor<T>.findOneOrNull(predicate: Predicate): T? = this.findOne(predicate).orElse(null)
