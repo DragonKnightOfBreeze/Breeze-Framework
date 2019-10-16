@@ -12,6 +12,7 @@ include(
 	"breeze-javafx",
 	"breeze-logger",
 	"breeze-reflect",
+	"breeze-serialization",
 	"breeze-spring-boot",
 	"breeze-spring-cloud",
 	"breeze-text",

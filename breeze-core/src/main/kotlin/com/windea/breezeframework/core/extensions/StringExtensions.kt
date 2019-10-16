@@ -502,8 +502,8 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 	enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
-@Suppress("DEPRECATION")
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
+@Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	requireNotNull(type.isEnum) { "$type is not an enum class!" }
 	

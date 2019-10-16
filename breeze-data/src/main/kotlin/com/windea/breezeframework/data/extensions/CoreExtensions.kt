@@ -1,49 +1,117 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.data.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import kotlin.reflect.*
+import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.reflect.extensions.java.*
+import mu.*
+import java.io.*
+import kotlin.reflect.full.*
 
-//REGION equals, hashcode ad toString extensions
+private val logger = KotlinLogging.logger { }
 
-/**通过比较指定类型中的属性，判断两个对象是否相等。*/
-inline fun <reified T> equalsByCondition(target: T?, other: Any?, predicate: (T, T) -> Boolean): Boolean {
-	if(target === other) return true
-	if(target == null) return false
-	if(other !is T) return false
-	return predicate(target, other)
+//REGION Serialize extensions
+
+/**序列化当前对象，返回序列化后的字符串。*/
+inline fun <T : Any> T.serialize(dataType: DataType): String {
+	return dataType.serializer.dump(this)
 }
 
-/**通过选择并比较指定类型中的属性，判断两个对象是否相等。*/
-inline fun <reified T> equalsBySelect(target: T?, other: Any?, selector: T.() -> Array<*>): Boolean {
-	if(target === other) return true
-	if(target == null) return false
-	if(other !is T) return false
-	return (target.selector() zip other.selector()).all { (a, b) -> a == b }
+/**序列化当前对象，将序列化后的字符串写入指定文件。*/
+inline fun <T : Any> T.serialize(dataType: DataType, file: File) {
+	dataType.serializer.dump(this, file)
 }
 
-/**通过选择指定类型中的属性，得到指定对象的哈希码。*/
-inline fun <reified T> hashcodeBySelect(target: T?, selector: T.() -> Array<*>): Int {
-	if(target == null) return 0
-	val result = 0
-	return target.selector().fold(result) { r, k -> 31 * r + k.hashCode() }
+/**序列化当前对象，将序列化后的字符串写入指定写入器。*/
+inline fun <T : Any> T.serialize(dataType: DataType, writer: Writer) {
+	return dataType.serializer.dump(this, writer)
 }
 
-/**通过选择指定类型中的属性（属性名-属性值），将指定对象转化为字符串。*/
-inline fun <reified T> toStringBySelect(target: T?, selector: T.() -> Array<Pair<String, *>>): String {
-	if(target == null) return "null"
-	val className = T::class.java.simpleName
-	val propertiesSnippet = target.selector().toMap()
-		.mapValues { (_, v) -> v.let { if(it is String) "'$it'" else it.toString() } }
-		.joinToString()
-	return "$className($propertiesSnippet)"
+
+/**反序列化当前字符串，返回指定泛型的对象。*/
+inline fun <reified T : Any> String.deserialize(dataType: DataType): T {
+	return dataType.serializer.load(this, T::class.java)
 }
 
-/**通过选择指定类型中的属性引用，将指定对象转化为字符串。*/
-inline fun <reified T> toStringBySelectRef(target: T?, selector: T.() -> Array<KProperty0<*>>): String {
-	if(target == null) return "null"
-	val className = T::class.java.simpleName
-	val propertiesSnippet = target.selector()
-		.associate { prop -> prop.name to prop.get().let { v -> if(v is String) "'$v'" else v.toString() } }
-		.joinToString()
-	return "$className($propertiesSnippet)"
+/**反序列化当前文件中文本，返回指定泛型的对象。*/
+inline fun <reified T : Any> File.deserialize(dataType: DataType): T {
+	return dataType.serializer.load(this, T::class.java)
+}
+
+/**反序列化当前读取器中文本，返回指定泛型的对象。*/
+inline fun <reified T : Any> Reader.deserialize(dataType: DataType): T {
+	return dataType.serializer.load(this, T::class.java)
+}
+
+//REGION Object and property map extensions
+
+/**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
+@Deprecated("使用'kotlinx-serialization'的'Mapper.map()'。", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))
+@LowPerformanceApi
+@Suppress("DEPRECATION")
+fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
+	return this::class.memberProperties.associate { it.name to it.call(this) }.let { map ->
+		when {
+			recursive -> map.mapValues { (_, v) ->
+				when {
+					v != null && v !is Array<*> && v !is Iterable<*> && v !is Map<*, *> -> v.toPropertyMap(true)
+					else -> v
+				}
+			}
+			else -> map
+		}
+	}
+}
+
+/**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
+@Deprecated("使用'kotlinx-serialization'的'Mapper.unmapNullable()'。", ReplaceWith("kotlinx.serialization.Mapper.unmapNullable<T>(this)"))
+@LowPerformanceApi
+@Suppress("DEPRECATION")
+inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T = toObject(T::class.java, recursive)
+
+/**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
+@Deprecated("使用具象化泛型。", ReplaceWith("this.toObject<T>(recursive)"))
+@LowPerformanceApi
+fun <T> Map<String, Any?>.toObject(type: Class<T>, recursive: Boolean = false): T {
+	val newObject = type.getConstructor().newInstance()
+	val propertyMap = type.setterMap
+	for((propertyName, setMethod) in propertyMap) {
+		if(!propertyMap.containsKey(propertyName)) {
+			continue
+		}
+		val propertyValue = this[propertyName]
+		try {
+			val propertyType = type.getDeclaredField(propertyName).type
+			val fixedPropertyValue = convertProperty(propertyType, propertyValue, recursive)
+			setMethod.invoke(newObject, fixedPropertyValue)
+		} catch(e: Exception) {
+			logger.warn("Property type mismatch. Class: ${type.name}, Name: $propertyName, Value: $propertyValue}.")
+		}
+	}
+	return newObject
+}
+
+@Suppress("DEPRECATION")
+private fun convertProperty(propertyType: Class<*>, propertyValue: Any?, recursive: Boolean = false): Any? {
+	return when {
+		propertyType.isPrimitive || propertyType.isCharSequence -> propertyValue
+		propertyType.isEnum -> propertyValue.toString().toEnumValue(propertyType)
+		//使用高阶函数后，无法直接得到运行时泛型
+		propertyType.isArray -> (propertyValue as Array<*>)
+		propertyType.isList -> (propertyValue as List<*>).map {
+			it?.let { convertProperty(it.javaClass, it, recursive) }
+		}
+		propertyType.isSet -> (propertyValue as Set<*>).map {
+			it?.let { convertProperty(it.javaClass, it, recursive) }
+		}.toSet()
+		propertyType.isMap -> (propertyValue as Map<*, *>).mapValues { (_, v) ->
+			v?.let { convertProperty(v.javaClass, v, recursive) }
+		}
+		propertyType.isSerializable && recursive -> {
+			(propertyValue as Map<*, *>).toStringKeyMap().toObject(propertyType)
+		}
+		else -> null
+	}
 }

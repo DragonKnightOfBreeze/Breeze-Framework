@@ -1,5 +1,6 @@
 package com.windea.breezeframework.data.extensions
 
+import com.windea.breezeframework.core.extensions.*
 import org.junit.*
 import org.junit.Assert.*
 
@@ -11,8 +12,6 @@ class CoreExtensionsKtTest {
 		val foo1 = Foo(123, "abc")
 		val foo2 = Foo(123, "abc")
 		val foo3 = Foo(233, "abc")
-		assertTrue(equalsByCondition(foo1, foo2) { a, b -> a.a == b.a && a.b == b.b })
-		assertFalse(equalsByCondition(foo1, foo3) { a, b -> a.a == b.a && a.b == b.b })
 		assertTrue(equalsBySelect(foo1, foo2) { arrayOf(a, b) })
 		assertFalse(equalsBySelect(foo1, foo3) { arrayOf(a, b) })
 	}

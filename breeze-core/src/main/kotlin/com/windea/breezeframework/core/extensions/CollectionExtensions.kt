@@ -355,38 +355,38 @@ inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstance
 }
 
 
-/**绑定当前数组中的元素以及另一个数组中满足指定预测的首个元素。过滤总是不满足的情况。*/
+/**根据指定的条件，内连接当前数组和另一个列表。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Array<out T>.zipWithFirst(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+inline fun <T, R : Any> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**绑定当前数组中的元素以及另一个集合中满足指定预测的首个元素。过滤总是不满足的情况。*/
+/**根据指定的条件，内连接当前数组和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Array<out T>.zipWithFirst(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+inline fun <T, R : Any> Array<out T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**绑定当前集合中的元素以及另一个集合中满足指定预测的首个元素。过滤总是不满足的情况。*/
+/**根据指定的条件，内连接当前集合和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Iterable<T>.zipWithFirst(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+inline fun <T, R : Any> Iterable<T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**绑定当前集合中的元素以及另一个集合中满足指定预测的首个元素。过滤总是不满足的情况。*/
+/**根据指定的条件，内连接当前集合和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Iterable<T>.zipWithFirst(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+inline fun <T, R : Any> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
 /**绑定当前序列中的元素以及另一个序列中满足指定预测的首个元素。过滤总是不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>,
+inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>,
 	crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-//REGION Deep operations
+//REGION Deep operation extensions
 
 /**根据指定的[StandardReference]得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
