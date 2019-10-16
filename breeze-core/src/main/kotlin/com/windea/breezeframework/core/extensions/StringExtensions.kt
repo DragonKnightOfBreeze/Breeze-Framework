@@ -297,6 +297,7 @@ private val quotes = arrayOf("\"", "'", "`")
 /**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。同时转义其中的引号。*/
 fun String.wrapQuote(quote: String = "\""): String {
 	require(quote in quotes) { "Invalid quote: $quote." }
+	
 	return this.replace(quote, "\\$quote").addSurrounding(quote, quote, false)
 }
 

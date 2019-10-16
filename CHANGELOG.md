@@ -121,6 +121,14 @@
 * [X] breeze-dsl 提取`CriticMarkupDsl`。
 * [X] breeze-dsl 补充缺失的Dsl文件。
 * [X] 一些更新。
+* [X] breeze-dsl 让本质上是List或Map的DSLElement继承对应的接口并代理实现。（本质上是Tree或Table的例外）
+* [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
+* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
+* [ ] breeze&serializer&breeze-serialization 提取和分离breeze-data的代码。
+* [ ] breeze-serialization 提供yaml的序列化实现。
+
+***
+
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。

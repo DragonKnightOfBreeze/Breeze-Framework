@@ -3,7 +3,6 @@
 package com.windea.breezeframework.dsl.text
 
 import com.windea.breezeframework.core.annotations.marks.*
-import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
 //REGION Dsl annotations
@@ -16,9 +15,9 @@ private annotation class CriticMarkupDsl
 @Reference("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupDsl
 class CriticMarkup @PublishedApi internal constructor() : DslBuilder, WithText<CriticMarkupTextBlock> {
-	var textBlock: CriticMarkupTextBlock? = null
+	var textBlock: CriticMarkupTextBlock = CriticMarkupTextBlock("")
 	
-	override fun toString() = textBlock.toStringOrEmpty()
+	override fun toString() = textBlock.toString()
 	
 	override fun String.unaryPlus() = textBlock(this)
 }

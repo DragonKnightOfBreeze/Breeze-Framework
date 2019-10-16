@@ -45,7 +45,7 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	}
 }
 
-/**Markdown配置。*/
+/**Markdown的配置。*/
 @MarkdownDsl
 object MarkdownConfig : DslConfig {
 	/**缩进长度。*/
@@ -295,7 +295,7 @@ class MarkdownHeading6 @PublishedApi internal constructor(text: String) : Markdo
 
 /**Markdown水平分割线。*/
 @MarkdownDsl
-class MarkdownHorizontalLine @PublishedApi internal constructor() : MarkdownDslTopElement {
+object MarkdownHorizontalLine : MarkdownDslTopElement {
 	override fun toString() = initialMarker * repeatableMarkerCount
 }
 
@@ -656,11 +656,11 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 /**Markdown特性组。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownAttributes : MarkdownDslElement {
-	val values: MutableSet<MarkdownAttribute> = mutableSetOf()
-	
+class MarkdownAttributes @PublishedApi internal constructor(
+	attributes: Set<MarkdownAttribute>
+) : MarkdownDslElement, Set<MarkdownAttribute> by attributes {
 	override fun toString(): String {
-		return if(values.isEmpty()) "" else values.joinToString("", " {", "}")
+		return if(this.isEmpty()) "" else this.joinToString("", " {", "}")
 	}
 }
 
@@ -802,7 +802,7 @@ object MarkdownInlineBuilder {
 	
 	@MarkdownDsl
 	@MarkdownDslExtendedFeature
-	inline fun attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes().also { it.values += attributes }
+	inline fun attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes(attributes.toSet())
 	
 	@MarkdownDsl
 	@MarkdownDslExtendedFeature
@@ -883,7 +883,7 @@ inline fun MarkdownDslEntry.h6(text: String) =
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.hr() =
-	MarkdownHorizontalLine().also { content += it }
+	MarkdownHorizontalLine.also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.list(builder: MarkdownList.() -> Unit) =

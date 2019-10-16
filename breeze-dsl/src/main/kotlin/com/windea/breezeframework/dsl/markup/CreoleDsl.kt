@@ -24,7 +24,7 @@ class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
 	override fun toString() = content.joinToString("\n\n")
 }
 
-/**Creole配置。*/
+/**Creole的配置。*/
 @CreoleDsl
 object CreoleConfig : DslConfig {
 	/**缩进长度。*/

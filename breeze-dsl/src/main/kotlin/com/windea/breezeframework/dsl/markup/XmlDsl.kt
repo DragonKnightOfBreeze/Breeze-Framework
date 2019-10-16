@@ -19,23 +19,17 @@ private annotation class XmlDsl
 
 /**Xml。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : DslBuilder, WrapContent, WithComment<XmlComment>, WithBlock<XmlElement> {
-	val statements: MutableList<XmlStatement> = mutableListOf(
-		XmlStatement("xml", mapOf("version" to "1.0", "encoding" to "UTF-8"))
-	)
+class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComment>, WithBlock<XmlElement> {
+	val statements: MutableList<XmlStatement> = mutableListOf()
 	val comments: MutableList<XmlComment> = mutableListOf()
 	var rootElement: XmlElement = XmlElement(defaultRootName)
 	
-	override var wrapContent: Boolean = true
-	
 	override fun toString(): String {
-		return if(wrapContent) {
-			arrayOf(statements.joinToString("\n"), comments.joinToString("\n"), rootElement.toString())
-				.filterNotEmpty().joinToString("\n")
-		} else {
-			arrayOf(statements.joinToString(""), comments.joinToString(""), rootElement.toString())
-				.filterNotEmpty().joinToString("")
-		}
+		return arrayOf(
+			statements.joinToString("\n"),
+			comments.joinToString("\n"),
+			rootElement.toString()
+		).filterNotEmpty().joinToString("\n")
 	}
 	
 	@XmlDsl
@@ -55,7 +49,7 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WrapContent, WithCo
 		element(this, *args, builder = builder)
 }
 
-/**Xml配置。*/
+/**Xml的配置。*/
 @XmlDsl
 object XmlConfig : DslConfig {
 	/**默认根元素名。*/
@@ -135,12 +129,11 @@ class XmlComment @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), WrapContent, IndentContent, InlineContent, WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
+) : XmlNode(), WrapContent, IndentContent, WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
 	override var indentContent: Boolean = true
-	override var inlineContent: Boolean = false
 	
 	override fun toString(): String {
 		val attributesSnippet = when {
@@ -148,7 +141,6 @@ class XmlElement @PublishedApi internal constructor(
 			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
 		}
 		val contentSnippet = when {
-			inlineContent -> nodes.last().toString()
 			wrapContent -> nodes.joinToString("\n")
 			else -> nodes.joinToString("")
 		}
@@ -166,7 +158,6 @@ class XmlElement @PublishedApi internal constructor(
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"
 		return "$prefixSnippet$wrappedContentSnippet$suffixSnippet"
 	}
-	
 	
 	@XmlDsl
 	override fun String.unaryPlus() = text(this)
@@ -188,13 +179,34 @@ class XmlElement @PublishedApi internal constructor(
 //REGION Build extensions
 
 @XmlDsl
+object XmlInlineBuilder {
+	@XmlDsl
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
+		XmlElement(name, attributes.toMap().toStringValueMap())
+	
+	@XmlDsl
+	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }
+	
+	@XmlDsl
+	operator fun String.invoke(vararg args: Pair<String, Any?>) = element(this, *args)
+	
+	@XmlDsl
+	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
+		element(this, *args, builder = builder)
+}
+
+
+@XmlDsl
 inline fun xml(builder: Xml.() -> Unit) =
 	Xml().also { it.builder() }
-
 
 @XmlDsl
 inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
 	XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
+
+@XmlDsl
+inline fun Xml.defaultStatement() = statement("xml", "version" to "1.0", "encoding" to "UTF-8")
 
 @XmlDsl
 inline fun Xml.comment(text: String) =

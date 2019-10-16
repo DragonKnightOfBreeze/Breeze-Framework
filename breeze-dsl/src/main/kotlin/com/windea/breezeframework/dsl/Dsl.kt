@@ -5,11 +5,13 @@ package com.windea.breezeframework.dsl
 import com.windea.breezeframework.core.extensions.*
 
 //规定：
-//所有的Dsl元素的构造方法都必须是@Published internal
-//所有的Dsl元素和Dsl构建方法都必须添加对应的DslMarker注解
-//所有的Dsl构建方法都要尽可能地写成内联形式和表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法
-//运算符重载规则：`+"text"`表示文本，`-"text"`表示内联文本，`"text" { } `表示唯一子级元素。
+//所有的Dsl元素的构造方法都必须是@Published internal。
+//所有的Dsl元素和Dsl构建方法都必须添加对应的DslMarker注解。
+//所有的Dsl构建方法都要尽可能地写成内联形式和表达式形式，且不要显式声明返回值，使用`Xxx.also{}`的写法。
+//运算符重载规则：`+"text"`表示文本，`-"text"`表示注释，`!"text"`表示内联子元素，`"text"{ }`表示块子元素。
 //文本属性以外的默认属性通过内联中缀方法构建。
+//Dsl构建方法需要尽可能地写成扩展方法。
+//Dsl的主要功能是生成处理后的字符串，尽量避免添加其他无关的功能。
 
 //REGION Dsl annotations
 
@@ -46,12 +48,6 @@ interface WrapContent {
 @Dsl
 interface IndentContent {
 	var indentContent: Boolean
-}
-
-/**包含可内联的内容。即，可以通过模版字符串构建的内容。在倾向内联的情况下默认内联。*/
-@Dsl
-interface InlineContent {
-	var inlineContent: Boolean
 }
 
 /**包含可生成的内容。可能替换原始文本。*/
@@ -95,15 +91,11 @@ inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapCont
 @Dsl
 inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
-/**设置是否内联内容。*/
-@Dsl
-inline infix fun <T : InlineContent> T.inline(value: Boolean) = this.also { inlineContent = value }
-
 /**设置是否生成内容。*/
 @Dsl
 inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
-//REGION Useful extensions for argument handling
+//REGION Internal extensions
 
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
