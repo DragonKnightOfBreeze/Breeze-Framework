@@ -99,6 +99,16 @@ class Tests {
 			}
 		}
 	}
+	
+	fun testSwap() {
+		val a = 1
+		val b = 2
+		var (c, d) = Pair(a, b)
+		var e = 1
+		var f = 2
+		//(e,f) = Pair(a,b)
+		//(a,b) = (b,a)
+	}
 }
 
 class Foo1 {

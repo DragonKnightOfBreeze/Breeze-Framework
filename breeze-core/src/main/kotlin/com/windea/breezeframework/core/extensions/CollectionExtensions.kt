@@ -4,6 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
+import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import java.util.concurrent.*
 import kotlin.random.*
 
@@ -276,15 +277,31 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 }
 
 
+/**将当前数组作为值的部分，与另一个数组组成映射。*/
+fun <K, V> Array<out V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
+
+/**将当前数组作为值的部分，与另一个列表组成映射。*/
+fun <K, V> Array<out V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
+
+/**将当前列表作为值的部分，与另一个数组组成映射。*/
+fun <K, V> List<V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
+
+/**将当前列表作为值的部分，与另一个列表组成映射。*/
+fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
+
+
 /**根据指定的转换操作，将映射中的键与值加入到指定的可添加对添加对象。默认转换操作是`$k=$v`。*/
 @OutlookImplementationApi
-fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): A {
+fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
+	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
+	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
 
 /**根据指定的转换操作，将映射中的键与值加入到字符串。默认转换操作是`$k=$v`。*/
 @OutlookImplementationApi
-fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
+fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
 
@@ -295,7 +312,8 @@ inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): Lis
 }
 
 /**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
-inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
+	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
 	return destination
 }
@@ -306,7 +324,8 @@ inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List
 }
 
 /**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
-inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
+	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
 	return destination
 }
@@ -317,7 +336,8 @@ inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<
 }
 
 /**按照类型以及附加条件过滤集，然后置入指定的集合。*/
-inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
+	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
 	return destination
 }
@@ -328,7 +348,8 @@ inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> B
 }
 
 /**按照类型以及附加条件过滤序列，然后置入指定的集合。*/
-inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C,
+	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
 	return destination
 }
@@ -360,23 +381,24 @@ inline fun <T, R : Any> Iterable<T>.zipWithFirst(other: Iterable<R>, predicate: 
 
 /**绑定当前序列中的元素以及另一个序列中满足指定预测的首个元素。过滤总是不满足的情况。*/
 @OutlookImplementationApi
-inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
+inline fun <T, R : Any> Sequence<T>.zipWithFirst(other: Sequence<R>,
+	crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
 //REGION Deep operations
 
-/**根据指定的标准引用得到当前数组中的元素。*/
+/**根据指定的[StandardReference]得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
-	this.toIndexKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
+	this.toIndexKeyMap().privateDeepGet(path.splitBy(StandardReference))
 
-/**根据指定的标准引用得到当前列表中的元素。*/
+/**根据指定的[StandardReference]得到当前列表中的元素。*/
 fun <T> List<T>.deepGet(path: String): Any? =
-	this.toIndexKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
+	this.toIndexKeyMap().privateDeepGet(path.splitBy(StandardReference))
 
-/**根据指定的标准引用得到当前映射中的元素。*/
+/**根据指定的[StandardReference]得到当前映射中的元素。*/
 fun <K, V> Map<K, V>.deepGet(path: String): Any? =
-	this.toStringKeyMap().privateDeepGet(path.splitBy(ReferenceCase.StandardReference))
+	this.toStringKeyMap().privateDeepGet(path.splitBy(StandardReference))
 
 private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): Any? {
 	val currentSubPath = subPaths.first()
@@ -396,24 +418,25 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
 }
 
 
-/**递归平滑映射当前数组，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Array<out T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+/**递归平滑映射当前数组，返回引用-值映射。默认使用[StandardReference]。可以指定层级，默认为全部层级。*/
+fun <T> Array<out T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
-/**递归平滑映射当前集合，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Iterable<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+/**递归平滑映射当前集合，返回引用-值映射。默认使用[StandardReference]。可以指定层级，默认为全部层级。*/
+fun <T> Iterable<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
-/**递归平滑映射当前映射，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+/**递归平滑映射当前映射，返回引用-值映射。默认使用[StandardReference]。可以指定层级，默认为全部层级。*/
+fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = StandardReference): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
-/**递归平滑映射当前序列，返回引用-值映射。默认使用标准引用[ReferenceCase.StandardReference]。可以指定层级，默认为全部层级。*/
-fun <T> Sequence<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> =
+/**递归平滑映射当前序列，返回引用-值映射。默认使用[StandardReference]。可以指定层级，默认为全部层级。*/
+fun <T> Sequence<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
 //TODO 尝试写成能够尾递归的形式
-private fun Map<String, Any?>.privateDeepFlatten(depth: Int = -1, preSubPaths: List<String>, pathFormatCase: FormatCase = ReferenceCase.StandardReference): Map<String, Any?> {
+private fun Map<String, Any?>.privateDeepFlatten(depth: Int = -1, preSubPaths: List<String>,
+	pathFormatCase: FormatCase = StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentHierarchy = if(depth <= 0) depth else depth - 1
 		//每次递归需要创建新的子路径列表
@@ -432,24 +455,25 @@ private fun Map<String, Any?>.privateDeepFlatten(depth: Int = -1, preSubPaths: L
 }
 
 
-/**根据指定的JsonSchema引用[ReferenceCase.JsonSchemaReference]递归查询当前数组，返回匹配的引用-值映射，默认使用标准引用[ReferenceCase.StandardReference]。*/
-fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
+/**根据指定的[JsonSchemaReference]递归查询当前数组，返回匹配的引用-值映射，默认使用[StandardReference]。*/
+fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepQuery(path.splitBy(JsonSchemaReference), listOf(), referenceCase)
 
-/**根据指定的JsonSchema引用[ReferenceCase.JsonSchemaReference]递归查询当前集合，返回匹配的引用-值映射，默认使用标准引用[ReferenceCase.StandardReference]。*/
-fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
+/**根据指定的[JsonSchemaReference]递归查询当前集合，返回匹配的引用-值映射，默认使用[StandardReference]。*/
+fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepQuery(path.splitBy(JsonSchemaReference), listOf(), referenceCase)
 
-/**根据指定的JsonSchema引用[ReferenceCase.JsonSchemaReference]递归查询当前映射，返回匹配的引用-值映射，默认使用标准引用[ReferenceCase.StandardReference]。*/
-fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toStringKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
+/**根据指定的[JsonSchemaReference]递归查询当前映射，返回匹配的引用-值映射，默认使用[StandardReference]。*/
+fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = StandardReference): Map<String, Any?> =
+	this.toStringKeyMap().privateDeepQuery(path.splitBy(JsonSchemaReference), listOf(), referenceCase)
 
-/**根据指定的JsonSchema引用[ReferenceCase.JsonSchemaReference]递归查询当前序列，返回匹配的引用-值映射，默认使用标准引用[ReferenceCase.StandardReference]。*/
-fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> =
-	this.toIndexKeyMap().privateDeepQuery(path.splitBy(ReferenceCase.JsonSchemaReference), listOf(), referenceCase)
+/**根据指定的[JsonSchemaReference]递归查询当前序列，返回匹配的引用-值映射，默认使用[StandardReference]。*/
+fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = StandardReference): Map<String, Any?> =
+	this.toIndexKeyMap().privateDeepQuery(path.splitBy(JsonSchemaReference), listOf(), referenceCase)
 
 //TODO 尝试写成能够尾递归的形式
-private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>, referenceCase: ReferenceCase = ReferenceCase.StandardReference): Map<String, Any?> {
+private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>,
+	referenceCase: ReferenceCase = StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
 		val currentSubPath = subPaths.first()
 		val currentSubPaths = subPaths.drop(1)

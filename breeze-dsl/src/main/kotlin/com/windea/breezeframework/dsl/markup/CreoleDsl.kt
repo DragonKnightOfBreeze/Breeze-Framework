@@ -268,7 +268,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		require(rows.isNotEmpty()) { "Table row size must be greater than 0." }
 		
 		//NOTE actual column size may not equal to columns.size, and can be user defined
-		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max()!!)
+		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		header.columnSize = actualColumnSize
 		rows.forEach { it.columnSize = actualColumnSize }
 		

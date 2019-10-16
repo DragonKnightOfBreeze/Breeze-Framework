@@ -4,14 +4,18 @@ import java.io.*
 
 //REGION Type alias
 
-/**单一元素类型的二元素元组。*/
-typealias Tuple2<T> = Pair<T, T>
+typealias Tuple2<A, B> = Pair<A, B>
 
-/**单一元素类型的三元素元组。*/
-typealias Tuple3<T> = Triple<T, T, T>
+typealias Tuple3<A, B, C> = Triple<A, B, C>
 
-/**单一元素类型的四元素元组。*/
-typealias Tuple4<T> = Quadruple<T, T, T, T>
+typealias Tuple4<A, B, C, D> = Quadruple<A, B, C, D>
+
+
+typealias TypedTuple2<T> = Pair<T, T>
+
+typealias TypedTuple3<T> = Triple<T, T, T>
+
+typealias TypedTuple4<T> = Quadruple<T, T, T, T>
 
 //REGION Quadruple class and extensions (necessary for Quaternion)
 
@@ -36,7 +40,7 @@ infix fun <A, B, C> Pair<A, B>.andTo(that: C): Triple<A, B, C> = Triple(first, s
 /**从三元素元组构造四元素元组。*/
 infix fun <A, B, C, D> Triple<A, B, C>.thenTo(that: D): Quadruple<A, B, C, D> = Quadruple(first, second, third, that)
 
-//REGION Common extensions (necessary for single-number-type tuples)
+//REGION Other extensions (necessary for single-type tuples)
 
 /**映射单一元素类型的二元素元组的元素。*/
 fun <T, R> Pair<T, T>.map(transform: (T) -> R): Pair<R, R> =
