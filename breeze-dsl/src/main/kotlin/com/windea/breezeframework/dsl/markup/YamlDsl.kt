@@ -5,10 +5,10 @@ package com.windea.breezeframework.dsl.markup
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.YamlConfig.indent
-import com.windea.breezeframework.dsl.markup.YamlConfig.prettyFormat
 import com.windea.breezeframework.dsl.markup.YamlConfig.quote
 
 //TODO
+//TODO complex key support
 
 //REGION Dsl annotations
 
@@ -35,16 +35,19 @@ class Yaml @PublishedApi internal constructor() : DslBuilder {
 object YamlConfig : DslConfig {
 	/**缩进长度。*/
 	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
+		set(value) = run { field = value.coerceIn(2, 8) }
+	/**数组指示器的缩进长度。*/
+	var indicatorIndentSize = 0
+		set(value) = run { field = value.coerceIn(0, 8) }
 	/**是否使用双引号。*/
 	var useDoubleQuote: Boolean = true
-	/**是否以美观的形式输出。*/
-	var prettyFormat: Boolean = true
+	/**是否偏好无引号。*/
+	var preferNoQuote: Boolean = true
 	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val indent get() = " " * indentSize
+	@PublishedApi internal val indicatorIndent get() = " " * indicatorIndentSize
 	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
 }
-
 
 /**Yaml Dsl的元素。*/
 @YamlDsl
@@ -98,8 +101,8 @@ class YamlString @PublishedApi internal constructor(value: String) : YamlPrimiti
 class YamlArray @PublishedApi internal constructor(
 	value: List<YamlElement<*>> = listOf()
 ) : YamlElement<List<*>>(value), List<YamlElement<*>> by value, WrapContent, IndentContent {
-	override var wrapContent: Boolean = prettyFormat
-	override var indentContent: Boolean = prettyFormat
+	override var wrapContent: Boolean = true
+	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		return when {
@@ -117,8 +120,8 @@ class YamlArray @PublishedApi internal constructor(
 class YamlObject @PublishedApi internal constructor(
 	value: Map<String, YamlElement<*>> = mapOf()
 ) : YamlElement<Map<String, *>>(value), Map<String, YamlElement<*>> by value, WrapContent, IndentContent {
-	override var wrapContent: Boolean = prettyFormat
-	override var indentContent: Boolean = prettyFormat
+	override var wrapContent: Boolean = true
+	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		return when {
@@ -129,6 +132,29 @@ class YamlObject @PublishedApi internal constructor(
 			else -> value.joinToString(", ", "{", "}") { (k, v) -> "${k.wrapQuote(quote)}: $v" }
 		}
 	}
+}
+
+
+class YamlDocument
+
+class YamlDirective
+
+class YamlTag
+
+class YamlAlias
+
+class YamlAnchor
+
+//REGION Enumerations and constants
+
+enum class YamlScalarStyle(
+	val text: String
+) {
+	None(""), DoubleQuoted("\""), SingleQuoted("'"), Literal("|"), Folded(">")
+}
+
+enum class YamlFlowStyle {
+	Auto, Flow, Block
 }
 
 //REGION Build extensions
@@ -163,6 +189,9 @@ object YamlInlineBuilder {
 
 @YamlDsl
 inline fun yaml(builder: Yaml.() -> Any?) = Yaml().also { it.rootElement = it.builder().toYamlElement() }
+
+@YamlDsl
+inline fun yamlTree(builder: Yaml.() -> YamlElement<*>) = Yaml().also { it.rootElement = it.builder() }
 
 //REGION Internal extensions
 

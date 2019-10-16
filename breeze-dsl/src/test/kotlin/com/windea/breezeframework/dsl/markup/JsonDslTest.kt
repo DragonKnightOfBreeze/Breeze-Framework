@@ -19,7 +19,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test2() {
-		json {
+		jsonTree {
 			jsonArrayOf(
 				jsonString("a"),
 				jsonArrayOf(jsonString("b1"), jsonString("b2")),
@@ -30,7 +30,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test3() {
-		json {
+		jsonTree {
 			jsonArrayOf(
 				"a".map(),
 				jsonArrayOf("b1".map(), "b2".map()),

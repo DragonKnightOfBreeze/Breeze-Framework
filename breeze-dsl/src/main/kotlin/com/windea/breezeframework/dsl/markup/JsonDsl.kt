@@ -162,6 +162,9 @@ object JsonInlineBuilder {
 @JsonDsl
 inline fun json(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
 
+@JsonDsl
+inline fun jsonTree(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
+
 //REGION Internal extensions
 
 @PublishedApi

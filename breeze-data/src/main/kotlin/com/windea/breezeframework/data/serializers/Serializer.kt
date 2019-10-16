@@ -6,7 +6,6 @@ import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import java.io.*
 
-//TODO Remain to add comments
 //TODO 允许读取指定泛型类型的数据
 //TODO 考虑编写自己的简洁而灵活的实现
 //TODO 考虑使用扩展库`kotlinx-serialization`，但是缺少具体的对于yaml、xml等格式的实现
