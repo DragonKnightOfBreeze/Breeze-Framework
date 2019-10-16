@@ -18,7 +18,7 @@ private annotation class JsonDsl
 /**Json。*/
 @JsonDsl
 class Json @PublishedApi internal constructor() : DslBuilder {
-	var rootElement: JsonElement<*> = JsonObject()
+	lateinit var rootElement: JsonElement<*>
 	
 	override fun toString(): String {
 		return rootElement.toString()

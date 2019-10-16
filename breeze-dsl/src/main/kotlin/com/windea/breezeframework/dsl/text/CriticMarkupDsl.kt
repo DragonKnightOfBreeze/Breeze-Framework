@@ -14,12 +14,10 @@ private annotation class CriticMarkupDsl
 
 @Reference("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupDsl
-class CriticMarkup @PublishedApi internal constructor() : DslBuilder, WithText<CriticMarkupTextBlock> {
-	var textBlock: CriticMarkupTextBlock = CriticMarkupTextBlock("")
+class CriticMarkup @PublishedApi internal constructor() : DslBuilder {
+	lateinit var text: String
 	
-	override fun toString() = textBlock.toString()
-	
-	override fun String.unaryPlus() = textBlock(this)
+	override fun toString() = text
 }
 
 
@@ -77,15 +75,6 @@ class CriticMarkupHighlightText @PublishedApi internal constructor(
 	text: String
 ) : CriticMarkupText("{==", text, "==}")
 
-
-/**Critic Markup文本块。*/
-@CriticMarkupDsl
-class CriticMarkupTextBlock @PublishedApi internal constructor(
-	val text: String
-) : CriticMarkupDslElement {
-	override fun toString() = text
-}
-
 //REGION Build extensions
 
 @CriticMarkupDsl
@@ -108,10 +97,5 @@ object CriticMarkupInlineBuilder {
 
 
 @CriticMarkupDsl
-inline fun criticMarkup(builder: CriticMarkup.() -> Unit) =
-	CriticMarkup().also { it.builder() }
+inline fun criticMarkup(builder: CriticMarkup.() -> String) = CriticMarkup().also { it.text = it.builder() }
 
-
-@CriticMarkupDsl
-inline fun CriticMarkup.textBlock(text: String) =
-	CriticMarkupTextBlock(text).also { this.textBlock = it }

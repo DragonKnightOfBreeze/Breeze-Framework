@@ -6,19 +6,9 @@ import org.junit.*
 
 class CriticMarkupDslTest {
 	@Test
-	fun test1() {
-		criticMarkup {
-			textBlock("""
-				Hello, ${cmAppend("world")}!
-				Nice to ${cmHighlight("meet")} you!
-			""".trimIndent())
-		}.also { println(it) }
-	}
-	
-	@Test
 	fun test2() {
 		criticMarkup {
-			+"""
+			"""
 				Hello, ${cmAppend("world")}!
 				Nice to ${cmHighlight("meet")} you!
 			""".trimIndent()
