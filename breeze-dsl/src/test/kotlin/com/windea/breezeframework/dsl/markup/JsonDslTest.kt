@@ -41,7 +41,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test4() {
-		JsonConfig.prettyFormat = false
+		JsonConfig.prettyPrint = false
 		json {
 			listOf(
 				"a",

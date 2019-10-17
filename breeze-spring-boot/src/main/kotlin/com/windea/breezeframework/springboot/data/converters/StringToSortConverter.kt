@@ -1,4 +1,4 @@
-package com.windea.breezeframework.springboot.data.components.converters
+package com.windea.breezeframework.springboot.data.converters
 
 import org.springframework.core.convert.converter.*
 import org.springframework.data.domain.*

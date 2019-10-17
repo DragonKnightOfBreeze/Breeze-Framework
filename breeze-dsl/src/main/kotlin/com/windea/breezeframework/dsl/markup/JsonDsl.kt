@@ -5,7 +5,7 @@ package com.windea.breezeframework.dsl.markup
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.JsonConfig.indent
-import com.windea.breezeframework.dsl.markup.JsonConfig.prettyFormat
+import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
 //REGION Dsl annotations
@@ -28,6 +28,7 @@ class Json @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toJsonElement()
 }
 
+
 /**Json的配置。*/
 @JsonDsl
 object JsonConfig : DslConfig {
@@ -37,7 +38,7 @@ object JsonConfig : DslConfig {
 	/**是否使用双引号。*/
 	var useDoubleQuote: Boolean = true
 	/**是否以美观的形式输出。*/
-	var prettyFormat: Boolean = true
+	var prettyPrint: Boolean = true
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
@@ -96,8 +97,8 @@ class JsonString @PublishedApi internal constructor(value: String) : JsonPrimiti
 class JsonArray @PublishedApi internal constructor(
 	value: List<JsonElement<*>> = listOf()
 ) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, WrapContent, IndentContent {
-	override var wrapContent: Boolean = prettyFormat
-	override var indentContent: Boolean = prettyFormat
+	override var wrapContent: Boolean = prettyPrint
+	override var indentContent: Boolean = prettyPrint
 	
 	override fun toString(): String {
 		return when {
@@ -115,8 +116,8 @@ class JsonArray @PublishedApi internal constructor(
 class JsonObject @PublishedApi internal constructor(
 	value: Map<String, JsonElement<*>> = mapOf()
 ) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, WrapContent, IndentContent {
-	override var wrapContent: Boolean = prettyFormat
-	override var indentContent: Boolean = prettyFormat
+	override var wrapContent: Boolean = prettyPrint
+	override var indentContent: Boolean = prettyPrint
 	
 	override fun toString(): String {
 		return when {

@@ -124,8 +124,8 @@
 * [X] breeze-dsl 让本质上是List或Map的DSLElement继承对应的接口并代理实现。（本质上是Tree或Table的例外）
 * [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
 * [X] 整理代码。
+* [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
-* [ ] breeze&serializer&breeze-serialization 提取和分离breeze-data的代码。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 
 ***

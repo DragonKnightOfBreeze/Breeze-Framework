@@ -590,34 +590,6 @@ inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWh
 inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
 
 
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Array<out T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> List<T>.mapTrim(): List<CharSequence> = this.map { it.trim() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Sequence<T>.mapTrim(): Sequence<CharSequence> = this.map { it.trim() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Array<out T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> List<T>.mapTrimStart(): List<CharSequence> = this.map { it.trimStart() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Sequence<T>.mapTrimStart(): Sequence<CharSequence> = this.map { it.trimStart() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Array<out T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> List<T>.mapTrimEnd(): List<CharSequence> = this.map { it.trimEnd() }
-
-/**去除首尾的空白。*/
-inline fun <T : CharSequence> Sequence<T>.mapTrimEnd(): Sequence<CharSequence> = this.map { it.trimEnd() }
-
-
 /**过滤空字符串。*/
 inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
