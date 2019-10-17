@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "NOTHING_TO_INLINE")
+@file:Suppress("UNUSED_PARAMETER", "NOTHING_TO_INLINE", "DuplicatedCode")
 
 package com.windea.breezeframework.core.extensions
 
@@ -463,6 +463,22 @@ fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
 	if(trimmedIndent.isEmpty()) return this.trimIndent()
 	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
+}
+
+
+/**转化为指定的数字类型。*/
+inline fun <reified T : Number> String.to(): T {
+	//performance note: approach to 1/5
+	val typeName = T::class.java.name
+	return when(typeName[10]) {
+		'I' -> this.toInt() as T
+		'L' -> this.toLong() as T
+		'F' -> this.toFloat() as T
+		'D' -> this.toDouble() as T
+		'B' -> this.toByte() as T
+		'S' -> this.toShort() as T
+		else -> throw IllegalArgumentException("Illegal reified type parameter '$typeName'. Not supported.")
+	}
 }
 
 

@@ -5,7 +5,7 @@ import kotlinx.serialization.internal.*
 import java.text.*
 import java.util.*
 
-@Serializer(forClass = Date::class)
+@Serializer(Date::class)
 class DateSerializer(val format: String = "yyyy/MM/dd HH:mm:ss") : KSerializer<Date> {
 	private val dateFormat: DateFormat = SimpleDateFormat(format)
 	

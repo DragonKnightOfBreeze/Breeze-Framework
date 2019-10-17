@@ -24,6 +24,7 @@ sealed class TemporalSerializer<T : Temporal> : KSerializer<T> {
 	abstract fun String.toTemporal(): T
 }
 
+//NOTE remove annotation for NoSuchMethodException
 class LocalDateSerializer(
 	val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 ) : TemporalSerializer<LocalDate>() {
@@ -34,22 +35,24 @@ class LocalDateSerializer(
 	override fun String.toTemporal(): LocalDate = LocalDate.parse(this, formatter)
 }
 
+//NOTE remove annotation for NoSuchMethodException
 class LocalTimeSerializer(
 	val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
 ) : TemporalSerializer<LocalTime>() {
 	override val descriptor: SerialDescriptor = StringDescriptor.withName("java.time.LocalTime")
 	
-	override fun LocalTime.fromTemporal(): String = this.format(formatter)
+	override fun LocalTime.fromTemporal(): String = this.withNano(0).format(formatter) //trim nanoSecond
 	
-	override fun String.toTemporal(): LocalTime = LocalTime.parse(this, formatter)
+	override fun String.toTemporal(): LocalTime = LocalTime.parse(this, formatter).withNano(0) //trim nanoSecond
 }
 
+//NOTE remove annotation for NoSuchMethodException
 class LocalDateTimeSerializer(
 	val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 ) : TemporalSerializer<LocalDateTime>() {
 	override val descriptor: SerialDescriptor = StringDescriptor.withName("java.time.LocalDateTime")
 	
-	override fun LocalDateTime.fromTemporal(): String = this.format(formatter)
+	override fun LocalDateTime.fromTemporal(): String = this.withNano(0).format(formatter) //trim nanoSecond
 	
-	override fun String.toTemporal(): LocalDateTime = LocalDateTime.parse(this, formatter)
+	override fun String.toTemporal(): LocalDateTime = LocalDateTime.parse(this, formatter).withNano(0) //trim nanoSecond
 }
