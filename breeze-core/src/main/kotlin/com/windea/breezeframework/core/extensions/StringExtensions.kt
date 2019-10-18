@@ -219,21 +219,21 @@ fun String.addPrefix(prefix: CharSequence, ignoreEmpty: Boolean = true): String 
 }
 
 /**添加指定的后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
+fun String.addSuffix(suffix: CharSequence, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
 /**添加指定的前缀和后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
+fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
 	return "$prefix$this$suffix"
 }
 
 /**添加指定的前后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSurrounding(delimiter: String, ignoreEmpty: Boolean): String {
+fun String.addSurrounding(delimiter: CharSequence, ignoreEmpty: Boolean): String {
 	return this.addSurrounding(delimiter, delimiter, ignoreEmpty)
 }
 
@@ -457,36 +457,18 @@ fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 /**转化为指定的数字类型。*/
 inline fun <reified T : Number> String.to(): T {
 	//performance note: approach to 1/5
-	val typeName = T::class.java.name
-	return when(typeName[10]) {
-		'I' -> this.toInt() as T
-		'L' -> this.toLong() as T
-		'F' -> this.toFloat() as T
-		'D' -> this.toDouble() as T
-		'B' -> this.toByte() as T
-		'S' -> this.toShort() as T
-		else -> throw IllegalArgumentException("Illegal reified type parameter '$typeName'. Not supported.")
+	return when(val typeName = T::class.java.name) {
+		"java.lang.Integer" -> this.toInt() as T
+		"java.lang.Long" -> this.toLong() as T
+		"java.lang.Float" -> this.toFloat() as T
+		"java.lang.Double" -> this.toDouble() as T
+		"java.lang.Byte" -> this.toByte() as T
+		"java.lang.Short" -> this.toShort() as T
+		"java.math.BigInteger" -> this.toBigInteger() as T
+		"java.math.BigDecimal" -> this.toBigDecimal() as T
+		else -> throw UnsupportedOperationException("Unsupported reified type parameter '$typeName'.")
 	}
 }
-
-
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。*/
-fun String.toIntOrDefault(defaultValue: Int = 0): Int = this.toIntOrDefault(10, defaultValue)
-
-/**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
-fun String.toIntOrDefault(radix: Int = 10, defaultValue: Int = 0): Int = this.toIntOrNull(radix) ?: defaultValue
-
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。*/
-fun String.toLongOrDefault(defaultValue: Long = 0): Long = this.toLongOrDefault(10, defaultValue)
-
-/**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
-fun String.toLongOrDefault(radix: Int = 10, defaultValue: Long = 0): Long = this.toLongOrNull(radix) ?: defaultValue
-
-/**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值，默认为0.0f。*/
-fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrNull() ?: defaultValue
-
-/**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值，默认为0.0。*/
-fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
@@ -568,29 +550,3 @@ internal fun String.toQueryParamMap(): QueryParamMap {
 	}
 	return QueryParamMap(map)
 }
-
-///**将当前字符串转化为颜色。*/
-//fun String.toColor(): Color {
-//	return when {
-//		//#333
-//		this startsWith "#" && this.length == 4 -> Color(this.substring(1).flatRepeat(2).toInt(16))
-//		//#3333
-//		this startsWith "#" && this.length == 5 -> Color(this.substring(1).flatRepeat(2).toInt(16), true)
-//		//#333333
-//		this startsWith "#" && this.length == 7 -> Color(this.substring(1).toInt(16))
-//		//#33333333
-//		this startsWith "#" && this.length == 9 -> Color(this.substring(1).toInt(16), true)
-//		//rgb(0,0,0)
-//		this startsWith "rgb(" -> {
-//			val (r, g, b) = this.substring(4, this.length - 1).split(",").map { it.trim().toInt(16) }
-//			Color(r, g, b)
-//		}
-//		//rgba(0,0,0,255)
-//		this startsWith "rgba(" -> {
-//			val (r, g, b, a) = this.substring(5, this.length - 1).split(",").map { it.trim().toInt(16) }
-//			Color(r, g, b, a)
-//		}
-//		//white || EXCEPTION
-//		else -> Color.getColor(this)
-//	}
-//}

@@ -111,15 +111,16 @@ inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 /**转化为指定的数字类型。*/
 inline fun <reified T : Number> Number.to(): T {
 	//performance note: approach to 1/5
-	val typeName = T::class.java.name
-	return when(typeName[10]) {
-		'I' -> this.toInt() as T
-		'L' -> this.toLong() as T
-		'F' -> this.toFloat() as T
-		'D' -> this.toDouble() as T
-		'B' -> this.toByte() as T
-		'S' -> this.toShort() as T
-		else -> throw IllegalArgumentException("Illegal reified type parameter '$typeName'. Not supported.")
+	return when(val typeName = T::class.java.name) {
+		"java.lang.Integer" -> this.toInt() as T
+		"java.lang.Long" -> this.toLong() as T
+		"java.lang.Float" -> this.toFloat() as T
+		"java.lang.Double" -> this.toDouble() as T
+		"java.lang.Byte" -> this.toByte() as T
+		"java.lang.Short" -> this.toShort() as T
+		"java.math.BigInteger" -> this.toString().toBigInteger() as T
+		"java.math.BigDecimal" -> this.toString().toBigDecimal() as T
+		else -> throw UnsupportedOperationException("Unsupported reified type parameter '$typeName'.")
 	}
 }
 

@@ -131,12 +131,16 @@
 * [X] breeze-core 提供`joinToStringOrEmpty`方法（为了优化性能）。
 * [X] breeze-core 重构`addPrefix`等方法（参照标准库）。
 * [X] breeze-dsl 重构代码。
+* [X] breeze-core 精简`toXxxOrDefault`和`toXxxOrElse`方法。
+* [ ] breeze-dsl 提供一种方法，使两组字符串能够按行对齐，并用指定字符补全空白。默认为空格。
 * [ ] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，实现`WrapContent`接口。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-serialization 提供yaml的序列化实现。
+* [ ] breeze-serialization 提供xml的序列化实现。
 
 ***
 
+* [ ] breeze-dsl 适用`orEmpty`方法。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。

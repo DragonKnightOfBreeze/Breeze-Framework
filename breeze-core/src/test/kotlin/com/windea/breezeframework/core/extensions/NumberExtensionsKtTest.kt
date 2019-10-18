@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 import org.junit.*
+import java.math.*
 import kotlin.system.*
 
 class NumberExtensionsKtTest {
@@ -36,6 +37,7 @@ class NumberExtensionsKtTest {
 		println(1.to<Long>())
 		println(1.to<Float>())
 		println(1.to<Double>())
+		println(1.to<BigInteger>())
 		
 		var a = 0L
 		var b = 0L

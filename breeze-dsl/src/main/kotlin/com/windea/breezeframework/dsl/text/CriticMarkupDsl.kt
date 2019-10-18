@@ -17,7 +17,9 @@ private annotation class CriticMarkupDsl
 class CriticMarkup @PublishedApi internal constructor() : DslBuilder {
 	lateinit var text: String
 	
-	override fun toString() = text
+	override fun toString(): String {
+		return text
+	}
 }
 
 
@@ -37,7 +39,9 @@ sealed class CriticMarkupText(
 	val text: String,
 	protected val suffixMarkers: String
 ) : CriticMarkupDslInlineElement {
-	override fun toString() = "$prefixMarkers $text $suffixMarkers"
+	override fun toString(): String {
+		return "$prefixMarkers $text $suffixMarkers"
+	}
 }
 
 /**Critic Markup添加文本。*/
@@ -60,7 +64,9 @@ class CriticMarkupReplacedText @PublishedApi internal constructor(
 ) : CriticMarkupText("{--", text, "--}") {
 	private val infixMarkers: String = "~>"
 	
-	override fun toString() = "$prefixMarkers $text $infixMarkers $replacedText $suffixMarkers"
+	override fun toString(): String {
+		return "$prefixMarkers $text $infixMarkers $replacedText $suffixMarkers"
+	}
 }
 
 /**Critic Markup注释文本。*/
