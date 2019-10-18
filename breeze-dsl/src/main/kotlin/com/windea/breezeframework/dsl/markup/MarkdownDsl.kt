@@ -241,14 +241,17 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 sealed class MarkdownHeading(
 	val headingLevel: Int,
 	val text: String
-) : MarkdownDslTopElement
+) : MarkdownDslTopElement, WithMarkdownAttributes {
+	override var attributes: MarkdownAttributes? = null
+}
 
 /**Setext风格的Markdown标题。*/
 @MarkdownDsl
 sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val suffixMarkers = (if(headingLevel == 1) "=" else "-") * repeatableMarkerCount
-		return "$text\n$suffixMarkers"
+		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		return "$text$attributesSnippet\n$suffixMarkers"
 	}
 }
 
@@ -265,7 +268,8 @@ class MarkdownSubHeading @PublishedApi internal constructor(text: String) : Mark
 sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val prefixMarkers = "#" * headingLevel
-		return "$prefixMarkers $text"
+		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		return "$prefixMarkers $text$attributesSnippet"
 	}
 }
 
@@ -501,7 +505,7 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 	override var attributes: MarkdownAttributes? = null
 	
 	override fun toString(): String {
-		val attributesSnippet = attributes?.toString()?.ifNotEmpty { " $it" } ?: ""
+		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
 		return "```$language$attributesSnippet\n$text\n``s`"
 	}
 }
@@ -577,7 +581,7 @@ class MarkdownImport @PublishedApi internal constructor(
 	override var generateContent: Boolean = false //TODO
 	
 	override fun toString(): String {
-		val attributesSnippet = attributes?.toString()?.ifNotEmpty { " $it" } ?: ""
+		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet$attributesSnippet"
 	}

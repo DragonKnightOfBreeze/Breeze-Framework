@@ -125,6 +125,7 @@
 * [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
 * [X] 整理代码。
 * [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
+* [X] 支持标题的特性（一般是id）。 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-serialization 提供yaml的序列化实现。
 

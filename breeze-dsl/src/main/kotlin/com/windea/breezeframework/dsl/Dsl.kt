@@ -12,6 +12,7 @@ import com.windea.breezeframework.core.extensions.*
 //文本属性以外的默认属性通过内联中缀方法构建。
 //Dsl构建方法需要尽可能地写成扩展方法。
 //Dsl的主要功能是生成处理后的字符串，尽量避免添加其他无关的功能。
+//toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 
 //REGION Dsl annotations
 

@@ -2,10 +2,14 @@
 
 package com.windea.breezeframework.core.extensions
 
-//REGION Global extensions
+//REGION Common extensions
 
 /**取在指定范围内的夹值。*/
 infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(range)
+
+/**转换范围的值。*/
+inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: (T) -> R): ClosedRange<R> =
+	transform(start)..transform(endInclusive)
 
 //REGION Build extensions
 
