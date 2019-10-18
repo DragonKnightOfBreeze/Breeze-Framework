@@ -1,5 +1,3 @@
-@file:NotTested
-
 package com.windea.breezeframework.data.serializers
 
 import com.windea.breezeframework.core.annotations.marks.*
@@ -13,6 +11,7 @@ import java.io.*
 //REGION Top interfaces
 
 /**序列化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
+@NotTested
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
 	fun <T : Any> load(string: String, type: Class<T>): T

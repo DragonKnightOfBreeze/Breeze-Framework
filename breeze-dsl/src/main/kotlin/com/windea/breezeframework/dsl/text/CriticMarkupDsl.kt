@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.text
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.dsl.*
 
 //REGION Dsl annotations
@@ -12,7 +12,7 @@ private annotation class CriticMarkupDsl
 
 //REGION Dsl & Dsl config & Dsl elements
 
-@Reference("[Critic Markup](http://criticmarkup.com/users-guide.php)")
+@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupDsl
 class CriticMarkup @PublishedApi internal constructor() : DslBuilder {
 	lateinit var text: String

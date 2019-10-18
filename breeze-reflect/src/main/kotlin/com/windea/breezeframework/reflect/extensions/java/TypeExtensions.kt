@@ -1,10 +1,9 @@
 package com.windea.breezeframework.reflect.extensions.java
 
-import com.windea.breezeframework.core.annotations.marks.*
 import java.lang.reflect.*
 
+//https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/TypeErasure.kt
 /**得到当前类型的被擦除类型。*/
-@Reference("[klutter](https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/TypeErasure.kt)")
 @Suppress("UNCHECKED_CAST")
 val Type.erasedType: Class<out Any>
 	get() = when(this) {

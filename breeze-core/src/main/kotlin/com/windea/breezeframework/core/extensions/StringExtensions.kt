@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.core.*
 import mu.*
@@ -16,31 +15,25 @@ private val logger = KotlinLogging.logger { }
 //REGION Operator overrides
 
 /**@see kotlin.text.slice*/
-@OutlookImplementationApi
 inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
 
 /**@see com.windea.breezeframework.core.extensions.remove*/
-@OutlookImplementationApi
 inline operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**@see kotlin.text.repeat*/
-@OutlookImplementationApi
 inline operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
-@OutlookImplementationApi
 inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 
 //REGION Common functions
 
 /**判断字符串是否相等。忽略大小写。*/
-@OutlookImplementationApi
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
-@OutlookImplementationApi
 infix fun String?.equalsIlc(other: String?): Boolean {
 	if(this == other) return true
 	return this != null && other != null && this.switchTo(this.letterCase, other.letterCase) == other
@@ -48,54 +41,45 @@ infix fun String?.equalsIlc(other: String?): Boolean {
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
-@OutlookImplementationApi
 inline infix fun String.anyIn(other: String): Boolean = this.any { it in other }
 
 
 /**判断当前字符串是否以指定前缀开头。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, false)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, false)
 }
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
 	return suffixArray.any { this.endsWith(it, false) }
 }
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, true)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, true) }
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-@OutlookImplementationApi
 inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
 
@@ -111,13 +95,11 @@ fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
 
 
 /**如果当前字符串不为空，则返回转换后的值。*/
-@OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
 	return if(this.isEmpty()) this else transform(this)
 }
 
 /**如果当前字符串不为空白，则返回转换后的值。*/
-@OutlookImplementationApi
 inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 	return if(this.isBlank()) this else transform(this)
 }
@@ -218,7 +200,6 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 
 
 /**添加指定的前缀。可指定是否忽略空字符串，默认为true。*/
-@OutlookImplementationApi
 fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix)) return this
@@ -226,7 +207,6 @@ fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
 }
 
 /**添加指定的后缀。可指定是否忽略空字符串，默认为true。*/
-@OutlookImplementationApi
 fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.endsWith(suffix)) return this
@@ -234,7 +214,6 @@ fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
 }
 
 /**添加指定的前缀和后缀。可指定是否忽略空字符串，默认为true。*/
-@OutlookImplementationApi
 fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
@@ -483,37 +462,29 @@ inline fun <reified T : Number> String.to(): T {
 
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。*/
-@OutlookImplementationApi
 fun String.toIntOrDefault(defaultValue: Int = 0): Int = this.toIntOrDefault(10, defaultValue)
 
 /**去空白后，将当前字符串转化为对应的整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
-@OutlookImplementationApi
 fun String.toIntOrDefault(radix: Int = 10, defaultValue: Int = 0): Int = this.toIntOrNull(radix) ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。*/
-@OutlookImplementationApi
 fun String.toLongOrDefault(defaultValue: Long = 0): Long = this.toLongOrDefault(10, defaultValue)
 
 /**去空白后，将当前字符串转化为对应的长整数，发生异常则转化为默认值，默认为0。可指定进制，默认为十进制。*/
-@OutlookImplementationApi
 fun String.toLongOrDefault(radix: Int = 10, defaultValue: Long = 0): Long = this.toLongOrNull(radix) ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的单精度浮点数，发生异常则转化为默认值，默认为0.0f。*/
-@OutlookImplementationApi
 fun String.toFloatOrDefault(defaultValue: Float = 0.0f): Float = this.toFloatOrNull() ?: defaultValue
 
 /**去空白后，将当前字符串转化为对应的双精度浮点数，发生异常则转化为默认值，默认为0.0。*/
-@OutlookImplementationApi
 fun String.toDoubleOrDefault(defaultValue: Double = 0.0): Double = this.toDoubleOrNull() ?: defaultValue
 
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
-@OutlookImplementationApi
 inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase: Boolean = false): T =
 	enumValues<T>().let { enumValues -> enumValues.firstOrNull { it.name.equals(this, ignoreCase) } ?: enumValues.first() }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
-@OutlookImplementationApi
 inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = false): T? =
 	enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
 

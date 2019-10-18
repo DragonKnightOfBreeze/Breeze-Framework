@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.indent
@@ -17,7 +17,7 @@ private annotation class PumlDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml Dsl.*/
-@Reference("[PlantUml](http://plantuml.com)")
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @PumlDsl
 abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	var title: PumlTitle? = null

@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -16,7 +16,7 @@ private annotation class MermaidGanttDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid甘特图。*/
-@Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
+@ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
 class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentContent, WithBlock<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null

@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import mu.*
 import org.slf4j.*
 import kotlin.contracts.*
@@ -80,7 +79,6 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 //REGION Precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
-@OutlookImplementationApi
 inline fun accept(value: Boolean) {
 	contract {
 		returns() implies value
@@ -89,7 +87,6 @@ inline fun accept(value: Boolean) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
-@OutlookImplementationApi
 inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 	contract {
 		returns() implies value
@@ -101,7 +98,6 @@ inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
-@OutlookImplementationApi
 inline fun <T> acceptNotNull(value: T?) {
 	contract {
 		returns() implies (value != null)
@@ -110,7 +106,6 @@ inline fun <T> acceptNotNull(value: T?) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
-@OutlookImplementationApi
 inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	contract {
 		returns() implies (value != null)

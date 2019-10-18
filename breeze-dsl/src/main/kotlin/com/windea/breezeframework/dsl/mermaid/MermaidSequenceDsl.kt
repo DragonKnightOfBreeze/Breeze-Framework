@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -15,7 +15,7 @@ private annotation class MermaidSequenceDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid序列图。*/
-@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
+@ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDsl
 class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDslEntry {
 	override val participants: MutableSet<MermaidSequenceParticipant> = mutableSetOf()

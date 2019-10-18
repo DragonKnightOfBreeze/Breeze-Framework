@@ -1,8 +1,6 @@
-@file:Reference("[funKTionale](https://github.com/MarioAriasC/funKTionale)")
-
 package com.windea.breezeframework.functional
 
-import com.windea.breezeframework.core.annotations.marks.*
+//https://github.com/MarioAriasC/funKTionale
 
 //REGION curried & uncurried
 

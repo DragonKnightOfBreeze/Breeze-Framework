@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.indent
@@ -17,7 +17,7 @@ private annotation class PumlStateDiagramDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml状态图。*/
-@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
+@ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @PumlStateDiagramDsl
 class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()

@@ -1,8 +1,7 @@
-@file:Reference("[klutter](https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/Helpers.kt)")
-
 package com.windea.breezeframework.reflect.extensions.java
 
-import com.windea.breezeframework.core.annotations.marks.*
+//https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/Helpers.kt
+
 import java.lang.reflect.*
 
 //TODO Remain to add comments

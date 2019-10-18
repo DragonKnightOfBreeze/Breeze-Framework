@@ -36,7 +36,7 @@
 * [X] 完善测试中。
 * [X] 参考官方库，将简单的转化方法也改写成内联方法。（为了进行堆栈追踪和日志追踪等）
 * [X] 添加`ReflectModifierExtensions`。
-* [X] 为有望被标准库实现的实现添加`@OutlookImplementationApi`注解。
+* [X] 为有望被标准库实现的实现添加`Time`注解。
 * [X] breeze-reflect 从breeze-core提取代码。
 * [X] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
 * [X] 实现已编写的标注为未实现的功能并通过测试。
@@ -125,7 +125,8 @@
 * [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
 * [X] 整理代码。
 * [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
-* [X] 支持标题的特性（一般是id）。 
+* [X] breeze-dsl MarkdownDsl 支持标题的特性（一般是id）。 
+* [X] 精简注解。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-serialization 提供yaml的序列化实现。
 

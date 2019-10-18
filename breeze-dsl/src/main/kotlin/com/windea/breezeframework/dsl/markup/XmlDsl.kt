@@ -56,7 +56,7 @@ object XmlConfig : DslConfig {
 	var defaultRootName: String = "root"
 		set(value) = run { field = value.ifBlank { "root" } }
 	/**缩进长度。*/
-	var indentSize = 2
+	var indentSize: Int = 2
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	/**是否使用双引号。*/
 	var useDoubleQuote: Boolean = true

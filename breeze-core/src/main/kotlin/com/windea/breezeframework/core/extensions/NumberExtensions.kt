@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import kotlin.math.*
 
 //REGION Operator overrides & infix extensions
@@ -100,15 +99,12 @@ fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 //REGION Convert extensions
 
 /**转化为二进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
 
 /**转化为八进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toHexString(): String = Integer.toHexString(this)
 
 /**转化为十六进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 

@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
@@ -14,7 +14,7 @@ private annotation class MermaidDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid Dsl。*/
-@Reference("[Mermaid](https://mermaidjs.github.io)")
+@ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @MermaidDsl
 abstract class Mermaid : DslBuilder
 

@@ -11,6 +11,7 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.initialMarker
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
 import org.intellij.lang.annotations.*
 
 //TODO list prefix marker can also be "+"
@@ -49,15 +50,16 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 @MarkdownDsl
 object MarkdownConfig : DslConfig {
 	/**缩进长度。*/
-	var indentSize = 4
+	var indentSize: Int = 4
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	/**可重复标记的个数。*/
-	var repeatableMarkerCount = 3
+	var repeatableMarkerCount: Int = 3
 		set(value) = run { field = value.coerceIn(3, 6) }
-	var truncated = "..."
+	var truncated: String = "..."
 	var preferDoubleQuote: Boolean = true
 	var preferAsteriskMaker: Boolean = true
 	var emptyColumnSize: Int = 4
+	var wrapLength: Int = 120
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) "\"" else "'"
@@ -231,8 +233,10 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement {
-	override fun toString() = text
+) : MarkdownDslTopElement, WrapContent {
+	override var wrapContent: Boolean = true
+	
+	override fun toString() = text.chunked(wrapLength).joinToString("\n")
 }
 
 

@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.markup
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
@@ -16,7 +16,7 @@ private annotation class CreoleDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**Creole。*/
-@Reference("[Creole](http://plantuml.com/zh/creole)")
+@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
@@ -81,7 +81,7 @@ class CreoleEscapedText @PublishedApi internal constructor(
 }
 
 /**Creole图标。可以使用open iconic图标。*/
-@Reference("[OpenIconic](https://useiconic.com/open/)")
+@ReferenceApi("[OpenIconic](https://useiconic.com/open/)")
 @CreoleDsl
 class CreoleIcon @PublishedApi internal constructor(
 	val name: String

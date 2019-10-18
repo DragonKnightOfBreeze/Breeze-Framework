@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
@@ -16,7 +16,7 @@ private annotation class PumlSequenceDsl
 //REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml序列图。*/
-@Reference("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
+@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @PumlSequenceDsl
 class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDslEntry {
 	override fun toString(): String {
