@@ -103,29 +103,29 @@ inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOr
 /**判断当前数组是否以任意指定元素开始。*/
 inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
-/**判断当前数组是否以指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**判断当前数组是否以任意指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
 /**判断当前集合是否以指定元素开始。*/
 inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素开始。*/
 inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
-/**判断当前集合是否以指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**判断当前集合是否以任意指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
 /**判断当前序列是否以指定元素开始。*/
 inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前序列是否以任意指定元素开始。*/
 inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+
+/**判断当前数组是否以指定元素结束。*/
+inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+
+/**判断当前数组是否以任意指定元素结束。*/
+inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+
+/**判断当前集合是否以指定元素结束。*/
+inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+
+/**判断当前集合是否以任意指定元素结束。*/
+inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 
 /**判断当前序列是否为空。*/
@@ -149,16 +149,6 @@ inline fun <T : Collection<*>> T.ifNotEmpty(transform: (T) -> T): T {
 /**如果当前映射不为空，则返回转换后的值。*/
 inline fun <T : Map<*, *>> T.ifNotEmpty(transform: (T) -> T): T {
 	return if(this.isEmpty()) this else transform(this)
-}
-
-/**如果当前序列不为空，则返回重新生成的值。*/
-inline fun <T> Sequence<T>.ifNotEmpty(crossinline transform: () -> Sequence<T>): Sequence<T> = sequence {
-	val iterator = this@ifNotEmpty.iterator()
-	if(iterator.hasNext()) {
-		yieldAll(transform())
-	} else {
-		yieldAll(iterator)
-	}
 }
 
 
@@ -214,16 +204,16 @@ fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
 }
 
 
-/**填充指定索引范围内的元素为指定元素。如果索引超出当前列表的长度，或为负数，则忽略。返回填充后的列表。*/
-fun <T> List<T>.fillAt(value: T, indices: IntRange): List<T> {
+/**填充指定索引范围内的元素到当前列表。如果索引超出当前列表的长度，或为负数，则忽略。*/
+fun <T> MutableList<T>.fillRange(value: T, indices: IntRange) {
 	val fromIndex = indices.first.coerceIn(0, this.size)
 	val toIndex = indices.last.coerceIn(fromIndex, this.size)
-	return this.toMutableList().also { list -> for(index in fromIndex..toIndex) list[index] = value }
+	for(index in fromIndex..toIndex) this[index] = value
 }
 
-/**填充指定的元素到当前列表，直到指定长度。如果指定长度比当前长度小，则忽略。返回填充后的列表。*/
-fun <T> List<T>.fillToSize(value: T, size: Int): List<T> {
-	if(this.size < size) return this
+/**填充指定元素到当前列表，直到指定长度。如果指定长度比当前长度小，则忽略。返回填充后的列表。*/
+fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
+	if(this.size <= size) return this
 	return this.toMutableList().also { list -> repeat(size - this.size) { list += value } }
 }
 
@@ -398,7 +388,6 @@ fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = S
 fun <T> Sequence<T>.deepFlatten(depth: Int = -1, pathFormatCase: FormatCase = StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth, listOf(), pathFormatCase)
 
-//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepFlatten(depth: Int = -1, preSubPaths: List<String>,
 	pathFormatCase: FormatCase = StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
@@ -435,7 +424,6 @@ fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = Stan
 fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = StandardReference): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(JsonSchemaReference), listOf(), referenceCase)
 
-//TODO 尝试写成能够尾递归的形式
 private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPaths: List<String>,
 	referenceCase: ReferenceCase = StandardReference): Map<String, Any?> {
 	return this.flatMap { (key, value) ->
@@ -566,19 +554,3 @@ inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.f
 
 /**过滤空白字符串。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
-
-
-/**将当前数组映射为转化索引后的索引-值对集合。*/
-inline fun <T> Array<T>.withIndex(transform: (Int) -> Int): Iterable<IndexedValue<T>> {
-	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
-}
-
-/**将当前集合映射为转化索引后的索引-值对集合。*/
-inline fun <T> Iterable<T>.withIndex(transform: (Int) -> Int): Iterable<IndexedValue<T>> {
-	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
-}
-
-/**将当前序列映射为转化索引后的索引-值对序列。*/
-inline fun <T> Sequence<T>.withIndex(crossinline transform: (Int) -> Int): Sequence<IndexedValue<T>> {
-	return this.withIndex().map { (i, v) -> IndexedValue(transform(i), v) }
-}

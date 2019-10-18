@@ -22,8 +22,8 @@ class CollectionExtensionsKtTest {
 	@Test //TESTED
 	fun fillToSize() {
 		val list = mutableListOf("1", "1", "1")
-		println(list.fillToSize("1", 2))
-		println(list.fillToSize("1", 3))
-		println(list.fillToSize("1", 4))
+		println(list.fillEnd(2, "1"))
+		println(list.fillEnd(3, "1"))
+		println(list.fillEnd(4, "1"))
 	}
 }
