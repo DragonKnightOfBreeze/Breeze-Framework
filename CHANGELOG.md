@@ -127,7 +127,11 @@
 * [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
 * [X] breeze-dsl MarkdownDsl 支持标题的特性（一般是id）。 
 * [X] 精简注解。
-* [X] breeze-core 参照标准库，重命名CollectionExtensions中的部分方法。
+* [X] breeze-core 参照标准库，重命名`CollectionExtensions`中的部分方法。
+* [X] breeze-core 提供`joinToStringOrEmpty`方法（为了优化性能）。
+* [X] breeze-core 重构`addPrefix`等方法（参照标准库）。
+* [X] breeze-dsl 重构代码。
+* [ ] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，实现`WrapContent`接口。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-serialization 提供yaml的序列化实现。
 

@@ -20,20 +20,19 @@ private annotation class MermaidGanttDsl
 @MermaidGanttDsl
 class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentContent, WithBlock<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null
-	var dataFormat: MermaidGanttDateFormat? = null
+	var dateFormat: MermaidGanttDateFormat? = null
 	val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			arrayOf(title, dataFormat).filterNotNull().joinToString("\n"),
-			sections.joinToString("\n\n")
-		).filterNotEmpty().joinToString("\n\n")
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "gantt\n$indentedContentSnippet"
+			arrayOf(title, dateFormat).filterNotNull().joinToStringOrEmpty("\n"),
+			sections.joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "gantt\n$contentSnippet"
 	}
-	
 	
 	@MermaidGanttDsl
 	override fun String.invoke() = section(this)
@@ -80,9 +79,9 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	override fun toString(): String {
 		//trim "\n" if no tasks
 		if(tasks.isEmpty()) return "section $name"
-		val contentSnippet = tasks.joinToString("\n")
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "section $name\n$indentedContentSnippet"
+		val contentSnippet = tasks.joinToStringOrEmpty("\n")
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "section $name\n$contentSnippet"
 	}
 	
 	@MermaidGanttDsl
@@ -106,7 +105,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 		val critSnippet = if(isCrit) "crit" else null
 		val statusSnippet = status.text
 		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime)
-			.filterNotNull().joinToString()
+			.filterNotNull().joinToStringOrEmpty()
 		return "$name: $paramsSnippet"
 	}
 }

@@ -68,4 +68,8 @@ class StringExtensionsKtTest {
 	//	assertTrue("abc ab a" like "abc abc a")
 	//	assertTrue("abc ab a" like  "bcd bc a")
 	//}
+	
+	fun quoteTest() {
+	
+	}
 }

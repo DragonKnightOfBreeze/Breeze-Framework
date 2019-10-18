@@ -33,8 +33,8 @@ class MermaidFlow @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val contentSnippet = toContentString()
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "graph ${direction.text}\n$indentedContentSnippet"
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "graph ${direction.text}\n$contentSnippet"
 	}
 }
 
@@ -50,14 +50,14 @@ interface MermaidFlowDslEntry : IndentContent {
 	
 	fun toContentString(): String {
 		return arrayOf(
-			nodes.joinToString("\n"),
-			links.joinToString("\n"),
-			subGraphs.joinToString("\n"),
-			styles.joinToString("\n"),
-			linkStyles.joinToString("\n"),
-			classDefs.joinToString("\n"),
-			classRefs.joinToString("\n")
-		).filterNotEmpty().joinToString("\n\n")
+			nodes.joinToStringOrEmpty("\n"),
+			links.joinToStringOrEmpty("\n"),
+			subGraphs.joinToStringOrEmpty("\n"),
+			styles.joinToStringOrEmpty("\n"),
+			linkStyles.joinToStringOrEmpty("\n"),
+			classDefs.joinToStringOrEmpty("\n"),
+			classRefs.joinToStringOrEmpty("\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 }
 
@@ -75,12 +75,16 @@ class MermaidFlowNode @PublishedApi internal constructor(
 ) : MermaidFlowDslElement {
 	var shape: MermaidFlowNodeShape = MermaidFlowNodeShape.Rect
 	
-	override fun equals(other: Any?) = this === other || (other is MermaidFlowNode && other.name == name)
+	override fun equals(other: Any?): Boolean {
+		return this === other || (other is MermaidFlowNode && other.name == name)
+	}
 	
-	override fun hashCode() = name.hashCode()
+	override fun hashCode(): Int {
+		return name.hashCode()
+	}
 	
 	override fun toString(): String {
-		val textSnippet = (text?.replaceWithEscapedWrap() ?: name).wrapQuote(quote)
+		val textSnippet = text?.replaceWithHtmlWrap()?.wrapQuote(quote) ?: name
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
 }
@@ -120,8 +124,8 @@ class MermaidFlowSubGraph @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val contentSnippet = toContentString()
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "subgraph $name\n$indentedContentSnippet\nend"
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "subgraph $name\n$contentSnippet\nend"
 	}
 }
 
@@ -132,7 +136,7 @@ class MermaidFlowNodeStyle @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
 		return "style $nodeId $styleMapSnippet"
 	}
 }
@@ -144,7 +148,7 @@ class MermaidFlowLinkStyle @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
 		return "style $linkOrder $styleMapSnippet"
 	}
 }
@@ -156,7 +160,7 @@ class MermaidFlowClassDef @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
 		return "classDef $className $styleMapSnippet"
 	}
 }
@@ -168,7 +172,7 @@ class MermaidFlowClassRef @PublishedApi internal constructor(
 	val className: String
 ) : MermaidFlowDslElement {
 	override fun toString(): String {
-		val nodeIdSetSnippet = nodeIds.joinToString()
+		val nodeIdSetSnippet = nodeIds.joinToStringOrEmpty()
 		return "class $nodeIdSetSnippet $className"
 	}
 }

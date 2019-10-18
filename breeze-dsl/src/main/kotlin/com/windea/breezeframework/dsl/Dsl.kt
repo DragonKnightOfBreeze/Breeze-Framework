@@ -39,25 +39,6 @@ interface DslElement {
 
 //REGION Interfaces
 
-/**包含可换行的内容。*/
-@Dsl
-interface WrapContent {
-	var wrapContent: Boolean
-}
-
-/**包含可缩进的内容。*/
-@Dsl
-interface IndentContent {
-	var indentContent: Boolean
-}
-
-/**包含可生成的内容。可能替换原始文本。*/
-@Dsl
-interface GenerateContent {
-	var generateContent: Boolean
-}
-
-
 /**包含（唯一主要的）可被视为文本的内容。*/
 @Dsl
 interface WithText<T : DslElement> {
@@ -80,6 +61,25 @@ interface WithBlock<T : DslElement> {
 	
 	/**添加主要的块元素为子元素。*/
 	operator fun String.invoke(builder: T.() -> Unit): T
+}
+
+
+/**包含可换行的内容。这个接口的优先级高于[IndentContent]。*/
+@Dsl
+interface WrapContent {
+	var wrapContent: Boolean
+}
+
+/**包含可缩进的内容。*/
+@Dsl
+interface IndentContent {
+	var indentContent: Boolean
+}
+
+/**包含可生成的内容。可能替换原始文本。*/
+@Dsl
+interface GenerateContent {
+	var generateContent: Boolean
 }
 
 //REGION Build extensions

@@ -40,13 +40,13 @@ object YamlConfig : DslConfig {
 	var indicatorIndentSize = 0
 		set(value) = run { field = value.coerceIn(0, 8) }
 	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
+	var preferDoubleQuote: Boolean = true
 	/**是否偏好无引号。*/
 	var preferNoQuote: Boolean = true
 	
 	@PublishedApi internal val indent get() = " " * indentSize
 	@PublishedApi internal val indicatorIndent get() = " " * indicatorIndentSize
-	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
 
 /**Yaml Dsl的元素。*/

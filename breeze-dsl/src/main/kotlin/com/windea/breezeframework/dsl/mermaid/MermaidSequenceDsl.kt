@@ -27,8 +27,8 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	
 	override fun toString(): String {
 		val contentSnippet = toContentString()
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "sequenceDiagram\n$indentedContentSnippet"
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "sequenceDiagram\n$contentSnippet"
 	}
 }
 
@@ -43,11 +43,11 @@ interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNo
 	
 	fun toContentString(): String {
 		return arrayOf(
-			participants.joinToString("\n"),
-			messages.joinToString("\n"),
-			notes.joinToString("\n"),
-			scopes.joinToString("\n")
-		).filterNotEmpty().joinToString("\n\n")
+			participants.joinToStringOrEmpty("\n"),
+			messages.joinToStringOrEmpty("\n"),
+			notes.joinToStringOrEmpty("\n"),
+			scopes.joinToStringOrEmpty("\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 	
 	@MermaidSequenceDsl
@@ -129,8 +129,8 @@ sealed class MermaidSequenceScope(
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" } ?: ""
 		val contentSnippet = toContentString()
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "$type$textSnippet\n$indentedContentSnippet\nend"
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "$type$textSnippet\n$contentSnippet\nend"
 	}
 }
 
@@ -149,7 +149,8 @@ class MermaidSequenceAlternative @PublishedApi internal constructor(text: String
 	
 	override fun toString(): String {
 		val contentSnippet = toContentString()
-		val elseScopesSnippet = elseScopes.joinToString("\n").ifNotEmpty { "\n$it" }
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
 		return "$contentSnippet$elseScopesSnippet"
 	}
 	

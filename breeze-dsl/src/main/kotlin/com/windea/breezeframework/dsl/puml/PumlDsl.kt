@@ -39,16 +39,17 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 }
 
 /**PlantUml Dsl的配置。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @PumlDsl
 object PumlConfig : DslConfig {
 	/**缩进长度。*/
 	var indentSize = 4
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
+	var preferDoubleQuote: Boolean = true
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
 
 
@@ -70,7 +71,7 @@ sealed class PumlElement(
 	override var wrapContent: Boolean = "\n" in text || "\r" in text//wrap content when necessary
 	
 	override fun toString(): String {
-		val positionSnippet = position?.let { "$it " } ?: ""
+		val positionSnippet = position?.text?.let { "$it " } ?: ""
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"$positionSnippet$type\n$indentedTextSnippet\nend $type"
@@ -104,7 +105,9 @@ class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement(
 class PumlScale @PublishedApi internal constructor(
 	val expression: String
 ) : PumlDslElement {
-	override fun toString() = "scale $expression"
+	override fun toString(): String {
+		return "scale $expression"
+	}
 }
 
 /**PlantUml图片标题。*/
@@ -112,7 +115,9 @@ class PumlScale @PublishedApi internal constructor(
 class PumlCaption @PublishedApi internal constructor(
 	val text: String
 ) : PumlDslElement {
-	override fun toString() = "caption $text"
+	override fun toString(): String {
+		return "caption $text"
+	}
 }
 
 
@@ -157,7 +162,7 @@ class PumlNote @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val aliasSnippet = if(position == null) " as $alias" else ""
-		val positionSnippet = position?.let { " ${it.text} $targetId" } ?: ""
+		val positionSnippet = position?.text?.let { " $it $targetId" } ?: ""
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"

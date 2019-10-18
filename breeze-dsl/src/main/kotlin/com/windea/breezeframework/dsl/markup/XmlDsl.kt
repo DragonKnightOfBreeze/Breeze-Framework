@@ -2,12 +2,12 @@
 
 package com.windea.breezeframework.dsl.markup
 
+import com.windea.breezeframework.core.enums.core.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.XmlConfig.autoCloseTag
 import com.windea.breezeframework.dsl.markup.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.markup.XmlConfig.indent
-import com.windea.breezeframework.dsl.markup.XmlConfig.indentSize
 import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
 //REGION Dsl annotations
@@ -26,10 +26,10 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComm
 	
 	override fun toString(): String {
 		return arrayOf(
-			statements.joinToString("\n"),
-			comments.joinToString("\n"),
+			statements.joinToStringOrEmpty("\n"),
+			comments.joinToStringOrEmpty("\n"),
 			rootElement.toString()
-		).filterNotEmpty().joinToString("\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n")
 	}
 	
 	@XmlDsl
@@ -59,12 +59,12 @@ object XmlConfig : DslConfig {
 	var indentSize: Int = 2
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
+	var preferDoubleQuote: Boolean = true
 	/**是否自关闭标签。*/
 	var autoCloseTag: Boolean = false
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
 
 
@@ -80,10 +80,7 @@ class XmlStatement @PublishedApi internal constructor(
 	val attributes: Map<String, String> = mapOf()
 ) : XmlDslElement {
 	override fun toString(): String {
-		val attributesSnippet = when {
-			attributes.isEmpty() -> ""
-			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
-		}
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
 		return "<?$name$attributesSnippet?>"
 	}
 }
@@ -99,7 +96,7 @@ class XmlText @PublishedApi internal constructor(
 	val text: String
 ) : XmlNode() {
 	override fun toString(): String {
-		return text.escapeXml()
+		return text.escape(EscapeType.InXml)
 	}
 }
 
@@ -109,18 +106,13 @@ class XmlComment @PublishedApi internal constructor(
 	val text: String
 ) : XmlNode(), WrapContent, IndentContent {
 	override var wrapContent: Boolean = false
-	override var indentContent: Boolean = false
+	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val textSnippet = text.escapeXml()
-		val indentedTextSnippet = if(indentContent) textSnippet.prependIndent(indent) else textSnippet
-		val wrappedTextSnippet = when {
-			wrapContent -> "\n$indentedTextSnippet\n"
-			//when no wrap with indent, trim first indent string.
-			!wrapContent && indentContent -> indentedTextSnippet.drop(indentSize)
-			else -> indentedTextSnippet
-		}
-		return "<!--$wrappedTextSnippet-->"
+		val textSnippet = text.escape(EscapeType.InXml)
+			.let { if(wrapContent && indentContent) it.prependIndent(indent) else it }
+			.let { if(wrapContent) "\n$it\n" else it }
+		return "<!--$textSnippet-->"
 	}
 }
 
@@ -136,27 +128,13 @@ class XmlElement @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val attributesSnippet = when {
-			attributes.isEmpty() -> ""
-			else -> attributes.joinToString(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
-		}
-		val contentSnippet = when {
-			wrapContent -> nodes.joinToString("\n")
-			else -> nodes.joinToString("")
-		}
-		val indentedContentSnippet = when {
-			indentContent -> contentSnippet.prependIndent(indent)
-			else -> contentSnippet
-		}
-		val wrappedContentSnippet = when {
-			wrapContent -> "\n$indentedContentSnippet\n"
-			//when no wrap with indent, trim first indent string.
-			!wrapContent && indentContent -> indentedContentSnippet.drop(indentSize)
-			else -> indentedContentSnippet
-		}
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		val nodesSnippet = nodes.joinToStringOrEmpty(if(wrapContent) "\n" else "")
+			.let { if(wrapContent && indentContent) it.prependIndent(indent) else it }
+			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"
-		return "$prefixSnippet$wrappedContentSnippet$suffixSnippet"
+		return "$prefixSnippet$nodesSnippet$suffixSnippet"
 	}
 	
 	@XmlDsl

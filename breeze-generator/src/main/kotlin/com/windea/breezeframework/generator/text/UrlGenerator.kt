@@ -1,30 +1,29 @@
 package com.windea.breezeframework.generator.text
 
+import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 
 /**地址生成器。*/
 object UrlGenerator : Generator {
-	var useDoubleQuote = true
+	var preferDoubleQuote = true
 	
+	val quote get() = if(preferDoubleQuote) '"' else '\''
 	
 	/**根据指定参数生成Html链接。*/
 	fun generateHtmlUrl(name: String, url: String, title: String? = null): String {
-		val quote = if(useDoubleQuote) "\"" else "'"
-		val titleSnippet = title?.let { " title=$quote$title$quote" } ?: ""
+		val titleSnippet = title?.let { " title=${title.wrapQuote(quote)}" } ?: ""
 		return "<a href=$quote$url$quote$titleSnippet>$name</a>"
 	}
 	
 	/**根据指定参数生成Markdown链接。*/
 	fun generateMdUrl(name: String, url: String, title: String? = null): String {
-		val quote = if(useDoubleQuote) "\"" else "'"
-		val titleSnippet = title?.let { " $quote$title$quote" } ?: ""
+		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" } ?: ""
 		return "[$name]($url$titleSnippet)"
 	}
 	
 	/**根据指定参数生成Markdown引用链接。*/
 	fun generateMdRefUrl(id: String, name: String, url: String, title: String? = null): Pair<String, String> {
-		val quote = if(useDoubleQuote) "\"" else "'"
-		val titleSnippet = title?.let { " $quote$title$quote" } ?: ""
+		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" } ?: ""
 		return "[$name][$id]" to "[$id]: $url$titleSnippet"
 	}
 	

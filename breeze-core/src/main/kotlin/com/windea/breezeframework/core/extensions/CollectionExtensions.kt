@@ -251,17 +251,38 @@ fun <K, V> List<V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).t
 fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
 
 
-/**根据指定的转换操作，将映射中的键与值加入到指定的可添加对添加对象。默认转换操作是`$k=$v`。*/
+/**根据指定的转换操作，将映射中的键与值加入到指定的可添加对添加对象。默认的转换操作是`$k=$v`。*/
 fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
 
-/**根据指定的转换操作，将映射中的键与值加入到字符串。默认转换操作是`$k=$v`。*/
+/**根据指定的转换操作，将映射中的键与值加入到字符串。默认的转换操作是`$k=$v`。*/
 fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
 	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
+}
+
+/**根据指定的转化操作，将数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
+fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
+	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
+	transform: ((T) -> CharSequence)? = null): String {
+	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
+}
+
+/**根据指定的转化操作，将集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
+fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
+	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
+	transform: ((T) -> CharSequence)? = null): String {
+	return if(this.none()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
+}
+
+/**根据指定的转化操作，将映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
+fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
+	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
+	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
+	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
 
 

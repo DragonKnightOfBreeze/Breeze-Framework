@@ -120,21 +120,33 @@ fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = 
 }
 
 /**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+@JvmName("replaceAllByChar")
+fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
+	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+}
+
+/**根据一组字符元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
 fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
-@JvmName("replaceAllByChar")
-fun String.replaceAll(charPairList: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
-	return charPairList.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
+/**根据一组字符元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+@JvmName("replaceAllByString")
+fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
+	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
-@JvmName("replaceAllByString")
-fun String.replaceAll(valuePairList: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
-	return valuePairList.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
+/**根据一组正则表达式-替换字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+@JvmName("replaceAllByRegex")
+fun String.replaceAll(vararg regexReplacementPairs: Pair<Regex, String>): String {
+	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
+}
+
+/**根据一组正则表达式-替换字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+@JvmName("replaceAllByRegex")
+fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String {
+	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
 }
 
 
@@ -182,14 +194,14 @@ fun String.messageFormat(vararg args: Any): String {
 fun String.customFormat(placeholder: String, vararg args: Any): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escapeRegex() }
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escape(EscapeType.InRegex) }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escapeRegex() }
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escape(EscapeType.InRegex) }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString() ?: ""
 			}
@@ -199,25 +211,30 @@ fun String.customFormat(placeholder: String, vararg args: Any): String {
 }
 
 
-/**添加指定的前缀。可指定是否忽略空字符串，默认为true。*/
-fun String.addPrefix(prefix: String, ignoreEmpty: Boolean = true): String {
+/**添加指定的前缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
+fun String.addPrefix(prefix: CharSequence, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix)) return this
 	return "$prefix$this"
 }
 
-/**添加指定的后缀。可指定是否忽略空字符串，默认为true。*/
+/**添加指定的后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
 fun String.addSuffix(suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
-/**添加指定的前缀和后缀。可指定是否忽略空字符串，默认为true。*/
+/**添加指定的前缀和后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
 fun String.addSurrounding(prefix: String, suffix: String, ignoreEmpty: Boolean = true): String {
 	if(this.isEmpty() && ignoreEmpty) return this
 	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
 	return "$prefix$this$suffix"
+}
+
+/**添加指定的前后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
+fun String.addSurrounding(delimiter: String, ignoreEmpty: Boolean): String {
+	return this.addSurrounding(delimiter, delimiter, ignoreEmpty)
 }
 
 
@@ -244,47 +261,6 @@ inline fun String.removeWhiteSpace(): String {
 /**去除所有空白。*/
 inline fun String.removeBlank(): String {
 	return this.replace("""\s+""".toRegex(), "")
-}
-
-
-//not for every language, ignore "\\" and "\$"
-private val escapeStrings = arrayOf("\t", "\b", "\n", "\r", "\'", "\"")
-private val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
-
-//not for every scope
-private val escapeStringsInRegex = arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+")
-private val escapedStringsInRegex = arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "\\?", "\\+")
-
-private val escapeStringsInXml = arrayOf("<", ">", "&", "'", "\"")
-private val escapedStringsInXml = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "quot;")
-
-/**转义当前字符串。例如，将`\n`转换为`\\n`。*/
-fun String.escape(): String = this.replaceAll(escapeStrings zip escapedStrings)
-
-/**反转义当前字符串。例如，将`\\n`转换为`\n`。*/
-fun String.unescape(): String = this.replaceAll(escapedStrings zip escapeStrings)
-
-/**转义当前正则表达式字符串。*/
-fun String.escapeRegex(): String = this.replaceAll(escapeStringsInRegex zip escapedStringsInRegex)
-
-/**转义当前Xml字符串。*/
-fun String.escapeXml(): String = this.replaceAll(escapeStringsInXml zip escapedStringsInXml)
-
-
-private val quotes = arrayOf("\"", "'", "`")
-
-/**使用双引号/单引号/反引号包围当前字符串。默认使用双引号。同时转义其中的引号。*/
-fun String.wrapQuote(quote: String = "\""): String {
-	require(quote in quotes) { "Invalid quote: $quote." }
-	
-	return this.replace(quote, "\\$quote").addSurrounding(quote, quote, false)
-}
-
-/**去除当前字符串两侧的双引号/单引号/反引号。同时反转义对应的引号。*/
-fun String.unwrapQuote(): String {
-	val quote = this.first().toString()
-	if(quote !in quotes) return this
-	return this.removeSurrounding(quote).replace("\\$quote", quote)
 }
 
 
@@ -317,39 +293,6 @@ fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 /**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
 fun String.toWords(): String {
 	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
-}
-
-
-/**得到当前字母的字母显示格式。*/
-val String.letterCase: LetterCase
-	get() = enumValues<LetterCase>().first { this matches it.regex }
-
-/**得到当前字符串的引用显示格式。*/
-val String.referenceCase: ReferenceCase
-	get() = enumValues<ReferenceCase>().first { this matches it.regex }
-
-/**根据显示格式分割当前字符串。*/
-fun String.splitBy(case: FormatCase): List<String> {
-	return case.splitFunction(this)
-}
-
-/**根据显示格式连接当前字符串列表，组成完整字符串。*/
-fun List<String>.joinBy(case: FormatCase): String {
-	return case.joinFunction(this)
-}
-
-/**切换当前字符串的显示格式。*/
-fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
-	return this.splitBy(fromCase).joinBy(toCase)
-}
-
-/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。某些显示格式需要显式指定。*/
-fun String.switchTo(case: FormatCase): String {
-	return when(case) {
-		is LetterCase -> this.splitBy(this.letterCase)
-		is ReferenceCase -> this.splitBy(this.referenceCase)
-		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
-	}.joinBy(case)
 }
 
 
@@ -415,6 +358,72 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
  */
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
+
+//REGION Specific extensions
+
+private val quoteChars = charArrayOf('\"', '\'', '`')
+
+/**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
+fun String.wrapQuote(quoteChar: Char): String {
+	require(quoteChar in quoteChars) { "Invalid quote char: $quoteChar" }
+	
+	return "$quoteChar${this.ifNotEmpty { it.replace(quoteChar.toString(), "\\$quoteChar") }}$quoteChar"
+}
+
+/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。*/
+fun String.unwrapQuote(): String {
+	val quote = this.first()
+	if(quote !in quoteChars) return this
+	return this.removeSurrounding(quote.toString()).ifNotEmpty { it.replace("\\$quote", quote.toString()) }
+}
+
+
+/**根据指定的转义类型，转义当前字符串。默认采用Kotlin的转义。*/
+fun String.escape(type: EscapeType = EscapeType.InKotlin): String {
+	//"\" should be escaped first
+	val tempString = if(type.escapeBackslash) this.replace("\\", "\\\\") else this
+	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
+}
+
+/**根据指定的转义类型，反转义当前字符串。默认采用Kotlin的转义。*/
+fun String.unescape(type: EscapeType = EscapeType.InKotlin): String {
+	//"\" should be unescaped last
+	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
+	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
+}
+
+
+/**得到当前字母的字母显示格式。*/
+val String.letterCase: LetterCase
+	get() = enumValues<LetterCase>().first { this matches it.regex }
+
+/**得到当前字符串的引用显示格式。*/
+val String.referenceCase: ReferenceCase
+	get() = enumValues<ReferenceCase>().first { this matches it.regex }
+
+/**根据显示格式分割当前字符串。*/
+fun String.splitBy(case: FormatCase): List<String> {
+	return case.splitFunction(this)
+}
+
+/**根据显示格式连接当前字符串列表，组成完整字符串。*/
+fun List<String>.joinBy(case: FormatCase): String {
+	return case.joinFunction(this)
+}
+
+/**切换当前字符串的显示格式。*/
+fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
+	return this.splitBy(fromCase).joinBy(toCase)
+}
+
+/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。某些显示格式需要显式指定。*/
+fun String.switchTo(case: FormatCase): String {
+	return when(case) {
+		is LetterCase -> this.splitBy(this.letterCase)
+		is ReferenceCase -> this.splitBy(this.referenceCase)
+		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
+	}.joinBy(case)
+}
 
 //REGION Convert extensions
 

@@ -11,12 +11,10 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.initialMarker
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
-import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
 import org.intellij.lang.annotations.*
 
 //TODO list prefix marker can also be "+"
-//TODO add MarkdownAttribute and it's subclasses
-//TODO add attribute support for all MarkdownDslElement, and related infix extensions
+//DONE add MarkdownAttribute and it's subclasses
 
 //REGION Dsl annotations
 
@@ -38,11 +36,11 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	
 	override fun toString(): String {
 		return arrayOf(
-			frontMatter?.toString() ?: "",
-			toc?.toString() ?: "",
+			frontMatter.toStringOrEmpty(),
+			toc.toStringOrEmpty(),
 			toContentString(),
-			references.joinToString("\n")
-		).filterNotEmpty().joinToString("\n\n")
+			references.joinToStringOrEmpty("\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 }
 
@@ -62,7 +60,7 @@ object MarkdownConfig : DslConfig {
 	var wrapLength: Int = 120
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) "\"" else "'"
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 	@PublishedApi internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
 	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
 }
@@ -71,7 +69,9 @@ object MarkdownConfig : DslConfig {
 interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
-	fun toContentString() = content.joinToString("\n\n")
+	fun toContentString(): String {
+		return content.joinToStringOrEmpty("\n\n")
+	}
 	
 	@MarkdownDsl
 	override fun String.unaryPlus() = textBlock(this)
@@ -100,7 +100,9 @@ interface MarkdownDslTopElement : MarkdownDslElement
 class MarkdownText @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownDslInlineElement {
-	override fun toString() = text
+	override fun toString(): String {
+		return text
+	}
 }
 
 /**Markdown图标。可以使用font awesome和emoji图标。*/
@@ -109,7 +111,9 @@ class MarkdownText @PublishedApi internal constructor(
 class MarkdownIcon @PublishedApi internal constructor(
 	val name: String
 ) : MarkdownDslInlineElement {
-	override fun toString() = ":$name:"
+	override fun toString(): String {
+		return ":$name:"
+	}
 }
 
 /**Markdown脚注。*/
@@ -118,7 +122,9 @@ class MarkdownIcon @PublishedApi internal constructor(
 class MarkdownFootNote @PublishedApi internal constructor(
 	val reference: String
 ) : MarkdownDslInlineElement {
-	override fun toString() = "[^$reference]"
+	override fun toString(): String {
+		return "[^$reference]"
+	}
 }
 
 
@@ -128,7 +134,9 @@ sealed class MarkdownRichText(
 	protected val markers: String,
 	val text: String
 ) : MarkdownDslInlineElement {
-	override fun toString() = "$markers$text$markers"
+	override fun toString(): String {
+		return "$markers$text$markers"
+	}
 }
 
 /**Markdown加粗文本。*/
@@ -174,7 +182,9 @@ sealed class MarkdownLink(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownAutoLink @PublishedApi internal constructor(url: String) : MarkdownLink(url) {
-	override fun toString() = "<$url>"
+	override fun toString(): String {
+		return "<$url>"
+	}
 }
 
 /**Markdown行内链接。*/
@@ -195,7 +205,9 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 class MarkdownInlineImageLink @PublishedApi internal constructor(
 	name: String, url: String, title: String? = null
 ) : MarkdownInlineLink(name, url, title) {
-	override fun toString() = "!${super.toString()}"
+	override fun toString(): String {
+		return "!${super.toString()}"
+	}
 }
 
 /**Markdown引用连接。*/
@@ -215,7 +227,9 @@ open class MarkdownReferenceLink @PublishedApi internal constructor(
 class MarkdownReferenceImageLink @PublishedApi internal constructor(
 	reference: String, name: String? = null
 ) : MarkdownReferenceLink(reference, name) {
-	override fun toString() = "!${super.toString()}"
+	override fun toString(): String {
+		return "!${super.toString()}"
+	}
 }
 
 /**Markdown维基链接。采用Github风格，标题在前，地址在后。*/
@@ -225,7 +239,9 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 	val name: String,
 	url: String
 ) : MarkdownLink(url) {
-	override fun toString() = "[[$name|$url]]"
+	override fun toString(): String {
+		return "[[$name|$url]]"
+	}
 }
 
 
@@ -233,10 +249,10 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement, WrapContent {
-	override var wrapContent: Boolean = true
-	
-	override fun toString() = text.chunked(wrapLength).joinToString("\n")
+) : MarkdownDslTopElement {
+	override fun toString(): String {
+		return text
+	}
 }
 
 
@@ -245,8 +261,9 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 sealed class MarkdownHeading(
 	val headingLevel: Int,
 	val text: String
-) : MarkdownDslTopElement, WithMarkdownAttributes {
+) : MarkdownDslTopElement, WithMarkdownAttributes, WrapContent {
 	override var attributes: MarkdownAttributes? = null
+	override var wrapContent: Boolean = true
 }
 
 /**Setext风格的Markdown标题。*/
@@ -304,7 +321,9 @@ class MarkdownHeading6 @PublishedApi internal constructor(text: String) : Markdo
 /**Markdown水平分割线。*/
 @MarkdownDsl
 object MarkdownHorizontalLine : MarkdownDslTopElement {
-	override fun toString() = initialMarker * repeatableMarkerCount
+	override fun toString(): String {
+		return initialMarker * repeatableMarkerCount
+	}
 }
 
 
@@ -313,7 +332,9 @@ object MarkdownHorizontalLine : MarkdownDslTopElement {
 class MarkdownList @PublishedApi internal constructor(
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 ) : MarkdownDslTopElement {
-	override fun toString() = nodes.joinToString("\n")
+	override fun toString(): String {
+		return nodes.joinToStringOrEmpty("\n")
+	}
 }
 
 /**Markdown列表节点。*/
@@ -325,9 +346,7 @@ sealed class MarkdownListNode(
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 	
 	override fun toString(): String {
-		val nodesSnippet = if(nodes.isEmpty()) "" else nodes.joinToString("\n", "\n") {
-			it.toString().prependIndent(indent)
-		}
+		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n").ifNotEmpty { it.prependIndent(indent) }
 		return "$prefixMarker $text$nodesSnippet"
 	}
 }
@@ -394,7 +413,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 		rows.forEach { it.columnSize = actualColumnSize }
 		
 		val headerRowSnippet = header.toString()
-		val rowsSnippet = rows.joinToString("\n")
+		val rowsSnippet = rows.joinToStringOrEmpty("\n")
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
 }
@@ -413,12 +432,12 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToString(" | ", "| ", " |")
+		}.joinToStringOrEmpty(" | ", "| ", " |")
 		val delimitersSnippet = when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toDelimiterString() }
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toDelimiterString() }
 			else -> columns.map { it.toDelimiterString() }.fillEnd(columnSize!!, "-" * emptyColumnSize)
-		}.joinToString(" | ", "| ", " |")
+		}.joinToStringOrEmpty(" | ", "| ", " |")
 		return "$columnsSnippet\n$delimitersSnippet"
 	}
 	
@@ -440,7 +459,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 			columnSize == null || columnSize == columns.size -> columns
 			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToString(" | ", "| ", " |")
+		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
 	@MarkdownDsl
@@ -454,7 +473,9 @@ class MarkdownTableColumn @PublishedApi internal constructor(
 ) : MarkdownDslElement {
 	var alignment: MarkdownTableAlignment = MarkdownTableAlignment.None //only for columns in table header
 	
-	override fun toString() = text
+	override fun toString(): String {
+		return text
+	}
 	
 	fun toDelimiterString(): String {
 		val (l, r) = alignment.textPair
@@ -530,7 +551,9 @@ class MarkdownInlineMath @PublishedApi internal constructor(text: String) : Mark
 class MarkdownMultilineMath @PublishedApi internal constructor(
 	override val text: String
 ) : MarkdownDslTopElement, MarkdownMath {
-	override fun toString() = "$$\n$text\n$$"
+	override fun toString(): String {
+		return "$$\n$text\n$$"
+	}
 }
 
 
@@ -561,7 +584,9 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 	@Language("Yaml")
 	val text: String
 ) : MarkdownDslElement {
-	override fun toString() = "---\n$text\n---"
+	override fun toString(): String {
+		return "---\n$text\n---"
+	}
 }
 
 /**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
@@ -570,7 +595,9 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, GenerateContent {
 	override var generateContent: Boolean = false //TODO
 	
-	override fun toString() = "[TOC]"
+	override fun toString(): String {
+		return "[TOC]"
+	}
 }
 
 
@@ -599,7 +626,9 @@ class MarkdownMacros @PublishedApi internal constructor(
 ) : MarkdownDslTopElement, GenerateContent {
 	override var generateContent: Boolean = false //TODO
 	
-	override fun toString() = "<<< $name >>>"
+	override fun toString(): String {
+		return "<<< $name >>>"
+	}
 }
 
 /**Markdown宏片段。*/
@@ -622,9 +651,13 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 sealed class MarkdownReference(
 	val reference: String
 ) : MarkdownDslElement {
-	override fun equals(other: Any?) = other === this || (other is MarkdownReference && other.reference == reference)
+	override fun equals(other: Any?): Boolean {
+		return other === this || (other is MarkdownReference && other.reference == reference)
+	}
 	
-	override fun hashCode() = reference.hashCode()
+	override fun hashCode(): Int {
+		return reference.hashCode()
+	}
 }
 
 /**Markdown脚注的引用。*/
@@ -634,7 +667,9 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun toString() = "[^$reference]: $text"
+	override fun toString(): String {
+		return "[^$reference]: $text"
+	}
 }
 
 /**Markdown缩写。*/
@@ -644,7 +679,9 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun toString() = "*[$reference]: $text"
+	override fun toString(): String {
+		return "*[$reference]: $text"
+	}
 }
 
 /**Markdown链接的引用。*/
@@ -666,9 +703,9 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownAttributes @PublishedApi internal constructor(
 	attributes: Set<MarkdownAttribute>
-) : MarkdownDslElement, Set<MarkdownAttribute> by attributes {
+) : MarkdownDslInlineElement, Set<MarkdownAttribute> by attributes {
 	override fun toString(): String {
-		return if(this.isEmpty()) "" else this.joinToString("", " {", "}")
+		return this.joinToString(" ", " {", "}")
 	}
 }
 
@@ -683,7 +720,9 @@ sealed class MarkdownAttribute : MarkdownDslElement
 class MarkdownIdAttribute(
 	val name: String
 ) : MarkdownAttribute() {
-	override fun toString() = "#$name"
+	override fun toString(): String {
+		return "#$name"
+	}
 }
 
 /**Markdown css class特性。*/
@@ -692,7 +731,9 @@ class MarkdownIdAttribute(
 class MarkdownClassAttribute(
 	val name: String
 ) : MarkdownAttribute() {
-	override fun toString() = ".$name"
+	override fun toString(): String {
+		return ".$name"
+	}
 }
 
 /**Markdown属性特性。*/
@@ -702,7 +743,9 @@ class MarkdownPropertyAttribute(
 	val name: String,
 	val value: String
 ) : MarkdownAttribute() {
-	override fun toString() = "$name=${value.wrapQuote()}"
+	override fun toString(): String {
+		return "$name=${value.wrapQuote(quote)}"
+	}
 }
 
 //REGION Enumerations and constants

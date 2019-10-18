@@ -36,12 +36,12 @@ object JsonConfig : DslConfig {
 	var indentSize = 2
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
+	var preferDoubleQuote: Boolean = true
 	/**是否以美观的形式输出。*/
 	var prettyPrint: Boolean = true
 	
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
 
 

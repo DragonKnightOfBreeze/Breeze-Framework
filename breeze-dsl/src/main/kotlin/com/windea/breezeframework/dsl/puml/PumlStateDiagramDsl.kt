@@ -38,9 +38,9 @@ interface PumlStateDiagramDslEntry {
 	
 	fun toContentString(): String {
 		return arrayOf(
-			states.joinToString("\n"),
-			links.joinToString("\n")
-		).filterNotEmpty().joinToString("\n\n")
+			states.joinToStringOrEmpty("\n"),
+			links.joinToStringOrEmpty("\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 }
 
@@ -69,8 +69,6 @@ sealed class PumlStateDiagramState(
 	override fun hashCode(): Int {
 		return alias?.hashCode() ?: name.hashCode()
 	}
-	
-	
 }
 
 /**
@@ -128,15 +126,15 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val contentSnippet = toContentString()
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
+			.let { if(indentContent) it.prependIndent(indent) else it }
 		val nameSnippet = alias ?: name
-		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
+		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithEscapedWrap().wrapQuote(quote)} as $alias"
 		val extraSnippetWithText = when {
 			text.isEmpty() -> extraSnippet
-			text.isNotEmpty() && extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithHtmlWrap()}"
-			else -> "$extraSnippet: ${text.replaceWithHtmlWrap()}"
+			text.isNotEmpty() && extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithEscapedWrap()}"
+			else -> "$extraSnippet: ${text.replaceWithEscapedWrap()}"
 		}
-		return "state $nameSnippet {\n$indentedContentSnippet\n}$extraSnippetWithText"
+		return "state $nameSnippet {\n$contentSnippet\n}$extraSnippetWithText"
 	}
 }
 
@@ -162,9 +160,9 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			states.joinToString("\n"),
-			sections.joinToString("\n---\n")
-		).filterNotEmpty().joinToString("\n\n")
+			states.joinToStringOrEmpty("\n"),
+			sections.joinToStringOrEmpty("\n---\n")
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = if(alias == null) "" else "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias"
@@ -175,8 +173,6 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 		}
 		return "state $nameSnippet {\n$indentedContentSnippet\n}$extraSnippetWithText"
 	}
-	
-	
 }
 
 /**Puml状态图并发状态部分。*/
@@ -211,9 +207,8 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
-		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowStyle?.text).filterNotNull().let {
-			if(it.isEmpty()) "" else it.joinToString(",", "[", "]")
-		}
+		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowStyle?.text).filterNotNull()
+			.joinToStringOrEmpty(",", "[", "]")
 		val arrowDirectionSnippet = arrowDirection ?: ""
 		val arrowLengthSnippet = "-" * (arrowLength - 1)
 		val arrowSnippet = "-$arrowParamsSnippet$arrowDirectionSnippet$arrowLengthSnippet>"
