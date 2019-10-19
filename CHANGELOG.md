@@ -141,6 +141,7 @@
 
 ***
 
+* [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。

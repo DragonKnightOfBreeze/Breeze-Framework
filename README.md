@@ -8,16 +8,28 @@ Breeze-Framework
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
 
 **NOTE**
+
 * This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
 * This framework is designed to be used by Kotlin, rather than Java. Though you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
+
+**Usage**
+```kts
+repositories {
+    maven("https://breeze-knights.bintray.com/breeze-framework")
+}
+
+dependencies {
+    implementation("com.windea.breezeframework:breeze-core:1.0.4")
+}
+```
 
 # Modules
 
 ## breeze-core
 
 * Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`, etc. (e.g, `toFile`, `anyIn`.)
-* Provide global extensions missing in stdlib. (e.g, `FIXME`, `tryCatching`, `accept`.)
+* Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`.)
 * Provide basic annotations, consts, enums and interfaces.
 
 ## breeze-data
@@ -25,8 +37,6 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 * Provide generator extensions for `equals`, `hashcode` and `toString`.
 * Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
 * Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`.
-* [ ] Provide lightweight multi-datatype serializers implementations.
-* [ ] Fully adapt to `kotlinx.serialization`.
 
 ## breeze-dream
 
@@ -66,6 +76,12 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 ## breeze-reflect
 
 * Provide some useful extensions for kotlin reflect & java reflect. (e.g, `checkClassForName`, `nameOf`)
+
+## breeze-serialization
+
+* Provide serializers for common kotlin type. (e.g, `RangeSerializer`) 
+* [ ] Provide lightweight multi-data-type serializers implementations.
+* [ ] Linked with related Dsl.
 
 ## breeze-spring-boot
 

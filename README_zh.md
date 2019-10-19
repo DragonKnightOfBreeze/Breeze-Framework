@@ -23,6 +23,7 @@ Breeze-Framework
 * **breeze-game**
 * **breeze-javafx**
 * **breeze-reflect**
+* **breeze-serialization**
 * **breeze-spring-boot**
 * **breeze-spring-cloud**
 * **breeze-text**

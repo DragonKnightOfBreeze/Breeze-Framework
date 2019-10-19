@@ -45,8 +45,8 @@ fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 		when {
 			recursive -> map.mapValues { (_, v) ->
 				when {
-					v != null && v !is Array<*> && v !is Iterable<*> && v !is Map<*, *> -> v.toPropertyMap(true)
-					else -> v
+					v == null || v is Array<*> || v is Iterable<*> || v is Map<*, *> || v is Sequence<*> -> v
+					else -> v.toPropertyMap(true)
 				}
 			}
 			else -> map
