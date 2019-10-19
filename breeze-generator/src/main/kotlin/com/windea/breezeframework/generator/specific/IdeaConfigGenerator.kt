@@ -4,6 +4,7 @@ package com.windea.breezeframework.generator.specific
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.generator.*
 import java.io.*
 
@@ -15,7 +16,7 @@ object IdeaConfigGenerator : Generator {
 	 * 输入文本的格式：Json Schema。
 	 */
 	fun generateYamlAnnotation(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.loadAsMap(inputText) as SchemaDefinitionMap
+		val inputMap = inputType.serializer.load<SchemaDefinitionMap>(inputText)
 		return getYamlAnnotationString(inputMap)
 	}
 	
@@ -25,7 +26,7 @@ object IdeaConfigGenerator : Generator {
 	 * 输入文本的格式：Json Schema。
 	 */
 	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.loadAsMap(inputFile) as SchemaDefinitionMap
+		val inputMap = inputType.serializer.load<SchemaDefinitionMap>(inputFile)
 		outputFile.writeText(getYamlAnnotationString(inputMap))
 	}
 	

@@ -15,33 +15,22 @@ private val logger = KotlinLogging.logger { }
 //REGION Serialize extensions
 
 /**序列化当前对象，返回序列化后的字符串。*/
-inline fun <T : Any> T.serialize(dataType: DataType): String {
+inline fun <T> T.serialize(dataType: DataType): String {
 	return dataType.serializer.dump(this)
 }
 
 /**序列化当前对象，将序列化后的字符串写入指定文件。*/
-inline fun <T : Any> T.serialize(dataType: DataType, file: File) {
+inline fun <T> T.serialize(dataType: DataType, file: File) {
 	dataType.serializer.dump(this, file)
 }
 
-/**序列化当前对象，将序列化后的字符串写入指定写入器。*/
-inline fun <T : Any> T.serialize(dataType: DataType, writer: Writer) {
-	return dataType.serializer.dump(this, writer)
-}
-
-
 /**反序列化当前字符串，返回指定泛型的对象。*/
-inline fun <reified T : Any> String.deserialize(dataType: DataType): T {
+inline fun <reified T> String.deserialize(dataType: DataType): T {
 	return dataType.serializer.load(this, T::class.java)
 }
 
 /**反序列化当前文件中文本，返回指定泛型的对象。*/
-inline fun <reified T : Any> File.deserialize(dataType: DataType): T {
-	return dataType.serializer.load(this, T::class.java)
-}
-
-/**反序列化当前读取器中文本，返回指定泛型的对象。*/
-inline fun <reified T : Any> Reader.deserialize(dataType: DataType): T {
+inline fun <reified T> File.deserialize(dataType: DataType): T {
 	return dataType.serializer.load(this, T::class.java)
 }
 
@@ -69,7 +58,9 @@ fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 @Deprecated("使用'kotlinx-serialization'的'Mapper.unmapNullable()'。", ReplaceWith("kotlinx.serialization.Mapper.unmapNullable<T>(this)"))
 @LowPerformanceApi
 @Suppress("DEPRECATION")
-inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T = toObject(T::class.java, recursive)
+inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T {
+	return toObject(T::class.java, recursive)
+}
 
 /**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toObject<T>(recursive)"))

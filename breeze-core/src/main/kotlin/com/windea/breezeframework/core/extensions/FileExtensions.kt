@@ -27,7 +27,7 @@ fun File.changeParent(newParent: String): File {
 
 /**更改当前文件的名字，返回新的文件对象。*/
 fun File.changeName(newName: String): File {
-	return File("${this.path}\\$newName")
+	return File("${this.parent}\\$newName")
 }
 
 /**更改当前文件的不包含扩展名在内的名字，返回新的文件对象。*/
@@ -39,3 +39,11 @@ fun File.changeShotName(newShotName: String): File {
 fun File.changeExtension(newExtension: String): File {
 	return File("${this.parent}\\${this.shotName}.$newExtension")
 }
+
+//REGION Convert extensions
+
+/**将当前文件转化为统一资源标识符。*/
+fun File.toUri(): URI = this.toURI()
+
+/**将当前文件转化为统一资源定位符。*/
+fun File.toUrl(): URL = this.toURI().toURL()

@@ -4,6 +4,7 @@ package com.windea.breezeframework.generator.code
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.generator.*
 import java.io.*
 
@@ -15,7 +16,7 @@ object SqlGenerator : Generator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.loadAsMap(inputText) as SqlDataMap
+		val inputMap = inputType.serializer.load<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
 	
@@ -25,7 +26,7 @@ object SqlGenerator : Generator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.loadAsMap(inputFile) as SqlDataMap
+		val inputMap = inputType.serializer.load<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
 	

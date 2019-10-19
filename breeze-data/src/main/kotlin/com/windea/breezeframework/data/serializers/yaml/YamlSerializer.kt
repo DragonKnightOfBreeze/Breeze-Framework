@@ -7,23 +7,16 @@ import java.io.*
 
 interface YamlSerializer : JsonSerializer {
 	/**从指定字符串读取所有数据。*/
-	fun loadAll(string: String): List<Any>
+	fun loadAll(string: String): List<Any?>
 	
 	/**从指定文件读取所有数据。*/
-	fun loadAll(file: File): List<Any>
-	
-	/**从指定读取器读取所有数据。*/
-	fun loadAll(reader: Reader): List<Any>
+	fun loadAll(file: File): List<Any?>
 	
 	/**转储所有数据到字符串。*/
-	fun <T : Any> dumpAll(data: List<T>): String
+	fun <T> dumpAll(data: List<T>): String
 	
 	/**转储所有数据到文件。*/
-	fun <T : Any> dumpAll(data: List<T>, file: File)
-	
-	/**转储所有数据到写入器。*/
-	fun <T : Any> dumpAll(data: List<T>, writer: Writer)
-	
+	fun <T> dumpAll(data: List<T>, file: File)
 	
 	companion object {
 		val instance: YamlSerializer = when {

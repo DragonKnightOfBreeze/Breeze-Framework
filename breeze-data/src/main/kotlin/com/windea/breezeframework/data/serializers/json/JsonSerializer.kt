@@ -9,8 +9,8 @@ interface JsonSerializer : Serializer {
 			checkClassForName("com.google.gson.Gson") -> GsonJsonSerializer
 			checkClassForName("com.alibaba.fastjson.JSON") -> FastJsonSerializer
 			checkClassForName("com.fasterxml.jackson.databind.json.JsonMapper") -> JacksonJsonSerializer
-				else -> throw IllegalStateException("Please contains at least one data serializer impl in classpath.")
-			}
+			else -> throw IllegalStateException("Please contains at least one data serializer impl in classpath.")
+		}
 	}
 }
 

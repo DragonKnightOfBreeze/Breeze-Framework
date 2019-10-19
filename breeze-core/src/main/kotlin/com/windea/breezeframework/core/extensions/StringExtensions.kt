@@ -331,25 +331,11 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 	return result
 }
 
-/**
- * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- * 不包含分隔符时，加入空字符串。
- */
-fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
-	this.substringsOrElse(*delimiters) { _, _ -> "" }
-
-/**
- * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- * 不包含分隔符时，加入剩余字符串。
- */
-fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
-	this.substringsOrElse(*delimiters) { _, str -> str }
 
 /**为当前字符串的每行添加缩进，并为第一行提供一个指定的前缀。*/
 fun String.prependIndent(indent: String = "    ", prefix: String): String {
 	return prefix + this.prependIndent(indent).drop(prefix.length)
 }
-
 
 //REGION Specific extensions
 
@@ -520,11 +506,11 @@ inline fun String.toFile(): File = File(this)
 /**将当前字符串转化为路径。*/
 inline fun String.toPath(): Path = Path.of(this)
 
-/**将当前字符串转化为地址。*/
-inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
+/**将当前字符串转化为统一资源标识符。*/
+inline fun String.toUri(): URI = URI.create(this)
 
 /**将当前字符串转化为统一资源定位符。*/
-inline fun String.toUri(): URI = URI.create(this)
+inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
 
 /**将当前字符串转化为路径信息。*/
