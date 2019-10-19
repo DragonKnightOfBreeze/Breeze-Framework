@@ -38,7 +38,7 @@ inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issu
 //REGION Standard.kt extensions (Scope functions)
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
-inline fun tryCatching(block: () -> Unit) {
+inline fun tryOrPrint(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
@@ -50,7 +50,7 @@ inline fun tryCatching(block: () -> Unit) {
 }
 
 /**尝试执行一段代码，并忽略异常。*/
-inline fun tryIgnored(block: () -> Unit) {
+inline fun tryOrIgnore(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
@@ -58,6 +58,14 @@ inline fun tryIgnored(block: () -> Unit) {
 		block()
 	} catch(e: Exception) {
 	}
+}
+
+/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+inline fun <T> T.where(condition: Boolean, block: (T) -> T): T {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if(condition) block(this) else this
 }
 
 @PublishedApi internal var enableOnce = false
