@@ -143,7 +143,6 @@
 
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
-* [ ] breeze-dsl 适用`orEmpty`方法。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
