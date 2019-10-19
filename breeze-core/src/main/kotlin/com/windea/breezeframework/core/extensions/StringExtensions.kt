@@ -506,38 +506,8 @@ inline fun String.toFile(): File = File(this)
 /**将当前字符串转化为路径。*/
 inline fun String.toPath(): Path = Path.of(this)
 
-/**将当前字符串转化为统一资源标识符。*/
+/**将当前字符串转化为统一资源标识符。可能需要事先进行适当的编码。*/
 inline fun String.toUri(): URI = URI.create(this)
 
 /**将当前字符串转化为统一资源定位符。*/
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
-
-
-/**将当前字符串转化为路径信息。*/
-fun String.toPathInfo(): PathInfo {
-	val path = this.replace("/", "\\")
-	val rootPath = path.substringBefore("\\")
-	val (fileDirectory, fileName) = path.substrings(null, "\\") { _, s -> listOf("", s) }
-	val (fileShotName, fileExtension) = fileName.substrings(null, ".") { _, s -> listOf(s, "") }
-	return PathInfo(path, rootPath, fileDirectory, fileName, fileShotName, fileExtension)
-}
-
-/**将当前字符串转化为地址信息。*/
-fun String.toUrlInfo(): UrlInfo {
-	val url = this
-	val (fullPath, query) = url.substrings("?") { _, s -> listOf(s, "") }
-	val (protocol, hostAndPort, path) = fullPath.substrings("://", "/") { _, s -> listOf("http", "", s) }
-	val (host, port) = hostAndPort.substrings(":") { _, s -> listOf(s, "") }
-	return UrlInfo(url, fullPath, protocol, host, port, path, query)
-}
-
-/**将当前字符串转化为查询参数映射。*/
-@Suppress("IMPLICIT_CAST_TO_ANY")
-internal fun String.toQueryParamMap(): QueryParamMap {
-	val map = when {
-		this.isEmpty() -> mapOf()
-		else -> this.split("&").map { s -> s.split("=") }.groupBy({ it[0] }, { it[1] })
-			.mapValues { (_, v) -> if(v.size == 1) v[0] else v }
-	}
-	return QueryParamMap(map)
-}

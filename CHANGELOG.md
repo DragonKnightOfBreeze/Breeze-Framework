@@ -136,6 +136,7 @@
 * [X] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，尽可能地实现`WrapContent`接口。
 * [X] breeze-core 添加`where`全局扩展。
 * [X] breeze-data Serializer 允许读取指定泛型类型的数据。
+* [X] breeze-core 重构代码，去除不必要的代码。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

@@ -2,16 +2,19 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.collections.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
 
+/**包括主机名在内的完整路径。*/
+val URL.fullPath get() = "$host$path"
+
 /**是否存在查询参数。*/
-val URL.hasQueryParam: Boolean get() = this.query.isNotBlank()
+val URL.hasQueryParams: Boolean get() = this.query != null
 
 /**查询参数映射。*/
-val URL.queryParamMap: QueryParamMap get() = this.query.toQueryParamMap()
+val URL.queryParams: QueryParamMap get() = this.query?.let { QueryParamMap(it) } ?: QueryParamMap()
 
 //REGION Convert extensions
 
