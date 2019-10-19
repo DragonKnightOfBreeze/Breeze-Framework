@@ -40,7 +40,7 @@ fun Random.nextUUID(): String = UUID.randomUUID().toString()
 
 /**检查一个几率发生的事件是否发生。*/
 fun Random.checkChance(chance: Float): Boolean {
-	require(chance in 0f..1f) { "Chance must in range 0.0..1.0, but it is $chance." }
+	require(chance in 0f..1f) { "Chance must between 0 and 1, but was $chance." }
 	
 	return when {
 		chance == 1f -> true

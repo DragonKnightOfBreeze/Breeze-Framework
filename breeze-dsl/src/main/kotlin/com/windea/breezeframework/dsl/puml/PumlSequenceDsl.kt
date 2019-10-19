@@ -52,8 +52,8 @@ class PumlSequenceParticipant @PublishedApi internal constructor(
 	}
 	
 	override fun toString(): String {
-		val orderSnippet = order?.let { " order $order" } ?: ""
-		val colorSnippet = color?.let { " ${it.addPrefix("#")}" } ?: ""
+		val orderSnippet = order?.let { " order $order" }.orEmpty()
+		val colorSnippet = color?.let { " ${it.addPrefix("#")}" }.orEmpty()
 		return if(alias == null) {
 			"$shape $name$orderSnippet$colorSnippet"
 		} else {
@@ -78,8 +78,8 @@ class PumlSequenceMessage @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
-		val arrowColorSnippet = arrowColor?.let { "[${it.addPrefix("#")}]" } ?: ""
-		val statusSnippet = isPosted?.let { if(it) "o" else "x" } ?: ""
+		val arrowColorSnippet = arrowColor?.let { "[${it.addPrefix("#")}]" }.orEmpty()
+		val statusSnippet = isPosted?.let { if(it) "o" else "x" }.orEmpty()
 		val arrowSnippet = when {
 			isBidirectional -> "${arrowShape.prefix}-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"
 			else -> "-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"

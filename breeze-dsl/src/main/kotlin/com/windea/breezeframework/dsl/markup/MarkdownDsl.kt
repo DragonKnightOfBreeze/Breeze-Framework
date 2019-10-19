@@ -36,8 +36,8 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	
 	override fun toString(): String {
 		return arrayOf(
-			frontMatter.toStringOrEmpty(),
-			toc.toStringOrEmpty(),
+			frontMatter?.toString().orEmpty(),
+			toc?.toString().orEmpty(),
 			toContentString(),
 			references.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
@@ -195,7 +195,7 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 	val title: String? = null
 ) : MarkdownLink(url) {
 	override fun toString(): String {
-		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" } ?: ""
+		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
 		return "[$name]($url$titleSnippet)"
 	}
 }
@@ -217,7 +217,7 @@ open class MarkdownReferenceLink @PublishedApi internal constructor(
 	val name: String? = null
 ) : MarkdownLink(truncated) {
 	override fun toString(): String {
-		val nameSnippet = name?.let { "[$name]" } ?: ""
+		val nameSnippet = name?.let { "[$name]" }.orEmpty()
 		return "$nameSnippet[$reference]"
 	}
 }
@@ -271,7 +271,7 @@ sealed class MarkdownHeading(
 sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val suffixMarkers = (if(headingLevel == 1) "=" else "-") * repeatableMarkerCount
-		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		return "$text$attributesSnippet\n$suffixMarkers"
 	}
 }
@@ -289,7 +289,7 @@ class MarkdownSubHeading @PublishedApi internal constructor(text: String) : Mark
 sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val prefixMarkers = "#" * headingLevel
-		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		return "$prefixMarkers $text$attributesSnippet"
 	}
 }
@@ -377,7 +377,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
 	
 	override fun toString(): String {
-		require(nodes.isNotEmpty()) { "Definition node size must be greater than 0." }
+		require(nodes.isNotEmpty()) { "Definition node size must be positive." }
 		
 		val nodesSnippet = nodes.joinToString("\n")
 		return "$title\n$nodesSnippet"
@@ -405,7 +405,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(rows.isNotEmpty()) { "Table row size must be greater than 0." }
+		require(rows.isNotEmpty()) { "Table row size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
@@ -425,7 +425,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(columns.isNotEmpty()) { "Table row column size must be greater than 0." }
+		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size
 		val columnsSnippet = when {
@@ -452,7 +452,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(columns.isNotEmpty()) { "Table row column size must be greater than 0." }
+		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size
 		return when {
@@ -530,7 +530,7 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 	override var attributes: MarkdownAttributes? = null
 	
 	override fun toString(): String {
-		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		return "```$language$attributesSnippet\n$text\n``s`"
 	}
 }
@@ -612,7 +612,7 @@ class MarkdownImport @PublishedApi internal constructor(
 	override var generateContent: Boolean = false //TODO
 	
 	override fun toString(): String {
-		val attributesSnippet = attributes.toStringOrEmpty().ifNotEmpty { " $it" }
+		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet$attributesSnippet"
 	}
@@ -692,7 +692,7 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val title: String? = null
 ) : MarkdownReference(reference) {
 	override fun toString(): String {
-		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" } ?: ""
+		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
 		return "[$reference]: $url$titleSnippet"
 	}
 }

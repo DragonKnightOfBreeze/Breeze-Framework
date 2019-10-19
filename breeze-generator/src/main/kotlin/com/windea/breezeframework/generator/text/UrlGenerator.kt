@@ -11,19 +11,19 @@ object UrlGenerator : Generator {
 	
 	/**根据指定参数生成Html链接。*/
 	fun generateHtmlUrl(name: String, url: String, title: String? = null): String {
-		val titleSnippet = title?.let { " title=${title.wrapQuote(quote)}" } ?: ""
+		val titleSnippet = title?.let { " title=${title.wrapQuote(quote)}" }.orEmpty()
 		return "<a href=$quote$url$quote$titleSnippet>$name</a>"
 	}
 	
 	/**根据指定参数生成Markdown链接。*/
 	fun generateMdUrl(name: String, url: String, title: String? = null): String {
-		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" } ?: ""
+		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" }.orEmpty()
 		return "[$name]($url$titleSnippet)"
 	}
 	
 	/**根据指定参数生成Markdown引用链接。*/
 	fun generateMdRefUrl(id: String, name: String, url: String, title: String? = null): Pair<String, String> {
-		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" } ?: ""
+		val titleSnippet = title?.let { " ${title.wrapQuote(quote)}" }.orEmpty()
 		return "[$name][$id]" to "[$id]: $url$titleSnippet"
 	}
 	

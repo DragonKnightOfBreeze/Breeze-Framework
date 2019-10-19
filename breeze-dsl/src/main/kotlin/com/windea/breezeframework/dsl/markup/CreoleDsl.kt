@@ -282,7 +282,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(rows.isNotEmpty()) { "Table row size must be greater than 0." }
+		require(rows.isNotEmpty()) { "Table row size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
@@ -302,7 +302,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(columns.isNotEmpty()) { "Table row column size must be greater than 0." }
+		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size
 		return when {
@@ -323,7 +323,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 	var columnSize: Int? = null
 	
 	override fun toString(): String {
-		require(columns.isNotEmpty()) { "Table row column size must be greater than 0." }
+		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size
 		return when {
@@ -346,12 +346,12 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 	var alignment: CreoleTableAlignment = CreoleTableAlignment.None //only for columns in table header
 	
 	override fun toString(): String {
-		val colorSnippet = color?.let { "<$color> " } ?: ""
+		val colorSnippet = color?.let { "<$color> " }.orEmpty()
 		return "$colorSnippet$text"
 	}
 	
 	fun toStringInHeader(): String {
-		val colorSnippet = color?.let { "<$color> " } ?: ""
+		val colorSnippet = color?.let { "<$color> " }.orEmpty()
 		val (l, r) = alignment.textPair
 		return "$l $colorSnippet$text $r"
 	}

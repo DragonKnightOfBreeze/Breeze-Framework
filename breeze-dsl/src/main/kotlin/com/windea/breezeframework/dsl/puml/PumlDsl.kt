@@ -71,7 +71,7 @@ sealed class PumlElement(
 	override var wrapContent: Boolean = "\n" in text || "\r" in text//wrap content when necessary
 	
 	override fun toString(): String {
-		val positionSnippet = position?.text?.let { "$it " } ?: ""
+		val positionSnippet = position?.text?.let { "$it " }.orEmpty()
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"$positionSnippet$type\n$indentedTextSnippet\nend $type"
@@ -162,7 +162,7 @@ class PumlNote @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val aliasSnippet = if(position == null) " as $alias" else ""
-		val positionSnippet = position?.text?.let { " $it $targetId" } ?: ""
+		val positionSnippet = position?.text?.let { " $it $targetId" }.orEmpty()
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"

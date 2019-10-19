@@ -205,16 +205,26 @@ fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
 
 
 /**填充指定索引范围内的元素到当前列表。如果索引超出当前列表的长度，或为负数，则忽略。*/
-fun <T> MutableList<T>.fillRange(value: T, indices: IntRange) {
+fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
 	val fromIndex = indices.first.coerceIn(0, this.size)
 	val toIndex = indices.last.coerceIn(fromIndex, this.size)
 	for(index in fromIndex..toIndex) this[index] = value
 }
 
-/**填充指定元素到当前列表，直到指定长度。如果指定长度比当前长度小，则忽略。返回填充后的列表。*/
+/**填充指定元素到当前列表之前，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
+fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
+	require(size >= 0) { "Desired size $size is less than zero." }
+	
+	if(size <= this.size) return this.subList(0, size)
+	return List(size - this.size) { value } + this
+}
+
+/**填充指定元素到当前列表之后，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
 fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
-	if(this.size <= size) return this
-	return this.toMutableList().also { list -> repeat(size - this.size) { list += value } }
+	require(size >= 0) { "Desired size $size is less than zero." }
+	
+	if(size <= this.size) return this.subList(0, size)
+	return this + List(size - this.size) { value }
 }
 
 

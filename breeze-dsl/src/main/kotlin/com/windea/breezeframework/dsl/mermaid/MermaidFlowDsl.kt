@@ -100,7 +100,7 @@ class MermaidFlowLink @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val arrowSnippet = arrowShape.text
-		val textSnippet = text?.let { "|${text.replaceWithHtmlWrap()}|" } ?: ""
+		val textSnippet = text?.let { "|${text.replaceWithHtmlWrap()}|" }.orEmpty()
 		return "$sourceNodeId $arrowSnippet$textSnippet $targetNodeId"
 	}
 	

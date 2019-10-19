@@ -92,7 +92,7 @@ class MermaidSequenceMessage @PublishedApi internal constructor(
 	var isActivated: Boolean? = null
 	
 	override fun toString(): String {
-		val activateSnippet = isActivated?.let { if(it) "+ " else "- " } ?: ""
+		val activateSnippet = isActivated?.let { if(it) "+ " else "- " }.orEmpty()
 		return "$fromActorId ${arrowShape.text} $activateSnippet$toActorId: $text"
 	}
 }
@@ -108,7 +108,7 @@ class MermaidSequenceNote @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()
-		val targetActor2NameSnippet = targetActor2Id?.let { ", $it" } ?: ""
+		val targetActor2NameSnippet = targetActor2Id?.let { ", $it" }.orEmpty()
 		return "note $position $targetActorId$targetActor2NameSnippet: $textSnippet"
 	}
 }
@@ -127,7 +127,7 @@ sealed class MermaidSequenceScope(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val textSnippet = text?.let { " $it" } ?: ""
+		val textSnippet = text?.let { " $it" }.orEmpty()
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		return "$type$textSnippet\n$contentSnippet\nend"

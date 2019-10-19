@@ -89,8 +89,8 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 ) : PumlStateDiagramState(name, text) {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()
-		val tagSnippet = tag?.let { "<<$it>>" } ?: ""
-		val colorSnippet = color?.let { " ${it.addPrefix("#")}" } ?: ""
+		val tagSnippet = tag?.let { "<<$it>>" }.orEmpty()
+		val colorSnippet = color?.let { " ${it.addPrefix("#")}" }.orEmpty()
 		return if(alias == null) {
 			"state $name$tagSnippet$colorSnippet: $textSnippet"
 		} else {
@@ -209,7 +209,7 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
 		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowStyle?.text).filterNotNull()
 			.joinToStringOrEmpty(",", "[", "]")
-		val arrowDirectionSnippet = arrowDirection ?: ""
+		val arrowDirectionSnippet = arrowDirection?.text.orEmpty()
 		val arrowLengthSnippet = "-" * (arrowLength - 1)
 		val arrowSnippet = "-$arrowParamsSnippet$arrowDirectionSnippet$arrowLengthSnippet>"
 		return "$sourceStateId $arrowSnippet $targetStateId$textSnippet"

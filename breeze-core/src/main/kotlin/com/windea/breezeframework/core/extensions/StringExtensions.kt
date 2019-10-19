@@ -179,7 +179,7 @@ fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValu
  * * 占位符格式：`{0}`, `{1,number}`, `{2,date,shot}`
  * * 示例：`"123{0}123{1}123".messageFormat("a","b")`
  */
-fun String.messageFormat(vararg args: Any): String {
+fun String.messageFormat(vararg args: Any?): String {
 	return MessageFormat.format(this.replace("'", "''"), *args)
 }
 
@@ -191,22 +191,22 @@ fun String.messageFormat(vararg args: Any): String {
  * * 示例：`"1{0}2{1}3".customFormat("{index}","a","b")`
  * * 示例：`"1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b")`
  */
-fun String.customFormat(placeholder: String, vararg args: Any): String {
+fun String.customFormat(placeholder: String, vararg args: Any?): String {
 	return when {
 		"index" in placeholder -> {
 			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escape(EscapeType.InRegex) }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
-				args.getOrNull(r.groupValues[1].toInt())?.toString() ?: ""
+				args.getOrNull(r.groupValues[1].toInt())?.toString().orEmpty()
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
 			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escape(EscapeType.InRegex) }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
-				argPairs[r.groupValues[1]]?.toString() ?: ""
+				argPairs[r.groupValues[1]]?.toString().orEmpty()
 			}
 		}
-		else -> this.replaceIndexed(placeholder) { args.getOrNull(it)?.toString() ?: "" }
+		else -> this.replaceIndexed(placeholder) { args.getOrNull(it)?.toString().orEmpty() }
 	}
 }
 
@@ -269,19 +269,9 @@ fun String.firstCharToUpperCase(): String {
 	return if(this.isNotBlank()) this[0].toUpperCase() + this.substring(1) else this
 }
 
-/**将第一个字符转为大写，将其他字符皆转为小写。*/
-fun String.firstCharToUpperCaseOnly(): String {
-	return if(this.isNotBlank()) this[0].toUpperCase() + this.substring(1).toLowerCase() else this
-}
-
 /**将第一个字符转为小写。*/
 fun String.firstCharToLowerCase(): String {
 	return if(this.isNotBlank()) this[0].toLowerCase() + this.substring(1) else this
-}
-
-/**将第一个字符转为小写，将其他字符皆转为大写。*/
-fun String.firstCharToLowerCaseOnly(): String {
-	return if(this.isNotBlank()) this[0].toLowerCase() + this.substring(1).toUpperCase() else this
 }
 
 
@@ -303,7 +293,6 @@ fun CharSequence.substrings(regex: Regex): List<String> {
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- *
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。
  */
 fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =
@@ -311,7 +300,6 @@ fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) ->
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- *
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
  */
 fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
@@ -345,7 +333,6 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- *
  * 不包含分隔符时，加入空字符串。
  */
 fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
@@ -353,7 +340,6 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- *
  * 不包含分隔符时，加入剩余字符串。
  */
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
@@ -365,7 +351,7 @@ private val quoteChars = charArrayOf('\"', '\'', '`')
 
 /**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
 fun String.wrapQuote(quoteChar: Char): String {
-	require(quoteChar in quoteChars) { "Invalid quote char: $quoteChar" }
+	require(quoteChar in quoteChars) { "Invalid quote char: $quoteChar." }
 	
 	return "$quoteChar${this.ifNotEmpty { it.replace(quoteChar.toString(), "\\$quoteChar") }}$quoteChar"
 }
@@ -425,6 +411,33 @@ fun String.switchTo(case: FormatCase): String {
 	}.joinBy(case)
 }
 
+//REGION Progressive extensions
+
+/**逐行连接两个字符串。对于左边的字符串，保持每行长度一致，使用空格填充。对于缺失的行，以空行填充。*/
+infix fun String.plusByLine(other: Any?): String {
+	val lines = this.lines()
+	val maxLength = lines.map { it.length }.max() ?: 0
+	val otherLines = other.toString().lines()
+	return when {
+		lines.size < otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
+		else -> lines zip otherLines
+	}.joinToString("\n") { (a, b) -> if(b.isEmpty()) a else a.padEnd(maxLength) + b }
+}
+
+/**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
+fun String.padStartByLine(padChar: Char = ' '): String {
+	val lines = this.lines()
+	val maxLength = lines.map { it.length }.max() ?: 0
+	return lines.joinToString("\n") { it.padStart(maxLength, padChar) }
+}
+
+/**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
+fun String.padEndByLine(padChar: Char = ' '): String {
+	val lines = this.lines()
+	val maxLength = lines.map { it.length }.max() ?: 0
+	return lines.joinToString("\n") { it.padEnd(maxLength, padChar) }
+}
+
 //REGION Convert extensions
 
 /**
@@ -437,20 +450,16 @@ fun String.toBreakLineText(): String {
 }
 
 /**
- * 将当前字符串转化为多行文本。可选相对缩进，默认为0，-1为制表符。
+ * 将当前字符串转化为多行文本。可选相对缩进，默认为0。
  *
  * 去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。
  **/
 fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 	val lines = this.lines()
-	val additionalIndent = when {
-		relativeIndentSize == 0 -> ""
-		relativeIndentSize > 0 -> " " * relativeIndentSize.coerceIn(-2, 8)
-		else -> "\t" * relativeIndentSize.coerceIn(-2, 8)
-	}
+	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize.coerceIn(0, 8) else ""
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
-	if(trimmedIndent.isEmpty()) return this.trimIndent()
-	return lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
+	return if(trimmedIndent.isEmpty()) this.trimIndent()
+	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
 
 
@@ -471,41 +480,31 @@ inline fun <reified T : Number> String.to(): T {
 }
 
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
-inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase: Boolean = false): T =
-	enumValues<T>().let { enumValues -> enumValues.firstOrNull { it.name.equals(this, ignoreCase) } ?: enumValues.first() }
+/**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
+inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase: Boolean = false): T {
+	return enumValues<T>().first { it.name.equals(this, ignoreCase) }
+}
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
-inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = false): T? =
-	enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
+/**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
+inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = false): T? {
+	return enumValues<T>().firstOrNull { it.name.equals(this, ignoreCase) }
+}
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为默认值。*/
+/**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 @Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
-	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	requireNotNull(type.isEnum) { "$type is not an enum class." }
 	
-	val enumConstants = type.enumConstants
-	return try {
-		enumConstants.first { it.toString().equals(this, ignoreCase) }
-	} catch(e: Exception) {
-		logger.warn("No matched enum value found. Convert to null.")
-		enumConstants.first()
-	}
+	return type.enumConstants.first { it.toString().equals(this, ignoreCase) }
 }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
-	requireNotNull(type.isEnum) { "$type is not an enum class!" }
+	requireNotNull(type.isEnum) { "$type is not an enum class." }
 	
-	val enumConstants = type.enumConstants
-	return try {
-		enumConstants.first { it.toString().equals(this, ignoreCase) }
-	} catch(e: Exception) {
-		logger.warn("No matched enum value found. Convert to null.")
-		null
-	}
+	return type.enumConstants.firstOrNull { it.toString().equals(this, ignoreCase) }
 }
 
 
