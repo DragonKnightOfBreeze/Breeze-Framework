@@ -133,7 +133,7 @@
 * [X] breeze-dsl 重构代码。
 * [X] breeze-core 精简`toXxxOrDefault`和`toXxxOrElse`方法。
 * [X] breeze-core 提供字符串的逐行连接和逐行填充扩展。
-* [ ] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，实现`WrapContent`接口。
+* [X] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，尽可能地实现`WrapContent`接口。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

@@ -96,7 +96,7 @@ inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { inde
 @Dsl
 inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
-//REGION Internal extensions
+//REGION Helpful extensions
 
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi

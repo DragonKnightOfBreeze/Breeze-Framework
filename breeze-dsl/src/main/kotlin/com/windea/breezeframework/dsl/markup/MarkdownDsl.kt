@@ -11,6 +11,7 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.initialMarker
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
 import org.intellij.lang.annotations.*
 
 //TODO list prefix marker can also be "+"
@@ -249,9 +250,13 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement {
+) : MarkdownDslTopElement, WrapContent {
+	override var wrapContent: Boolean = true
+	
 	override fun toString(): String {
-		return text
+		return if(text.length > wrapLength)
+			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+		else text
 	}
 }
 
@@ -270,9 +275,12 @@ sealed class MarkdownHeading(
 @MarkdownDsl
 sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
-		val suffixMarkers = (if(headingLevel == 1) "=" else "-") * repeatableMarkerCount
+		val textSnippet = if(text.length > wrapLength)
+			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+		else text
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		return "$text$attributesSnippet\n$suffixMarkers"
+		val suffixMarkers = (if(headingLevel == 1) "=" else "-") * repeatableMarkerCount
+		return "$textSnippet$attributesSnippet\n$suffixMarkers"
 	}
 }
 
@@ -288,9 +296,14 @@ class MarkdownSubHeading @PublishedApi internal constructor(text: String) : Mark
 @MarkdownDsl
 sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
+		val indent = " " * (headingLevel + 1)
 		val prefixMarkers = "#" * headingLevel
+		val textSnippet = if(text.length > wrapLength)
+			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+				.prependIndent(indent, prefixMarkers)
+		else text
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		return "$prefixMarkers $text$attributesSnippet"
+		return "$textSnippet$attributesSnippet"
 	}
 }
 
@@ -340,14 +353,21 @@ class MarkdownList @PublishedApi internal constructor(
 /**Markdown列表节点。*/
 @MarkdownDsl
 sealed class MarkdownListNode(
-	protected val prefixMarker: String,
+	protected val prefixMarkers: String,
 	val text: String
-) : MarkdownDslElement {
+) : MarkdownDslElement, WrapContent {
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 	
+	override var wrapContent: Boolean = true
+	
 	override fun toString(): String {
+		val indent = " " * (prefixMarkers.length + 1)
+		val textSnippet = if(text.length > wrapLength)
+			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+				.prependIndent(indent, prefixMarkers)
+		else text
 		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n").ifNotEmpty { it.prependIndent(indent) }
-		return "$prefixMarker $text$nodesSnippet"
+		return "$textSnippet$nodesSnippet"
 	}
 }
 
@@ -373,14 +393,19 @@ class MarkdownTaskListNode @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String
-) : MarkdownDslTopElement {
+) : MarkdownDslTopElement, WrapContent {
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
+	
+	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
 		require(nodes.isNotEmpty()) { "Definition node size must be positive." }
 		
-		val nodesSnippet = nodes.joinToString("\n")
-		return "$title\n$nodesSnippet"
+		val titleSnippet = if(title.length > wrapLength)
+			title.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+		else title
+		val nodesSnippet = nodes.joinToStringOrEmpty("\n")
+		return "$titleSnippet\n$nodesSnippet"
 	}
 }
 
@@ -389,9 +414,14 @@ class MarkdownDefinition @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslElement {
+) : MarkdownDslElement, WrapContent {
+	override var wrapContent: Boolean = true //TODO
+	
 	override fun toString(): String {
-		return ":" + text.prependIndent(indent).drop(1)
+		return if(text.length > wrapLength)
+			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
+				.prependIndent(indent, ":")
+		else text
 	}
 }
 

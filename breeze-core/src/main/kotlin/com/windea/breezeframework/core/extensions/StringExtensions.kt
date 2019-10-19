@@ -345,6 +345,12 @@ fun String.substringsOrEmpty(vararg delimiters: String?): List<String> =
 fun String.substringsOrRemain(vararg delimiters: String?): List<String> =
 	this.substringsOrElse(*delimiters) { _, str -> str }
 
+/**为当前字符串的每行添加缩进，并为第一行提供一个指定的前缀。*/
+fun String.prependIndent(indent: String = "    ", prefix: String): String {
+	return prefix + this.prependIndent(indent).drop(prefix.length)
+}
+
+
 //REGION Specific extensions
 
 private val quoteChars = charArrayOf('\"', '\'', '`')
