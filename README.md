@@ -10,7 +10,7 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 **NOTE**
 
 * This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
-* This framework is designed to be used by Kotlin, rather than Java. Though you can obviously use it in Java.
+* This framework is designed to be used by Kotlin-Jvm, rather than Java. Though you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
 **Usage**
@@ -30,8 +30,11 @@ dependencies {
 ## breeze-core
 
 * Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`, etc. (e.g, `toFile`, `anyIn`.)
-    * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`)
-    * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`)
+    * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`.)
+    * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`.)
+    * Including some powerful handler extensions for `String`. (e.g, `String.switchTo`, `String.escape`.)
+    * Including some deep operator extensions for `Collection`. (e.g, `List.deepGet`, `List.deepFlatten`.)
+    * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
 * Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`.)
 * Provide basic annotations, consts, enums and interfaces.
 * Provide generator extensions for `equals`, `hashcode` and `toString`.
@@ -78,7 +81,7 @@ dependencies {
 
 ## breeze-reflect
 
-* Provide some useful extensions for kotlin reflect & java reflect. (e.g, `checkClassForName`, `nameOf`)
+* Provide some useful extensions for kotlin reflect & java reflect. (e.g, `checkClassForName`, `nameOf`.)
 
 ## breeze-serialization
 
@@ -102,6 +105,8 @@ dependencies {
 ## breeze-time
 
 * Provide some useful extensions for time, including `Date`, `Temporal`, etc.
+    * Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.)
+    * Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.) 
 * **Split from `breeze-core`.**
 
 # Optional Dependencies
@@ -114,13 +119,14 @@ dependencies {
 
 # References
 
-* [khronos](https://github.com/hotchemi/khronos)
-* [klutter](https://github.com/kohesive/klutter)
-* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
-* [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [Google Guava](https://github.com/google/guava)
 
-Thanks for providing train of thought and ideas!
+***
+
+* [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+* [kohesive/klutter](https://github.com/kohesive/klutter)
+* [hotchemi/khronos](https://github.com/hotchemi/khronos)
+* [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
 # Example
 

@@ -140,6 +140,8 @@
 * [X] breeze-dsl 完善MarkdownDsl。
 * [X] breeze-core 提供一些委托属性的便捷写法。
 * [X] breeze-functional 提供基础函数式方法到最高11个参数的函数。
+* [X] breeze-core 提供标准颜色的枚举。（考虑改为常量）
+* [X] 更新README。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***
@@ -151,14 +153,18 @@
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-game 初步完成实体&组件的规范。
-* [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
-* [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。
+* [ ] breeze-core 提供额外的集合的实现。参考Guava。
+* [ ] breeze-logger 完成自己的日志器的实现。
+* [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
+* [ ] 提供一种Result的实现。
+* [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 
 # 长期
 
+* [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
 * [ ] 发布项目到JCenter。
