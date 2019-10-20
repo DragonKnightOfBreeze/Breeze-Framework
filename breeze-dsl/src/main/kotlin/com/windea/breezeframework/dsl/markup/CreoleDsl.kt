@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class CreoleDsl
@@ -22,7 +22,7 @@ class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
 	override fun toString() = content.joinToStringOrEmpty("\n\n")
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @CreoleDsl
 interface CreoleDslEntry : WithText<CreoleTextBlock> {
@@ -329,7 +329,7 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Creole水平线类型。*/
 @CreoleDsl
@@ -347,7 +347,7 @@ enum class CreoleTableAlignment(
 	None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @CreoleDsl
 object CreoleInlineBuilder {
@@ -503,7 +503,7 @@ inline infix fun CreoleTableColumn.color(color: String) =
 inline infix fun CreoleTableColumn.align(alignment: CreoleTableAlignment) =
 	this.also { it.alignment = alignment }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Creole的配置。*/
 @ReferenceApi("[Creole](http://plantuml.com/zh/creole)")

@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import java.time.*
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidGanttDsl
@@ -39,7 +39,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentConte
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
@@ -109,7 +109,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Mermaid甘特图任务的状态。*/
 @MermaidGanttDsl
@@ -117,7 +117,7 @@ enum class MermaidGanttTaskStatus(val text: String?) {
 	ToDo(null), Done("done"), Active("active")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @MermaidGanttDsl
 inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) =

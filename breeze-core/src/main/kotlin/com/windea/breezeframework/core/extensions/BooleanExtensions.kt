@@ -28,7 +28,7 @@ inline fun Boolean?.orTrue(): Boolean = this ?: true
 /**如果为null，则返回false，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**转化为1或0。*/
 inline fun Boolean.toInt(): Int = if(this) 1 else 0

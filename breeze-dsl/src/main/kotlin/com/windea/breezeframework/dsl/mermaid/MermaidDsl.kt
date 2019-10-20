@@ -6,7 +6,7 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidDsl
@@ -20,7 +20,7 @@ abstract class Mermaid : DslBuilder
 @MermaidDsl
 interface MermaidDslElement : DslElement
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Mermaid Dsl的配置。*/
 @ReferenceApi("[Mermaid](https://mermaidjs.github.io)")

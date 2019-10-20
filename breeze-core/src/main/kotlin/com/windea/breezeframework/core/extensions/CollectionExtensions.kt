@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import java.util.concurrent.*
 import kotlin.random.*
 
-//REGION Portal extensions
+//REGION portal extensions
 
 /**构建线程安全的并发列表。*/
 inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
@@ -27,7 +27,7 @@ inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 /**构建线程安全的并发映射。*/
 inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 
-//REGION Operator overrides
+//REGION operator overrides
 
 /**@see kotlin.collections.slice*/
 inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
@@ -47,7 +47,7 @@ inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 /**@see kotlin.collections.chunked*/
 inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 
-//REGION Common functions
+//REGION common functions
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
@@ -371,7 +371,7 @@ inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>,
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-//REGION Deep operation extensions
+//REGION deep operation extensions
 
 /**根据指定的[StandardReference]得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
@@ -491,7 +491,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 	}.toMap()
 }
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**将当前列表转化为并发列表。*/
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
@@ -543,7 +543,7 @@ fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
-//REGION Specific operations
+//REGION specific operations
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }

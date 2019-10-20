@@ -14,7 +14,7 @@ import com.windea.breezeframework.core.extensions.*
 //Dsl的主要功能是生成处理后的字符串，尽量避免添加其他无关的功能。
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class Dsl
@@ -35,7 +35,7 @@ interface DslElement {
 @Dsl
 interface DslConfig
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**包含（唯一主要的）可被视为文本的内容。*/
 @Dsl
@@ -81,7 +81,7 @@ interface GenerateContent {
 	fun toGeneratedString(): String
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 /**设置是否换行内容。*/
 @Dsl
@@ -95,7 +95,7 @@ inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { inde
 @Dsl
 inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
-//REGION Helpful extensions
+//REGION helpful extensions
 
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi

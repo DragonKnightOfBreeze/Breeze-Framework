@@ -139,6 +139,7 @@
 * [X] breeze-core 重构代码，去除不必要的代码。
 * [X] breeze-dsl 完善MarkdownDsl。
 * [X] breeze-core 提供一些委托属性的便捷写法。
+* [X] breeze-functional 提供基础函数式方法到最高11个参数的函数。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

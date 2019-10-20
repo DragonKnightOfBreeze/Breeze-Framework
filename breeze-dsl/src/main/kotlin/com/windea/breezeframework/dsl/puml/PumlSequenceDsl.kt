@@ -10,7 +10,7 @@ import org.intellij.lang.annotations.*
 
 //TODO fully support
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class PumlSequenceDsl
@@ -24,7 +24,7 @@ class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDs
 	}
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @PumlSequenceDsl
 interface PumlSequenceDslEntry
@@ -91,7 +91,7 @@ class PumlSequenceMessage @PublishedApi internal constructor(
 	
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**PlantUml序列图参与者的形状。*/
 @PumlSequenceDsl
@@ -109,7 +109,7 @@ enum class PumlSequenceMessageArrowShape(val prefix: String, val suffix: String)
 	DottedThinArrow("<<-", "->>"), DottedThinUpArrow("//-", "-\\\\"), DottedThinDownArrow("\\\\-", "-//")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @PumlSequenceDsl
 inline fun pumlSequence(builder: PumlSequence.() -> Unit) =

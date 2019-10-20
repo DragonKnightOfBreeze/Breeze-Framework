@@ -4,7 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import java.io.*
 
-//REGION Type alias
+//REGION type alias
 
 typealias Tuple2<A, B> = Pair<A, B>
 
@@ -19,7 +19,7 @@ typealias TypedTuple3<T> = Triple<T, T, T>
 
 typealias TypedTuple4<T> = Quadruple<T, T, T, T>
 
-//REGION Quadruple class and extensions (necessary for Quaternion)
+//REGION quadruple class and extensions (necessary for Quaternion)
 
 /**四元数元组。*/
 data class Quadruple<out A, out B, out C, out D>(
@@ -34,7 +34,7 @@ data class Quadruple<out A, out B, out C, out D>(
 /**将单一元素类型的四元素元组转化成列表。*/
 fun <T> Quadruple<T, T, T, T>.toList() = listOf(first, second, third, fourth)
 
-//REGION Build extensions
+//REGION build extensions
 
 /**从二元素元组构造三元素元组。*/
 infix fun <A, B, C> Pair<A, B>.andTo(that: C): Triple<A, B, C> = Triple(first, second, that)
@@ -42,7 +42,7 @@ infix fun <A, B, C> Pair<A, B>.andTo(that: C): Triple<A, B, C> = Triple(first, s
 /**从三元素元组构造四元素元组。*/
 infix fun <A, B, C, D> Triple<A, B, C>.thenTo(that: D): Quadruple<A, B, C, D> = Quadruple(first, second, third, that)
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**映射单一元素类型的二元素元组的元素。*/
 inline fun <T, R> Pair<T, T>.map(transform: (T) -> R): Pair<R, R> =

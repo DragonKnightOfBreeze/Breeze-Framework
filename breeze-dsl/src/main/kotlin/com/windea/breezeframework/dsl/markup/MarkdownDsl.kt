@@ -19,7 +19,7 @@ import org.intellij.lang.annotations.*
 //DONE 添加Dsl元素：MarkdownAttribute和它的子类
 //DELAY 添加Dsl元素：HtmlBlock
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MarkdownDsl
@@ -45,7 +45,7 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	}
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @MarkdownDsl
 interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
@@ -766,7 +766,7 @@ class MarkdownPropertyAttribute(
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Markdown表格的对齐方式。*/
 @MarkdownDslExtendedFeature
@@ -805,7 +805,7 @@ enum class MarkdownAdmonitionQualifier(
 	Warning("warning", "warning"), Caution("warning", "caution"), Attention("warning", "attention")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @MarkdownDsl
 object MarkdownInlineBuilder {
@@ -1100,7 +1100,7 @@ inline fun MarkdownTableRow.colSpan() = column("^")
 inline infix fun MarkdownTableColumn.align(alignment: MarkdownTableAlignment) =
 	this.also { it.alignment = alignment }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Markdown的配置。*/
 @MarkdownDsl

@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidSequenceDsl
@@ -30,7 +30,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	}
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @MermaidSequenceDsl
 interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNote> {
@@ -164,7 +164,7 @@ class MermaidSequenceElse @PublishedApi internal constructor(text: String? = nul
 class MermaidSequenceHighlight @PublishedApi internal constructor(
 	colorText: String) : MermaidSequenceScope("rect", colorText)
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Mermaid序列图消息的箭头形状。*/
 @MermaidSequenceDsl
@@ -178,7 +178,7 @@ enum class MermaidSequenceNodePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), Over("over")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 /**构建Mermaid序列图。*/
 @MermaidSequenceDsl

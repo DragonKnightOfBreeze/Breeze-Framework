@@ -4,7 +4,7 @@ import com.windea.breezeframework.time.domain.*
 import java.text.*
 import java.util.*
 
-//REGION Factory extensions
+//REGION factory extensions
 
 object Dates {
 	/**今天。*/
@@ -21,7 +21,7 @@ object Dates {
 	}
 }
 
-//REGION Operator overrides
+//REGION operator overrides
 
 /**@see Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
@@ -37,7 +37,7 @@ operator fun Date.minus(calendarField: CalendarField): Date {
 	return calendar.time
 }
 
-//REGION Common extensions
+//REGION common extensions
 
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 

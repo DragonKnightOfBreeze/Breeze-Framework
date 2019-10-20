@@ -11,7 +11,7 @@ import java.text.*
 
 private val logger = KotlinLogging.logger { }
 
-//REGION Operator overrides
+//REGION operator overrides
 
 /**@see kotlin.text.slice*/
 inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
@@ -25,7 +25,7 @@ inline operator fun String.times(n: Int): String = this.repeat(n)
 /**@see kotlin.text.chunked*/
 inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 
-//REGION Common functions
+//REGION common functions
 
 /**判断字符串是否相等。忽略大小写。*/
 infix fun String?.equalsIc(other: String?): Boolean {
@@ -336,7 +336,7 @@ fun String.prependIndent(indent: String = "    ", prefix: String): String {
 	return prefix + this.prependIndent(indent).drop(prefix.length)
 }
 
-//REGION Specific extensions
+//REGION specific extensions
 
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
@@ -402,7 +402,7 @@ fun String.switchTo(case: FormatCase): String {
 	}.joinBy(case)
 }
 
-//REGION Progressive extensions
+//REGION progressive extensions
 
 /**逐行连接两个字符串。对于左边的字符串，保持每行长度一致，使用空格填充。对于缺失的行，以空行填充。*/
 infix fun String.plusByLine(other: Any?): String {
@@ -429,7 +429,7 @@ fun String.padEndByLine(padChar: Char = ' '): String {
 	return lines.joinToString("\n") { it.padEnd(maxLength, padChar) }
 }
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**
  * 将当前字符串转为折行文本。

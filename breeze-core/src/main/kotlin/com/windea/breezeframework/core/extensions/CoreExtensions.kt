@@ -8,7 +8,7 @@ import kotlin.contracts.*
 
 private val logger = KotlinLogging.logger {}
 
-//REGION Global extensions
+//REGION global extensions
 
 /**转化为指定类型，或者抛出异常。用于链式调用。*/
 inline fun <reified R> Any?.cast(): R = this as R
@@ -16,7 +16,7 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
-//REGION Standard.kt extensions (TODOs)
+//REGION standard.kt extensions (TODOs)
 
 /**表明一个方法体推迟了实现。*/
 inline fun DELAY() = Unit
@@ -36,7 +36,7 @@ inline fun FIXME() = run { nearestLogger().warn("There is an issue in this opera
 /**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
 inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
 
-//REGION Standard.kt extensions (Scope functions)
+//REGION standard.kt extensions (Scope functions)
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 inline fun tryOrPrint(block: () -> Unit) {
@@ -82,7 +82,7 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	block()
 }
 
-//REGION Precondition.kt extensions
+//REGION precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 inline fun accept(value: Boolean) {
@@ -124,7 +124,7 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	}
 }
 
-//REGION Internal functions
+//REGION internal functions
 
 /**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
 @PublishedApi

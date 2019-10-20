@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.markup.YamlConfig.quote
 //TODO basic support
 //TODO complex key support
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class YamlDsl
@@ -28,7 +28,7 @@ class Yaml @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toYamlElement()
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**Yaml Dsl的元素。*/
 @YamlDsl
@@ -125,7 +125,7 @@ class YamlAlias
 
 class YamlAnchor
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 enum class YamlScalarStyle(
 	val text: String
@@ -137,7 +137,7 @@ enum class YamlFlowStyle {
 	Auto, Flow, Block
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @YamlDsl
 object YamlInlineBuilder {
@@ -173,7 +173,7 @@ inline fun yaml(builder: Yaml.() -> Any?) = Yaml().also { it.rootElement = it.bu
 @YamlDsl
 inline fun yamlTree(builder: Yaml.() -> YamlElement<*>) = Yaml().also { it.rootElement = it.builder() }
 
-//REGION Helpful extensions
+//REGION helpful extensions
 
 @PublishedApi
 internal fun Any?.toYamlElement(): YamlElement<*> {
@@ -189,7 +189,7 @@ internal fun Any?.toYamlElement(): YamlElement<*> {
 	}
 }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Yaml的配置。*/
 @YamlDsl

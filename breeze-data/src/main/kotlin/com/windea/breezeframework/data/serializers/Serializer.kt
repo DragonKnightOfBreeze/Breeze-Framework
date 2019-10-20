@@ -9,7 +9,7 @@ import kotlin.reflect.jvm.*
 //TODO 考虑编写自己的简洁而灵活的实现
 //TODO 考虑使用扩展库`kotlinx-serialization`，但是缺少具体的对于yaml、xml等格式的实现
 
-//REGION Top interfaces
+//REGION top interfaces
 
 /**序列化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
 interface Serializer {
@@ -35,7 +35,7 @@ interface Serializer {
 /**序列化器的配置。*/
 interface SerializerConfig
 
-//REGION Reified extensions
+//REGION reified extensions
 
 /**从指定字符串读取指定类型的数据。*/
 inline fun <reified T> Serializer.load(string: String): T {

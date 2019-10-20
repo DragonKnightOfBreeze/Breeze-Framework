@@ -2,7 +2,7 @@ package com.windea.breezeframework.time.extensions
 
 import java.time.*
 
-//REGION Operator overrides
+//REGION operator overrides
 
 /**@see java.time.Duration.negated*/
 operator fun Duration.unaryMinus(): Duration = this.negated()
@@ -74,7 +74,7 @@ operator fun DayOfWeek.inc(): DayOfWeek = this.plus(1L)
 /**@see java.time.DayOfWeek.minus*/
 operator fun DayOfWeek.dec(): DayOfWeek = this.minus(1L)
 
-//REGION Common extensions
+//REGION common extensions
 
 /**判断是否是今天。*/
 val LocalDate.isToday: Boolean

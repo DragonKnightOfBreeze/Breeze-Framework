@@ -43,7 +43,7 @@ fun File.changeExtension(newExtension: String): File {
 	return File("${this.parent}\\${this.shotName}.$newExtension")
 }
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**将当前文件转化为统一资源标识符。*/
 fun File.toUri(): URI = this.toURI()

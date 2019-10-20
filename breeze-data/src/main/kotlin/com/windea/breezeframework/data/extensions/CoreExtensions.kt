@@ -13,7 +13,7 @@ import kotlin.reflect.full.*
 
 private val logger = KotlinLogging.logger { }
 
-//REGION Serialize extensions
+//REGION serialize extensions
 
 /**序列化当前对象，返回序列化后的字符串。*/
 inline fun <T> T.serialize(dataType: DataType): String {
@@ -35,7 +35,7 @@ inline fun <reified T> File.deserialize(dataType: DataType): T {
 	return dataType.serializer.load(this)
 }
 
-//REGION Object and property map extensions
+//REGION object and property map extensions
 
 /**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
 @Deprecated("使用'kotlinx-serialization'的'Mapper.map()'。", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))

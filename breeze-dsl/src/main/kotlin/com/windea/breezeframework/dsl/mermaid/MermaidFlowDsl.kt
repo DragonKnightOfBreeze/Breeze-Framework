@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidFlowDsl
@@ -36,7 +36,7 @@ class MermaidFlow @PublishedApi internal constructor(
 	}
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @MermaidFlowDsl
 interface MermaidFlowDslEntry : IndentContent {
@@ -176,7 +176,7 @@ class MermaidFlowClassRef @PublishedApi internal constructor(
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Mermaid流程图的方向。*/
 @MermaidFlowDsl
@@ -205,7 +205,7 @@ enum class MermaidFlowLinkArrowShape(val text: String) {
 	Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @MermaidFlowDsl
 inline fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =

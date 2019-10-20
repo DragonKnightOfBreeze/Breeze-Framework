@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class JsonDsl
@@ -26,7 +26,7 @@ class Json @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toJsonElement()
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**Json Dsl的元素。*/
 @JsonDsl
@@ -113,7 +113,7 @@ class JsonObject @PublishedApi internal constructor(
 	}
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @JsonDsl
 object JsonInlineBuilder {
@@ -148,7 +148,7 @@ inline fun json(builder: Json.() -> Any?) = Json().also { it.rootElement = it.bu
 @JsonDsl
 inline fun jsonTree(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
 
-//REGION Helpful extensions
+//REGION helpful extensions
 
 @PublishedApi
 internal fun Any?.toJsonElement(): JsonElement<*> {
@@ -164,7 +164,7 @@ internal fun Any?.toJsonElement(): JsonElement<*> {
 	}
 }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Json的配置。*/
 @JsonDsl

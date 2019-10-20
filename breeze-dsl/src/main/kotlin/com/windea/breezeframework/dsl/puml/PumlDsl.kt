@@ -11,7 +11,7 @@ import org.intellij.lang.annotations.*
 
 //TODO fully support
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class PumlDsl
@@ -38,7 +38,7 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	override fun String.unaryMinus() = note(this)
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**PlantUml Dsl的元素。*/
 @PumlDsl
@@ -208,7 +208,7 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
@@ -236,7 +236,7 @@ enum class PumlNotePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @PumlDsl
 inline fun Puml.title(text: String) =
@@ -294,7 +294,7 @@ inline infix fun PumlNote.topOf(targetId: String) =
 inline infix fun PumlNote.bottomOf(targetId: String) =
 	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**PlantUml Dsl的配置。*/
 @ReferenceApi("[PlantUml](http://plantuml.com)")

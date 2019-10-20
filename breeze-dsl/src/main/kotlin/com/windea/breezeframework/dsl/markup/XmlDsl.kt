@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.markup.XmlConfig.indent
 import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class XmlDsl
@@ -47,7 +47,7 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComm
 		element(this, *args, builder = builder)
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 /**Xml Dsl的元素。*/
 @XmlDsl
@@ -134,7 +134,7 @@ class XmlElement @PublishedApi internal constructor(
 		element(this, *args, builder = builder)
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @XmlDsl
 object XmlInlineBuilder {
@@ -195,7 +195,7 @@ inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?
 inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
 
-//REGION Dsl config
+//REGION dsl config
 
 /**Xml的配置。*/
 @XmlDsl

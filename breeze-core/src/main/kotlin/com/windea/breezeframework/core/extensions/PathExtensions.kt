@@ -15,7 +15,7 @@ val Path.fileShotName: String get() = this.fileName.toString().substringBeforeLa
 /**判断对应文件是否存在。*/
 fun Path.exists(): Boolean = Files.exists(this)
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**将当前地址转化为统一资源定位符。*/
 inline fun Path.toUrl(): URL = this.toUri().toURL()

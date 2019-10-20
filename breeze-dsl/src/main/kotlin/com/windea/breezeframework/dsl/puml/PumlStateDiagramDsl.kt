@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//REGION Top annotations and interfaces
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class PumlStateDiagramDsl
@@ -29,7 +29,7 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	}
 }
 
-//REGION Dsl elements
+//REGION dsl elements
 
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslEntry {
@@ -215,7 +215,7 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 	}
 }
 
-//REGION Build extensions
+//REGION build extensions
 
 @PumlStateDiagramDsl
 inline fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
