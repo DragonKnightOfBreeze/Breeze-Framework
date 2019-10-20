@@ -10,12 +10,10 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.markup.XmlConfig.indent
 import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class XmlDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Xml。*/
 @XmlDsl
@@ -49,24 +47,7 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComm
 		element(this, *args, builder = builder)
 }
 
-/**Xml的配置。*/
-@XmlDsl
-object XmlConfig : DslConfig {
-	/**默认根元素名。*/
-	var defaultRootName: String = "root"
-		set(value) = run { field = value.ifBlank { "root" } }
-	/**缩进长度。*/
-	var indentSize: Int = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var preferDoubleQuote: Boolean = true
-	/**是否自关闭标签。*/
-	var autoCloseTag: Boolean = false
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}
-
+//REGION Dsl elements
 
 /**Xml Dsl的元素。*/
 @XmlDsl
@@ -84,7 +65,6 @@ class XmlStatement @PublishedApi internal constructor(
 		return "<?$name$attributesSnippet?>"
 	}
 }
-
 
 /**Xml结点。*/
 @XmlDsl
@@ -174,10 +154,10 @@ object XmlInlineBuilder {
 		element(this, *args, builder = builder)
 }
 
-
 @XmlDsl
 inline fun xml(builder: Xml.() -> Unit) =
 	Xml().also { it.builder() }
+
 
 @XmlDsl
 inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
@@ -214,3 +194,21 @@ inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?
 @XmlDsl
 inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
+
+//REGION Dsl config
+
+/**Xml的配置。*/
+@XmlDsl
+object XmlConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize: Int = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var defaultRootName: String = "root"
+		set(value) = run { if(value.isNotBlank()) field = value }
+	var autoCloseTag: Boolean = false
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+}

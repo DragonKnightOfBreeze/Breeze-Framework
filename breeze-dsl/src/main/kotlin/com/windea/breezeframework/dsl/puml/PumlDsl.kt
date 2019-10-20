@@ -9,12 +9,12 @@ import com.windea.breezeframework.dsl.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//REGION Dsl annotations
+//TODO fully support
+
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class PumlDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml Dsl.*/
 @ReferenceApi("[PlantUml](http://plantuml.com)")
@@ -38,20 +38,7 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	override fun String.unaryMinus() = note(this)
 }
 
-/**PlantUml Dsl的配置。*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
-@PumlDsl
-object PumlConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var preferDoubleQuote: Boolean = true
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}
-
+//REGION Dsl elements
 
 /**PlantUml Dsl的元素。*/
 @PumlDsl
@@ -99,7 +86,6 @@ class PumlHeader @PublishedApi internal constructor(text: String) : PumlElement(
 @PumlDsl
 class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement("footer", text)
 
-
 /**PlantUml缩放。*/
 @PumlDsl
 class PumlScale @PublishedApi internal constructor(
@@ -119,7 +105,6 @@ class PumlCaption @PublishedApi internal constructor(
 		return "caption $text"
 	}
 }
-
 
 /**
  * PlantUml注释。
@@ -172,10 +157,7 @@ class PumlNote @PublishedApi internal constructor(
 			else "note$positionSnippet: $textSnippet"
 		}
 	}
-	
-	
 }
-
 
 //TODO
 /**PlantUml显示参数。*/
@@ -288,11 +270,9 @@ inline fun Puml.note(text: String) =
 inline fun Puml.skinParams(builder: PumlSkinParams.() -> Unit) =
 	skinParams.builder()
 
-
 @PumlDsl
 inline infix fun PumlElement.at(position: PumlTopElementPosition) =
 	this.also { it.position = position }
-
 
 @PumlDsl
 inline infix fun PumlNote.alias(alias: String) =
@@ -313,3 +293,19 @@ inline infix fun PumlNote.topOf(targetId: String) =
 @PumlDsl
 inline infix fun PumlNote.bottomOf(targetId: String) =
 	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }
+
+//REGION Dsl config
+
+/**PlantUml Dsl的配置。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
+@PumlDsl
+object PumlConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize = 4
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+}

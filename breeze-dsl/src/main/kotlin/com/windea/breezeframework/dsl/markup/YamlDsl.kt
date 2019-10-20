@@ -7,15 +7,13 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.YamlConfig.indent
 import com.windea.breezeframework.dsl.markup.YamlConfig.quote
 
-//TODO
+//TODO basic support
 //TODO complex key support
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class YamlDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Yaml。*/
 @YamlDsl
@@ -30,24 +28,7 @@ class Yaml @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toYamlElement()
 }
 
-/**Yaml的配置。*/
-@YamlDsl
-object YamlConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(2, 8) }
-	/**数组指示器的缩进长度。*/
-	var indicatorIndentSize = 0
-		set(value) = run { field = value.coerceIn(0, 8) }
-	/**是否使用双引号。*/
-	var preferDoubleQuote: Boolean = true
-	/**是否偏好无引号。*/
-	var preferNoQuote: Boolean = true
-	
-	@PublishedApi internal val indent get() = " " * indentSize
-	@PublishedApi internal val indicatorIndent get() = " " * indicatorIndentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}
+//REGION Dsl elements
 
 /**Yaml Dsl的元素。*/
 @YamlDsl
@@ -134,7 +115,6 @@ class YamlObject @PublishedApi internal constructor(
 	}
 }
 
-
 class YamlDocument
 
 class YamlDirective
@@ -193,7 +173,7 @@ inline fun yaml(builder: Yaml.() -> Any?) = Yaml().also { it.rootElement = it.bu
 @YamlDsl
 inline fun yamlTree(builder: Yaml.() -> YamlElement<*>) = Yaml().also { it.rootElement = it.builder() }
 
-//REGION Internal extensions
+//REGION Helpful extensions
 
 @PublishedApi
 internal fun Any?.toYamlElement(): YamlElement<*> {
@@ -207,4 +187,23 @@ internal fun Any?.toYamlElement(): YamlElement<*> {
 		this is Iterable<*> -> YamlArray(this.map { it.toYamlElement() })
 		else -> YamlString(this.toString())
 	}
+}
+
+//REGION Dsl config
+
+/**Yaml的配置。*/
+@YamlDsl
+object YamlConfig : DslConfig {
+	private val indentSizeRange = 0..8
+	
+	var indentSize = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var indicatorIndentSize = 0
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var preferNoQuote: Boolean = true
+	
+	@PublishedApi internal val indent get() = " " * indentSize
+	@PublishedApi internal val indicatorIndent get() = " " * indicatorIndentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }

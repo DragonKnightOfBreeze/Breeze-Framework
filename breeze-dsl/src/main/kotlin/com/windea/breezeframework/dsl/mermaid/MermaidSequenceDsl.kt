@@ -7,12 +7,10 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidSequenceDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid序列图。*/
 @ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
@@ -32,7 +30,9 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	}
 }
 
+//REGION Dsl elements
 
+@MermaidSequenceDsl
 interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNote> {
 	val participants: MutableSet<MermaidSequenceParticipant>
 	val messages: MutableList<MermaidSequenceMessage>
@@ -53,7 +53,6 @@ interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNo
 	@MermaidSequenceDsl
 	override fun String.unaryMinus() = note(this)
 }
-
 
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDsl
@@ -186,6 +185,7 @@ enum class MermaidSequenceNodePosition(val text: String) {
 fun mermaidSequence(builder: MermaidSequence.() -> Unit) =
 	MermaidSequence().also { it.builder() }
 
+
 @MermaidSequenceDsl
 inline fun MermaidSequenceDslEntry.participant(name: String) =
 	MermaidSequenceParticipant(name).also { participants += it }
@@ -227,11 +227,9 @@ inline fun MermaidSequenceDslEntry.alt(text: String, builder: MermaidSequenceAlt
 inline fun MermaidSequenceDslEntry.highlight(text: String, builder: MermaidSequenceHighlight.() -> Unit) =
 	MermaidSequenceHighlight(text).also { it.builder() }.also { scopes += it }
 
-
 @MermaidSequenceDsl
 inline infix fun MermaidSequenceParticipant.alias(alias: String) =
 	this.also { it.alias = alias }
-
 
 @MermaidSequenceDsl
 inline infix fun MermaidSequenceMessage.arrowShape(arrowShape: MermaidSequenceMessageArrowShape) =
@@ -240,7 +238,6 @@ inline infix fun MermaidSequenceMessage.arrowShape(arrowShape: MermaidSequenceMe
 @MermaidSequenceDsl
 inline infix fun MermaidSequenceMessage.activate(isActivated: Boolean) =
 	this.also { it.isActivated = isActivated }
-
 
 @MermaidSequenceDsl
 inline infix fun MermaidSequenceNote.leftOf(actorId: String) =
@@ -255,7 +252,6 @@ inline infix fun MermaidSequenceNote.over(actorIdPair: Pair<String, String>) =
 	this.also { it.position = MermaidSequenceNodePosition.RightOf }
 		.also { it.targetActorId = actorIdPair.first }
 		.also { it.targetActor2Id = actorIdPair.second }
-
 
 @MermaidSequenceDsl
 inline fun MermaidSequenceAlternative.`else`(text: String) =

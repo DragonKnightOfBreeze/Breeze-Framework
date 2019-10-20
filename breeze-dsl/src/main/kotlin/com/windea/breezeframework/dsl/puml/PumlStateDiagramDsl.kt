@@ -9,12 +9,10 @@ import com.windea.breezeframework.dsl.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//REGION Dsl marker annotations & Dsl element interfaces
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class PumlStateDiagramDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml状态图。*/
 @ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
@@ -31,7 +29,9 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	}
 }
 
+//REGION Dsl elements
 
+@PumlStateDiagramDsl
 interface PumlStateDiagramDslEntry {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramLink>
@@ -43,7 +43,6 @@ interface PumlStateDiagramDslEntry {
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 }
-
 
 /**PlantUml状态图Dsl的元素。*/
 @PumlStateDiagramDsl
@@ -261,7 +260,6 @@ inline fun PumlStateDiagramDslEntry.link(sourceState: PumlStateDiagramSimpleStat
 	targetState: PumlStateDiagramSimpleState, text: String = "") =
 	link(sourceState.alias ?: sourceState.name, targetState.alias ?: targetState.name, text)
 
-
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramState.color(color: String) =
 	this.also { it.color = color }
@@ -274,7 +272,6 @@ inline infix fun PumlStateDiagramState.tag(tag: String) =
 inline infix fun PumlStateDiagramState.alias(alias: String) =
 	this.also { it.alias = alias }
 
-
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramConcurrentState.state(name: String, text: String = "") =
 	PumlStateDiagramSimpleState(name, text).also { states += it }
@@ -282,7 +279,6 @@ inline fun PumlStateDiagramConcurrentState.state(name: String, text: String = ""
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramConcurrentState.section(builder: PumlStateDiagramConcurrentSection.() -> Unit) =
 	PumlStateDiagramConcurrentSection().also { it.builder() }.also { sections += it }
-
 
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramLink.arrowColor(arrowColor: String) =

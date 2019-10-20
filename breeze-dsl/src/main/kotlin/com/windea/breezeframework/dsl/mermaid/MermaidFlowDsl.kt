@@ -8,12 +8,10 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidFlowDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid流程图。*/
 @ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
@@ -38,7 +36,9 @@ class MermaidFlow @PublishedApi internal constructor(
 	}
 }
 
+//REGION Dsl elements
 
+@MermaidFlowDsl
 interface MermaidFlowDslEntry : IndentContent {
 	val nodes: MutableSet<MermaidFlowNode>
 	val links: MutableList<MermaidFlowLink>
@@ -60,7 +60,6 @@ interface MermaidFlowDslEntry : IndentContent {
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 }
-
 
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowDsl
@@ -252,7 +251,6 @@ inline fun MermaidFlowDslEntry.classDef(className: String, vararg styles: Pair<S
 @MermaidFlowDsl
 inline fun MermaidFlowDslEntry.classRef(vararg nodeIds: String, className: String) =
 	MermaidFlowClassRef(nodeIds.toSet(), className).also { classRefs += it }
-
 
 @MermaidFlowDsl
 inline infix fun MermaidFlowNode.shape(shape: MermaidFlowNodeShape) =

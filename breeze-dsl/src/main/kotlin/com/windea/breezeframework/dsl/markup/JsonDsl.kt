@@ -8,12 +8,10 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class JsonDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Json。*/
 @JsonDsl
@@ -28,22 +26,7 @@ class Json @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toJsonElement()
 }
 
-
-/**Json的配置。*/
-@JsonDsl
-object JsonConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var preferDoubleQuote: Boolean = true
-	/**是否以美观的形式输出。*/
-	var prettyPrint: Boolean = true
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}
-
+//REGION Dsl elements
 
 /**Json Dsl的元素。*/
 @JsonDsl
@@ -159,14 +142,13 @@ object JsonInlineBuilder {
 	inline fun jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
 }
 
-
 @JsonDsl
 inline fun json(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
 
 @JsonDsl
 inline fun jsonTree(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
 
-//REGION Internal extensions
+//REGION Helpful extensions
 
 @PublishedApi
 internal fun Any?.toJsonElement(): JsonElement<*> {
@@ -180,4 +162,20 @@ internal fun Any?.toJsonElement(): JsonElement<*> {
 		this is Iterable<*> -> JsonArray(this.map { it.toJsonElement() })
 		else -> JsonString(this.toString())
 	}
+}
+
+//REGION Dsl config
+
+/**Json的配置。*/
+@JsonDsl
+object JsonConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var prettyPrint: Boolean = true
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }

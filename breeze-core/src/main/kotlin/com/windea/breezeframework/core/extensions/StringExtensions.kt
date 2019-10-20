@@ -341,10 +341,10 @@ fun String.prependIndent(indent: String = "    ", prefix: String): String {
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
 /**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
-fun String.wrapQuote(quoteChar: Char): String {
-	require(quoteChar in quoteChars) { "Invalid quote char: $quoteChar." }
+fun String.wrapQuote(quote: Char): String {
+	require(quote in quoteChars) { "Invalid quote char: $quote." }
 	
-	return "$quoteChar${this.ifNotEmpty { it.replace(quoteChar.toString(), "\\$quoteChar") }}$quoteChar"
+	return "$quote${this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }}$quote"
 }
 
 /**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。*/

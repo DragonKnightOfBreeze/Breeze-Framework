@@ -8,12 +8,12 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//REGION Dsl annotations
+//TODO fully support
+
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class PumlSequenceDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**PlantUml序列图。*/
 @ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
@@ -24,9 +24,10 @@ class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDs
 	}
 }
 
+//REGION Dsl elements
 
+@PumlSequenceDsl
 interface PumlSequenceDslEntry
-
 
 /**PlantUml序列图Dsl的元素。*/
 @PumlSequenceDsl
@@ -130,7 +131,6 @@ inline infix fun PumlSequenceParticipant.color(color: String) =
 @PumlSequenceDsl
 inline infix fun PumlSequenceParticipant.shape(shape: PumlSequenceParticipantShape) =
 	this.also { it.shape = shape }
-
 
 @PumlSequenceDsl
 inline infix fun PumlSequenceMessage.arrowColor(arrowColor: String) =

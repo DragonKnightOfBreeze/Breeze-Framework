@@ -8,12 +8,10 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import java.time.*
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidGanttDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Mermaid甘特图。*/
 @ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
@@ -41,6 +39,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentConte
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
+//REGION Dsl elements
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
@@ -133,11 +132,9 @@ inline fun MermaidGantt.section(name: String) =
 inline fun MermaidGantt.section(name: String, builder: MermaidGanttSection.() -> Unit) =
 	MermaidGanttSection(name).also { it.builder() }.also { sections += it }
 
-
 @MermaidGanttDsl
 inline fun MermaidGanttSection.task(name: String, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
 	MermaidGanttTask(name, status).also { tasks += it }
-
 
 @MermaidGanttDsl
 inline infix fun MermaidGanttTask.alias(alias: String) =

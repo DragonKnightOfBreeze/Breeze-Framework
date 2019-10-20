@@ -8,12 +8,10 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class CreoleDsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Creole。*/
 @ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
@@ -24,33 +22,15 @@ class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
 	override fun toString() = content.joinToStringOrEmpty("\n\n")
 }
 
-/**Creole的配置。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+//REGION Dsl elements
+
 @CreoleDsl
-object CreoleConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 2
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**可重复标记的个数。*/
-	var repeatableMarkerCount = 4
-		set(value) = run { field = value.coerceIn(2, 4) }
-	var truncated = "..."
-	var preferDoubleQuote: Boolean = true
-	var emptyColumnSize: Int = 4
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
-}
-
-
 interface CreoleDslEntry : WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
 	@CreoleDsl
 	override fun String.unaryPlus() = textBlock(this)
 }
-
 
 /**Creole Dsl的元素。*/
 @CreoleDsl
@@ -153,7 +133,6 @@ class CreoleTextBlock @PublishedApi internal constructor(
 	}
 }
 
-
 /**Creole水平分割线。*/
 @CreoleDsl
 class CreoleHorizontalLine @PublishedApi internal constructor(
@@ -175,7 +154,6 @@ class CreoleTitle @PublishedApi internal constructor(
 		return "$markers$text$markers"
 	}
 }
-
 
 /**Creole标题。*/
 @CreoleDsl
@@ -205,9 +183,7 @@ class CreoleHeading3 @PublishedApi internal constructor(text: String) : CreoleHe
 @CreoleDsl
 class CreoleHeading4 @PublishedApi internal constructor(text: String) : CreoleHeading(4, text)
 
-
 //NOTE Do not provide dsl for Legacy HTML
-
 
 /**Creole列表。*/
 @CreoleDsl
@@ -241,7 +217,6 @@ class CreoleOrderedListNode @PublishedApi internal constructor(text: String) : C
 @CreoleDsl
 class CreoleUnorderedListNode @PublishedApi internal constructor(text: String) : CreoleListNode("*", text)
 
-
 /**Creole树。*/
 @CreoleDsl
 class CreoleTree @PublishedApi internal constructor(
@@ -271,7 +246,6 @@ class CreoleTreeNode @PublishedApi internal constructor(
 		return "$textSnippet$nodesSnippet"
 	}
 }
-
 
 //TODO pretty format
 /**Creole表格。*/
@@ -307,7 +281,6 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
-			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toStringInHeader() }
 			else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty("|", "|", "|")
 	}
@@ -328,7 +301,6 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
@@ -410,7 +382,6 @@ object CreoleInlineBuilder {
 	inline fun w(text: String) = CreoleWavedText(text)
 }
 
-
 @CreoleDsl
 inline fun creole(builder: Creole.() -> Unit) =
 	Creole().also { it.builder() }
@@ -455,7 +426,6 @@ inline fun CreoleDslEntry.tree(title: String, builder: CreoleTree.() -> Unit) =
 inline fun CreoleDslEntry.table(builder: CreoleTable.() -> Unit) =
 	CreoleTable().also { it.builder() }.also { content += it }
 
-
 @CreoleDsl
 inline fun CreoleList.ol(text: String) =
 	CreoleOrderedListNode(text).also { nodes += it }
@@ -488,7 +458,6 @@ inline fun CreoleListNode.ul(text: String) =
 inline fun CreoleListNode.ul(text: String, builder: CreoleUnorderedListNode.() -> Unit) =
 	CreoleUnorderedListNode(text).also { it.builder() }.also { nodes += it }
 
-
 @CreoleDsl
 inline fun CreoleTree.node(text: String) =
 	CreoleTreeNode(text).also { nodes += it }
@@ -504,7 +473,6 @@ inline fun CreoleTreeNode.node(text: String) =
 @CreoleDsl
 inline fun CreoleTreeNode.node(text: String, builder: CreoleTreeNode.() -> Unit) =
 	CreoleTreeNode(text).also { it.builder() }.also { nodes += it }
-
 
 @CreoleDsl
 inline fun CreoleTable.header(builder: CreoleTableHeader.() -> Unit) =
@@ -534,3 +502,25 @@ inline infix fun CreoleTableColumn.color(color: String) =
 @CreoleDsl
 inline infix fun CreoleTableColumn.align(alignment: CreoleTableAlignment) =
 	this.also { it.alignment = alignment }
+
+//REGION Dsl config
+
+/**Creole的配置。*/
+@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+@CreoleDsl
+object CreoleConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	private val repeatableMarkerCountRange = 3..12
+	
+	var indentSize = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var repeatableMarkerCount = 4
+		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
+	var truncated = "..."
+	var preferDoubleQuote: Boolean = true
+	var emptyColumnSize: Int = 4
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
+}

@@ -1,10 +1,8 @@
 package com.windea.breezeframework.reflect.extensions.java
 
-//https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/Helpers.kt
-
 import java.lang.reflect.*
 
-//TODO Remain to add comments
+//https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/Helpers.kt
 
 val Executable?.isAbstract: Boolean get() = this?.modifiers?.let { Modifier.isAbstract(it) } ?: false
 

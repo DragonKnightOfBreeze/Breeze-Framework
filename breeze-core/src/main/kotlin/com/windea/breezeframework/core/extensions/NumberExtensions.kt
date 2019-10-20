@@ -6,34 +6,6 @@ import kotlin.math.*
 
 //REGION Operator overrides & infix extensions
 
-/**进行乘方运算。*/
-inline infix fun Int.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Int.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Int.`^`(x: Double) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(x: Double) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(x: Double) = this.pow(x)
-
-
 /**进行整乘运算。*/
 inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
 

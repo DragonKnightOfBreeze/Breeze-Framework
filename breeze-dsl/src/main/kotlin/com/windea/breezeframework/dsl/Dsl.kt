@@ -14,12 +14,10 @@ import com.windea.breezeframework.core.extensions.*
 //Dsl的主要功能是生成处理后的字符串，尽量避免添加其他无关的功能。
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class Dsl
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Dsl的构建器。*/
 @Dsl
@@ -27,17 +25,17 @@ interface DslBuilder {
 	override fun toString(): String
 }
 
-/**Dsl的配置。*/
-@Dsl
-interface DslConfig
-
 /**Dsl的元素。其构建方法会自动将其添加到父级元素。*/
 @Dsl
 interface DslElement {
 	override fun toString(): String
 }
 
-//REGION Interfaces
+/**Dsl的配置。*/
+@Dsl
+interface DslConfig
+
+//REGION Dsl elements
 
 /**包含（唯一主要的）可被视为文本的内容。*/
 @Dsl
@@ -63,7 +61,6 @@ interface WithBlock<T : DslElement> {
 	operator fun String.invoke(builder: T.() -> Unit): T
 }
 
-
 /**包含可换行的内容。这个接口的优先级高于[IndentContent]。*/
 @Dsl
 interface WrapContent {
@@ -80,6 +77,8 @@ interface IndentContent {
 @Dsl
 interface GenerateContent {
 	var generateContent: Boolean
+	
+	fun toGeneratedString(): String
 }
 
 //REGION Build extensions

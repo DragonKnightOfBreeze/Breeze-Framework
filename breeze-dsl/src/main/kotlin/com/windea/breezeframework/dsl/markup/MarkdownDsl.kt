@@ -4,28 +4,28 @@ package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnSize
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.addPrefixHeadingMarkers
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnLength
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnText
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.horizontalLineMarkers
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.indent
-import com.windea.breezeframework.dsl.markup.MarkdownConfig.initialMarker
+import com.windea.breezeframework.dsl.markup.MarkdownConfig.listNodeMarker
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
 import org.intellij.lang.annotations.*
 
-//TODO list prefix marker can also be "+"
-//DONE add MarkdownAttribute and it's subclasses
+//DONE 添加Dsl元素：MarkdownAttribute和它的子类
+//DELAY 添加Dsl元素：HtmlBlock
 
-//REGION Dsl annotations
+//REGION Top annotations and interfaces
 
 @DslMarker
 private annotation class MarkdownDsl
 
 @MustBeDocumented
 private annotation class MarkdownDslExtendedFeature
-
-//REGION Dsl & Dsl config & Dsl elements
 
 /**Markdown。*/
 @MarkdownDsl
@@ -45,28 +45,9 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	}
 }
 
-/**Markdown的配置。*/
+//REGION Dsl elements
+
 @MarkdownDsl
-object MarkdownConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize: Int = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**可重复标记的个数。*/
-	var repeatableMarkerCount: Int = 3
-		set(value) = run { field = value.coerceIn(3, 6) }
-	var truncated: String = "..."
-	var preferDoubleQuote: Boolean = true
-	var preferAsteriskMaker: Boolean = true
-	var emptyColumnSize: Int = 4
-	var wrapLength: Int = 120
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-	@PublishedApi internal val initialMarker get() = if(preferAsteriskMaker) "*" else "-"
-	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
-}
-
-
 interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
@@ -81,7 +62,6 @@ interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 interface WithMarkdownAttributes {
 	var attributes: MarkdownAttributes?
 }
-
 
 /**Markdown Dsl的元素。*/
 @MarkdownDsl
@@ -128,7 +108,6 @@ class MarkdownFootNote @PublishedApi internal constructor(
 	}
 }
 
-
 /**Markdown富文本。*/
 @MarkdownDsl
 sealed class MarkdownRichText(
@@ -171,7 +150,6 @@ class MarkdownSuperscriptText @PublishedApi internal constructor(text: String) :
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownSubscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText(text, "~")
-
 
 /**Markdown链接。*/
 @MarkdownDsl
@@ -260,7 +238,6 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 	}
 }
 
-
 /**Markdown标题。*/
 @MarkdownDsl
 sealed class MarkdownHeading(
@@ -303,7 +280,8 @@ sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeadi
 				.prependIndent(indent, prefixMarkers)
 		else text
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		return "$textSnippet$attributesSnippet"
+		val suffixMarkers = if(addPrefixHeadingMarkers) " $prefixMarkers" else ""
+		return "$textSnippet$attributesSnippet$suffixMarkers"
 	}
 }
 
@@ -335,10 +313,9 @@ class MarkdownHeading6 @PublishedApi internal constructor(text: String) : Markdo
 @MarkdownDsl
 object MarkdownHorizontalLine : MarkdownDslTopElement {
 	override fun toString(): String {
-		return initialMarker * repeatableMarkerCount
+		return horizontalLineMarkers
 	}
 }
-
 
 /**Markdown列表。*/
 @MarkdownDsl
@@ -379,14 +356,15 @@ class MarkdownOrderedListNode @PublishedApi internal constructor(
 
 /**Markdown无序列表节点。*/
 @MarkdownDsl
-class MarkdownUnorderedListNode @PublishedApi internal constructor(text: String) : MarkdownListNode(initialMarker, text)
+class MarkdownUnorderedListNode @PublishedApi internal constructor(
+	text: String
+) : MarkdownListNode(listNodeMarker.toString(), text)
 
 /**Markdown任务列表节点。*/
 @MarkdownDsl
 class MarkdownTaskListNode @PublishedApi internal constructor(
 	val isCompleted: Boolean, text: String
-) : MarkdownListNode("$initialMarker [${if(isCompleted) "X" else " "}]", text)
-
+) : MarkdownListNode("$listNodeMarker [${if(isCompleted) "X" else " "}]", text)
 
 /**Markdown定义列表。*/
 @MarkdownDsl
@@ -415,7 +393,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownDslElement, WrapContent {
-	override var wrapContent: Boolean = true //TODO
+	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
 		return if(text.length > wrapLength)
@@ -425,8 +403,6 @@ class MarkdownDefinitionNode @PublishedApi internal constructor(
 	}
 }
 
-
-//TODO pretty format
 /**Markdown表格。*/
 @MarkdownDsl
 class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement {
@@ -437,14 +413,17 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
 		
+		//DELAY pretty format
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
+		//adjust column size
 		header.columnSize = actualColumnSize
 		rows.forEach { it.columnSize = actualColumnSize }
 		
 		val headerRowSnippet = header.toString()
+		val delimitersSnippet = header.toDelimitersString()
 		val rowsSnippet = rows.joinToStringOrEmpty("\n")
-		return "$headerRowSnippet\n$rowsSnippet"
+		return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 	}
 }
 
@@ -458,17 +437,19 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 		
 		//NOTE actual column size may not equal to columns.size
-		val columnsSnippet = when {
+		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
-		val delimitersSnippet = when {
-			columnSize == null || columnSize == columns.size -> columns.map { it.toDelimiterString() }
-			columnSize!! < columns.size -> columns.subList(0, columnSize!!).map { it.toDelimiterString() }
-			else -> columns.map { it.toDelimiterString() }.fillEnd(columnSize!!, "-" * emptyColumnSize)
+	}
+	
+	fun toDelimitersString(): String {
+		require(columns.isNotEmpty()) { "Table row column size must be positive." }
+		
+		return when {
+			columnSize == null || columnSize == columns.size -> columns.map { it.toDelimitersString() }
+			else -> columns.map { it.toDelimitersString() }.fillEnd(columnSize!!, "-" * emptyColumnLength)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
-		return "$columnsSnippet\n$delimitersSnippet"
 	}
 	
 	@MarkdownDsl
@@ -486,8 +467,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 		
 		//NOTE actual column size may not equal to columns.size
 		return when {
-			columnSize == null || columnSize == columns.size -> columns
-			columnSize!! < columns.size -> columns.subList(0, columnSize!!)
+			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
@@ -507,12 +487,11 @@ class MarkdownTableColumn @PublishedApi internal constructor(
 		return text
 	}
 	
-	fun toDelimiterString(): String {
+	fun toDelimitersString(): String {
 		val (l, r) = alignment.textPair
-		return "$l${" " * (emptyColumnSize - 2)}$r"
+		return "$l${" " * (emptyColumnLength - 2)}$r"
 	}
 }
-
 
 /**Markdown引文。*/
 @MarkdownDsl
@@ -539,7 +518,6 @@ class MarkdownIndentedBlock @PublishedApi internal constructor() : MarkdownQuote
 @MarkdownDslExtendedFeature
 class MarkdownSideBlock @PublishedApi internal constructor() : MarkdownQuote("|")
 
-
 /**Markdown代码。*/
 @MarkdownDsl
 interface MarkdownCode {
@@ -560,11 +538,11 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 	override var attributes: MarkdownAttributes? = null
 	
 	override fun toString(): String {
+		val markersSnippet = horizontalLineMarkers
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		return "```$language$attributesSnippet\n$text\n``s`"
+		return "$markersSnippet$language$attributesSnippet\n$text\n$markersSnippet"
 	}
 }
-
 
 /**Markdown数学表达式。*/
 @MarkdownDsl
@@ -586,7 +564,6 @@ class MarkdownMultilineMath @PublishedApi internal constructor(
 	}
 }
 
-
 /**Markdown警告框。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -606,7 +583,6 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 	}
 }
 
-
 /**Front Matter。只能位于Markdown文档顶部。用于配置当前的Markdown文档。使用Yaml格式。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -623,13 +599,17 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, GenerateContent {
-	override var generateContent: Boolean = false //TODO
+	override var generateContent: Boolean = false
+	
+	override fun toGeneratedString(): String {
+		TODO("not implemented")
+	}
 	
 	override fun toString(): String {
+		if(generateContent) return toGeneratedString()
 		return "[TOC]"
 	}
 }
-
 
 /**Markdown导入。用于导入相对路径的图片或文本。*/
 @MarkdownDsl
@@ -639,9 +619,14 @@ class MarkdownImport @PublishedApi internal constructor(
 ) : MarkdownDslTopElement, GenerateContent, WithMarkdownAttributes {
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
-	override var generateContent: Boolean = false //TODO
+	override var generateContent: Boolean = false
+	
+	override fun toGeneratedString(): String {
+		TODO("not implemented")
+	}
 	
 	override fun toString(): String {
+		if(generateContent) return toGeneratedString()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet$attributesSnippet"
@@ -654,9 +639,14 @@ class MarkdownImport @PublishedApi internal constructor(
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
 ) : MarkdownDslTopElement, GenerateContent {
-	override var generateContent: Boolean = false //TODO
+	override var generateContent: Boolean = false
+	
+	override fun toGeneratedString(): String {
+		TODO("not implemented")
+	}
 	
 	override fun toString(): String {
+		if(generateContent) return toGeneratedString()
 		return "<<< $name >>>"
 	}
 }
@@ -674,7 +664,6 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }
-
 
 /**Markdown引用。*/
 @MarkdownDsl
@@ -726,7 +715,6 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 		return "[$reference]: $url$titleSnippet"
 	}
 }
-
 
 /**Markdown特性组。*/
 @MarkdownDsl
@@ -897,9 +885,9 @@ object MarkdownInlineBuilder {
 	inline fun prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 }
 
-
 @MarkdownDsl
 inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
+
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -924,7 +912,6 @@ inline fun Markdown.footNoteRef(reference: String, text: String) =
 @MarkdownDsl
 inline fun Markdown.linkRef(reference: String, url: String, title: String? = null) =
 	MarkdownLinkReference(reference, url, title).also { references += it }
-
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.textBlock(text: String) =
@@ -1022,12 +1009,10 @@ inline fun MarkdownDslEntry.macros(name: String) =
 inline fun MarkdownDslEntry.macrosSnippet(name: String, builder: MarkdownMacrosSnippet.() -> Unit) =
 	MarkdownMacrosSnippet(name).also { it.builder() }.also { content += it }
 
-
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline infix fun <T : WithMarkdownAttributes> T.with(attributes: MarkdownAttributes) =
 	this.also { it.attributes = attributes }
-
 
 @MarkdownDsl
 inline fun MarkdownList.ol(order: String, text: String) =
@@ -1077,12 +1062,10 @@ inline fun MarkdownListNode.task(status: Boolean, text: String) =
 inline fun MarkdownListNode.task(status: Boolean, text: String, builder: MarkdownTaskListNode.() -> Unit) =
 	MarkdownTaskListNode(status, text).also { it.builder() }.also { nodes += it }
 
-
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownDefinition.node(title: String, builder: MarkdownDefinitionNode.() -> Unit) =
 	MarkdownDefinitionNode(title).also { it.builder() }.also { nodes += it }
-
 
 @MarkdownDsl
 inline fun MarkdownTable.header(builder: MarkdownTableHeader.() -> Unit) =
@@ -1116,3 +1099,40 @@ inline fun MarkdownTableRow.colSpan() = column("^")
 @MarkdownDsl
 inline infix fun MarkdownTableColumn.align(alignment: MarkdownTableAlignment) =
 	this.also { it.alignment = alignment }
+
+//REGION Dsl config
+
+/**Markdown的配置。*/
+@MarkdownDsl
+object MarkdownConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	private val wrapLengthRange = 60..240
+	private val repeatableMarkerCountRange = 3..12
+	private val listNodeMarkerArray = charArrayOf('*', '-', '+')
+	private val horizontalListMarkerArray = charArrayOf('*', '-', '_')
+	private val codeFenceMarkerArray = charArrayOf('`', '~')
+	
+	var indentSize: Int = 4
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var truncated: String = "..."
+	var wrapLength: Int = 120
+		set(value) = run { if(value in wrapLengthRange) field = value }
+	var addPrefixHeadingMarkers: Boolean = false
+	var repeatableMarkerCount: Int = 3
+		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
+	var listNodeMarker: Char = '*'
+		set(value) = run { if(value in listNodeMarkerArray) field = value }
+	var horizontalLineMarker: Char = '*'
+		set(value) = run { if(value in horizontalListMarkerArray) field = value }
+	var codeFenceMarker: Char = '`'
+		set(value) = run { if(value in codeFenceMarkerArray) field = value }
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '\"' else '\''
+	
+	@PublishedApi internal val horizontalLineMarkers get() = horizontalLineMarker * repeatableMarkerCount
+	@PublishedApi internal val codeFenceMarkers get() = codeFenceMarker * repeatableMarkerCount
+	@PublishedApi internal val emptyColumnLength = 4
+	@PublishedApi internal val emptyColumnText = " " * emptyColumnLength
+}
