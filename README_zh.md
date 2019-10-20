@@ -7,10 +7,23 @@ Breeze-Framework
 
 基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
 
-**NOTE**
+**注意**
+
 * 这个框架并未完全实现其功能，且未经过充分的测试。尽管它现在已经具备了许多有用的功能。
 * 这个框架是为Kotlin设计的，而非Java。尽管你自然可以在Java中使用它。
 * 这个框架正在更新中，未来会提供更多的模块和功能。
+
+**用法**
+
+```
+repositories {
+    maven("https://breeze-knights.bintray.com/breeze-framework")
+}
+
+dependencies {
+    implementation("com.windea.breezeframework:breeze-core:$version")
+}
+```
 
 # 模块
 

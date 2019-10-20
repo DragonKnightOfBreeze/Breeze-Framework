@@ -5,6 +5,7 @@ package com.windea.breezeframework.data.extensions
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.reflect.extensions.java.*
 import mu.*
 import java.io.*
@@ -26,12 +27,12 @@ inline fun <T> T.serialize(dataType: DataType, file: File) {
 
 /**反序列化当前字符串，返回指定泛型的对象。*/
 inline fun <reified T> String.deserialize(dataType: DataType): T {
-	return dataType.serializer.load(this, T::class.java)
+	return dataType.serializer.load(this)
 }
 
 /**反序列化当前文件中文本，返回指定泛型的对象。*/
 inline fun <reified T> File.deserialize(dataType: DataType): T {
-	return dataType.serializer.load(this, T::class.java)
+	return dataType.serializer.load(this)
 }
 
 //REGION Object and property map extensions

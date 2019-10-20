@@ -14,13 +14,14 @@ Integrated code framework based on Kotlin, provide many useful extensions for st
 * This framework is updating, and will provide more modules and functions in future.
 
 **Usage**
-```kts
+
+```
 repositories {
     maven("https://breeze-knights.bintray.com/breeze-framework")
 }
 
 dependencies {
-    implementation("com.windea.breezeframework:breeze-core:1.0.4")
+    implementation("com.windea.breezeframework:breeze-core:$version")
 }
 ```
 
@@ -29,12 +30,14 @@ dependencies {
 ## breeze-core
 
 * Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`, etc. (e.g, `toFile`, `anyIn`.)
+    * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`)
+    * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`)
 * Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`.)
 * Provide basic annotations, consts, enums and interfaces.
+* Provide generator extensions for `equals`, `hashcode` and `toString`.
 
 ## breeze-data
 
-* Provide generator extensions for `equals`, `hashcode` and `toString`.
 * Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
 * Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`.
 

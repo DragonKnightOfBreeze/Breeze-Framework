@@ -20,6 +20,7 @@ inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
 /**表明一个方法体推迟了实现。*/
 inline fun DELAY() = Unit
+	.also { nearestLogger().warn("An operation is delay-implemented.") }
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现。*/
 inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()

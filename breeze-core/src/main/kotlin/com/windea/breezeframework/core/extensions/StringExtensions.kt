@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.enums.core.*
 import mu.*
 import java.io.*
@@ -506,7 +505,7 @@ inline fun String.toFile(): File = File(this)
 /**将当前字符串转化为路径。*/
 inline fun String.toPath(): Path = Path.of(this)
 
-/**将当前字符串转化为统一资源标识符。可能需要事先进行适当的编码。*/
+/**将当前字符串转化为统一资源标识符。可能需要事先对查询参数进行适当的编码。*/
 inline fun String.toUri(): URI = URI.create(this)
 
 /**将当前字符串转化为统一资源定位符。*/
