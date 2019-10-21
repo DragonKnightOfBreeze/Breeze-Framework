@@ -117,14 +117,14 @@ enum class LetterCase(
 	),
 	@ExplicitUsageApi
 	`camelCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat & at begin
+		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
 		"""_*\$?[a-z]+(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
 		{ it.toWords().splitToWordList() },
 		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
 	),
 	@ExplicitUsageApi
 	`PascalCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat & at begin
+		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
 		"""_*\$?(?:[A-Z][a-z]+|[A-Z]+)(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
 		{ it.toWords().splitToWordList() },
 		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }

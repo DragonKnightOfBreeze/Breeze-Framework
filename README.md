@@ -126,7 +126,10 @@ dependencies {
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
+* [yole/kxdate](https://github.com/yole/kxdate)
+* [cesarferreira/kotlin-pluralizer](https://github.com/cesarferreira/kotlin-pluralizer)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [consoleau/kassava](https://github.com/consoleau/kassava)
 
 # Example
 

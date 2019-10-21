@@ -2,7 +2,7 @@ package com.windea.breezeframework.time.extensions
 
 import java.time.*
 
-//REGION number to Duration extensions
+//REGION Number to Duration extensions
 
 /**创建指定纳秒的时长。*/
 inline val Int.nanoseconds: Duration get() = Duration.ofNanos(this.toLong())
@@ -35,7 +35,7 @@ inline val Long.minutes: Duration get() = Duration.ofMinutes(this)
 /**创建指定小时的时长。*/
 inline val Long.hours: Duration get() = Duration.ofHours(this)
 
-//REGION number to Period extensions
+//REGION Number to Period extensions
 
 /**创建指定周数的时期。*/
 inline val Int.weeks: Period get() = Period.ofWeeks(this)

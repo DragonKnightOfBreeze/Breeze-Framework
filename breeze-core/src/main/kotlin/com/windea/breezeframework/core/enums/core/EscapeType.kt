@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.enums.core
 
-/**转义类型*/
+/**转义类型。*/
 enum class EscapeType(
 	val escapeStrings: Array<String>, //ignore "\"
 	val escapedStrings: Array<String>,

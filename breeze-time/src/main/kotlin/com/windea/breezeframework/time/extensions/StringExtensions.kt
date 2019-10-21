@@ -7,7 +7,7 @@ import java.time.*
 import java.time.format.*
 import java.util.*
 
-//REGION string to Time extensions
+//REGION String to Time extensions
 
 /**将当前字符串转化为日期。*/
 inline fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)

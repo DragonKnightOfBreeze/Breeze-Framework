@@ -31,5 +31,6 @@ fun Random.nextRectangle2D(min: TypedTuple4<Double>, max: TypedTuple4<Double>): 
 		nextDouble(min.third, max.third), nextDouble(min.fourth, max.fourth)
 	)
 
+
 /**得到随机颜色。*/
 fun Random.nextColor(): Color = Color.color(nextDouble(), nextDouble(), nextDouble())
