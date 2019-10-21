@@ -1,13 +1,13 @@
 package com.windea.breezeframework.dsl.mermaid
 
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowDirection.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowLinkArrowShape.*
+import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartDirection.*
+import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartLinkArrowShape.*
 import kotlin.test.*
 
 //TESTED VERY NICE!
 
-class MermaidFlowDslTest {
+class MermaidFlowChartDslTest {
 	@Test
 	fun test1() {
 		val graph1 = mermaidFlowChart(LR) {

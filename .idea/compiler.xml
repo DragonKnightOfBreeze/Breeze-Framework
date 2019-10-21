@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
+      <module name="breeze-fxgl_main" target="11" />
+      <module name="breeze-fxgl_test" target="11" />
       <module name="breeze-study_main" target="11" />
       <module name="breeze-study_test" target="11" />
       <module name="learn-kotlin_main" target="11" />

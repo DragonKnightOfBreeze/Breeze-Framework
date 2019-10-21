@@ -117,6 +117,7 @@ dependencies {
 * Anko
 * SpringBoot
 * SpringCloud
+* LibGDX
 
 ***
 

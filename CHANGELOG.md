@@ -149,6 +149,7 @@
 * [X] breeze-dsl 完成`CommandLineTextDsl`。
 * [X] breeze-dsl 完善命名和目录。
 * [X] breeze-core 提供字符串的常量集。
+* [X] 移除breeze-fxgl（考虑使用LibGDX）。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***
@@ -172,6 +173,7 @@
 # 长期
 
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
+* [ ] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
 * [ ] 发布项目到JCenter。
