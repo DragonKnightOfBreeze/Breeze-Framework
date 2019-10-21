@@ -142,7 +142,7 @@
 * [X] breeze-functional 提供基础函数式方法到最高11个参数的函数。
 * [X] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [X] 更新README。
-* [X] breeze-core 优化`toSringBySelect`等方法。
+* [X] breeze-core 优化`toStringBySelect`等方法。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***
