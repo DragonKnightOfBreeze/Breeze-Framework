@@ -109,13 +109,19 @@ dependencies {
     * Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.) 
 * **Split from `breeze-core`.**
 
-# Optional Dependencies
+# Dependencies & Optional dependencies
 
 * Kodein-di
 * Spekframework
 * Anko
 * SpringBoot
 * SpringCloud
+
+***
+
+* [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
+* [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
+* [charleskorn/kaml](https://github.com/charleskorn/kaml)
 
 # References
 
@@ -128,8 +134,11 @@ dependencies {
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
 * [yole/kxdate](https://github.com/yole/kxdate)
 * [cesarferreira/kotlin-pluralizer](https://github.com/cesarferreira/kotlin-pluralizer)
-* [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [consoleau/kassava](https://github.com/consoleau/kassava)
+* [korlibs/klock](https://github.com/korlibs/klock)
+* [sandjelkovic/kxjtime](https://github.com/sandjelkovic/kxjtime)
+* [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
+* [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
 # Example
 
