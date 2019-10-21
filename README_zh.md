@@ -42,7 +42,7 @@ dependencies {
 * **breeze-text**
 * **breeze-time**
 
-# 可选依赖
+# 依赖 & 可选依赖
 
 * Kodein-di
 * Spekframework
@@ -50,15 +50,29 @@ dependencies {
 * SpringBoot
 * SpringCloud
 
+***
+
+* [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
+* [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
+* [charleskorn/kaml](https://github.com/charleskorn/kaml)
+* [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
+
 # 参考
 
-* [khronos](https://github.com/hotchemi/khronos)
-* [klutter](https://github.com/kohesive/klutter)
-* [Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
-* [funktionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [Google Guava](https://github.com/google/guava)
 
-感谢提供思路和灵感！
+***
+
+* [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
+* [kohesive/klutter](https://github.com/kohesive/klutter)
+* [hotchemi/khronos](https://github.com/hotchemi/khronos)
+* [yole/kxdate](https://github.com/yole/kxdate)
+* [cesarferreira/kotlin-pluralizer](https://github.com/cesarferreira/kotlin-pluralizer)
+* [consoleau/kassava](https://github.com/consoleau/kassava)
+* [sandjelkovic/kxjtime](https://github.com/sandjelkovic/kxjtime)
+* [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
+* [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
+* [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
 # 示例
 

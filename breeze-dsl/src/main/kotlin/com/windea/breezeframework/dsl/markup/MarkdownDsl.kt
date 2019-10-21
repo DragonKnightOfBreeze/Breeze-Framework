@@ -45,10 +45,50 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 	}
 }
 
-//REGION dsl elements
-
+/**Markdown的配置。*/
 @MarkdownDsl
-interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
+object MarkdownConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	private val wrapLengthRange = 60..240
+	private val repeatableMarkerCountRange = 3..12
+	private val listNodeMarkerArray = charArrayOf('*', '-', '+')
+	private val horizontalListMarkerArray = charArrayOf('*', '-', '_')
+	private val codeFenceMarkerArray = charArrayOf('`', '~')
+	
+	var indentSize: Int = 4
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var truncated: String = "..."
+	var wrapLength: Int = 120
+		set(value) = run { if(value in wrapLengthRange) field = value }
+	var addPrefixHeadingMarkers: Boolean = false
+	var repeatableMarkerCount: Int = 3
+		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
+	var listNodeMarker: Char = '*'
+		set(value) = run { if(value in listNodeMarkerArray) field = value }
+	var horizontalLineMarker: Char = '*'
+		set(value) = run { if(value in horizontalListMarkerArray) field = value }
+	var codeFenceMarker: Char = '`'
+		set(value) = run { if(value in codeFenceMarkerArray) field = value }
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '\"' else '\''
+	
+	@PublishedApi internal val horizontalLineMarkers get() = horizontalLineMarker * repeatableMarkerCount
+	@PublishedApi internal val codeFenceMarkers get() = codeFenceMarker * repeatableMarkerCount
+	@PublishedApi internal val emptyColumnLength = 4
+	@PublishedApi internal val emptyColumnText = " " * emptyColumnLength
+}
+
+//REGION dsl interfaces
+
+/**Markdown Dsl的内联入口。*/
+@MarkdownDsl
+interface MarkdownDslInlineEntry : DslEntry
+
+/**Markdown Dsl的入口。*/
+@MarkdownDsl
+interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
 	fun toContentString(): String {
@@ -57,10 +97,6 @@ interface MarkdownDslEntry : WithText<MarkdownTextBlock> {
 	
 	@MarkdownDsl
 	override fun String.unaryPlus() = textBlock(this)
-}
-
-interface WithMarkdownAttributes {
-	var attributes: MarkdownAttributes?
 }
 
 /**Markdown Dsl的元素。*/
@@ -75,6 +111,12 @@ interface MarkdownDslInlineElement : MarkdownDslElement
 @MarkdownDsl
 interface MarkdownDslTopElement : MarkdownDslElement
 
+@MarkdownDsl
+interface WithMarkdownAttributes {
+	var attributes: MarkdownAttributes?
+}
+
+//REGION dsl elements
 
 /**Markdown文本。*/
 @MarkdownDsl
@@ -403,6 +445,7 @@ class MarkdownDefinitionNode @PublishedApi internal constructor(
 	}
 }
 
+//DELAY pretty format
 /**Markdown表格。*/
 @MarkdownDsl
 class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement {
@@ -413,7 +456,6 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
 		
-		//DELAY pretty format
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		//adjust column size
@@ -454,6 +496,10 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 	
 	@MarkdownDsl
 	override fun String.unaryPlus() = column(this)
+	
+	@MarkdownDsl
+	inline infix fun MarkdownTableColumn.align(alignment: MarkdownTableAlignment) =
+		this.also { it.alignment = alignment }
 }
 
 /**Markdown表格行。*/
@@ -808,86 +854,7 @@ enum class MarkdownAdmonitionQualifier(
 //REGION build extensions
 
 @MarkdownDsl
-object MarkdownInlineBuilder {
-	@MarkdownDsl
-	inline fun text(text: String) = MarkdownText(text)
-	
-	@MarkdownDsl
-	inline fun icon(text: String) = MarkdownIcon(text)
-	
-	@MarkdownDsl
-	inline fun footNote(reference: String) = MarkdownFootNote(reference)
-	
-	@MarkdownDsl
-	inline fun b(text: String) = MarkdownBoldText(text)
-	
-	@MarkdownDsl
-	inline fun i(text: String) = MarkdownItalicText(text)
-	
-	@MarkdownDsl
-	inline fun s(text: String) = MarkdownStrokedText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun u(text: String) = MarkdownUnderlinedText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun em(text: String) = MarkdownHighlightText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun sup(text: String) = MarkdownSuperscriptText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun sub(text: String) = MarkdownSubscriptText(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun autoLink(url: String) = MarkdownAutoLink(url)
-	
-	@MarkdownDsl
-	inline fun link(name: String, url: String, title: String? = null) = MarkdownInlineLink(name, url, title)
-	
-	@MarkdownDsl
-	inline fun image(name: String, url: String, title: String? = null) = MarkdownInlineImageLink(name, url, title)
-	
-	@MarkdownDsl
-	inline fun refLink(reference: String, name: String? = null) = MarkdownReferenceLink(reference, name)
-	
-	@MarkdownDsl
-	inline fun refImage(reference: String, name: String? = null) = MarkdownReferenceImageLink(reference, name)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
-	
-	@MarkdownDsl
-	inline fun code(text: String) = MarkdownInlineCode(text)
-	
-	@MarkdownDsl
-	inline fun math(text: String) = MarkdownInlineMath(text)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes(attributes.toSet())
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun id(name: String) = MarkdownIdAttribute(name)
-	
-	@MarkdownDsl
-	@MarkdownDslExtendedFeature
-	inline fun `class`(name: String) = MarkdownClassAttribute(name)
-	
-	@MarkdownDslExtendedFeature
-	inline fun prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
-}
-
-@MarkdownDsl
 inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
-
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -912,6 +879,109 @@ inline fun Markdown.footNoteRef(reference: String, text: String) =
 @MarkdownDsl
 inline fun Markdown.linkRef(reference: String, url: String, title: String? = null) =
 	MarkdownLinkReference(reference, url, title).also { references += it }
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null) =
+	MarkdownInlineLink(name, url, title)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null) =
+	MarkdownInlineImageLink(name, url, title)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null) =
+	MarkdownReferenceLink(reference, name)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null) =
+	MarkdownReferenceImageLink(reference, name)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text)
+
+@InlineDsl
+@MarkdownDsl
+inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) =
+	MarkdownAttributes(attributes.toSet())
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownIdAttribute(name)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute(name)
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.textBlock(text: String) =
@@ -1087,52 +1157,12 @@ inline fun MarkdownTableHeader.column(text: String = emptyColumnText) =
 inline fun MarkdownTableRow.column(text: String = emptyColumnText) =
 	MarkdownTableColumn(text).also { columns += it }
 
+@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.rowSpan() = column(">")
 
+@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.colSpan() = column("^")
-
-/**Only for table header.*/
-@MarkdownDsl
-inline infix fun MarkdownTableColumn.align(alignment: MarkdownTableAlignment) =
-	this.also { it.alignment = alignment }
-
-//REGION dsl config
-
-/**Markdown的配置。*/
-@MarkdownDsl
-object MarkdownConfig : DslConfig {
-	private val indentSizeRange = -2..8
-	private val wrapLengthRange = 60..240
-	private val repeatableMarkerCountRange = 3..12
-	private val listNodeMarkerArray = charArrayOf('*', '-', '+')
-	private val horizontalListMarkerArray = charArrayOf('*', '-', '_')
-	private val codeFenceMarkerArray = charArrayOf('`', '~')
-	
-	var indentSize: Int = 4
-		set(value) = run { if(value in indentSizeRange) field = value }
-	var preferDoubleQuote: Boolean = true
-	var truncated: String = "..."
-	var wrapLength: Int = 120
-		set(value) = run { if(value in wrapLengthRange) field = value }
-	var addPrefixHeadingMarkers: Boolean = false
-	var repeatableMarkerCount: Int = 3
-		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
-	var listNodeMarker: Char = '*'
-		set(value) = run { if(value in listNodeMarkerArray) field = value }
-	var horizontalLineMarker: Char = '*'
-		set(value) = run { if(value in horizontalListMarkerArray) field = value }
-	var codeFenceMarker: Char = '`'
-		set(value) = run { if(value in codeFenceMarkerArray) field = value }
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '\"' else '\''
-	
-	@PublishedApi internal val horizontalLineMarkers get() = horizontalLineMarker * repeatableMarkerCount
-	@PublishedApi internal val codeFenceMarkers get() = codeFenceMarker * repeatableMarkerCount
-	@PublishedApi internal val emptyColumnLength = 4
-	@PublishedApi internal val emptyColumnText = " " * emptyColumnLength
-}

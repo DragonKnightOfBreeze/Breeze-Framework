@@ -38,12 +38,29 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	override fun String.unaryMinus() = note(this)
 }
 
-//REGION dsl elements
+/**PlantUml Dsl的配置。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
+@PumlDsl
+object PumlConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize = 4
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+}
+
+/**PlantUml Dsl的入口。*/
+@PumlDsl
+interface PumlDslEntry : DslEntry
 
 /**PlantUml Dsl的元素。*/
 @PumlDsl
 interface PumlDslElement : DslElement
 
+//REGION dsl elements
 
 /**PlantUml元素。*/
 @PumlDsl
@@ -294,18 +311,3 @@ inline infix fun PumlNote.topOf(targetId: String) =
 inline infix fun PumlNote.bottomOf(targetId: String) =
 	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }
 
-//REGION dsl config
-
-/**PlantUml Dsl的配置。*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
-@PumlDsl
-object PumlConfig : DslConfig {
-	private val indentSizeRange = -2..8
-	
-	var indentSize = 4
-		set(value) = run { if(value in indentSizeRange) field = value }
-	var preferDoubleQuote: Boolean = true
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}

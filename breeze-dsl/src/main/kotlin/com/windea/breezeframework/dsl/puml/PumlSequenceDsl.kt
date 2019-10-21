@@ -24,15 +24,17 @@ class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDs
 	}
 }
 
-//REGION dsl elements
+//REGION dsl interfaces
 
+/**PlantUml序列图Dsl的入口。*/
 @PumlSequenceDsl
-interface PumlSequenceDslEntry
+interface PumlSequenceDslEntry : PumlDslEntry
 
 /**PlantUml序列图Dsl的元素。*/
 @PumlSequenceDsl
 interface PumlSequenceDslElement : PumlDslElement
 
+//REGION dsl elements
 
 /**PlantUml序列图参与者。*/
 @PumlSequenceDsl
@@ -112,9 +114,7 @@ enum class PumlSequenceMessageArrowShape(val prefix: String, val suffix: String)
 //REGION build extensions
 
 @PumlSequenceDsl
-inline fun pumlSequence(builder: PumlSequence.() -> Unit) =
-	PumlSequence().also { it.builder() }
-
+inline fun pumlSequence(builder: PumlSequence.() -> Unit) = PumlSequence().also { it.builder() }
 
 @PumlSequenceDsl
 inline infix fun PumlSequenceParticipant.alias(alias: String) =

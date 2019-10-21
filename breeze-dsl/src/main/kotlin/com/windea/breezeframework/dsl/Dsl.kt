@@ -16,43 +16,47 @@ import com.windea.breezeframework.core.extensions.*
 
 //REGION top annotations and interfaces
 
+/**表明这个Dsl构建方法属于公共构建方法。*/
 @DslMarker
-private annotation class Dsl
+internal annotation class GenericDsl
+
+/**表名这个Dsl构建方法属于内联构建方法。即，不自动注册对应的Dsl元素。*/
+internal annotation class InlineDsl
 
 /**Dsl的构建器。*/
-@Dsl
 interface DslBuilder {
 	override fun toString(): String
 }
 
-/**Dsl的元素。其构建方法会自动将其添加到父级元素。*/
-@Dsl
+/**Dsl的配置。*/
+interface DslConfig
+
+/**Dsl的入口。*/
+interface DslEntry
+
+/**Dsl的元素。*/
 interface DslElement {
 	override fun toString(): String
 }
 
-/**Dsl的配置。*/
-@Dsl
-interface DslConfig
-
-//REGION dsl elements
+//REGION dsl interfaces
 
 /**包含（唯一主要的）可被视为文本的内容。*/
-@Dsl
+@GenericDsl
 interface WithText<T : DslElement> {
 	/**添加主要的文本元素为子元素。*/
 	operator fun String.unaryPlus(): T
 }
 
 /**包含（唯一主要的）可被视为注释的内容。*/
-@Dsl
+@GenericDsl
 interface WithComment<T : DslElement> {
 	/**添加注释元素为子元素。*/
 	operator fun String.unaryMinus(): T
 }
 
 /**包含（唯一主要的）可被视为块的内容。*/
-@Dsl
+@GenericDsl
 interface WithBlock<T : DslElement> {
 	/**添加主要的块元素为子元素。*/
 	operator fun String.invoke(): T
@@ -62,19 +66,19 @@ interface WithBlock<T : DslElement> {
 }
 
 /**包含可换行的内容。这个接口的优先级高于[IndentContent]。*/
-@Dsl
+@GenericDsl
 interface WrapContent {
 	var wrapContent: Boolean
 }
 
 /**包含可缩进的内容。*/
-@Dsl
+@GenericDsl
 interface IndentContent {
 	var indentContent: Boolean
 }
 
 /**包含可生成的内容。可能替换原始文本。*/
-@Dsl
+@GenericDsl
 interface GenerateContent {
 	var generateContent: Boolean
 	
@@ -84,15 +88,15 @@ interface GenerateContent {
 //REGION build extensions
 
 /**设置是否换行内容。*/
-@Dsl
+@GenericDsl
 inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
 
 /**设置是否缩进内容。*/
-@Dsl
+@GenericDsl
 inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 /**设置是否生成内容。*/
-@Dsl
+@GenericDsl
 inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
 
 //REGION helpful extensions

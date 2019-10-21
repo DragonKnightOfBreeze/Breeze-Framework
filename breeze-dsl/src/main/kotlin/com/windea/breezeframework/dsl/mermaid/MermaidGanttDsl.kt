@@ -16,17 +16,17 @@ private annotation class MermaidGanttDsl
 /**Mermaid甘特图。*/
 @ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentContent, WithBlock<MermaidGanttSection> {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, WithBlock<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
-	val sections: MutableList<MermaidGanttSection> = mutableListOf()
+	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
 			arrayOf(title, dateFormat).filterNotNull().joinToStringOrEmpty("\n"),
-			sections.joinToStringOrEmpty("\n\n")
+			toContentString()
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		return "gantt\n$contentSnippet"
@@ -39,12 +39,23 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), IndentConte
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
-//REGION dsl elements
+//REGION dsl interfaces
+
+/**Mermaid甘特图Dsl的入口。*/
+@MermaidGanttDsl
+interface MermaidGanttDslEntry : MermaidDslEntry, IndentContent {
+	val sections: MutableList<MermaidGanttSection>
+	
+	fun toContentString(): String {
+		return sections.joinToStringOrEmpty("\n\n")
+	}
+}
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
 interface MermaidGanttDslElement : MermaidDslElement
 
+//REGION dsl elements
 
 /**Mermaid甘特图标题。*/
 @MermaidGanttDsl
@@ -120,16 +131,22 @@ enum class MermaidGanttTaskStatus(val text: String?) {
 //REGION build extensions
 
 @MermaidGanttDsl
-inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) =
-	MermaidGantt().also { it.builder() }
-
+inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.builder() }
 
 @MermaidGanttDsl
-inline fun MermaidGantt.section(name: String) =
+inline fun MermaidGantt.title(name: String) =
+	MermaidGanttTitle(name).also { title = it }
+
+@MermaidGanttDsl
+inline fun MermaidGantt.dateFormat(expression: String = "YYYY-MM-DD") =
+	MermaidGanttDateFormat(expression).also { dateFormat = it }
+
+@MermaidGanttDsl
+inline fun MermaidGanttDslEntry.section(name: String) =
 	MermaidGanttSection(name).also { sections += it }
 
 @MermaidGanttDsl
-inline fun MermaidGantt.section(name: String, builder: MermaidGanttSection.() -> Unit) =
+inline fun MermaidGanttDslEntry.section(name: String, builder: MermaidGanttSection.() -> Unit) =
 	MermaidGanttSection(name).also { it.builder() }.also { sections += it }
 
 @MermaidGanttDsl

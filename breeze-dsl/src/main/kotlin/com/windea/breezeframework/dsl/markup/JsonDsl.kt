@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
 
 package com.windea.breezeframework.dsl.markup
 
@@ -15,7 +15,7 @@ private annotation class JsonDsl
 
 /**Json。*/
 @JsonDsl
-class Json @PublishedApi internal constructor() : DslBuilder {
+class Json @PublishedApi internal constructor() : DslBuilder, JsonDslInlineEntry {
 	lateinit var rootElement: JsonElement<*>
 	
 	override fun toString(): String {
@@ -26,18 +26,37 @@ class Json @PublishedApi internal constructor() : DslBuilder {
 	inline fun Any?.map() = this.toJsonElement()
 }
 
-//REGION dsl elements
+/**Json的配置。*/
+@JsonDsl
+object JsonConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var prettyPrint: Boolean = true
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+}
+
+//REGION dsl interfaces
+
+/**Json Dsl的元素的内联入口。*/
+@JsonDsl
+interface JsonDslInlineEntry : DslEntry
 
 /**Json Dsl的元素。*/
 @JsonDsl
 interface JsonDslElement : DslElement
 
+//REGION dsl elements
 
 /**Json元素。*/
 @JsonDsl
 sealed class JsonElement<T>(
 	val value: T
-) : JsonDslElement {
+) : JsonDslElement, JsonDslInlineEntry {
 	override fun equals(other: Any?): Boolean {
 		return this === other || (other is JsonElement<*> && other.value == value)
 	}
@@ -116,37 +135,42 @@ class JsonObject @PublishedApi internal constructor(
 //REGION build extensions
 
 @JsonDsl
-object JsonInlineBuilder {
-	@JsonDsl
-	inline fun jsonNull() = JsonNull
-	
-	@JsonDsl
-	inline fun jsonBoolean(value: Boolean) = JsonBoolean(value)
-	
-	@JsonDsl
-	inline fun jsonNumber(value: Number) = JsonNumber(value)
-	
-	@JsonDsl
-	inline fun jsonString(value: Any?) = JsonString(value.toString())
-	
-	@JsonDsl
-	inline fun jsonObject(value: Map<String, JsonElement<*>>) = JsonObject(value)
-	
-	@JsonDsl
-	inline fun jsonObjectOf(vararg value: Pair<String, JsonElement<*>>) = JsonObject(value.toMap())
-	
-	@JsonDsl
-	inline fun jsonArray(value: Iterable<JsonElement<*>>) = JsonArray(value.toList())
-	
-	@JsonDsl
-	inline fun jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
-}
+inline fun jsonTree(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
 
 @JsonDsl
-inline fun json(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
+inline fun json(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
 
+@InlineDsl
 @JsonDsl
-inline fun jsonTree(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
+inline fun JsonDslInlineEntry.jsonNull() = JsonNull
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonBoolean(value: Boolean) = JsonBoolean(value)
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonNumber(value: Number) = JsonNumber(value)
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonString(value: Any?) = JsonString(value.toString())
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonObject(value: Map<String, JsonElement<*>>) = JsonObject(value)
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonObjectOf(vararg value: Pair<String, JsonElement<*>>) = JsonObject(value.toMap())
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonArray(value: Iterable<JsonElement<*>>) = JsonArray(value.toList())
+
+@InlineDsl
+@JsonDsl
+inline fun JsonDslInlineEntry.jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
 
 //REGION helpful extensions
 
@@ -164,18 +188,3 @@ internal fun Any?.toJsonElement(): JsonElement<*> {
 	}
 }
 
-//REGION dsl config
-
-/**Json的配置。*/
-@JsonDsl
-object JsonConfig : DslConfig {
-	private val indentSizeRange = -2..8
-	
-	var indentSize = 2
-		set(value) = run { if(value in indentSizeRange) field = value }
-	var preferDoubleQuote: Boolean = true
-	var prettyPrint: Boolean = true
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}

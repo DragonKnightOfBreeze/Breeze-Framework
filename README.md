@@ -138,6 +138,7 @@ dependencies {
 * [consoleau/kassava](https://github.com/consoleau/kassava)
 * [sandjelkovic/kxjtime](https://github.com/sandjelkovic/kxjtime)
 * [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
+* [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
 # Example

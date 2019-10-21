@@ -29,10 +29,11 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	}
 }
 
-//REGION dsl elements
+//REGION dsl interfaces
 
+/**PlantUml状态图Dsl的入口。*/
 @PumlStateDiagramDsl
-interface PumlStateDiagramDslEntry {
+interface PumlStateDiagramDslEntry : PumlDslEntry {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramLink>
 	
@@ -48,6 +49,7 @@ interface PumlStateDiagramDslEntry {
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslElement : PumlDslElement
 
+//REGION dsl elements
 
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
@@ -220,14 +222,15 @@ class PumlStateDiagramLink @PublishedApi internal constructor(
 @PumlStateDiagramDsl
 inline fun pumlStateDiagram(builder: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.builder() }
 
-
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.state(name: String, text: String = "") =
 	PumlStateDiagramSimpleState(name, text).also { states += it }
 
+@InlineDsl
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.initState() = state("[*]")
 
+@InlineDsl
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.finishState() = state("[*]")
 

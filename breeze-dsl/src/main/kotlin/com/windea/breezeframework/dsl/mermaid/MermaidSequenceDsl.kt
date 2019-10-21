@@ -30,7 +30,7 @@ class MermaidSequence @PublishedApi internal constructor() : Mermaid(), MermaidS
 	}
 }
 
-//REGION dsl elements
+//REGION dsl interfaces
 
 @MermaidSequenceDsl
 interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNote> {
@@ -38,8 +38,6 @@ interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNo
 	val messages: MutableList<MermaidSequenceMessage>
 	val notes: MutableList<MermaidSequenceNote>
 	val scopes: MutableList<MermaidSequenceScope>
-	
-	override var indentContent: Boolean
 	
 	fun toContentString(): String {
 		return arrayOf(
@@ -58,6 +56,7 @@ interface MermaidSequenceDslEntry : IndentContent, WithComment<MermaidSequenceNo
 @MermaidSequenceDsl
 interface MermaidSequenceDslElement : MermaidDslElement
 
+//REGION dsl elements
 
 /**Mermaid序列图参与者。*/
 @MermaidSequenceDsl
@@ -182,9 +181,7 @@ enum class MermaidSequenceNodePosition(val text: String) {
 
 /**构建Mermaid序列图。*/
 @MermaidSequenceDsl
-fun mermaidSequence(builder: MermaidSequence.() -> Unit) =
-	MermaidSequence().also { it.builder() }
-
+fun mermaidSequence(builder: MermaidSequence.() -> Unit) = MermaidSequence().also { it.builder() }
 
 @MermaidSequenceDsl
 inline fun MermaidSequenceDslEntry.participant(name: String) =

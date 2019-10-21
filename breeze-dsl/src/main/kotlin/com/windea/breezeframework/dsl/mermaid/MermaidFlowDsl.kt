@@ -36,10 +36,11 @@ class MermaidFlow @PublishedApi internal constructor(
 	}
 }
 
-//REGION dsl elements
+//REGION dsl interfaces
 
+/**Mermaid流程图Dsl的入口。*/
 @MermaidFlowDsl
-interface MermaidFlowDslEntry : IndentContent {
+interface MermaidFlowDslEntry : MermaidDslEntry, IndentContent {
 	val nodes: MutableSet<MermaidFlowNode>
 	val links: MutableList<MermaidFlowLink>
 	val subGraphs: MutableList<MermaidFlowSubGraph>
@@ -65,6 +66,7 @@ interface MermaidFlowDslEntry : IndentContent {
 @MermaidFlowDsl
 interface MermaidFlowDslElement : MermaidDslElement
 
+//REGION dsl elements
 
 /**Mermaid流程图节点。*/
 @MermaidFlowDsl
@@ -210,7 +212,6 @@ enum class MermaidFlowLinkArrowShape(val text: String) {
 @MermaidFlowDsl
 inline fun mermaidFlow(direction: MermaidFlowDirection, builder: MermaidFlow.() -> Unit) =
 	MermaidFlow(direction).also { it.builder() }
-
 
 @MermaidFlowDsl
 inline fun MermaidFlowDslEntry.node(name: String, text: String? = null) =

@@ -17,7 +17,8 @@ private annotation class XmlDsl
 
 /**Xml。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComment>, WithBlock<XmlElement> {
+class Xml @PublishedApi internal constructor() : DslBuilder,
+	WithComment<XmlComment>, WithBlock<XmlElement> {
 	val statements: MutableList<XmlStatement> = mutableListOf()
 	val comments: MutableList<XmlComment> = mutableListOf()
 	var rootElement: XmlElement = XmlElement(defaultRootName)
@@ -47,12 +48,29 @@ class Xml @PublishedApi internal constructor() : DslBuilder, WithComment<XmlComm
 		element(this, *args, builder = builder)
 }
 
-//REGION dsl elements
+/**Xml的配置。*/
+@XmlDsl
+object XmlConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	
+	var indentSize: Int = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	var defaultRootName: String = "root"
+		set(value) = run { if(value.isNotBlank()) field = value }
+	var autoCloseTag: Boolean = false
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+}
+
+//REGION dsl interfaces
 
 /**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement : DslElement
 
+//REGION dsl elements
 
 /**Xml声明。*/
 @XmlDsl
@@ -101,7 +119,8 @@ class XmlComment @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), WrapContent, IndentContent, WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
+) : XmlNode(), WrapContent, IndentContent,
+	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
@@ -137,27 +156,7 @@ class XmlElement @PublishedApi internal constructor(
 //REGION build extensions
 
 @XmlDsl
-object XmlInlineBuilder {
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>) =
-		XmlElement(name, attributes.toMap().toStringValueMap())
-	
-	@XmlDsl
-	inline fun element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }
-	
-	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>) = element(this, *args)
-	
-	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		element(this, *args, builder = builder)
-}
-
-@XmlDsl
-inline fun xml(builder: Xml.() -> Unit) =
-	Xml().also { it.builder() }
-
+inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
 
 @XmlDsl
 inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
@@ -178,7 +177,6 @@ inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>) =
 inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
 
-
 @XmlDsl
 inline fun XmlElement.text(text: String) =
 	XmlText(text).also { nodes += it }
@@ -194,21 +192,3 @@ inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?
 @XmlDsl
 inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
 	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
-
-//REGION dsl config
-
-/**Xml的配置。*/
-@XmlDsl
-object XmlConfig : DslConfig {
-	private val indentSizeRange = -2..8
-	
-	var indentSize: Int = 2
-		set(value) = run { if(value in indentSizeRange) field = value }
-	var preferDoubleQuote: Boolean = true
-	var defaultRootName: String = "root"
-		set(value) = run { if(value.isNotBlank()) field = value }
-	var autoCloseTag: Boolean = false
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-}

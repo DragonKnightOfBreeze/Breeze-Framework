@@ -1,14 +1,11 @@
 package com.windea.breezeframework.dsl.markup
 
-import com.windea.breezeframework.dsl.markup.JsonInlineBuilder.jsonArrayOf
-import com.windea.breezeframework.dsl.markup.JsonInlineBuilder.jsonObjectOf
-import com.windea.breezeframework.dsl.markup.JsonInlineBuilder.jsonString
 import org.junit.*
 
 class JsonDslTest {
 	@Test //TESTED OK
 	fun test1() {
-		json {
+		jsonTree {
 			listOf(
 				"a",
 				listOf("b1", "b2"),
@@ -19,7 +16,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test2() {
-		jsonTree {
+		json {
 			jsonArrayOf(
 				jsonString("a"),
 				jsonArrayOf(jsonString("b1"), jsonString("b2")),
@@ -30,7 +27,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test3() {
-		jsonTree {
+		json {
 			jsonArrayOf(
 				"a".map(),
 				jsonArrayOf("b1".map(), "b2".map()),
@@ -42,7 +39,7 @@ class JsonDslTest {
 	@Test //TESTED OK
 	fun test4() {
 		JsonConfig.prettyPrint = false
-		json {
+		jsonTree {
 			listOf(
 				"a",
 				listOf("b1", "b2"),
@@ -53,7 +50,7 @@ class JsonDslTest {
 	
 	@Test //TESTED OK
 	fun test5() {
-		json {
+		jsonTree {
 			listOf(
 				"a",
 				listOf("b1", "b2"),

@@ -16,16 +16,41 @@ private annotation class CreoleDsl
 /**Creole。*/
 @ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
-class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry {
+class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
 	
 	override fun toString() = content.joinToStringOrEmpty("\n\n")
 }
 
-//REGION dsl elements
-
+/**Creole的配置。*/
+@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
-interface CreoleDslEntry : WithText<CreoleTextBlock> {
+object CreoleConfig : DslConfig {
+	private val indentSizeRange = -2..8
+	private val repeatableMarkerCountRange = 3..12
+	
+	var indentSize = 2
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var repeatableMarkerCount = 4
+		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
+	var truncated = "..."
+	var preferDoubleQuote: Boolean = true
+	var emptyColumnSize: Int = 4
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
+}
+
+//REGION dsl interfaces
+
+/**Creole Dsl的内联入口。*/
+@CreoleDsl
+interface CreoleDslInlineEntry : DslEntry
+
+/**Creole Dsl的入口。*/
+@CreoleDsl
+interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
 	@CreoleDsl
@@ -34,7 +59,7 @@ interface CreoleDslEntry : WithText<CreoleTextBlock> {
 
 /**Creole Dsl的元素。*/
 @CreoleDsl
-interface CreoleDslElement : DslElement
+interface CreoleDslElement : DslElement, CreoleDslInlineEntry
 
 /**Creole Dsl的内联元素。*/
 @CreoleDsl
@@ -44,6 +69,7 @@ interface CreoleDslInlineElement : CreoleDslElement
 @CreoleDsl
 interface CreoleDslTopElement : CreoleDslElement
 
+//REGION dsl elements
 
 /**Creole文本。*/
 @CreoleDsl
@@ -247,7 +273,7 @@ class CreoleTreeNode @PublishedApi internal constructor(
 	}
 }
 
-//TODO pretty format
+//DELAY pretty format
 /**Creole表格。*/
 @CreoleDsl
 class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
@@ -287,6 +313,10 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 	
 	@CreoleDsl
 	override fun String.unaryPlus() = column(this)
+	
+	@CreoleDsl
+	inline infix fun CreoleTableColumn.align(alignment: CreoleTableAlignment) =
+		this.also { it.alignment = alignment }
 }
 
 /**Creole表格行。*/
@@ -350,42 +380,47 @@ enum class CreoleTableAlignment(
 //REGION build extensions
 
 @CreoleDsl
-object CreoleInlineBuilder {
-	@CreoleDsl
-	inline fun text(text: String) = CreoleText(text)
-	
-	@CreoleDsl
-	inline fun escaped(text: String) = CreoleEscapedText(text)
-	
-	@CreoleDsl
-	inline fun icon(name: String) = CreoleIcon(name)
-	
-	@CreoleDsl
-	inline fun unicode(number: Int) = CreoleUnicode(number)
-	
-	@CreoleDsl
-	inline fun b(text: String) = CreoleBoldText(text)
-	
-	@CreoleDsl
-	inline fun i(text: String) = CreoleItalicText(text)
-	
-	@CreoleDsl
-	inline fun m(text: String) = CreoleMonospacedText(text)
-	
-	@CreoleDsl
-	inline fun s(text: String) = CreoleStrokedText(text)
-	
-	@CreoleDsl
-	inline fun u(text: String) = CreoleUnderlinedText(text)
-	
-	@CreoleDsl
-	inline fun w(text: String) = CreoleWavedText(text)
-}
+inline fun creole(builder: Creole.() -> Unit) = Creole().also { it.builder() }
 
+@InlineDsl
 @CreoleDsl
-inline fun creole(builder: Creole.() -> Unit) =
-	Creole().also { it.builder() }
+inline fun CreoleDslInlineEntry.text(text: String) = CreoleText(text)
 
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.escaped(text: String) = CreoleEscapedText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.icon(name: String) = CreoleIcon(name)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.unicode(number: Int) = CreoleUnicode(number)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.b(text: String) = CreoleBoldText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.i(text: String) = CreoleItalicText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.m(text: String) = CreoleMonospacedText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.s(text: String) = CreoleStrokedText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.u(text: String) = CreoleUnderlinedText(text)
+
+@InlineDsl
+@CreoleDsl
+inline fun CreoleDslInlineEntry.w(text: String) = CreoleWavedText(text)
 
 @CreoleDsl
 inline fun CreoleDslEntry.textBlock(text: String) =
@@ -497,30 +532,3 @@ inline fun CreoleTableRow.column(text: String = emptyColumnText) =
 @CreoleDsl
 inline infix fun CreoleTableColumn.color(color: String) =
 	this.also { it.color = color }
-
-/**Only for table header.*/
-@CreoleDsl
-inline infix fun CreoleTableColumn.align(alignment: CreoleTableAlignment) =
-	this.also { it.alignment = alignment }
-
-//REGION dsl config
-
-/**Creole的配置。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
-@CreoleDsl
-object CreoleConfig : DslConfig {
-	private val indentSizeRange = -2..8
-	private val repeatableMarkerCountRange = 3..12
-	
-	var indentSize = 2
-		set(value) = run { if(value in indentSizeRange) field = value }
-	var repeatableMarkerCount = 4
-		set(value) = run { if(value in repeatableMarkerCountRange) field = value }
-	var truncated = "..."
-	var preferDoubleQuote: Boolean = true
-	var emptyColumnSize: Int = 4
-	
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
-	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
-}

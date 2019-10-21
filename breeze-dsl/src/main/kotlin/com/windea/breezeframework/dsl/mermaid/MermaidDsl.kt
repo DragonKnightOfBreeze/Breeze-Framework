@@ -16,12 +16,6 @@ private annotation class MermaidDsl
 @MermaidDsl
 abstract class Mermaid : DslBuilder
 
-/**Mermaid Dsl的元素。*/
-@MermaidDsl
-interface MermaidDslElement : DslElement
-
-//REGION dsl config
-
 /**Mermaid Dsl的配置。*/
 @ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @MermaidDsl
@@ -35,3 +29,11 @@ object MermaidConfig : DslConfig {
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
+
+/**Mermaid Dsl的入口。*/
+@MermaidDsl
+interface MermaidDslEntry : DslEntry
+
+/**Mermaid Dsl的元素。*/
+@MermaidDsl
+interface MermaidDslElement : DslElement
