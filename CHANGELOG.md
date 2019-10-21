@@ -147,6 +147,7 @@
 * [X] breeze-time 完善代码。
 * [X] breeze-text 添加`String.base64Encoded`、`String.base64Decoded`。
 * [X] breeze-dsl 完成`CommandLineTextDsl`。
+* [X] breeze-dsl 完善命名和目录。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

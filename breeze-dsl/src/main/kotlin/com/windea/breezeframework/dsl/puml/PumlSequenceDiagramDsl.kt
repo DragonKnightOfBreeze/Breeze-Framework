@@ -13,12 +13,12 @@ import org.intellij.lang.annotations.*
 //REGION top annotations and interfaces
 
 @DslMarker
-private annotation class PumlSequenceDsl
+private annotation class PumlSequenceDiagramDsl
 
 /**PlantUml序列图。*/
 @ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
-@PumlSequenceDsl
-class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDslEntry {
+@PumlSequenceDiagramDsl
+class PumlSequenceDiagram @PublishedApi internal constructor() : Puml(), PumlSequenceDiagramDslEntry {
 	override fun toString(): String {
 		TODO("not implemented")
 	}
@@ -27,27 +27,27 @@ class PumlSequence @PublishedApi internal constructor() : Puml(), PumlSequenceDs
 //REGION dsl interfaces
 
 /**PlantUml序列图Dsl的入口。*/
-@PumlSequenceDsl
-interface PumlSequenceDslEntry : PumlDslEntry
+@PumlSequenceDiagramDsl
+interface PumlSequenceDiagramDslEntry : PumlDslEntry
 
 /**PlantUml序列图Dsl的元素。*/
-@PumlSequenceDsl
-interface PumlSequenceDslElement : PumlDslElement
+@PumlSequenceDiagramDsl
+interface PumlSequenceDiagramDslElement : PumlDslElement
 
 //REGION dsl elements
 
 /**PlantUml序列图参与者。*/
-@PumlSequenceDsl
-class PumlSequenceParticipant @PublishedApi internal constructor(
+@PumlSequenceDiagramDsl
+class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : PumlSequenceDslElement {
+) : PumlSequenceDiagramDslElement {
 	var alias: String? = null
 	var order: Int? = null
 	var color: String? = null
-	var shape: PumlSequenceParticipantShape = PumlSequenceParticipantShape.Actor
+	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
 	
 	override fun equals(other: Any?): Boolean {
-		return this === other || (other is PumlSequenceParticipant && (other.alias == alias || other.name == name))
+		return this === other || (other is PumlSequenceDiagramParticipant && (other.alias == alias || other.name == name))
 	}
 	
 	override fun hashCode(): Int {
@@ -67,16 +67,16 @@ class PumlSequenceParticipant @PublishedApi internal constructor(
 }
 
 /**PlantUml序列图消息。*/
-@PumlSequenceDsl
-class PumlSequenceMessage @PublishedApi internal constructor(
+@PumlSequenceDiagramDsl
+class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromActorId: String,
 	val toActorId: String,
 	@Language("Creole")
 	val text: String = "",  //NOTE can wrap by "\n"
 	val isBidirectional: Boolean = false
-) : PumlSequenceDslElement {
+) : PumlSequenceDiagramDslElement {
 	var arrowColor: String? = null
-	var arrowShape: PumlSequenceMessageArrowShape = PumlSequenceMessageArrowShape.Arrow
+	var arrowShape: PumlSequenceDiagramMessageArrowShape = PumlSequenceDiagramMessageArrowShape.Arrow
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
 	
 	override fun toString(): String {
@@ -96,15 +96,15 @@ class PumlSequenceMessage @PublishedApi internal constructor(
 //REGION enumerations and constants
 
 /**PlantUml序列图参与者的形状。*/
-@PumlSequenceDsl
-enum class PumlSequenceParticipantShape(val text: String) {
+@PumlSequenceDiagramDsl
+enum class PumlSequenceDiagramParticipantShape(val text: String) {
 	Actor("actor"), Boundary("boundary"), Control("control"),
 	Entity("entity"), Database("database"), Collections("collections")
 }
 
 /**PlantUml序列图消息箭头的形状。*/
-@PumlSequenceDsl
-enum class PumlSequenceMessageArrowShape(val prefix: String, val suffix: String) {
+@PumlSequenceDiagramDsl
+enum class PumlSequenceDiagramMessageArrowShape(val prefix: String, val suffix: String) {
 	Arrow("<", ">"), UpArrow("/", "\\"), DownArrow("\\", "/"),
 	ThinArrow("<<", ">>"), ThinUpArrow("//", "\\\\"), ThinDownArrow("\\\\", "//"),
 	DottedArrow("<-", "->"), DottedUpArrow("/-", "-\\"), DottedDownArrow("\\-", "-/"),
@@ -113,33 +113,33 @@ enum class PumlSequenceMessageArrowShape(val prefix: String, val suffix: String)
 
 //REGION build extensions
 
-@PumlSequenceDsl
-inline fun pumlSequence(builder: PumlSequence.() -> Unit) = PumlSequence().also { it.builder() }
+@PumlSequenceDiagramDsl
+inline fun pumlSequenceDiagram(builder: PumlSequenceDiagram.() -> Unit) = PumlSequenceDiagram().also { it.builder() }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceParticipant.alias(alias: String) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramParticipant.alias(alias: String) =
 	this.also { it.alias = alias }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceParticipant.order(order: Int) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramParticipant.order(order: Int) =
 	this.also { it.order = order }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceParticipant.color(color: String) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramParticipant.color(color: String) =
 	this.also { it.color = color }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceParticipant.shape(shape: PumlSequenceParticipantShape) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramParticipant.shape(shape: PumlSequenceDiagramParticipantShape) =
 	this.also { it.shape = shape }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceMessage.arrowColor(arrowColor: String) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramMessage.arrowColor(arrowColor: String) =
 	this.also { it.arrowColor = arrowColor }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceMessage.arrowShape(arrowShape: PumlSequenceMessageArrowShape) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramMessage.arrowShape(arrowShape: PumlSequenceDiagramMessageArrowShape) =
 	this.also { it.arrowShape = arrowShape }
 
-@PumlSequenceDsl
-inline infix fun PumlSequenceMessage.post(isPosted: Boolean) =
+@PumlSequenceDiagramDsl
+inline infix fun PumlSequenceDiagramMessage.post(isPosted: Boolean) =
 	this.also { it.isPosted = isPosted }

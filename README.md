@@ -50,8 +50,9 @@ dependencies {
 
 ## breeze-dsl
 
-* Provide dsl builders for common markup languages such as `Xml`, `Markdown`.
+* Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
 * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`.
+* Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
 ## breeze-functional
 
