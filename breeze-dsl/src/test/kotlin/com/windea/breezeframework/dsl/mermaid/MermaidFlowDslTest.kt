@@ -1,16 +1,16 @@
 package com.windea.breezeframework.dsl.mermaid
 
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowDirection.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowLinkArrowShape.*
+import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartDirection.*
+import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartLinkArrowShape.*
 import kotlin.test.*
 
 //TESTED VERY NICE!
 
-class MermaidFlowDslTest {
+class MermaidFlowChartDslTest {
 	@Test
 	fun test1() {
-		val graph1 = mermaidFlow(LR) {
+		val graph1 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
 			link(node("S2", "Source"), node("T2", "Target"), "Link Text")
 			link(node("S3", "Source"), node("T3", "Target"), "Text") arrowShape DottedArrow
@@ -20,7 +20,7 @@ class MermaidFlowDslTest {
 	
 	@Test
 	fun test2() {
-		val graph2 = mermaidFlow(LR) {
+		val graph2 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
 			link(node("S2", "Source"), node("T2", "Target"), "Link Text")
 			link(node("S3", "Source"), node("T3", "Target"), "Text") arrowShape DottedArrow
@@ -30,7 +30,7 @@ class MermaidFlowDslTest {
 	
 	@Test
 	fun test3() {
-		val graph3 = mermaidFlow(LR) {
+		val graph3 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
 			link(node("S3", "Source"), node("T3", "Target"), "Text") arrowShape DottedArrow
 			subGraph("SubGraph") {

@@ -71,13 +71,13 @@ enum class LetterCase(
 		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers
 		"""\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex(),
 		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
+		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
 	),
 	`PascalCase`(
 		//allow: capitalized/upper words , $ surrounds a word, numbers
 		"""\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex(),
 		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCaseOnly() } }
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() } }
 	),
 	`snake_case`(
 		//allow: lower words, $ surrounds a word, _, numbers
@@ -115,19 +115,19 @@ enum class LetterCase(
 		{ it.splitToWordList('-') },
 		{ it.joinToString("-") }
 	),
-	@ExplicitApi
+	@ExplicitUsageApi
 	`camelCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat & at begin
+		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
 		"""_*\$?[a-z]+(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
 		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
+		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
 	),
-	@ExplicitApi
+	@ExplicitUsageApi
 	`PascalCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers, _ may repeat & at begin
+		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
 		"""_*\$?(?:[A-Z][a-z]+|[A-Z]+)(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
 		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCaseOnly() }.firstCharToLowerCase() }
+		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
 	),
 	Unknown(""".*""".toRegex(), { listOf(it) }, { it.joinToString("") });
 }

@@ -2,12 +2,33 @@
 
 package com.windea.breezeframework.core.extensions
 
+import kotlin.contracts.*
+
+/**如果为true，则执行一段代码。总是返回自身。*/
+inline fun Boolean.onTrue(block: () -> Unit): Boolean {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	if(this) block()
+	return this
+}
+
+/**如果为false，则执行一段代码。总是返回自身。*/
+inline fun Boolean.onFalse(block: () -> Unit): Boolean {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	if(!this) block()
+	return this
+}
+
 /**如果为null，则返回true，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orTrue(): Boolean = this ?: true
 
 /**如果为null，则返回false，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 
+//REGION convert extensions
 
 /**转化为1或0。*/
 inline fun Boolean.toInt(): Int = if(this) 1 else 0

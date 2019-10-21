@@ -1,39 +1,10 @@
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "DuplicatedCode")
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import kotlin.math.*
 
-//REGION Operator overrides & infix extensions
-
-/**进行乘方运算。*/
-inline infix fun Int.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Int.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Int.`^`(x: Double) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Float.`^`(x: Double) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(n: Int) = this.pow(n)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(x: Float) = this.pow(x)
-
-/**进行乘方运算。*/
-inline infix fun Double.`^`(x: Double) = this.pow(x)
-
+//REGION operator overrides & infix extensions
 
 /**进行整乘运算。*/
 inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
@@ -85,42 +56,43 @@ inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
 inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
-/**判断是否约等于另一个数，可指定精确度。默认为0.1。*/
-fun Number?.nearlyEqualsTo(other: Number?, precision: Float = 0.1f): Boolean {
+/**判断是否约等于另一个数。对应小数部分的精确度默认为0.001。当差值的绝对值小于此精确度时，认为两数近似相等。*/
+infix fun Number?.nearlyEquals(other: Number?): Boolean = this.nearlyEquals(other, 0.001f)
+
+/**判断是否约等于另一个数。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
+fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 	return when {
 		this == null && other == null -> true
 		this == null || other == null -> false
-		else -> abs(this.toFloat() - other.toFloat()) <= precision
+		else -> abs(this.toFloat() - other.toFloat()) < precision
 	}
 }
 
-//REGION Convert extensions
+//REGION convert extensions
 
 /**转化为二进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
 
 /**转化为八进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toHexString(): String = Integer.toHexString(this)
 
 /**转化为十六进制字符串。*/
-@OutlookImplementationApi
 inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 
 /**转化为指定的数字类型。*/
 inline fun <reified T : Number> Number.to(): T {
 	//performance note: approach to 1/5
-	val typeName = T::class.java.name
-	return when(typeName[10]) {
-		'I' -> this.toInt() as T
-		'L' -> this.toLong() as T
-		'F' -> this.toFloat() as T
-		'D' -> this.toDouble() as T
-		'B' -> this.toByte() as T
-		'S' -> this.toShort() as T
-		else -> throw IllegalArgumentException("Illegal reified type parameter '$typeName'. Not supported.")
+	return when(val typeName = T::class.java.name) {
+		"java.lang.Integer" -> this.toInt() as T
+		"java.lang.Long" -> this.toLong() as T
+		"java.lang.Float" -> this.toFloat() as T
+		"java.lang.Double" -> this.toDouble() as T
+		"java.lang.Byte" -> this.toByte() as T
+		"java.lang.Short" -> this.toShort() as T
+		"java.math.BigInteger" -> this.toString().toBigInteger() as T
+		"java.math.BigDecimal" -> this.toString().toBigDecimal() as T
+		else -> throw UnsupportedOperationException("Unsupported reified type parameter '$typeName'.")
 	}
 }
 

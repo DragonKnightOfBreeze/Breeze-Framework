@@ -5,5 +5,5 @@ package com.windea.breezeframework.core.annotations.api
 @Retention(AnnotationRetention.BINARY)
 annotation class InfiniteLoopApi(
 	/**备注信息。*/
-	val value: String = ""
+	val message: String = ""
 )

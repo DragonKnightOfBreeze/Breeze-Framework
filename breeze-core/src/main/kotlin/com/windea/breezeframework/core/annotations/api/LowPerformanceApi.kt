@@ -5,5 +5,5 @@ package com.windea.breezeframework.core.annotations.api
 @Retention(AnnotationRetention.BINARY)
 annotation class LowPerformanceApi(
 	/**备注信息。*/
-	val value: String = ""
+	val message: String = ""
 )

@@ -2,14 +2,13 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import mu.*
 import org.slf4j.*
 import kotlin.contracts.*
 
 private val logger = KotlinLogging.logger {}
 
-//REGION Global extensions
+//REGION global extensions
 
 /**转化为指定类型，或者抛出异常。用于链式调用。*/
 inline fun <reified R> Any?.cast(): R = this as R
@@ -17,10 +16,11 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
-//REGION Standard.kt extensions (TODOs)
+//REGION standard.kt extensions (TODOs)
 
 /**表明一个方法体推迟了实现。*/
 inline fun DELAY() = Unit
+	.also { nearestLogger().warn("An operation is delay-implemented.") }
 
 /**返回一个模拟结果，以表明一个方法体推迟了实现。*/
 inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
@@ -36,10 +36,10 @@ inline fun FIXME() = run { nearestLogger().warn("There is an issue in this opera
 /**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
 inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
 
-//REGION Standard.kt extensions (Scope functions)
+//REGION standard.kt extensions (Scope functions)
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
-inline fun tryCatching(block: () -> Unit) {
+inline fun tryOrPrint(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
@@ -51,7 +51,7 @@ inline fun tryCatching(block: () -> Unit) {
 }
 
 /**尝试执行一段代码，并忽略异常。*/
-inline fun tryIgnored(block: () -> Unit) {
+inline fun tryOrIgnore(block: () -> Unit) {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
@@ -59,6 +59,14 @@ inline fun tryIgnored(block: () -> Unit) {
 		block()
 	} catch(e: Exception) {
 	}
+}
+
+/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+inline fun <T> T.where(condition: Boolean, block: (T) -> T): T {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if(condition) block(this) else this
 }
 
 @PublishedApi internal var enableOnce = false
@@ -74,10 +82,9 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	block()
 }
 
-//REGION Precondition.kt extensions
+//REGION precondition.kt extensions
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
-@OutlookImplementationApi
 inline fun accept(value: Boolean) {
 	contract {
 		returns() implies value
@@ -86,7 +93,6 @@ inline fun accept(value: Boolean) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
-@OutlookImplementationApi
 inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 	contract {
 		returns() implies value
@@ -98,7 +104,6 @@ inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
-@OutlookImplementationApi
 inline fun <T> acceptNotNull(value: T?) {
 	contract {
 		returns() implies (value != null)
@@ -107,7 +112,6 @@ inline fun <T> acceptNotNull(value: T?) {
 }
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]，带有懒加载的信息。*/
-@OutlookImplementationApi
 inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	contract {
 		returns() implies (value != null)
@@ -120,7 +124,7 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	}
 }
 
-//REGION Internal functions
+//REGION internal functions
 
 /**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
 @PublishedApi

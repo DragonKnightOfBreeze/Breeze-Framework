@@ -2,17 +2,14 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
 
 /**判断两个枚举的枚举值名是否相等。*/
-@OutlookImplementationApi
 inline infix fun <T : Enum<T>> T.nameEquals(other: T): Boolean {
 	return this.name == other.name
 }
 
 /**判断两个枚举的枚举值名是否相等。忽略大小写。*/
-@OutlookImplementationApi
 inline infix fun <T : Enum<T>> T.nameEqualsIc(other: T): Boolean {
 	return this.name equalsIc other.name
 }

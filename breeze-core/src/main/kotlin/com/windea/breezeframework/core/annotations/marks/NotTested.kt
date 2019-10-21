@@ -9,5 +9,5 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotTested(
 	/**备注信息。*/
-	val value: String = ""
+	val message: String = ""
 )

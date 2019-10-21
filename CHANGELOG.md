@@ -36,7 +36,7 @@
 * [X] 完善测试中。
 * [X] 参考官方库，将简单的转化方法也改写成内联方法。（为了进行堆栈追踪和日志追踪等）
 * [X] 添加`ReflectModifierExtensions`。
-* [X] 为有望被标准库实现的实现添加`@OutlookImplementationApi`注解。
+* [X] 为有望被标准库实现的实现添加`Time`注解。
 * [X] breeze-reflect 从breeze-core提取代码。
 * [X] 更新字符串扩展，完善`customFormat`和`toMultilineText`方法。
 * [X] 实现已编写的标注为未实现的功能并通过测试。
@@ -114,19 +114,66 @@
 * [X] breeze-core 添加`.editorconfig`，修改`fillAt`、`fillToSize`等扩展的逻辑。
 * [X] breeze-core 为集合提供足够而必要的的`allIn`扩展。
 * [X] 更新README。添加额外的模块`breeze-logger`、`breeze-generator`。
+* [X] breeze-core 添加`checkChance`扩展。
+* [X] breeze-dsl 完善MarkdownDsl。添加特性支持。重新实现内联dsl。
+* [X] breeze-core 添加`toStringOrEmpty`扩展。
+* [X] breeze-core 添加`Colors`，提供标准颜色常量集。
+* [X] breeze-dsl 提取`CriticMarkupDsl`。
+* [X] breeze-dsl 补充缺失的Dsl文件。
+* [X] 一些更新。
+* [X] breeze-dsl 让本质上是List或Map的DSLElement继承对应的接口并代理实现。（本质上是Tree或Table的例外）
+* [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
+* [X] 整理代码。
+* [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
+* [X] breeze-dsl MarkdownDsl 支持标题的特性（一般是id）。 
+* [X] 精简注解。
+* [X] breeze-core 参照标准库，重命名`CollectionExtensions`中的部分方法。
+* [X] breeze-core 提供`joinToStringOrEmpty`方法（为了优化性能）。
+* [X] breeze-core 重构`addPrefix`等方法（参照标准库）。
+* [X] breeze-dsl 重构代码。
+* [X] breeze-core 精简`toXxxOrDefault`和`toXxxOrElse`方法。
+* [X] breeze-core 提供字符串的逐行连接和逐行填充扩展。
+* [X] breeze-dsl MarkdownDsl 对于任何存在内联文本的元素，尽可能地实现`WrapContent`接口。
+* [X] breeze-core 添加`where`全局扩展。
+* [X] breeze-data Serializer 允许读取指定泛型类型的数据。
+* [X] breeze-core 重构代码，去除不必要的代码。
+* [X] breeze-dsl 完善MarkdownDsl。
+* [X] breeze-core 提供一些委托属性的便捷写法。
+* [X] breeze-functional 提供基础函数式方法到最高11个参数的函数。
+* [X] breeze-core 提供标准颜色的枚举。（考虑改为常量）
+* [X] 更新README。
+* [X] breeze-core 优化`toStringBySelect`等方法。
+* [X] breeze-core 提供`filterValueNotNull`、`filterValueNotNullTo`扩展。
+* [X] breeze-time 完善代码。
+* [X] breeze-text 添加`String.base64Encoded`、`String.base64Decoded`。
+* [X] breeze-dsl 完成`CommandLineTextDsl`。
+* [X] breeze-dsl 完善命名和目录。
+* [X] breeze-core 提供字符串的常量集。
+* [X] 移除breeze-fxgl（考虑使用LibGDX）。
+* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
+
+***
+
+* [ ] breeze-core&breeze-text 考虑两者之间的界限。
+* [ ] breeze-serialization 提供yaml的序列化实现。
+* [ ] breeze-serialization 提供xml的序列化实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
-* [ ] breeze-dsl 区分DslElement和InlineDslElement，只允许通过字符串模版插入InlineDslElement。
+* [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-game 初步完成实体&组件的规范。
-* [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
-* [ ] breeze-core 提供标准颜色的枚举。（考虑改为常量）
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。
-* [ ] breeze-emmx 对于MindMaster的增强，例如json/yaml与emmx文档的相互转化。
+* [ ] breeze-core 提供额外的集合的实现。参考Guava。
+* [ ] breeze-logger 完成自己的日志器的实现。
+* [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
+* [ ] 提供一种Result的实现。
+* [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 
 # 长期
 
+* [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
+* [ ] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
 * [ ] 发布项目到JCenter。

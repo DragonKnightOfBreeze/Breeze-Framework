@@ -4,15 +4,15 @@ import com.windea.breezeframework.time.domain.*
 import java.text.*
 import java.util.*
 
-//REGION Factory extensions
+//REGION factory extensions
 
 object Dates {
 	/**今天。*/
-	val today = Date()
+	val today: Date get() = Date()
 	/**明天。*/
-	val tomorrow = getDate(1)
+	val tomorrow: Date get() = getDate(1)
 	/**昨天。*/
-	val yesterday = getDate(-1)
+	val yesterday: Date get() = getDate(-1)
 	
 	private fun getDate(amount: Int): Date {
 		calendar.time = Date()
@@ -21,7 +21,7 @@ object Dates {
 	}
 }
 
-//REGION Operator overrides
+//REGION operator overrides
 
 /**@see Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
@@ -37,7 +37,7 @@ operator fun Date.minus(calendarField: CalendarField): Date {
 	return calendar.time
 }
 
-//REGION Common extensions
+//REGION common extensions
 
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 
@@ -76,7 +76,8 @@ val Date.isSaturday: Boolean get() = this.assign().let { calendar.get(Calendar.D
 
 
 /**更改日期。*/
-fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1, weekday: Int = -1): Date {
+fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
+	weekday: Int = -1): Date {
 	calendar.time = this
 	calendar.set(Calendar.YEAR, year)
 	if(month > 0) calendar.set(Calendar.MONTH, month - 1)

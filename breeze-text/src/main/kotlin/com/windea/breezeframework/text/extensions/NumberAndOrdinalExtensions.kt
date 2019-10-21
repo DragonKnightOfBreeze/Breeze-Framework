@@ -1,8 +1,6 @@
-@file:Reference("[Humanizer](https://github.com/MehdiK/Humanizer.jvm/blob/master/src/main/kotlin/org/humanizer/jvm/Ordinalize.kt)")
-
 package com.windea.breezeframework.text.extensions
 
-import com.windea.breezeframework.core.annotations.marks.*
+//https://github.com/MehdiK/Humanizer.jvm/blob/master/src/main/kotlin/org/humanizer/jvm/Ordinalize.kt
 
 /**转化为序数形式。*/
 fun Int.toOrdinal(): String = getOrdinal(this.toString())

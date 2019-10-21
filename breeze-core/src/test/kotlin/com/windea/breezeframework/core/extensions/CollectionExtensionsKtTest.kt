@@ -10,7 +10,7 @@ class CollectionExtensionsKtTest {
 		println(listOf(1, 2, 3).repeatChunked(3))
 	}
 	
-	@Test
+	@Test //TESTED
 	fun dropBlankTest() {
 		println(listOf("123").dropBlank())
 		println(listOf("", "123").dropBlank())
@@ -21,9 +21,14 @@ class CollectionExtensionsKtTest {
 	
 	@Test //TESTED
 	fun fillToSize() {
-		val list = mutableListOf("1", "1", "1")
-		println(list.fillToSize("1", 2))
-		println(list.fillToSize("1", 3))
-		println(list.fillToSize("1", 4))
+		val list = listOf("1", "2", "3")
+		println(list.toMutableList().also { it.fill("1") })
+		println(list)
+		println(list.toMutableList().also { it.fillRange(1..2, "1") })
+		println(list)
+		println(list.fillStart(5, "1"))
+		println(list)
+		println(list.fillEnd(5, "1"))
+		println(list)
 	}
 }

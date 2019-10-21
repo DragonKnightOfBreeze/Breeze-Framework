@@ -50,6 +50,7 @@ allprojects {
 	tasks.withType<KotlinCompile> {
 		kotlinOptions.jvmTarget = "11"
 		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
 	}
 	
 	//构建source jar

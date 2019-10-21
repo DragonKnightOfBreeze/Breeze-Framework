@@ -2,12 +2,16 @@
 
 package com.windea.breezeframework.core.extensions
 
-//REGION Global extensions
+//REGION common extensions
 
 /**取在指定范围内的夹值。*/
 infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(range)
 
-//REGION Build extensions
+/**转换范围的值。*/
+inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: (T) -> R): ClosedRange<R> =
+	transform(start)..transform(endInclusive)
+
+//REGION build extensions
 
 infix fun Long.downUntil(until: Byte): LongProgression {
 	return LongProgression.fromClosedRange(this, until.toLong() - 1, -1L)

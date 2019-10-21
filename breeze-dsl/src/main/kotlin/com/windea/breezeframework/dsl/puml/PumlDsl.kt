@@ -2,24 +2,24 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//REGION Dsl annotations
+//TODO fully support
+
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class PumlDsl
 
-//REGION Dsl & Dsl config & Dsl elements
-
 /**PlantUml Dsl.*/
-@Reference("[PlantUml](http://plantuml.com)")
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @PumlDsl
-abstract class Puml : DslBuilder, CommentContent<PumlNote> {
+abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	var title: PumlTitle? = null
 	var legend: PumlLegend? = null
 	var header: PumlHeader? = null
@@ -34,61 +34,33 @@ abstract class Puml : DslBuilder, CommentContent<PumlNote> {
 	
 	fun toSuffixString(): String = TODO()
 	
-	
-	@PumlDsl
-	inline fun title(text: String) =
-		PumlTitle(text).also { title = it }
-	
-	@PumlDsl
-	inline fun legend(text: String) =
-		PumlLegend(text).also { legend = it }
-	
-	@PumlDsl
-	inline fun header(text: String) =
-		PumlHeader(text).also { header = it }
-	
-	@PumlDsl
-	inline fun footer(text: String) =
-		PumlFooter(text).also { footer = it }
-	
-	@PumlDsl
-	inline fun scale(expression: String) =
-		PumlScale(expression).also { scale = it }
-	
-	@PumlDsl
-	inline fun caption(text: String) =
-		PumlCaption(text).also { caption = it }
-	
-	@PumlDsl
-	inline fun note(text: String) =
-		PumlNote(text).also { notes += it }
-	
-	@PumlDsl
-	inline fun skinParams(builder: PumlSkinParams.() -> Unit) =
-		skinParams.builder()
-	
 	@PumlDsl
 	override fun String.unaryMinus() = note(this)
 }
 
 /**PlantUml Dsl的配置。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @PumlDsl
 object PumlConfig : DslConfig {
-	/**缩进长度。*/
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	/**是否使用双引号。*/
-	var useDoubleQuote: Boolean = true
+	private val indentSizeRange = -2..8
 	
-	internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	internal val quote get() = if(useDoubleQuote) "\"" else "'"
+	var indentSize = 4
+		set(value) = run { if(value in indentSizeRange) field = value }
+	var preferDoubleQuote: Boolean = true
+	
+	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
+	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
 
+/**PlantUml Dsl的入口。*/
+@PumlDsl
+interface PumlDslEntry : DslEntry
 
 /**PlantUml Dsl的元素。*/
 @PumlDsl
 interface PumlDslElement : DslElement
 
+//REGION dsl elements
 
 /**PlantUml元素。*/
 @PumlDsl
@@ -96,14 +68,14 @@ sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
-) : PumlDslElement, CanIndentContent, CanWrapContent {
+) : PumlDslElement, IndentContent, WrapContent {
 	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
 	override var wrapContent: Boolean = "\n" in text || "\r" in text//wrap content when necessary
 	
 	override fun toString(): String {
-		val positionSnippet = position?.let { "$it " } ?: ""
+		val positionSnippet = position?.text?.let { "$it " }.orEmpty()
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"$positionSnippet$type\n$indentedTextSnippet\nend $type"
@@ -113,11 +85,6 @@ sealed class PumlElement(
 			"$positionSnippet$type $textSnippet"
 		}
 	}
-	
-	
-	@PumlDsl
-	inline infix fun at(position: PumlTopElementPosition) =
-		this.also { it.position = position }
 }
 
 /**PlantUml标题。*/
@@ -136,13 +103,14 @@ class PumlHeader @PublishedApi internal constructor(text: String) : PumlElement(
 @PumlDsl
 class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement("footer", text)
 
-
 /**PlantUml缩放。*/
 @PumlDsl
 class PumlScale @PublishedApi internal constructor(
 	val expression: String
 ) : PumlDslElement {
-	override fun toString() = "scale $expression"
+	override fun toString(): String {
+		return "scale $expression"
+	}
 }
 
 /**PlantUml图片标题。*/
@@ -150,9 +118,10 @@ class PumlScale @PublishedApi internal constructor(
 class PumlCaption @PublishedApi internal constructor(
 	val text: String
 ) : PumlDslElement {
-	override fun toString() = "caption $text"
+	override fun toString(): String {
+		return "caption $text"
+	}
 }
-
 
 /**
  * PlantUml注释。
@@ -176,7 +145,7 @@ class PumlCaption @PublishedApi internal constructor(
 class PumlNote @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
-) : PumlDslElement, CanIndentContent, CanWrapContent {
+) : PumlDslElement, IndentContent, WrapContent {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
@@ -195,7 +164,7 @@ class PumlNote @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val aliasSnippet = if(position == null) " as $alias" else ""
-		val positionSnippet = position?.let { " ${it.text} $targetId" } ?: ""
+		val positionSnippet = position?.text?.let { " $it $targetId" }.orEmpty()
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
@@ -205,28 +174,7 @@ class PumlNote @PublishedApi internal constructor(
 			else "note$positionSnippet: $textSnippet"
 		}
 	}
-	
-	
-	@PumlDsl
-	inline infix fun alias(alias: String) = this.also { it.alias = alias }
-	
-	@PumlDsl
-	inline infix fun leftOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.LeftOf }
-	
-	@PumlDsl
-	inline infix fun rightOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.RightOf }
-	
-	@PumlDsl
-	inline infix fun topOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.TopOf }
-	
-	@PumlDsl
-	inline infix fun bottomOf(targetId: String) = this.also { it.targetId = targetId }
-		.also { it.position = PumlNotePosition.BottomOf }
 }
-
 
 //TODO
 /**PlantUml显示参数。*/
@@ -266,7 +214,7 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, IndentContent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
@@ -277,7 +225,7 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 	}
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
@@ -304,3 +252,62 @@ enum class PumlArrowDirection(val text: String) {
 enum class PumlNotePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
+
+//REGION build extensions
+
+@PumlDsl
+inline fun Puml.title(text: String) =
+	PumlTitle(text).also { title = it }
+
+@PumlDsl
+inline fun Puml.legend(text: String) =
+	PumlLegend(text).also { legend = it }
+
+@PumlDsl
+inline fun Puml.header(text: String) =
+	PumlHeader(text).also { header = it }
+
+@PumlDsl
+inline fun Puml.footer(text: String) =
+	PumlFooter(text).also { footer = it }
+
+@PumlDsl
+inline fun Puml.scale(expression: String) =
+	PumlScale(expression).also { scale = it }
+
+@PumlDsl
+inline fun Puml.caption(text: String) =
+	PumlCaption(text).also { caption = it }
+
+@PumlDsl
+inline fun Puml.note(text: String) =
+	PumlNote(text).also { notes += it }
+
+@PumlDsl
+inline fun Puml.skinParams(builder: PumlSkinParams.() -> Unit) =
+	skinParams.builder()
+
+@PumlDsl
+inline infix fun PumlElement.at(position: PumlTopElementPosition) =
+	this.also { it.position = position }
+
+@PumlDsl
+inline infix fun PumlNote.alias(alias: String) =
+	this.also { it.alias = alias }
+
+@PumlDsl
+inline infix fun PumlNote.leftOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.LeftOf }
+
+@PumlDsl
+inline infix fun PumlNote.rightOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.RightOf }
+
+@PumlDsl
+inline infix fun PumlNote.topOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.TopOf }
+
+@PumlDsl
+inline infix fun PumlNote.bottomOf(targetId: String) =
+	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }
+

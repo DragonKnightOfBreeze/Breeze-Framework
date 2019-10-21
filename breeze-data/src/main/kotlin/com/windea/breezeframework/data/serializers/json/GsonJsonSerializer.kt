@@ -2,44 +2,41 @@ package com.windea.breezeframework.data.serializers.json
 
 import com.google.gson.*
 import java.io.*
+import java.lang.reflect.*
 
 object GsonJsonSerializer : JsonSerializer {
 	@PublishedApi internal val gsonBuilder = GsonBuilder()
 	
 	private val gson by lazy { gsonBuilder.create() }
+	private val gsonWithPrettyPrint by lazy { gson.newBuilder().setPrettyPrinting().create() }
 	
-	init {
-		gsonBuilder.setPrettyPrinting()
-	}
-	
-	
-	override fun <T : Any> load(string: String, type: Class<T>): T {
+	override fun <T> load(string: String, type: Class<T>): T {
 		return gson.fromJson(string, type)
 	}
 	
-	override fun <T : Any> load(file: File, type: Class<T>): T {
+	override fun <T> load(file: File, type: Class<T>): T {
 		return gson.fromJson(file.reader(), type)
 	}
 	
-	override fun <T : Any> load(reader: Reader, type: Class<T>): T {
-		return gson.fromJson(reader, type)
+	override fun <T> load(string: String, type: Type): T {
+		return gson.fromJson(string, type)
 	}
 	
-	override fun <T : Any> dump(data: T): String {
+	override fun <T> load(file: File, type: Type): T {
+		return gson.fromJson(file.reader(), type)
+	}
+	
+	override fun <T> dump(data: T): String {
 		return gson.toJson(data)
 	}
 	
-	override fun <T : Any> dump(data: T, file: File) {
+	override fun <T> dump(data: T, file: File) {
 		//Do not use gson.toJson(Any, Appendable)
-		gson.toJson(data).let { file.writeText(it) }
-	}
-	
-	override fun <T : Any> dump(data: T, writer: Writer) {
-		//Do not use gson.toJson(Any, Appendable)
-		gson.toJson(data).let { writer.write(it) }
+		//Default to pretty print
+		gsonWithPrettyPrint.toJson(data).let { file.writeText(it) }
 	}
 }
 
 object GsonJsonSerializerConfig : JsonSerializerConfig {
-	inline operator fun invoke(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
+	inline fun configure(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
 }

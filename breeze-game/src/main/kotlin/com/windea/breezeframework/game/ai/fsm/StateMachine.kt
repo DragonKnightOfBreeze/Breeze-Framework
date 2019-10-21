@@ -18,7 +18,7 @@ open class StateMachine<S : State<S>>(
 	/**当前的父状态。*/
 	var currentParentState: S = initialState
 		private set(value) {
-			require(!value.isSubState) { "Parent state <$value> cannot be a subState." }
+			require(!value.isSubState) { "Parent state '$value' cannot be a subState." }
 			field = value
 		}
 	

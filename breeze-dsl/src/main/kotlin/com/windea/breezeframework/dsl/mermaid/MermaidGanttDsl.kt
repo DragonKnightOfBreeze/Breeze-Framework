@@ -2,50 +2,35 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import java.time.*
 
-//REGION Dsl annotations
+//REGION top annotations and interfaces
 
 @DslMarker
 private annotation class MermaidGanttDsl
 
-//REGION Dsl & Dsl config & Dsl elements
-
-/**构建Mermaid甘特图。*/
-@MermaidGanttDsl
-inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.builder() }
-
 /**Mermaid甘特图。*/
-@Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
+@ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentContent, BlockContent<MermaidGanttSection> {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, WithBlock<MermaidGanttSection> {
 	var title: MermaidGanttTitle? = null
-	var dataFormat: MermaidGanttDateFormat? = null
-	val sections: MutableList<MermaidGanttSection> = mutableListOf()
+	var dateFormat: MermaidGanttDateFormat? = null
+	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			arrayOf(title, dataFormat).filterNotNull().joinToString("\n"),
-			sections.joinToString("\n\n")
-		).filterNotEmpty().joinToString("\n\n")
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "gantt\n$indentedContentSnippet"
+			arrayOf(title, dateFormat).filterNotNull().joinToStringOrEmpty("\n"),
+			toContentString()
+		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "gantt\n$contentSnippet"
 	}
-	
-	
-	@MermaidGanttDsl
-	inline fun section(name: String) =
-		MermaidGanttSection(name).also { sections += it }
-	
-	@MermaidGanttDsl
-	inline fun section(name: String, builder: MermaidGanttSection.() -> Unit) =
-		MermaidGanttSection(name).also { it.builder() }.also { sections += it }
 	
 	@MermaidGanttDsl
 	override fun String.invoke() = section(this)
@@ -54,11 +39,23 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), CanIndentCo
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
+//REGION dsl interfaces
+
+/**Mermaid甘特图Dsl的入口。*/
+@MermaidGanttDsl
+interface MermaidGanttDslEntry : MermaidDslEntry, IndentContent {
+	val sections: MutableList<MermaidGanttSection>
+	
+	fun toContentString(): String {
+		return sections.joinToStringOrEmpty("\n\n")
+	}
+}
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
 interface MermaidGanttDslElement : MermaidDslElement
 
+//REGION dsl elements
 
 /**Mermaid甘特图标题。*/
 @MermaidGanttDsl
@@ -84,7 +81,7 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndentContent, TextContent<MermaidGanttTask> {
+) : MermaidGanttDslElement, IndentContent, WithText<MermaidGanttTask> {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false
@@ -92,14 +89,10 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	override fun toString(): String {
 		//trim "\n" if no tasks
 		if(tasks.isEmpty()) return "section $name"
-		val contentSnippet = tasks.joinToString("\n")
-		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
-		return "section $name\n$indentedContentSnippet"
+		val contentSnippet = tasks.joinToStringOrEmpty("\n")
+			.let { if(indentContent) it.prependIndent(indent) else it }
+		return "section $name\n$contentSnippet"
 	}
-	
-	@MermaidGanttDsl
-	inline fun task(name: String, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
-		MermaidGanttTask(name, status).also { tasks += it }
 	
 	@MermaidGanttDsl
 	override fun String.unaryPlus() = task(this)
@@ -122,58 +115,82 @@ class MermaidGanttTask @PublishedApi internal constructor(
 		val critSnippet = if(isCrit) "crit" else null
 		val statusSnippet = status.text
 		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime)
-			.filterNotNull().joinToString()
+			.filterNotNull().joinToStringOrEmpty()
 		return "$name: $paramsSnippet"
 	}
-	
-	
-	@MermaidGanttDsl
-	inline infix fun alias(alias: String) =
-		this.also { it.alias = alias }
-	
-	@MermaidGanttDsl
-	inline infix fun status(status: MermaidGanttTaskStatus) =
-		this.also { it.status = status }
-	
-	@MermaidGanttDsl
-	inline infix fun crit(isCrit: Boolean) =
-		this.also { it.isCrit = isCrit }
-	
-	@MermaidGanttDsl
-	inline infix fun initAt(time: String) =
-		this.also { it.initTime = time }
-	
-	@MermaidGanttDsl
-	inline infix fun finishAt(time: String) =
-		this.also { it.finishTime = time }
-	
-	//LocalDateTime format causes error
-	@MermaidGanttDsl
-	inline infix fun initAt(time: LocalDate) =
-		this.also { it.initTime = time.toString() }
-	
-	@MermaidGanttDsl
-	inline infix fun finishAt(time: LocalDate) =
-		this.also { it.finishTime = time.toString() }
-	
-	@MermaidGanttDsl
-	inline infix fun after(taskId: String) =
-		this.also { it.initTime = "after $taskId" }
-	
-	@MermaidGanttDsl
-	inline infix fun duration(duration: String) =
-		this.also { it.finishTime = duration }
-	
-	//the output string format is "PTnHnMnS", but mermaid use "xd"/"xh"
-	@MermaidGanttDsl
-	inline infix fun duration(duration: Duration) =
-		this.also { it.finishTime = duration.toString().drop(2).toLowerCase() }
 }
 
-//REGION Enumerations and constants
+//REGION enumerations and constants
 
 /**Mermaid甘特图任务的状态。*/
 @MermaidGanttDsl
 enum class MermaidGanttTaskStatus(val text: String?) {
 	ToDo(null), Done("done"), Active("active")
 }
+
+//REGION build extensions
+
+@MermaidGanttDsl
+inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.builder() }
+
+@MermaidGanttDsl
+inline fun MermaidGantt.title(name: String) =
+	MermaidGanttTitle(name).also { title = it }
+
+@MermaidGanttDsl
+inline fun MermaidGantt.dateFormat(expression: String = "YYYY-MM-DD") =
+	MermaidGanttDateFormat(expression).also { dateFormat = it }
+
+@MermaidGanttDsl
+inline fun MermaidGanttDslEntry.section(name: String) =
+	MermaidGanttSection(name).also { sections += it }
+
+@MermaidGanttDsl
+inline fun MermaidGanttDslEntry.section(name: String, builder: MermaidGanttSection.() -> Unit) =
+	MermaidGanttSection(name).also { it.builder() }.also { sections += it }
+
+@MermaidGanttDsl
+inline fun MermaidGanttSection.task(name: String, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
+	MermaidGanttTask(name, status).also { tasks += it }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.alias(alias: String) =
+	this.also { it.alias = alias }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.status(status: MermaidGanttTaskStatus) =
+	this.also { it.status = status }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.crit(isCrit: Boolean) =
+	this.also { it.isCrit = isCrit }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.initAt(time: String) =
+	this.also { it.initTime = time }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.finishAt(time: String) =
+	this.also { it.finishTime = time }
+
+//LocalDateTime format causes error
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.initAt(time: LocalDate) =
+	this.also { it.initTime = time.toString() }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.finishAt(time: LocalDate) =
+	this.also { it.finishTime = time.toString() }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.after(taskId: String) =
+	this.also { it.initTime = "after $taskId" }
+
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.duration(duration: String) =
+	this.also { it.finishTime = duration }
+
+//the output string format is "PTnHnMnS", but mermaid use "xd"/"xh"
+@MermaidGanttDsl
+inline infix fun MermaidGanttTask.duration(duration: Duration) =
+	this.also { it.finishTime = duration.toString().drop(2).toLowerCase() }

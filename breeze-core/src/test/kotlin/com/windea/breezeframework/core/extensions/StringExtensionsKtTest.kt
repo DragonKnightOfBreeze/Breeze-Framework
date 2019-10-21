@@ -41,18 +41,18 @@ class StringExtensionsKtTest {
 	}
 	
 	@Test //TESTED
-	fun repeatExtension() {
+	fun repeatExtensionTest() {
 		println("abc".repeat(3))
 		println("abc".flatRepeat(3))
 	}
 	
 	@Test //TESTED
-	fun messageFormat() {
+	fun messageFormatTest() {
 		assertEquals("123a123b123","123{0}123{1}123".messageFormat("a","b"))
 	}
 	
 	@Test //TESTED
-	fun customFormat() {
+	fun customFormatTest() {
 		assertEquals("1a2b3","1{}2{}3".customFormat("{}","a","b"))
 		assertEquals("1a2b3", "1\${}2\${}3".customFormat("\${}", "a", "b"))
 		assertEquals("1a2b3","1{0}2{1}3".customFormat("{index}","a","b"))
@@ -61,11 +61,26 @@ class StringExtensionsKtTest {
 		assertEquals("1b2a3", "1{bbb}2{aaa}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
 	}
 	
-	//@Test
-	//fun likeTest(){
-	//	assertTrue("abc ab a" like "abc ab")
-	//	assertTrue("abc ab a" like "abc")
-	//	assertTrue("abc ab a" like "abc abc a")
-	//	assertTrue("abc ab a" like  "bcd bc a")
-	//}
+	@Test //TESTED
+	fun quoteTest() {
+		assertEquals(""""'1\"2'"""", """'1"2'""".wrapQuote('"'))
+		assertEquals("""'1"2'""", """"'1\"2'"""".unwrapQuote())
+	}
+	
+	@Test //TESTED
+	fun progressiveTest() {
+		val a = """
+			123
+			123123
+		""".trimIndent()
+		val b = """
+			123
+			123123
+			123123123
+		""".trimIndent()
+		
+		println(a plusByLine b)
+		println(a.padStartByLine())
+		println(a.padEndByLine())
+	}
 }

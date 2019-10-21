@@ -9,5 +9,5 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotIncluded(
 	/**备注信息。*/
-	val value: String = ""
+	val message: String = ""
 )

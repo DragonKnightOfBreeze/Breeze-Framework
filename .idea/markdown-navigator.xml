@@ -8,7 +8,7 @@
     </PreviewSettings>
     <ParserSettings gitHubSyntaxChange="false" emojiShortcuts="1" emojiImages="0">
       <PegdownExtensions>
-        <option name="ABBREVIATIONS" value="false" />
+        <option name="ABBREVIATIONS" value="true" />
         <option name="ANCHORLINKS" value="true" />
         <option name="ASIDE" value="false" />
         <option name="ATXHEADERSPACE" value="true" />
@@ -19,13 +19,13 @@
         <option name="FOOTNOTES" value="false" />
         <option name="HARDWRAPS" value="false" />
         <option name="HTML_DEEP_PARSER" value="false" />
-        <option name="INSERTED" value="false" />
+        <option name="INSERTED" value="true" />
         <option name="QUOTES" value="false" />
         <option name="RELAXEDHRULES" value="true" />
         <option name="SMARTS" value="false" />
         <option name="STRIKETHROUGH" value="true" />
-        <option name="SUBSCRIPT" value="false" />
-        <option name="SUPERSCRIPT" value="false" />
+        <option name="SUBSCRIPT" value="true" />
+        <option name="SUPERSCRIPT" value="true" />
         <option name="SUPPRESS_HTML_BLOCKS" value="false" />
         <option name="SUPPRESS_INLINE_HTML" value="false" />
         <option name="TABLES" value="true" />
@@ -57,10 +57,10 @@
         <option name="PARSE_HTML_ANCHOR_ID" value="false" />
         <option name="PLANTUML_FENCED_CODE" value="false" />
         <option name="PUML_FENCED_CODE" value="false" />
-        <option name="SIM_TOC_BLANK_LINE_SPACER" value="true" />
+        <option name="SIM_TOC_BLANK_LINE_SPACER" value="false" />
       </ParserOptions>
     </ParserSettings>
-    <HtmlSettings headerTopEnabled="false" headerBottomEnabled="false" bodyTopEnabled="false" bodyBottomEnabled="false" embedUrlContent="false" addPageHeader="true" embedImages="false" embedHttpImages="false" imageUriSerials="false" addDocTypeHtml="true" noParaTags="false" plantUmlConversion="0" mathConversion="0">
+    <HtmlSettings headerTopEnabled="false" headerBottomEnabled="false" bodyTopEnabled="false" bodyBottomEnabled="false" embedUrlContent="false" addPageHeader="true" embedImages="false" embedHttpImages="false" imageUriSerials="false" addDocTypeHtml="true" noParaTags="false" plantUmlConversion="0" mathConversion="-1">
       <GeneratorProvider>
         <provider providerId="com.vladsch.idea.multimarkdown.editor.swing.html.generator" providerName="Default Swing HTML Generator" />
       </GeneratorProvider>

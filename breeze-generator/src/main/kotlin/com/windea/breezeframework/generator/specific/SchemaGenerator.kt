@@ -4,6 +4,7 @@ package com.windea.breezeframework.generator.specific
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
+import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.generator.*
 import java.io.*
 import java.util.concurrent.*
@@ -77,7 +78,7 @@ object SchemaGenerator : Generator {
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
 	fun generateExtendedSchema(inputText: String, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.loadAsMap(inputText) as MutableMap<String, Any?>
+		val inputMap = inputType.serializer.load<MutableMap<String, Any?>>(inputText)
 		convertRules(inputMap)
 		return outputType.serializer.dump(inputMap)
 	}
@@ -88,7 +89,7 @@ object SchemaGenerator : Generator {
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
 	fun generateExtendedSchema(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.loadAsMap(inputFile) as MutableMap<String, Any?>
+		val inputMap = inputType.serializer.load<MutableMap<String, Any?>>(inputFile)
 		convertRules(inputMap)
 		outputType.serializer.dump(inputMap, outputFile)
 	}

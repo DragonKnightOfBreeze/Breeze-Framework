@@ -1,5 +1,8 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.windea.breezeframework.core.extensions
 
+import java.net.*
 import java.nio.file.*
 
 /**文件扩展名。*/
@@ -12,5 +15,7 @@ val Path.fileShotName: String get() = this.fileName.toString().substringBeforeLa
 /**判断对应文件是否存在。*/
 fun Path.exists(): Boolean = Files.exists(this)
 
-/**递归删除对应目录下的所有内容。*/
-fun Path.deleteRecursively(): Boolean = this.toFile().deleteRecursively()
+//REGION convert extensions
+
+/**将当前地址转化为统一资源定位符。*/
+inline fun Path.toUrl(): URL = this.toUri().toURL()
