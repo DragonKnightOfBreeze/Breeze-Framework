@@ -44,8 +44,10 @@ interface PumlStateDiagramDslEntry : PumlDslEntry, WithTransition<PumlStateDiagr
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 	
+	@PumlStateDiagramDsl
 	override fun String.fromTo(other: String) = transition(this, other)
 	
+	@PumlStateDiagramDsl
 	override fun PumlStateDiagramTransition.invoke(text: String) = this.also { it.text = text }
 }
 

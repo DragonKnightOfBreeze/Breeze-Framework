@@ -49,6 +49,7 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry,
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 	
+	@MermaidClassDiagramDsl
 	override fun String.fromTo(other: String) =
 		relation(this, other, MermaidClassDiagramRelationType.Link)
 	
@@ -120,8 +121,10 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 	fun `package`(member: MermaidClassDiagramMember) =
 		member.also { it.visibility = MermaidClassDiagramVisibility.Protected }
 	
+	@MermaidClassDiagramDsl
 	operator fun String.invoke(member: MermaidClassDiagramMember) = member.also { it.type = this }
 	
+	@MermaidClassDiagramDsl
 	@Suppress("DEPRECATION")
 	operator fun String.invoke(vararg params: String) = method(this, *params)
 }

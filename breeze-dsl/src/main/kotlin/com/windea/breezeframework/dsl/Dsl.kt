@@ -79,7 +79,7 @@ interface WithBlock<T : DslElement> {
 	operator fun String.invoke(builder: T.() -> Unit = {}): T
 }
 
-//TODO use type parameter N
+//TODO make usage of type parameter N
 /**包含（唯一主要的）可表示一个元素到另一个元素的转变的内容。*/
 interface WithTransition<N : DslElement, T : DslElement> {
 	/**根据节点元素的名字创建过渡元素。*/
