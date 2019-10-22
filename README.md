@@ -51,6 +51,8 @@ dependencies {
 
 ## breeze-dsl
 
+Powerful and clear builders for various domain specific languages.
+
 * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
 * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
@@ -81,9 +83,10 @@ Now support:
     
 Note:
 
-* Dsl is used to generate text, and it's the only thing that Dsl should do.
+* Dsl is used to generate text, and it's the only thing that dsl should do.
 * Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
 * Dsl can not deserialize data from generated string. 
+* Less limit (either type or invocation) dsl is not a good dsl.
 
 ## breeze-functional
 

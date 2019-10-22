@@ -5,10 +5,8 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartDirection.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartLinkArrowShape.*
 import kotlin.test.*
 
-//TESTED VERY NICE!
-
 class MermaidFlowChartDslTest {
-	@Test
+	@Test //TESTED VERY NICE!
 	fun test1() {
 		val graph1 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
@@ -18,7 +16,7 @@ class MermaidFlowChartDslTest {
 		println(graph1)
 	}
 	
-	@Test
+	@Test //TESTED VERY NICE!
 	fun test2() {
 		val graph2 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
@@ -28,7 +26,7 @@ class MermaidFlowChartDslTest {
 		println(graph2)
 	}
 	
-	@Test
+	@Test //TESTED VERY NICE!
 	fun test3() {
 		val graph3 = mermaidFlowChart(LR) {
 			link(node("S", "Source"), node("T", "Target"))
