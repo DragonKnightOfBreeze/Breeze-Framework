@@ -85,7 +85,7 @@ class CriticMarkupHighlightText @PublishedApi internal constructor(
 //REGION build extensions
 
 @CriticMarkupTextDsl
-inline fun criticMarkupText(builder: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.builder() }
+inline fun criticMarkupText(block: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.block() }
 
 @InlineDsl
 @CriticMarkupTextDsl

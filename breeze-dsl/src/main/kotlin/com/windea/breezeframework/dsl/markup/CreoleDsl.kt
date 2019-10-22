@@ -54,7 +54,7 @@ interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
 	@CreoleDsl
-	override fun String.unaryPlus() = textBlock(this)
+	override fun String.unaryPlus() = CreoleTextBlock(this).also { content += it }
 }
 
 /**Creole Dsl的元素。*/
@@ -363,24 +363,20 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 
 /**Creole水平线类型。*/
 @CreoleDsl
-enum class CreoleHorizontalLineType(
-	val text: String
-) {
+enum class CreoleHorizontalLineType(val text: String) {
 	Normal("-"), Double("="), Strong("_"), Dotted(".")
 }
 
 /**Creole表格的对齐方式。*/
 @CreoleDsl
-enum class CreoleTableAlignment(
-	val textPair: Pair<String, String>
-) {
+enum class CreoleTableAlignment(val textPair: Pair<String, String>) {
 	None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 }
 
 //REGION build extensions
 
 @CreoleDsl
-inline fun creole(builder: Creole.() -> Unit) = Creole().also { it.builder() }
+inline fun creole(block: Creole.() -> Unit) = Creole().also { it.block() }
 
 @InlineDsl
 @CreoleDsl
@@ -423,12 +419,12 @@ inline fun CreoleDslInlineEntry.u(text: String) = CreoleUnderlinedText(text).toS
 inline fun CreoleDslInlineEntry.w(text: String) = CreoleWavedText(text).toString()
 
 @CreoleDsl
-inline fun CreoleDslEntry.textBlock(text: String) =
-	CreoleTextBlock(text).also { content += it }
+inline fun CreoleDslEntry.textBlock(lazyText: () -> String) =
+	CreoleTextBlock(lazyText()).also { content += it }
 
 @CreoleDsl
-inline fun CreoleDslEntry.list(builder: CreoleList.() -> Unit) =
-	CreoleList().also { it.builder() }.also { content += it }
+inline fun CreoleDslEntry.list(block: CreoleList.() -> Unit) =
+	CreoleList().also { it.block() }.also { content += it }
 
 @CreoleDsl
 inline fun CreoleDslEntry.hr(type: CreoleHorizontalLineType = CreoleHorizontalLineType.Normal) =
@@ -454,68 +450,44 @@ inline fun CreoleDslEntry.h3(text: String) =
 inline fun CreoleDslEntry.h4(text: String) =
 	CreoleHeading4(text).also { content += it }
 
-inline fun CreoleDslEntry.tree(title: String, builder: CreoleTree.() -> Unit) =
-	CreoleTree(title).also { it.builder() }.also { content += it }
+inline fun CreoleDslEntry.tree(title: String, block: CreoleTree.() -> Unit) =
+	CreoleTree(title).also { it.block() }.also { content += it }
 
 @CreoleDsl
-inline fun CreoleDslEntry.table(builder: CreoleTable.() -> Unit) =
-	CreoleTable().also { it.builder() }.also { content += it }
+inline fun CreoleDslEntry.table(block: CreoleTable.() -> Unit) =
+	CreoleTable().also { it.block() }.also { content += it }
 
 @CreoleDsl
-inline fun CreoleList.ol(text: String) =
-	CreoleOrderedListNode(text).also { nodes += it }
+inline fun CreoleList.ol(text: String, block: CreoleOrderedListNode.() -> Unit = {}) =
+	CreoleOrderedListNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleList.ol(text: String, builder: CreoleOrderedListNode.() -> Unit) =
-	CreoleOrderedListNode(text).also { it.builder() }.also { nodes += it }
+inline fun CreoleList.ul(text: String, block: CreoleUnorderedListNode.() -> Unit = {}) =
+	CreoleUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleList.ul(text: String) =
-	CreoleUnorderedListNode(text).also { nodes += it }
+inline fun CreoleListNode.ol(text: String, block: CreoleOrderedListNode.() -> Unit = {}) =
+	CreoleOrderedListNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleList.ul(text: String, builder: CreoleUnorderedListNode.() -> Unit) =
-	CreoleUnorderedListNode(text).also { it.builder() }.also { nodes += it }
+inline fun CreoleListNode.ul(text: String, block: CreoleUnorderedListNode.() -> Unit = {}) =
+	CreoleUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleListNode.ol(text: String) =
-	CreoleOrderedListNode(text).also { nodes += it }
+inline fun CreoleTree.node(text: String, block: CreoleTreeNode.() -> Unit = {}) =
+	CreoleTreeNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleListNode.ol(text: String, builder: CreoleOrderedListNode.() -> Unit) =
-	CreoleOrderedListNode(text).also { it.builder() }.also { nodes += it }
+inline fun CreoleTreeNode.node(text: String, block: CreoleTreeNode.() -> Unit = {}) =
+	CreoleTreeNode(text).also { it.block() }.also { nodes += it }
 
 @CreoleDsl
-inline fun CreoleListNode.ul(text: String) =
-	CreoleUnorderedListNode(text).also { nodes += it }
+inline fun CreoleTable.header(block: CreoleTableHeader.() -> Unit) =
+	CreoleTableHeader().also { it.block() }.also { header = it }
 
 @CreoleDsl
-inline fun CreoleListNode.ul(text: String, builder: CreoleUnorderedListNode.() -> Unit) =
-	CreoleUnorderedListNode(text).also { it.builder() }.also { nodes += it }
-
-@CreoleDsl
-inline fun CreoleTree.node(text: String) =
-	CreoleTreeNode(text).also { nodes += it }
-
-@CreoleDsl
-inline fun CreoleTree.node(text: String, builder: CreoleTreeNode.() -> Unit) =
-	CreoleTreeNode(text).also { it.builder() }.also { nodes += it }
-
-@CreoleDsl
-inline fun CreoleTreeNode.node(text: String) =
-	CreoleTreeNode(text).also { nodes += it }
-
-@CreoleDsl
-inline fun CreoleTreeNode.node(text: String, builder: CreoleTreeNode.() -> Unit) =
-	CreoleTreeNode(text).also { it.builder() }.also { nodes += it }
-
-@CreoleDsl
-inline fun CreoleTable.header(builder: CreoleTableHeader.() -> Unit) =
-	CreoleTableHeader().also { it.builder() }.also { header = it }
-
-@CreoleDsl
-inline fun CreoleTable.row(builder: CreoleTableRow.() -> Unit) =
-	CreoleTableRow().also { it.builder() }.also { rows += it }
+inline fun CreoleTable.row(block: CreoleTableRow.() -> Unit) =
+	CreoleTableRow().also { it.block() }.also { rows += it }
 
 @CreoleDsl
 inline infix fun CreoleTable.columnSize(size: Int) =

@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.addPrefixHeadingMarkers
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnLength
@@ -97,7 +98,7 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	}
 	
 	@MarkdownDsl
-	override fun String.unaryPlus() = textBlock(this)
+	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
 }
 
 /**Markdown Dsl的元素。*/
@@ -716,7 +717,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownReference(
 	val reference: String
-) : MarkdownDslElement {
+) : MarkdownDslElement, CanEqual {
 	override fun equals(other: Any?): Boolean {
 		return other === this || (other is MarkdownReference && other.reference == reference)
 	}
@@ -817,27 +818,21 @@ class MarkdownPropertyAttribute(
 
 /**Markdown表格的对齐方式。*/
 @MarkdownDslExtendedFeature
-enum class MarkdownTableAlignment(
-	val textPair: Pair<String, String>
-) {
+enum class MarkdownTableAlignment(val textPair: Pair<String, String>) {
 	None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 }
 
 /**Markdown警告框的类型。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionType(
-	val text: String
-) {
+enum class MarkdownAdmonitionType(val text: String) {
 	Normal("!!!"), Collapsed("???"), Opened("!!!+")
 }
 
 /**Markdown警告框的限定符。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionQualifier(
-	val style: String, val text: String
-) {
+enum class MarkdownAdmonitionQualifier(val style: String, val text: String) {
 	Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 	Bug("bug", "bug"),
 	Danger("danger", "danger"), Error("danger", "error"),
@@ -855,7 +850,7 @@ enum class MarkdownAdmonitionQualifier(
 //REGION build extensions
 
 @MarkdownDsl
-inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
+inline fun markdown(block: Markdown.() -> Unit) = Markdown().also { it.block() }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -985,8 +980,8 @@ inline fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute
 inline fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.textBlock(text: String) =
-	MarkdownTextBlock(text).also { content += it }
+inline fun MarkdownDslEntry.textBlock(lazyText: () -> String) =
+	MarkdownTextBlock(lazyText()).also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.mainHeading(text: String) =
@@ -1025,31 +1020,31 @@ inline fun MarkdownDslEntry.hr() =
 	MarkdownHorizontalLine.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.list(builder: MarkdownList.() -> Unit) =
-	MarkdownList().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.list(block: MarkdownList.() -> Unit) =
+	MarkdownList().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.def(title: String, builder: MarkdownDefinition.() -> Unit) =
-	MarkdownDefinition(title).also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.def(title: String, block: MarkdownDefinition.() -> Unit) =
+	MarkdownDefinition(title).also { it.block() }.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.table(builder: MarkdownTable.() -> Unit) =
-	MarkdownTable().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.table(block: MarkdownTable.() -> Unit) =
+	MarkdownTable().also { it.block() }.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.blockQueue(builder: MarkdownBlockQuote.() -> Unit) =
-	MarkdownBlockQuote().also { it.builder() }.also { content += it }
-
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.indentedBlock(builder: MarkdownIndentedBlock.() -> Unit) =
-	MarkdownIndentedBlock().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.blockQueue(block: MarkdownBlockQuote.() -> Unit) =
+	MarkdownBlockQuote().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.sideBlock(builder: MarkdownSideBlock.() -> Unit) =
-	MarkdownSideBlock().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.indentedBlock(block: MarkdownIndentedBlock.() -> Unit) =
+	MarkdownIndentedBlock().also { it.block() }.also { content += it }
+
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslEntry.sideBlock(block: MarkdownSideBlock.() -> Unit) =
+	MarkdownSideBlock().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.codeFence(language: String, lazyText: () -> String) =
@@ -1062,8 +1057,8 @@ inline fun MarkdownDslEntry.multilineMath(lazyText: () -> String) =
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownDslEntry.admonition(qualifier: MarkdownAdmonitionQualifier, title: String = "",
-	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal) =
-	MarkdownAdmonition(qualifier, title, type).also { content += it }
+	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal, block: MarkdownAdmonition.() -> Unit) =
+	MarkdownAdmonition(qualifier, title, type).also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -1077,8 +1072,8 @@ inline fun MarkdownDslEntry.macros(name: String) =
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.macrosSnippet(name: String, builder: MarkdownMacrosSnippet.() -> Unit) =
-	MarkdownMacrosSnippet(name).also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.macrosSnippet(name: String, block: MarkdownMacrosSnippet.() -> Unit) =
+	MarkdownMacrosSnippet(name).also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -1086,65 +1081,41 @@ inline infix fun <T : WithMarkdownAttributes> T.with(attributes: MarkdownAttribu
 	this.also { it.attributes = attributes }
 
 @MarkdownDsl
-inline fun MarkdownList.ol(order: String, text: String) =
-	MarkdownOrderedListNode(order, text).also { nodes += it }
+inline fun MarkdownList.ol(order: String, text: String, block: MarkdownOrderedListNode.() -> Unit = {}) =
+	MarkdownOrderedListNode(order, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ol(order: String, text: String, builder: MarkdownOrderedListNode.() -> Unit) =
-	MarkdownOrderedListNode(order, text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownList.ul(text: String, block: MarkdownUnorderedListNode.() -> Unit = {}) =
+	MarkdownUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ul(text: String) =
-	MarkdownUnorderedListNode(text).also { nodes += it }
+inline fun MarkdownList.task(status: Boolean, text: String, block: MarkdownTaskListNode.() -> Unit = {}) =
+	MarkdownTaskListNode(status, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ul(text: String, builder: MarkdownUnorderedListNode.() -> Unit) =
-	MarkdownUnorderedListNode(text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownListNode.ol(order: String, text: String, block: MarkdownOrderedListNode.() -> Unit = {}) =
+	MarkdownOrderedListNode(order, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.task(status: Boolean, text: String) =
-	MarkdownTaskListNode(status, text).also { nodes += it }
+inline fun MarkdownListNode.ul(text: String, block: MarkdownUnorderedListNode.() -> Unit = {}) =
+	MarkdownUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.task(status: Boolean, text: String, builder: MarkdownTaskListNode.() -> Unit) =
-	MarkdownTaskListNode(status, text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ol(order: String, text: String) =
-	MarkdownOrderedListNode(order, text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ol(order: String, text: String, builder: MarkdownOrderedListNode.() -> Unit) =
-	MarkdownOrderedListNode(order, text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ul(text: String) =
-	MarkdownUnorderedListNode(text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ul(text: String, builder: MarkdownUnorderedListNode.() -> Unit) =
-	MarkdownUnorderedListNode(text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.task(status: Boolean, text: String) =
-	MarkdownTaskListNode(status, text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.task(status: Boolean, text: String, builder: MarkdownTaskListNode.() -> Unit) =
-	MarkdownTaskListNode(status, text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownListNode.task(status: Boolean, text: String, block: MarkdownTaskListNode.() -> Unit = {}) =
+	MarkdownTaskListNode(status, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDefinition.node(title: String, builder: MarkdownDefinitionNode.() -> Unit) =
-	MarkdownDefinitionNode(title).also { it.builder() }.also { nodes += it }
+inline fun MarkdownDefinition.node(title: String, block: MarkdownDefinitionNode.() -> Unit) =
+	MarkdownDefinitionNode(title).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownTable.header(builder: MarkdownTableHeader.() -> Unit) =
-	MarkdownTableHeader().also { it.builder() }.also { header = it }
+inline fun MarkdownTable.header(block: MarkdownTableHeader.() -> Unit) =
+	MarkdownTableHeader().also { it.block() }.also { header = it }
 
 @MarkdownDsl
-inline fun MarkdownTable.row(builder: MarkdownTableRow.() -> Unit) =
-	MarkdownTableRow().also { it.builder() }.also { rows += it }
+inline fun MarkdownTable.row(block: MarkdownTableRow.() -> Unit) =
+	MarkdownTableRow().also { it.block() }.also { rows += it }
 
 @MarkdownDsl
 inline infix fun MarkdownTable.columnSize(size: Int) =
@@ -1158,12 +1129,10 @@ inline fun MarkdownTableHeader.column(text: String = emptyColumnText) =
 inline fun MarkdownTableRow.column(text: String = emptyColumnText) =
 	MarkdownTableColumn(text).also { columns += it }
 
-@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.rowSpan() = column(">")
 
-@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.colSpan() = column("^")

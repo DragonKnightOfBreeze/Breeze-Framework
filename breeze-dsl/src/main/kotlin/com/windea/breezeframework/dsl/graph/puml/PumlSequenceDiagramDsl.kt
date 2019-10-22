@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.graph.puml
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
@@ -40,7 +41,7 @@ interface PumlSequenceDiagramDslElement : PumlDslElement
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : PumlSequenceDiagramDslElement {
+) : PumlSequenceDiagramDslElement, CanEqual {
 	var alias: String? = null
 	var order: Int? = null
 	var color: String? = null
@@ -72,7 +73,7 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromActorId: String,
 	val toActorId: String,
 	@Language("Creole")
-	val text: String = "",  //NOTE can wrap by "\n"
+	val text: String? = null,  //NOTE can wrap by "\n"
 	val isBidirectional: Boolean = false
 ) : PumlSequenceDiagramDslElement {
 	var arrowColor: String? = null
@@ -80,7 +81,7 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
 	
 	override fun toString(): String {
-		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
+		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
 		val arrowColorSnippet = arrowColor?.let { "[${it.addPrefix("#")}]" }.orEmpty()
 		val statusSnippet = isPosted?.let { if(it) "o" else "x" }.orEmpty()
 		val arrowSnippet = when {

@@ -33,9 +33,6 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 	}
 	
 	@MermaidGanttDsl
-	override fun String.invoke() = section(this)
-	
-	@MermaidGanttDsl
 	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 

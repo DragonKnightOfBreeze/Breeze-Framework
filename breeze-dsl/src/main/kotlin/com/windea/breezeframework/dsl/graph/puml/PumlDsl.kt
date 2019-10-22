@@ -229,9 +229,7 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
-enum class PumlTopElementPosition(
-	val text: String
-) {
+enum class PumlTopElementPosition(val text: String) {
 	Right("right"), Left("left"), Center("center")
 }
 

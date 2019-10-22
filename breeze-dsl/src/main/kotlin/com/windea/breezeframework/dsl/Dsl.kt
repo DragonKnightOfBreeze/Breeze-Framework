@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。
@@ -20,13 +21,11 @@ import com.windea.breezeframework.core.extensions.*
 @DslMarker
 internal annotation class GenericDsl
 
-/**表明这个Dsl构建方法属于内联构建方法。即，不会自动注册对应的Dsl元素，且允许直接返回字符串。*/
+/**表明这个Dsl构建方法属于内联构建方法。即，不会自动注册对应的元素，且允许直接返回字符串。*/
 internal annotation class InlineDsl
 
 /**Dsl的构建器。*/
-interface DslBuilder {
-	override fun toString(): String
-}
+interface DslBuilder : CanToString
 
 /**Dsl的配置。*/
 interface DslConfig
@@ -35,35 +34,9 @@ interface DslConfig
 interface DslEntry
 
 /**Dsl的元素。*/
-interface DslElement {
-	override fun toString(): String
-}
+interface DslElement : CanToString
 
 //REGION dsl interfaces
-
-/**包含（唯一主要的）可被视为文本的内容。*/
-@GenericDsl
-interface WithText<T : DslElement> {
-	/**添加主要的文本元素为子元素。*/
-	operator fun String.unaryPlus(): T
-}
-
-/**包含（唯一主要的）可被视为注释的内容。*/
-@GenericDsl
-interface WithComment<T : DslElement> {
-	/**添加注释元素为子元素。*/
-	operator fun String.unaryMinus(): T
-}
-
-/**包含（唯一主要的）可被视为块的内容。*/
-@GenericDsl
-interface WithBlock<T : DslElement> {
-	/**添加主要的块元素为子元素。*/
-	operator fun String.invoke(): T
-	
-	/**添加主要的块元素为子元素。*/
-	operator fun String.invoke(builder: T.() -> Unit): T
-}
 
 /**包含可换行的内容。这个接口的优先级高于[IndentContent]。*/
 @GenericDsl
@@ -83,6 +56,37 @@ interface GenerateContent {
 	var generateContent: Boolean
 	
 	fun toGeneratedString(): String
+}
+
+/**包含（唯一主要的）可被视为文本的内容。*/
+@GenericDsl
+interface WithText<T : DslElement> {
+	/**添加主要的文本元素为子元素。*/
+	operator fun String.unaryPlus(): T
+}
+
+/**包含（唯一主要的）可被视为注释的内容。*/
+@GenericDsl
+interface WithComment<T : DslElement> {
+	/**添加注释元素为子元素。*/
+	operator fun String.unaryMinus(): T
+}
+
+/**包含（唯一主要的）可被视为块的内容。*/
+@GenericDsl
+interface WithBlock<T : DslElement> {
+	/**添加主要的块元素为子元素。*/
+	operator fun String.invoke(builder: T.() -> Unit = {}): T
+}
+
+//TODO use type parameter N
+/**包含（唯一主要的）可表示一个元素到另一个元素的转变的内容。*/
+interface WithTransition<N : DslElement, T : DslElement> {
+	/**根据节点元素的名字创建过渡元素。*/
+	infix fun String.fromTo(other: String): T
+	
+	/**为过渡元素添加描述文本。*/
+	operator fun T.invoke(text: String): T
 }
 
 //REGION build extensions

@@ -152,6 +152,7 @@
 * [X] 移除breeze-fxgl（考虑使用LibGDX）。
 * [X] breeze-dsl 完善`CommandLineTextDsl`，以支持更多的富文本。
 * [X] breeze-dsl 实现`MermaidPieChartDsl`。
+* [X] breeze-dsl 实现`MermaidClassSequenceDsl`，同时补充更多便捷的Dsl构建方法，至此`MermaidDsl`已经完全支持。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

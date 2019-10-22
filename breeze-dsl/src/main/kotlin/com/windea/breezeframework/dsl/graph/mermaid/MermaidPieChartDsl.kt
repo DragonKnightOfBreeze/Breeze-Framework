@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
@@ -19,7 +20,7 @@ private annotation class MermaidPieChartDsl
 @ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @MermaidPieChartDsl
 class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry {
-	override val parts: MutableList<MermaidPieChartPart> = mutableListOf()
+	override val parts: MutableSet<MermaidPieChartPart> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
 	
@@ -35,7 +36,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry, IndentContent {
-	val parts: MutableList<MermaidPieChartPart>
+	val parts: MutableSet<MermaidPieChartPart>
 	
 	fun toContentString(): String {
 		return parts.joinToStringOrEmpty("\n")
@@ -46,12 +47,18 @@ interface MermaidPieChartDslEntry : MermaidDslEntry, IndentContent {
 @MermaidPieChartDsl
 interface MermaidPieChartDslElement : MermaidDslElement
 
+//REGION dsl elements
+
 /**Mermaid饼图部分。*/
 @MermaidPieChartDsl
 class MermaidPieChartPart @PublishedApi internal constructor(
 	val key: String,
 	val value: Number
-) : MermaidPieChartDslElement {
+) : MermaidPieChartDslElement, CanEqual {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(key) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(key) }
+	
 	override fun toString(): String {
 		return "${key.wrapQuote(quote)}: $value"
 	}

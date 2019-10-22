@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
@@ -40,7 +41,8 @@ class MermaidFlowChart @PublishedApi internal constructor(
 
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
-interface MermaidFlowChartDslEntry : MermaidDslEntry, IndentContent {
+interface MermaidFlowChartDslEntry : MermaidDslEntry, IndentContent,
+	WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
 	val nodes: MutableSet<MermaidFlowChartNode>
 	val links: MutableList<MermaidFlowChartLink>
 	val subGraphs: MutableList<MermaidFlowChartSubGraph>
@@ -60,6 +62,12 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, IndentContent {
 			classRefs.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
+	
+	@MermaidFlowChartDsl
+	override fun String.fromTo(other: String) = link(this, other)
+	
+	@MermaidFlowChartDsl
+	override fun MermaidFlowChartLink.invoke(text: String) = this.also { it.text = text }
 }
 
 /**Mermaid流程图Dsl的元素。*/
@@ -73,7 +81,7 @@ interface MermaidFlowChartDslElement : MermaidDslElement
 class MermaidFlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val text: String? = null //NOTE can wrap by "<br>"
-) : MermaidFlowChartDslElement {
+) : MermaidFlowChartDslElement, CanEqual {
 	var shape: MermaidFlowChartNodeShape = MermaidFlowChartNodeShape.Rect
 	
 	override fun equals(other: Any?): Boolean {
@@ -95,13 +103,13 @@ class MermaidFlowChartNode @PublishedApi internal constructor(
 class MermaidFlowChartLink @PublishedApi internal constructor(
 	val sourceNodeId: String,
 	val targetNodeId: String,
-	val text: String? = null //NOTE can wrap by "<br>"
+	var text: String? = null //NOTE can wrap by "<br>"
 ) : MermaidFlowChartDslElement {
 	var arrowShape: MermaidFlowChartLinkArrowShape = MermaidFlowChartLinkArrowShape.Arrow
 	
 	override fun toString(): String {
 		val arrowSnippet = arrowShape.text
-		val textSnippet = text?.let { "|${text.replaceWithHtmlWrap()}|" }.orEmpty()
+		val textSnippet = text?.let { "|${it.replaceWithHtmlWrap()}|" }.orEmpty()
 		return "$sourceNodeId $arrowSnippet$textSnippet $targetNodeId"
 	}
 }
@@ -220,17 +228,19 @@ inline fun MermaidFlowChartDslEntry.link(sourceNodeId: String, targetNodeId: Str
 	MermaidFlowChartLink(sourceNodeId, targetNodeId, text).also { links += it }
 
 @MermaidFlowChartDsl
-inline fun MermaidFlowChartDslEntry.link(sourceNode: MermaidFlowChartNode, targetNodeId: String, text: String? = null) =
-	link(sourceNode.name, targetNodeId, text)
-
-@MermaidFlowChartDsl
-inline fun MermaidFlowChartDslEntry.link(sourceNodeId: String, targetNode: MermaidFlowChartNode, text: String? = null) =
-	link(sourceNodeId, targetNode.name, text)
-
-@MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.link(sourceNode: MermaidFlowChartNode, targetNode: MermaidFlowChartNode,
 	text: String? = null) =
-	link(sourceNode.name, targetNode.name, text)
+	MermaidFlowChartLink(sourceNode.name, targetNode.name, text).also { links += it }
+
+@MermaidFlowChartDsl
+inline fun MermaidFlowChartDslEntry.link(
+	sourceNodeId: String,
+	arrowShape: MermaidFlowChartLinkArrowShape,
+	targetNodeId: String,
+	text: String? = null
+) = MermaidFlowChartLink(sourceNodeId, targetNodeId, text)
+	.also { it.arrowShape = arrowShape }
+	.also { links += it }
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.subGraph(name: String, builder: MermaidFlowChartSubGraph.() -> Unit) =

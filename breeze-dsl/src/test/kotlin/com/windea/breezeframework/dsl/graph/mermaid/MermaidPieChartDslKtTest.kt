@@ -12,3 +12,5 @@ class MermaidPieChartDslKtTest {
 		})
 	}
 }
+
+annotation class FooAnnotation(val abc: Array<String> = [])

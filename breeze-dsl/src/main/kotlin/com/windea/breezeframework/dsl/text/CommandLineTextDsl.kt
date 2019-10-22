@@ -98,9 +98,7 @@ class CommandLineAdvanceText(
 
 /**命令行富文本的颜色。*/
 @CommandLineTextDsl
-enum class CommandLineColor(
-	val code: Int
-) {
+enum class CommandLineColor(val code: Int) {
 	Black(30),
 	Red(31),
 	Green(32),
@@ -123,9 +121,7 @@ enum class CommandLineColor(
 
 /**命令行富文本的显示格式。*/
 @CommandLineTextDsl
-enum class CommandLineDisplayMode(
-	val code: Int
-) {
+enum class CommandLineDisplayMode(val code: Int) {
 	/**默认。*/
 	Default(0),
 	/**粗体。*/
@@ -144,49 +140,52 @@ enum class CommandLineDisplayMode(
 	val disableCode = code + 20
 }
 
+private const val defaultCommand = "\u001B[0m"
+
+private fun command(codes: String) = "\u001B[${codes}m"
+
 //REGION build extensions
 
 @CommandLineTextDsl
-inline fun commandLineText(builder: CommandLineText.() -> String) =
-	CommandLineText().also { it.text = it.builder() }
+inline fun commandLineText(block: CommandLineText.() -> String) = CommandLineText().also { it.text = it.block() }
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun bold(text: String) = CommandLineBoldText(text).toString()
+inline fun CommandLineTextDslInlineEntry.bold(text: String) = CommandLineBoldText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun lightColor(text: String) = CommandLineLightColorText(text).toString()
+inline fun CommandLineTextDslInlineEntry.lightColor(text: String) = CommandLineLightColorText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun italic(text: String) = CommandLineItalicText(text).toString()
+inline fun CommandLineTextDslInlineEntry.italic(text: String) = CommandLineItalicText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun underline(text: String) = CommandLineUnderlineText(text).toString()
+inline fun CommandLineTextDslInlineEntry.underline(text: String) = CommandLineUnderlineText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun blink(text: String) = CommandLineBlinkText(text).toString()
+inline fun CommandLineTextDslInlineEntry.blink(text: String) = CommandLineBlinkText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun invert(text: String) = CommandLineInvertText(text).toString()
+inline fun CommandLineTextDslInlineEntry.invert(text: String) = CommandLineInvertText(text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun color(color: CommandLineColor, text: String) =
-	CommandLineColorfulText(color, null, text).toString()
+inline fun CommandLineTextDslInlineEntry.color(color: CommandLineColor,
+	text: String) = CommandLineColorfulText(color, null, text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun bgColor(backgroundColor: CommandLineColor, text: String) =
+inline fun CommandLineTextDslInlineEntry.bgColor(backgroundColor: CommandLineColor, text: String) =
 	CommandLineColorfulText(null, backgroundColor, text).toString()
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun colorful(
+inline fun CommandLineTextDslInlineEntry.colorful(
 	color: CommandLineColor? = null,
 	backgroundColor: CommandLineColor? = null,
 	lazyText: () -> String
@@ -194,15 +193,9 @@ inline fun colorful(
 
 @InlineDsl
 @CommandLineTextDsl
-inline fun advance(
+inline fun CommandLineTextDslInlineEntry.advance(
 	color: CommandLineColor? = null,
 	backgroundColor: CommandLineColor? = null,
 	vararg displayMode: CommandLineDisplayMode,
 	lazyText: () -> String
 ) = CommandLineAdvanceText(color, backgroundColor, displayMode, lazyText()).toString()
-
-//REGION useful extensions
-
-private const val defaultCommand = "\u001B[0m"
-
-private fun command(codes: String) = "\u001B[${codes}m"

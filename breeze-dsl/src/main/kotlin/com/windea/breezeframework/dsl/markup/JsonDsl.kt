@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
@@ -48,7 +49,7 @@ interface JsonDslInlineEntry : DslEntry
 
 /**Json Dsl的元素。*/
 @JsonDsl
-interface JsonDslElement : DslElement
+interface JsonDslElement : DslElement, CanEqual
 
 //REGION dsl elements
 
@@ -135,10 +136,10 @@ class JsonObject @PublishedApi internal constructor(
 //REGION build extensions
 
 @JsonDsl
-inline fun jsonTree(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
+inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
 
 @JsonDsl
-inline fun json(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
+inline fun json(block: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.block() }
 
 @InlineDsl
 @JsonDsl
