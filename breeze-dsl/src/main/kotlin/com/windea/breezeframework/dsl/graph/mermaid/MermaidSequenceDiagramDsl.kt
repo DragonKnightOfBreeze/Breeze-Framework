@@ -1,11 +1,11 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.mermaid
+package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 
 //REGION top annotations and interfaces
 

@@ -14,6 +14,7 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
+import com.windea.breezeframework.dsl.text.*
 import org.intellij.lang.annotations.*
 
 //DONE 添加Dsl元素：MarkdownAttribute和它的子类
@@ -84,7 +85,7 @@ object MarkdownConfig : DslConfig {
 
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
-interface MarkdownDslInlineEntry : DslEntry
+interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 
 /**Markdown Dsl的入口。*/
 @MarkdownDsl
@@ -882,91 +883,91 @@ inline fun Markdown.linkRef(reference: String, url: String, title: String? = nul
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text)
+inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text)
+inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference)
+inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text)
+inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text)
+inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text)
-
-@InlineDsl
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text)
+inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text)
+inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text)
+inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text)
+inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url)
+inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text).toString()
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null) =
-	MarkdownInlineLink(name, url, title)
+	MarkdownInlineLink(name, url, title).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null) =
-	MarkdownInlineImageLink(name, url, title)
+	MarkdownInlineImageLink(name, url, title).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null) =
-	MarkdownReferenceLink(reference, name)
+	MarkdownReferenceLink(reference, name).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null) =
-	MarkdownReferenceImageLink(reference, name)
+	MarkdownReferenceImageLink(reference, name).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
+inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text)
+inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text)
+inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) =
-	MarkdownAttributes(attributes.toSet())
+	MarkdownAttributes(attributes.toSet()).toString()
 
 @InlineDsl
 @MarkdownDsl

@@ -384,43 +384,43 @@ inline fun creole(builder: Creole.() -> Unit) = Creole().also { it.builder() }
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.text(text: String) = CreoleText(text)
+inline fun CreoleDslInlineEntry.text(text: String) = CreoleText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.escaped(text: String) = CreoleEscapedText(text)
+inline fun CreoleDslInlineEntry.escaped(text: String) = CreoleEscapedText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.icon(name: String) = CreoleIcon(name)
+inline fun CreoleDslInlineEntry.icon(name: String) = CreoleIcon(name).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.unicode(number: Int) = CreoleUnicode(number)
+inline fun CreoleDslInlineEntry.unicode(number: Int) = CreoleUnicode(number).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.b(text: String) = CreoleBoldText(text)
+inline fun CreoleDslInlineEntry.b(text: String) = CreoleBoldText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.i(text: String) = CreoleItalicText(text)
+inline fun CreoleDslInlineEntry.i(text: String) = CreoleItalicText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.m(text: String) = CreoleMonospacedText(text)
+inline fun CreoleDslInlineEntry.m(text: String) = CreoleMonospacedText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.s(text: String) = CreoleStrokedText(text)
+inline fun CreoleDslInlineEntry.s(text: String) = CreoleStrokedText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.u(text: String) = CreoleUnderlinedText(text)
+inline fun CreoleDslInlineEntry.u(text: String) = CreoleUnderlinedText(text).toString()
 
 @InlineDsl
 @CreoleDsl
-inline fun CreoleDslInlineEntry.w(text: String) = CreoleWavedText(text)
+inline fun CreoleDslInlineEntry.w(text: String) = CreoleWavedText(text).toString()
 
 @CreoleDsl
 inline fun CreoleDslEntry.textBlock(text: String) =

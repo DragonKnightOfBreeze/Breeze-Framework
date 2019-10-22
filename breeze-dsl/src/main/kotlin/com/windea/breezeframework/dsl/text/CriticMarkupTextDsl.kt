@@ -85,30 +85,25 @@ class CriticMarkupHighlightText @PublishedApi internal constructor(
 //REGION build extensions
 
 @CriticMarkupTextDsl
-inline fun criticMarkupText(builder: CriticMarkupText.() -> String) =
-	CriticMarkupText().also { it.text = it.builder() }
-
-@CriticMarkupTextDsl
-inline fun criticMarkup(builder: CriticMarkupText.() -> CriticMarkupRichText) =
-	CriticMarkupText().also { it.text = it.builder().toString() }
+inline fun criticMarkupText(builder: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.builder() }
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.append(text: String) = CriticMarkupAppendedText(text)
+inline fun CriticMarkupTextDslInlineEntry.append(text: String) = CriticMarkupAppendedText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.delete(text: String) = CriticMarkupDeletedText(text)
+inline fun CriticMarkupTextDslInlineEntry.delete(text: String) = CriticMarkupDeletedText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
 inline fun CriticMarkupTextDslInlineEntry.replace(text: String, replacedText: String) =
-	CriticMarkupReplacedText(text, replacedText)
+	CriticMarkupReplacedText(text, replacedText).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCommentText(text)
+inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCommentText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text)
+inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text).toString()

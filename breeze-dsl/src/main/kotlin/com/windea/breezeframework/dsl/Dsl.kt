@@ -20,7 +20,7 @@ import com.windea.breezeframework.core.extensions.*
 @DslMarker
 internal annotation class GenericDsl
 
-/**表名这个Dsl构建方法属于内联构建方法。即，不自动注册对应的Dsl元素。*/
+/**表明这个Dsl构建方法属于内联构建方法。即，不会自动注册对应的Dsl元素，且允许直接返回字符串。*/
 internal annotation class InlineDsl
 
 /**Dsl的构建器。*/

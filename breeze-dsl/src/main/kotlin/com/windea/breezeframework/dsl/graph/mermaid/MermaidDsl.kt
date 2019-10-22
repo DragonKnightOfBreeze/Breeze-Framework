@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.mermaid
+package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*

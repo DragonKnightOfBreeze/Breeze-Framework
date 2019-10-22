@@ -1,12 +1,12 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.puml
+package com.windea.breezeframework.dsl.graph.puml
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.puml.PumlConfig.indent
-import com.windea.breezeframework.dsl.puml.PumlConfig.quote
+import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
+import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
 //TODO fully support

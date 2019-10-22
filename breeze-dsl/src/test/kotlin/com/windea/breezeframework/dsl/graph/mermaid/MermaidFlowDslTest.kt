@@ -1,8 +1,8 @@
-package com.windea.breezeframework.dsl.mermaid
+package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartDirection.*
-import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartLinkArrowShape.*
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartDirection.*
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartLinkArrowShape.*
 import kotlin.test.*
 
 //TESTED VERY NICE!

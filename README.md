@@ -58,11 +58,6 @@ dependencies {
 
 * Provide functional extensions for Functions. (e.g, `curried`, `compose`.)
 
-## breeze-fxgl
-
-* Provide some useful extensions for `FXGL`, a javafx-based game framework.
-* **May be removed in future.**
-
 ## breeze-game
 
 * Provide some useful extensions for game.
