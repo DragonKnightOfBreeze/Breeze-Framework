@@ -54,6 +54,36 @@ dependencies {
 * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
+Now support:
+
+* graph
+    * mermaid
+        * [X] MermaidClassDiagramDsl
+        * [X] MermaidFlowChartDsl
+        * [X] MermaidGanttDsl
+        * [X] MermaidPieChartDsl
+        * [X] MermaidSequenceDiagramDsl
+    * puml
+        * [ ] PumlSequenceDiagramDsl
+        * [ ] PumlStateDiagramDsl
+    * [X] FlowDsl
+    * [X] SequenceDsl 
+* markup
+    * [X] CreoleDsl
+    * [X] JsonDsl
+    * [X] MarkdownDsl
+    * [X] XmlDsl
+    * [ ] YamlDsl
+* text
+    * [X] CommandLineTextDsl
+    * [X] CriticMarkupTextDsl 
+    
+Note:
+
+* Dsl is used to generate text, and it's the only thing that Dsl should do.
+* Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
+* Dsl can not deserialize data from generated string. 
+
 ## breeze-functional
 
 * Provide functional extensions for Functions. (e.g, `curried`, `compose`.)
