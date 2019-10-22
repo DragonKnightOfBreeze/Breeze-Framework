@@ -131,7 +131,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 
 /**Mermaid类图注解。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagramAnnotation(
+class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 	val name: String //NOTE could be custom
 ) : MermaidClassDiagramDslElement, CanEqual {
 	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
@@ -154,7 +154,7 @@ sealed class MermaidClassDiagramMember(
 
 /**Mermaid类图属性。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagramProperty(
+class MermaidClassDiagramProperty @PublishedApi internal constructor(
 	name: String
 ) : MermaidClassDiagramMember(name) {
 	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
@@ -168,7 +168,7 @@ class MermaidClassDiagramProperty(
 
 /**Mermaid类图方法。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagramMethod(
+class MermaidClassDiagramMethod @PublishedApi internal constructor(
 	name: String,
 	val params: Array<out String>
 ) : MermaidClassDiagramMember(name) {
@@ -183,7 +183,7 @@ class MermaidClassDiagramMethod(
 
 /**Mermaid类图关系。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagramRelation(
+class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val fromClassId: String,
 	val toClassId: String,
 	val type: MermaidClassDiagramRelationType,
