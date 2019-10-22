@@ -6,6 +6,7 @@ Breeze-Framework
 [Bintray](https://bintray.com/breeze-knights/breeze-framework)
 
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
+Including: basic & functional & reflect & text & time extensions, dsls & generators & delegated serializers and more.
 
 **NOTE**
 
