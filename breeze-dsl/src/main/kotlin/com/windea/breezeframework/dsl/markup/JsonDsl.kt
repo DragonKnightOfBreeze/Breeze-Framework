@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
@@ -10,6 +11,7 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Json的Dsl。*/
 @DslMarker
 private annotation class JsonDsl
 
@@ -48,7 +50,7 @@ interface JsonDslInlineEntry : DslEntry
 
 /**Json Dsl的元素。*/
 @JsonDsl
-interface JsonDslElement : DslElement
+interface JsonDslElement : DslElement, CanEqual
 
 //REGION dsl elements
 
@@ -57,13 +59,9 @@ interface JsonDslElement : DslElement
 sealed class JsonElement<T>(
 	val value: T
 ) : JsonDslElement, JsonDslInlineEntry {
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is JsonElement<*> && other.value == value)
-	}
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf<Any?>(value) }
 	
-	override fun hashCode(): Int {
-		return value.hashCode()
-	}
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf<Any?>(value) }
 	
 	override fun toString(): String {
 		return value.toString()
@@ -80,15 +78,21 @@ object JsonNull : JsonPrimitive<Nothing?>(null)
 
 /**Json布尔值。*/
 @JsonDsl
-class JsonBoolean @PublishedApi internal constructor(value: Boolean) : JsonPrimitive<Boolean>(value)
+class JsonBoolean @PublishedApi internal constructor(
+	value: Boolean
+) : JsonPrimitive<Boolean>(value)
 
 /**Json数值。*/
 @JsonDsl
-class JsonNumber @PublishedApi internal constructor(value: Number) : JsonPrimitive<Number>(value)
+class JsonNumber @PublishedApi internal constructor(
+	value: Number
+) : JsonPrimitive<Number>(value)
 
 /**Json字符串值。*/
 @JsonDsl
-class JsonString @PublishedApi internal constructor(value: String) : JsonPrimitive<String>(value) {
+class JsonString @PublishedApi internal constructor(
+	value: String
+) : JsonPrimitive<String>(value) {
 	override fun toString(): String {
 		return value.wrapQuote(quote)
 	}
@@ -135,10 +139,10 @@ class JsonObject @PublishedApi internal constructor(
 //REGION build extensions
 
 @JsonDsl
-inline fun jsonTree(builder: Json.() -> Any?) = Json().also { it.rootElement = it.builder().toJsonElement() }
+inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
 
 @JsonDsl
-inline fun json(builder: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.builder() }
+inline fun json(block: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.block() }
 
 @InlineDsl
 @JsonDsl

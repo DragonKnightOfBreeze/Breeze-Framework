@@ -150,6 +150,14 @@
 * [X] breeze-dsl 完善命名和目录。
 * [X] breeze-core 提供字符串的常量集。
 * [X] 移除breeze-fxgl（考虑使用LibGDX）。
+* [X] breeze-dsl 完善`CommandLineTextDsl`，以支持更多的富文本。
+* [X] breeze-dsl 实现`MermaidPieChartDsl`。
+* [X] breeze-dsl 实现`MermaidClassSequenceDsl`，同时补充更多便捷的Dsl构建方法，至此`MermaidDsl`已经完全支持。
+* [X] 更新README。
+* [X] breeze-dsl 修复不足之处。
+- [X] breeze-dsl 优化Dsl构建方法。
+* [X] breeze-dsl 完成`FlowChartDsl`，完善其他的Dsl。
+* [ ] breeze-dsl 实现`SequenceDiagramDsl`。（过于复杂，搁置）
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***

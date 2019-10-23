@@ -421,14 +421,14 @@ infix fun String.plusByLine(other: Any?): String {
 /**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
 fun String.padStartByLine(padChar: Char = ' '): String {
 	val lines = this.lines()
-	val maxLength = lines.map { it.length }.max() ?: 0
+	val maxLength = lines.map { it.length }.max() ?: return this
 	return lines.joinToString("\n") { it.padStart(maxLength, padChar) }
 }
 
 /**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
 fun String.padEndByLine(padChar: Char = ' '): String {
 	val lines = this.lines()
-	val maxLength = lines.map { it.length }.max() ?: 0
+	val maxLength = lines.map { it.length }.max() ?: return this
 	return lines.joinToString("\n") { it.padEnd(maxLength, padChar) }
 }
 

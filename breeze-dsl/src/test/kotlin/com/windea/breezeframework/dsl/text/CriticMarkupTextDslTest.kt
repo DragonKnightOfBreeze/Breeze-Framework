@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.text
 import org.junit.*
 
 class CriticMarkupTextDslTest {
-	@Test
+	@Test //TESTED SO EASY
 	fun test2() {
 		criticMarkupText {
 			"""

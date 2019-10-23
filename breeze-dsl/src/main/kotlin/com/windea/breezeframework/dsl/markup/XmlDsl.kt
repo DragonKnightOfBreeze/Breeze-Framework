@@ -12,6 +12,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Xml的Dsl。*/
 @DslMarker
 private annotation class XmlDsl
 
@@ -31,21 +32,15 @@ class Xml @PublishedApi internal constructor() : DslBuilder,
 		).filterNotEmpty().joinToStringOrEmpty("\n")
 	}
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryMinus() = comment(this)
 	
-	@XmlDsl
-	override fun String.invoke(): XmlElement = element(this)
+	@GenericDsl
+	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
 	
-	@XmlDsl
-	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
-	
-	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>) = element(this, *args)
-	
-	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		element(this, *args, builder = builder)
+	@GenericDsl
+	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
+		element(this, *args, block = block)
 }
 
 /**Xml的配置。*/
@@ -136,46 +131,36 @@ class XmlElement @PublishedApi internal constructor(
 		return "$prefixSnippet$nodesSnippet$suffixSnippet"
 	}
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryPlus() = text(this)
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryMinus() = comment(this)
 	
-	@XmlDsl
-	override fun String.invoke() = element(this)
+	@GenericDsl
+	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
 	
-	@XmlDsl
-	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, builder = builder)
-	
-	@XmlDsl
-	operator fun String.invoke(vararg args: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-		element(this, *args, builder = builder)
+	@GenericDsl
+	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
+		element(this, *args, block = block)
 }
 
 //REGION build extensions
 
 @XmlDsl
-inline fun xml(builder: Xml.() -> Unit) = Xml().also { it.builder() }
+inline fun xml(block: Xml.() -> Unit) = Xml().also { it.block() }
 
 @XmlDsl
 inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
 	XmlStatement(name, attributes.toMap().toStringValueMap()).also { statements += it }
 
 @XmlDsl
-inline fun Xml.defaultStatement() = statement("xml", "version" to "1.0", "encoding" to "UTF-8")
-
-@XmlDsl
 inline fun Xml.comment(text: String) =
 	XmlComment(text).also { comments += it }
 
 @XmlDsl
-inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { rootElement = it }
-
-@XmlDsl
-inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { rootElement = it }
+inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.block() }.also { rootElement = it }
 
 @XmlDsl
 inline fun XmlElement.text(text: String) =
@@ -186,9 +171,5 @@ inline fun XmlElement.comment(text: String) =
 	XmlComment(text).also { nodes += it }
 
 @XmlDsl
-inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { nodes += it }
-
-@XmlDsl
-inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, builder: XmlElement.() -> Unit) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.builder() }.also { nodes += it }
+inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
+	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.block() }.also { nodes += it }

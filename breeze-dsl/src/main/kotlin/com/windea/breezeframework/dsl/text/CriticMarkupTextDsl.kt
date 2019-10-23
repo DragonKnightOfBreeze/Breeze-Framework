@@ -7,11 +7,12 @@ import com.windea.breezeframework.dsl.*
 
 //REGION top annotations and interfaces
 
+/**CriticMarkup富文本的Dsl。*/
+@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @DslMarker
 private annotation class CriticMarkupTextDsl
 
 /**CriticMarkup富文本。*/
-@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupTextDsl
 class CriticMarkupText @PublishedApi internal constructor() : DslBuilder, CriticMarkupTextDslInlineEntry {
 	lateinit var text: String
@@ -85,30 +86,25 @@ class CriticMarkupHighlightText @PublishedApi internal constructor(
 //REGION build extensions
 
 @CriticMarkupTextDsl
-inline fun criticMarkupText(builder: CriticMarkupText.() -> String) =
-	CriticMarkupText().also { it.text = it.builder() }
-
-@CriticMarkupTextDsl
-inline fun criticMarkup(builder: CriticMarkupText.() -> CriticMarkupRichText) =
-	CriticMarkupText().also { it.text = it.builder().toString() }
+inline fun criticMarkupText(block: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.block() }
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.append(text: String) = CriticMarkupAppendedText(text)
+inline fun CriticMarkupTextDslInlineEntry.append(text: String) = CriticMarkupAppendedText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.delete(text: String) = CriticMarkupDeletedText(text)
+inline fun CriticMarkupTextDslInlineEntry.delete(text: String) = CriticMarkupDeletedText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
 inline fun CriticMarkupTextDslInlineEntry.replace(text: String, replacedText: String) =
-	CriticMarkupReplacedText(text, replacedText)
+	CriticMarkupReplacedText(text, replacedText).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCommentText(text)
+inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCommentText(text).toString()
 
 @InlineDsl
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text)
+inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text).toString()

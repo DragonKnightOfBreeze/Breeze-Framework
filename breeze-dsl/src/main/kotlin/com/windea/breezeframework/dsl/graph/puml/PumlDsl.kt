@@ -1,23 +1,24 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.puml
+package com.windea.breezeframework.dsl.graph.puml
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.puml.PumlConfig.indent
-import com.windea.breezeframework.dsl.puml.PumlConfig.quote
+import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
+import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
 //TODO fully support
 
 //REGION top annotations and interfaces
 
+/**PlantUml的Dsl。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @DslMarker
 private annotation class PumlDsl
 
-/**PlantUml Dsl.*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
+/**PlantUml。*/
 @PumlDsl
 abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	var title: PumlTitle? = null
@@ -34,12 +35,11 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	
 	fun toSuffixString(): String = TODO()
 	
-	@PumlDsl
+	@GenericDsl
 	override fun String.unaryMinus() = note(this)
 }
 
-/**PlantUml Dsl的配置。*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
+/**PlantUml的配置。*/
 @PumlDsl
 object PumlConfig : DslConfig {
 	private val indentSizeRange = -2..8
@@ -89,19 +89,27 @@ sealed class PumlElement(
 
 /**PlantUml标题。*/
 @PumlDsl
-class PumlTitle @PublishedApi internal constructor(text: String) : PumlElement("title", text)
+class PumlTitle @PublishedApi internal constructor(
+	text: String
+) : PumlElement("title", text)
 
 /**PlantUml图例说明。*/
 @PumlDsl
-class PumlLegend @PublishedApi internal constructor(text: String) : PumlElement("legend", text)
+class PumlLegend @PublishedApi internal constructor(
+	text: String
+) : PumlElement("legend", text)
 
 /**PlantUml页眉。*/
 @PumlDsl
-class PumlHeader @PublishedApi internal constructor(text: String) : PumlElement("header", text)
+class PumlHeader @PublishedApi internal constructor(
+	text: String
+) : PumlElement("header", text)
 
 /**PlantUml页脚。*/
 @PumlDsl
-class PumlFooter @PublishedApi internal constructor(text: String) : PumlElement("footer", text)
+class PumlFooter @PublishedApi internal constructor(
+	text: String
+) : PumlElement("footer", text)
 
 /**PlantUml缩放。*/
 @PumlDsl
@@ -149,7 +157,7 @@ class PumlNote @PublishedApi internal constructor(
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
-	var targetId: String? = null
+	var targetName: String? = null
 	
 	override var indentContent: Boolean = true
 	override var wrapContent: Boolean = "\n" in text || "\r" in text //wrap content when necessary
@@ -164,7 +172,7 @@ class PumlNote @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val aliasSnippet = if(position == null) " as $alias" else ""
-		val positionSnippet = position?.text?.let { " $it $targetId" }.orEmpty()
+		val positionSnippet = position?.text?.let { " $it $targetName" }.orEmpty()
 		return if(wrapContent) {
 			val indentedTextSnippet = if(indentContent) text.prependIndent(indent) else text
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
@@ -229,9 +237,7 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
-enum class PumlTopElementPosition(
-	val text: String
-) {
+enum class PumlTopElementPosition(val text: String) {
 	Right("right"), Left("left"), Center("center")
 }
 
@@ -296,18 +302,18 @@ inline infix fun PumlNote.alias(alias: String) =
 	this.also { it.alias = alias }
 
 @PumlDsl
-inline infix fun PumlNote.leftOf(targetId: String) =
-	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.LeftOf }
+inline infix fun PumlNote.leftOf(targetName: String) =
+	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.LeftOf }
 
 @PumlDsl
-inline infix fun PumlNote.rightOf(targetId: String) =
-	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.RightOf }
+inline infix fun PumlNote.rightOf(targetName: String) =
+	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.RightOf }
 
 @PumlDsl
-inline infix fun PumlNote.topOf(targetId: String) =
-	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.TopOf }
+inline infix fun PumlNote.topOf(targetName: String) =
+	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.TopOf }
 
 @PumlDsl
-inline infix fun PumlNote.bottomOf(targetId: String) =
-	this.also { it.targetId = targetId }.also { it.position = PumlNotePosition.BottomOf }
+inline infix fun PumlNote.bottomOf(targetName: String) =
+	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.BottomOf }
 

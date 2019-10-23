@@ -5,7 +5,7 @@ import kotlin.test.*
 
 //TESTED VERY NICE!
 
-class XmlDslKtTest {
+class XmlDslTest {
 	@Test
 	fun test() {
 		val xml = xml {

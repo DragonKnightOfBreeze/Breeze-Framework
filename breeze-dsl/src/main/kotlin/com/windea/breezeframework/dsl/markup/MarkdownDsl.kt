@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.addPrefixHeadingMarkers
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnLength
@@ -14,16 +15,18 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.truncated
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
+import com.windea.breezeframework.dsl.text.*
 import org.intellij.lang.annotations.*
 
-//DONE 添加Dsl元素：MarkdownAttribute和它的子类
-//DELAY 添加Dsl元素：HtmlBlock
+//DELAY add dsl element: HtmlBlock
 
 //REGION top annotations and interfaces
 
+/**Markdown的Dsl。*/
 @DslMarker
 private annotation class MarkdownDsl
 
+/**Markdown的扩展特性。*/
 @MustBeDocumented
 private annotation class MarkdownDslExtendedFeature
 
@@ -84,7 +87,7 @@ object MarkdownConfig : DslConfig {
 
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
-interface MarkdownDslInlineEntry : DslEntry
+interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 
 /**Markdown Dsl的入口。*/
 @MarkdownDsl
@@ -95,8 +98,8 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 		return content.joinToStringOrEmpty("\n\n")
 	}
 	
-	@MarkdownDsl
-	override fun String.unaryPlus() = textBlock(this)
+	@GenericDsl
+	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
 }
 
 /**Markdown Dsl的元素。*/
@@ -163,35 +166,49 @@ sealed class MarkdownRichText(
 
 /**Markdown加粗文本。*/
 @MarkdownDsl
-class MarkdownBoldText @PublishedApi internal constructor(text: String) : MarkdownRichText("**", text)
+class MarkdownBoldText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("**", text)
 
 /**Markdown斜体文本。*/
 @MarkdownDsl
-class MarkdownItalicText @PublishedApi internal constructor(text: String) : MarkdownRichText("*", text)
+class MarkdownItalicText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("*", text)
 
 /**Markdown删除文本。*/
 @MarkdownDsl
-class MarkdownStrokedText @PublishedApi internal constructor(text: String) : MarkdownRichText("~~", text)
+class MarkdownStrokedText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("~~", text)
 
 /**Markdown下划线文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownUnderlinedText @PublishedApi internal constructor(text: String) : MarkdownRichText("++", text)
+class MarkdownUnderlinedText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("++", text)
 
 /**Markdown高亮文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownHighlightText @PublishedApi internal constructor(text: String) : MarkdownRichText("==", text)
+class MarkdownHighlightText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("==", text)
 
 /**Markdown上标文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownSuperscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText("^", text)
+class MarkdownSuperscriptText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("^", text)
 
 /**Markdown下标文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownSubscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText(text, "~")
+class MarkdownSubscriptText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText(text, "~")
 
 /**Markdown链接。*/
 @MarkdownDsl
@@ -202,7 +219,9 @@ sealed class MarkdownLink(
 /**Markdown自动链接。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownAutoLink @PublishedApi internal constructor(url: String) : MarkdownLink(url) {
+class MarkdownAutoLink @PublishedApi internal constructor(
+	url: String
+) : MarkdownLink(url) {
 	override fun toString(): String {
 		return "<$url>"
 	}
@@ -224,7 +243,9 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 /**Markdown行内图片链接。*/
 @MarkdownDsl
 class MarkdownInlineImageLink @PublishedApi internal constructor(
-	name: String, url: String, title: String? = null
+	name: String,
+	url: String,
+	title: String? = null
 ) : MarkdownInlineLink(name, url, title) {
 	override fun toString(): String {
 		return "!${super.toString()}"
@@ -246,7 +267,8 @@ open class MarkdownReferenceLink @PublishedApi internal constructor(
 /**Markdown引用图片连接。*/
 @MarkdownDsl
 class MarkdownReferenceImageLink @PublishedApi internal constructor(
-	reference: String, name: String? = null
+	reference: String,
+	name: String? = null
 ) : MarkdownReferenceLink(reference, name) {
 	override fun toString(): String {
 		return "!${super.toString()}"
@@ -292,7 +314,10 @@ sealed class MarkdownHeading(
 
 /**Setext风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
+sealed class MarkdownSetextHeading(
+	headingLevel: Int,
+	text: String
+) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val textSnippet = if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
@@ -305,15 +330,22 @@ sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHe
 
 /**Markdown主标题。*/
 @MarkdownDsl
-class MarkdownMainHeading @PublishedApi internal constructor(text: String) : MarkdownSetextHeading(1, text)
+class MarkdownMainHeading @PublishedApi internal constructor(
+	text: String
+) : MarkdownSetextHeading(1, text)
 
 /**Markdown副标题。*/
 @MarkdownDsl
-class MarkdownSubHeading @PublishedApi internal constructor(text: String) : MarkdownSetextHeading(2, text)
+class MarkdownSubHeading @PublishedApi internal constructor(
+	text: String
+) : MarkdownSetextHeading(2, text)
 
 /**Atx风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
+sealed class MarkdownAtxHeading(
+	headingLevel: Int,
+	text: String
+) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val indent = " " * (headingLevel + 1)
 		val prefixMarkers = "#" * headingLevel
@@ -329,27 +361,39 @@ sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeadi
 
 /**Markdown一级标题。*/
 @MarkdownDsl
-class MarkdownHeading1 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(1, text)
+class MarkdownHeading1 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(1, text)
 
 /**Markdown二级标题。*/
 @MarkdownDsl
-class MarkdownHeading2 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(2, text)
+class MarkdownHeading2 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(2, text)
 
 /**Markdown三级标题。*/
 @MarkdownDsl
-class MarkdownHeading3 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(3, text)
+class MarkdownHeading3 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(3, text)
 
 /**Markdown四级标题。*/
 @MarkdownDsl
-class MarkdownHeading4 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(4, text)
+class MarkdownHeading4 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(4, text)
 
 /**Markdown五级标题。*/
 @MarkdownDsl
-class MarkdownHeading5 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(5, text)
+class MarkdownHeading5 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(5, text)
 
 /**Markdown六级标题。*/
 @MarkdownDsl
-class MarkdownHeading6 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(6, text)
+class MarkdownHeading6 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(6, text)
 
 /**Markdown水平分割线。*/
 @MarkdownDsl
@@ -393,7 +437,8 @@ sealed class MarkdownListNode(
 /**Markdown有序列表节点。*/
 @MarkdownDsl
 class MarkdownOrderedListNode @PublishedApi internal constructor(
-	val order: String, text: String
+	val order: String,
+	text: String
 ) : MarkdownListNode("$order.", text)
 
 /**Markdown无序列表节点。*/
@@ -405,7 +450,8 @@ class MarkdownUnorderedListNode @PublishedApi internal constructor(
 /**Markdown任务列表节点。*/
 @MarkdownDsl
 class MarkdownTaskListNode @PublishedApi internal constructor(
-	val isCompleted: Boolean, text: String
+	val isCompleted: Boolean,
+	text: String
 ) : MarkdownListNode("$listNodeMarker [${if(isCompleted) "X" else " "}]", text)
 
 /**Markdown定义列表。*/
@@ -494,7 +540,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@MarkdownDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 	
 	@MarkdownDsl
@@ -518,7 +564,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@MarkdownDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 }
 
@@ -572,7 +618,9 @@ interface MarkdownCode {
 
 /**Markdown行内代码。*/
 @MarkdownDsl
-class MarkdownInlineCode @PublishedApi internal constructor(text: String) : MarkdownRichText("`", text), MarkdownCode
+class MarkdownInlineCode @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("`", text), MarkdownCode
 
 /**Markdown代码块。*/
 @MarkdownDsl
@@ -598,7 +646,9 @@ interface MarkdownMath {
 
 /**Markdown行内数学表达式。*/
 @MarkdownDsl
-class MarkdownInlineMath @PublishedApi internal constructor(text: String) : MarkdownRichText("$", text), MarkdownMath
+class MarkdownInlineMath @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("$", text), MarkdownMath
 
 /**Markdown多行数学表达式。*/
 @MarkdownDsl
@@ -633,8 +683,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownFrontMatter @PublishedApi internal constructor(
-	@Language("Yaml")
-	val text: String
+	@Language("Yaml") val text: String
 ) : MarkdownDslElement {
 	override fun toString(): String {
 		return "---\n$text\n---"
@@ -715,15 +764,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownReference(
 	val reference: String
-) : MarkdownDslElement {
-	override fun equals(other: Any?): Boolean {
-		return other === this || (other is MarkdownReference && other.reference == reference)
-	}
-	
-	override fun hashCode(): Int {
-		return reference.hashCode()
-	}
-}
+) : MarkdownDslElement, CanEqual
 
 /**Markdown脚注的引用。*/
 @MarkdownDsl
@@ -732,6 +773,10 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		return "[^$reference]: $text"
 	}
@@ -744,6 +789,10 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		return "*[$reference]: $text"
 	}
@@ -756,6 +805,10 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val url: String,
 	val title: String? = null
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
 		return "[$reference]: $url$titleSnippet"
@@ -781,7 +834,7 @@ sealed class MarkdownAttribute : MarkdownDslElement
 /**Markdown css id特性。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownIdAttribute(
+class MarkdownNameAttribute(
 	val name: String
 ) : MarkdownAttribute() {
 	override fun toString(): String {
@@ -816,27 +869,21 @@ class MarkdownPropertyAttribute(
 
 /**Markdown表格的对齐方式。*/
 @MarkdownDslExtendedFeature
-enum class MarkdownTableAlignment(
-	val textPair: Pair<String, String>
-) {
+enum class MarkdownTableAlignment(val textPair: Pair<String, String>) {
 	None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 }
 
 /**Markdown警告框的类型。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionType(
-	val text: String
-) {
+enum class MarkdownAdmonitionType(val text: String) {
 	Normal("!!!"), Collapsed("???"), Opened("!!!+")
 }
 
 /**Markdown警告框的限定符。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionQualifier(
-	val style: String, val text: String
-) {
+enum class MarkdownAdmonitionQualifier(val style: String, val text: String) {
 	Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 	Bug("bug", "bug"),
 	Danger("danger", "danger"), Error("danger", "error"),
@@ -854,7 +901,7 @@ enum class MarkdownAdmonitionQualifier(
 //REGION build extensions
 
 @MarkdownDsl
-inline fun markdown(builder: Markdown.() -> Unit) = Markdown().also { it.builder() }
+inline fun markdown(block: Markdown.() -> Unit) = Markdown().also { it.block() }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -882,96 +929,96 @@ inline fun Markdown.linkRef(reference: String, url: String, title: String? = nul
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text)
+inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text)
+inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference)
+inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text)
+inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text)
+inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text)
-
-@InlineDsl
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text)
+inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text)
+inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text)
+inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text)
+inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url)
+inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text).toString()
+
+@InlineDsl
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null) =
-	MarkdownInlineLink(name, url, title)
+	MarkdownInlineLink(name, url, title).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null) =
-	MarkdownInlineImageLink(name, url, title)
+	MarkdownInlineImageLink(name, url, title).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null) =
-	MarkdownReferenceLink(reference, name)
+	MarkdownReferenceLink(reference, name).toString()
 
 @InlineDsl
 @MarkdownDsl
 inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null) =
-	MarkdownReferenceImageLink(reference, name)
+	MarkdownReferenceImageLink(reference, name).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url)
+inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text)
+inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text).toString()
 
 @InlineDsl
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text)
+inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) =
-	MarkdownAttributes(attributes.toSet())
+	MarkdownAttributes(attributes.toSet()).toString()
 
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownIdAttribute(name)
+inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownNameAttribute(name)
 
 @InlineDsl
 @MarkdownDsl
@@ -984,8 +1031,8 @@ inline fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute
 inline fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.textBlock(text: String) =
-	MarkdownTextBlock(text).also { content += it }
+inline fun MarkdownDslEntry.textBlock(lazyText: () -> String) =
+	MarkdownTextBlock(lazyText()).also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.mainHeading(text: String) =
@@ -1024,31 +1071,31 @@ inline fun MarkdownDslEntry.hr() =
 	MarkdownHorizontalLine.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.list(builder: MarkdownList.() -> Unit) =
-	MarkdownList().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.list(block: MarkdownList.() -> Unit) =
+	MarkdownList().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.def(title: String, builder: MarkdownDefinition.() -> Unit) =
-	MarkdownDefinition(title).also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.def(title: String, block: MarkdownDefinition.() -> Unit) =
+	MarkdownDefinition(title).also { it.block() }.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.table(builder: MarkdownTable.() -> Unit) =
-	MarkdownTable().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.table(block: MarkdownTable.() -> Unit) =
+	MarkdownTable().also { it.block() }.also { content += it }
 
 @MarkdownDsl
-inline fun MarkdownDslEntry.blockQueue(builder: MarkdownBlockQuote.() -> Unit) =
-	MarkdownBlockQuote().also { it.builder() }.also { content += it }
-
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.indentedBlock(builder: MarkdownIndentedBlock.() -> Unit) =
-	MarkdownIndentedBlock().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.blockQueue(block: MarkdownBlockQuote.() -> Unit) =
+	MarkdownBlockQuote().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.sideBlock(builder: MarkdownSideBlock.() -> Unit) =
-	MarkdownSideBlock().also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.indentedBlock(block: MarkdownIndentedBlock.() -> Unit) =
+	MarkdownIndentedBlock().also { it.block() }.also { content += it }
+
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+inline fun MarkdownDslEntry.sideBlock(block: MarkdownSideBlock.() -> Unit) =
+	MarkdownSideBlock().also { it.block() }.also { content += it }
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.codeFence(language: String, lazyText: () -> String) =
@@ -1061,8 +1108,8 @@ inline fun MarkdownDslEntry.multilineMath(lazyText: () -> String) =
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownDslEntry.admonition(qualifier: MarkdownAdmonitionQualifier, title: String = "",
-	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal) =
-	MarkdownAdmonition(qualifier, title, type).also { content += it }
+	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal, block: MarkdownAdmonition.() -> Unit) =
+	MarkdownAdmonition(qualifier, title, type).also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -1076,8 +1123,8 @@ inline fun MarkdownDslEntry.macros(name: String) =
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.macrosSnippet(name: String, builder: MarkdownMacrosSnippet.() -> Unit) =
-	MarkdownMacrosSnippet(name).also { it.builder() }.also { content += it }
+inline fun MarkdownDslEntry.macrosSnippet(name: String, block: MarkdownMacrosSnippet.() -> Unit) =
+	MarkdownMacrosSnippet(name).also { it.block() }.also { content += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
@@ -1085,65 +1132,41 @@ inline infix fun <T : WithMarkdownAttributes> T.with(attributes: MarkdownAttribu
 	this.also { it.attributes = attributes }
 
 @MarkdownDsl
-inline fun MarkdownList.ol(order: String, text: String) =
-	MarkdownOrderedListNode(order, text).also { nodes += it }
+inline fun MarkdownList.ol(order: String, text: String, block: MarkdownOrderedListNode.() -> Unit = {}) =
+	MarkdownOrderedListNode(order, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ol(order: String, text: String, builder: MarkdownOrderedListNode.() -> Unit) =
-	MarkdownOrderedListNode(order, text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownList.ul(text: String, block: MarkdownUnorderedListNode.() -> Unit = {}) =
+	MarkdownUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ul(text: String) =
-	MarkdownUnorderedListNode(text).also { nodes += it }
+inline fun MarkdownList.task(status: Boolean, text: String, block: MarkdownTaskListNode.() -> Unit = {}) =
+	MarkdownTaskListNode(status, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.ul(text: String, builder: MarkdownUnorderedListNode.() -> Unit) =
-	MarkdownUnorderedListNode(text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownListNode.ol(order: String, text: String, block: MarkdownOrderedListNode.() -> Unit = {}) =
+	MarkdownOrderedListNode(order, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.task(status: Boolean, text: String) =
-	MarkdownTaskListNode(status, text).also { nodes += it }
+inline fun MarkdownListNode.ul(text: String, block: MarkdownUnorderedListNode.() -> Unit = {}) =
+	MarkdownUnorderedListNode(text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownList.task(status: Boolean, text: String, builder: MarkdownTaskListNode.() -> Unit) =
-	MarkdownTaskListNode(status, text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ol(order: String, text: String) =
-	MarkdownOrderedListNode(order, text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ol(order: String, text: String, builder: MarkdownOrderedListNode.() -> Unit) =
-	MarkdownOrderedListNode(order, text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ul(text: String) =
-	MarkdownUnorderedListNode(text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.ul(text: String, builder: MarkdownUnorderedListNode.() -> Unit) =
-	MarkdownUnorderedListNode(text).also { it.builder() }.also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.task(status: Boolean, text: String) =
-	MarkdownTaskListNode(status, text).also { nodes += it }
-
-@MarkdownDsl
-inline fun MarkdownListNode.task(status: Boolean, text: String, builder: MarkdownTaskListNode.() -> Unit) =
-	MarkdownTaskListNode(status, text).also { it.builder() }.also { nodes += it }
+inline fun MarkdownListNode.task(status: Boolean, text: String, block: MarkdownTaskListNode.() -> Unit = {}) =
+	MarkdownTaskListNode(status, text).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDefinition.node(title: String, builder: MarkdownDefinitionNode.() -> Unit) =
-	MarkdownDefinitionNode(title).also { it.builder() }.also { nodes += it }
+inline fun MarkdownDefinition.node(title: String, block: MarkdownDefinitionNode.() -> Unit) =
+	MarkdownDefinitionNode(title).also { it.block() }.also { nodes += it }
 
 @MarkdownDsl
-inline fun MarkdownTable.header(builder: MarkdownTableHeader.() -> Unit) =
-	MarkdownTableHeader().also { it.builder() }.also { header = it }
+inline fun MarkdownTable.header(block: MarkdownTableHeader.() -> Unit) =
+	MarkdownTableHeader().also { it.block() }.also { header = it }
 
 @MarkdownDsl
-inline fun MarkdownTable.row(builder: MarkdownTableRow.() -> Unit) =
-	MarkdownTableRow().also { it.builder() }.also { rows += it }
+inline fun MarkdownTable.row(block: MarkdownTableRow.() -> Unit) =
+	MarkdownTableRow().also { it.block() }.also { rows += it }
 
 @MarkdownDsl
 inline infix fun MarkdownTable.columnSize(size: Int) =
@@ -1157,12 +1180,10 @@ inline fun MarkdownTableHeader.column(text: String = emptyColumnText) =
 inline fun MarkdownTableRow.column(text: String = emptyColumnText) =
 	MarkdownTableColumn(text).also { columns += it }
 
-@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.rowSpan() = column(">")
 
-@InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.colSpan() = column("^")

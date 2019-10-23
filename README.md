@@ -6,6 +6,7 @@ Breeze-Framework
 [Bintray](https://bintray.com/breeze-knights/breeze-framework)
 
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
+Including: basic & functional & reflect & text & time extensions, dsls & generators & delegated serializers and more.
 
 **NOTE**
 
@@ -50,18 +51,46 @@ dependencies {
 
 ## breeze-dsl
 
+Powerful and clear builders for various domain specific languages.
+
 * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
 * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
+Now support:
+
+* graph
+    * mermaid
+        * [X] MermaidClassDiagramDsl
+        * [X] MermaidFlowChartDsl
+        * [X] MermaidGanttDsl
+        * [X] MermaidPieChartDsl
+        * [X] MermaidSequenceDiagramDsl
+    * puml
+        * [ ] PumlSequenceDiagramDsl
+        * [ ] PumlStateDiagramDsl
+    * [X] FlowDsl
+    * [X] SequenceDsl 
+* markup
+    * [X] CreoleDsl
+    * [X] JsonDsl
+    * [X] MarkdownDsl
+    * [X] XmlDsl
+    * [ ] YamlDsl
+* text
+    * [X] CommandLineTextDsl
+    * [X] CriticMarkupTextDsl 
+    
+Note:
+
+* Dsl is used to generate text, and it's the only thing that dsl should do.
+* Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
+* Dsl can not deserialize data from generated string. 
+* Less limit (either type or invocation) dsl is not a good dsl.
+
 ## breeze-functional
 
 * Provide functional extensions for Functions. (e.g, `curried`, `compose`.)
-
-## breeze-fxgl
-
-* Provide some useful extensions for `FXGL`, a javafx-based game framework.
-* **May be removed in future.**
 
 ## breeze-game
 

@@ -1,22 +1,24 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.puml
+package com.windea.breezeframework.dsl.graph.puml
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.puml.PumlConfig.quote
+import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
 //TODO fully support
 
 //REGION top annotations and interfaces
 
+/**PlantUml序列图的Dsl。*/
+@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @DslMarker
 private annotation class PumlSequenceDiagramDsl
 
 /**PlantUml序列图。*/
-@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagram @PublishedApi internal constructor() : Puml(), PumlSequenceDiagramDslEntry {
 	override fun toString(): String {
@@ -40,19 +42,15 @@ interface PumlSequenceDiagramDslElement : PumlDslElement
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : PumlSequenceDiagramDslElement {
+) : PumlSequenceDiagramDslElement, CanEqual {
 	var alias: String? = null
 	var order: Int? = null
 	var color: String? = null
 	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
 	
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is PumlSequenceDiagramParticipant && (other.alias == alias || other.name == name))
-	}
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
 	
-	override fun hashCode(): Int {
-		return alias?.hashCode() ?: name.hashCode()
-	}
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(alias ?: name) }
 	
 	override fun toString(): String {
 		val orderSnippet = order?.let { " order $order" }.orEmpty()
@@ -69,10 +67,10 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 /**PlantUml序列图消息。*/
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramMessage @PublishedApi internal constructor(
-	val fromActorId: String,
-	val toActorId: String,
+	val fromActorName: String,
+	val toActorName: String,
 	@Language("Creole")
-	val text: String = "",  //NOTE can wrap by "\n"
+	val text: String? = null,  //NOTE can wrap by "\n"
 	val isBidirectional: Boolean = false
 ) : PumlSequenceDiagramDslElement {
 	var arrowColor: String? = null
@@ -80,17 +78,15 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
 	
 	override fun toString(): String {
-		val textSnippet = if(text.isEmpty()) "" else ": ${text.replaceWithEscapedWrap()}"
+		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
 		val arrowColorSnippet = arrowColor?.let { "[${it.addPrefix("#")}]" }.orEmpty()
 		val statusSnippet = isPosted?.let { if(it) "o" else "x" }.orEmpty()
 		val arrowSnippet = when {
 			isBidirectional -> "${arrowShape.prefix}-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"
 			else -> "-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"
 		}
-		return "$fromActorId $arrowSnippet $toActorId$textSnippet"
+		return "$fromActorName $arrowSnippet $toActorName$textSnippet"
 	}
-	
-	
 }
 
 //REGION enumerations and constants
