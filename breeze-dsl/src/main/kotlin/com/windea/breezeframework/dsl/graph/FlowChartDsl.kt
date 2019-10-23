@@ -79,7 +79,7 @@ interface FlowChartConnectionBinder {
 class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: FlowChartNodeType,
-	val text: String? = null //NOTE can wrap by "\n"
+	val text: String? = null //NOTE can wrap by truly "\n"
 ) : FlowChartDslElement, CanEqual {
 	var flowState: String? = null
 	var urlLink: String? = null
@@ -93,11 +93,10 @@ class FlowChartNode @PublishedApi internal constructor(
 	
 	//NOTE syntax: name=>$type: $text|$flowState?:>$urlLink
 	override fun toString(): String {
-		val textSnippet = text?.replaceWithEscapedWrap()
 		val flowStateSnippet = flowState?.let { "|$it" }.orEmpty()
 		val urlLinkSnippet = urlLink?.let { ":>$it" }.orEmpty()
 		val blankSnippet = if(openNewTab) "[blank]" else ""
-		return "$name=>${type.text}: $textSnippet$flowStateSnippet$urlLinkSnippet$blankSnippet"
+		return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 	}
 }
 
