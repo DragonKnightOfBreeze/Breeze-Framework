@@ -157,6 +157,7 @@
 * [X] breeze-dsl 修复不足之处。
 - [X] breeze-dsl 优化Dsl构建方法。
 * [X] breeze-dsl 完成`FlowChartDsl`，完善其他的Dsl。
+* [ ] breeze-dsl 实现`SequenceDiagramDsl`。（过于复杂，搁置）
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***
