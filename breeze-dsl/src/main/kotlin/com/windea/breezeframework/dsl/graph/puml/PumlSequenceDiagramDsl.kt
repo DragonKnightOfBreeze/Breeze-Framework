@@ -47,13 +47,9 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	var color: String? = null
 	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
 	
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is PumlSequenceDiagramParticipant && (other.alias == alias || other.name == name))
-	}
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
 	
-	override fun hashCode(): Int {
-		return alias?.hashCode() ?: name.hashCode()
-	}
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(alias ?: name) }
 	
 	override fun toString(): String {
 		val orderSnippet = order?.let { " order $order" }.orEmpty()
@@ -70,8 +66,8 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 /**PlantUml序列图消息。*/
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramMessage @PublishedApi internal constructor(
-	val fromActorId: String,
-	val toActorId: String,
+	val fromActorName: String,
+	val toActorName: String,
 	@Language("Creole")
 	val text: String? = null,  //NOTE can wrap by "\n"
 	val isBidirectional: Boolean = false
@@ -88,10 +84,8 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 			isBidirectional -> "${arrowShape.prefix}-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"
 			else -> "-$arrowColorSnippet${arrowShape.suffix}$statusSnippet"
 		}
-		return "$fromActorId $arrowSnippet $toActorId$textSnippet"
+		return "$fromActorName $arrowSnippet $toActorName$textSnippet"
 	}
-	
-	
 }
 
 //REGION enumerations and constants

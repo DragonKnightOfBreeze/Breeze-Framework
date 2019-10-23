@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
+@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode", "unused")
 
 package com.windea.breezeframework.dsl.graph.puml
 
@@ -37,6 +37,9 @@ interface PumlStateDiagramDslEntry : PumlDslEntry, WithTransition<PumlStateDiagr
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramTransition>
 	
+	override val PumlStateDiagramState._nodeName get() = this.name
+	override val PumlStateDiagramTransition._toNodeName get() = this.targetStateName
+	
 	fun toContentString(): String {
 		return arrayOf(
 			states.joinToStringOrEmpty("\n"),
@@ -44,11 +47,8 @@ interface PumlStateDiagramDslEntry : PumlDslEntry, WithTransition<PumlStateDiagr
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
 	
-	@PumlStateDiagramDsl
+	@GenericDsl
 	override fun String.fromTo(other: String) = transition(this, other)
-	
-	@PumlStateDiagramDsl
-	override fun PumlStateDiagramTransition.invoke(text: String) = this.also { it.text = text }
 }
 
 /**PlantUml状态图Dsl的元素。*/
@@ -92,7 +92,8 @@ sealed class PumlStateDiagramState(
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramSimpleState @PublishedApi internal constructor(
-	name: String, text: String? = null
+	name: String,
+	text: String? = null
 ) : PumlStateDiagramState(name, text) {
 	override fun toString(): String {
 		val textSnippet = text?.replaceWithEscapedWrap().orEmpty()
@@ -124,7 +125,8 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramCompositedState @PublishedApi internal constructor(
-	name: String, text: String? = null
+	name: String,
+	text: String? = null
 ) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, IndentContent {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
@@ -159,7 +161,8 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
-	name: String, text: String? = null
+	name: String,
+	text: String? = null
 ) : PumlStateDiagramState(name, text), IndentContent {
 	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
@@ -203,8 +206,8 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
  */
 @PumlStateDiagramDsl
 class PumlStateDiagramTransition @PublishedApi internal constructor(
-	val sourceStateId: String,
-	val targetStateId: String,
+	val sourceStateName: String,
+	val targetStateName: String,
 	@Language("Creole")
 	var text: String? = null //NOTE can wrap by "\n"
 ) : PumlStateDiagramDslElement {
@@ -220,7 +223,7 @@ class PumlStateDiagramTransition @PublishedApi internal constructor(
 		val arrowDirectionSnippet = arrowDirection?.text.orEmpty()
 		val arrowLengthSnippet = "-" * (arrowLength - 1)
 		val arrowSnippet = "-$arrowParamsSnippet$arrowDirectionSnippet$arrowLengthSnippet>"
-		return "$sourceStateId $arrowSnippet $targetStateId$textSnippet"
+		return "$sourceStateName $arrowSnippet $targetStateName$textSnippet"
 	}
 }
 
@@ -235,11 +238,13 @@ inline fun PumlStateDiagramDslEntry.state(name: String, text: String? = null) =
 
 @InlineDsl
 @PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.initState() = state("[*]")
+inline val PumlStateDiagramDslEntry.initState
+	get() = "[*]"
 
 @InlineDsl
 @PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.finishState() = state("[*]")
+inline val PumlStateDiagramDslEntry.finishState
+	get() = "[*]"
 
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.compositedState(name: String, text: String? = null,
@@ -252,8 +257,8 @@ inline fun PumlStateDiagramDslEntry.concurrentState(name: String, text: String? 
 	PumlStateDiagramConcurrentState(name, text).also { it.builder() }.also { states += it }
 
 @PumlStateDiagramDsl
-inline fun PumlStateDiagramDslEntry.transition(sourceStateId: String, targetStateId: String, text: String? = null) =
-	PumlStateDiagramTransition(sourceStateId, targetStateId, text).also { links += it }
+inline fun PumlStateDiagramDslEntry.transition(sourceStateName: String, targetStateName: String, text: String? = null) =
+	PumlStateDiagramTransition(sourceStateName, targetStateName, text).also { links += it }
 
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.transition(sourceState: PumlStateDiagramSimpleState,
@@ -263,13 +268,13 @@ inline fun PumlStateDiagramDslEntry.transition(sourceState: PumlStateDiagramSimp
 
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.transition(
-	sourceStateId: String,
+	sourceStateName: String,
 	arrowColor: String?,
 	arrowStyle: PumlArrowStyle?,
 	arrowDirection: PumlArrowDirection?,
-	targetStateId: String,
+	targetStateName: String,
 	text: String? = null
-) = PumlStateDiagramTransition(sourceStateId, targetStateId, text)
+) = PumlStateDiagramTransition(sourceStateName, targetStateName, text)
 	.also { it.arrowColor = arrowColor;it.arrowStyle = arrowStyle;it.arrowDirection = arrowDirection }
 	.also { links += it }
 
@@ -292,6 +297,10 @@ inline fun PumlStateDiagramConcurrentState.state(name: String, text: String? = n
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramConcurrentState.section(builder: PumlStateDiagramConcurrentSection.() -> Unit) =
 	PumlStateDiagramConcurrentSection().also { it.builder() }.also { sections += it }
+
+@PumlStateDiagramDsl
+inline infix fun PumlStateDiagramTransition.text(text: String) =
+	this.also { it.text = text }
 
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramTransition.arrowColor(arrowColor: String) =

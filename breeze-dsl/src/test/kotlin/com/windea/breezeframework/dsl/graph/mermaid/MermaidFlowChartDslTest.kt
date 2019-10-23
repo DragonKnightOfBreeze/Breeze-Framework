@@ -38,4 +38,14 @@ class MermaidFlowChartDslTest {
 		}
 		println(graph3)
 	}
+	
+	@Test //TESTED PERFECT!
+	fun test4() {
+		println(mermaidFlowChart(LR) {
+			node("S", "Source") fromTo node("T", "Target")
+			node("S2", "Source") fromTo node("T2", "Target") text "Link Text"
+			node("S3", "Source") fromTo node("T3", "Target") text "Text" arrowShape DottedArrow
+			node("A") fromTo node("B") andTo node("C")
+		})
+	}
 }

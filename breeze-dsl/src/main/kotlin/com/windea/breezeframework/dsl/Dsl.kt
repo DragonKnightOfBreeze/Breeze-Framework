@@ -62,6 +62,7 @@ interface GenerateContent {
 @GenericDsl
 interface WithText<T : DslElement> {
 	/**添加主要的文本元素为子元素。*/
+	@GenericDsl
 	operator fun String.unaryPlus(): T
 }
 
@@ -69,6 +70,7 @@ interface WithText<T : DslElement> {
 @GenericDsl
 interface WithComment<T : DslElement> {
 	/**添加注释元素为子元素。*/
+	@GenericDsl
 	operator fun String.unaryMinus(): T
 }
 
@@ -76,17 +78,40 @@ interface WithComment<T : DslElement> {
 @GenericDsl
 interface WithBlock<T : DslElement> {
 	/**添加主要的块元素为子元素。*/
+	@GenericDsl
 	operator fun String.invoke(builder: T.() -> Unit = {}): T
 }
 
-//TODO make usage of type parameter N
 /**包含（唯一主要的）可表示一个元素到另一个元素的转变的内容。*/
-interface WithTransition<N : DslElement, T : DslElement> {
-	/**根据节点元素的名字创建过渡元素。*/
+@Suppress("PropertyName")
+@GenericDsl
+interface WithTransition<N : DslElement, T> where T : DslElement {
+	val N._nodeName: String
+	val T._toNodeName: String
+	
+	/**根据节点元素创建过渡元素。*/
+	@GenericDsl
 	infix fun String.fromTo(other: String): T
 	
-	/**为过渡元素添加描述文本。*/
-	operator fun T.invoke(text: String): T
+	/**根据节点元素创建过渡元素。*/
+	@GenericDsl
+	infix fun String.fromTo(other: N): T = this fromTo other._nodeName
+	
+	/**根据节点元素创建过渡元素。*/
+	@GenericDsl
+	infix fun N.fromTo(other: String): T = this._nodeName fromTo other
+	
+	/**根据节点元素创建过渡元素。*/
+	@GenericDsl
+	infix fun N.fromTo(other: N): T = this._nodeName fromTo other._nodeName
+	
+	/**根据节点元素连续创建过渡元素。*/
+	@GenericDsl
+	infix fun T.andTo(other: String): T = this._toNodeName fromTo other
+	
+	/**根据节点元素连续创建过渡元素。*/
+	@GenericDsl
+	infix fun T.andTo(other: N): T = this._toNodeName fromTo other
 }
 
 //REGION build extensions

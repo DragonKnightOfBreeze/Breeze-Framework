@@ -1,6 +1,5 @@
 package com.windea.breezeframework.core.extensions
 
-import java.util.*
 import kotlin.reflect.*
 
 //https://github.com/consoleau/kassava
@@ -27,7 +26,6 @@ inline fun <reified T> equalsBySelect(target: T?, other: Any?, deepOperation: Bo
 
 /**通过选择指定类型中的属性，得到指定对象的哈希码。特殊对待数组类型。*/
 inline fun <reified T> hashCodeBySelect(target: T?, deepOperation: Boolean = false, selector: T.() -> Array<*>): Int {
-	Objects.hash()
 	if(target == null) return 0
 	val result = 0
 	return target.selector().fold(result) { r, k ->

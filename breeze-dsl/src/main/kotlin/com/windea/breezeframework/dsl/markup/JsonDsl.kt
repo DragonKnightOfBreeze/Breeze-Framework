@@ -58,13 +58,9 @@ interface JsonDslElement : DslElement, CanEqual
 sealed class JsonElement<T>(
 	val value: T
 ) : JsonDslElement, JsonDslInlineEntry {
-	override fun equals(other: Any?): Boolean {
-		return this === other || (other is JsonElement<*> && other.value == value)
-	}
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf<Any?>(value) }
 	
-	override fun hashCode(): Int {
-		return value.hashCode()
-	}
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf<Any?>(value) }
 	
 	override fun toString(): String {
 		return value.toString()
@@ -81,15 +77,21 @@ object JsonNull : JsonPrimitive<Nothing?>(null)
 
 /**Json布尔值。*/
 @JsonDsl
-class JsonBoolean @PublishedApi internal constructor(value: Boolean) : JsonPrimitive<Boolean>(value)
+class JsonBoolean @PublishedApi internal constructor(
+	value: Boolean
+) : JsonPrimitive<Boolean>(value)
 
 /**Json数值。*/
 @JsonDsl
-class JsonNumber @PublishedApi internal constructor(value: Number) : JsonPrimitive<Number>(value)
+class JsonNumber @PublishedApi internal constructor(
+	value: Number
+) : JsonPrimitive<Number>(value)
 
 /**Json字符串值。*/
 @JsonDsl
-class JsonString @PublishedApi internal constructor(value: String) : JsonPrimitive<String>(value) {
+class JsonString @PublishedApi internal constructor(
+	value: String
+) : JsonPrimitive<String>(value) {
 	override fun toString(): String {
 		return value.wrapQuote(quote)
 	}

@@ -53,7 +53,7 @@ interface CreoleDslInlineEntry : DslEntry
 interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
-	@CreoleDsl
+	@GenericDsl
 	override fun String.unaryPlus() = CreoleTextBlock(this).also { content += it }
 }
 
@@ -112,7 +112,6 @@ class CreoleUnicode @PublishedApi internal constructor(
 	}
 }
 
-
 /**Creole富文本。*/
 @CreoleDsl
 sealed class CreoleRichText(
@@ -126,27 +125,39 @@ sealed class CreoleRichText(
 
 /**Creole加粗文本。*/
 @CreoleDsl
-class CreoleBoldText @PublishedApi internal constructor(text: String) : CreoleRichText("**", text)
+class CreoleBoldText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("**", text)
 
 /**Creole斜体文本。*/
 @CreoleDsl
-class CreoleItalicText @PublishedApi internal constructor(text: String) : CreoleRichText("//", text)
+class CreoleItalicText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("//", text)
 
 /**Creole代码文本。*/
 @CreoleDsl
-class CreoleMonospacedText @PublishedApi internal constructor(text: String) : CreoleRichText("\"\"", text)
+class CreoleMonospacedText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("\"\"", text)
 
 /**Creole删除文本。*/
 @CreoleDsl
-class CreoleStrokedText @PublishedApi internal constructor(text: String) : CreoleRichText("--", text)
+class CreoleStrokedText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("--", text)
 
 /**Creole下划线文本。*/
 @CreoleDsl
-class CreoleUnderlinedText @PublishedApi internal constructor(text: String) : CreoleRichText("__", text)
+class CreoleUnderlinedText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("__", text)
 
 /**Creole波浪下划线文本。*/
 @CreoleDsl
-class CreoleWavedText @PublishedApi internal constructor(text: String) : CreoleRichText("~~", text)
+class CreoleWavedText @PublishedApi internal constructor(
+	text: String
+) : CreoleRichText("~~", text)
 
 
 /**Creole文本块。*/
@@ -195,19 +206,27 @@ sealed class CreoleHeading(
 
 /**Creole一级标题。*/
 @CreoleDsl
-class CreoleHeading1 @PublishedApi internal constructor(text: String) : CreoleHeading(1, text)
+class CreoleHeading1 @PublishedApi internal constructor(
+	text: String
+) : CreoleHeading(1, text)
 
 /**Creole二级标题。*/
 @CreoleDsl
-class CreoleHeading2 @PublishedApi internal constructor(text: String) : CreoleHeading(2, text)
+class CreoleHeading2 @PublishedApi internal constructor(
+	text: String
+) : CreoleHeading(2, text)
 
 /**Creole三级标题。*/
 @CreoleDsl
-class CreoleHeading3 @PublishedApi internal constructor(text: String) : CreoleHeading(3, text)
+class CreoleHeading3 @PublishedApi internal constructor(
+	text: String
+) : CreoleHeading(3, text)
 
 /**Creole四级标题。*/
 @CreoleDsl
-class CreoleHeading4 @PublishedApi internal constructor(text: String) : CreoleHeading(4, text)
+class CreoleHeading4 @PublishedApi internal constructor(
+	text: String
+) : CreoleHeading(4, text)
 
 //NOTE Do not provide dsl for Legacy HTML
 
@@ -237,11 +256,15 @@ sealed class CreoleListNode(
 
 /**Creole有序列表节点。*/
 @CreoleDsl
-class CreoleOrderedListNode @PublishedApi internal constructor(text: String) : CreoleListNode("#", text)
+class CreoleOrderedListNode @PublishedApi internal constructor(
+	text: String
+) : CreoleListNode("#", text)
 
 /**Creole无序列表节点。*/
 @CreoleDsl
-class CreoleUnorderedListNode @PublishedApi internal constructor(text: String) : CreoleListNode("*", text)
+class CreoleUnorderedListNode @PublishedApi internal constructor(
+	text: String
+) : CreoleListNode("*", text)
 
 /**Creole树。*/
 @CreoleDsl
@@ -311,7 +334,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 		}.joinToStringOrEmpty("|", "|", "|")
 	}
 	
-	@CreoleDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 	
 	@CreoleDsl
@@ -335,7 +358,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@CreoleDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 }
 

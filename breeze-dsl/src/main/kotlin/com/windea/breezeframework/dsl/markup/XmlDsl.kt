@@ -31,13 +31,13 @@ class Xml @PublishedApi internal constructor() : DslBuilder,
 		).filterNotEmpty().joinToStringOrEmpty("\n")
 	}
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryMinus() = comment(this)
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
 	
-	@XmlDsl
+	@GenericDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 		element(this, *args, block = block)
 }
@@ -130,16 +130,16 @@ class XmlElement @PublishedApi internal constructor(
 		return "$prefixSnippet$nodesSnippet$suffixSnippet"
 	}
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryPlus() = text(this)
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.unaryMinus() = comment(this)
 	
-	@XmlDsl
+	@GenericDsl
 	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
 	
-	@XmlDsl
+	@GenericDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 		element(this, *args, block = block)
 }

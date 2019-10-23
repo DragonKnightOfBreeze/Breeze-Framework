@@ -19,7 +19,7 @@ private annotation class MermaidPieChartDsl
 /**Mermaid饼图。*/
 @ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @MermaidPieChartDsl
-class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry {
+class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, IndentContent {
 	override val parts: MutableSet<MermaidPieChartPart> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
@@ -35,7 +35,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
-interface MermaidPieChartDslEntry : MermaidDslEntry, IndentContent {
+interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val parts: MutableSet<MermaidPieChartPart>
 	
 	fun toContentString(): String {

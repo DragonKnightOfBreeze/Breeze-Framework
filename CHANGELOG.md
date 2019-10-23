@@ -154,8 +154,9 @@
 * [X] breeze-dsl 实现`MermaidPieChartDsl`。
 * [X] breeze-dsl 实现`MermaidClassSequenceDsl`，同时补充更多便捷的Dsl构建方法，至此`MermaidDsl`已经完全支持。
 * [X] 更新README。
-* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [X] breeze-dsl 修复不足之处。
+- [X] breeze-dsl 优化Dsl构建方法。
+* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
 ***
 

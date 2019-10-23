@@ -97,7 +97,7 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 		return content.joinToStringOrEmpty("\n\n")
 	}
 	
-	@MarkdownDsl
+	@GenericDsl
 	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
 }
 
@@ -165,35 +165,49 @@ sealed class MarkdownRichText(
 
 /**Markdown加粗文本。*/
 @MarkdownDsl
-class MarkdownBoldText @PublishedApi internal constructor(text: String) : MarkdownRichText("**", text)
+class MarkdownBoldText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("**", text)
 
 /**Markdown斜体文本。*/
 @MarkdownDsl
-class MarkdownItalicText @PublishedApi internal constructor(text: String) : MarkdownRichText("*", text)
+class MarkdownItalicText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("*", text)
 
 /**Markdown删除文本。*/
 @MarkdownDsl
-class MarkdownStrokedText @PublishedApi internal constructor(text: String) : MarkdownRichText("~~", text)
+class MarkdownStrokedText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("~~", text)
 
 /**Markdown下划线文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownUnderlinedText @PublishedApi internal constructor(text: String) : MarkdownRichText("++", text)
+class MarkdownUnderlinedText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("++", text)
 
 /**Markdown高亮文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownHighlightText @PublishedApi internal constructor(text: String) : MarkdownRichText("==", text)
+class MarkdownHighlightText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("==", text)
 
 /**Markdown上标文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownSuperscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText("^", text)
+class MarkdownSuperscriptText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("^", text)
 
 /**Markdown下标文本。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownSubscriptText @PublishedApi internal constructor(text: String) : MarkdownRichText(text, "~")
+class MarkdownSubscriptText @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText(text, "~")
 
 /**Markdown链接。*/
 @MarkdownDsl
@@ -204,7 +218,9 @@ sealed class MarkdownLink(
 /**Markdown自动链接。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownAutoLink @PublishedApi internal constructor(url: String) : MarkdownLink(url) {
+class MarkdownAutoLink @PublishedApi internal constructor(
+	url: String
+) : MarkdownLink(url) {
 	override fun toString(): String {
 		return "<$url>"
 	}
@@ -226,7 +242,9 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 /**Markdown行内图片链接。*/
 @MarkdownDsl
 class MarkdownInlineImageLink @PublishedApi internal constructor(
-	name: String, url: String, title: String? = null
+	name: String,
+	url: String,
+	title: String? = null
 ) : MarkdownInlineLink(name, url, title) {
 	override fun toString(): String {
 		return "!${super.toString()}"
@@ -248,7 +266,8 @@ open class MarkdownReferenceLink @PublishedApi internal constructor(
 /**Markdown引用图片连接。*/
 @MarkdownDsl
 class MarkdownReferenceImageLink @PublishedApi internal constructor(
-	reference: String, name: String? = null
+	reference: String,
+	name: String? = null
 ) : MarkdownReferenceLink(reference, name) {
 	override fun toString(): String {
 		return "!${super.toString()}"
@@ -294,7 +313,10 @@ sealed class MarkdownHeading(
 
 /**Setext风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
+sealed class MarkdownSetextHeading(
+	headingLevel: Int,
+	text: String
+) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val textSnippet = if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
@@ -307,15 +329,22 @@ sealed class MarkdownSetextHeading(headingLevel: Int, text: String) : MarkdownHe
 
 /**Markdown主标题。*/
 @MarkdownDsl
-class MarkdownMainHeading @PublishedApi internal constructor(text: String) : MarkdownSetextHeading(1, text)
+class MarkdownMainHeading @PublishedApi internal constructor(
+	text: String
+) : MarkdownSetextHeading(1, text)
 
 /**Markdown副标题。*/
 @MarkdownDsl
-class MarkdownSubHeading @PublishedApi internal constructor(text: String) : MarkdownSetextHeading(2, text)
+class MarkdownSubHeading @PublishedApi internal constructor(
+	text: String
+) : MarkdownSetextHeading(2, text)
 
 /**Atx风格的Markdown标题。*/
 @MarkdownDsl
-sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeading(headingLevel, text) {
+sealed class MarkdownAtxHeading(
+	headingLevel: Int,
+	text: String
+) : MarkdownHeading(headingLevel, text) {
 	override fun toString(): String {
 		val indent = " " * (headingLevel + 1)
 		val prefixMarkers = "#" * headingLevel
@@ -331,27 +360,39 @@ sealed class MarkdownAtxHeading(headingLevel: Int, text: String) : MarkdownHeadi
 
 /**Markdown一级标题。*/
 @MarkdownDsl
-class MarkdownHeading1 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(1, text)
+class MarkdownHeading1 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(1, text)
 
 /**Markdown二级标题。*/
 @MarkdownDsl
-class MarkdownHeading2 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(2, text)
+class MarkdownHeading2 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(2, text)
 
 /**Markdown三级标题。*/
 @MarkdownDsl
-class MarkdownHeading3 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(3, text)
+class MarkdownHeading3 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(3, text)
 
 /**Markdown四级标题。*/
 @MarkdownDsl
-class MarkdownHeading4 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(4, text)
+class MarkdownHeading4 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(4, text)
 
 /**Markdown五级标题。*/
 @MarkdownDsl
-class MarkdownHeading5 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(5, text)
+class MarkdownHeading5 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(5, text)
 
 /**Markdown六级标题。*/
 @MarkdownDsl
-class MarkdownHeading6 @PublishedApi internal constructor(text: String) : MarkdownAtxHeading(6, text)
+class MarkdownHeading6 @PublishedApi internal constructor(
+	text: String
+) : MarkdownAtxHeading(6, text)
 
 /**Markdown水平分割线。*/
 @MarkdownDsl
@@ -395,7 +436,8 @@ sealed class MarkdownListNode(
 /**Markdown有序列表节点。*/
 @MarkdownDsl
 class MarkdownOrderedListNode @PublishedApi internal constructor(
-	val order: String, text: String
+	val order: String,
+	text: String
 ) : MarkdownListNode("$order.", text)
 
 /**Markdown无序列表节点。*/
@@ -407,7 +449,8 @@ class MarkdownUnorderedListNode @PublishedApi internal constructor(
 /**Markdown任务列表节点。*/
 @MarkdownDsl
 class MarkdownTaskListNode @PublishedApi internal constructor(
-	val isCompleted: Boolean, text: String
+	val isCompleted: Boolean,
+	text: String
 ) : MarkdownListNode("$listNodeMarker [${if(isCompleted) "X" else " "}]", text)
 
 /**Markdown定义列表。*/
@@ -496,7 +539,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@MarkdownDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 	
 	@MarkdownDsl
@@ -520,7 +563,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@MarkdownDsl
+	@GenericDsl
 	override fun String.unaryPlus() = column(this)
 }
 
@@ -574,7 +617,9 @@ interface MarkdownCode {
 
 /**Markdown行内代码。*/
 @MarkdownDsl
-class MarkdownInlineCode @PublishedApi internal constructor(text: String) : MarkdownRichText("`", text), MarkdownCode
+class MarkdownInlineCode @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("`", text), MarkdownCode
 
 /**Markdown代码块。*/
 @MarkdownDsl
@@ -600,7 +645,9 @@ interface MarkdownMath {
 
 /**Markdown行内数学表达式。*/
 @MarkdownDsl
-class MarkdownInlineMath @PublishedApi internal constructor(text: String) : MarkdownRichText("$", text), MarkdownMath
+class MarkdownInlineMath @PublishedApi internal constructor(
+	text: String
+) : MarkdownRichText("$", text), MarkdownMath
 
 /**Markdown多行数学表达式。*/
 @MarkdownDsl
@@ -635,8 +682,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownFrontMatter @PublishedApi internal constructor(
-	@Language("Yaml")
-	val text: String
+	@Language("Yaml") val text: String
 ) : MarkdownDslElement {
 	override fun toString(): String {
 		return "---\n$text\n---"
@@ -717,15 +763,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownReference(
 	val reference: String
-) : MarkdownDslElement, CanEqual {
-	override fun equals(other: Any?): Boolean {
-		return other === this || (other is MarkdownReference && other.reference == reference)
-	}
-	
-	override fun hashCode(): Int {
-		return reference.hashCode()
-	}
-}
+) : MarkdownDslElement, CanEqual
 
 /**Markdown脚注的引用。*/
 @MarkdownDsl
@@ -734,6 +772,10 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		return "[^$reference]: $text"
 	}
@@ -746,6 +788,10 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		return "*[$reference]: $text"
 	}
@@ -758,6 +804,10 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val url: String,
 	val title: String? = null
 ) : MarkdownReference(reference) {
+	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	
+	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	
 	override fun toString(): String {
 		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
 		return "[$reference]: $url$titleSnippet"
@@ -783,7 +833,7 @@ sealed class MarkdownAttribute : MarkdownDslElement
 /**Markdown css id特性。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownIdAttribute(
+class MarkdownNameAttribute(
 	val name: String
 ) : MarkdownAttribute() {
 	override fun toString(): String {
@@ -967,7 +1017,7 @@ inline fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribut
 @InlineDsl
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownIdAttribute(name)
+inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownNameAttribute(name)
 
 @InlineDsl
 @MarkdownDsl

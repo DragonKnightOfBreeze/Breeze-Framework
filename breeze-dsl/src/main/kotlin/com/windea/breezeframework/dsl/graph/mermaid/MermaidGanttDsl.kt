@@ -16,7 +16,7 @@ private annotation class MermaidGanttDsl
 /**Mermaid甘特图。*/
 @ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, WithBlock<MermaidGanttSection> {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, IndentContent {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
@@ -31,21 +31,21 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		return "gantt\n$contentSnippet"
 	}
-	
-	@MermaidGanttDsl
-	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
 //REGION dsl interfaces
 
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
-interface MermaidGanttDslEntry : MermaidDslEntry, IndentContent {
+interface MermaidGanttDslEntry : MermaidDslEntry, WithBlock<MermaidGanttSection> {
 	val sections: MutableList<MermaidGanttSection>
 	
 	fun toContentString(): String {
 		return sections.joinToStringOrEmpty("\n\n")
 	}
+	
+	@GenericDsl
+	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
 }
 
 /**Mermaid甘特图Dsl的元素。*/
@@ -180,8 +180,8 @@ inline infix fun MermaidGanttTask.finishAt(time: LocalDate) =
 	this.also { it.finishTime = time.toString() }
 
 @MermaidGanttDsl
-inline infix fun MermaidGanttTask.after(taskId: String) =
-	this.also { it.initTime = "after $taskId" }
+inline infix fun MermaidGanttTask.after(taskName: String) =
+	this.also { it.initTime = "after $taskName" }
 
 @MermaidGanttDsl
 inline infix fun MermaidGanttTask.duration(duration: String) =
