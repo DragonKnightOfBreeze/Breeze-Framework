@@ -13,11 +13,12 @@ import org.intellij.lang.annotations.*
 
 //REGION top annotations and interfaces
 
+/**PlantUml序列图的Dsl。*/
+@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @DslMarker
 private annotation class PumlSequenceDiagramDsl
 
 /**PlantUml序列图。*/
-@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagram @PublishedApi internal constructor() : Puml(), PumlSequenceDiagramDslEntry {
 	override fun toString(): String {

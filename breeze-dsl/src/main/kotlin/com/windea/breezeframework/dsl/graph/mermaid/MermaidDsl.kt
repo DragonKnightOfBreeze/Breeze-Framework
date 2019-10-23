@@ -8,16 +8,15 @@ import com.windea.breezeframework.dsl.*
 
 //REGION top annotations and interfaces
 
+@ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @DslMarker
 private annotation class MermaidDsl
 
-/**Mermaid Dsl。*/
-@ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
+/**Mermaid。*/
 @MermaidDsl
 abstract class Mermaid : DslBuilder
 
-/**Mermaid Dsl的配置。*/
-@ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
+/**Mermaid配置。*/
 @MermaidDsl
 object MermaidConfig : DslConfig {
 	private val indentSizeRange = -2..8

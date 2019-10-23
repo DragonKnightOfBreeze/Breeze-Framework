@@ -14,11 +14,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Mermaid类图的Dsl。*/
+@ReferenceApi("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @DslMarker
 private annotation class MermaidClassDiagramDsl
 
 /**Mermaid类图。*/
-@ReferenceApi("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @MermaidClassDiagramDsl
 class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, IndentContent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
@@ -55,19 +56,19 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry,
 	@GenericDsl
 	override fun String.fromTo(other: String) = relation(this, other, MermaidClassDiagramRelationType.Link)
 	
-	@MermaidClassDiagramDsl
+	@GenericDsl
 	infix fun String.inherits(other: String) =
 		relation(this, other, MermaidClassDiagramRelationType.ReversedInheritance)
 	
-	@MermaidClassDiagramDsl
+	@GenericDsl
 	infix fun String.composes(other: String) =
 		relation(this, other, MermaidClassDiagramRelationType.ReversedComposition)
 	
-	@MermaidClassDiagramDsl
+	@GenericDsl
 	infix fun String.aggregates(other: String) =
 		relation(this, other, MermaidClassDiagramRelationType.ReversedAggregation)
 	
-	@MermaidClassDiagramDsl
+	@GenericDsl
 	infix fun String.associates(other: String) =
 		relation(this, other, MermaidClassDiagramRelationType.ReversedAssociation)
 }
@@ -266,7 +267,7 @@ inline fun MermaidClassDiagramClass.annotation(type: MermaidClassDiagramAnnotati
 inline fun MermaidClassDiagramClass.property(name: String) =
 	MermaidClassDiagramProperty(name).also { properties += it }
 
-@Deprecated("Use code-like-style build extensions.", ReplaceWith("method(name(*params))"))
+@Deprecated("""Use code-like-style build extensions. e.g: method("name"()).""", ReplaceWith("method(name(*params))"))
 @MermaidClassDiagramDsl
 inline fun MermaidClassDiagramClass.method(name: String, vararg params: String) =
 	MermaidClassDiagramMethod(name, params).also { methods += it }
@@ -278,7 +279,7 @@ inline fun MermaidClassDiagramClass.method(method: MermaidClassDiagramMethod) = 
 inline infix fun <T : MermaidClassDiagramMember> T.type(type: String) =
 	this.also { it.type = type }
 
-@Deprecated("Use wrapped-style build extensions.", ReplaceWith("`public`(this)"))
+@Deprecated("""Use wrapped-style build extensions. e,g: public(method("name"()).""", ReplaceWith("public(this)"))
 @MermaidClassDiagramDsl
 inline infix fun <T : MermaidClassDiagramMember> T.visibility(visibility: MermaidClassDiagramVisibility) =
 	this.also { it.visibility = visibility }

@@ -8,13 +8,16 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 
+//DELAY add dsl element: HtmlBlock
+
 //REGION top annotations and interfaces
 
+/**Creole的Dsl。*/
+@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
 private annotation class CreoleDsl
 
 /**Creole。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
@@ -227,8 +230,6 @@ class CreoleHeading3 @PublishedApi internal constructor(
 class CreoleHeading4 @PublishedApi internal constructor(
 	text: String
 ) : CreoleHeading(4, text)
-
-//NOTE Do not provide dsl for Legacy HTML
 
 /**Creole列表。*/
 @CreoleDsl

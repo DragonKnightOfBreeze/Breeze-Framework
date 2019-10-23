@@ -10,11 +10,12 @@ import java.time.*
 
 //REGION top annotations and interfaces
 
+/**Mermaid甘特图的Dsl。*/
+@ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @DslMarker
 private annotation class MermaidGanttDsl
 
 /**Mermaid甘特图。*/
-@ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
 class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, IndentContent {
 	var title: MermaidGanttTitle? = null

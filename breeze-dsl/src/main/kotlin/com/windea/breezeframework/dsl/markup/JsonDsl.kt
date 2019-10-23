@@ -11,6 +11,7 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Json的Dsl。*/
 @DslMarker
 private annotation class JsonDsl
 

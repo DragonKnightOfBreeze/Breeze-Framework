@@ -11,11 +11,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Mermaid流程图的Dsl。*/
+@ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @DslMarker
 private annotation class MermaidFlowChartDsl
 
 /**Mermaid流程图。*/
-@ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @MermaidFlowChartDsl
 class MermaidFlowChart @PublishedApi internal constructor(
 	val direction: MermaidFlowChartDirection
@@ -67,14 +68,6 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlow
 	
 	@GenericDsl
 	override fun String.fromTo(other: String) = link(this, other)
-	
-	fun String.bindTo(text: String? = null): MermaidFlowChartNodeBinder = TODO()
-	
-	class MermaidFlowChartNodeBinder(
-		val text: String? = null
-	) {
-		infix operator fun invoke(other: String): MermaidFlowChartLink = TODO()
-	}
 }
 
 /**Mermaid流程图Dsl的元素。*/

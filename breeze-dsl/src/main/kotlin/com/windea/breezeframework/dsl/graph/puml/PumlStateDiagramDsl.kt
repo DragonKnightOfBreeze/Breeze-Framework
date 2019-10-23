@@ -11,11 +11,12 @@ import org.intellij.lang.annotations.*
 
 //REGION top annotations and interfaces
 
+/**PlantUml状态图的Dsl。*/
+@ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @DslMarker
 private annotation class PumlStateDiagramDsl
 
 /**PlantUml状态图。*/
-@ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @PumlStateDiagramDsl
 class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()

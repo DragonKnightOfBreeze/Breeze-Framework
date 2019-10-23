@@ -17,11 +17,11 @@ import com.windea.breezeframework.core.interfaces.*
 
 //REGION top annotations and interfaces
 
-/**表明这个Dsl构建方法属于公共构建方法。*/
+/**公共的Dsl。*/
 @DslMarker
 internal annotation class GenericDsl
 
-/**表明这个Dsl构建方法属于内联构建方法。即，不会自动注册对应的元素，且允许直接返回字符串。*/
+/**内联的Dsl。即，对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。*/
 internal annotation class InlineDsl
 
 /**Dsl的构建器。*/

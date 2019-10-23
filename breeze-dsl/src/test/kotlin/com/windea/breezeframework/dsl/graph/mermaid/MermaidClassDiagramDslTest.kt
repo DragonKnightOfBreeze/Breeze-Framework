@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.graph.mermaid
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidClassDiagramAnnotationType.*
 import kotlin.test.*
 
-class MermaidClassDiagramDslKtTest {
+class MermaidClassDiagramDslTest {
 	@Test //TESTED OK, @ReplaceWith WORKS
 	fun test1() {
 		//居然真的可以这样写。。。
@@ -30,7 +30,7 @@ class MermaidClassDiagramDslKtTest {
 				property("ImmortalFemale")
 			}
 			//relation("Person", "BreezeKnight", MermaidClassDiagramRelationType.Inheritance)
-			("BreezeKnight" inherits "Person")("Here are dragon knights!") cardinality ("*" to "1")
+			"BreezeKnight" inherits "Person" text "Here are dragon knights!" cardinality ("*" to "1")
 		})
 	}
 }

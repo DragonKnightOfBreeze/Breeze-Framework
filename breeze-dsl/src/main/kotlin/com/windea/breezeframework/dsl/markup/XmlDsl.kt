@@ -12,6 +12,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Xml的Dsl。*/
 @DslMarker
 private annotation class XmlDsl
 

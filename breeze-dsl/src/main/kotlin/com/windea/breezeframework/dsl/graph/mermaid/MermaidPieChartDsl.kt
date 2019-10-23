@@ -13,11 +13,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //REGION top annotations and interfaces
 
+/**Mermaid饼图的Dsl。*/
+@ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @DslMarker
 private annotation class MermaidPieChartDsl
 
 /**Mermaid饼图。*/
-@ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @MermaidPieChartDsl
 class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, IndentContent {
 	override val parts: MutableSet<MermaidPieChartPart> = mutableSetOf()

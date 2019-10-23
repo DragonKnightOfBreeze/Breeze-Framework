@@ -7,11 +7,12 @@ import com.windea.breezeframework.dsl.*
 
 //REGION top annotations and interfaces
 
+/**CriticMarkup富文本的Dsl。*/
+@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @DslMarker
 private annotation class CriticMarkupTextDsl
 
 /**CriticMarkup富文本。*/
-@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupTextDsl
 class CriticMarkupText @PublishedApi internal constructor() : DslBuilder, CriticMarkupTextDslInlineEntry {
 	lateinit var text: String

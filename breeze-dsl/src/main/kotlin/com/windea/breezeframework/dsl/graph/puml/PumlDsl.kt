@@ -13,11 +13,12 @@ import org.intellij.lang.annotations.*
 
 //REGION top annotations and interfaces
 
+/**PlantUml的Dsl。*/
+@ReferenceApi("[PlantUml](http://plantuml.com)")
 @DslMarker
 private annotation class PumlDsl
 
-/**PlantUml Dsl.*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
+/**PlantUml。*/
 @PumlDsl
 abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	var title: PumlTitle? = null
@@ -38,8 +39,7 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	override fun String.unaryMinus() = note(this)
 }
 
-/**PlantUml Dsl的配置。*/
-@ReferenceApi("[PlantUml](http://plantuml.com)")
+/**PlantUml的配置。*/
 @PumlDsl
 object PumlConfig : DslConfig {
 	private val indentSizeRange = -2..8

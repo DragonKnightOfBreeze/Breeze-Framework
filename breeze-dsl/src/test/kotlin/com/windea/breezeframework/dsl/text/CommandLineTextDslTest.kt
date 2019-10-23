@@ -4,7 +4,7 @@ import com.windea.breezeframework.dsl.text.CommandLineColor.*
 import com.windea.breezeframework.dsl.text.CommandLineDisplayMode.*
 import org.junit.*
 
-class CommandLineTextDsl {
+class CommandLineTextDslTest {
 	@Test //TESTED OK
 	fun test1() {
 		println(commandLineText {

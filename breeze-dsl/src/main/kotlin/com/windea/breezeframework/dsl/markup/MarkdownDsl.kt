@@ -18,14 +18,15 @@ import com.windea.breezeframework.dsl.markup.MarkdownConfig.wrapLength
 import com.windea.breezeframework.dsl.text.*
 import org.intellij.lang.annotations.*
 
-//DONE 添加Dsl元素：MarkdownAttribute和它的子类
-//DELAY 添加Dsl元素：HtmlBlock
+//DELAY add dsl element: HtmlBlock
 
 //REGION top annotations and interfaces
 
+/**Markdown的Dsl。*/
 @DslMarker
 private annotation class MarkdownDsl
 
+/**Markdown的扩展特性。*/
 @MustBeDocumented
 private annotation class MarkdownDslExtendedFeature
 

@@ -9,11 +9,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 
 //REGION top annotations and interfaces
 
+/**Mermaid序列图的Dsl。*/
+@ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @DslMarker
 private annotation class MermaidSequenceDiagramDsl
 
 /**Mermaid序列图。*/
-@ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, IndentContent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
