@@ -98,14 +98,14 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 
 /**PlantUml序列图参与者的形状。*/
 @PumlSequenceDiagramDsl
-enum class PumlSequenceDiagramParticipantShape(val text: String) {
+enum class PumlSequenceDiagramParticipantShape(internal val text: String) {
 	Actor("actor"), Boundary("boundary"), Control("control"),
 	Entity("entity"), Database("database"), Collections("collections")
 }
 
 /**PlantUml序列图消息箭头的形状。*/
 @PumlSequenceDiagramDsl
-enum class PumlSequenceDiagramMessageArrowShape(val prefix: String, val suffix: String) {
+enum class PumlSequenceDiagramMessageArrowShape(internal val prefix: String, internal val suffix: String) {
 	Arrow("<", ">"), UpArrow("/", "\\"), DownArrow("\\", "/"),
 	ThinArrow("<<", ">>"), ThinUpArrow("//", "\\\\"), ThinDownArrow("\\\\", "//"),
 	DottedArrow("<-", "->"), DottedUpArrow("/-", "-\\"), DottedDownArrow("\\-", "-/"),

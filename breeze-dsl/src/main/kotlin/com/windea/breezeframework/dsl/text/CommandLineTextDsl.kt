@@ -99,7 +99,7 @@ class CommandLineAdvanceText(
 
 /**命令行富文本的颜色。*/
 @CommandLineTextDsl
-enum class CommandLineColor(val code: Int) {
+enum class CommandLineColor(internal val code: Int) {
 	Black(30),
 	Red(31),
 	Green(32),
@@ -122,7 +122,7 @@ enum class CommandLineColor(val code: Int) {
 
 /**命令行富文本的显示格式。*/
 @CommandLineTextDsl
-enum class CommandLineDisplayMode(val code: Int) {
+enum class CommandLineDisplayMode(internal val code: Int) {
 	/**默认。*/
 	Default(0),
 	/**粗体。*/

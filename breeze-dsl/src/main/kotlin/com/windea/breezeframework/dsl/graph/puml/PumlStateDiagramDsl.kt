@@ -215,7 +215,7 @@ class PumlStateDiagramTransition @PublishedApi internal constructor(
 	var text: String? = null //NOTE can wrap by "\n"
 ) : PumlStateDiagramDslElement, WithNode<PumlStateDiagramState> {
 	var arrowColor: String? = null
-	var arrowStyle: PumlArrowStyle? = null
+	var arrowShape: PumlArrowShape? = null
 	var arrowDirection: PumlArrowDirection? = null
 	var arrowLength: Int = 1
 	
@@ -224,7 +224,7 @@ class PumlStateDiagramTransition @PublishedApi internal constructor(
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${it.replaceWithEscapedWrap()}" }.orEmpty()
-		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowStyle?.text).filterNotNull()
+		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowShape?.text).filterNotNull()
 			.joinToStringOrEmpty(",", "[", "]")
 		val arrowDirectionSnippet = arrowDirection?.text.orEmpty()
 		val arrowLengthSnippet = "-" * (arrowLength - 1)
@@ -276,12 +276,12 @@ inline fun PumlStateDiagramDslEntry.transition(sourceState: PumlStateDiagramSimp
 inline fun PumlStateDiagramDslEntry.transition(
 	sourceStateName: String,
 	arrowColor: String?,
-	arrowStyle: PumlArrowStyle?,
+	arrowStyle: PumlArrowShape?,
 	arrowDirection: PumlArrowDirection?,
 	targetStateName: String,
 	text: String? = null
 ) = PumlStateDiagramTransition(sourceStateName, targetStateName, text)
-	.also { it.arrowColor = arrowColor;it.arrowStyle = arrowStyle;it.arrowDirection = arrowDirection }
+	.also { it.arrowColor = arrowColor;it.arrowShape = arrowStyle;it.arrowDirection = arrowDirection }
 	.also { links += it }
 
 @PumlStateDiagramDsl
@@ -313,8 +313,8 @@ inline infix fun PumlStateDiagramTransition.arrowColor(arrowColor: String) =
 	this.also { it.arrowColor = arrowColor }
 
 @PumlStateDiagramDsl
-inline infix fun PumlStateDiagramTransition.arrowStyle(arrowShape: PumlArrowStyle) =
-	this.also { it.arrowStyle = arrowShape }
+inline infix fun PumlStateDiagramTransition.arrowShape(arrowShape: PumlArrowShape) =
+	this.also { it.arrowShape = arrowShape }
 
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramTransition.arrowDirection(arrowDirection: PumlArrowDirection) =

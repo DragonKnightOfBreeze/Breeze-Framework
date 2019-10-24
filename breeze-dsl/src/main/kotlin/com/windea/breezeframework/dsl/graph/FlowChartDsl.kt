@@ -102,7 +102,7 @@ class FlowChartNode @PublishedApi internal constructor(
 		return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 	}
 	
-	enum class Type(val text: String) {
+	enum class Type(internal val text: String) {
 		Start("start"), End("end"), Operation("operation"), InputOutput("inputoutput"),
 		Subroutine("subroutine"), Condition("condition"), Parallel("parallel")
 	}
@@ -123,19 +123,19 @@ class FlowChartConnection @PublishedApi internal constructor(
 		return "$fromNodeName$specificationsSnippet->$toNodeName"
 	}
 	
-	enum class Status(val text: String) {
+	enum class Status(internal val text: String) {
 		Yes("yes"), No("no")
 	}
 	
-	enum class Path(val text: String) {
+	enum class Path(internal val text: String) {
 		Path1("path1"), Path2("path2"), Path3("path3")
 	}
 	
-	enum class Direction(val text: String) {
+	enum class Direction(internal val text: String) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
 	}
 	
-	class Binder(
+	internal class Binder(
 		override var status: Status? = null,
 		override var path: Path? = null,
 		override var direction: Direction? = null

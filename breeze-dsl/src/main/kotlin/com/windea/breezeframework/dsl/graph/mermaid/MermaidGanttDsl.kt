@@ -124,7 +124,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	
 	/**Mermaid甘特图任务的状态。*/
 	@MermaidGanttDsl
-	enum class Status(val text: String?) {
+	enum class Status(internal val text: String?) {
 		ToDo(null), Done("done"), Active("active")
 	}
 }

@@ -237,25 +237,25 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
-enum class PumlTopElementPosition(val text: String) {
+enum class PumlTopElementPosition(internal val text: String) {
 	Right("right"), Left("left"), Center("center")
 }
 
-/**PlantUml箭头的风格。*/
+/**PlantUml箭头的形状。*/
 @PumlDsl
-enum class PumlArrowStyle(val text: String) {
+enum class PumlArrowShape(internal val text: String) {
 	Dotted("dotted"), Dashed("dashed"), Bold("bold"), Hidden("hidden")
 }
 
 /**PlantUml箭头的方向。*/
 @PumlDsl
-enum class PumlArrowDirection(val text: String) {
+enum class PumlArrowDirection(internal val text: String) {
 	Down("down"), Up("up"), Left("left"), Right("right")
 }
 
 /**PlantUml注释的位置。*/
 @PumlDsl
-enum class PumlNotePosition(val text: String) {
+enum class PumlNotePosition(internal val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
 

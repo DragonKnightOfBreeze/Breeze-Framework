@@ -125,7 +125,7 @@ class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 		return "<<$name>>"
 	}
 	
-	enum class Type(val text: String) {
+	enum class Type(@PublishedApi internal val text: String) {
 		Interface("interface"), Abstract("abstract"), Service("service"), Enumeration("enumeration")
 	}
 }
@@ -138,7 +138,7 @@ sealed class MermaidClassDiagramMember(
 	var visibility: Visibility? = null
 	var type: String? = null
 	
-	enum class Visibility(val text: String) {
+	enum class Visibility(internal val text: String) {
 		Public("+"), Private("-"), Protected("#"), Package("~") //NOTE why no "internal" ???
 	}
 }
@@ -197,7 +197,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
 	}
 	
-	enum class Type(val text: String) {
+	enum class Type(internal val text: String) {
 		//NOTE do not allow bidirectional arrows
 		Link("--"),
 		Inheritance("<|--"), Composition("*--"), Aggregation("o--"), Association("<--"),

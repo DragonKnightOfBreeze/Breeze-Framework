@@ -101,7 +101,7 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 		return "$fromActorName ${arrowShape.text} $activateSnippet$toActorName: $text"
 	}
 	
-	enum class ArrowShape(val text: String) {
+	enum class ArrowShape(internal val text: String) {
 		Arrow("->>"), DashedArrow("-->>"), Line("->"), DashedLine("-->"), Cross("-x"), DashedCross("--x")
 	}
 }
@@ -128,7 +128,7 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 		}
 	}
 	
-	enum class Position(val text: String) {
+	enum class Position(internal val text: String) {
 		RightOf("right of"), LeftOf("left of"), Over("over")
 	}
 }

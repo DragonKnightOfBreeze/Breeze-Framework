@@ -182,7 +182,7 @@ open class CreoleHorizontalLine @PublishedApi internal constructor(
 		return type.text * repeatableMarkerCount
 	}
 	
-	enum class Type(val text: String) {
+	enum class Type(internal val text: String) {
 		Normal("-"), Double("="), Strong("_"), Dotted(".")
 	}
 }
@@ -322,7 +322,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
 	
-	enum class Alignment(val textPair: Pair<String, String>) {
+	enum class Alignment(internal val textPair: Pair<String, String>) {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}
 }

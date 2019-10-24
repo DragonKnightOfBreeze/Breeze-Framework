@@ -36,7 +36,7 @@ class MermaidFlowChart @PublishedApi internal constructor(
 		return "graph ${direction.text}\n$contentSnippet"
 	}
 	
-	enum class Direction(val text: String) {
+	enum class Direction(internal val text: String) {
 		TB("TB"), BT("BT"), LR("LR"), RL("RL")
 	}
 }
@@ -96,7 +96,7 @@ class MermaidFlowChartNode @PublishedApi internal constructor(
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
 	
-	enum class Shape(val prefix: String, val suffix: String) {
+	enum class Shape(internal val prefix: String, internal val suffix: String) {
 		/**矩形。*/
 		Rect("[", "]"),
 		/**圆角矩形。*/
@@ -130,7 +130,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 	
 	/**Mermaid流程图连接的箭头形状。*/
 	@MermaidFlowChartDsl
-	enum class ArrowShape(val text: String) {
+	enum class ArrowShape(internal val text: String) {
 		Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 	}
 }

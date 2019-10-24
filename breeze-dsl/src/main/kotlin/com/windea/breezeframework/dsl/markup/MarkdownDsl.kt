@@ -513,7 +513,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 		return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 	}
 	
-	enum class Alignment(val textPair: Pair<String, String>) {
+	enum class Alignment(internal val textPair: Pair<String, String>) {
 		None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 	}
 }
@@ -681,11 +681,11 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
 	
-	enum class Type(val text: String) {
+	enum class Type(internal val text: String) {
 		Normal("!!!"), Collapsed("???"), Opened("!!!+")
 	}
 	
-	enum class Qualifier(val style: String, val text: String) {
+	enum class Qualifier(internal val style: String, internal val text: String) {
 		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 		Bug("bug", "bug"),
 		Danger("danger", "danger"), Error("danger", "error"),

@@ -76,12 +76,6 @@ interface CanGenerateContent {
 	fun _toGeneratedString(): String
 }
 
-/**可省略声明。*/
-@GenericDsl
-interface CanOmitDeclaration {
-	val omitDeclaration: Boolean
-}
-
 /**包含可被视为文本的子元素。*/
 @GenericDsl
 interface WithText<T> {
