@@ -64,10 +64,10 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	val name: String //NOTE can wrap by "\n", treat blank as whitespace
+	val text: String //NOTE can wrap by "\n", treat blank as whitespace
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
-		return "title: ${name.replaceWithEscapedWrap()}"
+		return "title: ${text.replaceWithEscapedWrap()}"
 	}
 }
 
@@ -144,8 +144,8 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().also { it.block() }
 
 @SequenceDiagramDsl
-inline fun SequenceDiagram.title(naem: String) =
-	SequenceDiagramTitle(naem).also { title = it }
+inline fun SequenceDiagram.title(text: String) =
+	SequenceDiagramTitle(text).also { title = it }
 
 @SequenceDiagramDsl
 inline fun SequenceDiagramDslEntry.participant(name: String) =

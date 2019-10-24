@@ -59,10 +59,10 @@ interface MermaidGanttDslElement : MermaidDslElement
 /**Mermaid甘特图标题。*/
 @MermaidGanttDsl
 class MermaidGanttTitle @PublishedApi internal constructor(
-	val name: String
+	val text: String
 ) : MermaidGanttDslElement {
 	override fun toString(): String {
-		return "title $name"
+		return "title $text"
 	}
 }
 
@@ -135,8 +135,8 @@ class MermaidGanttTask @PublishedApi internal constructor(
 inline fun mermaidGantt(block: MermaidGantt.() -> Unit) = MermaidGantt().also { it.block() }
 
 @MermaidGanttDsl
-inline fun MermaidGantt.title(name: String) =
-	MermaidGanttTitle(name).also { title = it }
+inline fun MermaidGantt.title(text: String) =
+	MermaidGanttTitle(text).also { title = it }
 
 @MermaidGanttDsl
 inline fun MermaidGantt.dateFormat(expression: String = "YYYY-MM-DD") =
