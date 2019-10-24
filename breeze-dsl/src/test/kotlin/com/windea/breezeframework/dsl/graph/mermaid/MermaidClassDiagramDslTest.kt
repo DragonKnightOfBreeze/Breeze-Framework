@@ -1,6 +1,6 @@
 package com.windea.breezeframework.dsl.graph.mermaid
 
-import com.windea.breezeframework.dsl.graph.mermaid.MermaidClassDiagramAnnotationType.*
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidClassDiagramAnnotation.Type.*
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {

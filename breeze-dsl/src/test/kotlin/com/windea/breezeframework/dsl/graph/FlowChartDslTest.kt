@@ -1,8 +1,8 @@
 package com.windea.breezeframework.dsl.graph
 
-import com.windea.breezeframework.dsl.graph.FlowChartConnectionBoolean.*
-import com.windea.breezeframework.dsl.graph.FlowChartConnectionDirection.*
-import com.windea.breezeframework.dsl.graph.FlowChartConnectionPath.*
+import com.windea.breezeframework.dsl.graph.FlowChartConnection.Direction.*
+import com.windea.breezeframework.dsl.graph.FlowChartConnection.Path.*
+import com.windea.breezeframework.dsl.graph.FlowChartConnection.Status.*
 import kotlin.test.*
 
 class FlowChartDslTest {
@@ -32,10 +32,10 @@ class FlowChartDslTest {
 			inputOutput("io", "catch something...")
 			parallel("para", "parallel tasks")
 			
-			"st" fromTo "op1" andTo "cond"
-			"cond"(Yes) fromTo "io" andTo "e"
+			"st" fromTo "op1" fromTo "cond"
+			"cond"(Yes) fromTo "io" fromTo "e"
 			"cond"(No) fromTo "para"
-			"para"(Path1, Bottom) fromTo "sub1"(Right) andTo "op1"
+			"para"(Path1, Bottom) fromTo "sub1"(Right) fromTo "op1"
 			"para"(Path2, Top) fromTo "op1"
 		})
 	}

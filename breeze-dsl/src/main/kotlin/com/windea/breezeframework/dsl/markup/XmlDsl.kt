@@ -36,7 +36,7 @@ class Xml @PublishedApi internal constructor() : DslBuilder,
 	override fun String.unaryMinus() = comment(this)
 	
 	@GenericDsl
-	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
+	override fun String.invoke(block: XmlElement.() -> Unit) = element(this, block = block)
 	
 	@GenericDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
@@ -97,7 +97,7 @@ class XmlText @PublishedApi internal constructor(
 @XmlDsl
 class XmlComment @PublishedApi internal constructor(
 	val text: String
-) : XmlNode(), WrapContent, IndentContent {
+) : XmlNode(), CanWrap, CanIndent {
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true
 	
@@ -114,12 +114,14 @@ class XmlComment @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), WrapContent, IndentContent,
-	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement> {
+) : XmlNode(), CanWrap, CanIndent,
+	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement>, WithName {
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
 	override var indentContent: Boolean = true
+	
+	override val _name: String get() = name
 	
 	override fun toString(): String {
 		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
@@ -138,7 +140,7 @@ class XmlElement @PublishedApi internal constructor(
 	override fun String.unaryMinus() = comment(this)
 	
 	@GenericDsl
-	override fun String.invoke(builder: XmlElement.() -> Unit) = element(this, block = builder)
+	override fun String.invoke(block: XmlElement.() -> Unit) = element(this, block = block)
 	
 	@GenericDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =

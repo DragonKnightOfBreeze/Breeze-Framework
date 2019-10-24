@@ -17,7 +17,7 @@ private annotation class MermaidGanttDsl
 
 /**Mermaid甘特图。*/
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, IndentContent {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndent {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
@@ -46,7 +46,7 @@ interface MermaidGanttDslEntry : MermaidDslEntry, WithBlock<MermaidGanttSection>
 	}
 	
 	@GenericDsl
-	override fun String.invoke(builder: MermaidGanttSection.() -> Unit) = section(this, builder)
+	override fun String.invoke(block: MermaidGanttSection.() -> Unit) = section(this, block)
 }
 
 /**Mermaid甘特图Dsl的元素。*/
@@ -79,10 +79,12 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, IndentContent, WithText<MermaidGanttTask> {
+) : MermaidGanttDslElement, CanIndent, WithText<MermaidGanttTask>, WithName {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false
+	
+	override val _name: String get() = name
 	
 	override fun toString(): String {
 		//trim "\n" if no tasks
@@ -100,14 +102,16 @@ class MermaidGanttSection @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttTask @PublishedApi internal constructor(
 	val name: String,
-	var status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo
-) : MermaidGanttDslElement {
+	var status: Status = Status.ToDo
+) : MermaidGanttDslElement, WithName {
 	var alias: String? = null
 	var isCrit: Boolean = false
 	//LocalDate format or "after $alias" format
 	var initTime: String? = null
 	//LocalDate format or Duration format
 	var finishTime: String? = null
+	
+	override val _name: String get() = name
 	
 	override fun toString(): String {
 		val critSnippet = if(isCrit) "crit" else null
@@ -116,20 +120,18 @@ class MermaidGanttTask @PublishedApi internal constructor(
 			.filterNotNull().joinToStringOrEmpty()
 		return "$name: $paramsSnippet"
 	}
-}
-
-//REGION enumerations and constants
-
-/**Mermaid甘特图任务的状态。*/
-@MermaidGanttDsl
-enum class MermaidGanttTaskStatus(val text: String?) {
-	ToDo(null), Done("done"), Active("active")
+	
+	/**Mermaid甘特图任务的状态。*/
+	@MermaidGanttDsl
+	enum class Status(val text: String?) {
+		ToDo(null), Done("done"), Active("active")
+	}
 }
 
 //REGION build extensions
 
 @MermaidGanttDsl
-inline fun mermaidGantt(builder: MermaidGantt.() -> Unit) = MermaidGantt().also { it.builder() }
+inline fun mermaidGantt(block: MermaidGantt.() -> Unit) = MermaidGantt().also { it.block() }
 
 @MermaidGanttDsl
 inline fun MermaidGantt.title(name: String) =
@@ -144,11 +146,11 @@ inline fun MermaidGanttDslEntry.section(name: String) =
 	MermaidGanttSection(name).also { sections += it }
 
 @MermaidGanttDsl
-inline fun MermaidGanttDslEntry.section(name: String, builder: MermaidGanttSection.() -> Unit) =
-	MermaidGanttSection(name).also { it.builder() }.also { sections += it }
+inline fun MermaidGanttDslEntry.section(name: String, block: MermaidGanttSection.() -> Unit) =
+	MermaidGanttSection(name).also { it.block() }.also { sections += it }
 
 @MermaidGanttDsl
-inline fun MermaidGanttSection.task(name: String, status: MermaidGanttTaskStatus = MermaidGanttTaskStatus.ToDo) =
+inline fun MermaidGanttSection.task(name: String, status: MermaidGanttTask.Status = MermaidGanttTask.Status.ToDo) =
 	MermaidGanttTask(name, status).also { tasks += it }
 
 @MermaidGanttDsl
@@ -156,7 +158,7 @@ inline infix fun MermaidGanttTask.alias(alias: String) =
 	this.also { it.alias = alias }
 
 @MermaidGanttDsl
-inline infix fun MermaidGanttTask.status(status: MermaidGanttTaskStatus) =
+inline infix fun MermaidGanttTask.status(status: MermaidGanttTask.Status) =
 	this.also { it.status = status }
 
 @MermaidGanttDsl

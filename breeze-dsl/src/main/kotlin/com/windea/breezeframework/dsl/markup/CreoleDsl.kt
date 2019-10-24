@@ -175,20 +175,24 @@ class CreoleTextBlock @PublishedApi internal constructor(
 
 /**Creole水平分割线。*/
 @CreoleDsl
-class CreoleHorizontalLine @PublishedApi internal constructor(
-	val type: CreoleHorizontalLineType = CreoleHorizontalLineType.Normal
+open class CreoleHorizontalLine @PublishedApi internal constructor(
+	val type: Type = Type.Normal
 ) : CreoleDslTopElement {
 	override fun toString(): String {
 		return type.text * repeatableMarkerCount
 	}
+	
+	enum class Type(val text: String) {
+		Normal("-"), Double("="), Strong("_"), Dotted(".")
+	}
 }
 
-/**Creole水平分割标题。*/
+/**Creole水平标题。*/
 @CreoleDsl
-class CreoleTitle @PublishedApi internal constructor(
+class CreoleHorizontalTitle @PublishedApi internal constructor(
 	val text: String,
-	val type: CreoleHorizontalLineType = CreoleHorizontalLineType.Normal
-) : CreoleDslTopElement {
+	type: Type = Type.Normal
+) : CreoleHorizontalLine(type) {
 	override fun toString(): String {
 		val markers = type.text * 2
 		return "$markers$text$markers"
@@ -317,6 +321,10 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		val rowsSnippet = rows.joinToStringOrEmpty("\n")
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
+	
+	enum class Alignment(val textPair: Pair<String, String>) {
+		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
+	}
 }
 
 /**Creole表格头部。*/
@@ -339,7 +347,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 	override fun String.unaryPlus() = column(this)
 	
 	@CreoleDsl
-	inline infix fun CreoleTableColumn.align(alignment: CreoleTableAlignment) =
+	inline infix fun CreoleTableColumn.align(alignment: CreoleTable.Alignment) =
 		this.also { it.alignment = alignment }
 }
 
@@ -369,7 +377,7 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 	val text: String = emptyColumnText
 ) : CreoleDslElement {
 	var color: String? = null
-	var alignment: CreoleTableAlignment = CreoleTableAlignment.None //only for columns in table header
+	var alignment: CreoleTable.Alignment = CreoleTable.Alignment.None //only for columns in table header
 	
 	override fun toString(): String {
 		val colorSnippet = color?.let { "<$color> " }.orEmpty()
@@ -381,20 +389,6 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 		val (l, r) = alignment.textPair
 		return "$l $colorSnippet$text $r"
 	}
-}
-
-//REGION enumerations and constants
-
-/**Creole水平线类型。*/
-@CreoleDsl
-enum class CreoleHorizontalLineType(val text: String) {
-	Normal("-"), Double("="), Strong("_"), Dotted(".")
-}
-
-/**Creole表格的对齐方式。*/
-@CreoleDsl
-enum class CreoleTableAlignment(val textPair: Pair<String, String>) {
-	None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 }
 
 //REGION build extensions
@@ -451,12 +445,12 @@ inline fun CreoleDslEntry.list(block: CreoleList.() -> Unit) =
 	CreoleList().also { it.block() }.also { content += it }
 
 @CreoleDsl
-inline fun CreoleDslEntry.hr(type: CreoleHorizontalLineType = CreoleHorizontalLineType.Normal) =
+inline fun CreoleDslEntry.hr(type: CreoleHorizontalLine.Type = CreoleHorizontalLine.Type.Normal) =
 	CreoleHorizontalLine(type).also { content += it }
 
 @CreoleDsl
-inline fun CreoleDslEntry.title(text: String, type: CreoleHorizontalLineType = CreoleHorizontalLineType.Normal) =
-	CreoleTitle(text, type).also { content += it }
+inline fun CreoleDslEntry.title(text: String, type: CreoleHorizontalLine.Type = CreoleHorizontalLine.Type.Normal) =
+	CreoleHorizontalTitle(text, type).also { content += it }
 
 @CreoleDsl
 inline fun CreoleDslEntry.h1(text: String) =

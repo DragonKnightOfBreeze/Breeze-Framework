@@ -37,7 +37,7 @@ fun <T> Quadruple<T, T, T, T>.toList() = listOf(first, second, third, fourth)
 //REGION build extensions
 
 /**从二元素元组构造三元素元组。*/
-infix fun <A, B, C> Pair<A, B>.andTo(that: C): Triple<A, B, C> = Triple(first, second, that)
+infix fun <A, B, C> Pair<A, B>.fromTo(that: C): Triple<A, B, C> = Triple(first, second, that)
 
 /**从三元素元组构造四元素元组。*/
 infix fun <A, B, C, D> Triple<A, B, C>.thenTo(that: D): Quadruple<A, B, C, D> = Quadruple(first, second, third, that)

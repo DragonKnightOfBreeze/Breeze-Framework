@@ -11,6 +11,6 @@ class MermaidPieChartDslKtTest {
 			part("Sleep", 50)
 		})
 	}
+	
+	annotation class FooAnnotation(val abc: Array<String> = [])
 }
-
-annotation class FooAnnotation(val abc: Array<String> = [])

@@ -68,7 +68,7 @@ sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
-) : PumlDslElement, IndentContent, WrapContent {
+) : PumlDslElement, CanIndent, CanWrap {
 	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
@@ -153,7 +153,7 @@ class PumlCaption @PublishedApi internal constructor(
 class PumlNote @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
-) : PumlDslElement, IndentContent, WrapContent {
+) : PumlDslElement, CanIndent, CanWrap {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
@@ -222,7 +222,7 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, IndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
@@ -290,8 +290,8 @@ inline fun Puml.note(text: String) =
 	PumlNote(text).also { notes += it }
 
 @PumlDsl
-inline fun Puml.skinParams(builder: PumlSkinParams.() -> Unit) =
-	skinParams.builder()
+inline fun Puml.skinParams(block: PumlSkinParams.() -> Unit) =
+	skinParams.block()
 
 @PumlDsl
 inline infix fun PumlElement.at(position: PumlTopElementPosition) =

@@ -1,9 +1,8 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "PropertyName")
 
 package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.interfaces.*
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。
@@ -25,7 +24,9 @@ internal annotation class GenericDsl
 internal annotation class InlineDsl
 
 /**Dsl的构建器。*/
-interface DslBuilder : CanToString
+interface DslBuilder {
+	override fun toString(): String
+}
 
 /**Dsl的配置。*/
 interface DslConfig
@@ -34,99 +35,116 @@ interface DslConfig
 interface DslEntry
 
 /**Dsl的元素。*/
-interface DslElement : CanToString
+interface DslElement {
+	override fun toString(): String
+}
 
 //REGION dsl interfaces
 
-/**包含可换行的内容。这个接口的优先级高于[IndentContent]。*/
+/**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @GenericDsl
-interface WrapContent {
+interface CanWrap {
 	var wrapContent: Boolean
 }
 
 /**包含可缩进的内容。*/
 @GenericDsl
-interface IndentContent {
+interface CanIndent {
 	var indentContent: Boolean
 }
 
 /**包含可生成的内容。可能替换原始文本。*/
 @GenericDsl
-interface GenerateContent {
+interface CanGenerate {
 	var generateContent: Boolean
 	
 	fun toGeneratedString(): String
 }
 
-/**包含（唯一主要的）可被视为文本的内容。*/
+/**可省略声明。*/
 @GenericDsl
-interface WithText<T : DslElement> {
+interface CanOmit {
+	val isOmitted: Boolean
+}
+
+/**包含可被视为文本的子元素。*/
+@GenericDsl
+interface WithText<T> {
 	/**添加主要的文本元素为子元素。*/
 	@GenericDsl
 	operator fun String.unaryPlus(): T
 }
 
-/**包含（唯一主要的）可被视为注释的内容。*/
+/**包含可被视为注释的子元素。*/
 @GenericDsl
-interface WithComment<T : DslElement> {
+interface WithComment<T> {
 	/**添加注释元素为子元素。*/
 	@GenericDsl
 	operator fun String.unaryMinus(): T
 }
 
-/**包含（唯一主要的）可被视为块的内容。*/
+/**包含可被视为块的子元素。*/
 @GenericDsl
-interface WithBlock<T : DslElement> {
+interface WithBlock<T> {
 	/**添加主要的块元素为子元素。*/
 	@GenericDsl
-	operator fun String.invoke(builder: T.() -> Unit = {}): T
+	operator fun String.invoke(block: T.() -> Unit = {}): T
 }
 
-/**包含（唯一主要的）可表示一个元素到另一个元素的转变的内容。*/
-@Suppress("PropertyName")
+/**带有一个可用于查询的名字。这个名字不是唯一的。*/
 @GenericDsl
-interface WithTransition<N : DslElement, T> where T : DslElement {
-	val N._nodeName: String
-	val T._toNodeName: String
-	
+interface WithName {
+	val _name: String
+}
+
+/**包含两个和多个可被视为节点的子元素。*/
+@GenericDsl
+interface WithNode<N : WithName> {
+	val _fromNodeName: String
+	val _toNodeName: String
+}
+
+/**包含可被视为转换的子元素。*/
+@GenericDsl
+interface WithTransition<N : WithName, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
 	infix fun String.fromTo(other: String): T
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun String.fromTo(other: N): T = this fromTo other._nodeName
+	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other._name }
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun N.fromTo(other: String): T = this._nodeName fromTo other
+	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo._name fromTo other }
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun N.fromTo(other: N): T = this._nodeName fromTo other._nodeName
+	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo._name fromTo other._name }
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.andTo(other: String): T = this._toNodeName fromTo other
+	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo._toNodeName fromTo other }
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.andTo(other: N): T = this._toNodeName fromTo other
+	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo._toNodeName fromTo other._name }
 }
 
 //REGION build extensions
 
 /**设置是否换行内容。*/
 @GenericDsl
-inline infix fun <T : WrapContent> T.wrap(value: Boolean) = this.also { wrapContent = value }
+inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { wrapContent = value }
 
 /**设置是否缩进内容。*/
 @GenericDsl
-inline infix fun <T : IndentContent> T.indent(value: Boolean) = this.also { indentContent = value }
+inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { indentContent = value }
 
 /**设置是否生成内容。*/
 @GenericDsl
-inline infix fun <T : GenerateContent> T.generate(value: Boolean) = this.also { generateContent = value }
+inline infix fun <T : CanGenerate> T.generate(value: Boolean) = this.also { generateContent = value }
 
 //REGION helpful extensions
 

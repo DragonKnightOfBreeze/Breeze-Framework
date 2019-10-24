@@ -4,11 +4,11 @@ package com.windea.breezeframework.dsl.graph.puml
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
+//DELAY puml is too complex to write dsl
 //TODO fully support
 
 //REGION top annotations and interfaces
@@ -42,11 +42,13 @@ interface PumlSequenceDiagramDslElement : PumlDslElement
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : PumlSequenceDiagramDslElement, CanEqual {
+) : PumlSequenceDiagramDslElement, WithName {
 	var alias: String? = null
 	var order: Int? = null
 	var color: String? = null
 	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
+	
+	override val _name: String get() = alias ?: name
 	
 	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
 	
@@ -72,10 +74,13 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String? = null,  //NOTE can wrap by "\n"
 	val isBidirectional: Boolean = false
-) : PumlSequenceDiagramDslElement {
+) : PumlSequenceDiagramDslElement, WithNode<PumlSequenceDiagramParticipant> {
 	var arrowColor: String? = null
 	var arrowShape: PumlSequenceDiagramMessageArrowShape = PumlSequenceDiagramMessageArrowShape.Arrow
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
+	
+	override val _fromNodeName: String get() = fromActorName
+	override val _toNodeName: String get() = toActorName
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
@@ -110,7 +115,7 @@ enum class PumlSequenceDiagramMessageArrowShape(val prefix: String, val suffix: 
 //REGION build extensions
 
 @PumlSequenceDiagramDsl
-inline fun pumlSequenceDiagram(builder: PumlSequenceDiagram.() -> Unit) = PumlSequenceDiagram().also { it.builder() }
+inline fun pumlSequenceDiagram(block: PumlSequenceDiagram.() -> Unit) = PumlSequenceDiagram().also { it.block() }
 
 @PumlSequenceDiagramDsl
 inline infix fun PumlSequenceDiagramParticipant.alias(alias: String) =

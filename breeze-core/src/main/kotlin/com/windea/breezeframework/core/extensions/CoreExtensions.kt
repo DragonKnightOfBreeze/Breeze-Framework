@@ -10,10 +10,10 @@ private val logger = KotlinLogging.logger {}
 
 //REGION global extensions
 
-/**转化为指定类型，或者抛出异常。用于链式调用。*/
+/**强制转化为指定类型，或者抛出异常。用于链式调用。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
-/**转化为指定类型，或者返回null。用于链式调用。*/
+/**强制转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
 //REGION standard.kt extensions (TODOs)
