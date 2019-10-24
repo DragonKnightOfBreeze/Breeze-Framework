@@ -7,7 +7,7 @@ class MermaidPieChartDslKtTest {
 	fun test1() {
 		println(mermaidPieChart {
 			part("Study", 20)
-			part("Play", 30)
+			part("Play", 30).
 			part("Sleep", 50)
 		})
 	}

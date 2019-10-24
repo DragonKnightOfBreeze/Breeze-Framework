@@ -19,14 +19,13 @@ private annotation class MermaidPieChartDsl
 
 /**Mermaid饼图。*/
 @MermaidPieChartDsl
-class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndent {
+class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndentContent {
 	override val parts: MutableSet<MermaidPieChartPart> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.where(indentContent) { it.prependIndent(indent) }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "pie\n$contentSnippet"
 	}
 }
@@ -38,7 +37,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val parts: MutableSet<MermaidPieChartPart>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return parts.joinToStringOrEmpty("\n")
 	}
 }

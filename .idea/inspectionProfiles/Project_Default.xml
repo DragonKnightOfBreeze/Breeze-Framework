@@ -1,13 +1,40 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="CanBeParameter" enabled="true" level="UNUSED ENTRY" enabled_by_default="true" />
+    <inspection_tool class="CanBeParameter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="CanBePrimaryConstructorProperty" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ComplexRedundantLet" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="EnumEntryName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ExplicitThis" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="FunctionName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="IntroduceWhenSubject" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="KotlinUnusedImport" enabled="true" level="UNUSED ENTRY" enabled_by_default="true" />
+    <inspection_tool class="KotlinUnusedImport" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="LossyEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MemberVisibilityCanBePrivate" enabled="false" level="INFO" enabled_by_default="false" />
     <inspection_tool class="NonAsciiCharacters" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="UnusedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RedundantCompanionReference" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantEmptyInitializerBlock" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantExplicitType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantModalityModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSamConstructor" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSemicolon" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantSuspendModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantUnitExpression" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantUnitReturnType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantVisibilityModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveEmptyClassBody" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveEmptyParenthesesFromLambdaCall" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveForLoopIndices" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveRedundantBackticks" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveRedundantCallsOfConversionMethods" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveRedundantQualifierName" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveRedundantSpreadOperator" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveSetterParameterType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RemoveSingleExpressionStringTemplate" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="SimpleRedundantLet" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedEquals" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedReceiverParameter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedSymbol" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
   </profile>
 </component>

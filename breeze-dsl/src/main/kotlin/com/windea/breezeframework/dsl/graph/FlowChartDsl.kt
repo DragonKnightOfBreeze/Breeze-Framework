@@ -21,10 +21,10 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 	override val nodes: MutableSet<FlowChartNode> = mutableSetOf()
 	override val connections: MutableList<FlowChartConnection> = mutableListOf()
 	
+	override var splitContent: Boolean = true
+	
 	override fun toString(): String {
-		val nodesSnippet = nodes.joinToString("\n")
-		val connectionsSnippet = connections.joinToString("\n")
-		return "$nodesSnippet\n\n$connectionsSnippet"
+		return _toContentString()
 	}
 }
 
@@ -32,9 +32,16 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 
 /**流程图Dsl的入口。*/
 @FlowChartDsl
-interface FlowChartDslEntry : DslEntry, WithTransition<FlowChartNode, FlowChartConnection> {
+interface FlowChartDslEntry : DslEntry, CanSplitContent, WithTransition<FlowChartNode, FlowChartConnection> {
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
+	
+	fun _toContentString(): String {
+		return arrayOf(
+			nodes.joinToStringOrEmpty("\n"),
+			connections.joinToStringOrEmpty("\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+	}
 	
 	@GenericDsl
 	override fun String.fromTo(other: String) = connection(this, other)

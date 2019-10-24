@@ -19,17 +19,17 @@ private annotation class MermaidSequenceDiagramDsl
 
 /**Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
-class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, CanIndent {
+class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, CanIndentContent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "sequenceDiagram\n$contentSnippet"
 	}
 }
@@ -38,20 +38,20 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 
 /**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
-interface MermaidSequenceDiagramDslEntry : MermaidDslEntry,
+interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplitContent,
 	WithTransition<MermaidSequenceDiagramParticipant, MermaidSequenceDiagramMessage> {
 	val participants: MutableSet<MermaidSequenceDiagramParticipant>
 	val messages: MutableList<MermaidSequenceDiagramMessage>
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
 			messages.joinToStringOrEmpty("\n"),
 			notes.joinToStringOrEmpty("\n"),
 			scopes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -138,18 +138,18 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 sealed class MermaidSequenceDiagramScope(
 	val type: String,
 	val text: String?
-) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, CanIndent {
+) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, CanIndentContent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" }.orEmpty()
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "$type$textSnippet\n$contentSnippet\nend"
 	}
 }
@@ -174,7 +174,7 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	val elseScopes: MutableList<MermaidSequenceDiagramElse> = mutableListOf()
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
+		val contentSnippet = _toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
 		return "$contentSnippet$elseScopesSnippet"

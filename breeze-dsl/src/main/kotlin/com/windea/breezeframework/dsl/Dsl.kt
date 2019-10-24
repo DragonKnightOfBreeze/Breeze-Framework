@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "PropertyName")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.dsl
 
@@ -13,6 +13,7 @@ import com.windea.breezeframework.core.extensions.*
 //Dsl构建方法需要尽可能地写成扩展方法。
 //Dsl的主要功能是生成处理后的字符串，尽量避免添加其他无关的功能。
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
+//下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
 //REGION top annotations and interfaces
 
@@ -41,30 +42,44 @@ interface DslElement {
 
 //REGION dsl interfaces
 
-/**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
+/**包含可换行的内容。这个接口的优先级要高于[CanIndentContent]。*/
 @GenericDsl
-interface CanWrap {
+interface CanWrapContent {
 	var wrapContent: Boolean
+	
+	val _wrap: String get() = if(wrapContent) "\n" else ""
 }
 
 /**包含可缩进的内容。*/
 @GenericDsl
-interface CanIndent {
+interface CanIndentContent {
 	var indentContent: Boolean
+	
+	fun String._applyIndent(indent: String, condition: Boolean = true): String {
+		return if(indentContent && condition) this.prependIndent(indent) else this
+	}
 }
 
-/**包含可生成的内容。可能替换原始文本。*/
+/**包含可分割的内容。一般使用空行进行分割。*/
 @GenericDsl
-interface CanGenerate {
+interface CanSplitContent {
+	var splitContent: Boolean
+	
+	val _splitWrap: String get() = if(splitContent) "\n\n" else "\n"
+}
+
+/**可生成文本。可能替换原始文本。*/
+@GenericDsl
+interface CanGenerateContent {
 	var generateContent: Boolean
 	
-	fun toGeneratedString(): String
+	fun _toGeneratedString(): String
 }
 
 /**可省略声明。*/
 @GenericDsl
-interface CanOmit {
-	val isOmitted: Boolean
+interface CanOmitDeclaration {
+	val omitDeclaration: Boolean
 }
 
 /**包含可被视为文本的子元素。*/
@@ -136,15 +151,19 @@ interface WithTransition<N : WithName, T : WithNode<N>> {
 
 /**设置是否换行内容。*/
 @GenericDsl
-inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { wrapContent = value }
+inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
 
 /**设置是否缩进内容。*/
 @GenericDsl
-inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { indentContent = value }
+inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { it.indentContent = value }
+
+/**设置是否分割内容。*/
+@GenericDsl
+inline infix fun <T : CanSplitContent> T.split(value: Boolean) = this.also { it.splitContent = value }
 
 /**设置是否生成内容。*/
 @GenericDsl
-inline infix fun <T : CanGenerate> T.generate(value: Boolean) = this.also { generateContent = value }
+inline infix fun <T : CanGenerateContent> T.generate(value: Boolean) = this.also { it.generateContent = value }
 
 //REGION helpful extensions
 

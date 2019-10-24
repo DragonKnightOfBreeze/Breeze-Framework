@@ -22,11 +22,15 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
 	
+	override var splitContent: Boolean = true
+	
 	override fun toString(): String {
-		val prefixSnippet = toPrefixString()
-		val contentSnippet = toContentString()
-		val suffixSnippet = toSuffixString()
-		return "@startuml\n$prefixSnippet\n\n$contentSnippet\n\n$suffixSnippet\n@enduml"
+		val contentSnippet = arrayOf(
+			toPrefixString(),
+			_toContentString(),
+			toSuffixString()
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+		return "@startuml\n$contentSnippet\n@enduml"
 	}
 }
 
@@ -34,15 +38,15 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 
 /**PlantUml状态图Dsl的入口。*/
 @PumlStateDiagramDsl
-interface PumlStateDiagramDslEntry : PumlDslEntry, WithTransition<PumlStateDiagramState, PumlStateDiagramTransition> {
+interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplitContent, WithTransition<PumlStateDiagramState, PumlStateDiagramTransition> {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramTransition>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			states.joinToStringOrEmpty("\n"),
 			links.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -123,14 +127,15 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 	name: String,
 	text: String? = null
-) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, CanIndent {
+) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, CanIndentContent {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
+		val contentSnippet = _toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val nameSnippet = alias ?: name
 		val extraSnippet = alias?.let { "\nstate ${name.replaceWithEscapedWrap().wrapQuote(quote)} as $alias" }
@@ -159,7 +164,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String,
 	text: String? = null
-) : PumlStateDiagramState(name, text), CanIndent {
+) : PumlStateDiagramState(name, text), CanIndentContent {
 	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
 	
@@ -188,7 +193,9 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
 	
-	override fun toString() = toContentString()
+	override var splitContent: Boolean = true
+	
+	override fun toString() = _toContentString()
 }
 
 /**

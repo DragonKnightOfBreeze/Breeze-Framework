@@ -101,7 +101,7 @@ class JsonString @PublishedApi internal constructor(
 @JsonDsl
 class JsonArray @PublishedApi internal constructor(
 	value: List<JsonElement<*>> = listOf()
-) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrap, CanIndent {
+) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrapContent, CanIndentContent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	
@@ -120,7 +120,7 @@ class JsonArray @PublishedApi internal constructor(
 @JsonDsl
 class JsonObject @PublishedApi internal constructor(
 	value: Map<String, JsonElement<*>> = mapOf()
-) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrap, CanIndent {
+) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrapContent, CanIndentContent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	

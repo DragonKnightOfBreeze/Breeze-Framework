@@ -19,7 +19,7 @@ private annotation class MermaidFlowChartDsl
 @MermaidFlowChartDsl
 class MermaidFlowChart @PublishedApi internal constructor(
 	val direction: Direction
-) : Mermaid(), MermaidFlowChartDslEntry, CanIndent {
+) : Mermaid(), MermaidFlowChartDslEntry, CanIndentContent {
 	override val nodes: MutableSet<MermaidFlowChartNode> = mutableSetOf()
 	override val links: MutableList<MermaidFlowChartLink> = mutableListOf()
 	override val subGraphs: MutableList<MermaidFlowChartSubGraph> = mutableListOf()
@@ -29,10 +29,10 @@ class MermaidFlowChart @PublishedApi internal constructor(
 	override val classRefs: MutableSet<MermaidFlowChartClassRef> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "graph ${direction.text}\n$contentSnippet"
 	}
 	
@@ -45,7 +45,8 @@ class MermaidFlowChart @PublishedApi internal constructor(
 
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
-interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
+interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplitContent,
+	WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
 	val nodes: MutableSet<MermaidFlowChartNode>
 	val links: MutableList<MermaidFlowChartLink>
 	val subGraphs: MutableList<MermaidFlowChartSubGraph>
@@ -54,7 +55,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlow
 	val classDefs: MutableSet<MermaidFlowChartClassDef>
 	val classRefs: MutableSet<MermaidFlowChartClassRef>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			nodes.joinToStringOrEmpty("\n"),
 			links.joinToStringOrEmpty("\n"),
@@ -63,7 +64,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlow
 			linkStyles.joinToStringOrEmpty("\n"),
 			classDefs.joinToStringOrEmpty("\n"),
 			classRefs.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -138,7 +139,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 @MermaidFlowChartDsl
 class MermaidFlowChartSubGraph @PublishedApi internal constructor(
 	val name: String
-) : MermaidDslElement, MermaidFlowChartDslEntry, CanIndent {
+) : MermaidDslElement, MermaidFlowChartDslEntry, CanIndentContent {
 	override val nodes: MutableSet<MermaidFlowChartNode> = mutableSetOf()
 	override val links: MutableList<MermaidFlowChartLink> = mutableListOf()
 	override val subGraphs: MutableList<MermaidFlowChartSubGraph> = mutableListOf()
@@ -148,10 +149,10 @@ class MermaidFlowChartSubGraph @PublishedApi internal constructor(
 	override val classRefs: MutableSet<MermaidFlowChartClassRef> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "subgraph $name\n$contentSnippet\nend"
 	}
 }

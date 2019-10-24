@@ -23,10 +23,13 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 	override val messages: MutableList<SequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<SequenceDiagramNote> = mutableListOf()
 	
+	override var splitContent: Boolean = true
+	
 	override fun toString(): String {
-		val titleSnippet = title?.let { "$it\n\n" }.orEmpty()
-		val contentSnippet = toContentString()
-		return "$titleSnippet$contentSnippet"
+		return arrayOf(
+			title?.toString().orEmpty(),
+			_toContentString()
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 }
 
@@ -34,17 +37,18 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
-interface SequenceDiagramDslEntry : DslEntry, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
+interface SequenceDiagramDslEntry : DslEntry, CanSplitContent,
+	WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
 	val participants: MutableSet<SequenceDiagramParticipant>
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
 			messages.joinToStringOrEmpty("\n"),
 			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToString("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl

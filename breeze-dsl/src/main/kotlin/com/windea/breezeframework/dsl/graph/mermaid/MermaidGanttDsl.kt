@@ -17,19 +17,19 @@ private annotation class MermaidGanttDsl
 
 /**Mermaid甘特图。*/
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndent {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndentContent {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			arrayOf(title, dateFormat).filterNotNull().joinToStringOrEmpty("\n"),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
-			.let { if(indentContent) it.prependIndent(indent) else it }
+			arrayOf(title, dateFormat).filterNotNull().joinToString("\n"),
+			_toContentString()
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)._applyIndent(indent)
 		return "gantt\n$contentSnippet"
 	}
 }
@@ -38,11 +38,12 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
-interface MermaidGanttDslEntry : MermaidDslEntry, WithBlock<MermaidGanttSection> {
+interface MermaidGanttDslEntry : MermaidDslEntry, CanSplitContent,
+	WithBlock<MermaidGanttSection> {
 	val sections: MutableList<MermaidGanttSection>
 	
-	fun toContentString(): String {
-		return sections.joinToStringOrEmpty("\n\n")
+	fun _toContentString(): String {
+		return sections.joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -79,7 +80,7 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndent, WithText<MermaidGanttTask>, WithName {
+) : MermaidGanttDslElement, CanIndentContent, WithText<MermaidGanttTask>, WithName {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false

@@ -9,7 +9,6 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //NOTE unstable raw api
-//NOTE members should be declared in class
 
 //REGION top annotations and interfaces
 
@@ -20,15 +19,15 @@ private annotation class MermaidClassDiagramDsl
 
 /**Mermaid类图。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndent {
+class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndentContent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
 	override val relations: MutableList<MermaidClassDiagramRelation> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.where(indentContent) { it.prependIndent(indent) }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "classDiagram\n$contentSnippet"
 	}
 }
@@ -37,16 +36,16 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
-interface MermaidClassDiagramDslEntry : MermaidDslEntry,
+interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplitContent,
 	WithTransition<MermaidClassDiagramClass, MermaidClassDiagramRelation> {
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			classes.joinToStringOrEmpty("\n"),
 			relations.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -79,7 +78,7 @@ interface MermaidClassDiagramDslElement : MermaidDslElement
 @MermaidClassDiagramDsl
 class MermaidClassDiagramClass @PublishedApi internal constructor(
 	val name: String
-) : MermaidClassDiagramDslElement, CanIndent, WithName {
+) : MermaidClassDiagramDslElement, CanIndentContent, WithName {
 	var annotation: MermaidClassDiagramAnnotation? = null
 	val properties: MutableSet<MermaidClassDiagramProperty> = mutableSetOf()
 	val methods: MutableSet<MermaidClassDiagramMethod> = mutableSetOf()
