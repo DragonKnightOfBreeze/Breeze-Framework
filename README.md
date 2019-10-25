@@ -18,7 +18,7 @@ Including: basic & functional & reflect & text & time extensions, dsls & generat
 
 ```
 repositories {
-    maven("https://windea.bintray.com/breeze-framework")
+    maven("https://dl.bintray.com/windea/breeze-framework")
 }
 
 dependencies {

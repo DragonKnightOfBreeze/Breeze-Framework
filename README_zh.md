@@ -17,7 +17,7 @@ Breeze-Framework
 
 ```
 repositories {
-    maven("https://windea.bintray.com/breeze-framework")
+    maven("https://dl.bintray.com/windea/breeze-framework")
 }
 
 dependencies {
