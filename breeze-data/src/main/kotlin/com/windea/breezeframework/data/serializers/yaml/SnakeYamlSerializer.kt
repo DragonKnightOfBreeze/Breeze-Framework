@@ -6,9 +6,9 @@ import org.yaml.snakeyaml.representer.*
 import java.io.*
 import java.lang.reflect.*
 
-object SnakeYamlSerializer : YamlSerializer {
-	@PublishedApi internal val loaderOptions = LoaderOptions()
-	@PublishedApi internal val dumperOptions = DumperOptions()
+internal object SnakeYamlSerializer : YamlSerializer {
+	internal val loaderOptions = LoaderOptions()
+	internal val dumperOptions = DumperOptions()
 	
 	private val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
 	
@@ -58,6 +58,6 @@ object SnakeYamlSerializer : YamlSerializer {
 }
 
 object SnakeYamlSerializerConfig : YamlSerializerConfig {
-	inline fun configure(builder: (LoaderOptions, DumperOptions) -> Unit) =
+	fun configure(builder: (LoaderOptions, DumperOptions) -> Unit) =
 		builder(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.csv.*
 import java.io.*
 import java.lang.reflect.*
 
-object JacksonCsvSerializer : CsvSerializer {
+internal object JacksonCsvSerializer : CsvSerializer {
 	@PublishedApi internal val mapper = CsvMapper()
 	
 	override fun <T> load(string: String, type: Type): T {
@@ -33,5 +33,5 @@ object JacksonCsvSerializer : CsvSerializer {
 }
 
 object JacksonCsvSerializerConfig : CsvSerializerConfig {
-	inline fun configure(builder: (CsvMapper) -> Unit) = builder(JacksonCsvSerializer.mapper)
+	fun configure(builder: (CsvMapper) -> Unit) = builder(JacksonCsvSerializer.mapper)
 }

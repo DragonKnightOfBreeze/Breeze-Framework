@@ -1,0 +1,6 @@
+[2019-10-25 18:33:12] TRACE com.windea.breezeframework.logger.Tests - trace
+[2019-10-25 18:33:12] DEBUG com.windea.breezeframework.logger.Tests - debug
+[2019-10-25 18:33:12] INFO com.windea.breezeframework.logger.Tests - info
+[2019-10-25 18:33:12] WARN com.windea.breezeframework.logger.Tests - warn
+[2019-10-25 18:33:12] ERROR com.windea.breezeframework.logger.Tests - error
+[2019-10-25 18:33:12] FATAL com.windea.breezeframework.logger.Tests - fatal

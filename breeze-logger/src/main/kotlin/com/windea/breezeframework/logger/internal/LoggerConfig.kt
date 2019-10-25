@@ -1,4 +1,6 @@
-package com.windea.breezeframework.logger
+package com.windea.breezeframework.logger.internal
+
+import com.windea.breezeframework.logger.*
 
 object LoggerConfig {
 	var isLevelIncluded: Boolean = true
@@ -10,4 +12,6 @@ object LoggerConfig {
 	var minLogLevel: LogLevel = LogLevel.Trace
 	var dateFormat: String = "yyyy-MM-dd HH:mm:ss"
 	var delimiter: String = " - "
+	
+	var output: String? = null
 }

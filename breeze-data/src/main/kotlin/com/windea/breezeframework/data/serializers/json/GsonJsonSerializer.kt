@@ -4,8 +4,8 @@ import com.google.gson.*
 import java.io.*
 import java.lang.reflect.*
 
-object GsonJsonSerializer : JsonSerializer {
-	@PublishedApi internal val gsonBuilder = GsonBuilder()
+internal object GsonJsonSerializer : JsonSerializer {
+	internal val gsonBuilder = GsonBuilder()
 	
 	private val gson by lazy { gsonBuilder.create() }
 	private val gsonWithPrettyPrint by lazy { gson.newBuilder().setPrettyPrinting().create() }
@@ -38,5 +38,5 @@ object GsonJsonSerializer : JsonSerializer {
 }
 
 object GsonJsonSerializerConfig : JsonSerializerConfig {
-	inline fun configure(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
+	fun configure(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
 }

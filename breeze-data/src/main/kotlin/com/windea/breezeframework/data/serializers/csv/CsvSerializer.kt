@@ -7,11 +7,9 @@ interface CsvSerializer : Serializer {
 	companion object {
 		val instance: CsvSerializer = when {
 			checkClassForName("com.fasterxml.jackson.dataformat.csv.CsvMapper") -> JacksonCsvSerializer
-			else -> throw IllegalStateException("Please contains at least one data serializer impl in classpath.")
+			else -> throw IllegalStateException("Please contains at least one data serializer implementation in classpath.")
 		}
 	}
 }
 
 interface CsvSerializerConfig : SerializerConfig
-
-

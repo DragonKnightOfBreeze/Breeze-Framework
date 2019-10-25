@@ -6,6 +6,8 @@ import kotlin.test.*
 class Tests {
 	@Test
 	fun test() {
+		loggerConfig.output = "D:\\My Documents\\My Projects\\Managed\\Breeze-Framework\\breeze-logger\\src\\test\\resources\\log.txt"
+		
 		logger.trace("trace")
 		logger.debug("debug")
 		logger.info("info")

@@ -5,8 +5,8 @@ import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
-object JacksonPropertiesSerializer : PropertiesSerializer {
-	@PublishedApi internal val mapper = JavaPropsMapper()
+internal object JacksonPropertiesSerializer : PropertiesSerializer {
+	internal val mapper = JavaPropsMapper()
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -46,5 +46,5 @@ object JacksonPropertiesSerializer : PropertiesSerializer {
 }
 
 object JacksonPropertiesSerializerConfig : PropertiesSerializerConfig {
-	inline fun configure(builder: (JavaPropsMapper) -> Unit) = builder(JacksonPropertiesSerializer.mapper)
+	fun configure(builder: (JavaPropsMapper) -> Unit) = builder(JacksonPropertiesSerializer.mapper)
 }

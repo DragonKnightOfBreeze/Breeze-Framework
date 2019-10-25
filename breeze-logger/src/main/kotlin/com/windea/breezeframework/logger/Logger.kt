@@ -8,6 +8,7 @@ interface Logger {
 	val isInfoEnabled: Boolean
 	val isWarnEnabled: Boolean
 	val isErrorEnabled: Boolean
+	
 	val isFatalEnabled: Boolean
 	
 	fun trace(message: Any?)

@@ -1,13 +1,15 @@
 package com.windea.breezeframework.logger.internal
 
 import com.windea.breezeframework.logger.*
-import com.windea.breezeframework.logger.LoggerConfig.delimiter
-import com.windea.breezeframework.logger.LoggerConfig.isColorful
-import com.windea.breezeframework.logger.LoggerConfig.isDateIncluded
-import com.windea.breezeframework.logger.LoggerConfig.isLevelIncluded
-import com.windea.breezeframework.logger.LoggerConfig.isPathAbbreviated
-import com.windea.breezeframework.logger.LoggerConfig.isPathIncluded
-import com.windea.breezeframework.logger.LoggerConfig.minLogLevel
+import com.windea.breezeframework.logger.internal.LoggerConfig.delimiter
+import com.windea.breezeframework.logger.internal.LoggerConfig.isColorful
+import com.windea.breezeframework.logger.internal.LoggerConfig.isDateIncluded
+import com.windea.breezeframework.logger.internal.LoggerConfig.isLevelIncluded
+import com.windea.breezeframework.logger.internal.LoggerConfig.isPathAbbreviated
+import com.windea.breezeframework.logger.internal.LoggerConfig.isPathIncluded
+import com.windea.breezeframework.logger.internal.LoggerConfig.minLogLevel
+import com.windea.breezeframework.logger.internal.LoggerConfig.output
+import java.io.*
 import java.text.*
 import java.util.*
 
@@ -55,8 +57,12 @@ internal object ColorfulLogger : Logger {
 		val markersSnippet = arrayOf(dateSnippet, levelSnippet, pathSnippet)
 			.filterNotNull().joinToString(" ", "", delimiter)
 		val messageSnippet = message.toString()
+		val logSnippet = "$markersSnippet$messageSnippet\n"
+		
+		output?.let { File(it).appendText(logSnippet) }
+		
 		val (prefix, suffix) = if(isColorful) level.colorCommandPair else "" to ""
-		println("$prefix$markersSnippet$messageSnippet$suffix")
+		print(logSnippet.let { "$prefix$it$suffix" })
 	}
 	
 	@PublishedApi

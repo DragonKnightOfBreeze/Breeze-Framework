@@ -4,7 +4,7 @@ import com.alibaba.fastjson.*
 import java.io.*
 import java.lang.reflect.*
 
-object FastJsonSerializer : JsonSerializer {
+internal object FastJsonSerializer : JsonSerializer {
 	override fun <T> load(string: String, type: Class<T>): T {
 		return JSON.parseObject(string, type)
 	}
