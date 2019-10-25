@@ -134,7 +134,7 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 	}
 	
 	enum class Position(internal val text: String) {
-		RightOf("right of"), LeftOf("left of"), Over("over")
+		LeftOf("left of"), RightOf("right of"), Over("over")
 	}
 }
 

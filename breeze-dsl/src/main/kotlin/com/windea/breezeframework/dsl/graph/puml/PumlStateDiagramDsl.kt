@@ -9,6 +9,8 @@ import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
+//DELAY puml is too complex to write dsl
+
 //REGION top annotations and interfaces
 
 /**PlantUml状态图的Dsl。*/
@@ -165,16 +167,12 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String,
 	text: String? = null
 ) : PumlStateDiagramState(name, text), CanIndentContent {
-	val states: MutableSet<PumlStateDiagramSimpleState> = mutableSetOf()
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			states.joinToStringOrEmpty("\n"),
-			sections.joinToStringOrEmpty("\n---\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		val contentSnippet = sections.joinToStringOrEmpty("\n---\n")
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
 		val extraSnippet = alias?.let { "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias" }.orEmpty()
@@ -244,13 +242,11 @@ inline fun PumlStateDiagramDslEntry.state(name: String, text: String? = null) =
 
 @InlineDsl
 @PumlStateDiagramDsl
-inline val PumlStateDiagramDslEntry.initState
-	get() = "[*]"
+inline fun PumlStateDiagramDslEntry.initState() = "[*]"
 
 @InlineDsl
 @PumlStateDiagramDsl
-inline val PumlStateDiagramDslEntry.finishState
-	get() = "[*]"
+inline fun PumlStateDiagramDslEntry.finishState() = "[*]"
 
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramDslEntry.compositedState(name: String, text: String? = null,
@@ -295,10 +291,6 @@ inline infix fun PumlStateDiagramState.tag(tag: String) =
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramState.alias(alias: String) =
 	this.also { it.alias = alias }
-
-@PumlStateDiagramDsl
-inline fun PumlStateDiagramConcurrentState.state(name: String, text: String? = null) =
-	PumlStateDiagramSimpleState(name, text).also { states += it }
 
 @PumlStateDiagramDsl
 inline fun PumlStateDiagramConcurrentState.section(block: PumlStateDiagramConcurrentSection.() -> Unit) =

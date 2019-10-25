@@ -9,6 +9,7 @@ import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
+//DELAY puml is too complex to write dsl
 //TODO fully support
 
 //REGION top annotations and interfaces
@@ -68,7 +69,7 @@ sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
-) : PumlDslElement, CanIndentContent, CanWrapContent {
+) : PumlDslElement, CanWrapContent, CanIndentContent {
 	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
@@ -153,14 +154,14 @@ class PumlCaption @PublishedApi internal constructor(
 class PumlNote @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
-) : PumlDslElement, CanIndentContent, CanWrapContent {
+) : PumlDslElement, CanWrapContent, CanIndentContent {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
 	var targetName: String? = null
 	
 	override var indentContent: Boolean = true
-	override var wrapContent: Boolean = "\n" in text || "\r" in text //wrap content when necessary
+	override var wrapContent: Boolean = false
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || (other is PumlNote && other.alias == alias)
@@ -171,6 +172,8 @@ class PumlNote @PublishedApi internal constructor(
 	}
 	
 	override fun toString(): String {
+		if("\n" in text || "\r" in text) wrapContent = true //wrap if necessary
+		
 		val aliasSnippet = if(position == null) " as $alias" else ""
 		val positionSnippet = position?.text?.let { " $it $targetName" }.orEmpty()
 		return if(wrapContent) {

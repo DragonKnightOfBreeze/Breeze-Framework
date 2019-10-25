@@ -159,7 +159,7 @@
 * [X] breeze-dsl 完成`FlowChartDsl`，完善其他的Dsl。
 * [X] breeze-dsl 实现`SequenceDiagramDsl`，将枚举尽可能地移到对应的类内部。
 * [X] breeze-dsl 添加接口`CanSplitContent`并适用。
-* [ ] breeze-dsl 实现`MermaidStateDiagram`。
+* [X] breeze-dsl 实现`MermaidStateDiagram`。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 
