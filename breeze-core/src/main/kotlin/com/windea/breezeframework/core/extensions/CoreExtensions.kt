@@ -27,26 +27,31 @@ inline fun DELAY(reason: String) = DELAY(reason) { Unit }
 /**表明一个操作推迟了实现。返回模拟结果。*/
 inline fun <T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult().also {
 	println("An operation is delay implemented.".let { "\u001B[33m$it\u001B[0m" })
-	println("Location: $currentMethodFullName".let { "\u001B[33m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
 
 /**表明一个方法体推迟了实现，并指定原因。返回模拟结果。*/
 inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult().also {
 	println("An operation is delay implemented: $reason".let { "\u001B[33m$it\u001B[0m" })
-	println("Location: $currentMethodFullName".let { "\u001B[33m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
 
 /**表明一个方法体中存在问题。*/
 inline fun FIXME() = run {
 	println("An operation has an unresolved issue.".let { "\u001B[91m$it\u001B[0m" })
-	println("Location: $currentMethodFullName".let { "\u001B[91m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
 
 /**表明一个方法体中存在问题，并指明原因。*/
 inline fun FIXME(message: String) = run {
 	println("An operation has an unresolved issue: $message".let { "\u001B[91m$it\u001B[0m" })
-	println("Location: $currentMethodFullName".let { "\u001B[91m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
+
+/**得到当前的完整类名。*/
+@PublishedApi
+internal inline val currentClassFullName
+	get() = RuntimeException().stackTrace.first().className
 
 //REGION standard.kt extensions (Scope functions)
 
@@ -135,17 +140,3 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 		return value
 	}
 }
-
-//REGION internal functions
-
-private fun nearestStackInfo() = RuntimeException().stackTrace.first()
-
-/**得到当前的完整类名。*/
-@PublishedApi
-internal val currentClassFullName
-	get() = nearestStackInfo().className
-
-/**得到当前的完整方法名*/
-@PublishedApi
-internal val currentMethodFullName
-	get() = "${nearestStackInfo().className}.${nearestStackInfo().methodName}"

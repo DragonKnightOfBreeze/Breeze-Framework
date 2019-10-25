@@ -3,7 +3,6 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.enums.core.*
-import mu.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
@@ -514,7 +513,7 @@ inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null)
 
 
 /**将当前字符串转化为日期。*/
-inline fun String.toDate(format: String): Date = SimpleDateFormat(format).parse(this)
+inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date = SimpleDateFormat(format).parse(this)
 
 /**将当前字符串转化为本地日期。*/
 inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =

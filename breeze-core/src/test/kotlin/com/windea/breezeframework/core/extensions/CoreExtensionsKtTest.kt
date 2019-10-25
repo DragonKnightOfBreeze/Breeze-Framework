@@ -1,6 +1,5 @@
 package com.windea.breezeframework.core.extensions
 
-import mu.*
 import org.junit.*
 import kotlin.contracts.*
 

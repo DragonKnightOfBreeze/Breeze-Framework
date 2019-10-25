@@ -166,6 +166,8 @@
 
 - [X] 更新版本。
 * [X] 优化额外TODO方法的实现，消除对`kotlin-logging`的依赖。
+* [X] breeze-logger 提供Logger的简单实现。带有颜色、日期和路径。
+* [X] breeze-logger 调整日志显示风格。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***

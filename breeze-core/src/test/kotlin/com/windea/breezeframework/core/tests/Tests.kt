@@ -3,8 +3,8 @@ package com.windea.breezeframework.core.tests
 import com.windea.breezeframework.core.enums.core.LetterCase.*
 import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
-import org.junit.*
 import java.time.*
+import kotlin.test.*
 
 class Tests {
 	@Test

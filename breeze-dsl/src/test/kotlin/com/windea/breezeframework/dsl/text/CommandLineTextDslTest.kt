@@ -2,7 +2,7 @@ package com.windea.breezeframework.dsl.text
 
 import com.windea.breezeframework.dsl.text.CommandLineColor.*
 import com.windea.breezeframework.dsl.text.CommandLineDisplayMode.*
-import org.junit.*
+import kotlin.test.*
 
 class CommandLineTextDslTest {
 	@Test //TESTED OK
@@ -10,6 +10,27 @@ class CommandLineTextDslTest {
 		println(commandLineText {
 			color(Red, "123")
 		})
+	}
+	
+	@Test
+	fun testColor() {
+		
+		//	Black(30),
+		//	Red(31),
+		//	Green(32),
+		//	Yellow(33),
+		//	Blue(34),
+		//	Magenta(35),
+		//	Cyan(36),
+		//	LightGray(37),
+		println(commandLineText { color(Black, "hello world!") })
+		println(commandLineText { color(Red, "hello world!") })
+		println(commandLineText { color(Green, "hello world!") })
+		println(commandLineText { color(Yellow, "hello world!") })
+		println(commandLineText { color(Blue, "hello world!") })
+		println(commandLineText { color(Magenta, "hello world!") })
+		println(commandLineText { color(Cyan, "hello world!") })
+		println(commandLineText { color(LightGray, "hello world!") })
 	}
 	
 	@Test //TESTED OK
