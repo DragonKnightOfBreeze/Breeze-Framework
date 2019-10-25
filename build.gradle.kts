@@ -3,21 +3,17 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
-	`maven-publish`
-	kotlin("jvm") version "1.3.50"
+	id("org.gradle.maven-publish")
+	id("org.jetbrains.kotlin.jvm") version "1.3.50"
 	id("nebula.optional-base") version "3.0.3"
 	id("com.jfrog.bintray") version "1.8.4"
 	id("org.jetbrains.dokka") version "0.9.18"
 }
 
-allprojects {
+subprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.4"
-	
-	//在这里放置常量和扩展参数
-	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+	version = "1.0.5"
 	
 	//应用插件
 	apply {
@@ -53,6 +49,10 @@ allprojects {
 		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
 	}
 	
+	
+	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+	
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
@@ -67,6 +67,7 @@ allprojects {
 	}
 	
 	//上传的配置
+	//虽然并不知道为什么会显示上传两次，但是不这样做就会报错，姑且这样了
 	publishing {
 		//配置包含的jar
 		publications {
@@ -118,7 +119,6 @@ allprojects {
 		user = System.getenv("BINTRAY_USER")
 		key = System.getenv("BINTRAY_API_KEY")
 		setPublications("maven")
-		pkg.userOrg = "breeze-knights"
 		pkg.repo = rootProject.name
 		pkg.name = project.name
 		pkg.websiteUrl = siteUrl
