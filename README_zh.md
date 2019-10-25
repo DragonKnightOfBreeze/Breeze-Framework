@@ -3,7 +3,7 @@
 Breeze-Framework
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
-[Bintray](https://bintray.com/breeze-knights/breeze-framework)
+[Bintray](https://bintray.com/windea/breeze-framework)
 
 基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
 
@@ -17,7 +17,7 @@ Breeze-Framework
 
 ```
 repositories {
-    maven("https://breeze-knights.bintray.com/breeze-framework")
+    maven("https://dl.bintray.com/windea/breeze-framework")
 }
 
 dependencies {

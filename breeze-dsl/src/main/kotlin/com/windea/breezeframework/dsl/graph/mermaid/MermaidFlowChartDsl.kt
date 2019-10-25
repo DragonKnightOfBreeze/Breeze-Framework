@@ -4,7 +4,6 @@ package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
@@ -19,8 +18,8 @@ private annotation class MermaidFlowChartDsl
 /**Mermaid流程图。*/
 @MermaidFlowChartDsl
 class MermaidFlowChart @PublishedApi internal constructor(
-	val direction: MermaidFlowChartDirection
-) : Mermaid(), MermaidFlowChartDslEntry, IndentContent {
+	val direction: Direction
+) : Mermaid(), MermaidFlowChartDslEntry, CanIndentContent {
 	override val nodes: MutableSet<MermaidFlowChartNode> = mutableSetOf()
 	override val links: MutableList<MermaidFlowChartLink> = mutableListOf()
 	override val subGraphs: MutableList<MermaidFlowChartSubGraph> = mutableListOf()
@@ -30,11 +29,15 @@ class MermaidFlowChart @PublishedApi internal constructor(
 	override val classRefs: MutableSet<MermaidFlowChartClassRef> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "graph ${direction.text}\n$contentSnippet"
+	}
+	
+	enum class Direction(internal val text: String) {
+		TB("TB"), BT("BT"), LR("LR"), RL("RL")
 	}
 }
 
@@ -42,7 +45,8 @@ class MermaidFlowChart @PublishedApi internal constructor(
 
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
-interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
+interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplitContent,
+	WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
 	val nodes: MutableSet<MermaidFlowChartNode>
 	val links: MutableList<MermaidFlowChartLink>
 	val subGraphs: MutableList<MermaidFlowChartSubGraph>
@@ -51,10 +55,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlow
 	val classDefs: MutableSet<MermaidFlowChartClassDef>
 	val classRefs: MutableSet<MermaidFlowChartClassRef>
 	
-	override val MermaidFlowChartNode._nodeName get() = this.name
-	override val MermaidFlowChartLink._toNodeName get() = this.targetNodeName
-	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			nodes.joinToStringOrEmpty("\n"),
 			links.joinToStringOrEmpty("\n"),
@@ -63,7 +64,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, WithTransition<MermaidFlow
 			linkStyles.joinToStringOrEmpty("\n"),
 			classDefs.joinToStringOrEmpty("\n"),
 			classRefs.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 	
 	@GenericDsl
@@ -81,8 +82,10 @@ interface MermaidFlowChartDslElement : MermaidDslElement
 class MermaidFlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val text: String? = null //NOTE can wrap by "<br>"
-) : MermaidFlowChartDslElement, CanEqual {
-	var shape: MermaidFlowChartNodeShape = MermaidFlowChartNodeShape.Rect
+) : MermaidFlowChartDslElement, WithName {
+	var shape: Shape = Shape.Rect
+	
+	override val _name: String get() = name
 	
 	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
 	
@@ -92,6 +95,19 @@ class MermaidFlowChartNode @PublishedApi internal constructor(
 		val textSnippet = text?.replaceWithHtmlWrap()?.wrapQuote(quote) ?: name
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
+	
+	enum class Shape(internal val prefix: String, internal val suffix: String) {
+		/**矩形。*/
+		Rect("[", "]"),
+		/**圆角矩形。*/
+		RoundedRect("(", ")"),
+		/**圆角矩形。*/
+		Circle("((", "))"),
+		/**非对称。*/
+		Asymetric(">", "]"),
+		/**菱形。*/
+		Rhombus("{", "}")
+	}
 }
 
 /**Mermaid流程图连接。*/
@@ -100,13 +116,22 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 	val sourceNodeName: String,
 	val targetNodeName: String,
 	var text: String? = null //NOTE can wrap by "<br>"
-) : MermaidFlowChartDslElement {
-	var arrowShape: MermaidFlowChartLinkArrowShape = MermaidFlowChartLinkArrowShape.Arrow
+) : MermaidFlowChartDslElement, WithNode<MermaidFlowChartNode> {
+	var arrowShape: ArrowShape = ArrowShape.Arrow
+	
+	override val _fromNodeName get() = sourceNodeName
+	override val _toNodeName get() = targetNodeName
 	
 	override fun toString(): String {
 		val arrowSnippet = arrowShape.text
 		val textSnippet = text?.let { "|${it.replaceWithHtmlWrap()}|" }.orEmpty()
 		return "$sourceNodeName $arrowSnippet$textSnippet $targetNodeName"
+	}
+	
+	/**Mermaid流程图连接的箭头形状。*/
+	@MermaidFlowChartDsl
+	enum class ArrowShape(internal val text: String) {
+		Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
 	}
 }
 
@@ -114,7 +139,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 @MermaidFlowChartDsl
 class MermaidFlowChartSubGraph @PublishedApi internal constructor(
 	val name: String
-) : MermaidDslElement, MermaidFlowChartDslEntry, IndentContent {
+) : MermaidDslElement, MermaidFlowChartDslEntry, CanIndentContent {
 	override val nodes: MutableSet<MermaidFlowChartNode> = mutableSetOf()
 	override val links: MutableList<MermaidFlowChartLink> = mutableListOf()
 	override val subGraphs: MutableList<MermaidFlowChartSubGraph> = mutableListOf()
@@ -124,10 +149,10 @@ class MermaidFlowChartSubGraph @PublishedApi internal constructor(
 	override val classRefs: MutableSet<MermaidFlowChartClassRef> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "subgraph $name\n$contentSnippet\nend"
 	}
 }
@@ -180,40 +205,11 @@ class MermaidFlowChartClassRef @PublishedApi internal constructor(
 	}
 }
 
-//REGION enumerations and constants
-
-/**Mermaid流程图的方向。*/
-@MermaidFlowChartDsl
-enum class MermaidFlowChartDirection(val text: String) {
-	TB("TB"), BT("BT"), LR("LR"), RL("RL")
-}
-
-/**Mermaid流程图节点的形状。*/
-@MermaidFlowChartDsl
-enum class MermaidFlowChartNodeShape(val prefix: String, val suffix: String) {
-	/**矩形。*/
-	Rect("[", "]"),
-	/**圆角矩形。*/
-	RoundedRect("(", ")"),
-	/**圆角矩形。*/
-	Circle("((", "))"),
-	/**非对称。*/
-	Asymetric(">", "]"),
-	/**菱形。*/
-	Rhombus("{", "}")
-}
-
-/**Mermaid流程图连接的箭头形状。*/
-@MermaidFlowChartDsl
-enum class MermaidFlowChartLinkArrowShape(val text: String) {
-	Arrow("-->"), DottedArrow("-.->"), BoldArrow("==>"), Line("---"), DottedLine("-.-"), BoldLine("===")
-}
-
 //REGION build extensions
 
 @MermaidFlowChartDsl
-inline fun mermaidFlowChart(direction: MermaidFlowChartDirection, builder: MermaidFlowChart.() -> Unit) =
-	MermaidFlowChart(direction).also { it.builder() }
+inline fun mermaidFlowChart(direction: MermaidFlowChart.Direction, block: MermaidFlowChart.() -> Unit) =
+	MermaidFlowChart(direction).also { it.block() }
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.node(name: String, text: String? = null) =
@@ -231,7 +227,7 @@ inline fun MermaidFlowChartDslEntry.link(sourceNode: MermaidFlowChartNode, targe
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.link(
 	sourceNodeName: String,
-	arrowShape: MermaidFlowChartLinkArrowShape,
+	arrowShape: MermaidFlowChartLink.ArrowShape,
 	targetNodeName: String,
 	text: String? = null
 ) = MermaidFlowChartLink(sourceNodeName, targetNodeName, text)
@@ -239,8 +235,8 @@ inline fun MermaidFlowChartDslEntry.link(
 	.also { links += it }
 
 @MermaidFlowChartDsl
-inline fun MermaidFlowChartDslEntry.subGraph(name: String, builder: MermaidFlowChartSubGraph.() -> Unit) =
-	MermaidFlowChartSubGraph(name).also { it.builder() }.also { subGraphs += it }
+inline fun MermaidFlowChartDslEntry.subGraph(name: String, block: MermaidFlowChartSubGraph.() -> Unit) =
+	MermaidFlowChartSubGraph(name).also { it.block() }.also { subGraphs += it }
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.style(nodeName: String, vararg styles: Pair<String, String>) =
@@ -259,7 +255,7 @@ inline fun MermaidFlowChartDslEntry.classRef(vararg nodeNames: String, className
 	MermaidFlowChartClassRef(nodeNames.toSet(), className).also { classRefs += it }
 
 @MermaidFlowChartDsl
-inline infix fun MermaidFlowChartNode.shape(shape: MermaidFlowChartNodeShape) =
+inline infix fun MermaidFlowChartNode.shape(shape: MermaidFlowChartNode.Shape) =
 	this.also { it.shape = shape }
 
 @MermaidFlowChartDsl
@@ -267,5 +263,5 @@ inline infix fun MermaidFlowChartLink.text(text: String) =
 	this.also { it.text = text }
 
 @MermaidFlowChartDsl
-inline infix fun MermaidFlowChartLink.arrowShape(arrowShape: MermaidFlowChartLinkArrowShape) =
+inline infix fun MermaidFlowChartLink.arrowShape(arrowShape: MermaidFlowChartLink.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }

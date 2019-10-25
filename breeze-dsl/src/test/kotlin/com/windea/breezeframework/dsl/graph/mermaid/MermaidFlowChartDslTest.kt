@@ -1,8 +1,8 @@
 package com.windea.breezeframework.dsl.graph.mermaid
 
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartDirection.*
-import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartLinkArrowShape.*
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChart.Direction.*
+import com.windea.breezeframework.dsl.graph.mermaid.MermaidFlowChartLink.ArrowShape.*
 import kotlin.test.*
 
 class MermaidFlowChartDslTest {
@@ -45,7 +45,7 @@ class MermaidFlowChartDslTest {
 			node("S", "Source") fromTo node("T", "Target")
 			node("S2", "Source") fromTo node("T2", "Target") text "Link Text"
 			node("S3", "Source") fromTo node("T3", "Target") text "Text" arrowShape DottedArrow
-			node("A") fromTo node("B") andTo node("C")
+			node("A") fromTo node("B") fromTo node("C")
 		})
 	}
 }

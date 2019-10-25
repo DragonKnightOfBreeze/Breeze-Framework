@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.consts
 
-//language=sass prefix=$color: suffix:;
+//language=scss prefix=$color:
 
 /**标准颜色的常量集。*/
 object Colors {

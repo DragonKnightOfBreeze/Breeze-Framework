@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "DuplicatedCode")
+@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
 
 package com.windea.breezeframework.core.extensions
 

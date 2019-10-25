@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.json.*
 import java.io.*
 import java.lang.reflect.*
 
-object JacksonJsonSerializer : JsonSerializer {
-	@PublishedApi internal val mapper = JsonMapper()
+internal object JacksonJsonSerializer : JsonSerializer {
+	internal val mapper = JsonMapper()
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -33,5 +33,5 @@ object JacksonJsonSerializer : JsonSerializer {
 }
 
 object JacksonJsonSerializerConfig : JsonSerializerConfig {
-	inline fun configure(builder: (JsonMapper) -> Unit) = builder(JacksonJsonSerializer.mapper)
+	fun configure(builder: (JsonMapper) -> Unit) = builder(JacksonJsonSerializer.mapper)
 }

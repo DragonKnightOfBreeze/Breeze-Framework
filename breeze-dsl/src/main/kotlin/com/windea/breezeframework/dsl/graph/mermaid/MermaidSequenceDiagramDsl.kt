@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package com.windea.breezeframework.dsl.graph.mermaid
 
@@ -6,6 +6,9 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
+import org.intellij.lang.annotations.*
+
+//NOTE can have a title by `title: text`, but it is not introduced in official api
 
 //REGION top annotations and interfaces
 
@@ -16,45 +19,40 @@ private annotation class MermaidSequenceDiagramDsl
 
 /**Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
-class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, IndentContent {
+class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, CanIndentContent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "sequenceDiagram\n$contentSnippet"
 	}
 }
 
 //REGION dsl interfaces
 
+/**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
-interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, WithComment<MermaidSequenceDiagramNote>,
+interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplitContent,
 	WithTransition<MermaidSequenceDiagramParticipant, MermaidSequenceDiagramMessage> {
 	val participants: MutableSet<MermaidSequenceDiagramParticipant>
 	val messages: MutableList<MermaidSequenceDiagramMessage>
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 	
-	override val MermaidSequenceDiagramParticipant._nodeName get() = this.alias ?: this.name
-	override val MermaidSequenceDiagramMessage._toNodeName get() = this.toActorName
-	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
 			messages.joinToStringOrEmpty("\n"),
 			notes.joinToStringOrEmpty("\n"),
 			scopes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
-	
-	@GenericDsl
-	override fun String.unaryMinus() = note(this)
 	
 	@GenericDsl
 	override fun String.fromTo(other: String) = message(this, other)
@@ -70,8 +68,10 @@ interface MermaidSequenceDiagramDslElement : MermaidDslElement
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : MermaidSequenceDiagramDslElement {
+) : MermaidSequenceDiagramDslElement, WithName {
 	var alias: String? = null
+	
+	override val _name: String get() = alias ?: name
 	
 	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
 	
@@ -88,31 +88,48 @@ class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromActorName: String,
 	val toActorName: String,
-	var text: String? = null
-) : MermaidSequenceDiagramDslElement {
-	var arrowShape: MermaidSequenceDiagramMessageArrowShape = MermaidSequenceDiagramMessageArrowShape.Arrow
+	var text: String = ""//NOTE can not be null
+) : MermaidSequenceDiagramDslElement, WithNode<MermaidSequenceDiagramParticipant> {
+	var arrowShape: ArrowShape = ArrowShape.Arrow
 	var isActivated: Boolean? = null
+	
+	override val _fromNodeName get() = fromActorName
+	override val _toNodeName get() = toActorName
 	
 	override fun toString(): String {
 		val activateSnippet = isActivated?.let { if(it) "+ " else "- " }.orEmpty()
-		val textSnippet = text?.let { ": $it" }.orEmpty()
-		return "$fromActorName ${arrowShape.text} $activateSnippet$toActorName$textSnippet"
+		return "$fromActorName ${arrowShape.text} $activateSnippet$toActorName: $text"
+	}
+	
+	enum class ArrowShape(internal val text: String) {
+		Arrow("->>"), DashedArrow("-->>"), Line("->"), DashedLine("-->"), Cross("-x"), DashedCross("--x")
 	}
 }
 
 /**Mermaid序列图注释。*/
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
+	val location: Location,
 	val text: String //NOTE can wrap by "<br>"
 ) : MermaidSequenceDiagramDslElement {
-	var position: MermaidSequenceDiagramNodePosition = MermaidSequenceDiagramNodePosition.RightOf
-	var targetActorName: String = "Default"
-	var targetActor2Name: String? = null
-	
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()
-		val targetActor2NameSnippet = targetActor2Name?.let { ", $it" }.orEmpty()
-		return "note $position $targetActorName$targetActor2NameSnippet: $textSnippet"
+		return "note $location: $textSnippet"
+	}
+	
+	class Location @PublishedApi internal constructor(
+		val position: Position,
+		val actorName1: String,
+		val actorName2: String? = null
+	) {
+		override fun toString(): String {
+			val targetActorName2Snippet = actorName2?.let { ", $it" }.orEmpty()
+			return "${position.text} $actorName1$targetActorName2Snippet"
+		}
+	}
+	
+	enum class Position(internal val text: String) {
+		RightOf("right of"), LeftOf("left of"), Over("over")
 	}
 }
 
@@ -121,18 +138,18 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 sealed class MermaidSequenceDiagramScope(
 	val type: String,
 	val text: String?
-) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, IndentContent {
+) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, CanIndentContent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" }.orEmpty()
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = _toContentString()._applyIndent(indent)
 		return "$type$textSnippet\n$contentSnippet\nend"
 	}
 }
@@ -157,7 +174,7 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	val elseScopes: MutableList<MermaidSequenceDiagramElse> = mutableListOf()
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
+		val contentSnippet = _toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
 		return "$contentSnippet$elseScopesSnippet"
@@ -174,73 +191,75 @@ class MermaidSequenceDiagramElse @PublishedApi internal constructor(
 /**Mermaid序列图颜色高亮作用域。*/
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
-	colorText: String
-) : MermaidSequenceDiagramScope("rect", colorText)
-
-//REGION enumerations and constants
-
-/**Mermaid序列图消息的箭头形状。*/
-@MermaidSequenceDiagramDsl
-enum class MermaidSequenceDiagramMessageArrowShape(val text: String) {
-	Arrow("->>"), DottedArrow("-->>"), Line("->"), DottedLine("-->"), Cross("-x"), DottedCross("--x")
-}
-
-/**Mermaid序列图注释的位置。*/
-@MermaidSequenceDiagramDsl
-enum class MermaidSequenceDiagramNodePosition(val text: String) {
-	RightOf("right of"), LeftOf("left of"), Over("over")
-}
+	@Language(value = "SCSS", prefix = "\$color:")
+	color: String
+) : MermaidSequenceDiagramScope("rect", color)
 
 //REGION build extensions
 
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
-fun mermaidSequenceDiagram(builder: MermaidSequenceDiagram.() -> Unit) = MermaidSequenceDiagram().also { it.builder() }
+fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) = MermaidSequenceDiagram().also { it.block() }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.participant(name: String) =
 	MermaidSequenceDiagramParticipant(name).also { participants += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(fromActorName: String, toActorName: String, text: String? = null) =
+inline fun MermaidSequenceDiagramDslEntry.message(fromActorName: String, toActorName: String, text: String = "") =
 	MermaidSequenceDiagramMessage(fromActorName, toActorName, text).also { messages += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.message(fromActor: MermaidSequenceDiagramParticipant,
-	toActor: MermaidSequenceDiagramParticipant, text: String? = null) =
+	toActor: MermaidSequenceDiagramParticipant, text: String = "") =
 	MermaidSequenceDiagramMessage(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
 		.also { messages += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.message(
 	fromActorName: String,
-	arrowShape: MermaidSequenceDiagramMessageArrowShape,
+	arrowShape: MermaidSequenceDiagramMessage.ArrowShape,
 	isActivated: Boolean = false,
 	toActorName: String,
-	text: String
+	text: String = ""
 ) = MermaidSequenceDiagramMessage(fromActorName, toActorName, text)
 	.also { it.arrowShape = arrowShape;it.isActivated = isActivated }
 	.also { messages += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.note(text: String) =
-	MermaidSequenceDiagramNote(text).also { notes += it }
+inline fun MermaidSequenceDiagramDslEntry.note(location: MermaidSequenceDiagramNote.Location, text: String) =
+	MermaidSequenceDiagramNote(location, text).also { notes += it }
+
+@InlineDsl
+@MermaidSequenceDiagramDsl
+inline fun MermaidSequenceDiagramDslEntry.leftOf(actorName: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, actorName)
+
+@InlineDsl
+@MermaidSequenceDiagramDsl
+inline fun MermaidSequenceDiagramDslEntry.rightOf(actorName: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, actorName)
+
+@InlineDsl
+@MermaidSequenceDiagramDsl
+inline fun MermaidSequenceDiagramDslEntry.over(actorName1: String, actorName2: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, actorName1, actorName2)
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.loop(text: String, builder: MermaidSequenceDiagramLoop.() -> Unit) =
-	MermaidSequenceDiagramLoop(text).also { it.builder() }.also { scopes += it }
+inline fun MermaidSequenceDiagramDslEntry.loop(text: String, block: MermaidSequenceDiagramLoop.() -> Unit) =
+	MermaidSequenceDiagramLoop(text).also { it.block() }.also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.opt(text: String, builder: MermaidSequenceDiagramOptional.() -> Unit) =
-	MermaidSequenceDiagramOptional(text).also { it.builder() }.also { scopes += it }
+inline fun MermaidSequenceDiagramDslEntry.opt(text: String, block: MermaidSequenceDiagramOptional.() -> Unit) =
+	MermaidSequenceDiagramOptional(text).also { it.block() }.also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.alt(text: String, builder: MermaidSequenceDiagramAlternative.() -> Unit) =
-	MermaidSequenceDiagramAlternative(text).also { it.builder() }.also { scopes += it }
+inline fun MermaidSequenceDiagramDslEntry.alt(text: String, block: MermaidSequenceDiagramAlternative.() -> Unit) =
+	MermaidSequenceDiagramAlternative(text).also { it.block() }.also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.highlight(text: String, builder: MermaidSequenceDiagramHighlight.() -> Unit) =
-	MermaidSequenceDiagramHighlight(text).also { it.builder() }.also { scopes += it }
+inline fun MermaidSequenceDiagramDslEntry.highlight(text: String, block: MermaidSequenceDiagramHighlight.() -> Unit) =
+	MermaidSequenceDiagramHighlight(text).also { it.block() }.also { scopes += it }
 
 @MermaidSequenceDiagramDsl
 inline infix fun MermaidSequenceDiagramParticipant.alias(alias: String) =
@@ -251,26 +270,12 @@ inline infix fun MermaidSequenceDiagramMessage.text(text: String) =
 	this.also { it.text = text }
 
 @MermaidSequenceDiagramDsl
-inline infix fun MermaidSequenceDiagramMessage.arrowShape(arrowShape: MermaidSequenceDiagramMessageArrowShape) =
+inline infix fun MermaidSequenceDiagramMessage.arrowShape(arrowShape: MermaidSequenceDiagramMessage.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }
 
 @MermaidSequenceDiagramDsl
 inline infix fun MermaidSequenceDiagramMessage.activate(isActivated: Boolean) =
 	this.also { it.isActivated = isActivated }
-
-@MermaidSequenceDiagramDsl
-inline infix fun MermaidSequenceDiagramNote.leftOf(actorName: String) =
-	this.also { it.position = MermaidSequenceDiagramNodePosition.LeftOf }.also { it.targetActorName = actorName }
-
-@MermaidSequenceDiagramDsl
-inline infix fun MermaidSequenceDiagramNote.rightOf(actorName: String) =
-	this.also { it.position = MermaidSequenceDiagramNodePosition.RightOf }.also { it.targetActorName = actorName }
-
-@MermaidSequenceDiagramDsl
-inline infix fun MermaidSequenceDiagramNote.over(actorNamePair: Pair<String, String>) =
-	this.also { it.position = MermaidSequenceDiagramNodePosition.RightOf }
-		.also { it.targetActorName = actorNamePair.first }
-		.also { it.targetActor2Name = actorNamePair.second }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramAlternative.`else`(text: String) =

@@ -1,40 +1,57 @@
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 
-import mu.*
-import org.slf4j.*
 import kotlin.contracts.*
-
-private val logger = KotlinLogging.logger {}
 
 //REGION global extensions
 
-/**转化为指定类型，或者抛出异常。用于链式调用。*/
+/**强制转化为指定类型，或者抛出异常。用于链式调用。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
-/**转化为指定类型，或者返回null。用于链式调用。*/
+/**强制转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
+
+fun main() {
+	println()
+}
 
 //REGION standard.kt extensions (TODOs)
 
-/**表明一个方法体推迟了实现。*/
-inline fun DELAY() = Unit
-	.also { nearestLogger().warn("An operation is delay-implemented.") }
+/**表明一个操作推迟了实现。*/
+inline fun DELAY() = DELAY { Unit }
 
-/**返回一个模拟结果，以表明一个方法体推迟了实现。*/
-inline fun <reified T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult()
-	.also { nearestLogger().warn("An operation is delay-implemented.") }
+/**表明一个方法体推迟了实现，并指定原因。*/
+inline fun DELAY(reason: String) = DELAY(reason) { Unit }
 
-/**返回一个模拟结果，以表明一个方法体推迟了实现，并指定原因。*/
-inline fun <reified T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult()
-	.also { nearestLogger().warn("An operation is delay-implemented: $reason") }
+/**表明一个操作推迟了实现。返回模拟结果。*/
+inline fun <T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult().also {
+	println("An operation is delay implemented.".let { "\u001B[33m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
+}
 
-/**打印一段消息，以表明一个方法体中存在问题。*/
-inline fun FIXME() = run { nearestLogger().warn("There is an issue in this operation.") }
+/**表明一个方法体推迟了实现，并指定原因。返回模拟结果。*/
+inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult().also {
+	println("An operation is delay implemented: $reason".let { "\u001B[33m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
+}
 
-/**打印一段消息，以表明一个方法体中存在问题，并指明原因。*/
-inline fun FIXME(message: String) = run { nearestLogger().warn("There is an issue in this operation: $message") }
+/**表明一个方法体中存在问题。*/
+inline fun FIXME() = run {
+	println("An operation has an unresolved issue.".let { "\u001B[91m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
+}
+
+/**表明一个方法体中存在问题，并指明原因。*/
+inline fun FIXME(message: String) = run {
+	println("An operation has an unresolved issue: $message".let { "\u001B[91m$it\u001B[0m" })
+	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
+}
+
+/**得到当前的完整类名。*/
+@PublishedApi
+internal inline val currentClassFullName
+	get() = RuntimeException().stackTrace.first().className
 
 //REGION standard.kt extensions (Scope functions)
 
@@ -122,22 +139,4 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	} else {
 		return value
 	}
-}
-
-//REGION internal functions
-
-/**得到最近的堆栈追踪信息。即，得到最近一个内联方法的调用处的信息。*/
-@PublishedApi
-internal inline fun nearestStackInfo(): StackTraceElement {
-	try {
-		throw RuntimeException()
-	} catch(e: RuntimeException) {
-		return e.stackTrace[0]
-	}
-}
-
-/**得到最近的日志对象。即，得到最近一个内联方法的调用处的日志对象。显示的行数可能不正确。*/
-@PublishedApi
-internal inline fun nearestLogger(): Logger {
-	return KotlinLogging.logger(nearestStackInfo().toString())
 }

@@ -3,7 +3,6 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
@@ -50,7 +49,7 @@ interface JsonDslInlineEntry : DslEntry
 
 /**Json Dsl的元素。*/
 @JsonDsl
-interface JsonDslElement : DslElement, CanEqual
+interface JsonDslElement : DslElement
 
 //REGION dsl elements
 
@@ -102,7 +101,7 @@ class JsonString @PublishedApi internal constructor(
 @JsonDsl
 class JsonArray @PublishedApi internal constructor(
 	value: List<JsonElement<*>> = listOf()
-) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, WrapContent, IndentContent {
+) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrapContent, CanIndentContent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	
@@ -121,7 +120,7 @@ class JsonArray @PublishedApi internal constructor(
 @JsonDsl
 class JsonObject @PublishedApi internal constructor(
 	value: Map<String, JsonElement<*>> = mapOf()
-) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, WrapContent, IndentContent {
+) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrapContent, CanIndentContent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	

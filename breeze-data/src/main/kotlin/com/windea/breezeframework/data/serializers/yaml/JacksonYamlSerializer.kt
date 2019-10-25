@@ -5,8 +5,8 @@ import java.io.*
 import java.lang.reflect.*
 
 
-object JacksonYamlSerializer : YamlSerializer {
-	@PublishedApi internal val mapper = YAMLMapper()
+internal object JacksonYamlSerializer : YamlSerializer {
+	internal val mapper = YAMLMapper()
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -50,5 +50,5 @@ object JacksonYamlSerializer : YamlSerializer {
 }
 
 object JacksonYamlSerializerConfig : YamlSerializerConfig {
-	inline fun configure(builder: (YAMLMapper) -> Unit) = builder(JacksonYamlSerializer.mapper)
+	fun configure(builder: (YAMLMapper) -> Unit) = builder(JacksonYamlSerializer.mapper)
 }

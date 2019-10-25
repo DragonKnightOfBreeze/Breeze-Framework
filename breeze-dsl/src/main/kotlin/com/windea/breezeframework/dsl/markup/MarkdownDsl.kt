@@ -3,7 +3,6 @@
 package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.interfaces.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.addPrefixHeadingMarkers
 import com.windea.breezeframework.dsl.markup.MarkdownConfig.emptyColumnLength
@@ -42,7 +41,7 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 		return arrayOf(
 			frontMatter?.toString().orEmpty(),
 			toc?.toString().orEmpty(),
-			toContentString(),
+			_toContentString(),
 			references.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
@@ -94,7 +93,7 @@ interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
-	fun toContentString(): String {
+	fun _toContentString(): String {
 		return content.joinToStringOrEmpty("\n\n")
 	}
 	
@@ -292,7 +291,7 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement, WrapContent {
+) : MarkdownDslTopElement, CanWrapContent {
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
@@ -307,7 +306,7 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 sealed class MarkdownHeading(
 	val headingLevel: Int,
 	val text: String
-) : MarkdownDslTopElement, WithMarkdownAttributes, WrapContent {
+) : MarkdownDslTopElement, WithMarkdownAttributes, CanWrapContent {
 	override var attributes: MarkdownAttributes? = null
 	override var wrapContent: Boolean = true
 }
@@ -418,7 +417,7 @@ class MarkdownList @PublishedApi internal constructor(
 sealed class MarkdownListNode(
 	protected val prefixMarkers: String,
 	val text: String
-) : MarkdownDslElement, WrapContent {
+) : MarkdownDslElement, CanWrapContent {
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
@@ -459,7 +458,7 @@ class MarkdownTaskListNode @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String
-) : MarkdownDslTopElement, WrapContent {
+) : MarkdownDslTopElement, CanWrapContent {
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
@@ -480,7 +479,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslElement, WrapContent {
+) : MarkdownDslElement, CanWrapContent {
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
@@ -513,6 +512,10 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 		val rowsSnippet = rows.joinToStringOrEmpty("\n")
 		return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 	}
+	
+	enum class Alignment(internal val textPair: Pair<String, String>) {
+		None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
+	}
 }
 
 /**Markdown表格头部。*/
@@ -544,7 +547,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 	override fun String.unaryPlus() = column(this)
 	
 	@MarkdownDsl
-	inline infix fun MarkdownTableColumn.align(alignment: MarkdownTableAlignment) =
+	inline infix fun MarkdownTableColumn.align(alignment: MarkdownTable.Alignment) =
 		this.also { it.alignment = alignment }
 }
 
@@ -573,7 +576,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 class MarkdownTableColumn @PublishedApi internal constructor(
 	val text: String = emptyColumnText
 ) : MarkdownDslElement {
-	var alignment: MarkdownTableAlignment = MarkdownTableAlignment.None //only for columns in table header
+	var alignment: MarkdownTable.Alignment = MarkdownTable.Alignment.None //only for columns in table header
 	
 	override fun toString(): String {
 		return text
@@ -593,7 +596,7 @@ sealed class MarkdownQuote(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
 	override fun toString(): String {
-		return toContentString().prependIndent("$prefixMarker ")
+		return _toContentString().prependIndent("$prefixMarker ")
 	}
 }
 
@@ -664,9 +667,9 @@ class MarkdownMultilineMath @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownAdmonition @PublishedApi internal constructor(
-	val qualifier: MarkdownAdmonitionQualifier,
+	val qualifier: Qualifier,
 	val title: String = "",
-	val type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal
+	val type: Type = Type.Normal
 ) : MarkdownDslTopElement, MarkdownDslEntry {
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
@@ -674,8 +677,27 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 		
 		val titleSnippet = title.wrapQuote(quote)
-		val contentSnippet = toContentString().prependIndent(indent)
+		val contentSnippet = _toContentString().prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
+	}
+	
+	enum class Type(internal val text: String) {
+		Normal("!!!"), Collapsed("???"), Opened("!!!+")
+	}
+	
+	enum class Qualifier(internal val style: String, internal val text: String) {
+		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
+		Bug("bug", "bug"),
+		Danger("danger", "danger"), Error("danger", "error"),
+		Example("example", "example"), Snippet("example", "snippet"),
+		Fail("fail", "fail"), Failure("fail", "failure"), Missing("fail", "missing"),
+		Question("fag", "question"), Help("fag", "help"), Fag("fag", "fag"),
+		Info("info", "info"), Todo("info", "todo"),
+		Note("note", "note"), SeeAlso("note", "seealso"),
+		Quote("quote", "quote"), Cite("quote", "cite"),
+		Success("success", "success"), Check("success", "check"), Done("success", "done"),
+		Tip("tip", "tip"), Hint("tip", "hint"), Important("tip", "important"),
+		Warning("warning", "warning"), Caution("warning", "caution"), Attention("warning", "attention")
 	}
 }
 
@@ -693,15 +715,15 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 /**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, GenerateContent {
+class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerateContent {
 	override var generateContent: Boolean = false
 	
-	override fun toGeneratedString(): String {
+	override fun _toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return _toGeneratedString()
 		return "[TOC]"
 	}
 }
@@ -711,17 +733,17 @@ class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, Gen
 @MarkdownDslExtendedFeature
 class MarkdownImport @PublishedApi internal constructor(
 	val url: String
-) : MarkdownDslTopElement, GenerateContent, WithMarkdownAttributes {
+) : MarkdownDslTopElement, CanGenerateContent, WithMarkdownAttributes {
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
 	override var generateContent: Boolean = false
 	
-	override fun toGeneratedString(): String {
+	override fun _toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return _toGeneratedString()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet$attributesSnippet"
@@ -733,15 +755,15 @@ class MarkdownImport @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
-) : MarkdownDslTopElement, GenerateContent {
+) : MarkdownDslTopElement, CanGenerateContent {
 	override var generateContent: Boolean = false
 	
-	override fun toGeneratedString(): String {
+	override fun _toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return _toGeneratedString()
 		return "<<< $name >>>"
 	}
 }
@@ -755,7 +777,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
 	override fun toString(): String {
-		val contentSnippet = toContentString()
+		val contentSnippet = _toContentString()
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }
@@ -764,7 +786,9 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownReference(
 	val reference: String
-) : MarkdownDslElement, CanEqual
+) : MarkdownDslElement, WithName {
+	override val _name: String get() = reference
+}
 
 /**Markdown脚注的引用。*/
 @MarkdownDsl
@@ -863,39 +887,6 @@ class MarkdownPropertyAttribute(
 	override fun toString(): String {
 		return "$name=${value.wrapQuote(quote)}"
 	}
-}
-
-//REGION enumerations and constants
-
-/**Markdown表格的对齐方式。*/
-@MarkdownDslExtendedFeature
-enum class MarkdownTableAlignment(val textPair: Pair<String, String>) {
-	None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
-}
-
-/**Markdown警告框的类型。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionType(val text: String) {
-	Normal("!!!"), Collapsed("???"), Opened("!!!+")
-}
-
-/**Markdown警告框的限定符。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-enum class MarkdownAdmonitionQualifier(val style: String, val text: String) {
-	Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
-	Bug("bug", "bug"),
-	Danger("danger", "danger"), Error("danger", "error"),
-	Example("example", "example"), Snippet("example", "snippet"),
-	Fail("fail", "fail"), Failure("fail", "failure"), Missing("fail", "missing"),
-	Question("fag", "question"), Help("fag", "help"), Fag("fag", "fag"),
-	Info("info", "info"), Todo("info", "todo"),
-	Note("note", "note"), SeeAlso("note", "seealso"),
-	Quote("quote", "quote"), Cite("quote", "cite"),
-	Success("success", "success"), Check("success", "check"), Done("success", "done"),
-	Tip("tip", "tip"), Hint("tip", "hint"), Important("tip", "important"),
-	Warning("warning", "warning"), Caution("warning", "caution"), Attention("warning", "attention")
 }
 
 //REGION build extensions
@@ -1107,8 +1098,8 @@ inline fun MarkdownDslEntry.multilineMath(lazyText: () -> String) =
 
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslEntry.admonition(qualifier: MarkdownAdmonitionQualifier, title: String = "",
-	type: MarkdownAdmonitionType = MarkdownAdmonitionType.Normal, block: MarkdownAdmonition.() -> Unit) =
+inline fun MarkdownDslEntry.admonition(qualifier: MarkdownAdmonition.Qualifier, title: String = "",
+	type: MarkdownAdmonition.Type = MarkdownAdmonition.Type.Normal, block: MarkdownAdmonition.() -> Unit) =
 	MarkdownAdmonition(qualifier, title, type).also { it.block() }.also { content += it }
 
 @MarkdownDsl

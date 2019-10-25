@@ -4,8 +4,8 @@ import com.fasterxml.jackson.dataformat.xml.*
 import java.io.*
 import java.lang.reflect.*
 
-object JacksonXmlSerializer : XmlSerializer {
-	@PublishedApi internal val mapper = XmlMapper()
+internal object JacksonXmlSerializer : XmlSerializer {
+	internal val mapper = XmlMapper()
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -33,5 +33,5 @@ object JacksonXmlSerializer : XmlSerializer {
 }
 
 object JacksonXmlSerializerConfig : XmlSerializerConfig {
-	inline fun configure(builder: (XmlMapper) -> Unit) = builder(JacksonXmlSerializer.mapper)
+	fun configure(builder: (XmlMapper) -> Unit) = builder(JacksonXmlSerializer.mapper)
 }

@@ -22,15 +22,4 @@ class SystemExtensionsKtTest {
 	@Test
 	fun exac() {
 	}
-	
-	@Test //TESTED
-	fun getNearestStackTrace() {
-		//com.windea.breezeframework.core.extensions.SystemExtensionsKtTest.getNearestStackTrace(SystemExtensionsKtTest.kt:42)
-		inlineFun()
-	}
-	
-	@Suppress("NOTHING_TO_INLINE")
-	inline fun inlineFun() {
-		println(nearestStackInfo())
-	}
 }

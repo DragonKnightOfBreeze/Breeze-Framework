@@ -3,29 +3,25 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
-	`maven-publish`
-	kotlin("jvm") version "1.3.50"
-	id("nebula.optional-base") version "3.0.3"
-	id("com.jfrog.bintray") version "1.8.4"
+	id("org.gradle.maven-publish")
+	id("org.jetbrains.kotlin.jvm") version "1.3.50"
 	id("org.jetbrains.dokka") version "0.9.18"
+	id("com.jfrog.bintray") version "1.8.4"
+	id("nebula.optional-base") version "3.0.3"
 }
 
-allprojects {
+subprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.4"
-	
-	//在这里放置常量和扩展参数
-	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+	version = "1.0.6"
 	
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
 		plugin("org.jetbrains.kotlin.jvm")
-		plugin("nebula.optional-base")
-		plugin("com.jfrog.bintray")
 		plugin("org.jetbrains.dokka")
+		plugin("com.jfrog.bintray")
+		plugin("nebula.optional-base")
 	}
 	
 	//配置依赖仓库
@@ -36,14 +32,12 @@ allprojects {
 		jcenter()
 	}
 	
-	//配置依赖，implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
+	//配置依赖
+	//implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
 	//optional只能依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
-		
-		implementation("io.github.microutils:kotlin-logging:1.6.26")
-		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 	}
 	
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置
@@ -52,6 +46,10 @@ allprojects {
 		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
 	}
+	
+	
+	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
 	
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
@@ -67,6 +65,7 @@ allprojects {
 	}
 	
 	//上传的配置
+	//虽然并不知道为什么会显示上传两次，但是不这样做就会报错，姑且这样了
 	publishing {
 		//配置包含的jar
 		publications {
@@ -103,7 +102,6 @@ allprojects {
 					}
 				}
 			}
-			
 			//配置上传到的仓库
 			repositories {
 				//maven本地仓库
@@ -118,7 +116,6 @@ allprojects {
 		user = System.getenv("BINTRAY_USER")
 		key = System.getenv("BINTRAY_API_KEY")
 		setPublications("maven")
-		pkg.userOrg = "breeze-knights"
 		pkg.repo = rootProject.name
 		pkg.name = project.name
 		pkg.websiteUrl = siteUrl

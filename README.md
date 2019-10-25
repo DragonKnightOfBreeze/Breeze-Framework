@@ -3,7 +3,7 @@
 Breeze-Framework
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
-[Bintray](https://bintray.com/breeze-knights/breeze-framework)
+[Bintray](https://bintray.com/windea/breeze-framework)
 
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
 Including: basic & functional & reflect & text & time extensions, dsls & generators & delegated serializers and more.
@@ -18,7 +18,7 @@ Including: basic & functional & reflect & text & time extensions, dsls & generat
 
 ```
 repositories {
-    maven("https://breeze-knights.bintray.com/breeze-framework")
+    maven("https://dl.bintray.com/windea/breeze-framework")
 }
 
 dependencies {

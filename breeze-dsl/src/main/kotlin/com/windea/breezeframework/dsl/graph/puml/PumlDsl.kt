@@ -9,6 +9,7 @@ import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
+//DELAY puml is too complex to write dsl
 //TODO fully support
 
 //REGION top annotations and interfaces
@@ -68,7 +69,7 @@ sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
-) : PumlDslElement, IndentContent, WrapContent {
+) : PumlDslElement, CanWrapContent, CanIndentContent {
 	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
@@ -153,14 +154,14 @@ class PumlCaption @PublishedApi internal constructor(
 class PumlNote @PublishedApi internal constructor(
 	@Language("Creole")
 	val text: String //NOTE can wrap by "\n"
-) : PumlDslElement, IndentContent, WrapContent {
+) : PumlDslElement, CanWrapContent, CanIndentContent {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
 	var targetName: String? = null
 	
 	override var indentContent: Boolean = true
-	override var wrapContent: Boolean = "\n" in text || "\r" in text //wrap content when necessary
+	override var wrapContent: Boolean = false
 	
 	override fun equals(other: Any?): Boolean {
 		return this === other || (other is PumlNote && other.alias == alias)
@@ -171,6 +172,8 @@ class PumlNote @PublishedApi internal constructor(
 	}
 	
 	override fun toString(): String {
+		if("\n" in text || "\r" in text) wrapContent = true //wrap if necessary
+		
 		val aliasSnippet = if(position == null) " as $alias" else ""
 		val positionSnippet = position?.text?.let { " $it $targetName" }.orEmpty()
 		return if(wrapContent) {
@@ -222,7 +225,7 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, IndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
@@ -237,25 +240,25 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
-enum class PumlTopElementPosition(val text: String) {
+enum class PumlTopElementPosition(internal val text: String) {
 	Right("right"), Left("left"), Center("center")
 }
 
-/**PlantUml箭头的风格。*/
+/**PlantUml箭头的形状。*/
 @PumlDsl
-enum class PumlArrowStyle(val text: String) {
+enum class PumlArrowShape(internal val text: String) {
 	Dotted("dotted"), Dashed("dashed"), Bold("bold"), Hidden("hidden")
 }
 
 /**PlantUml箭头的方向。*/
 @PumlDsl
-enum class PumlArrowDirection(val text: String) {
+enum class PumlArrowDirection(internal val text: String) {
 	Down("down"), Up("up"), Left("left"), Right("right")
 }
 
 /**PlantUml注释的位置。*/
 @PumlDsl
-enum class PumlNotePosition(val text: String) {
+enum class PumlNotePosition(internal val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
 
@@ -290,8 +293,8 @@ inline fun Puml.note(text: String) =
 	PumlNote(text).also { notes += it }
 
 @PumlDsl
-inline fun Puml.skinParams(builder: PumlSkinParams.() -> Unit) =
-	skinParams.builder()
+inline fun Puml.skinParams(block: PumlSkinParams.() -> Unit) =
+	skinParams.block()
 
 @PumlDsl
 inline infix fun PumlElement.at(position: PumlTopElementPosition) =

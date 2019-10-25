@@ -10,23 +10,23 @@ object SystemProperties {
 	private val properties = System.getProperties()
 	
 	/**操作系统名。*/
-	val osName: String? by lazy { properties.getProperty("os.name") }
+	val osName: String? = properties.getProperty("os.name")
 	/**用户名。*/
-	val userName: String? by lazy { properties.getProperty("user.name") }
+	val userName: String? = properties.getProperty("user.name")
 	/**用户首页目录。*/
-	val userHome: String? by lazy { properties.getProperty("user.home") }
+	val userHome: String? = properties.getProperty("user.home")
 	/**用户目录。即，项目的当前工作路径。*/
-	val userDir: String? by lazy { properties.getProperty("user.dir") }
+	val userDir: String? = properties.getProperty("user.dir")
 	/**用户所属国家。*/
-	val userCountry: String? by lazy { properties.getProperty("user.country") }
+	val userCountry: String? = properties.getProperty("user.country")
 	/**用户所用语言。*/
-	val userLanguage: String? by lazy { properties.getProperty("user.language") }
+	val userLanguage: String? = properties.getProperty("user.language")
 	/**文件分隔符。*/
-	val fileSeparator: String? by lazy { properties.getProperty("file.separator") }
+	val fileSeparator: String? = properties.getProperty("file.separator")
 	/**文件编码。*/
-	val fileEncoding: String? by lazy { properties.getProperty("file.encoding") }
+	val fileEncoding: String? = properties.getProperty("file.encoding")
 	/**行分隔符。*/
-	val lineSeparator: String? by lazy { properties.getProperty("line.separator") }
+	val lineSeparator: String? = properties.getProperty("line.separator")
 	
 	/**得到指定的系统属性。*/
 	operator fun get(name: String): String? = properties.getProperty(name)
@@ -38,9 +38,9 @@ object EnvironmentVariables {
 	private val env = System.getenv()
 	
 	/**得到Java Home。*/
-	val javaHome: String? by lazy { env["JAVA_HOME"] }
+	val javaHome: String? = env["JAVA_HOME"]
 	/**得到Kotlin Home。*/
-	val kotlinHome: String? by lazy { env["KOTLIN_HOME"] }
+	val kotlinHome: String? = env["KOTLIN_HOME"]
 	
 	/**得到指定的环境变量。*/
 	operator fun get(name: String): String? = env[name]

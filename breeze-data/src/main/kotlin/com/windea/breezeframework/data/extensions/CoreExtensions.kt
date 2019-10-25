@@ -7,11 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.reflect.extensions.java.*
-import mu.*
 import java.io.*
-import kotlin.reflect.full.*
-
-private val logger = KotlinLogging.logger { }
 
 //REGION serialize extensions
 
@@ -79,7 +75,7 @@ fun <T> Map<String, Any?>.toObject(type: Class<T>, recursive: Boolean = false): 
 			val fixedPropertyValue = convertProperty(propertyType, propertyValue, recursive)
 			setMethod.invoke(newObject, fixedPropertyValue)
 		} catch(e: Exception) {
-			logger.warn("Property type mismatch. Class: ${type.name}, Name: $propertyName, Value: $propertyValue}.")
+			throw IllegalArgumentException("Property type mismatch. Class: ${type.name}, Name: $propertyName, Value: $propertyValue}.")
 		}
 	}
 	return newObject

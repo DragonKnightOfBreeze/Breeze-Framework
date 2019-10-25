@@ -157,11 +157,21 @@
 * [X] breeze-dsl 修复不足之处。
 - [X] breeze-dsl 优化Dsl构建方法。
 * [X] breeze-dsl 完成`FlowChartDsl`，完善其他的Dsl。
-* [ ] breeze-dsl 实现`SequenceDiagramDsl`。（过于复杂，搁置）
+* [X] breeze-dsl 实现`SequenceDiagramDsl`，将枚举尽可能地移到对应的类内部。
+* [X] breeze-dsl 添加接口`CanSplitContent`并适用。
+* [X] breeze-dsl 实现`MermaidStateDiagram`。
+* [X] 整理代码。
+
+### 1.0.6
+
+- [X] 更新版本。
+* [X] 优化额外TODO方法的实现，消除对`kotlin-logging`的依赖。
+* [X] breeze-logger 提供Logger的简单实现。带有颜色、日期和路径。
+* [X] breeze-logger 调整日志显示风格。
+* [X] breeze-data 约束可见性。
+* [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
-
 ***
-
 * [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
