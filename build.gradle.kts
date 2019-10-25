@@ -13,7 +13,7 @@ plugins {
 subprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.5"
+	version = "1.0.6"
 	
 	//应用插件
 	apply {
