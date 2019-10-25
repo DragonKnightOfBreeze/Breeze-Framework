@@ -17,4 +17,5 @@ object Strings {
 	const val tab: String = "\t"
 	const val cr: String = "\r"
 	const val lf: String = "\n"
+	const val crlf: String = "\r\n"
 }

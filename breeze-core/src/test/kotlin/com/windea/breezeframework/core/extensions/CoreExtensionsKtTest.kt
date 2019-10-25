@@ -1,12 +1,12 @@
 package com.windea.breezeframework.core.extensions
 
+import mu.*
 import org.junit.*
 import kotlin.contracts.*
 
 //Ignore Tests
 
 class CoreExtensionsKtTest {
-	
 	@Test
 	fun with() {
 	}
@@ -25,6 +25,9 @@ class CoreExtensionsKtTest {
 	
 	@Test
 	fun nearestStackInfo() {
+		DELAY("delay!")
+		FIXME("fix me!")
+		TODO("todo!")
 	}
 	
 	@Test

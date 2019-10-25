@@ -32,14 +32,12 @@ subprojects {
 		jcenter()
 	}
 	
-	//配置依赖，implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
+	//配置依赖
+	//implementation表示不能传递依赖，api表示能传递依赖，test为测试期，compile为编译器，runtime为运行时
 	//optional只能依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
-		
-		implementation("io.github.microutils:kotlin-logging:1.6.26")
-		implementation("org.slf4j:slf4j-simple:2.0.0-alpha0")
 	}
 	
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置

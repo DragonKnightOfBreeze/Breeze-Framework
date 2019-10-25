@@ -12,8 +12,6 @@ import java.time.*
 import java.time.format.*
 import java.util.*
 
-private val logger = KotlinLogging.logger { }
-
 //REGION operator overrides
 
 /**@see kotlin.text.slice*/
