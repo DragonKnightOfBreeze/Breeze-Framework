@@ -5,9 +5,9 @@ import org.jetbrains.kotlin.gradle.tasks.*
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.jetbrains.kotlin.jvm") version "1.3.50"
-	id("nebula.optional-base") version "3.0.3"
-	id("com.jfrog.bintray") version "1.8.4"
 	id("org.jetbrains.dokka") version "0.9.18"
+	id("com.jfrog.bintray") version "1.8.4"
+	id("nebula.optional-base") version "3.0.3"
 }
 
 subprojects {
@@ -19,9 +19,9 @@ subprojects {
 	apply {
 		plugin("org.gradle.maven-publish")
 		plugin("org.jetbrains.kotlin.jvm")
-		plugin("nebula.optional-base")
-		plugin("com.jfrog.bintray")
 		plugin("org.jetbrains.dokka")
+		plugin("com.jfrog.bintray")
+		plugin("nebula.optional-base")
 	}
 	
 	//配置依赖仓库
@@ -104,7 +104,6 @@ subprojects {
 					}
 				}
 			}
-			
 			//配置上传到的仓库
 			repositories {
 				//maven本地仓库
