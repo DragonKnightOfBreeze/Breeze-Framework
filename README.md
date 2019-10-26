@@ -45,10 +45,6 @@ dependencies {
 * Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
 * Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`.
 
-## breeze-dream
-
-* 〒▽〒 Please ignore it, for it's my daydream.
-
 ## breeze-dsl
 
 Powerful and clear builders for various domain specific languages.

@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="breeze-dream_main" target="11" />
+      <module name="breeze-dream_test" target="11" />
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
       <module name="breeze-fxgl_main" target="11" />

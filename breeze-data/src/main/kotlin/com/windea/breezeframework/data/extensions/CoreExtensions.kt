@@ -8,6 +8,7 @@ import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.reflect.extensions.java.*
 import java.io.*
+import kotlin.reflect.full.*
 
 //REGION serialize extensions
 

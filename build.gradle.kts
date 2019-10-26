@@ -10,7 +10,7 @@ plugins {
 	id("nebula.optional-base") version "3.0.3"
 }
 
-subprojects {
+allprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
 	version = "1.0.6"
