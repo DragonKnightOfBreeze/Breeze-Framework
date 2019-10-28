@@ -54,7 +54,7 @@ data class Vector2(
 	}
 	
 	/**得到两个向量之间的距离。*/
-	infix fun distance(other: Vector2): Float = sqrt(this distance other)
+	infix fun distance(other: Vector2): Float = sqrt(this distanceSquared other)
 	
 	/**得到两个向量的数量积。*/
 	infix fun dotProduct(other: Vector2): Float = length * other.length
