@@ -21,4 +21,19 @@ abstract class AbstractMultiValueMap<K, V> protected constructor() : MultiValueM
 	
 	override val flatEntries: Set<Map.Entry<K, V>>
 		get() = entries.flatMap { (k, v) -> v.map { MapEntry(k, it) } }.toSet()
+	
+	override fun equals(other: Any?): Boolean {
+		if(other === this) return true
+		if(other !is MultiValueMap<*, *>) return false
+		if(size != other.size) return false
+		return other.entries.all { (k, v) -> this[k] == v }
+	}
+	
+	override fun hashCode(): Int {
+		return entries.hashCode()
+	}
+	
+	override fun toString(): String {
+		return entries.joinToString(", ", "{", "}")
+	}
 }
