@@ -65,16 +65,13 @@ internal object ColorfulLogger : Logger {
 		print(logSnippet.let { "$prefix$it$suffix" })
 	}
 	
-	@PublishedApi
-	internal val currentDate
+	private val currentDate
 		get() = SimpleDateFormat(LoggerConfig.dateFormat).format(Date())
 	
-	@PublishedApi
-	internal val currentClassName
+	private val currentClassName
 		get() = RuntimeException().stackTrace[3].className
 	
-	@PublishedApi
-	internal val currentClassNameAbbreviation
+	private val currentClassNameAbbreviation
 		get() = currentClassName.split(".").joinToString(".") { it.substring(0, 1) } +
 		        currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
 	

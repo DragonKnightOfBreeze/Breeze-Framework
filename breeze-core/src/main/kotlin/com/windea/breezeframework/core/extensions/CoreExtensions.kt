@@ -12,10 +12,6 @@ inline fun <reified R> Any?.cast(): R = this as R
 /**强制转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
 
-fun main() {
-	println()
-}
-
 //REGION standard.kt extensions (TODOs)
 
 /**表明一个操作推迟了实现。*/
@@ -48,7 +44,6 @@ inline fun FIXME(message: String) = run {
 	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
 
-/**得到当前的完整类名。*/
 @PublishedApi
 internal inline val currentClassFullName
 	get() = RuntimeException().stackTrace.first().className
