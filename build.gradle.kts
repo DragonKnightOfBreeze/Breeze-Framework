@@ -41,12 +41,13 @@ allprojects {
 	}
 	
 	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置
-	tasks.withType<KotlinCompile> {
-		kotlinOptions.jvmTarget = "11"
-		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
-		kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
-	}
+	val compileKotlin: KotlinCompile by tasks
 	
+	compileKotlin.kotlinOptions {
+		jvmTarget = "11"
+		freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
+		freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+	}
 	
 	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
 	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"

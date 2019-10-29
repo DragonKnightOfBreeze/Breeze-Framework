@@ -177,6 +177,7 @@
 * [X] ~~breeze-dsl 提供`SteamTextDsl`。~~
 * [X] breeze-core 基本完成`MultiValueMap`。
 * [X] breeze-core 修正`Vector`中的Bug。
+* [X] breeze-core 为字符串添加`inline`和`multiline`内联扩展属性。为了间接与美观。
 * [ ] breeze-dsl 分割为多个子模块。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
@@ -187,7 +188,7 @@
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
-* [ ] breeze-game 初步完成实体&组件的规范。
+* [ ] breeze-game *****************&组件的规范。
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。

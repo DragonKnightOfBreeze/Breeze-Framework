@@ -431,12 +431,18 @@ fun String.padEndByLine(padChar: Char = ' '): String {
 
 //REGION convert extensions
 
+/**@see com.windea.breezeframework.core.extensions.toInlineText*/
+inline val String.inline get() = this.toInlineText()
+
+/**@see kotlin.text.trimIndent*/
+inline val String.multiline get() = this.trimIndent()
+
 /**
- * 将当前字符串转为折行文本。
+ * 将当前字符串转为单行文本。
  *
  * 去除所有换行符以及每行的首尾空白。
  */
-fun String.toBreakLineText(): String {
+fun String.toInlineText(): String {
 	return this.remove("""\s*\n\s*""".toRegex())
 }
 
@@ -446,8 +452,10 @@ fun String.toBreakLineText(): String {
  * 去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。
  **/
 fun String.toMultilineText(relativeIndentSize: Int = 0): String {
+	require(relativeIndentSize in -2..8) { "Relative indent size is not in range -2..8." }
+	
 	val lines = this.lines()
-	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize.coerceIn(0, 8) else ""
+	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
 	return if(trimmedIndent.isEmpty()) this.trimIndent()
 	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
@@ -482,6 +490,7 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
+
 @Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 @Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
