@@ -178,6 +178,7 @@
 * [X] breeze-core 基本完成`MultiValueMap`。
 * [X] breeze-core 修正`Vector`中的Bug。
 * [X] breeze-core 为字符串添加`inline`和`multiline`内联扩展属性。为了间接与美观。
+* [X] breeze-core 补充注解。
 * [ ] breeze-dsl 分割为多个子模块。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
