@@ -12,8 +12,7 @@ import org.intellij.lang.annotations.*
 //DELAY puml is too complex to write dsl
 //TODO fully support
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**PlantUml的Dsl。*/
 @ReferenceApi("[PlantUml](http://plantuml.com)")
 @DslMarker
@@ -60,9 +59,9 @@ interface PumlDslEntry : DslEntry
 /**PlantUml Dsl的元素。*/
 @PumlDsl
 interface PumlDslElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**PlantUml元素。*/
 @PumlDsl
 sealed class PumlElement(
@@ -235,9 +234,9 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 		return "{\n$indentedContentSnippet\n}"
 	}
 }
+//endregion
 
-//REGION enumerations and constants
-
+//region enumerations and constants
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
 enum class PumlTopElementPosition(internal val text: String) {
@@ -261,9 +260,9 @@ enum class PumlArrowDirection(internal val text: String) {
 enum class PumlNotePosition(internal val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @PumlDsl
 inline fun Puml.title(text: String) =
 	PumlTitle(text).also { title = it }
@@ -319,4 +318,4 @@ inline infix fun PumlNote.topOf(targetName: String) =
 @PumlDsl
 inline infix fun PumlNote.bottomOf(targetName: String) =
 	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.BottomOf }
-
+//endregion

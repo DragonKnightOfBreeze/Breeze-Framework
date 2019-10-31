@@ -1,11 +1,7 @@
 package com.windea.breezeframework.generator
 
-//REGION top interfaces
-
 /**生成器。*/
 interface Generator
-
-//REGION type aliases
 
 internal typealias SchemaDefinitionMap = Map<String, SchemaMap>
 internal typealias SchemaMap = Map<String, Map<String, Any>>

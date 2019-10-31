@@ -10,8 +10,7 @@ import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 
 //DELAY add dsl element: HtmlBlock
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Creole的Dsl。*/
 @ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
@@ -44,9 +43,9 @@ object CreoleConfig : DslConfig {
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Creole Dsl的内联入口。*/
 @CreoleDsl
 interface CreoleDslInlineEntry : DslEntry
@@ -71,9 +70,9 @@ interface CreoleDslInlineElement : CreoleDslElement
 /**Creole Dsl的顶级元素。*/
 @CreoleDsl
 interface CreoleDslTopElement : CreoleDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Creole文本。*/
 @CreoleDsl
 class CreoleText @PublishedApi internal constructor(
@@ -390,9 +389,9 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 		return "$l $colorSnippet$text $r"
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @CreoleDsl
 inline fun creole(block: Creole.() -> Unit) = Creole().also { it.block() }
 
@@ -522,3 +521,4 @@ inline fun CreoleTableRow.column(text: String = emptyColumnText) =
 @CreoleDsl
 inline infix fun CreoleTableColumn.color(color: String) =
 	this.also { it.color = color }
+//endregion

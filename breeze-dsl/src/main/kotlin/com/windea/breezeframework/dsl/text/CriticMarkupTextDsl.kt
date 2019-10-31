@@ -5,8 +5,7 @@ package com.windea.breezeframework.dsl.text
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.dsl.*
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**CriticMarkup富文本的Dsl。*/
 @ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @DslMarker
@@ -21,9 +20,9 @@ class CriticMarkupText @PublishedApi internal constructor() : DslBuilder, Critic
 		return text
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**CriticMarkup Dsl的内联入口。*/
 @CriticMarkupTextDsl
 interface CriticMarkupTextDslInlineEntry : DslEntry
@@ -31,9 +30,9 @@ interface CriticMarkupTextDslInlineEntry : DslEntry
 /**CriticMarkup Dsl的内联元素。*/
 @CriticMarkupTextDsl
 interface CriticMarkupTextDslInlineElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Critic Markup文本。*/
 @CriticMarkupTextDsl
 sealed class CriticMarkupRichText(
@@ -82,9 +81,9 @@ class CriticMarkupCommentText @PublishedApi internal constructor(
 class CriticMarkupHighlightText @PublishedApi internal constructor(
 	text: String
 ) : CriticMarkupRichText("{==", text, "==}")
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @CriticMarkupTextDsl
 inline fun criticMarkupText(block: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.block() }
 
@@ -108,3 +107,4 @@ inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCo
 @InlineDsl
 @CriticMarkupTextDsl
 inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text).toString()
+//endregion

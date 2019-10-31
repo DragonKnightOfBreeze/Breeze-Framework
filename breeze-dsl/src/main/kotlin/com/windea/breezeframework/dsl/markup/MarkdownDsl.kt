@@ -19,8 +19,7 @@ import org.intellij.lang.annotations.*
 
 //DELAY add dsl element: HtmlBlock
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Markdown的Dsl。*/
 @DslMarker
 private annotation class MarkdownDsl
@@ -81,9 +80,9 @@ object MarkdownConfig : DslConfig {
 	@PublishedApi internal val emptyColumnLength = 4
 	@PublishedApi internal val emptyColumnText = " " * emptyColumnLength
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
 interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
@@ -117,9 +116,9 @@ interface MarkdownDslTopElement : MarkdownDslElement
 interface WithMarkdownAttributes {
 	var attributes: MarkdownAttributes?
 }
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Markdown文本。*/
 @MarkdownDsl
 class MarkdownText @PublishedApi internal constructor(
@@ -888,9 +887,9 @@ class MarkdownPropertyAttribute(
 		return "$name=${value.wrapQuote(quote)}"
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MarkdownDsl
 inline fun markdown(block: Markdown.() -> Unit) = Markdown().also { it.block() }
 
@@ -1178,3 +1177,4 @@ inline fun MarkdownTableRow.rowSpan() = column(">")
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 inline fun MarkdownTableRow.colSpan() = column("^")
+//endregion

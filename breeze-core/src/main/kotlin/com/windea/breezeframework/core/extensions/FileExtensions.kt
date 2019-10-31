@@ -7,7 +7,6 @@ import java.net.*
 /**不包含扩展名的文件名。*/
 val File.shotName: String get() = this.nameWithoutExtension
 
-
 //https://zhidao.baidu.com/question/2078337860385272108.html
 //https://www.oschina.net/question/112255_44552
 //https://www.iteye.com/blog/chinacheng-841270
@@ -43,7 +42,6 @@ fun File.changeExtension(newExtension: String): File {
 	return File("${this.parent}\\${this.shotName}.$newExtension")
 }
 
-//REGION convert extensions
 
 /**将当前文件转化为统一资源标识符。*/
 fun File.toUri(): URI = this.toURI()

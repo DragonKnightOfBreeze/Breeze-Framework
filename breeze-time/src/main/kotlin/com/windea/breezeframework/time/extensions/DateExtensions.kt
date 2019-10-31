@@ -4,8 +4,7 @@ import com.windea.breezeframework.time.domain.*
 import java.text.*
 import java.util.*
 
-//REGION factory extensions
-
+//region factory extensions
 object Dates {
 	/**今天。*/
 	val today: Date get() = Date()
@@ -20,9 +19,9 @@ object Dates {
 		return calendar.time
 	}
 }
+//endregion
 
-//REGION operator overrides
-
+//region operator overrides
 /**@see Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
@@ -36,9 +35,9 @@ operator fun Date.minus(calendarField: CalendarField): Date {
 	calendar.add(calendarField.field, -calendarField.amount)
 	return calendar.time
 }
+//endregion
 
-//REGION common extensions
-
+//region common extensions
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 
 val Date.endOfYear: Date get() = this.modify(month = 12, day = 31, hour = 23, minute = 59, second = 59)
@@ -74,6 +73,9 @@ val Date.isFriday: Boolean get() = this.assign().let { calendar.get(Calendar.DAY
 
 val Date.isSaturday: Boolean get() = this.assign().let { calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY }
 
+private fun Date.assign(): Date = this.also {
+	calendar.time = this
+}
 
 /**更改日期。*/
 fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
@@ -89,9 +91,6 @@ fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, 
 	return calendar.time
 }
 
-private fun Date.assign(): Date = this.also {
-	calendar.time = this
-}
-
 /**将当前日期转化为格式化的字符串。*/
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
+//endregion

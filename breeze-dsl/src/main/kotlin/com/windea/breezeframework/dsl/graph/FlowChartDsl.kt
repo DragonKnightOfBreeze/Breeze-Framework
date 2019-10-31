@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.FlowChartConnection.Companion.binderQueue
 import java.util.*
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**流程图的Dsl。*/
 @ReferenceApi("[Github](//https://github.com/adrai/flowchart.js)")
 @DslMarker
@@ -27,9 +26,9 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 		return _toContentString()
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**流程图Dsl的入口。*/
 @FlowChartDsl
 interface FlowChartDslEntry : DslEntry, CanSplitContent, WithTransition<FlowChartNode, FlowChartConnection> {
@@ -74,9 +73,9 @@ interface FlowChartConnectionBinder {
 	var path: FlowChartConnection.Path?
 	var direction: FlowChartConnection.Direction?
 }
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**流程图节点。*/
 @FlowChartDsl
 class FlowChartNode @PublishedApi internal constructor(
@@ -146,9 +145,9 @@ class FlowChartConnection @PublishedApi internal constructor(
 		@PublishedApi internal val binderQueue = LinkedList<Binder>()
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @FlowChartDsl
 inline fun flowChart(block: FlowChart.() -> Unit) =
 	FlowChart().also { it.block() }

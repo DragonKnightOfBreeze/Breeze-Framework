@@ -11,8 +11,7 @@ import org.intellij.lang.annotations.*
 //DELAY puml is too complex to write dsl
 //TODO fully support
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**PlantUml序列图的Dsl。*/
 @ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @DslMarker
@@ -25,9 +24,9 @@ class PumlSequenceDiagram @PublishedApi internal constructor() : Puml(), PumlSeq
 		TODO("not implemented")
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**PlantUml序列图Dsl的入口。*/
 @PumlSequenceDiagramDsl
 interface PumlSequenceDiagramDslEntry : PumlDslEntry
@@ -35,9 +34,9 @@ interface PumlSequenceDiagramDslEntry : PumlDslEntry
 /**PlantUml序列图Dsl的元素。*/
 @PumlSequenceDiagramDsl
 interface PumlSequenceDiagramDslElement : PumlDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**PlantUml序列图参与者。*/
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
@@ -93,9 +92,9 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 		return "$fromActorName $arrowSnippet $toActorName$textSnippet"
 	}
 }
+//endregion
 
-//REGION enumerations and constants
-
+//region enumerations and constants
 /**PlantUml序列图参与者的形状。*/
 @PumlSequenceDiagramDsl
 enum class PumlSequenceDiagramParticipantShape(internal val text: String) {
@@ -111,9 +110,9 @@ enum class PumlSequenceDiagramMessageArrowShape(internal val prefix: String, int
 	DottedArrow("<-", "->"), DottedUpArrow("/-", "-\\"), DottedDownArrow("\\-", "-/"),
 	DottedThinArrow("<<-", "->>"), DottedThinUpArrow("//-", "-\\\\"), DottedThinDownArrow("\\\\-", "-//")
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @PumlSequenceDiagramDsl
 inline fun pumlSequenceDiagram(block: PumlSequenceDiagram.() -> Unit) = PumlSequenceDiagram().also { it.block() }
 
@@ -144,3 +143,4 @@ inline infix fun PumlSequenceDiagramMessage.arrowShape(arrowShape: PumlSequenceD
 @PumlSequenceDiagramDsl
 inline infix fun PumlSequenceDiagramMessage.post(isPosted: Boolean) =
 	this.also { it.isPosted = isPosted }
+//endregion

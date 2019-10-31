@@ -10,8 +10,7 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //NOTE unstable raw api
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid饼图的Dsl。*/
 @ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @DslMarker
@@ -29,9 +28,9 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 		return "pie\n$contentSnippet"
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry {
@@ -45,9 +44,9 @@ interface MermaidPieChartDslEntry : MermaidDslEntry {
 /**Mermaid饼图Dsl的元素。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid饼图部分。*/
 @MermaidPieChartDsl
 class MermaidPieChartPart @PublishedApi internal constructor(
@@ -64,9 +63,9 @@ class MermaidPieChartPart @PublishedApi internal constructor(
 		return "${key.wrapQuote(quote)}: $value"
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MermaidPieChartDsl
 inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
 	MermaidPieChart().also { it.block() }
@@ -74,3 +73,4 @@ inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
 @MermaidPieChartDsl
 inline fun MermaidPieChartDslEntry.part(key: String, value: Number) =
 	MermaidPieChartPart(key, value).also { parts += it }
+//endregion

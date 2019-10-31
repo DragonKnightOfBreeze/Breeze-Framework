@@ -15,8 +15,7 @@ import com.windea.breezeframework.core.extensions.*
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**公共的Dsl。*/
 @DslMarker
 internal annotation class GenericDsl
@@ -39,9 +38,9 @@ interface DslEntry
 interface DslElement {
 	override fun toString(): String
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**包含可换行的内容。这个接口的优先级要高于[CanIndentContent]。*/
 @GenericDsl
 interface CanWrapContent {
@@ -140,9 +139,9 @@ interface WithTransition<N : WithName, T : WithNode<N>> {
 	@GenericDsl
 	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo._toNodeName fromTo other._name }
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 /**设置是否换行内容。*/
 @GenericDsl
 inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
@@ -158,9 +157,9 @@ inline infix fun <T : CanSplitContent> T.split(value: Boolean) = this.also { it.
 /**设置是否生成内容。*/
 @GenericDsl
 inline infix fun <T : CanGenerateContent> T.generate(value: Boolean) = this.also { it.generateContent = value }
+//endregion
 
-//REGION helpful extensions
-
+//region helpful extensions
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
 internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")
@@ -168,3 +167,4 @@ internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r"
 /**将`\n`或`\r`替换成`\\n`和`\\r`。*/
 @PublishedApi
 internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
+//endregion

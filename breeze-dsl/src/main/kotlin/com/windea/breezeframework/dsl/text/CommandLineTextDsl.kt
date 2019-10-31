@@ -12,8 +12,7 @@ import com.windea.breezeframework.dsl.*
 
 //NOTE not for all echo commands
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**命令行富文本的Dsl。*/
 @DslMarker
 private annotation class CommandLineTextDsl
@@ -27,9 +26,9 @@ class CommandLineText @PublishedApi internal constructor() : DslBuilder, Command
 		return text
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**命令行富文本Dsl的内联入口。*/
 @CommandLineTextDsl
 interface CommandLineTextDslInlineEntry : DslEntry
@@ -37,9 +36,9 @@ interface CommandLineTextDslInlineEntry : DslEntry
 /**命令行富文本Dsl的内联元素。*/
 @CommandLineTextDsl
 interface CommandLineTextDslInlineElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 @CommandLineTextDsl
 sealed class CommandLineRichText(
 	protected val codes: String,
@@ -94,9 +93,9 @@ class CommandLineAdvanceText(
 	val displayMode: Array<out CommandLineDisplayMode> = arrayOf(),
 	text: String
 ) : CommandLineRichText((listOfNotNull(color?.code, backgroundColor?.backgroundCode) + displayMode.map { it.code }).joinToStringOrEmpty(";"), text)
+//endregion
 
-//REGION enumerations and constants
-
+//region enumerations and constants
 /**命令行富文本的颜色。*/
 @CommandLineTextDsl
 enum class CommandLineColor(internal val code: Int) {
@@ -144,9 +143,9 @@ enum class CommandLineDisplayMode(internal val code: Int) {
 private const val defaultCommand = "\u001B[0m"
 
 private fun command(codes: String) = "\u001B[${codes}m"
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @CommandLineTextDsl
 inline fun commandLineText(block: CommandLineText.() -> String) = CommandLineText().also { it.text = it.block() }
 
@@ -200,3 +199,4 @@ inline fun CommandLineTextDslInlineEntry.advance(
 	vararg displayMode: CommandLineDisplayMode,
 	lazyText: () -> String
 ) = CommandLineAdvanceText(color, backgroundColor, displayMode, lazyText()).toString()
+//endregion

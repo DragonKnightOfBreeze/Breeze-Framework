@@ -6,8 +6,6 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//REGION top annotations and interfaces
-
 @ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @DslMarker
 private annotation class MermaidDsl

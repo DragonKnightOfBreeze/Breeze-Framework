@@ -10,8 +10,7 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
 //NOTE unstable raw api
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid类图的Dsl。*/
 @ReferenceApi("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @DslMarker
@@ -31,9 +30,9 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 		return "classDiagram\n$contentSnippet"
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
 interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplitContent,
@@ -71,9 +70,9 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplitContent,
 /**Mermaid类图Dsl元素。*/
 @MermaidClassDiagramDsl
 interface MermaidClassDiagramDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid类图类。*/
 @MermaidClassDiagramDsl
 class MermaidClassDiagramClass @PublishedApi internal constructor(
@@ -204,9 +203,9 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 		ReversedInheritance("--|>"), ReversedComposition("--*"), ReversedAggregation("--o"), ReversedAssociation("-->")
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MermaidClassDiagramDsl
 inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
 	MermaidClassDiagram().also { it.block() }
@@ -289,3 +288,4 @@ inline infix fun MermaidClassDiagramRelation.text(text: String) =
 @MermaidClassDiagramDsl
 inline infix fun MermaidClassDiagramRelation.cardinality(cardinalityPair: Pair<String?, String?>) =
 	this.also { it.fromCardinality = cardinalityPair.first;it.toCardinality = cardinalityPair.second }
+//endregion

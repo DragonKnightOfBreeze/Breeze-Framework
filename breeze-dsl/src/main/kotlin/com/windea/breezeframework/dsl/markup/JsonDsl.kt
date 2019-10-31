@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.indent
 import com.windea.breezeframework.dsl.markup.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Json的Dsl。*/
 @DslMarker
 private annotation class JsonDsl
@@ -40,9 +39,9 @@ object JsonConfig : DslConfig {
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Json Dsl的元素的内联入口。*/
 @JsonDsl
 interface JsonDslInlineEntry : DslEntry
@@ -50,9 +49,9 @@ interface JsonDslInlineEntry : DslEntry
 /**Json Dsl的元素。*/
 @JsonDsl
 interface JsonDslElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Json元素。*/
 @JsonDsl
 sealed class JsonElement<T>(
@@ -134,9 +133,9 @@ class JsonObject @PublishedApi internal constructor(
 		}
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @JsonDsl
 inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
 
@@ -174,9 +173,9 @@ inline fun JsonDslInlineEntry.jsonArray(value: Iterable<JsonElement<*>>) = JsonA
 @InlineDsl
 @JsonDsl
 inline fun JsonDslInlineEntry.jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
+//endregion
 
-//REGION helpful extensions
-
+//region helpful extensions
 @PublishedApi
 internal fun Any?.toJsonElement(): JsonElement<*> {
 	return when {
@@ -190,4 +189,4 @@ internal fun Any?.toJsonElement(): JsonElement<*> {
 		else -> JsonString(this.toString())
 	}
 }
-
+//endregion

@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.*
 
 //TODO
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**序列图的Dsl。*/
 @ReferenceApi("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
@@ -32,9 +31,9 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
 interface SequenceDiagramDslEntry : DslEntry, CanSplitContent,
@@ -58,9 +57,9 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplitContent,
 /**序列图Dsl的元素。*/
 @SequenceDiagramDsl
 interface SequenceDiagramDslElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
@@ -137,9 +136,9 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 		LeftOf("left of"), RightOf("right of"), Over("over")
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @SequenceDiagramDsl
 inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().also { it.block() }
 
@@ -201,3 +200,4 @@ inline infix fun SequenceDiagramMessage.text(text: String) =
 @SequenceDiagramDsl
 inline infix fun SequenceDiagramMessage.arrowShape(arrowShape: SequenceDiagramMessage.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }
+//endregion

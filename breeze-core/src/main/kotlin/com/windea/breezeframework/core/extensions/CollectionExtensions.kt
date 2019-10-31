@@ -7,8 +7,7 @@ import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import java.util.concurrent.*
 import kotlin.random.*
 
-//REGION portal extensions
-
+//region portal extensions
 /**构建线程安全的并发列表。*/
 inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
 
@@ -26,9 +25,9 @@ inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 
 /**构建线程安全的并发映射。*/
 inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
+//endregion
 
-//REGION operator overrides
-
+//region operator overrides
 /**@see kotlin.collections.slice*/
 inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
 
@@ -46,9 +45,9 @@ inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**@see kotlin.collections.chunked*/
 inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+//endregion
 
-//REGION common functions
-
+//region common functions
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
 	return this == other || this.size == other.size && (this zip other).all { (a, b) -> a == b }
@@ -382,9 +381,9 @@ inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>,
 	crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
+//endregion
 
-//REGION deep operation extensions
-
+//region deep operation extensions
 /**根据指定的[StandardReference]得到当前数组中的元素。*/
 fun <T> Array<out T>.deepGet(path: String): Any? =
 	this.toIndexKeyMap().privateDeepGet(path.splitBy(StandardReference))
@@ -502,9 +501,9 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
 		return@flatMap fixedValue.privateDeepQuery(currentSubPaths, currentPreSubPaths, referenceCase).toList()
 	}.toMap()
 }
+//endregion
 
-//REGION convert extensions
-
+//region convert extensions
 /**将当前列表转化为并发列表。*/
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
 
@@ -554,9 +553,9 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
+//endregion
 
-//REGION specific operations
-
+//region specific operations
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
@@ -597,3 +596,4 @@ inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.f
 
 /**过滤空白字符串。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
+//endregion

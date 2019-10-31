@@ -10,8 +10,7 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.markup.XmlConfig.indent
 import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Xml的Dsl。*/
 @DslMarker
 private annotation class XmlDsl
@@ -58,15 +57,15 @@ object XmlConfig : DslConfig {
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement : DslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Xml声明。*/
 @XmlDsl
 class XmlStatement @PublishedApi internal constructor(
@@ -144,9 +143,9 @@ class XmlElement @PublishedApi internal constructor(
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 		element(this, *args, block = block)
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @XmlDsl
 inline fun xml(block: Xml.() -> Unit) = Xml().also { it.block() }
 
@@ -173,3 +172,4 @@ inline fun XmlElement.comment(text: String) =
 @XmlDsl
 inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.block() }.also { nodes += it }
+//endregion

@@ -10,8 +10,7 @@ import org.intellij.lang.annotations.*
 
 //NOTE can have a title by `title: text`, but it is not introduced in official api
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid序列图的Dsl。*/
 @ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @DslMarker
@@ -33,9 +32,9 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 		return "sequenceDiagram\n$contentSnippet"
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
 interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplitContent,
@@ -61,9 +60,9 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplitContent,
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDiagramDsl
 interface MermaidSequenceDiagramDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid序列图参与者。*/
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
@@ -194,9 +193,9 @@ class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
 	@Language(value = "SCSS", prefix = "\$color:")
 	color: String
 ) : MermaidSequenceDiagramScope("rect", color)
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
 fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) = MermaidSequenceDiagram().also { it.block() }
@@ -284,3 +283,4 @@ inline fun MermaidSequenceDiagramAlternative.`else`(text: String) =
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramAlternative.`else`() =
 	MermaidSequenceDiagramElse().also { elseScopes += it }
+//endregion

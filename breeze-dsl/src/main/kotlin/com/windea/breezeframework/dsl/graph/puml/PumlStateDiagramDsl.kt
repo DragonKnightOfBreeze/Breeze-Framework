@@ -11,8 +11,7 @@ import org.intellij.lang.annotations.*
 
 //DELAY puml is too complex to write dsl
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**PlantUml状态图的Dsl。*/
 @ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @DslMarker
@@ -35,9 +34,9 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 		return "@startuml\n$contentSnippet\n@enduml"
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**PlantUml状态图Dsl的入口。*/
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplitContent, WithTransition<PumlStateDiagramState, PumlStateDiagramTransition> {
@@ -58,9 +57,9 @@ interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplitContent, WithTransiti
 /**PlantUml状态图Dsl的元素。*/
 @PumlStateDiagramDsl
 interface PumlStateDiagramDslElement : PumlDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
 sealed class PumlStateDiagramState(
@@ -230,9 +229,9 @@ class PumlStateDiagramTransition @PublishedApi internal constructor(
 		return "$sourceStateName $arrowSnippet $targetStateName$textSnippet"
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @PumlStateDiagramDsl
 inline fun pumlStateDiagram(block: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.block() }
 
@@ -315,3 +314,4 @@ inline infix fun PumlStateDiagramTransition.arrowDirection(arrowDirection: PumlA
 @PumlStateDiagramDsl
 inline infix fun PumlStateDiagramTransition.arrowLength(arrowLength: Int) =
 	this.also { it.arrowLength = arrowLength.coerceIn(1, 8) }
+//endregion

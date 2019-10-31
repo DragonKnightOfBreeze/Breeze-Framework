@@ -4,6 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.contracts.*
 
+//region commmon extensions
 /**如果为true，则执行一段代码。总是返回自身。*/
 inline fun Boolean.onTrue(block: () -> Unit): Boolean {
 	contract {
@@ -27,9 +28,9 @@ inline fun Boolean?.orTrue(): Boolean = this ?: true
 
 /**如果为null，则返回false，否则返回本身。用于链式调用。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
+//endregion
 
-//REGION convert extensions
-
+//region convert extensions
 /**转化为1或0。*/
 inline fun Boolean.toInt(): Int = if(this) 1 else 0
 
@@ -67,3 +68,4 @@ inline fun Boolean?.toOpsFloat(value: Float = 1f): Float = this?.toOpsFloat(valu
 
 /**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
 inline fun Boolean?.toOpsDouble(value: Double = 1.0): Double = this?.toOpsDouble(value) ?: 0.0
+//endregion

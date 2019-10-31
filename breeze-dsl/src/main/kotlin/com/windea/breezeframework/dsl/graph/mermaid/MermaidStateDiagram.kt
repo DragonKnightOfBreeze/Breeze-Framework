@@ -9,8 +9,7 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 
 //NOTE unstable raw api
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid状态图的Dsl。*/
 @ReferenceApi("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
 @DslMarker
@@ -31,10 +30,9 @@ class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 		return "stateDiagram\n$contentSnippet"
 	}
 }
+//endregion
 
-
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid状态图Dsl的入口。*/
 @MermaidStateDiagramDsl
 interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplitContent, WithTransition<MermaidStateDiagramState, MermaidStateDiagramTransition> {
@@ -57,9 +55,9 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplitContent, WithTr
 /**Mermaid状态图Dsl的元素。*/
 @MermaidStateDiagramDsl
 interface MermaidStateDiagramDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid状态图状态。*/
 @MermaidStateDiagramDsl
 sealed class MermaidStateDiagramState(
@@ -185,9 +183,9 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 		LeftOf("left of"), RightOf("right of")
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MermaidStateDiagramDsl
 inline fun pumlStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().also { it.block() }
 
@@ -249,3 +247,4 @@ inline infix fun MermaidStateDiagramSimpleState.type(type: MermaidStateDiagramSi
 @MermaidStateDiagramDsl
 inline infix fun MermaidStateDiagramTransition.text(text: String) =
 	this.also { it.text = text }
+//endregion

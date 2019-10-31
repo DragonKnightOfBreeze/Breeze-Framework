@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import java.time.*
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid甘特图的Dsl。*/
 @ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @DslMarker
@@ -33,9 +32,9 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 		return "gantt\n$contentSnippet"
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
 interface MermaidGanttDslEntry : MermaidDslEntry, CanSplitContent,
@@ -53,9 +52,9 @@ interface MermaidGanttDslEntry : MermaidDslEntry, CanSplitContent,
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
 interface MermaidGanttDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid甘特图标题。*/
 @MermaidGanttDsl
 class MermaidGanttTitle @PublishedApi internal constructor(
@@ -128,9 +127,9 @@ class MermaidGanttTask @PublishedApi internal constructor(
 		ToDo(null), Done("done"), Active("active")
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MermaidGanttDsl
 inline fun mermaidGantt(block: MermaidGantt.() -> Unit) = MermaidGantt().also { it.block() }
 
@@ -195,3 +194,4 @@ inline infix fun MermaidGanttTask.duration(duration: String) =
 @MermaidGanttDsl
 inline infix fun MermaidGanttTask.duration(duration: Duration) =
 	this.also { it.finishTime = duration.toString().drop(2).toLowerCase() }
+//endregion

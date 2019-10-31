@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 
-//REGION top annotations and interfaces
-
+//region top annotations and interfaces
 /**Mermaid流程图的Dsl。*/
 @ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @DslMarker
@@ -40,9 +39,9 @@ class MermaidFlowChart @PublishedApi internal constructor(
 		TB("TB"), BT("BT"), LR("LR"), RL("RL")
 	}
 }
+//endregion
 
-//REGION dsl interfaces
-
+//region dsl interfaces
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
 interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplitContent,
@@ -74,9 +73,9 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplitContent,
 /**Mermaid流程图Dsl的元素。*/
 @MermaidFlowChartDsl
 interface MermaidFlowChartDslElement : MermaidDslElement
+//endregion
 
-//REGION dsl elements
-
+//region dsl elements
 /**Mermaid流程图节点。*/
 @MermaidFlowChartDsl
 class MermaidFlowChartNode @PublishedApi internal constructor(
@@ -204,9 +203,9 @@ class MermaidFlowChartClassRef @PublishedApi internal constructor(
 		return "class $nodeNameSetSnippet $className"
 	}
 }
+//endregion
 
-//REGION build extensions
-
+//region build extensions
 @MermaidFlowChartDsl
 inline fun mermaidFlowChart(direction: MermaidFlowChart.Direction, block: MermaidFlowChart.() -> Unit) =
 	MermaidFlowChart(direction).also { it.block() }
@@ -265,3 +264,4 @@ inline infix fun MermaidFlowChartLink.text(text: String) =
 @MermaidFlowChartDsl
 inline infix fun MermaidFlowChartLink.arrowShape(arrowShape: MermaidFlowChartLink.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }
+//endregion

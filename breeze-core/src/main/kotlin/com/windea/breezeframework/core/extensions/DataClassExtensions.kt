@@ -10,8 +10,6 @@ import kotlin.reflect.*
 //DONE toString时可以考虑父类型的toString
 //DONE 可以考虑是否进行深层判断
 
-//REGION extensions with closure
-
 /**通过选择并比较指定类型中的属性，判断两个对象是否相等。特殊对待数组类型。*/
 inline fun <reified T> equalsBySelect(target: T?, other: Any?, deepOperation: Boolean = false,
 	selector: T .() -> Array<*>): Boolean {

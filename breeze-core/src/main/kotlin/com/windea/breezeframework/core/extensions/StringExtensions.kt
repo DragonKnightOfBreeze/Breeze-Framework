@@ -11,8 +11,7 @@ import java.time.*
 import java.time.format.*
 import java.util.*
 
-//REGION operator overrides
-
+//region operator overrides
 /**@see kotlin.text.slice*/
 inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
 
@@ -24,9 +23,9 @@ inline operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
 inline operator fun String.div(n: Int): List<String> = this.chunked(n)
+//endregion
 
-//REGION common functions
-
+//region common functions
 /**判断字符串是否相等。忽略大小写。*/
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
@@ -335,9 +334,9 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 fun String.prependIndent(indent: String = "    ", prefix: String): String {
 	return prefix + this.prependIndent(indent).drop(prefix.length)
 }
+//endregion
 
-//REGION specific extensions
-
+//region specific extensions
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
 /**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
@@ -401,9 +400,9 @@ fun String.switchTo(case: FormatCase): String {
 		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
 	}.joinBy(case)
 }
+//endregion
 
-//REGION progressive extensions
-
+//region progressive extensions
 /**逐行连接两个字符串。对于左边的字符串，保持每行长度一致，使用空格填充。对于缺失的行，以空行填充。*/
 infix fun String.plusByLine(other: Any?): String {
 	val lines = this.lines()
@@ -428,9 +427,9 @@ fun String.padEndByLine(padChar: Char = ' '): String {
 	val maxLength = lines.map { it.length }.max() ?: return this
 	return lines.joinToString("\n") { it.padEnd(maxLength, padChar) }
 }
+//endregion
 
-//REGION convert extensions
-
+//region convert extensions
 /**@see com.windea.breezeframework.core.extensions.toInlineText*/
 inline val String.inline get() = this.toInlineText()
 
@@ -536,3 +535,4 @@ inline fun CharSequence.toLocalDateTime(
 /**将当前字符串转化为本地时间。*/
 inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
+//endregion

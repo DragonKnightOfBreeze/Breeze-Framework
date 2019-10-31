@@ -4,8 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.math.*
 
-//REGION operator overrides & infix extensions
-
+//region operator overrides & infix extensions
 /**进行整乘运算。*/
 inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
 
@@ -67,9 +66,9 @@ fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 		else -> abs(this.toFloat() - other.toFloat()) < precision
 	}
 }
+//endregion
 
-//REGION convert extensions
-
+//region convert extensions
 /**转化为二进制字符串。*/
 inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
 
@@ -102,3 +101,4 @@ inline fun <reified T : Enum<T>> Int.toEnumValue(): T = enumValues<T>().getOrDef
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
 inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? = enumValues<T>().getOrNull(this)
+//endregion
