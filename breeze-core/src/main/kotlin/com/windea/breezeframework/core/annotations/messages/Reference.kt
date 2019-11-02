@@ -7,5 +7,5 @@ import kotlin.reflect.*
 @MustBeDocumented
 @Target(CLASS, PROPERTY)
 annotation class Reference(
-	val value: Array<KClass<*>>
+	vararg val value: KClass<*>
 )

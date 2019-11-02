@@ -1,6 +1,6 @@
 @file:Suppress("KDocUnresolvedReference")
 
-package com.windea.breezeframework.core.domain.collections
+package com.windea.breezeframework.core.domain.collections.deprecated
 
 /**
  * 多值映射。

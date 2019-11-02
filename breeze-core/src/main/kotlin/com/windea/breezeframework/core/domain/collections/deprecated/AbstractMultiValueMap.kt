@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.domain.collections
+package com.windea.breezeframework.core.domain.collections.deprecated
 
 /**
  * 抽象的多值映射。

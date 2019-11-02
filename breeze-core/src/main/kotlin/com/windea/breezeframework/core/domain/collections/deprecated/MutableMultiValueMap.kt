@@ -1,6 +1,6 @@
 @file:Suppress("KDocUnresolvedReference")
 
-package com.windea.breezeframework.core.domain.collections
+package com.windea.breezeframework.core.domain.collections.deprecated
 
 //TODO 如何继承自MutableMap<K, List<V>>而不引起泛型冲突？
 

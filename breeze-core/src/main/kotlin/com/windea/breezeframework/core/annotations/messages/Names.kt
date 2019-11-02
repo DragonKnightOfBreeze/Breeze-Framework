@@ -7,5 +7,5 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(CLASS, PROPERTY)
 annotation class Names(
 	/**本地化名字组。*/
-	val value: Array<Name>
+	vararg val value: Name
 )

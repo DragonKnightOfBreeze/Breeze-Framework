@@ -4,6 +4,30 @@
     <bytecodeTargetLevel>
       <module name="breeze-dream_main" target="11" />
       <module name="breeze-dream_test" target="11" />
+      <module name="breeze-dsl-command-line_main" target="11" />
+      <module name="breeze-dsl-command-line_test" target="11" />
+      <module name="breeze-dsl-core_main" target="11" />
+      <module name="breeze-dsl-core_test" target="11" />
+      <module name="breeze-dsl-creole_main" target="11" />
+      <module name="breeze-dsl-creole_test" target="11" />
+      <module name="breeze-dsl-critic-markup_main" target="11" />
+      <module name="breeze-dsl-critic-markup_test" target="11" />
+      <module name="breeze-dsl-flow_main" target="11" />
+      <module name="breeze-dsl-flow_test" target="11" />
+      <module name="breeze-dsl-json_main" target="11" />
+      <module name="breeze-dsl-json_test" target="11" />
+      <module name="breeze-dsl-markdown_main" target="11" />
+      <module name="breeze-dsl-markdown_test" target="11" />
+      <module name="breeze-dsl-mermaid_main" target="11" />
+      <module name="breeze-dsl-mermaid_test" target="11" />
+      <module name="breeze-dsl-puml_main" target="11" />
+      <module name="breeze-dsl-puml_test" target="11" />
+      <module name="breeze-dsl-sequence_main" target="11" />
+      <module name="breeze-dsl-sequence_test" target="11" />
+      <module name="breeze-dsl-xml_main" target="11" />
+      <module name="breeze-dsl-xml_test" target="11" />
+      <module name="breeze-dsl-yaml_main" target="11" />
+      <module name="breeze-dsl-yaml_test" target="11" />
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
       <module name="breeze-fxgl_main" target="11" />
