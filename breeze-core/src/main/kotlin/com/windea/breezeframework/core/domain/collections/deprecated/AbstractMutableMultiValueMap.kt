@@ -1,5 +1,7 @@
 package com.windea.breezeframework.core.domain.collections.deprecated
 
+import com.windea.breezeframework.core.domain.collections.*
+
 abstract class AbstractMutableMultiValueMap<K, V> protected constructor() : MutableMultiValueMap<K, V> {
 	override fun containsSingleValue(value: @UnsafeVariance V): Boolean {
 		return this.values.any { value in it }

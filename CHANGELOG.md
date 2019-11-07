@@ -180,6 +180,9 @@
 * [X] breeze-core 为字符串添加`inline`和`multiline`内联扩展属性。为了间接与美观。
 * [X] breeze-core 补充注解。
 * [X] 适用region...endregion注释。
+* [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
+* [X] breeze-logger 完成自己的日志器的实现。
+* [X] breeze-core 添加`String.alignLeft`等方法。
 * [ ] breeze-dsl 分割为多个子模块。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
@@ -190,15 +193,12 @@
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
-* [ ] breeze-game *****************&组件的规范。
 * [ ] breeze-core Uri构建和编码的扩展。
 * [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。
 * [ ] breeze-core 提供额外的集合的实现。参考Guava。
-* [ ] breeze-logger 完成自己的日志器的实现。
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
-* [ ] ［可能］ breeze-core 考虑废弃`MultiValueMap`的实现，转而为`Map<K,List<Value>>`提供扩展。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 
 # 长期

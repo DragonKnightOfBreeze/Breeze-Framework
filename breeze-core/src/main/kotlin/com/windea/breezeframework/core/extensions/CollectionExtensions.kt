@@ -66,34 +66,34 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 
 
 /**判断当前数组中的所有元素是否被另一数组包含。*/
-inline infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
 
 /**判断当前数组中的所有元素是否被另一集合包含。*/
-inline infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
 
 /**判断当前集合中的所有元素是否被另一数组包含。*/
-inline infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
 
 /**判断当前集合中的所有元素是否被另一集合包含。*/
-inline infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
 
 /**判断当前序列中的所有元素是否被另一序列包含。*/
-inline infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
+infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
 
 /**判断当前数组中的任意元素是否被另一数组包含。*/
-inline infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
 
 /**判断当前数组中的任意元素是否被另一集合包含。*/
-inline infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前集合中的任意元素是否被另一数组包含。*/
-inline infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
 
 /**判断当前集合中的任意元素是否被另一集合包含。*/
-inline infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
 
 /**判断当前序列中的任意元素是否被另一序列包含。*/
-inline infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
 
 
 /**判断当前数组是否以指定元素开始。*/

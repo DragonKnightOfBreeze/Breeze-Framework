@@ -79,8 +79,8 @@ class StringExtensionsKtTest {
 			123123123
 		""".trimIndent()
 		
-		println(a plusByLine b)
-		println(a.padStartByLine())
-		println(a.padEndByLine())
+		//println(a plusByLine b)
+		//println(a.padStartByLine())
+		//println(a.padEndByLine())
 	}
 }

@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.domain.collections.deprecated
+package com.windea.breezeframework.core.domain.collections
 
 data class MapEntry<K, V>(
 	override val key: K,

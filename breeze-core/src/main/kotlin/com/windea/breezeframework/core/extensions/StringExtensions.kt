@@ -26,6 +26,16 @@ inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
+/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+infix fun String.lineConcat(other: String): String {
+	val lines = this.lines()
+	val otherLines = other.lines()
+	return when {
+		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
+		else -> lines zip otherLines.fillEnd(lines.size, "")
+	}.joinToString("\n") { (a, b) -> "$a$b" }
+}
+
 /**判断字符串是否相等。忽略大小写。*/
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
@@ -34,12 +44,12 @@ infix fun String?.equalsIc(other: String?): Boolean {
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
 infix fun String?.equalsIlc(other: String?): Boolean {
 	if(this == other) return true
-	return this != null && other != null && this.switchTo(this.letterCase, other.letterCase) == other
+	return this != null && other != null && this.switchCase(this.letterCase, other.letterCase) == other
 }
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
-inline infix fun String.anyIn(other: String): Boolean = this.any { it in other }
+infix fun String.anyIn(other: String): Boolean = this.any { it in other }
 
 
 /**判断当前字符串是否以指定前缀开头。*/
@@ -192,14 +202,14 @@ fun String.messageFormat(vararg args: Any?): String {
 fun String.customFormat(placeholder: String, vararg args: Any?): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escape(EscapeType.InRegex) }
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escape(EscapeType.Regex) }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString().orEmpty()
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escape(EscapeType.InRegex) }
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escape(EscapeType.Regex) }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString().orEmpty()
 			}
@@ -355,14 +365,14 @@ fun String.unwrapQuote(): String {
 
 
 /**根据指定的转义类型，转义当前字符串。默认采用Kotlin的转义。*/
-fun String.escape(type: EscapeType = EscapeType.InKotlin): String {
+fun String.escape(type: EscapeType = EscapeType.Kotlin): String {
 	//"\" should be escaped first
 	val tempString = if(type.escapeBackslash) this.replace("\\", "\\\\") else this
 	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
 }
 
 /**根据指定的转义类型，反转义当前字符串。默认采用Kotlin的转义。*/
-fun String.unescape(type: EscapeType = EscapeType.InKotlin): String {
+fun String.unescape(type: EscapeType = EscapeType.Kotlin): String {
 	//"\" should be unescaped last
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
 	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
@@ -377,6 +387,11 @@ val String.letterCase: LetterCase
 val String.referenceCase: ReferenceCase
 	get() = enumValues<ReferenceCase>().first { this matches it.regex }
 
+/**切换当前字符串的显示格式。*/
+fun String.switchCase(fromCase: FormatCase, toCase: FormatCase): String {
+	return this.splitBy(fromCase).joinBy(toCase)
+}
+
 /**根据显示格式分割当前字符串。*/
 fun String.splitBy(case: FormatCase): List<String> {
 	return case.splitFunction(this)
@@ -387,11 +402,6 @@ fun List<String>.joinBy(case: FormatCase): String {
 	return case.joinFunction(this)
 }
 
-/**切换当前字符串的显示格式。*/
-fun String.switchTo(fromCase: FormatCase, toCase: FormatCase): String {
-	return this.splitBy(fromCase).joinBy(toCase)
-}
-
 /**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。某些显示格式需要显式指定。*/
 fun String.switchTo(case: FormatCase): String {
 	return when(case) {
@@ -400,32 +410,38 @@ fun String.switchTo(case: FormatCase): String {
 		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
 	}.joinBy(case)
 }
-//endregion
 
-//region progressive extensions
-/**逐行连接两个字符串。对于左边的字符串，保持每行长度一致，使用空格填充。对于缺失的行，以空行填充。*/
-infix fun String.plusByLine(other: Any?): String {
+
+/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignLeft(padChar: Char = ' '): String {
 	val lines = this.lines()
-	val maxLength = lines.map { it.length }.max() ?: 0
-	val otherLines = other.toString().lines()
-	return when {
-		lines.size < otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
-		else -> lines zip otherLines
-	}.joinToString("\n") { (a, b) -> if(b.isEmpty()) a else a.padEnd(maxLength) + b }
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
 }
 
-/**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
-fun String.padStartByLine(padChar: Char = ' '): String {
+/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignCenter(padChar: Char = ' '): String {
 	val lines = this.lines()
-	val maxLength = lines.map { it.length }.max() ?: return this
-	return lines.joinToString("\n") { it.padStart(maxLength, padChar) }
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") {
+		val trimmedString = it.trim()
+		val deltaLength = maxLength - trimmedString.length
+		when {
+			deltaLength > 0 && deltaLength % 2 == 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString$s" }
+			deltaLength > 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString $s" }
+			else -> trimmedString
+		}
+	}
 }
 
-/**使用指定的字符，在当前字符串的开头逐行填充字符串，并保持每行长度一致。默认使用空格。*/
-fun String.padEndByLine(padChar: Char = ' '): String {
+/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignRight(padChar: Char = ' '): String {
 	val lines = this.lines()
-	val maxLength = lines.map { it.length }.max() ?: return this
-	return lines.joinToString("\n") { it.padEnd(maxLength, padChar) }
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
 }
 //endregion
 

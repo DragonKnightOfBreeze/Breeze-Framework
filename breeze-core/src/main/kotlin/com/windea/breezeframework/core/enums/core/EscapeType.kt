@@ -6,19 +6,19 @@ enum class EscapeType(
 	val escapedStrings: Array<String>,
 	val escapeBackslash: Boolean = true
 ) {
-	InKotlin(
+	Kotlin(
 		arrayOf("\t", "\b", "\n", "\r", "\'", "\"", "\$"),
 		arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"", "\\\$")
 	),
-	InJava(
+	Java(
 		arrayOf("\t", "\b", "\n", "\r", "\'", "\""),
 		arrayOf("\\t", "\\b", "\\n", "\\r", "\\'", "\\\"")
 	),
-	InRegex(
+	Regex(
 		arrayOf(".", "^", "$", "[", "{", "(", "|", "?", "+"), //not for every scope
 		arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "\\?", "\\+")
 	),
-	InXml(
+	Xml(
 		arrayOf("<", ">", "&", "'", "\""), //only for basic escape
 		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "quot;"),
 		false

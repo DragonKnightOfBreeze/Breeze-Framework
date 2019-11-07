@@ -1,5 +1,7 @@
 package com.windea.breezeframework.core.domain.collections.deprecated
 
+import com.windea.breezeframework.core.domain.collections.*
+
 /**
  * 抽象的多值映射。
  */
