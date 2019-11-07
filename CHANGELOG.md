@@ -183,7 +183,6 @@
 * [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
 * [X] breeze-logger 完成自己的日志器的实现。
 * [X] breeze-core 添加`String.alignLeft`等方法。
-* [ ] breeze-dsl 分割为多个子模块。
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
@@ -200,6 +199,7 @@
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
+* [ ] ［搁置］ breeze-dsl 分割为多个子模块。
 
 # 长期
 
