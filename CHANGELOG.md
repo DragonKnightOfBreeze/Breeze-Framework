@@ -183,9 +183,10 @@
 * [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
 * [X] breeze-logger 完成自己的日志器的实现。
 * [X] breeze-core 添加`String.alignLeft`等方法。
+* [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。 
+***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
-***
 * [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。

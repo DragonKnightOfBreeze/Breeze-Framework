@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.*
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.3.50"
+	id("org.jetbrains.kotlin.jvm") version "1.3.60"
 	id("org.jetbrains.dokka") version "0.9.18"
 	id("com.jfrog.bintray") version "1.8.4"
 	id("nebula.optional-base") version "3.0.3"
@@ -13,7 +13,7 @@ plugins {
 allprojects {
 	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
-	version = "1.0.6"
+	version = "1.0.7"
 	
 	//应用插件
 	apply {

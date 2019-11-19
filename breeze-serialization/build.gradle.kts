@@ -1,5 +1,5 @@
 plugins {
-	kotlin("plugin.serialization") version "1.3.50"
+	kotlin("plugin.serialization") version "1.3.60"
 }
 
 dependencies {

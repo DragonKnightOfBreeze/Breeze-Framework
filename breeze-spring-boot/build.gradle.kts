@@ -2,8 +2,8 @@ import groovy.lang.*
 import org.gradle.util.*
 
 plugins {
-	kotlin("plugin.spring") version "1.3.50"
-	kotlin("plugin.jpa") version "1.3.50"
+	kotlin("plugin.spring") version "1.3.60"
+	kotlin("plugin.jpa") version "1.3.60"
 }
 
 val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*>).let { ConfigureUtil.configureUsing(it) }

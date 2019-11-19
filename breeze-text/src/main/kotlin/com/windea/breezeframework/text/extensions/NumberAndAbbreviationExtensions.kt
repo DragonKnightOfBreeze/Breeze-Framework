@@ -1,7 +1,13 @@
 @file:Suppress("DuplicatedCode")
+@file:NotRecommended("Use java12's NumberFormat.")
+
+//Use java12's NumberFormat:
+//val cnf = NumberFormat.getCompactNumberInstance(Locale.CHINA, NumberFormat.Style.SHORT)
+//println(cnf.format(1_0000))
 
 package com.windea.breezeframework.text.extensions
 
+import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 

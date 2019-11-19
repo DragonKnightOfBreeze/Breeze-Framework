@@ -93,13 +93,30 @@ inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): 
 
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
-fun CharSequence.isAlphabetic() = this matches "[a-zA-Z]+".toRegex()
+fun CharSequence.isAlphabetic(): Boolean {
+	return this matches "[a-zA-Z]+".toRegex()
+}
 
 /**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
-fun CharSequence.isNumeric() = this matches "[1-9]+".toRegex()
+fun CharSequence.isNumeric(): Boolean {
+	return this matches "[1-9]+".toRegex()
+}
 
 /**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
-fun CharSequence.isAlphanumeric() = this matches "[1-9a-zA-Z_]+".toRegex()
+fun CharSequence.isAlphanumeric(): Boolean {
+	return this matches "[1-9a-zA-Z_]+".toRegex()
+}
+
+
+/**如果当前字符串为空，则返回null，否则返回自身。*/
+inline fun CharSequence.takeIfNotEmpty(): CharSequence? {
+	return this.takeIf { it.isNotEmpty() }
+}
+
+/**如果当前字符串未空白，则返回null，否则返回自身。*/
+inline fun CharSequence.takeIfNotBlank(): CharSequence? {
+	return this.takeIf { it.isNotBlank() }
+}
 
 
 /**如果当前字符串不为空，则返回转换后的值。*/
