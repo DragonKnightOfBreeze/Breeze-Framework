@@ -186,6 +186,7 @@
 * [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。 
 * [X] breeze-core 去除以上扩展，添加`String.orNull`和`Optional.orNull`扩展。
 * [X] breeze-core 重构和添加`String.alignStart`,`String.addPrefix`,`String.inline`,`String.trimWrap`等扩展。
+* [X] breeze-dsl 重构代码和整理目录。
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）

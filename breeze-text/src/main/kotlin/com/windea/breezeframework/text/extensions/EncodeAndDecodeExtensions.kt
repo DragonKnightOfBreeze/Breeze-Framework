@@ -10,7 +10,7 @@ fun ByteArray.base64Encoded(): ByteArray = Base64.getEncoder().encode(this)
 fun ByteArray.base64Decoded(): ByteArray = Base64.getDecoder().decode(this)
 
 /**将字符串编码成Base64格式。*/
-fun String.base64Encoded(): String = Base64.getEncoder().encodeToString(this.toByteArray())
+fun String.base64Encoded(): String = Base64.getEncoder().encodeToString(this.encodeToByteArray())
 
 /**将字符串从Base64格式解码。*/
 fun String.base64Decoded(): String = Base64.getDecoder().decode(this).decodeToString()
