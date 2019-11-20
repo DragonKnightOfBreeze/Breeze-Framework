@@ -54,5 +54,5 @@ fun <K, V> MutableMultiValueMap<K, V>.putAll(from: MultiValueMap<K, V>) {
 }
 
 val <K, V> MutableMultiValueMap<K, V>.flatValues: MutableCollection<V>
-	@JvmName("getFlatValues_Mutable") get() = values.flatten().toMutableList()
+	@JvmName("getMutableFlatValues") get() = values.flatten().toMutableList()
 //endregion

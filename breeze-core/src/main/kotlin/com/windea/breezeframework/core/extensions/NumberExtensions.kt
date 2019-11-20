@@ -69,17 +69,17 @@ fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 //endregion
 
 //region convert extensions
-/**转化为二进制字符串。*/
+/**将当前整数转化为二进制字符串。*/
 inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
 
-/**转化为八进制字符串。*/
+/**将当前整数转化为八进制字符串。*/
 inline fun Int.toHexString(): String = Integer.toHexString(this)
 
-/**转化为十六进制字符串。*/
+/**将当前整数转化为十六进制字符串。*/
 inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 
-/**转化为指定的数字类型。*/
+/**将当前数字转化为指定的数字类型。*/
 inline fun <reified T : Number> Number.to(): T {
 	//performance note: approach to 1/5
 	return when(val typeName = T::class.java.name) {

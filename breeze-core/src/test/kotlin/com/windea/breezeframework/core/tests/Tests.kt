@@ -52,7 +52,7 @@ class Tests {
 		  <element>
 		    Here also indented.
 		  </element>
-		""".toMultilineText())
+		""".trimRelativeIndent())
 		
 		//abcAbc
 		println("Abc abc".switchTo(camelCase))

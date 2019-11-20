@@ -26,16 +26,6 @@ inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
-/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-infix fun String.lineConcat(other: String): String {
-	val lines = this.lines()
-	val otherLines = other.lines()
-	return when {
-		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
-		else -> lines zip otherLines.fillEnd(lines.size, "")
-	}.joinToString("\n") { (a, b) -> "$a$b" }
-}
-
 /**判断字符串是否相等。忽略大小写。*/
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
@@ -232,30 +222,79 @@ fun String.customFormat(placeholder: String, vararg args: Any?): String {
 }
 
 
-/**添加指定的前缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addPrefix(prefix: CharSequence, ignoreEmpty: Boolean = true): String {
-	if(this.isEmpty() && ignoreEmpty) return this
-	else if(this.startsWith(prefix)) return this
+/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+infix fun String.lineConcat(other: String): String {
+	val lines = this.lines()
+	val otherLines = other.lines()
+	return when {
+		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
+		else -> lines zip otherLines.fillEnd(lines.size, "")
+	}.joinToString("\n") { (a, b) -> "$a$b" }
+}
+
+
+//TODO 作为前缀和作为后缀方法
+
+
+/**添加指定的前缀。当已存在时或者为空字符串时返回自身。*/
+infix fun String.addPrefix(prefix: CharSequence): String {
+	if(this.isEmpty() || this.startsWith(prefix)) return this
 	return "$prefix$this"
 }
 
-/**添加指定的后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSuffix(suffix: CharSequence, ignoreEmpty: Boolean = true): String {
-	if(this.isEmpty() && ignoreEmpty) return this
-	else if(this.endsWith(suffix)) return this
+/**添加指定的后缀。当已存在时或者为空字符串时返回自身。*/
+infix fun String.addSuffix(suffix: CharSequence): String {
+	if(this.isEmpty() || this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
-/**添加指定的前缀和后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence, ignoreEmpty: Boolean = true): String {
-	if(this.isEmpty() && ignoreEmpty) return this
-	else if(this.startsWith(prefix) && this.endsWith(suffix)) return this
+/**添加指定的前缀和后缀。当已存在时或者为空字符串时返回自身。*/
+fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
+	if(this.isEmpty() || (this.startsWith(prefix) && this.endsWith(suffix))) return this
 	return "$prefix$this$suffix"
 }
 
-/**添加指定的前后缀。当已存在时不添加。可指定是否忽略空字符串，默认为true。*/
-fun String.addSurrounding(delimiter: CharSequence, ignoreEmpty: Boolean): String {
-	return this.addSurrounding(delimiter, delimiter, ignoreEmpty)
+/**添加指定的前缀和后缀。当已存在时或者为空字符串时返回自身。*/
+infix fun String.addSurrounding(delimiterPair: Pair<CharSequence, CharSequence>): String {
+	return this.addSurrounding(delimiterPair.first, delimiterPair.second)
+}
+
+/**添加指定的前后缀。当已存在时或者为空字符串时返回自身。*/
+infix fun String.addSurrounding(delimiter: CharSequence): String {
+	return this.addSurrounding(delimiter, delimiter)
+}
+
+
+/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignStart(padChar: Char = ' '): String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
+}
+
+/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignEnd(padChar: Char = ' '): String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
+}
+
+/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+fun String.alignCenter(padChar: Char = ' '): String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") {
+		val trimmedString = it.trim()
+		val deltaLength = maxLength - trimmedString.length
+		when {
+			deltaLength > 0 && deltaLength % 2 == 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString$s" }
+			deltaLength > 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString $s" }
+			else -> trimmedString
+		}
+	}
 }
 
 
@@ -286,23 +325,22 @@ inline fun String.removeBlank(): String {
 
 
 /**将第一个字符转为大写。*/
-fun String.firstCharToUpperCase(): String {
-	return if(this.isNotBlank()) this[0].toUpperCase() + this.substring(1) else this
+internal fun String.firstCharToUpperCase(): String {
+	return this[0].toUpperCase() + this.substring(1)
 }
 
 /**将第一个字符转为小写。*/
-fun String.firstCharToLowerCase(): String {
-	return if(this.isNotBlank()) this[0].toLowerCase() + this.substring(1) else this
+internal fun String.firstCharToLowerCase(): String {
+	return this[0].toLowerCase() + this.substring(1)
 }
 
-
 /**将当前字符串分割为单词列表，基于任意长度的指定的分割符，默认为空格。允许位于首尾的分隔符。*/
-fun String.splitToWordList(delimiter: Char = ' '): List<String> {
+internal fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 	return this.split(delimiter).filterNotEmpty()
 }
 
 /**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
-fun String.toWords(): String {
+internal fun String.toWords(): String {
 	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }
 
@@ -316,7 +354,7 @@ fun CharSequence.substrings(regex: Regex): List<String> {
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。
  */
-fun String.substrings(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =
+fun String.substrings(vararg delimiters: String?, defaultValue: (index: Int, missingDelimiterValue: String) -> List<String>): List<String> =
 	substringsOrElse(*delimiters) { index, str -> defaultValue(index, str).getOrEmpty(index) }
 
 /**
@@ -353,13 +391,16 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 }
 
 
+//TODO 与substrings匹配的replace方法
+
+
 /**为当前字符串的每行添加缩进，并为第一行提供一个指定的前缀。*/
 fun String.prependIndent(indent: String = "    ", prefix: String): String {
 	return prefix + this.prependIndent(indent).drop(prefix.length)
 }
 //endregion
 
-//region specific extensions
+//region wrap & unwrap extensions
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
 /**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
@@ -375,8 +416,9 @@ fun String.unwrapQuote(): String {
 	if(quote !in quoteChars) return this
 	return this.removeSurrounding(quote.toString()).ifNotEmpty { it.replace("\\$quote", quote.toString()) }
 }
+//endregion
 
-
+//region escape & unescape extensions
 /**根据指定的转义类型，转义当前字符串。默认采用Kotlin的转义。*/
 fun String.escape(type: EscapeType = EscapeType.Kotlin): String {
 	//"\" should be escaped first
@@ -390,8 +432,9 @@ fun String.unescape(type: EscapeType = EscapeType.Kotlin): String {
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
 	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
 }
+//endregion
 
-
+//region case handling extensions
 /**得到当前字母的字母显示格式。*/
 val String.letterCase: LetterCase
 	get() = enumValues<LetterCase>().first { this matches it.regex }
@@ -423,64 +466,33 @@ fun String.switchTo(case: FormatCase): String {
 		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
 	}.joinBy(case)
 }
-
-
-/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-fun String.alignLeft(padChar: Char = ' '): String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
-}
-
-/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-fun String.alignCenter(padChar: Char = ' '): String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") {
-		val trimmedString = it.trim()
-		val deltaLength = maxLength - trimmedString.length
-		when {
-			deltaLength > 0 && deltaLength % 2 == 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString$s" }
-			deltaLength > 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString $s" }
-			else -> trimmedString
-		}
-	}
-}
-
-/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-fun String.alignRight(padChar: Char = ' '): String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
-}
 //endregion
 
 //region convert extensions
-/**@see com.windea.breezeframework.core.extensions.toInlineText*/
-inline val String.inline get() = this.toInlineText()
+/**
+ * 将当前字符串转为内联文本。
+ * @see com.windea.breezeframework.core.extensions.trimWrap
+ */
+inline val String.inline get() = this.trimWrap()
 
-/**@see kotlin.text.trimIndent*/
+/**
+ * 将当前字符串转为多行文本。
+ * @see kotlin.text.trimIndent
+ */
 inline val String.multiline get() = this.trimIndent()
 
 /**
- * 将当前字符串转为单行文本。
- *
- * 去除所有换行符以及每行的首尾空白。
+ * 去除当前字符串中的所有换行符以及换行符周围的空白。
  */
-fun String.toInlineText(): String {
-	return this.remove("""\s*\n\s*""".toRegex())
+fun String.trimWrap(): String {
+	return this.remove("""\s*(\r|\n|\r\n)\s*""".toRegex())
 }
 
 /**
- * 将当前字符串转化为多行文本。可选相对缩进，默认为0。
- *
- * 去除首尾空白行，然后基于尾随空白行的缩进，尝试去除每一行的缩进。
+ * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
  **/
-fun String.toMultilineText(relativeIndentSize: Int = 0): String {
-	require(relativeIndentSize in -2..8) { "Relative indent size is not in range -2..8." }
+fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
+	require(relativeIndentSize in -2..8) { "Relative indent size is not in range [-2, 8]." }
 	
 	val lines = this.lines()
 	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
@@ -490,7 +502,7 @@ fun String.toMultilineText(relativeIndentSize: Int = 0): String {
 }
 
 
-/**转化为指定的数字类型。*/
+/**将当前字符串转化为指定的数字类型。*/
 inline fun <reified T : Number> String.to(): T {
 	//performance note: approach to 1/5
 	return when(val typeName = T::class.java.name) {

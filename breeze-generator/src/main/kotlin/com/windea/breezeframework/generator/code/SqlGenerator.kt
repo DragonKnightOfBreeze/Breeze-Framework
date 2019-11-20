@@ -49,8 +49,8 @@ object SqlGenerator : Generator {
 				
 				"""  ($columnsSnippet)"""
 			}}
-			""".toMultilineText()
+			""".trimRelativeIndent()
 		}}
-		""".toMultilineText()
+		""".trimRelativeIndent()
 	}
 }

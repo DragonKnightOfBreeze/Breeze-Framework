@@ -70,9 +70,9 @@ object IdeaConfigGenerator : Generator {
 			      <option name="XML" value="false"/>
 			    </context>
 			  </template>
-			""".toMultilineText()
+			""".trimRelativeIndent()
 		}}
 		</templateSet>
-		""".toMultilineText()
+		""".trimRelativeIndent()
 	}
 }
