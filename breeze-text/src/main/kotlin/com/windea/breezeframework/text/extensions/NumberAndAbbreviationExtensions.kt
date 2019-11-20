@@ -1,9 +1,5 @@
 @file:Suppress("DuplicatedCode")
-@file:NotRecommended("Use java12's NumberFormat.")
-
-//Use java12's NumberFormat:
-//val cnf = NumberFormat.getCompactNumberInstance(Locale.CHINA, NumberFormat.Style.SHORT)
-//println(cnf.format(1_0000))
+@file:NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 
 package com.windea.breezeframework.text.extensions
 

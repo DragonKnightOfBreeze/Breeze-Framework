@@ -108,14 +108,10 @@ fun CharSequence.isAlphanumeric(): Boolean {
 }
 
 
-/**如果当前字符串为空，则返回null，否则返回自身。*/
-inline fun CharSequence.takeIfNotEmpty(): CharSequence? {
-	return this.takeIf { it.isNotEmpty() }
-}
-
-/**如果当前字符串未空白，则返回null，否则返回自身。*/
-inline fun CharSequence.takeIfNotBlank(): CharSequence? {
-	return this.takeIf { it.isNotBlank() }
+/**如果当前字符串为空，则返回null，否则返回自身。当includeBlank为true时，也包括为空白的情况，默认为false。*/
+inline fun <C : CharSequence> C.orNull(includeBlank: Boolean = false): C? {
+	val condition = if(includeBlank) this.isBlank() else this.isEmpty()
+	return if(condition) null else this
 }
 
 
@@ -150,13 +146,13 @@ fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = f
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
-/**根据一组字符元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
 fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组字符元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
 fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
