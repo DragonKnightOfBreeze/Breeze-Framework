@@ -1,5 +1,4 @@
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.*
 
 //配置要用到的插件
 plugins {
@@ -40,17 +39,31 @@ allprojects {
 		testImplementation(kotlin("test-junit"))
 	}
 	
-	//配置kotlin的**一些**选项，增量编译需在gradle.properties中配置
-	val compileKotlin: KotlinCompile by tasks
-	
-	compileKotlin.kotlinOptions {
-		jvmTarget = "11"
-		freeCompilerArgs += "-Xuse-experimental=kotlin.ExperimentalStdlibApi"
-		freeCompilerArgs += "-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+	//配置kotlin的一些选项，增量编译需在gradle.properties中配置
+	tasks {
+		compileKotlin {
+			incremental = true
+			kotlinOptions {
+				jvmTarget = "11"
+				freeCompilerArgs = listOf(
+					"-Xjsr305=strict",
+					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
+					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+				)
+			}
+		}
+		compileTestKotlin {
+			incremental = true
+			kotlinOptions {
+				jvmTarget = "11"
+				freeCompilerArgs = listOf(
+					"-Xjsr305=strict",
+					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
+					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+				)
+			}
+		}
 	}
-	
-	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
 	
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
@@ -64,6 +77,9 @@ allprojects {
 		group = JavaBasePlugin.DOCUMENTATION_GROUP
 		from(tasks.dokka)
 	}
+	
+	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
 	
 	//上传的配置
 	//虽然并不知道为什么会显示上传两次，但是不这样做就会报错，姑且这样了
