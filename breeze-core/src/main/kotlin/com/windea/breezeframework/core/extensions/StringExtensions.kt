@@ -233,8 +233,33 @@ infix fun String.lineConcat(other: String): String {
 }
 
 
-//TODO 作为前缀和作为后缀方法
+/**设置指定的前缀。即，添加前缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+infix fun String.setPrefix(prefix: CharSequence): String {
+	if(this.length < prefix.length) return this
+	return "$prefix${this.drop(prefix.length)}"
+}
 
+/**设置指定的后缀。即，添加后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+infix fun String.setSuffix(suffix: CharSequence): String {
+	if(this.length < suffix.length) return this
+	return "${this.dropLast(suffix.length)}$suffix"
+}
+
+/**设置指定的前缀和后缀。即，添加前缀和后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
+	if(this.length < prefix.length + suffix.length) return this
+	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
+}
+
+/**设置指定的前缀和后缀。即，添加前缀和后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+infix fun String.setSurrounding(delimiterPair: Pair<String, String>): String {
+	return this.setSurrounding(delimiterPair.first, delimiterPair.second)
+}
+
+/**设置指定的前后缀。即，添加前后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+infix fun String.setSurrounding(delimiter: String): String {
+	return this.setSurrounding(delimiter, delimiter)
+}
 
 /**添加指定的前缀。当已存在时或者为空字符串时返回自身。*/
 infix fun String.addPrefix(prefix: CharSequence): String {
