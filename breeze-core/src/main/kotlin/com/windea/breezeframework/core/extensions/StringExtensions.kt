@@ -417,12 +417,6 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 
 
 //TODO 与substrings匹配的replace方法
-
-
-/**为当前字符串的每行添加缩进，并为第一行提供一个指定的前缀。*/
-fun String.prependIndent(indent: String = "    ", prefix: String): String {
-	return prefix + this.prependIndent(indent).drop(prefix.length)
-}
 //endregion
 
 //region wrap & unwrap extensions

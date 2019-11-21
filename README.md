@@ -101,6 +101,10 @@ Note:
 
 * Provide some useful extensions for javafx.
 
+## breeze-linq
+
+TODO
+
 ## breeze-logger
 
 * [ ] Provide lightweight, individual, and powerful logger for Kotlin.
@@ -122,6 +126,10 @@ Note:
 ## breeze-spring-cloud
 
 * Provide some useful extensions for `SpringCloud` and it's optional modules.
+
+## breeze-test
+
+TODO
 
 ## breeze-text
 

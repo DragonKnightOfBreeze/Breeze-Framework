@@ -349,7 +349,7 @@ sealed class MarkdownAtxHeading(
 		val prefixMarkers = "#" * headingLevel
 		val textSnippet = if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
-				.prependIndent(indent, prefixMarkers)
+				.prependIndent(indent).setPrefix(prefixMarkers)
 		else text
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val suffixMarkers = if(addPrefixHeadingMarkers) " $prefixMarkers" else ""
@@ -425,7 +425,7 @@ sealed class MarkdownListNode(
 		val indent = " " * (prefixMarkers.length + 1)
 		val textSnippet = if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
-				.prependIndent(indent, prefixMarkers)
+				.prependIndent(indent).setPrefix(prefixMarkers)
 		else text
 		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n").ifNotEmpty { it.prependIndent(indent) }
 		return "$textSnippet$nodesSnippet"
@@ -484,7 +484,7 @@ class MarkdownDefinitionNode @PublishedApi internal constructor(
 	override fun toString(): String {
 		return if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
-				.prependIndent(indent, ":")
+				.prependIndent(indent).setPrefix(":")
 		else text
 	}
 }

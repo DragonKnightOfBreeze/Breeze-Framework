@@ -20,11 +20,13 @@ include(
 	"breeze-game",
 	"breeze-generator",
 	"breeze-javafx",
+	"breeze-linq",
 	"breeze-logger",
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-spring-boot",
 	"breeze-spring-cloud",
+	"breeze-test",
 	"breeze-text",
 	"breeze-time"
 )
