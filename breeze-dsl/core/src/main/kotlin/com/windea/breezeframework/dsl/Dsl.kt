@@ -16,11 +16,18 @@ import com.windea.breezeframework.core.extensions.*
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
 //region top annotations and interfaces
-/**公共的Dsl。对应的构造方法会自动注册对应元素，且一般返回元素自身。*/
+/**公共的Dsl（领域特定语言）。
+ *
+ * 对应的构造方法会自动注册对应的元素，且一般返回元素自身。
+ */
 @DslMarker
 annotation class GenericDsl
 
-/**内联的Dsl。对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。*/
+/**
+ * 内联的Dsl（领域特定语言）。
+ *
+ * 对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。
+ */
 @DslMarker
 annotation class InlineDsl
 

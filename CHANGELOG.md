@@ -190,7 +190,7 @@
 - [X] breeze-core 添加`String.setPrefix`等扩展。
 * [X] breeze-dsl 分割为多个子模块。
 * [X] breeze-core,breeze-text 将`DecodeAndEncodeExtensions`移到`breeze-core`。更改`StringExtensions`中的一些扩展命名。
-* [ ] breeze-linq 提供linq的模拟实现。
+* [X] breeze-linq 提供linq的模拟实现。
     * linq其实类似于java8中的Stream。
     * linq语句可被定义为一个（函数类型的）变量。
     * linq语句可通过`Collection.linq()`扩展应用到该集合上。
