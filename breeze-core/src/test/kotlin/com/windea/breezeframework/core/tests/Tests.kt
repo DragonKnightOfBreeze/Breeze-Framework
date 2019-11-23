@@ -55,13 +55,13 @@ class Tests {
 		""".trimRelativeIndent())
 		
 		//abcAbc
-		println("Abc abc".switchTo(camelCase))
+		println("Abc abc".switchCaseBy(camelCase))
 		//AbcAbc
-		println("ABC_ABC".switchTo(PascalCase))
+		println("ABC_ABC".switchCaseBy(PascalCase))
 		//ABC_ABC
-		println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
+		println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
 		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".switchTo(StandardReference))
+		println("/a/b/1/2/c/3".switchCaseBy(StandardReference))
 	}
 	
 	@Test

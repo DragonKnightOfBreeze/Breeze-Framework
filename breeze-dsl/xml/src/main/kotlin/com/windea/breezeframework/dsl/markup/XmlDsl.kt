@@ -88,7 +88,7 @@ class XmlText @PublishedApi internal constructor(
 	val text: String
 ) : XmlNode() {
 	override fun toString(): String {
-		return text.escape(EscapeType.Xml)
+		return text.escapeBy(EscapeType.Xml)
 	}
 }
 
@@ -101,7 +101,7 @@ class XmlComment @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val textSnippet = text.escape(EscapeType.Xml)._applyIndent(indent, wrapContent)
+		val textSnippet = text.escapeBy(EscapeType.Xml)._applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		return "<!--$textSnippet-->"
 	}

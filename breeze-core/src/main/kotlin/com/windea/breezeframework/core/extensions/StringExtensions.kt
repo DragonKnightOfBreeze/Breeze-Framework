@@ -34,7 +34,7 @@ infix fun String?.equalsIc(other: String?): Boolean {
 /**判断字符串是否相等。忽略显示格式[LetterCase]。*/
 infix fun String?.equalsIlc(other: String?): Boolean {
 	if(this == other) return true
-	return this != null && other != null && this.switchCase(this.letterCase, other.letterCase) == other
+	return this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
 }
 
 
@@ -205,14 +205,14 @@ fun String.messageFormat(vararg args: Any?): String {
 fun String.customFormat(placeholder: String, vararg args: Any?): String {
 	return when {
 		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escape(EscapeType.Regex) }
+			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escapeBy(EscapeType.Regex) }
 			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
 				args.getOrNull(r.groupValues[1].toInt())?.toString().orEmpty()
 			}
 		}
 		"name" in placeholder -> {
 			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escape(EscapeType.Regex) }
+			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escapeBy(EscapeType.Regex) }
 			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
 				argPairs[r.groupValues[1]]?.toString().orEmpty()
 			}
@@ -417,6 +417,9 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 
 
 //TODO 与substrings匹配的replace方法
+
+/**将当前字符串解码为base64格式的字节数组。*/
+fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
 //region wrap & unwrap extensions
@@ -439,14 +442,14 @@ fun String.unwrapQuote(): String {
 
 //region escape & unescape extensions
 /**根据指定的转义类型，转义当前字符串。默认采用Kotlin的转义。*/
-fun String.escape(type: EscapeType = EscapeType.Kotlin): String {
+fun String.escapeBy(type: EscapeType = EscapeType.Kotlin): String {
 	//"\" should be escaped first
 	val tempString = if(type.escapeBackslash) this.replace("\\", "\\\\") else this
 	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
 }
 
 /**根据指定的转义类型，反转义当前字符串。默认采用Kotlin的转义。*/
-fun String.unescape(type: EscapeType = EscapeType.Kotlin): String {
+fun String.unescapeBy(type: EscapeType = EscapeType.Kotlin): String {
 	//"\" should be unescaped last
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
 	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
@@ -462,10 +465,6 @@ val String.letterCase: LetterCase
 val String.referenceCase: ReferenceCase
 	get() = enumValues<ReferenceCase>().first { this matches it.regex }
 
-/**切换当前字符串的显示格式。*/
-fun String.switchCase(fromCase: FormatCase, toCase: FormatCase): String {
-	return this.splitBy(fromCase).joinBy(toCase)
-}
 
 /**根据显示格式分割当前字符串。*/
 fun String.splitBy(case: FormatCase): List<String> {
@@ -477,8 +476,13 @@ fun List<String>.joinBy(case: FormatCase): String {
 	return case.joinFunction(this)
 }
 
-/**切换当前字符串的显示格式。根据目标显示格式的类型推导当前的显示格式。某些显示格式需要显式指定。*/
-fun String.switchTo(case: FormatCase): String {
+/**切换当前字符串的显示格式。*/
+fun String.switchCaseBy(fromCase: FormatCase, toCase: FormatCase): String {
+	return this.splitBy(fromCase).joinBy(toCase)
+}
+
+/**切换当前字符串的显示格式。根据目标显示格式的类型自动推导当前的显示格式，但某些显示格式需要显式指定。*/
+fun String.switchCaseBy(case: FormatCase): String {
 	return when(case) {
 		is LetterCase -> this.splitBy(this.letterCase)
 		is ReferenceCase -> this.splitBy(this.referenceCase)
