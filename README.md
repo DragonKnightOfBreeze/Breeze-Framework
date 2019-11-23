@@ -103,11 +103,16 @@ Note:
 
 ## breeze-linq
 
-TODO
+* Provide simulate language integrated search implementation.
+* Can be implemented by delegating to Kotlin Collection or Java Stream.
+* Do not store collection information, and can be defined independent.
+
+Usage:
+* `listOf("foo", "Bar", "FooBar") linq (from<String> select { it.toLowerCase() } where { it.length <= 5 })`
 
 ## breeze-logger
 
-* [ ] Provide lightweight, individual, and powerful logger for Kotlin.
+* Provide lightweight, individual, and powerful logger for Kotlin.
 
 ## breeze-reflect
 
