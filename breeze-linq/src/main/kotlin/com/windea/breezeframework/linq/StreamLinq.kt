@@ -19,12 +19,29 @@ class StreamLinq<S, T>(
 		return StreamLinq { statement(it).filter(predicate) }
 	}
 	
+	override fun distinct(): Linq<S, T> {
+		return StreamLinq { statement(it).distinct() }
+	}
+	
+	override fun <K> distinctBy(selector: (T) -> K): Linq<S, T> {
+		val set = HashSet<K>()
+		return StreamLinq { statement(it).filter { key -> set.add(selector(key)) } }
+	}
+	
 	override fun <K : Comparable<K>> orderBy(selector: (T) -> K?): Linq<S, T> {
 		return StreamLinq { statement(it).sorted(compareBy(selector)) }
 	}
 	
 	override fun orderBy(comparator: Comparator<T>): Linq<S, T> {
 		return StreamLinq { statement(it).sorted(comparator) }
+	}
+	
+	override fun <K : Comparable<K>> orderByDesc(selector: (T) -> K?): Linq<S, T> {
+		return StreamLinq { statement(it).sorted(compareByDescending(selector)) }
+	}
+	
+	override fun orderByDesc(comparator: Comparator<T>): Linq<S, T> {
+		return StreamLinq { statement(it).sorted(comparator.reversed()) }
 	}
 	
 	override fun limit(start: Int, end: Int): Linq<S, T> {

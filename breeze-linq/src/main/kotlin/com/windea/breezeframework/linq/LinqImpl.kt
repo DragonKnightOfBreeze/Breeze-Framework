@@ -16,12 +16,28 @@ class LinqImpl<S, T>(
 		return LinqImpl { statement(it).filter(predicate) }
 	}
 	
+	override fun distinct(): Linq<S, T> {
+		return LinqImpl { statement(it).distinct() }
+	}
+	
+	override fun <K> distinctBy(selector: (T) -> K): Linq<S, T> {
+		return LinqImpl { statement(it).distinctBy(selector) }
+	}
+	
 	override fun <R : Comparable<R>> orderBy(selector: (T) -> R?): Linq<S, T> {
 		return LinqImpl { statement(it).sortedBy(selector) }
 	}
 	
 	override fun orderBy(comparator: Comparator<T>): Linq<S, T> {
 		return LinqImpl { statement(it).sortedWith(comparator) }
+	}
+	
+	override fun <K : Comparable<K>> orderByDesc(selector: (T) -> K?): Linq<S, T> {
+		return LinqImpl { statement(it).sortedByDescending(selector) }
+	}
+	
+	override fun orderByDesc(comparator: Comparator<T>): Linq<S, T> {
+		return LinqImpl { statement(it).sortedWith(comparator.reversed()) }
 	}
 	
 	override fun limit(start: Int, end: Int): Linq<S, T> {
