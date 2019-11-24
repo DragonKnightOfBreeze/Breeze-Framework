@@ -49,6 +49,22 @@ internal inline val currentClassFullName
 //endregion
 
 //region Standard.kt extensions (Scope functions)
+/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if(condition) this.block() else this
+}
+
+/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+inline fun <T> T.let(condition: Boolean, block: (T) -> T): T {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if(condition) block(this) else this
+}
+
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 inline fun tryOrPrint(block: () -> Unit) {
 	contract {
@@ -70,14 +86,6 @@ inline fun tryOrIgnore(block: () -> Unit) {
 		block()
 	} catch(e: Exception) {
 	}
-}
-
-/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
-inline fun <T> T.where(condition: Boolean, block: (T) -> T): T {
-	contract {
-		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-	}
-	return if(condition) block(this) else this
 }
 
 @PublishedApi internal var enableOnce = false

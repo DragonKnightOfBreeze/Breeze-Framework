@@ -199,6 +199,7 @@
     * linq语句有别于一般的dsl，实现时应当尽可能地减少额外的接口和对象。
     * linq语句本质上是对集合常用高阶函数的委托。
 * [X] breeze-linq 提供`distinct`, `distinctBy`方法。
+* [X] breeze-core 重命名和补充全局代码。
 * [ ] breeze-core 封装和扩展`java.net.http.HttpClient`
     * 是否已有其他类似的实现？
     * 参考`axios`、`spring web mvc`的MockMvc测试等。

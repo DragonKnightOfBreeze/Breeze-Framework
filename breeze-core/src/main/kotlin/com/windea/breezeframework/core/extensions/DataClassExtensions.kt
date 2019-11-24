@@ -42,7 +42,7 @@ inline fun <reified T> toStringBySelect(target: T?, omitNulls: Boolean = false, 
 	if(target == null) return "null"
 	val className = T::class.java.simpleName
 	val propertiesSnippet = target.selector().toMap()
-		.where(omitNulls) { it.filterValueNotNull() }
+		.let(omitNulls) { it.filterValueNotNull() }
 		.mapValues { (_, v) ->
 			//NOTE treat Arrays specially
 			if(v is Array<*>)
@@ -59,7 +59,7 @@ inline fun <reified T> toStringBySelectRef(target: T?, omitNulls: Boolean = fals
 	if(target == null) return "null"
 	val className = T::class.java.simpleName
 	val propertiesSnippet = target.selector().associate { it.name to it.get() }
-		.where(omitNulls) { it.filterValueNotNull() }
+		.let(omitNulls) { it.filterValueNotNull() }
 		.mapValues { (_, v) ->
 			//NOTE treat Arrays specially
 			if(v is Array<*>)
