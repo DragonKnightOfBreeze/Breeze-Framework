@@ -19,6 +19,7 @@ include(
 	"breeze-functional",
 	"breeze-game",
 	"breeze-generator",
+	"breeze-http",
 	"breeze-javafx",
 	"breeze-linq",
 	"breeze-logger",
