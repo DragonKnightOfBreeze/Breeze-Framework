@@ -201,6 +201,7 @@
 * [X] breeze-linq 提供`distinct`, `distinctBy`方法。
 * [X] breeze-linq 提供`limitDesc`方法。
 * [X] breeze-core 重命名和补充全局代码。
+* [X] breeze-linq 提供`union`, `unionAll`, `selectMany`方法。
 * [ ] breeze-core 封装和扩展`java.net.http.HttpClient`
     * 是否已有其他类似的实现？
     * 参考`axios`、`spring web mvc`的MockMvc测试等。

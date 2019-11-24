@@ -3,8 +3,6 @@
 package com.windea.breezeframework.linq
 
 //TODO 语句的编写顺序与执行顺序的问题
-//TODO 允许聚合函数
-//TODO 反向/倒序的扩展
 
 /**
  * Linq（语言集成查询）。
@@ -13,8 +11,6 @@ package com.windea.breezeframework.linq
  * Linq的语法类似Sql，但是以`from`语句开始。
  */
 interface Linq<S, T> {
-	infix fun <R> select(transform: (T) -> R): Linq<S, R>
-	
 	infix fun where(predicate: (T) -> Boolean): Linq<S, T>
 	
 	fun distinct(): Linq<S, T>
@@ -29,6 +25,8 @@ interface Linq<S, T> {
 	
 	infix fun orderByDesc(comparator: Comparator<T>): Linq<S, T>
 	
+	infix fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>>
+	
 	fun limit(start: Int, end: Int): Linq<S, T>
 	
 	infix fun limit(range: IntRange): Linq<S, T> = limit(range.first, range.last)
@@ -41,22 +39,41 @@ interface Linq<S, T> {
 	
 	infix fun limitDesc(end: Int): Linq<S, T> = limitDesc(0, end)
 	
-	infix fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>>
+	infix fun <R> select(transform: (T) -> R): Linq<S, R>
+	
+	infix fun <R> selectMany(transform: (T) -> Iterable<R>): Linq<S, R>
+	
+	infix fun <R> union(other: Linq<S, T>): Linq<S, T>
+	
+	infix fun <R> unionAll(other: Linq<S, T>): Linq<S, T>
 	
 	operator fun invoke(source: Collection<S>): List<T>
 }
 
 /**Linq的实现类型。*/
 enum class LinqImplementationType {
-	Default, Stream, ParallelStream
+	Default, ByStream, ByParallelStream
 }
 
 /**创建Linq语句。可选Linq的实现类型，默认为委托给Kotlin集合框架实现。*/
 inline fun <reified T> from(type: LinqImplementationType = LinqImplementationType.Default): Linq<T, T> = when(type) {
 	LinqImplementationType.Default -> LinqImpl.init()
-	LinqImplementationType.Stream -> StreamLinq.init()
-	LinqImplementationType.ParallelStream -> StreamLinq.init(true)
+	LinqImplementationType.ByStream -> StreamLinq.init()
+	LinqImplementationType.ByParallelStream -> StreamLinq.init(true)
 }
+
+//@Deprecated("Not implemented, use `from<Pair<T,O>>()` instead.")
+//inline fun <S, T, reified O> Linq<S, T>.join(): Linq<S, Pair<T, O>> {
+//
+//}
+
+//@Deprecated("Not implemented, use `from<Pair<T,O>>()` and then `where()` instead.")
+//inline fun <S, T, O> Linq<S, Pair<T, O>>.on(): Linq<S, Pair<T, O>> {
+//
+//}
+
+/**对当前字符串进行语言集成查询。*/
+inline infix fun <R> String.linq(linqStatement: Linq<Char, R>): List<R> = linqStatement(this.toList())
 
 /**对当前数组进行语言集成查询。*/
 inline infix fun <T, R> Array<out T>.linq(linqStatement: Linq<T, R>): List<R> = linqStatement(this.toList())

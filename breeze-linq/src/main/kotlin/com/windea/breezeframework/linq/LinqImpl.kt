@@ -1,17 +1,11 @@
 package com.windea.breezeframework.linq
 
 /**
- * 默认的Linq实现。
- *
- * 委托给Kotlin集合框架。
+ * 默认的Linq实现。基于Kotlin集合框架。
  */
 class LinqImpl<S, T>(
-	private val statement: (Iterable<S>) -> Iterable<T>
+	val statement: (Iterable<S>) -> Iterable<T>
 ) : Linq<S, T> {
-	override fun <R> select(transform: (T) -> R): Linq<S, R> {
-		return LinqImpl { statement(it).map(transform) }
-	}
-	
 	override fun where(predicate: (T) -> Boolean): Linq<S, T> {
 		return LinqImpl { statement(it).filter(predicate) }
 	}
@@ -40,6 +34,10 @@ class LinqImpl<S, T>(
 		return LinqImpl { statement(it).sortedWith(comparator.reversed()) }
 	}
 	
+	override fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>> {
+		return LinqImpl { statement(it).groupBy(keySelector).toList() }
+	}
+	
 	override fun limit(start: Int, end: Int): Linq<S, T> {
 		return LinqImpl { statement(it).toList().subList(start, end) }
 	}
@@ -48,8 +46,24 @@ class LinqImpl<S, T>(
 		return LinqImpl { statement(it).toList().let { list -> list.subList(list.size - end, list.size - start) } }
 	}
 	
-	override fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>> {
-		return LinqImpl { statement(it).groupBy(keySelector).toList() }
+	override fun <R> select(transform: (T) -> R): Linq<S, R> {
+		return LinqImpl { statement(it).map(transform) }
+	}
+	
+	override fun <R> selectMany(transform: (T) -> Iterable<R>): Linq<S, R> {
+		return LinqImpl { statement(it).flatMap(transform) }
+	}
+	
+	override fun <R> union(other: Linq<S, T>): Linq<S, T> {
+		return LinqImpl { statement(it) + (other as? LinqImpl<S, T> ?: throw typeMismatch()).statement(it) }
+	}
+	
+	override fun <R> unionAll(other: Linq<S, T>): Linq<S, T> {
+		return LinqImpl { statement(it) union (other as? LinqImpl<S, T> ?: throw typeMismatch()).statement(it) }
+	}
+	
+	private fun typeMismatch(): UnsupportedOperationException {
+		return UnsupportedOperationException("Linq implementation type mismatch, use both `LinqImpl` instead.")
 	}
 	
 	override fun invoke(source: Collection<S>): List<T> {
