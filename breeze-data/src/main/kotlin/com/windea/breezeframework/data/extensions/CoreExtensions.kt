@@ -8,9 +8,9 @@ import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.reflect.extensions.java.*
 import java.io.*
+import kotlin.reflect.full.*
 
-//REGION serialize extensions
-
+//region serialize extensions
 /**序列化当前对象，返回序列化后的字符串。*/
 inline fun <T> T.serialize(dataType: DataType): String {
 	return dataType.serializer.dump(this)
@@ -30,9 +30,9 @@ inline fun <reified T> String.deserialize(dataType: DataType): T {
 inline fun <reified T> File.deserialize(dataType: DataType): T {
 	return dataType.serializer.load(this)
 }
+//endregion
 
-//REGION object and property map extensions
-
+//region object and property map extensions
 /**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
 @Deprecated("使用'kotlinx-serialization'的'Mapper.map()'。", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))
 @LowPerformanceApi
@@ -103,3 +103,4 @@ private fun convertProperty(propertyType: Class<*>, propertyValue: Any?, recursi
 		else -> null
 	}
 }
+//endregion

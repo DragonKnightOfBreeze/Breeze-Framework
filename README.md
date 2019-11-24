@@ -45,10 +45,6 @@ dependencies {
 * Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
 * Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`.
 
-## breeze-dream
-
-* 〒▽〒 Please ignore it, for it's my daydream.
-
 ## breeze-dsl
 
 Powerful and clear builders for various domain specific languages.
@@ -105,9 +101,18 @@ Note:
 
 * Provide some useful extensions for javafx.
 
+## breeze-linq
+
+* Provide simulate language integrated search implementation.
+* Can be implemented by delegating to Kotlin Collection or Java Stream.
+* Do not store collection information, and can be defined independent.
+
+Usage:
+* `listOf("foo", "Bar", "FooBar") linq (from<String> select { it.toLowerCase() } where { it.length <= 5 })`
+
 ## breeze-logger
 
-* [ ] Provide lightweight, individual, and powerful logger for Kotlin.
+* Provide lightweight, individual, and powerful logger for Kotlin.
 
 ## breeze-reflect
 
@@ -126,6 +131,10 @@ Note:
 ## breeze-spring-cloud
 
 * Provide some useful extensions for `SpringCloud` and it's optional modules.
+
+## breeze-test
+
+TODO
 
 ## breeze-text
 

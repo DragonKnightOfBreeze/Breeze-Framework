@@ -29,7 +29,6 @@ dependencies {
 
 * **breeze-core**
 * **breeze-data**
-* **breeze-dream**
 * **breeze-dsl**
 * **breeze-functional**
 * **breeze-fxgl**

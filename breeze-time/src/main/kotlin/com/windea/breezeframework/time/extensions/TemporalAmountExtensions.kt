@@ -5,8 +5,7 @@ package com.windea.breezeframework.time.extensions
 import java.time.*
 import java.time.temporal.*
 
-//REGION operator overrides
-
+//region operator overrides
 /**@see java.time.Duration.negated*/
 operator fun Duration.unaryMinus(): Duration = this.negated()
 
@@ -37,9 +36,9 @@ operator fun Period.component2(): Int = this.months
 
 /**@see java.time.Period.getDays*/
 operator fun Period.component3(): Int = this.days
+//endregion
 
-//REGION inline build extensions
-
+//region inline build extensions
 /**得到距今当前时长之前的本地日期时间。*/
 inline val Duration.ago: LocalDateTime get() = LocalDateTime.now() - this
 
@@ -76,3 +75,4 @@ inline infix fun TemporalAmount.before(other: ZonedDateTime): ZonedDateTime = ot
 
 /**得到距指定时区日期时间当前时长之后的本地日期。*/
 inline infix fun TemporalAmount.after(other: ZonedDateTime): ZonedDateTime = other - this
+//endregion

@@ -4,8 +4,7 @@ import com.windea.breezeframework.core.extensions.*
 
 //https://github.com/MarioAriasC/funKTionale
 
-//REGION curried & uncurried
-
+//region curried & uncurried
 /**柯里化当前函数。即，`fun(a,b,c) -> fun(a)(b)(c)`。*/
 fun <P1, P2, R> ((P1, P2) -> R).curried() =
 	fun(p1: P1) = fun(p2: P2) = this(p1, p2)
@@ -94,10 +93,9 @@ fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1) -> (P2) -> (P3) -> (P4) -
 fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1) -> (P2) -> (P3) -> (P4) -> (P5) -> (P6) -> (P7) -> (P8) -> (P9) -> (P10) -> (P11) -> R).uncurried() =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10, p11: P11) =
 		this(p1)(p2)(p3)(p4)(p5)(p6)(p7)(p8)(p9)(p10)(p11)
+//endregion
 
-
-//REGION reversed
-
+//region reversed
 /**反转当前函数的参数。即，`fun(a,b,c) -> fun(c,b,a)`。*/
 fun <P1, P2, R> ((P1, P2) -> R).reversed() =
 	fun(p2: P2, p1: P1) = this(p1, p2)
@@ -140,9 +138,9 @@ fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P
 fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).reversed() =
 	fun(p11: P11, p10: P10, p9: P9, p8: P8, p7: P7, p6: P6, p5: P5, p4: P4, p3: P3, p2: P2, p1: P1) =
 		this(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11)
+//endregion
 
-//REGION tupled & untupled
-
+//region tupled & untupled
 /**绑定当前函数的参数。即，`fun(a,b,c) -> fun((a,b,c))`。*/
 fun <P1, P2, R> ((P1, P2) -> R).tupled() = fun(pair: Pair<P1, P2>) = this(pair.first, pair.second)
 
@@ -164,9 +162,9 @@ fun <P1, P2, P3, P4, R> ((P1, P2, P3, P4) -> R).tupled() = fun(quadruple: Quadru
 /**解绑当前函数的参数。即，`fun((a,b,c)) -> fun(a,b,c)`。*/
 fun <P1, P2, P3, P4, R> ((Quadruple<P1, P2, P3, P4>) -> R).untupled() = fun(p1: P1, p2: P2, p3: P3, p4: P4) =
 	this(Quadruple(p1, p2, p3, p4))
+//endregion
 
-//REGION partial & partialLast
-
+//region partial & partialLast
 /**传入第一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & a -> fun(b)(c)`。*/
 infix fun <P1, P2, R> ((P1, P2) -> R).partial(param: P1) =
 	fun(p2: P2) = this(param, p2)
@@ -261,9 +259,9 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5
 	param: P11) =
 	fun(p1: P1) = fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = fun(p6: P6) = fun(p7: P7) = fun(p8: P8) =
 		fun(p9: P9) = fun(p10: P10) = this(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, param)
+//endregion
 
-//REGION pipe & pipeLast
-
+//region pipe & pipeLast
 /**传入第一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & a -> fun(b,c)`。*/
 infix fun <P1, P2, R> ((P1, P2) -> R).pipe(param: P1) =
 	fun(p2: P2) = this(param, p2)
@@ -352,11 +350,12 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5
 	param: P11) =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10) =
 		this(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, param)
+//endregion
 
-//REGION compose
-
+//region compose
 /**组合当前函数和另一个函数。即，`fun(a,b) & fun(b,c) -> fun(a,c)`。*/
 infix fun <P, I, R> ((P) -> I).compose(other: (I) -> R) = fun(p: P) = other(this(p))
 
 /**组合当前函数和另一个函数。即，`fun(a,b) & fun(b,c) -> fun(a,c)`。*/
 infix fun <I, R> (() -> I).compose(other: (I) -> R) = fun() = other(this())
+//endregion

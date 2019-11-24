@@ -16,7 +16,6 @@ val URL.hasQueryParams: Boolean get() = this.query != null
 /**查询参数映射。*/
 val URL.queryParams: QueryParamMap get() = this.query?.let { QueryParamMap(it) } ?: QueryParamMap()
 
-//REGION convert extensions
 
 /**将当前统一资源定位符转化为文件。*/
 inline fun URL.toFile(): File = File(this.toURI())

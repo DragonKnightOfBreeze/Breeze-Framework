@@ -169,29 +169,59 @@
 * [X] breeze-logger 提供Logger的简单实现。带有颜色、日期和路径。
 * [X] breeze-logger 调整日志显示风格。
 * [X] breeze-data 约束可见性。
+* [X] 更新依赖。
+
+### 1.0.7
+
+* [X] 更新版本。
+* [X] ~~breeze-dsl 提供`SteamTextDsl`。~~
+* [X] breeze-core 基本完成`MultiValueMap`。
+* [X] breeze-core 修正`Vector`中的Bug。
+* [X] breeze-core 为字符串添加`inline`和`multiline`内联扩展属性。为了间接与美观。
+* [X] breeze-core 补充注解。
+* [X] 适用region...endregion注释。
+* [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
+* [X] breeze-logger 完成自己的日志器的实现。
+* [X] breeze-core 添加`String.alignLeft`等方法。
+* [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。 
+* [X] breeze-core 去除以上扩展，添加`String.orNull`和`Optional.orNull`扩展。
+* [X] breeze-core 重构和添加`String.alignStart`,`String.addPrefix`,`String.inline`,`String.trimWrap`等扩展。
+* [X] breeze-dsl 重构代码和整理目录。
+- [X] breeze-core 添加`String.setPrefix`等扩展。
+* [X] breeze-dsl 分割为多个子模块。
+* [X] breeze-core,breeze-text 将`DecodeAndEncodeExtensions`移到`breeze-core`。更改`StringExtensions`中的一些扩展命名。
+* [X] breeze-linq 提供linq的模拟实现。
+    * linq其实类似于java8中的Stream。
+    * linq语句可被定义为一个（函数类型的）变量。
+    * linq语句可通过`Collection.linq()`扩展应用到该集合上。
+    * linq语句的语法顺序是`from ... select ... where  ... orderBy ... groupBy`
+    * linq语句本身不应该包含集合实例的信息。
+    * linq语句有别于一般的dsl，实现时应当尽可能地减少额外的接口和对象。
+    * linq语句本质上是对集合常用高阶函数的委托。
+* [ ] breeze-core 封装和扩展`java.net.http.HttpClient`
+    * 是否已有其他类似的实现？
+    * 参考`axios`、`spring web mvc`的MockMvc测试等。
+***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
-***
 * [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
-* [ ] breeze-game 初步完成实体&组件的规范。
-* [ ] breeze-core Uri构建和编码的扩展。
-* [ ] breeze-core 利用反射的类型转换的扩展。
 * [ ] breeze-text 英文单数与复数的转化。
-* [ ] breeze-core 提供额外的集合的实现。参考Guava。
-* [ ] breeze-logger 完成自己的日志器的实现。
+* [ ] ~~breeze-core Uri构建和编码的扩展。~~
+* [ ] ~~breeze-core 利用反射的类型转换的扩展。~~
+* [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 
 # 长期
 
+* [X] 移除对非框架类的第三方库的依赖。
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
-* [ ] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
 * [ ] 发布项目到JCenter。

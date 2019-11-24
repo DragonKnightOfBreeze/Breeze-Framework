@@ -4,20 +4,15 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.contracts.*
 
-//REGION global extensions
-
+//region global extensions
 /**强制转化为指定类型，或者抛出异常。用于链式调用。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
 /**强制转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
+//endregion
 
-fun main() {
-	println()
-}
-
-//REGION standard.kt extensions (TODOs)
-
+//region Standard.kt extensions (TODOs)
 /**表明一个操作推迟了实现。*/
 inline fun DELAY() = DELAY { Unit }
 
@@ -48,13 +43,12 @@ inline fun FIXME(message: String) = run {
 	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
 
-/**得到当前的完整类名。*/
 @PublishedApi
 internal inline val currentClassFullName
 	get() = RuntimeException().stackTrace.first().className
+//endregion
 
-//REGION standard.kt extensions (Scope functions)
-
+//region Standard.kt extensions (Scope functions)
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 inline fun tryOrPrint(block: () -> Unit) {
 	contract {
@@ -98,9 +92,9 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	enableOnce = true
 	block()
 }
+//endregion
 
-//REGION precondition.kt extensions
-
+//region Precondition.kt extensions
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 inline fun accept(value: Boolean) {
 	contract {
@@ -140,3 +134,4 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 		return value
 	}
 }
+//endregion

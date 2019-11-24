@@ -2,8 +2,6 @@ package com.windea.breezeframework.core.domain.collections
 
 import com.windea.breezeframework.core.extensions.*
 
-//TODO 继承自MultiValueMap
-
 /**查询参数映射。*/
 class QueryParamMap internal constructor(
 	map: Map<String, List<String>> = mapOf()
