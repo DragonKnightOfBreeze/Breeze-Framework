@@ -127,7 +127,9 @@ Note:
 * Do not store collection information, and can be defined independent.
 
 Usage:
-* `listOf("foo", "Bar", "FooBar") linq (from<String>() where { it.length <= 5 } select { it.toLowerCase() } `
+```
+listOf("foo", "Bar", "FooBar") linq (from<String>() where { it.length <= 5 } select { it.toLowerCase() }
+```
 
 ## breeze-logger
 
