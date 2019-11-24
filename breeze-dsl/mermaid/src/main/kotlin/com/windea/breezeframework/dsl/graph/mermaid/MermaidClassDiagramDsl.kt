@@ -97,7 +97,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 			methods.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty("\n")
 			.ifEmpty { return "class $name" }
-			.where(indentContent) { it.prependIndent(indent) }
+			.let(indentContent) { it.prependIndent(indent) }
 		return "class $name {\n$contentSnippet\n}"
 	}
 	

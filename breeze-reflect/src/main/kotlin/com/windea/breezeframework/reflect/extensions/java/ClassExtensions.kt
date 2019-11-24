@@ -1,9 +1,7 @@
 package com.windea.breezeframework.reflect.extensions.java
 
-import com.windea.breezeframework.core.extensions.*
 import java.io.*
 import java.lang.reflect.*
-import kotlin.text.startsWith
 
 /**判断当前类型是否可从指定类型分配。即，判断当前类型是否是另一类型的直接父类型。*/
 infix fun <T> Class<T>.isAssignableFrom(clazz: Class<*>): Boolean = this.isAssignableFrom(clazz)
@@ -39,10 +37,9 @@ val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java isDeep
 /**得到类型的属性名-取值方法映射。忽略class属性。*/
 val <T> Class<T>.getterMap: Map<String, Method>
 	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" }
-		.associateBy { it.name.substring(3).firstCharToLowerCase() }
-
+		.associateBy { it.name.substring(3).let { s -> s[0].toLowerCase() + s.substring(1, s.length) } }
 
 /**得到类型的属性名-赋值方法映射。*/
 val <T> Class<T>.setterMap: Map<String, Method>
 	get() = this.methods.filter { it.name.startsWith("set") }
-		.associateBy { it.name.substring(3).firstCharToLowerCase() }
+		.associateBy { it.name.substring(3).let { s -> s[0].toLowerCase() + s.substring(1, s.length) } }

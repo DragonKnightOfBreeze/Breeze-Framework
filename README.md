@@ -1,28 +1,42 @@
 # Summary
 
-Breeze-Framework
+## Breeze-Framework
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 [Bintray](https://bintray.com/windea/breeze-framework)
 
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
-Including: basic & functional & reflect & text & time extensions, dsls & generators & delegated serializers and more.
+Including: basic & functional & reflect & text & time extensions & linq & dsls & generators & delegated serializers and more.
 
-**NOTE**
+## NOTE
 
 * This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
 * This framework is designed to be used by Kotlin-Jvm, rather than Java. Though you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
-**Usage**
+## Usage
 
+build.gradle
+
+```groovy
+repositories{
+    maven { url "https://dl.bintray.com/windea/breeze-framework" }
+}
+
+dependencies {
+    implementation "com.windea.breezeframework:$module:$version"
+}
 ```
+
+build.gradle.kts
+
+```kotlin
 repositories {
     maven("https://dl.bintray.com/windea/breeze-framework")
 }
 
 dependencies {
-    implementation("com.windea.breezeframework:breeze-core:$version")
+    implementation("com.windea.breezeframework:$module:$version")
 }
 ```
 
@@ -30,27 +44,27 @@ dependencies {
 
 ## breeze-core
 
-* Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`, etc. (e.g, `toFile`, `anyIn`.)
+* Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`.
     * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`.)
     * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`.)
-    * Including some powerful handler extensions for `String`. (e.g, `String.switchTo`, `String.escape`.)
+    * Including some powerful handler extensions for `String`. (e.g, `String.escapeBy`, `String.switchCaseBy`.)
     * Including some deep operator extensions for `Collection`. (e.g, `List.deepGet`, `List.deepFlatten`.)
     * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
-* Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`.)
+* Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`, `tryOrPrint`, `tryOrIgnore`.)
 * Provide basic annotations, consts, enums and interfaces.
-* Provide generator extensions for `equals`, `hashcode` and `toString`.
+* Provide generator extensions for `equals`, `hashcode` and `toString` (**YEAH IT DO!**).
 
 ## breeze-data
 
 * Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
-* Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`.
+* Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`, `Jackson`.
 
 ## breeze-dsl
 
 Powerful and clear builders for various domain specific languages.
 
 * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
-* Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`.
+* Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
 Now support:
@@ -62,6 +76,7 @@ Now support:
         * [X] MermaidGanttDsl
         * [X] MermaidPieChartDsl
         * [X] MermaidSequenceDiagramDsl
+        * [X] MermaidStateDiagramDsl
     * puml
         * [ ] PumlSequenceDiagramDsl
         * [ ] PumlStateDiagramDsl
@@ -74,11 +89,10 @@ Now support:
     * [X] XmlDsl
     * [ ] YamlDsl
 * text
-    * [X] CommandLineTextDsl
-    * [X] CriticMarkupTextDsl 
+    * [X] CommandLineTextDsl (You can use it to print colorful text in command line, and **YEAH IT DO!**)
+    * [X] CriticMarkupTextDsl
     
 Note:
-
 * Dsl is used to generate text, and it's the only thing that dsl should do.
 * Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
 * Dsl can not deserialize data from generated string. 
@@ -86,7 +100,8 @@ Note:
 
 ## breeze-functional
 
-* Provide functional extensions for Functions. (e.g, `curried`, `compose`.)
+* Provide functional extensions for Functions. (e.g, `curried`, 'partical', `compose`.)
+* Provide functional extensions for Functions from zero parameter to 11 parameter.
 
 ## breeze-game
 
@@ -96,6 +111,10 @@ Note:
 ## breeze-generator
 
 * Provide generators for string and text. (e.g, `UrlGenerator`)
+
+## breeze-http
+
+* Provide convenient http extensions delegated to `java.net.http.HttpClient`.
 
 ## breeze-javafx
 
@@ -108,11 +127,14 @@ Note:
 * Do not store collection information, and can be defined independent.
 
 Usage:
-* `listOf("foo", "Bar", "FooBar") linq (from<String> select { it.toLowerCase() } where { it.length <= 5 })`
+```
+listOf("foo", "Bar", "FooBar") linq (from<String>() where { it.length <= 5 } select { it.toLowerCase() }
+```
 
 ## breeze-logger
 
 * Provide lightweight, individual, and powerful logger for Kotlin.
+* Default implementation is `ColorfulLogger`, which print colorful text in command line.
 
 ## breeze-reflect
 
@@ -144,9 +166,8 @@ TODO
 ## breeze-time
 
 * Provide some useful extensions for time, including `Date`, `Temporal`, etc.
-    * Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.)
-    * Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.) 
-* **Split from `breeze-core`.**
+* Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.) (**YEAH IT DO!**)
+* Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.) 
 
 # Dependencies & Optional dependencies
 
@@ -156,9 +177,7 @@ TODO
 * SpringBoot
 * SpringCloud
 * LibGDX
-
 ***
-
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)
@@ -167,9 +186,7 @@ TODO
 # References
 
 * [Google Guava](https://github.com/google/guava)
-
 ***
-
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
@@ -191,19 +208,22 @@ fun example() {
     println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
     //{0=a, 1=b, 2=c}
     println(listOf("a", "b", "c").toIndexKeyMap())
+    
     //[a, b, c, a, b, c, a, b, c]
     println(listOf("a", "b", "c") * 3)
     //[b, c]
     println(listOf("a", "b", "c")[1..2])
-
+    
     //true
     println("Hello world" endsWithIc "World")
     //[abc, def]
-    println("1abc2def3".substrings("\\d(\\w*)\\d(\\w*)\\d".toRegex()))
+    println("1abc2def3".substrings("""\d(\w*)\d(\w*)\d""".toRegex()))
     //1{0}2{1}3{2}
     println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
     //**********
     println("*" * 10)
+    //[***, ***, ***]
+    println("*********" / 3)
     //  <element>
     //    Here also indented.
     //  </element>
@@ -211,15 +231,15 @@ fun example() {
       <element>
         Here also indented.
       </element>
-    """.toMultilineText())
-    	
+    """.trimRelativeIndent())
+    
     //abcAbc
-    println("Abc abc".switchTo(camelCase))
+    println("Abc abc".switchCaseBy(camelCase))
     //AbcAbc
-    println("ABC_ABC".switchTo(PascalCase))
+    println("ABC_ABC".switchCaseBy(PascalCase))
     //ABC_ABC
-    println("abc-abc".switchTo(SCREAMING_SNAKE_CASE))
+    println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
     //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".switchTo(StandardReference))
+    println("/a/b/1/2/c/3".switchCaseBy(StandardReference))
 }
 ```

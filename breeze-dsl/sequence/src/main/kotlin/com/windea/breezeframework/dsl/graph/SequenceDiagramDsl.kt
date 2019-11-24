@@ -201,3 +201,9 @@ inline infix fun SequenceDiagramMessage.text(text: String) =
 inline infix fun SequenceDiagramMessage.arrowShape(arrowShape: SequenceDiagramMessage.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }
 //endregion
+
+//region helpful extensions
+/**将`\n`或`\r`替换成`\\n`和`\\r`。*/
+@PublishedApi
+internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
+//endregion

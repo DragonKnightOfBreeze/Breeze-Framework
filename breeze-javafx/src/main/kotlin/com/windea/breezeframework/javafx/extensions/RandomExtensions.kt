@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.javafx.extensions
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.types.*
 import javafx.geometry.*
 import javafx.scene.paint.*
 import kotlin.random.*

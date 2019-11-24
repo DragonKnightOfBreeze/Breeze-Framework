@@ -1,6 +1,6 @@
 package com.windea.breezeframework.functional
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.domain.core.*
 
 //https://github.com/MarioAriasC/funKTionale
 
