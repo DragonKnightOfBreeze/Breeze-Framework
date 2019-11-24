@@ -1,6 +1,6 @@
 package com.windea.breezeframework.javafx.extensions
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.types.*
 import javafx.geometry.*
 
 fun TypedTuple2<Double>.toPoint2D() = Point2D(first, second)

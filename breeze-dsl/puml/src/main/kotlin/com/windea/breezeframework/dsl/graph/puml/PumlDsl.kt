@@ -319,3 +319,13 @@ inline infix fun PumlNote.topOf(targetName: String) =
 inline infix fun PumlNote.bottomOf(targetName: String) =
 	this.also { it.targetName = targetName }.also { it.position = PumlNotePosition.BottomOf }
 //endregion
+
+//region helpful extensions
+/**将`\n`或`\r`替换成`<br>`。*/
+@PublishedApi
+internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")
+
+/**将`\n`或`\r`替换成`\\n`和`\\r`。*/
+@PublishedApi
+internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
+//endregion
