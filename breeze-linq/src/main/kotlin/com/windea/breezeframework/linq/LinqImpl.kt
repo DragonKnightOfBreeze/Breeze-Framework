@@ -44,6 +44,10 @@ class LinqImpl<S, T>(
 		return LinqImpl { statement(it).toList().subList(start, end) }
 	}
 	
+	override fun limitDesc(start: Int, end: Int): Linq<S, T> {
+		return LinqImpl { statement(it).toList().let { list -> list.subList(list.size - end, list.size - start) } }
+	}
+	
 	override fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>> {
 		return LinqImpl { statement(it).groupBy(keySelector).toList() }
 	}

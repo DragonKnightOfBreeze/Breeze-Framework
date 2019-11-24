@@ -35,6 +35,12 @@ interface Linq<S, T> {
 	
 	infix fun limit(end: Int): Linq<S, T> = limit(0, end)
 	
+	fun limitDesc(start: Int, end: Int): Linq<S, T>
+	
+	infix fun limitDesc(range: IntRange): Linq<S, T> = limitDesc(range.first, range.last)
+	
+	infix fun limitDesc(end: Int): Linq<S, T> = limitDesc(0, end)
+	
 	infix fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>>
 	
 	operator fun invoke(source: Collection<S>): List<T>

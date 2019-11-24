@@ -48,6 +48,10 @@ class StreamLinq<S, T>(
 		return StreamLinq { statement(it).skip(start.toLong()).limit(end.toLong()) }
 	}
 	
+	override fun limitDesc(start: Int, end: Int): Linq<S, T> {
+		throw UnsupportedOperationException("Operation 'limitDesc' of linq implementation 'StreamLinq' is not supported.")
+	}
+	
 	override fun <K> groupBy(keySelector: (T) -> K): Linq<S, Pair<K, List<T>>> {
 		return StreamLinq { statement(it).collect(Collectors.groupingBy(keySelector)).toList().toStream(isParallel) }
 	}
