@@ -6,7 +6,7 @@
 [Bintray](https://bintray.com/windea/breeze-framework)
 
 Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
-Including: basic & functional & reflect & text & time extensions, dsls & generators & delegated serializers and more.
+Including: basic & functional & reflect & text & time extensions & linq & dsls & generators & delegated serializers and more.
 
 ## NOTE
 
