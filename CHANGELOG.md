@@ -205,9 +205,7 @@
 * [X] 更新README。
 * [X] breeze-core 添加`String.lineBreak`扩展。
 * [X] breeze-http 更新代码。未测试。
-* [ ] breeze-core 封装和扩展`java.net.http.HttpClient`
-    * 是否已有其他类似的实现？
-    * 参考`axios`、`spring web mvc`的MockMvc测试等。
+* [X] breeze-http 完善代码。
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
