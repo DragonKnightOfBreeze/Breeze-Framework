@@ -18,8 +18,8 @@ class LinqTest {
 	
 	@Test
 	fun test2() {
-		val source = listOf("foo", "Bar", "FooBar", "abc", "DDD", "Windea", "BreezesLanding", "Maple", "Kotlin")
-		val linq = from<String>() where { it.length <= 5 } orderBy { it.first() } limit 1..5 select { it.toLowerCase() }
+		val source = listOf("foo", "Bar", "FooBar", "abc", "123", "Windea", "BreezesLanding", "Kotlin")
+		val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.toLowerCase() }
 		println(source linq linq)
 	}
 	

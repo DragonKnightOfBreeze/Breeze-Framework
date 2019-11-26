@@ -32,20 +32,24 @@ fun <K, V> MutableMultiValueMap<K, V>.addSingle(key: K, value: V) {
 	this.getOrPut(key) { mutableListOf() } += value
 }
 
+fun <K, V> MutableMultiValueMap<K, V>.addSingle(key: K, vararg values: V) {
+	this.getOrPut(key) { mutableListOf() } += values
+}
+
 fun <K, V> MutableMultiValueMap<K, V>.add(key: K, value: List<V>) {
 	this.getOrPut(key) { mutableListOf() } += value
 }
 
 fun <K, V> MutableMultiValueMap<K, V>.addAll(from: MultiValueMap<K, V>) {
-	for((k, v) in from) {
-		this.getOrPut(k) { mutableListOf() } += v
-	}
+	from.forEach { (k, v) -> this.getOrPut(k) { mutableListOf() } += v }
 }
 
-fun <K, V> MutableMultiValueMap<K, V>.putSingle(key: K, value: V): V? {
-	val result = this[key]?.firstOrNull()
+fun <K, V> MutableMultiValueMap<K, V>.putSingle(key: K, value: V) {
 	this[key] = mutableListOf(value)
-	return result
+}
+
+fun <K, V> MutableMultiValueMap<K, V>.putSingle(key: K, vararg values: V) {
+	this[key] = mutableListOf(*values)
 }
 
 @Suppress("UNCHECKED_CAST")
