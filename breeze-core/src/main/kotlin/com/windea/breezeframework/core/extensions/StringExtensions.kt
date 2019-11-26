@@ -232,6 +232,11 @@ infix fun String.lineConcat(other: String): String {
 	}.joinToString("\n") { (a, b) -> "$a$b" }
 }
 
+/**逐行换行字符串，确保每行长度不超过指定长度。*/
+fun String.lineBreak(width: Int = 120): String {
+	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
+}
+
 
 /**设置指定的前缀。即，添加前缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
 infix fun String.setPrefix(prefix: CharSequence): String {
