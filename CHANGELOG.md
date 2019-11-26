@@ -204,6 +204,7 @@
 * [X] breeze-linq 提供`union`, `unionAll`, `selectMany`方法。
 * [X] 更新README。
 * [X] breeze-core 添加`String.lineBreak`扩展。
+* [X] breeze-http 更新代码。未测试。
 * [ ] breeze-core 封装和扩展`java.net.http.HttpClient`
     * 是否已有其他类似的实现？
     * 参考`axios`、`spring web mvc`的MockMvc测试等。
