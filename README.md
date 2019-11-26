@@ -116,6 +116,7 @@ Note:
 
 * Provide convenient http extensions delegated to `java.net.http.HttpClient`.
 * Simple and convenient API which is similar to `axios`.
+* Based on string body, so you should provide external json serializer implementation such as `Gson`, `Jackson`.
 
 Usage:
 ```
