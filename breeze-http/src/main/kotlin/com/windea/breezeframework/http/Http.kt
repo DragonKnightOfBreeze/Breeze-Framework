@@ -1,7 +1,6 @@
 package com.windea.breezeframework.http
 
 import com.windea.breezeframework.core.extensions.*
-import kotlinx.serialization.*
 import java.net.*
 import java.net.http.*
 
@@ -12,7 +11,6 @@ import java.net.http.*
  * @see java.net.http.HttpRequest
  * @see java.net.http.HttpResponse
  */
-@ImplicitReflectionSerializer
 class Http {
 	private var httpConfig: HttpConfig
 	private var httpClient: HttpClient
