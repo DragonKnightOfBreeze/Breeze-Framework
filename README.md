@@ -52,7 +52,7 @@ dependencies {
     * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
 * Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`, `tryOrPrint`, `tryOrIgnore`.)
 * Provide basic annotations, consts, enums and interfaces.
-* Provide generator extensions for `equals`, `hashcode` and `toString` (**YEAH IT DO!**).
+* Provide generator extensions for `equals`, `hashcode` and `toString`.
 
 ## breeze-data
 
@@ -89,7 +89,7 @@ Now support:
     * [X] XmlDsl
     * [ ] YamlDsl
 * text
-    * [X] CommandLineTextDsl (You can use it to print colorful text in command line, and **YEAH IT DO!**)
+    * [X] CommandLineTextDsl (You can use it to print colorful text in command line)
     * [X] CriticMarkupTextDsl
     
 Note:
@@ -100,7 +100,7 @@ Note:
 
 ## breeze-functional
 
-* Provide functional extensions for Functions. (e.g, `curried`, 'partical', `compose`.)
+* Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
 * Provide functional extensions for Functions from zero parameter to 11 parameter.
 
 ## breeze-game
@@ -115,6 +115,14 @@ Note:
 ## breeze-http
 
 * Provide convenient http extensions delegated to `java.net.http.HttpClient`.
+* Simple and convenient API which is similar to `axios`.
+
+Usage:
+```
+val http = Http()
+http.get("https://httpbin.org")
+http.get("https://httpbin.org") { query("name", "Windea") }
+```
 
 ## breeze-javafx
 
@@ -128,7 +136,9 @@ Note:
 
 Usage:
 ```
-listOf("foo", "Bar", "FooBar") linq (from<String>() where { it.length <= 5 } select { it.toLowerCase() }
+val source = listOf("foo", "Bar", "FooBar", "abc","123", "Windea", "BreezesLanding", "Kotlin")
+val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.toLowerCase() }
+println(source linq linq)
 ```
 
 ## breeze-logger
