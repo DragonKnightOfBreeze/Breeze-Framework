@@ -2,11 +2,7 @@ package com.windea.breezeframework.linq
 
 import java.util.stream.*
 
-/**
- * 基于Stream的Linq实现。
- *
- * @see java.util.stream.Stream
- */
+/**基于[Stream]的Linq实现。*/
 class StreamLinq<S, T>(
 	val isParallel: Boolean = false,
 	val statement: (Stream<S>) -> Stream<T>

@@ -1,8 +1,6 @@
 package com.windea.breezeframework.linq
 
-/**
- * 默认的Linq实现。基于Kotlin集合框架。
- */
+/**默认的Linq实现。基于Kotlin集合框架。*/
 class LinqImpl<S, T>(
 	val statement: (Iterable<S>) -> Iterable<T>
 ) : Linq<S, T> {

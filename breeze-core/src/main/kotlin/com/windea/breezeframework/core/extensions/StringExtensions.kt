@@ -491,12 +491,14 @@ fun String.switchCaseBy(case: FormatCase): String {
 //region convert extensions
 /**
  * 将当前字符串转为内联文本。
+ *
  * @see com.windea.breezeframework.core.extensions.trimWrap
  */
 inline val String.inline get() = this.trimWrap()
 
 /**
  * 将当前字符串转为多行文本。
+ *
  * @see kotlin.text.trimIndent
  */
 inline val String.multiline get() = this.trimIndent()

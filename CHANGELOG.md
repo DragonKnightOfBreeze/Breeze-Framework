@@ -201,28 +201,29 @@
 * [X] breeze-http 完善代码。
 * [X] breeze-core 删除带有唯一Pair类型参数的中缀方法。
 * [X] breeze-core 提供废弃且标为隐藏的`T?.toOptional()`方法。
+* [X] breeze-core 整理代码和注释，提供`Array.stream()`扩展。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
-* [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的思维导图Dsl的规范。不提供实现。
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-text 英文单数与复数的转化。
-* [ ] ~~breeze-core Uri构建和编码的扩展。~~
-* [ ] ~~breeze-core 利用反射的类型转换的扩展。~~
-* [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
+***
+* [X] ~~breeze-core Uri构建和编码的扩展。~~
+* [X] ~~breeze-core 利用反射的类型转换的扩展。~~
+* [X] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖。
-* [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
 * [ ] 发布项目到JCenter。
+* [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
