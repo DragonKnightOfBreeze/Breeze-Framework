@@ -190,7 +190,7 @@ class MermaidSequenceDiagramElse @PublishedApi internal constructor(
 /**Mermaid序列图颜色高亮作用域。*/
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
-	@Language(value = "SCSS", prefix = "\$color:")
+	@Language(value = "Less", prefix = "@color:")
 	color: String
 ) : MermaidSequenceDiagramScope("rect", color)
 //endregion

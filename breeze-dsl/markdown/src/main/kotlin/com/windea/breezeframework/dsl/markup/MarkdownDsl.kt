@@ -704,7 +704,8 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownFrontMatter @PublishedApi internal constructor(
-	@Language("Yaml") val text: String
+	@Language("Yaml")
+	val text: String
 ) : MarkdownDslElement {
 	override fun toString(): String {
 		return "---\n$text\n---"

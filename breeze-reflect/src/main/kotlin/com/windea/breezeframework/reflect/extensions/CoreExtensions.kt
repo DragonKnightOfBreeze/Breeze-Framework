@@ -3,13 +3,13 @@
 package com.windea.breezeframework.reflect.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
+import org.intellij.lang.annotations.*
 import kotlin.reflect.*
 
 /**判断指定名字的Class是否在classpath中。*/
 inline fun checkClassForName(className: String): Boolean {
 	return runCatching { Class.forName(className) }.onFailure { it.printStackTrace() }.isSuccess
 }
-
 
 /**得到指定类型的名字。使用Kotlin反射。*/
 @TrickImplementationApi("Can never be implemented for all situations.")

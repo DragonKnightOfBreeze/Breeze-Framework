@@ -18,7 +18,7 @@ interface PropertiesSerializer : Serializer {
 	companion object {
 		val instance: PropertiesSerializer = when {
 			checkClassForName("com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper") -> JacksonPropertiesSerializer
-			else -> throw IllegalStateException("Please contains at least one data serializer implementation in classpath.")
+			else -> throw IllegalStateException("Please contain at least one serializer implementation in classpath.")
 		}
 	}
 }

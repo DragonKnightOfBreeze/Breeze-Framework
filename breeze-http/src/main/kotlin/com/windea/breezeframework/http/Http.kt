@@ -1,6 +1,5 @@
 package com.windea.breezeframework.http
 
-import com.windea.breezeframework.core.extensions.*
 import java.net.*
 import java.net.http.*
 
@@ -51,7 +50,7 @@ class Http {
 	private fun String.withQuery(query: Map<String, List<String>>): String {
 		//allow query in url
 		val delimiter = if("?" in this) "&" else "?"
-		val querySnippet = query.joinToStringOrEmpty("&", delimiter) { (name, values) ->
+		val querySnippet = if(query.isEmpty()) "" else query.entries.joinToString("&", delimiter) { (name, values) ->
 			values.joinToString("&") { value -> "$name=${value.urlEncoded()}" }
 		}
 		return "$this$querySnippet"

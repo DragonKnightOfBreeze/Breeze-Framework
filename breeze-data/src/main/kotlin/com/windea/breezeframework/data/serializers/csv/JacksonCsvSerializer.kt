@@ -5,7 +5,11 @@ import java.io.*
 import java.lang.reflect.*
 
 internal object JacksonCsvSerializer : CsvSerializer {
-	@PublishedApi internal val mapper = CsvMapper()
+	internal val mapper = CsvMapper()
+	
+	override fun <T> load(string: String, type: Class<T>): T {
+		return mapper.readValue(string, type)
+	}
 	
 	override fun <T> load(string: String, type: Type): T {
 		return mapper.readValue(string, mapper.typeFactory.constructType(type))
@@ -13,10 +17,6 @@ internal object JacksonCsvSerializer : CsvSerializer {
 	
 	override fun <T> load(file: File, type: Type): T {
 		return mapper.readValue(file, mapper.typeFactory.constructType(type))
-	}
-	
-	override fun <T> load(string: String, type: Class<T>): T {
-		return mapper.readValue(string, type)
 	}
 	
 	override fun <T> load(file: File, type: Class<T>): T {

@@ -6,7 +6,6 @@ plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.3.60"
 	id("org.jetbrains.dokka") version "0.9.18"
 	id("com.jfrog.bintray") version "1.8.4"
-	id("nebula.optional-base") version "3.0.3"
 }
 
 allprojects {
@@ -20,7 +19,6 @@ allprojects {
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
 		plugin("com.jfrog.bintray")
-		plugin("nebula.optional-base")
 	}
 	
 	//配置依赖仓库

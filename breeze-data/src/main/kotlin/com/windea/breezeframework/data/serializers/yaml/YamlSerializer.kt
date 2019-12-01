@@ -22,7 +22,7 @@ interface YamlSerializer : JsonSerializer {
 		val instance: YamlSerializer = when {
 			checkClassForName("com.fasterxml.jackson.dataformat.yaml.YAMLMapper") -> JacksonYamlSerializer
 			checkClassForName("org.yaml.snakeyaml.Yaml") -> SnakeYamlSerializer
-			else -> throw IllegalStateException("Please contains at least one data serializer implementation in classpath.")
+			else -> throw IllegalStateException("Please contain at least one serializer implementation in classpath.")
 		}
 	}
 }

@@ -7,7 +7,7 @@ interface XmlSerializer : Serializer {
 	companion object {
 		val instance: XmlSerializer = when {
 			checkClassForName("com.fasterxml.jackson.dataformat.xml.XmlMapper") -> JacksonXmlSerializer
-			else -> throw IllegalStateException("Please contains at least one data serializer implementation in classpath.")
+			else -> throw IllegalStateException("Please contain at least one serializer implementation in classpath.")
 		}
 	}
 }

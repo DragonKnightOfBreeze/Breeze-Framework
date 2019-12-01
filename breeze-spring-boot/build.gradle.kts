@@ -4,6 +4,7 @@ import org.gradle.util.*
 plugins {
 	kotlin("plugin.spring") version "1.3.60"
 	kotlin("plugin.jpa") version "1.3.60"
+	id("nebula.optional-base") version "3.0.3"
 }
 
 val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*>).let { ConfigureUtil.configureUsing(it) }

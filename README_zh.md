@@ -54,7 +54,6 @@ dependencies {
 * breeze-reflect
 * breeze-serialization
 * breeze-spring-boot
-* breeze-spring-cloud
 * breeze-test
 * breeze-text
 * breeze-time

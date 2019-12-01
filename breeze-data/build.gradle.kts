@@ -1,6 +1,10 @@
 import groovy.lang.*
 import org.gradle.util.*
 
+plugins {
+	id("nebula.optional-base") version "3.0.3"
+}
+
 val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*>).let { ConfigureUtil.configureUsing(it) }
 
 dependencies {
