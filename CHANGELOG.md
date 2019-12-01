@@ -200,7 +200,7 @@
 * [X] breeze-http 更新代码。未测试。
 * [X] breeze-http 完善代码。
 * [X] breeze-core 删除带有唯一Pair类型参数的中缀方法。
-* [ ] breeze-core 提供废弃且标为隐藏的`Any?.toOptional()`方法。
+* [X] breeze-core 提供废弃且标为隐藏的`T?.toOptional()`方法。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
