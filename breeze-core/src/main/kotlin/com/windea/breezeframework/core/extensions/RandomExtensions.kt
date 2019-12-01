@@ -50,7 +50,7 @@ fun Random.checkChance(chance: Float): Boolean {
 }
 
 /**检查一个几率发生的事件是否发生，附带额外条件。*/
-fun Random.checkChance(chance: Float, extraCondition: Boolean): Boolean = checkChance(chance) && extraCondition
+fun Random.checkChance(chance: Float, extraCondition: Boolean): Boolean = extraCondition && checkChance(chance)
 
 /**检查一个几率发生的事件是否发生，附带额外条件。*/
-fun Random.checkChance(chance: Float, extraPredicate: () -> Boolean): Boolean = checkChance(chance) && extraPredicate()
+fun Random.checkChance(chance: Float, extraPredicate: () -> Boolean): Boolean = extraPredicate() && checkChance(chance)

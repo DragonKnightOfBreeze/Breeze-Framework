@@ -191,13 +191,6 @@
 * [X] breeze-dsl 分割为多个子模块。
 * [X] breeze-core,breeze-text 将`DecodeAndEncodeExtensions`移到`breeze-core`。更改`StringExtensions`中的一些扩展命名。
 * [X] breeze-linq 提供linq的模拟实现。
-    * linq其实类似于java8中的Stream。
-    * linq语句可被定义为一个（函数类型的）变量。
-    * linq语句可通过`Collection.linq()`扩展应用到该集合上。
-    * linq语句的语法顺序是`from ... select ... where  ... orderBy ... groupBy`
-    * linq语句本身不应该包含集合实例的信息。
-    * linq语句有别于一般的dsl，实现时应当尽可能地减少额外的接口和对象。
-    * linq语句本质上是对集合常用高阶函数的委托。
 * [X] breeze-linq 提供`distinct`, `distinctBy`方法。
 * [X] breeze-linq 提供`limitDesc`方法。
 * [X] breeze-core 重命名和补充全局代码。
@@ -206,9 +199,11 @@
 * [X] breeze-core 添加`String.lineBreak`扩展。
 * [X] breeze-http 更新代码。未测试。
 * [X] breeze-http 完善代码。
+* [X] breeze-core 删除带有唯一Pair类型参数的中缀方法。
+* [ ] breeze-core 提供废弃且标为隐藏的`Any?.toOptional()`方法。
+* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
-* [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-core&breeze-text 考虑两者之间的界限。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
