@@ -61,7 +61,7 @@ class Tests {
 		//ABC_ABC
 		println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
 		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".switchCaseBy(StandardReference))
+		println("/a/b/1/2/c/3".switchCaseBy(Standard))
 	}
 	
 	@Test

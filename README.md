@@ -105,7 +105,7 @@ Note:
 
 ## breeze-game
 
-* Provide some useful extensions for game.
+* [ ] Provide some useful extensions for game.
 * **Should be platform-independent.**
 
 ## breeze-generator
@@ -163,11 +163,11 @@ println(source linq linq)
 
 ## breeze-spring-cloud
 
-* Provide some useful extensions for `SpringCloud` and it's optional modules.
+* [ ] Provide some useful extensions for `SpringCloud` and it's optional modules.
 
 ## breeze-test
 
-TODO
+* [ ] Provide kotlin-style unit test support.
 
 ## breeze-text
 

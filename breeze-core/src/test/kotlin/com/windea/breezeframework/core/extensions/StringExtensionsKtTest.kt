@@ -34,10 +34,10 @@ class StringExtensionsKtTest {
 	
 	@Test //TESTED ALMOST
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(StandardReference))
-		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(StandardReference))
-		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(JsonReference))
-		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(JsonSchemaReference))
+		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(Standard))
+		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(Standard))
+		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(Json))
+		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(JsonSchema))
 	}
 	
 	@Test //TESTED

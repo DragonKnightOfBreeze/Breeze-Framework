@@ -1,9 +1,6 @@
 package com.windea.breezeframework.core.enums.core
 
-import com.windea.breezeframework.core.annotations.marks.*
-
 /**引用的显示格式。*/
-@NotTested("难以进行完整的测试。")
 enum class ReferenceCase(
 	override val regex: Regex,
 	override val splitFunction: (String) -> List<String>,
@@ -17,7 +14,7 @@ enum class ReferenceCase(
 	 * * `[0]` 表示一个列表的元素。
 	 */
 	//TODO 支持静态成员/类型 `T(a).b`
-	StandardReference(
+	Standard(
 		//allow: $, ., words, [number]
 		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex(),
 		{ it.replace("]", "].").split(".").map { s -> s.removeSurrounding("[", "]") } },
@@ -30,7 +27,7 @@ enum class ReferenceCase(
 	 * * `Reference` 表示一个对象/属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 */
-	JsonReference(
+	Json(
 		//allow: $, ., words, [number]
 		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex(),
 		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
@@ -49,8 +46,8 @@ enum class ReferenceCase(
 	 * * `regex:.*Name` 表示一个映射的键符合指定正则的键值对。
 	 * * `Name` 表示一个映射的对应键的值。
 	 */
-	//DELAY 严格验证
-	JsonSchemaReference(
+	//TODO 严格验证
+	JsonSchema(
 		//allow: #, /, unchecked supPaths
 		"""#?(?:/.+)+""".toRegex(),
 		{ it.removePrefix("#").removePrefix("/").split("/") },

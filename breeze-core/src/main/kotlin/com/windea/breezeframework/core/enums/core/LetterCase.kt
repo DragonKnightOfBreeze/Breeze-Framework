@@ -3,11 +3,9 @@
 package com.windea.breezeframework.core.enums.core
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.extensions.*
 
 /**字母的显示格式。*/
-@NotTested("难以进行完整的测试。")
 enum class LetterCase(
 	override val regex: Regex,
 	override val splitFunction: (String) -> List<String>,

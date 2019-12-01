@@ -234,6 +234,7 @@ infix fun String.lineConcat(other: String): String {
 
 /**逐行换行字符串，确保每行长度不超过指定长度。*/
 fun String.lineBreak(width: Int = 120): String {
+	//TODO 保持整个单词在同一行
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
 }
 
@@ -256,15 +257,11 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
 }
 
-/**设置指定的前缀和后缀。即，添加前缀和后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
-infix fun String.setSurrounding(delimiterPair: Pair<String, String>): String {
-	return this.setSurrounding(delimiterPair.first, delimiterPair.second)
-}
-
 /**设置指定的前后缀。即，添加前后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
 infix fun String.setSurrounding(delimiter: String): String {
 	return this.setSurrounding(delimiter, delimiter)
 }
+
 
 /**添加指定的前缀。当已存在时或者为空字符串时返回自身。*/
 infix fun String.addPrefix(prefix: CharSequence): String {
@@ -282,11 +279,6 @@ infix fun String.addSuffix(suffix: CharSequence): String {
 fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	if(this.isEmpty() || (this.startsWith(prefix) && this.endsWith(suffix))) return this
 	return "$prefix$this$suffix"
-}
-
-/**添加指定的前缀和后缀。当已存在时或者为空字符串时返回自身。*/
-infix fun String.addSurrounding(delimiterPair: Pair<CharSequence, CharSequence>): String {
-	return this.addSurrounding(delimiterPair.first, delimiterPair.second)
 }
 
 /**添加指定的前后缀。当已存在时或者为空字符串时返回自身。*/
@@ -499,12 +491,14 @@ fun String.switchCaseBy(case: FormatCase): String {
 //region convert extensions
 /**
  * 将当前字符串转为内联文本。
+ *
  * @see com.windea.breezeframework.core.extensions.trimWrap
  */
 inline val String.inline get() = this.trimWrap()
 
 /**
  * 将当前字符串转为多行文本。
+ *
  * @see kotlin.text.trimIndent
  */
 inline val String.multiline get() = this.trimIndent()
