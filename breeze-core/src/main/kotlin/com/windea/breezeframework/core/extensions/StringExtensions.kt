@@ -367,16 +367,18 @@ internal fun String.toWords(): String {
 }
 
 
-/**根据指定的正则表达式，得到当前字符串的匹配结果分组对应的字符串列表。不包含索引0的分组，列表可能为空。*/
-fun CharSequence.substrings(regex: Regex): List<String> {
-	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
-}
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ * 不包含分隔符时，加入空字符串。
+ */
+fun String.substrings(vararg delimiters: String?): List<String> =
+	substringsOrElse(*delimiters) { _, _ -> "" }
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。
  */
-fun String.substrings(vararg delimiters: String?, defaultValue: (index: Int, missingDelimiterValue: String) -> List<String>): List<String> =
+fun String.substringsOrDefault(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =
 	substringsOrElse(*delimiters) { index, str -> defaultValue(index, str).getOrEmpty(index) }
 
 /**
@@ -412,8 +414,6 @@ fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, Stri
 	return result
 }
 
-
-//TODO 与substrings匹配的replace方法
 
 /**将当前字符串解码为base64格式的字节数组。*/
 fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)

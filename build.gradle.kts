@@ -35,6 +35,8 @@ allprojects {
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
+		
+		implementation("org.jetbrains:annotations:17.0.0")
 	}
 	
 	//配置kotlin的一些选项，增量编译需在gradle.properties中配置

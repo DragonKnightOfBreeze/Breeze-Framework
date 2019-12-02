@@ -105,8 +105,6 @@ fun example() {
     
     //true
     println("Hello world" endsWithIc "World")
-    //[abc, def]
-    println("1abc2def3".substrings("""\d(\w*)\d(\w*)\d""".toRegex()))
     //1{0}2{1}3{2}
     println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
     //**********
@@ -129,6 +127,6 @@ fun example() {
     //ABC_ABC
     println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
     //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".switchCaseBy(StandardReference))
+    println("/a/b/1/2/c/3".switchCaseBy(Standard))
 }
 ```
