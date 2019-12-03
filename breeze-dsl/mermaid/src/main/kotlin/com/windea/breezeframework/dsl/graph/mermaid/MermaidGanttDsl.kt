@@ -12,23 +12,25 @@ import java.time.*
 /**Mermaid甘特图的Dsl。*/
 @ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @DslMarker
-private annotation class MermaidGanttDsl
+@MustBeDocumented
+internal annotation class MermaidGanttDsl
 
 /**Mermaid甘特图。*/
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndentContent {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndent, CanSplit {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
-	override var splitContent: Boolean = true
+	override var splitContent: Boolean = false
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			arrayOf(title, dateFormat).filterNotNull().joinToString("\n"),
-			_toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)._applyIndent(indent)
+			title.toStringOrEmpty(),
+			dateFormat.toStringOrEmpty(),
+			toContentString()
+		).filterNotEmpty().joinToStringOrEmpty(split).applyIndent(indent)
 		return "gantt\n$contentSnippet"
 	}
 }
@@ -37,16 +39,12 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 //region dsl interfaces
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
-interface MermaidGanttDslEntry : MermaidDslEntry, CanSplitContent,
-	WithBlock<MermaidGanttSection> {
+interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {
 	val sections: MutableList<MermaidGanttSection>
 	
-	fun _toContentString(): String {
-		return sections.joinToStringOrEmpty(_splitWrap)
+	fun toContentString(): String {
+		return sections.joinToStringOrEmpty(split)
 	}
-	
-	@GenericDsl
-	override fun String.invoke(block: MermaidGanttSection.() -> Unit) = section(this, block)
 }
 
 /**Mermaid甘特图Dsl的元素。*/
@@ -68,34 +66,30 @@ class MermaidGanttTitle @PublishedApi internal constructor(
 /**Mermaid甘特图日期格式。*/
 @MermaidGanttDsl
 class MermaidGanttDateFormat @PublishedApi internal constructor(
-	val expression: String = "YYYY-MM-DD"
+	val expression: String
 ) : MermaidGanttDslElement {
 	override fun toString(): String {
 		return "dateFormat $expression"
 	}
 }
 
-/**Mermaid甘特图章节。*/
+/**Mermaid甘特图部分。*/
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndentContent, WithText<MermaidGanttTask>, WithName {
+) : MermaidGanttDslElement, CanIndent, WithId {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 	
 	override var indentContent: Boolean = false
 	
-	override val _name: String get() = name
+	override val id: String get() = name
 	
 	override fun toString(): String {
-		//trim "\n" if no tasks
 		if(tasks.isEmpty()) return "section $name"
-		val contentSnippet = tasks.joinToStringOrEmpty("\n")
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		
+		val contentSnippet = tasks.joinToStringOrEmpty("\n").applyIndent(indent)
 		return "section $name\n$contentSnippet"
 	}
-	
-	@MermaidGanttDsl
-	override fun String.unaryPlus() = task(this)
 }
 
 /**Mermaid甘特图任务。*/
@@ -103,7 +97,7 @@ class MermaidGanttSection @PublishedApi internal constructor(
 class MermaidGanttTask @PublishedApi internal constructor(
 	val name: String,
 	var status: Status = Status.ToDo
-) : MermaidGanttDslElement, WithName {
+) : MermaidGanttDslElement, WithId {
 	var alias: String? = null
 	var isCrit: Boolean = false
 	//LocalDate format or "after $alias" format
@@ -111,13 +105,12 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	//LocalDate format or Duration format
 	var finishTime: String? = null
 	
-	override val _name: String get() = name
+	override val id: String get() = name
 	
 	override fun toString(): String {
 		val critSnippet = if(isCrit) "crit" else null
 		val statusSnippet = status.text
-		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime)
-			.filterNotNull().joinToStringOrEmpty()
+		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).filterNotNull().joinToStringOrEmpty()
 		return "$name: $paramsSnippet"
 	}
 	
@@ -131,14 +124,15 @@ class MermaidGanttTask @PublishedApi internal constructor(
 
 //region build extensions
 @MermaidGanttDsl
-inline fun mermaidGantt(block: MermaidGantt.() -> Unit) = MermaidGantt().also { it.block() }
+inline fun mermaidGantt(block: MermaidGantt.() -> Unit) =
+	MermaidGantt().also { it.block() }
 
 @MermaidGanttDsl
 inline fun MermaidGantt.title(text: String) =
 	MermaidGanttTitle(text).also { title = it }
 
 @MermaidGanttDsl
-inline fun MermaidGantt.dateFormat(expression: String = "YYYY-MM-DD") =
+inline fun MermaidGantt.dateFormat(expression: String) =
 	MermaidGanttDateFormat(expression).also { dateFormat = it }
 
 @MermaidGanttDsl

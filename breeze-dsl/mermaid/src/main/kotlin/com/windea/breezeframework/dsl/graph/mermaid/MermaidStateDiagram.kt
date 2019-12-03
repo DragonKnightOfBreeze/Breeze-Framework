@@ -13,11 +13,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.indent
 /**Mermaid状态图的Dsl。*/
 @ReferenceApi("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
 @DslMarker
-private annotation class MermaidStateDiagramDsl
+@MustBeDocumented
+internal annotation class MermaidStateDiagramDsl
 
 /**Mermaid状态图。*/
 @MermaidStateDiagramDsl
-class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), MermaidStateDiagramDslEntry, CanIndentContent {
+class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), MermaidStateDiagramDslEntry, CanIndent {
 	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
 	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
 	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
@@ -26,7 +27,7 @@ class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = _toContentString()._applyIndent(indent)
+		val contentSnippet = toContentString().applyIndent(indent)
 		return "stateDiagram\n$contentSnippet"
 	}
 }
@@ -35,17 +36,17 @@ class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 //region dsl interfaces
 /**Mermaid状态图Dsl的入口。*/
 @MermaidStateDiagramDsl
-interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplitContent, WithTransition<MermaidStateDiagramState, MermaidStateDiagramTransition> {
+interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransition<MermaidStateDiagramState, MermaidStateDiagramTransition> {
 	val states: MutableSet<MermaidStateDiagramState>
 	val links: MutableList<MermaidStateDiagramTransition>
 	val notes: MutableList<MermaidStateDiagramNote>
 	
-	fun _toContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			states.joinToStringOrEmpty("\n"),
 			links.joinToStringOrEmpty("\n"),
 			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
 	@GenericDsl
@@ -63,12 +64,12 @@ interface MermaidStateDiagramDslElement : MermaidDslElement
 sealed class MermaidStateDiagramState(
 	val name: String,
 	val text: String? = null
-) : MermaidStateDiagramDslElement, WithName {
-	override val _name: String get() = name
+) : MermaidStateDiagramDslElement, WithUniqueId {
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 }
 
 /**Mermaid状态图简单状态。*/
@@ -95,7 +96,7 @@ class MermaidStateDiagramSimpleState @PublishedApi internal constructor(
 class MermaidStateDiagramCompositedState @PublishedApi internal constructor(
 	name: String,
 	text: String? = null
-) : MermaidStateDiagramState(name, text), MermaidStateDiagramDslEntry, CanIndentContent {
+) : MermaidStateDiagramState(name, text), MermaidStateDiagramDslEntry, CanIndent {
 	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
 	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
 	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
@@ -104,7 +105,7 @@ class MermaidStateDiagramCompositedState @PublishedApi internal constructor(
 	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = _toContentString()._applyIndent(indent)
+		val contentSnippet = toContentString().applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
 	}
 }
@@ -114,13 +115,13 @@ class MermaidStateDiagramCompositedState @PublishedApi internal constructor(
 class MermaidStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String,
 	text: String? = null
-) : MermaidStateDiagramState(name, text), CanIndentContent {
+) : MermaidStateDiagramState(name, text), CanIndent {
 	val sections: MutableList<MermaidStateDiagramConcurrentSection> = mutableListOf()
 	
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = sections.joinToStringOrEmpty("\n--\n")._applyIndent(indent)
+		val contentSnippet = sections.joinToStringOrEmpty("\n--\n").applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
 	}
 }
@@ -134,7 +135,7 @@ class MermaidStateDiagramConcurrentSection : MermaidStateDiagramDslEntry {
 	
 	override var splitContent: Boolean = true
 	
-	override fun toString() = _toContentString()
+	override fun toString() = toContentString()
 }
 
 /**Mermaid状态图转换。*/
@@ -144,8 +145,8 @@ class MermaidStateDiagramTransition @PublishedApi internal constructor(
 	val targetStateName: String,
 	var text: String? = null
 ) : MermaidStateDiagramDslElement, WithNode<MermaidStateDiagramState> {
-	override val _fromNodeName get() = sourceStateName
-	override val _toNodeName get() = targetStateName
+	override val fromNodeId get() = sourceStateName
+	override val toNodeId get() = targetStateName
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": $it" }.orEmpty()
@@ -156,7 +157,7 @@ class MermaidStateDiagramTransition @PublishedApi internal constructor(
 class MermaidStateDiagramNote @PublishedApi internal constructor(
 	val location: Location,
 	val text: String //NOTE can be multiline
-) : MermaidStateDiagramDslElement, CanWrapContent, CanIndentContent {
+) : MermaidStateDiagramDslElement, CanWrap, CanIndent {
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true
 	
@@ -164,7 +165,7 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 		if("\n" in text || "\r" in text) wrapContent = true //wrap if necessary
 		
 		return when {
-			wrapContent && indentContent -> "note $location\n${text._applyIndent(indent)}\nend note"
+			wrapContent && indentContent -> "note $location\n${text.applyIndent(indent)}\nend note"
 			wrapContent -> "note $location\n$text\nend note"
 			else -> "note $location: $text"
 		}

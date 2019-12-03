@@ -15,7 +15,8 @@ import com.windea.breezeframework.dsl.*
 //region top annotations and interfaces
 /**命令行富文本的Dsl。*/
 @DslMarker
-private annotation class CommandLineTextDsl
+@MustBeDocumented
+internal annotation class CommandLineTextDsl
 
 /**命令行富文本。*/
 @CommandLineTextDsl

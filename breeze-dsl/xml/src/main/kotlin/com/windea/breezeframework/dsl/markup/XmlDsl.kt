@@ -13,7 +13,8 @@ import com.windea.breezeframework.dsl.markup.XmlConfig.quote
 //region top annotations and interfaces
 /**Xml的Dsl。*/
 @DslMarker
-private annotation class XmlDsl
+@MustBeDocumented
+internal annotation class XmlDsl
 
 /**Xml。*/
 @XmlDsl
@@ -96,12 +97,12 @@ class XmlText @PublishedApi internal constructor(
 @XmlDsl
 class XmlComment @PublishedApi internal constructor(
 	val text: String
-) : XmlNode(), CanWrapContent, CanIndentContent {
+) : XmlNode(), CanWrap, CanIndent {
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {
-		val textSnippet = text.escapeBy(EscapeType.Xml)._applyIndent(indent, wrapContent)
+		val textSnippet = text.escapeBy(EscapeType.Xml).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		return "<!--$textSnippet-->"
 	}
@@ -112,18 +113,18 @@ class XmlComment @PublishedApi internal constructor(
 class XmlElement @PublishedApi internal constructor(
 	val name: String,
 	val attributes: Map<String, String> = mapOf()
-) : XmlNode(), CanWrapContent, CanIndentContent,
-	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement>, WithName {
+) : XmlNode(), CanWrap, CanIndent,
+	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement>, WithId {
 	val nodes: MutableList<XmlNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
 	override var indentContent: Boolean = true
 	
-	override val _name: String get() = name
+	override val id: String get() = name
 	
 	override fun toString(): String {
 		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
-		val nodesSnippet = nodes.joinToStringOrEmpty(_wrap)._applyIndent(indent, wrapContent)
+		val nodesSnippet = nodes.joinToStringOrEmpty(wrap).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"

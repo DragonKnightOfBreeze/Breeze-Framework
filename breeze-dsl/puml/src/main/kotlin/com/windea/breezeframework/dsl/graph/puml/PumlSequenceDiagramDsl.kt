@@ -15,7 +15,8 @@ import org.intellij.lang.annotations.*
 /**PlantUml序列图的Dsl。*/
 @ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @DslMarker
-private annotation class PumlSequenceDiagramDsl
+@MustBeDocumented
+internal annotation class PumlSequenceDiagramDsl
 
 /**PlantUml序列图。*/
 @PumlSequenceDiagramDsl
@@ -41,17 +42,17 @@ interface PumlSequenceDiagramDslElement : PumlDslElement
 @PumlSequenceDiagramDsl
 class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : PumlSequenceDiagramDslElement, WithName {
+) : PumlSequenceDiagramDslElement, WithUniqueId {
 	var alias: String? = null
 	var order: Int? = null
 	var color: String? = null
 	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
 	
-	override val _name: String get() = alias ?: name
+	override val id: String get() = alias ?: name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(alias ?: name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		val orderSnippet = order?.let { " order $order" }.orEmpty()
@@ -70,16 +71,16 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromActorName: String,
 	val toActorName: String,
-	@Language("Creole")
-	val text: String? = null,  //NOTE can wrap by "\n"
+	@Language("Creole") @Multiline("\\n")
+	val text: String? = null,
 	val isBidirectional: Boolean = false
 ) : PumlSequenceDiagramDslElement, WithNode<PumlSequenceDiagramParticipant> {
 	var arrowColor: String? = null
 	var arrowShape: PumlSequenceDiagramMessageArrowShape = PumlSequenceDiagramMessageArrowShape.Arrow
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
 	
-	override val _fromNodeName: String get() = fromActorName
-	override val _toNodeName: String get() = toActorName
+	override val fromNodeId: String get() = fromActorName
+	override val toNodeId: String get() = toActorName
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
@@ -104,7 +105,7 @@ enum class PumlSequenceDiagramParticipantShape(internal val text: String) {
 
 /**PlantUml序列图消息箭头的形状。*/
 @PumlSequenceDiagramDsl
-enum class PumlSequenceDiagramMessageArrowShape(internal val prefix: String, internal val suffix: String) {
+enum class PumlSequenceDiagramMessageArrowShape(val prefix: String, val suffix: String) {
 	Arrow("<", ">"), UpArrow("/", "\\"), DownArrow("\\", "/"),
 	ThinArrow("<<", ">>"), ThinUpArrow("//", "\\\\"), ThinDownArrow("\\\\", "//"),
 	DottedArrow("<-", "->"), DottedUpArrow("/-", "-\\"), DottedDownArrow("\\-", "-/"),

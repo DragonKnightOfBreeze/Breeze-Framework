@@ -12,7 +12,8 @@ import com.windea.breezeframework.dsl.*
 /**序列图的Dsl。*/
 @ReferenceApi("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
-private annotation class SequenceDiagramDsl
+@MustBeDocumented
+internal annotation class SequenceDiagramDsl
 
 /**序列图。*/
 @SequenceDiagramDsl
@@ -27,8 +28,8 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 	override fun toString(): String {
 		return arrayOf(
 			title?.toString().orEmpty(),
-			_toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+			toContentString()
+		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 }
 //endregion
@@ -36,18 +37,18 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 //region dsl interfaces
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
-interface SequenceDiagramDslEntry : DslEntry, CanSplitContent,
+interface SequenceDiagramDslEntry : DslEntry, CanSplit,
 	WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
 	val participants: MutableSet<SequenceDiagramParticipant>
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
 	
-	fun _toContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
 			messages.joinToStringOrEmpty("\n"),
 			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
 	@GenericDsl
@@ -63,7 +64,8 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	val text: String //NOTE can wrap by "\n", treat blank as whitespace
+	@Multiline("\\n")
+	val text: String
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
 		return "title: ${text.replaceWithEscapedWrap()}"
@@ -74,14 +76,14 @@ class SequenceDiagramTitle @PublishedApi internal constructor(
 @SequenceDiagramDsl
 class SequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : SequenceDiagramDslElement, WithName {
+) : SequenceDiagramDslElement, WithUniqueId {
 	var alias: String? = null
 	
-	override val _name: String get() = alias ?: name
+	override val id: String get() = alias ?: name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(alias ?: name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(alias ?: name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		val aliasSnippet = alias?.let { "as $it" }.orEmpty()
@@ -98,8 +100,8 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 ) : SequenceDiagramDslElement, WithNode<SequenceDiagramParticipant> {
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 	
-	override val _fromNodeName: String get() = fromActorName
-	override val _toNodeName: String get() = toActorName
+	override val fromNodeId: String get() = fromActorName
+	override val toNodeId: String get() = toActorName
 	
 	override fun toString(): String {
 		return "$fromActorName ${arrowShape.text} $toActorName: $text"
@@ -114,7 +116,8 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 @SequenceDiagramDsl
 class SequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
-	val text: String //NOTE can be wrap by "\n"
+	@Multiline("\\n")
+	val text: String
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()

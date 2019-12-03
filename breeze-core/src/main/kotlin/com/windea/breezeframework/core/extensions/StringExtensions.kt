@@ -422,7 +422,7 @@ fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //region wrap & unwrap extensions
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
-/**使用指定的引号包围当前字符串。同时转义其中的对应引号。默认使用双引号。*/
+/**使用指定的引号包围当前字符串。同时转义其中的对应引号。*/
 fun String.wrapQuote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
 	

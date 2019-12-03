@@ -16,7 +16,8 @@ import org.intellij.lang.annotations.*
 /**PlantUml的Dsl。*/
 @ReferenceApi("[PlantUml](http://plantuml.com)")
 @DslMarker
-private annotation class PumlDsl
+@MustBeDocumented
+internal annotation class PumlDsl
 
 /**PlantUml。*/
 @PumlDsl
@@ -68,7 +69,7 @@ sealed class PumlElement(
 	protected val type: String,
 	@Language("Html")
 	val text: String
-) : PumlDslElement, CanWrapContent, CanIndentContent {
+) : PumlDslElement, CanWrap, CanIndent {
 	var position: PumlTopElementPosition? = null
 	
 	override var indentContent: Boolean = true
@@ -151,9 +152,9 @@ class PumlCaption @PublishedApi internal constructor(
  */
 @PumlDsl
 class PumlNote @PublishedApi internal constructor(
-	@Language("Creole")
-	val text: String //NOTE can wrap by "\n"
-) : PumlDslElement, CanWrapContent, CanIndentContent {
+	@Language("Creole") @Multiline("\\n")
+	val text: String
+) : PumlDslElement, CanWrap, CanIndent {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
@@ -224,7 +225,7 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndentContent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by HashMap() {
 	override var indentContent: Boolean = true
 	
 	override fun toString(): String {

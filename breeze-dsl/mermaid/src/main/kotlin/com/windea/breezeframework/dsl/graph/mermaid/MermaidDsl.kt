@@ -8,7 +8,8 @@ import com.windea.breezeframework.dsl.*
 
 @ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @DslMarker
-private annotation class MermaidDsl
+@MustBeDocumented
+internal annotation class MermaidDsl
 
 /**Mermaid。*/
 @MermaidDsl

@@ -21,6 +21,7 @@ import com.windea.breezeframework.core.extensions.*
  * 对应的构造方法会自动注册对应的元素，且一般返回元素自身。
  */
 @DslMarker
+@MustBeDocumented
 annotation class GenericDsl
 
 /**
@@ -29,6 +30,7 @@ annotation class GenericDsl
  * 对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。
  */
 @DslMarker
+@MustBeDocumented
 annotation class InlineDsl
 
 /**Dsl的构建器。*/
@@ -48,40 +50,53 @@ interface DslElement {
 }
 //endregion
 
+//region dsl annotations
+/**注明这个字符串属性可以通过指定的方式换行。*/
+@MustBeDocumented
+@Target(AnnotationTarget.PROPERTY)
+annotation class Multiline(
+	/**行分隔符。*/
+	val lineSeparator: String,
+	/**额外条件。*/
+	val condition: String = ""
+)
+//endregion
+
 //region dsl interfaces
-/**包含可换行的内容。这个接口的优先级要高于[CanIndentContent]。*/
+/**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @GenericDsl
-interface CanWrapContent {
+interface CanWrap {
 	var wrapContent: Boolean
 	
-	val _wrap: String get() = if(wrapContent) "\n" else ""
-}
-
-/**包含可缩进的内容。*/
-@GenericDsl
-interface CanIndentContent {
-	var indentContent: Boolean
-	
-	fun String._applyIndent(indent: String, condition: Boolean = true): String {
-		return if(indentContent && condition) this.prependIndent(indent) else this
-	}
+	val wrap: String get() = if(wrapContent) "\n" else ""
 }
 
 /**包含可分割的内容。一般使用空行进行分割。*/
 @GenericDsl
-interface CanSplitContent {
+interface CanSplit {
 	var splitContent: Boolean
 	
-	val _splitWrap: String get() = if(splitContent) "\n\n" else "\n"
+	val split: String get() = if(splitContent) "\n\n" else "\n"
+}
+
+/**包含可缩进的内容。*/
+@GenericDsl
+interface CanIndent {
+	var indentContent: Boolean
+	
+	fun String.applyIndent(indent: String, condition: Boolean = true): String {
+		return if(indentContent && condition) this.prependIndent(indent) else this
+	}
 }
 
 /**可生成文本。可能替换原始文本。*/
 @GenericDsl
-interface CanGenerateContent {
+interface CanGenerate {
 	var generateContent: Boolean
 	
-	fun _toGeneratedString(): String
+	fun toGeneratedString(): String
 }
+
 
 /**包含可被视为文本的子元素。*/
 @GenericDsl
@@ -107,64 +122,72 @@ interface WithBlock<T> {
 	operator fun String.invoke(block: T.() -> Unit = {}): T
 }
 
-/**带有一个可用于查询的名字。这个名字不是唯一的。*/
+/**带有一个可用于查询的id。这个id不是唯一的。*/
 @GenericDsl
-interface WithName {
-	val _name: String
+interface WithId {
+	val id: String
+}
+
+/**带有一个可用于查询的id。这个id是唯一的。*/
+@GenericDsl
+interface WithUniqueId : WithId {
+	override fun equals(other: Any?): Boolean
+	
+	override fun hashCode(): Int
 }
 
 /**包含一对可被视为节点的子元素。*/
 @GenericDsl
-interface WithNode<N : WithName> {
-	val _fromNodeName: String
-	val _toNodeName: String
+interface WithNode<N : WithId> {
+	val fromNodeId: String
+	val toNodeId: String
 }
 
 /**包含可被视为转换的子元素。*/
 @GenericDsl
-interface WithTransition<N : WithName, T : WithNode<N>> {
+interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
 	infix fun String.fromTo(other: String): T
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other._name }
+	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other.id }
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo._name fromTo other }
+	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo.id fromTo other }
 	
 	/**根据节点元素创建过渡元素。*/
 	@GenericDsl
-	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo._name fromTo other._name }
+	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo.id fromTo other.id }
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo._toNodeName fromTo other }
+	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.toNodeId fromTo other }
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo._toNodeName fromTo other._name }
+	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.toNodeId fromTo other.id }
 }
 //endregion
 
 //region build extensions
 /**设置是否换行内容。*/
 @GenericDsl
-inline infix fun <T : CanWrapContent> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
+inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
 
 /**设置是否缩进内容。*/
 @GenericDsl
-inline infix fun <T : CanIndentContent> T.indent(value: Boolean) = this.also { it.indentContent = value }
+inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { it.indentContent = value }
 
 /**设置是否分割内容。*/
 @GenericDsl
-inline infix fun <T : CanSplitContent> T.split(value: Boolean) = this.also { it.splitContent = value }
+inline infix fun <T : CanSplit> T.split(value: Boolean) = this.also { it.splitContent = value }
 
 /**设置是否生成内容。*/
 @GenericDsl
-inline infix fun <T : CanGenerateContent> T.generate(value: Boolean) = this.also { it.generateContent = value }
+inline infix fun <T : CanGenerate> T.generate(value: Boolean) = this.also { it.generateContent = value }
 //endregion
 
 //region helpful extensions

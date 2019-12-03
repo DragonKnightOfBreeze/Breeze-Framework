@@ -11,7 +11,8 @@ import com.windea.breezeframework.dsl.markup.JsonConfig.quote
 //region top annotations and interfaces
 /**Json的Dsl。*/
 @DslMarker
-private annotation class JsonDsl
+@MustBeDocumented
+internal annotation class JsonDsl
 
 /**Json。*/
 @JsonDsl
@@ -57,9 +58,9 @@ interface JsonDslElement : DslElement
 sealed class JsonElement<T>(
 	val value: T
 ) : JsonDslElement, JsonDslInlineEntry {
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf<Any?>(value) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { value }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf<Any?>(value) }
+	override fun hashCode() = hashCodeBySelectId(this) { value }
 	
 	override fun toString(): String {
 		return value.toString()
@@ -100,7 +101,7 @@ class JsonString @PublishedApi internal constructor(
 @JsonDsl
 class JsonArray @PublishedApi internal constructor(
 	value: List<JsonElement<*>> = listOf()
-) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrapContent, CanIndentContent {
+) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrap, CanIndent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	
@@ -119,7 +120,7 @@ class JsonArray @PublishedApi internal constructor(
 @JsonDsl
 class JsonObject @PublishedApi internal constructor(
 	value: Map<String, JsonElement<*>> = mapOf()
-) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrapContent, CanIndentContent {
+) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrap, CanIndent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
 	

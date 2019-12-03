@@ -14,11 +14,12 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 /**Mermaid类图的Dsl。*/
 @ReferenceApi("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @DslMarker
-private annotation class MermaidClassDiagramDsl
+@MustBeDocumented
+internal annotation class MermaidClassDiagramDsl
 
 /**Mermaid类图。*/
 @MermaidClassDiagramDsl
-class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndentContent {
+class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
 	override val relations: MutableList<MermaidClassDiagramRelation> = mutableListOf()
 	
@@ -26,7 +27,7 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		val contentSnippet = _toContentString()._applyIndent(indent)
+		val contentSnippet = toContentString().applyIndent(indent)
 		return "classDiagram\n$contentSnippet"
 	}
 }
@@ -35,16 +36,16 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 //region dsl interfaces
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
-interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplitContent,
+interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	WithTransition<MermaidClassDiagramClass, MermaidClassDiagramRelation> {
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
 	
-	fun _toContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			classes.joinToStringOrEmpty("\n"),
 			relations.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
 	@GenericDsl
@@ -77,27 +78,25 @@ interface MermaidClassDiagramDslElement : MermaidDslElement
 @MermaidClassDiagramDsl
 class MermaidClassDiagramClass @PublishedApi internal constructor(
 	val name: String
-) : MermaidClassDiagramDslElement, CanIndentContent, WithName {
+) : MermaidClassDiagramDslElement, CanIndent, WithUniqueId {
 	var annotation: MermaidClassDiagramAnnotation? = null
 	val properties: MutableSet<MermaidClassDiagramProperty> = mutableSetOf()
 	val methods: MutableSet<MermaidClassDiagramMethod> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
 	
-	override val _name: String get() = name
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
-			annotation?.toString().orEmpty(),
+			annotation.toStringOrEmpty(),
 			properties.joinToStringOrEmpty("\n"),
 			methods.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n")
-			.ifEmpty { return "class $name" }
-			.let(indentContent) { it.prependIndent(indent) }
+		).filterNotEmpty().ifEmpty { return "class $name" }.joinToStringOrEmpty("\n").applyIndent(indent)
 		return "class $name {\n$contentSnippet\n}"
 	}
 	
@@ -113,18 +112,20 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 @MermaidClassDiagramDsl
 class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 	val name: String //NOTE could be custom
-) : MermaidClassDiagramDslElement, WithName {
-	override val _name: String get() = name
+) : MermaidClassDiagramDslElement, WithId {
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "<<$name>>"
 	}
 	
-	enum class Type(@PublishedApi internal val text: String) {
+	/**Mermaid类图注解的类型。*/
+	@MermaidClassDiagramDsl
+	enum class Type(val text: String) {
 		Interface("interface"), Abstract("abstract"), Service("service"), Enumeration("enumeration")
 	}
 }
@@ -133,12 +134,16 @@ class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 @MermaidClassDiagramDsl
 sealed class MermaidClassDiagramMember(
 	val name: String
-) : MermaidClassDiagramDslElement, WithName {
+) : MermaidClassDiagramDslElement, WithUniqueId {
 	var visibility: Visibility? = null
 	var type: String? = null
 	
-	enum class Visibility(internal val text: String) {
-		Public("+"), Private("-"), Protected("#"), Package("~") //NOTE why no "internal" ???
+	/**Mermaid类图成员的可见性。*/
+	@MermaidClassDiagramDsl
+	enum class Visibility(val text: String) {
+		//no "internal"
+		Public("+"),
+		Private("-"), Protected("#"), Package("~")
 	}
 }
 
@@ -147,11 +152,11 @@ sealed class MermaidClassDiagramMember(
 class MermaidClassDiagramProperty @PublishedApi internal constructor(
 	name: String
 ) : MermaidClassDiagramMember(name) {
-	override val _name: String get() = name
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "${visibility?.text.orEmpty()}${type?.let { "$it " }.orEmpty()}$name"
@@ -164,11 +169,11 @@ class MermaidClassDiagramMethod @PublishedApi internal constructor(
 	name: String,
 	val params: Array<out String>
 ) : MermaidClassDiagramMember(name) {
-	override val _name: String get() = name
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name, params) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name, params) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "${visibility?.text.orEmpty()}${type?.let { "$it " }.orEmpty()}$name(${params.joinToStringOrEmpty()})"
@@ -181,13 +186,15 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val fromClassName: String,
 	val toClassName: String,
 	val type: Type,
-	var text: String? = null //NOTE can wrap by "<br>"
+	@Multiline("<br>")
+	var text: String? = null
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	var fromCardinality: String? = null //NOTE syntax: "0", "0..1", "0..*", "many"
+	//NOTE syntax: "0", "0..1", "0..*", "many"
+	var fromCardinality: String? = null
 	var toCardinality: String? = null
 	
-	override val _fromNodeName get() = fromClassName
-	override val _toNodeName get() = toClassName
+	override val fromNodeId get() = fromClassName
+	override val toNodeId get() = toClassName
 	
 	//NOTE syntax: $fromClassName $fromCardinality? $relationType $toCardinality? $toClassName: $text?
 	override fun toString(): String {

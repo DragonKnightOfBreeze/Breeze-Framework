@@ -22,11 +22,12 @@ import org.intellij.lang.annotations.*
 //region top annotations and interfaces
 /**Markdown的Dsl。*/
 @DslMarker
-private annotation class MarkdownDsl
+@MustBeDocumented
+internal annotation class MarkdownDsl
 
 /**Markdown的扩展特性。*/
 @MustBeDocumented
-private annotation class MarkdownDslExtendedFeature
+internal annotation class MarkdownDslExtendedFeature
 
 /**Markdown。*/
 @MarkdownDsl
@@ -40,7 +41,7 @@ class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEnt
 		return arrayOf(
 			frontMatter?.toString().orEmpty(),
 			toc?.toString().orEmpty(),
-			_toContentString(),
+			toContentString(),
 			references.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty("\n\n")
 	}
@@ -92,7 +93,7 @@ interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 	
-	fun _toContentString(): String {
+	fun toContentString(): String {
 		return content.joinToStringOrEmpty("\n\n")
 	}
 	
@@ -290,7 +291,7 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement, CanWrapContent {
+) : MarkdownDslTopElement, CanWrap {
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
@@ -305,7 +306,7 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 sealed class MarkdownHeading(
 	val headingLevel: Int,
 	val text: String
-) : MarkdownDslTopElement, WithMarkdownAttributes, CanWrapContent {
+) : MarkdownDslTopElement, WithMarkdownAttributes, CanWrap {
 	override var attributes: MarkdownAttributes? = null
 	override var wrapContent: Boolean = true
 }
@@ -416,7 +417,7 @@ class MarkdownList @PublishedApi internal constructor(
 sealed class MarkdownListNode(
 	protected val prefixMarkers: String,
 	val text: String
-) : MarkdownDslElement, CanWrapContent {
+) : MarkdownDslElement, CanWrap {
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
@@ -457,7 +458,7 @@ class MarkdownTaskListNode @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String
-) : MarkdownDslTopElement, CanWrapContent {
+) : MarkdownDslTopElement, CanWrap {
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
 	
 	override var wrapContent: Boolean = true
@@ -478,7 +479,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslElement, CanWrapContent {
+) : MarkdownDslElement, CanWrap {
 	override var wrapContent: Boolean = true
 	
 	override fun toString(): String {
@@ -595,7 +596,7 @@ sealed class MarkdownQuote(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
 	override fun toString(): String {
-		return _toContentString().prependIndent("$prefixMarker ")
+		return toContentString().prependIndent("$prefixMarker ")
 	}
 }
 
@@ -676,7 +677,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 		
 		val titleSnippet = title.wrapQuote(quote)
-		val contentSnippet = _toContentString().prependIndent(indent)
+		val contentSnippet = toContentString().prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
 	
@@ -684,7 +685,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		Normal("!!!"), Collapsed("???"), Opened("!!!+")
 	}
 	
-	enum class Qualifier(internal val style: String, internal val text: String) {
+	enum class Qualifier(val style: String, val text: String) {
 		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 		Bug("bug", "bug"),
 		Danger("danger", "danger"), Error("danger", "error"),
@@ -715,15 +716,15 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 /**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerateContent {
+class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerate {
 	override var generateContent: Boolean = false
 	
-	override fun _toGeneratedString(): String {
+	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return _toGeneratedString()
+		if(generateContent) return toGeneratedString()
 		return "[TOC]"
 	}
 }
@@ -733,17 +734,17 @@ class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, Can
 @MarkdownDslExtendedFeature
 class MarkdownImport @PublishedApi internal constructor(
 	val url: String
-) : MarkdownDslTopElement, CanGenerateContent, WithMarkdownAttributes {
+) : MarkdownDslTopElement, CanGenerate, WithMarkdownAttributes {
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
 	override var generateContent: Boolean = false
 	
-	override fun _toGeneratedString(): String {
+	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return _toGeneratedString()
+		if(generateContent) return toGeneratedString()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.wrapQuote(quote)
 		return "@import $urlSnippet$attributesSnippet"
@@ -755,15 +756,15 @@ class MarkdownImport @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
-) : MarkdownDslTopElement, CanGenerateContent {
+) : MarkdownDslTopElement, CanGenerate {
 	override var generateContent: Boolean = false
 	
-	override fun _toGeneratedString(): String {
+	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
 	
 	override fun toString(): String {
-		if(generateContent) return _toGeneratedString()
+		if(generateContent) return toGeneratedString()
 		return "<<< $name >>>"
 	}
 }
@@ -777,7 +778,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	
 	override fun toString(): String {
-		val contentSnippet = _toContentString()
+		val contentSnippet = toContentString()
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }
@@ -786,8 +787,8 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 @MarkdownDsl
 sealed class MarkdownReference(
 	val reference: String
-) : MarkdownDslElement, WithName {
-	override val _name: String get() = reference
+) : MarkdownDslElement, WithUniqueId {
+	override val id: String get() = reference
 }
 
 /**Markdown脚注的引用。*/
@@ -797,9 +798,9 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "[^$reference]: $text"
@@ -813,9 +814,9 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "*[$reference]: $text"
@@ -829,9 +830,9 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val url: String,
 	val title: String? = null
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(reference) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(reference) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()

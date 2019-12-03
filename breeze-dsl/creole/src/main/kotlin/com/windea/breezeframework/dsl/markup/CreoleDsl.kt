@@ -14,7 +14,8 @@ import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 /**Creole的Dsl。*/
 @ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
-private annotation class CreoleDsl
+@MustBeDocumented
+internal annotation class CreoleDsl
 
 /**Creole。*/
 @CreoleDsl
@@ -181,7 +182,7 @@ open class CreoleHorizontalLine @PublishedApi internal constructor(
 		return type.text * repeatableMarkerCount
 	}
 	
-	enum class Type(internal val text: String) {
+	enum class Type(val text: String) {
 		Normal("-"), Double("="), Strong("_"), Dotted(".")
 	}
 }
@@ -321,7 +322,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
 	
-	enum class Alignment(internal val textPair: Pair<String, String>) {
+	enum class Alignment(val textPair: Pair<String, String>) {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}
 }

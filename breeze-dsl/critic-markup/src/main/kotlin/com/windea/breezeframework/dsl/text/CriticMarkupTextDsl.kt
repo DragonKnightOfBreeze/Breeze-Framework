@@ -9,7 +9,8 @@ import com.windea.breezeframework.dsl.*
 /**CriticMarkup富文本的Dsl。*/
 @ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @DslMarker
-private annotation class CriticMarkupTextDsl
+@MustBeDocumented
+internal annotation class CriticMarkupTextDsl
 
 /**CriticMarkup富文本。*/
 @CriticMarkupTextDsl

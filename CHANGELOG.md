@@ -203,6 +203,7 @@
 * [X] breeze-core 提供废弃且标为隐藏的`T?.toOptional()`方法。
 * [X] breeze-core 整理代码和注释，提供`Array.stream()`扩展。
 * [X] 整理代码。
+* [X] breeze-dsl 重构代码。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。

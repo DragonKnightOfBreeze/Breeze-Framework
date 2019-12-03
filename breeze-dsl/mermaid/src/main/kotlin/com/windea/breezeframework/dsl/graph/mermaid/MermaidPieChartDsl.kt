@@ -14,17 +14,23 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidConfig.quote
 /**Mermaid饼图的Dsl。*/
 @ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @DslMarker
-private annotation class MermaidPieChartDsl
+@MustBeDocumented
+internal annotation class MermaidPieChartDsl
 
 /**Mermaid饼图。*/
 @MermaidPieChartDsl
-class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndentContent {
-	override val parts: MutableSet<MermaidPieChartPart> = mutableSetOf()
+class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndent, CanSplit {
+	var title: MermaidPieChartTitle? = null
+	override val sections: MutableSet<MermaidPieChartSection> = mutableSetOf()
 	
 	override var indentContent: Boolean = true
+	override var splitContent: Boolean = false
 	
 	override fun toString(): String {
-		val contentSnippet = _toContentString()._applyIndent(indent)
+		val contentSnippet = arrayOf(
+			title.toStringOrEmpty(),
+			toContentString()
+		).filterNotEmpty().joinToStringOrEmpty(split).applyIndent(indent)
 		return "pie\n$contentSnippet"
 	}
 }
@@ -34,10 +40,10 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry {
-	val parts: MutableSet<MermaidPieChartPart>
+	val sections: MutableSet<MermaidPieChartSection>
 	
-	fun _toContentString(): String {
-		return parts.joinToStringOrEmpty("\n")
+	fun toContentString(): String {
+		return sections.joinToStringOrEmpty("\n")
 	}
 }
 
@@ -47,17 +53,27 @@ interface MermaidPieChartDslElement : MermaidDslElement
 //endregion
 
 //region dsl elements
+/**Mermaid饼图标题。*/
+@MermaidPieChartDsl
+class MermaidPieChartTitle @PublishedApi internal constructor(
+	val text: String
+) : MermaidPieChartDslElement {
+	override fun toString(): String {
+		return "title $text"
+	}
+}
+
 /**Mermaid饼图部分。*/
 @MermaidPieChartDsl
-class MermaidPieChartPart @PublishedApi internal constructor(
+class MermaidPieChartSection @PublishedApi internal constructor(
 	val key: String,
 	val value: Number
-) : MermaidPieChartDslElement, WithName {
-	override val _name: String get() = key
+) : MermaidPieChartDslElement, WithUniqueId {
+	override val id: String get() = key
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(key) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(key) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	override fun toString(): String {
 		return "${key.wrapQuote(quote)}: $value"
@@ -71,6 +87,10 @@ inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
 	MermaidPieChart().also { it.block() }
 
 @MermaidPieChartDsl
-inline fun MermaidPieChartDslEntry.part(key: String, value: Number) =
-	MermaidPieChartPart(key, value).also { parts += it }
+inline fun MermaidPieChart.title(text: String) =
+	MermaidPieChartTitle(text).also { title = it }
+
+@MermaidPieChartDsl
+inline fun MermaidPieChartDslEntry.section(key: String, value: Number) =
+	MermaidPieChartSection(key, value).also { sections += it }
 //endregion

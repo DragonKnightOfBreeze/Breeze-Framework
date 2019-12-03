@@ -12,7 +12,8 @@ import java.util.*
 /**流程图的Dsl。*/
 @ReferenceApi("[Github](//https://github.com/adrai/flowchart.js)")
 @DslMarker
-private annotation class FlowChartDsl
+@MustBeDocumented
+internal annotation class FlowChartDsl
 
 /**流程图。*/
 @FlowChartDsl
@@ -23,7 +24,7 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 	override var splitContent: Boolean = true
 	
 	override fun toString(): String {
-		return _toContentString()
+		return toContentString()
 	}
 }
 //endregion
@@ -31,15 +32,15 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 //region dsl interfaces
 /**流程图Dsl的入口。*/
 @FlowChartDsl
-interface FlowChartDslEntry : DslEntry, CanSplitContent, WithTransition<FlowChartNode, FlowChartConnection> {
+interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, FlowChartConnection> {
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
 	
-	fun _toContentString(): String {
+	fun toContentString(): String {
 		return arrayOf(
 			nodes.joinToStringOrEmpty("\n"),
 			connections.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(_splitWrap)
+		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
 	@GenericDsl
@@ -81,17 +82,18 @@ interface FlowChartConnectionBinder {
 class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: Type,
-	val text: String? = null //NOTE can wrap by truly "\n"
-) : FlowChartDslElement, WithName {
+	@Multiline("\n")
+	val text: String? = null
+) : FlowChartDslElement, WithUniqueId {
 	var flowState: String? = null
 	var urlLink: String? = null
 	var openNewTab: Boolean = false
 	
-	override val _name: String get() = name
+	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelect(this, other) { arrayOf(name) }
+	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelect(this) { arrayOf(name) }
+	override fun hashCode() = hashCodeBySelectId(this) { id }
 	
 	//NOTE syntax: name=>$type: $text|$flowState?:>$urlLink
 	override fun toString(): String {
@@ -101,7 +103,7 @@ class FlowChartNode @PublishedApi internal constructor(
 		return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 	}
 	
-	enum class Type(internal val text: String) {
+	enum class Type(val text: String) {
 		Start("start"), End("end"), Operation("operation"), InputOutput("inputoutput"),
 		Subroutine("subroutine"), Condition("condition"), Parallel("parallel")
 	}
@@ -113,8 +115,8 @@ class FlowChartConnection @PublishedApi internal constructor(
 	val fromNodeName: String,
 	val toNodeName: String
 ) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.pollLast() ?: Binder() {
-	override val _fromNodeName get() = fromNodeName
-	override val _toNodeName get() = toNodeName
+	override val fromNodeId get() = fromNodeName
+	override val toNodeId get() = toNodeName
 	
 	//NOTE syntax: $fromNodeName($specifications)->$toNodeName
 	override fun toString(): String {
@@ -122,15 +124,15 @@ class FlowChartConnection @PublishedApi internal constructor(
 		return "$fromNodeName$specificationsSnippet->$toNodeName"
 	}
 	
-	enum class Status(internal val text: String) {
+	enum class Status(val text: String) {
 		Yes("yes"), No("no")
 	}
 	
-	enum class Path(internal val text: String) {
+	enum class Path(val text: String) {
 		Path1("path1"), Path2("path2"), Path3("path3")
 	}
 	
-	enum class Direction(internal val text: String) {
+	enum class Direction(val text: String) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
 	}
 	
