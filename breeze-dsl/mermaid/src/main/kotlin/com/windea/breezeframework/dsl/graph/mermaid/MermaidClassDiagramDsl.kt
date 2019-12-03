@@ -293,6 +293,6 @@ inline infix fun MermaidClassDiagramRelation.text(text: String) =
 	this.also { it.text = text }
 
 @MermaidClassDiagramDsl
-inline infix fun MermaidClassDiagramRelation.cardinality(cardinalityPair: Pair<String?, String?>) =
-	this.also { it.fromCardinality = cardinalityPair.first;it.toCardinality = cardinalityPair.second }
+inline fun MermaidClassDiagramRelation.cardinality(from: String? = null, to: String? = null) =
+	this.also { it.fromCardinality = from;it.toCardinality = to }
 //endregion
