@@ -1,7 +1,6 @@
-package com.windea.breezeframework.logger.internal
+package com.windea.breezeframework.logger
 
-import com.windea.breezeframework.logger.*
-
+/**日志器的配置。*/
 object LoggerConfig {
 	var isLevelIncluded: Boolean = true
 	var isDateIncluded: Boolean = true
@@ -9,9 +8,9 @@ object LoggerConfig {
 	var isPathAbbreviated: Boolean = false
 	var isColorful: Boolean = true
 	
-	var minLogLevel: LogLevel = LogLevel.Trace
+	var minLogLevel: LogLevel = LogLevel.Info
 	var dateFormat: String = "yyyy-MM-dd HH:mm:ss"
 	var delimiter: String = " - "
 	
-	var output: String? = null
+	var outputPath: String? = null
 }

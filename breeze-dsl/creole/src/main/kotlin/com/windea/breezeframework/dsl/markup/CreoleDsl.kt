@@ -56,7 +56,7 @@ interface CreoleDslInlineEntry : DslEntry
 interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
 	
-	@GenericDsl
+	@CreoleDsl
 	override fun String.unaryPlus() = CreoleTextBlock(this).also { content += it }
 }
 
@@ -343,7 +343,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 		}.joinToStringOrEmpty("|", "|", "|")
 	}
 	
-	@GenericDsl
+	@CreoleDsl
 	override fun String.unaryPlus() = column(this)
 	
 	@CreoleDsl
@@ -367,7 +367,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@GenericDsl
+	@CreoleDsl
 	override fun String.unaryPlus() = column(this)
 }
 

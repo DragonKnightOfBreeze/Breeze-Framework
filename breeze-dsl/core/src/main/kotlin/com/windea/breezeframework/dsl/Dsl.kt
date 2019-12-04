@@ -16,21 +16,10 @@ import com.windea.breezeframework.core.extensions.*
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
 //region top annotations and interfaces
-/**公共的Dsl（领域特定语言）。
- *
- * 对应的构造方法会自动注册对应的元素，且一般返回元素自身。
- */
+/**Dsl。*/
 @DslMarker
 @MustBeDocumented
-annotation class GenericDsl
-
-/**
- * 内联的Dsl（领域特定语言）。
- *
- * 对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。
- */
-@MustBeDocumented
-annotation class InlineDsl
+internal annotation class Dsl
 
 /**Dsl的构建器。*/
 interface DslBuilder {
@@ -50,7 +39,12 @@ interface DslElement {
 //endregion
 
 //region dsl annotations
-/**注明这个字符串属性可以通过指定的方式换行。*/
+/**表示这个Dsl构建方法是内联的。即，对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。*/
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION)
+annotation class InlineDsl
+
+/**表示这个字符串属性换行。并注明对应的行分隔符和额外条件。*/
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
 annotation class Multiline(
@@ -63,7 +57,7 @@ annotation class Multiline(
 
 //region dsl interfaces
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
-@GenericDsl
+@Dsl
 interface CanWrap {
 	var wrapContent: Boolean
 	
@@ -71,7 +65,7 @@ interface CanWrap {
 }
 
 /**包含可分割的内容。一般使用空行进行分割。*/
-@GenericDsl
+@Dsl
 interface CanSplit {
 	var splitContent: Boolean
 	
@@ -79,7 +73,7 @@ interface CanSplit {
 }
 
 /**包含可缩进的内容。*/
-@GenericDsl
+@Dsl
 interface CanIndent {
 	var indentContent: Boolean
 	
@@ -89,7 +83,7 @@ interface CanIndent {
 }
 
 /**可生成文本。可能替换原始文本。*/
-@GenericDsl
+@Dsl
 interface CanGenerate {
 	var generateContent: Boolean
 	
@@ -98,37 +92,37 @@ interface CanGenerate {
 
 
 /**包含可被视为文本的子元素。*/
-@GenericDsl
+@Dsl
 interface WithText<T> {
 	/**添加主要的文本元素为子元素。*/
-	@GenericDsl
+	@Dsl
 	operator fun String.unaryPlus(): T
 }
 
 /**包含可被视为注释的子元素。*/
-@GenericDsl
+@Dsl
 interface WithComment<T> {
 	/**添加注释元素为子元素。*/
-	@GenericDsl
+	@Dsl
 	operator fun String.unaryMinus(): T
 }
 
 /**包含可被视为块的子元素。*/
-@GenericDsl
+@Dsl
 interface WithBlock<T> {
 	/**添加主要的块元素为子元素。*/
-	@GenericDsl
+	@Dsl
 	operator fun String.invoke(block: T.() -> Unit = {}): T
 }
 
 /**带有一个可用于查询的id。这个id不是唯一的。*/
-@GenericDsl
+@Dsl
 interface WithId {
 	val id: String
 }
 
 /**带有一个可用于查询的id。这个id是唯一的。*/
-@GenericDsl
+@Dsl
 interface WithUniqueId : WithId {
 	override fun equals(other: Any?): Boolean
 	
@@ -136,56 +130,56 @@ interface WithUniqueId : WithId {
 }
 
 /**包含一对可被视为节点的子元素。*/
-@GenericDsl
+@Dsl
 interface WithNode<N : WithId> {
 	val sourceNodeId: String
 	val targetNodeId: String
 }
 
 /**包含有可被视为转换的子元素。*/
-@GenericDsl
+@Dsl
 interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun String.fromTo(other: String): T
 	
 	/**根据节点元素创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other.id }
 	
 	/**根据节点元素创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo.id fromTo other }
 	
 	/**根据节点元素创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo.id fromTo other.id }
 	
 	/**根据节点元素连续创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other }
 	
 	/**根据节点元素连续创建过渡元素。*/
-	@GenericDsl
+	@Dsl
 	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other.id }
 }
 //endregion
 
 //region build extensions
 /**设置是否换行内容。*/
-@GenericDsl
+@Dsl
 inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
 
 /**设置是否缩进内容。*/
-@GenericDsl
+@Dsl
 inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { it.indentContent = value }
 
 /**设置是否分割内容。*/
-@GenericDsl
+@Dsl
 inline infix fun <T : CanSplit> T.split(value: Boolean) = this.also { it.splitContent = value }
 
 /**设置是否生成内容。*/
-@GenericDsl
+@Dsl
 inline infix fun <T : CanGenerate> T.generate(value: Boolean) = this.also { it.generateContent = value }
 //endregion
 

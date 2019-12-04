@@ -5,7 +5,7 @@ package com.windea.breezeframework.logger.internal
 import com.windea.breezeframework.logger.*
 import java.io.*
 
-object ColorfulLogger : Logger {
+object SimpleLogger : Logger {
 	override fun trace(message: Any?) = log(LogLevel.Trace, message)
 	
 	override fun trace(lazyMessage: () -> Any?) = log(LogLevel.Trace, lazyMessage())
@@ -47,7 +47,6 @@ object ColorfulLogger : Logger {
 		
 		LoggerConfig.outputPath?.let { File(it).appendText(logSnippet) }
 		
-		val (prefix, suffix) = if(LoggerConfig.isColorful) level.colorCommandPair else "" to ""
-		print(logSnippet.let { "$prefix$it$suffix" })
+		System.err.print(logSnippet)
 	}
 }

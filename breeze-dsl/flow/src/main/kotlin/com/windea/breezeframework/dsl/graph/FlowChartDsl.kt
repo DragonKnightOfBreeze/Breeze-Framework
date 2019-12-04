@@ -10,7 +10,7 @@ import java.util.*
 
 //region top annotations and interfaces
 /**流程图的Dsl。*/
-@ReferenceApi("[Github](//https://github.com/adrai/flowchart.js)")
+@ReferenceApi("[Github](https://github.com/adrai/flowchart.js)")
 @DslMarker
 @MustBeDocumented
 internal annotation class FlowChartDsl
@@ -43,18 +43,18 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@FlowChartDsl
 	override fun String.fromTo(other: String) = connection(this, other)
 	
-	@GenericDsl
+	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(null, null, direction)) }
 	
-	@GenericDsl
+	@FlowChartDsl
 	operator fun String.invoke(status: FlowChartConnection.Status, direction: FlowChartConnection.Direction? = null) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(status, null, direction)) }
 	
-	@GenericDsl
+	@FlowChartDsl
 	operator fun String.invoke(path: FlowChartConnection.Path, direction: FlowChartConnection.Direction? = null) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(null, path, direction)) }
 }
@@ -195,10 +195,6 @@ inline fun FlowChartDslEntry.parallel(name: String) =
 @FlowChartDsl
 inline fun FlowChartDslEntry.connection(fromNodeId: String, toNodeId: String) =
 	FlowChartConnection(fromNodeId, toNodeId).also { connections += it }
-
-@FlowChartDsl
-inline fun FlowChartDslEntry.connection(fromNode: FlowChartNode, toNode: FlowChartNode) =
-	FlowChartConnection(fromNode.id, toNode.id).also { connections += it }
 
 @FlowChartDsl
 inline infix fun FlowChartNode.text(text: String) =

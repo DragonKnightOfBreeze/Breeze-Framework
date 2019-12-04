@@ -4,30 +4,29 @@ import com.windea.breezeframework.dsl.graph.mermaid.MermaidClassDiagramAnnotatio
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {
-	@Test //TESTED OK, @ReplaceWith WORKS
+	@Test //TESTED OK
 	fun test1() {
-		//居然真的可以这样写。。。
 		println(mermaidClassDiagram {
 			`class`("Person") {
-				property("name")
-				property("gender") type "Gender"
+				statement("name")
+				statement("gender" type "Gender")
 			}
 			`class`("BreezeKnight") {
-				property("weapons") type "List<Weapon>"
-				property("magics") type "List<Magic>"
-				protected(property("memberId")) type "Int"
-				public(method("tellStoriesAndTales"()))
-				method("helloBreezeFramework"())
-				method("weaponAttack"("weaponName"))
-				method("magicCast"("magicName"))
-				method("dragonDrive"("dragon", "licence"))
+				statement("weapons" type "List<Weapon>")
+				statement("magics" type "List<Magic>")
+				protected(statement("memberId" type "Int"))
+				public(statement("tellStoriesAndTales"()))
+				statement("helloBreezeFramework"())
+				statement("weaponAttack"("weaponName" type "String"))
+				statement("magicCast"("magicName"))
+				statement("dragonDrive"("dragon", "licence"))
 			}
 			`class`("Gender") {
 				annotation(Enumeration)
-				property("Male")
-				property("Female")
-				property("ImmortalMale")
-				property("ImmortalFemale")
+				statement("Male")
+				statement("Female")
+				statement("ImmortalMale")
+				statement("ImmortalFemale")
 			}
 			`class`("Weapon")
 			`class`("Magic")

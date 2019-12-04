@@ -97,7 +97,7 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 		return content.joinToStringOrEmpty("\n\n")
 	}
 	
-	@GenericDsl
+	@MarkdownDsl
 	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
 }
 
@@ -543,7 +543,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@GenericDsl
+	@MarkdownDsl
 	override fun String.unaryPlus() = column(this)
 	
 	@MarkdownDsl
@@ -567,7 +567,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
 	
-	@GenericDsl
+	@MarkdownDsl
 	override fun String.unaryPlus() = column(this)
 }
 

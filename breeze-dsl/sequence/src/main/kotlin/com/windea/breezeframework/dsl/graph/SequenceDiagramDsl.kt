@@ -50,7 +50,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@SequenceDiagramDsl
 	override fun String.fromTo(other: String) = message(this, other)
 }
 
@@ -162,10 +162,6 @@ inline fun SequenceDiagramDslEntry.participant(name: String) =
 @SequenceDiagramDsl
 inline fun SequenceDiagramDslEntry.message(fromParticipantId: String, toParticipantId: String) =
 	SequenceDiagramMessage(fromParticipantId, toParticipantId).also { messages += it }
-
-@SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.message(fromParticipant: SequenceDiagramParticipant, toParticipant: SequenceDiagramParticipant) =
-	SequenceDiagramMessage(fromParticipant.id, toParticipant.id).also { messages += it }
 
 @SequenceDiagramDsl
 inline fun SequenceDiagramDslEntry.message(

@@ -11,6 +11,7 @@ class SequenceDiagramDslTest {
 			message("A", Arrow, "B") text "Normal line"
 			message("B", DashedArrow, "C") text "Dashed line"
 			message("C", OpenArrow, "D") text "Open arrow"
+			"D" fromTo "E"
 			note(leftOf("A")) text "Note"
 		})
 	}

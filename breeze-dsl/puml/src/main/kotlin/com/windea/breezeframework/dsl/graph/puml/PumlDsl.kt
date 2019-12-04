@@ -35,7 +35,7 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	
 	fun toSuffixString(): String = TODO()
 	
-	@GenericDsl
+	@PumlDsl
 	override fun String.unaryMinus() = note(this)
 }
 

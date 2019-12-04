@@ -69,7 +69,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<M
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@MermaidFlowChartDsl
 	override fun String.fromTo(other: String) = link(this, other)
 }
 
@@ -234,10 +234,6 @@ inline fun MermaidFlowChartDslEntry.node(name: String) =
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.link(fromNodeId: String, toNodeId: String) =
 	MermaidFlowChartLink(fromNodeId, toNodeId).also { links += it }
-
-@MermaidFlowChartDsl
-inline fun MermaidFlowChartDslEntry.link(fromNode: MermaidFlowChartNode, toNode: MermaidFlowChartNode) =
-	MermaidFlowChartLink(fromNode.id, toNode.id).also { links += it }
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.link(

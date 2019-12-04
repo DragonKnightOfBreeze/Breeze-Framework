@@ -51,7 +51,7 @@ interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplit, WithTransition<Puml
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@PumlDsl
 	override fun String.fromTo(other: String) = transition(this, other)
 }
 

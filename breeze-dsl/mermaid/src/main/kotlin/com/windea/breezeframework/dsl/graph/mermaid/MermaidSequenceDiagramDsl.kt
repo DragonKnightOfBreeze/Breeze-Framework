@@ -54,7 +54,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@MermaidFlowChartDsl
 	override fun String.fromTo(other: String) = message(this, other)
 }
 
@@ -216,10 +216,6 @@ inline fun MermaidSequenceDiagramDslEntry.participant(name: String) =
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.message(fromParticipantId: String, toParticipantId: String) =
 	MermaidSequenceDiagramMessage(fromParticipantId, toParticipantId).also { messages += it }
-
-@MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(fromParticipant: MermaidSequenceDiagramParticipant, toParticipant: MermaidSequenceDiagramParticipant) =
-	MermaidSequenceDiagramMessage(fromParticipant.id, toParticipant.id).also { messages += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.message(

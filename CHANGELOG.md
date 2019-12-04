@@ -7,7 +7,7 @@
 * [X] 使用gradle构建项目（因为比maven更简洁），使用kts脚本构建。
 * [X] 迁移[Kotlin-Utility](https://github.com/DragonKnightOfBreeze/Kotlin-Utility)中的代码到此项目。
 * [X] 初始化仓库成功。
- 
+
 ### 1.0.1
 
 * [X] breeze-core `eval()` 直接运行脚本。
@@ -21,7 +21,7 @@
 * [X] breeze-time 参考khronos更新一部分代码。
 * [X] breeze-text en 序数与数量的转化。
 * [X] breeze-core 使类似`TODO()`的方法能够显示正确的日志。
-* [X] breeze-core 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。 
+* [X] breeze-core 优化和完善`LetterCase`和`ReferenceCase`以及相关代码。
 * [X] 完成基本的顶层README文档。
 * [X] breeze-core 进一步完善`LetterCase`和`ReferenceCase`以及相关代码。
 * [X] breeze-core 参考klutter更新一部分代码。
@@ -56,7 +56,7 @@
 * [X] breeze-core 提供通用的`@AllOpen`和`@NoArg`注解。
 * [X] breeze-data 更新扩展。
 * [X] breeze-reflect 为`memberProperties`添加一步到位的得到指定属性的扩展。`memberFunctions`同理。
-* [X] breeze-reflect 将代码按照扩展kotlin反射还是java反射进行明确的分类。 
+* [X] breeze-reflect 将代码按照扩展kotlin反射还是java反射进行明确的分类。
 * [X] breeze-core 重构涉及正则表达式的代码。用于`matches`方法的正则不需要包含`^``$`和捕捉分组，正则可用原始字符串表示。
 * [X] breeze-core 重构annotations，明确保留级别。
 * [X] breeze-core 添加并完善函数式扩展的示例。
@@ -94,7 +94,7 @@
 * [X] breeze-data 完善equals、hashcode、toString方法的构建方法。
 * [X] breeze-dsl 更新PumlDsl和PumlStateDiagramDsl中。
 * [X] breeze-text Base64的相关扩展。
-* [X] breeze-dsl 完善各种DSL，基本完成PumlStateDiagramDsl。 
+* [X] breeze-dsl 完善各种DSL，基本完成PumlStateDiagramDsl。
 * [X] breeze-dsl 完成PumlStateDiagramDsl，并将公共Dsl提取到PumlDsl。（puml的语法真的是面向人类的吗？）
 * [X] breeze-dsl 完善各种Dsl，更新MarkdownDsl中。
 * [X] breeze-dsl 更新MarkdownDsl中。
@@ -125,7 +125,7 @@
 * [X] breeze-dsl 实现`JsonDsl`。（不推荐使用，但是作为规范）
 * [X] 整理代码。
 * [X] breeze-serialization 提供缺失的基础的基于kotlin-jvm的KSerializer。
-* [X] breeze-dsl MarkdownDsl 支持标题的特性（一般是id）。 
+* [X] breeze-dsl MarkdownDsl 支持标题的特性（一般是id）。
 * [X] 精简注解。
 * [X] breeze-core 参照标准库，重命名`CollectionExtensions`中的部分方法。
 * [X] breeze-core 提供`joinToStringOrEmpty`方法（为了优化性能）。
@@ -183,7 +183,7 @@
 * [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
 * [X] breeze-logger 完成自己的日志器的实现。
 * [X] breeze-core 添加`String.alignLeft`等方法。
-* [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。 
+* [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。
 * [X] breeze-core 去除以上扩展，添加`String.orNull`和`Optional.orNull`扩展。
 * [X] breeze-core 重构和添加`String.alignStart`,`String.addPrefix`,`String.inline`,`String.trimWrap`等扩展。
 * [X] breeze-dsl 重构代码和整理目录。
@@ -205,6 +205,7 @@
 * [X] 整理代码。
 * [X] breeze-dsl 重构代码。
 * [X] breeze-data&breeze-reflect&breeze-dsl 重构与优化代码，排除bug。
+* [ ] breeze-logger 提供`SimpleLogger`。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。

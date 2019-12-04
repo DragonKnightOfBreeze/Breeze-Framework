@@ -49,7 +49,7 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
 	
-	@GenericDsl
+	@MermaidStateDiagramDsl
 	override fun String.fromTo(other: String) = transition(this, other)
 }
 
@@ -227,10 +227,6 @@ inline fun MermaidStateDiagramDslEntry.concurrentState(name: String, block: Merm
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.transition(fromStateId: String, toStateId: String) =
 	MermaidStateDiagramTransition(fromStateId, toStateId).also { links += it }
-
-@MermaidStateDiagramDsl
-inline fun MermaidStateDiagramDslEntry.transition(fromState: MermaidStateDiagramSimpleState, toState: MermaidStateDiagramSimpleState) =
-	MermaidStateDiagramTransition(fromState.name, toState.name).also { links += it }
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.note(location: MermaidStateDiagramNote.Location) =
