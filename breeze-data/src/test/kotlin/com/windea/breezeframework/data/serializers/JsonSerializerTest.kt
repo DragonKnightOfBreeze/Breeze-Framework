@@ -3,6 +3,7 @@ package com.windea.breezeframework.data.serializers
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.extensions.*
+import kotlin.reflect.*
 import kotlin.test.*
 
 class JsonSerializerTest {
@@ -48,5 +49,32 @@ class JsonSerializerTest {
 	
 	}
 	
+	@Test
+	fun testTypeOf() {
+		println(typeOf<Int>())
+		
+		println(typeOf<List<String>>())
+		
+		println(typeOf<Map<*, *>>())
+		
+		println(getType<Int>())
+		
+		println(getType<List<String>>())
+		
+		println(getType<Map<*, *>>())
+		
+		println(getType2<Int>())
+		
+		println(getType2<List<String>>())
+		
+		println(getType2<Map<*, *>>())
+	}
+	
+	inline fun <reified T> getType() = typeOf<T>()
+	
+	inline fun <reified T> getType2() = getType<T>()
+	
 	data class Person(val name: String, val age: String)
+	
+	data class Person2(val name: String, val age: String)
 }

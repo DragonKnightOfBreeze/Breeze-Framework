@@ -1,16 +1,17 @@
 package com.windea.breezeframework.data.serializers
 
+import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 import java.lang.reflect.*
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
-
-//DONE 允许读取指定泛型类型的数据
-//TODO 考虑编写自己的简洁而灵活的实现
-//TODO 考虑使用扩展库`kotlinx-serialization`，但是缺少具体的对于yaml、xml等格式的实现
 
 //region top interfaces
-/**序列化器。其实现依赖于第三方库，如Gson。需要将必要的实现库添加到classpath中。*/
+/**
+ * 序列化器。
+ *
+ * 注意：其实现依赖于第三方库，如`jackson`, `gson`。
+ *
+ * 注意：当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
+ */
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
 	fun <T> load(string: String, type: Class<T>): T
@@ -36,21 +37,13 @@ interface SerializerConfig
 //endregion
 
 //region reified extensions
+
+//FIXME use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
+//NOTE use user-defined javaTypeOf<T>() here, reference to jackson's TypeReference implementation.
+
 /**从指定字符串读取指定类型的数据。*/
-inline fun <reified T> Serializer.load(string: String): T {
-	val javaType = T::class.java
-	return when {
-		javaType.typeParameters.isEmpty() -> load(string, javaType)
-		else -> load(string, typeOf<T>().javaType)
-	}
-}
+inline fun <reified T> Serializer.load(string: String): T = load(string, javaTypeOf<T>())
 
 /**从指定文件读取指定类型的数据。*/
-inline fun <reified T> Serializer.load(file: File): T {
-	val javaType = T::class.java
-	return when {
-		javaType.typeParameters.isEmpty() -> load(file, javaType)
-		else -> load(file, typeOf<T>().javaType)
-	}
-}
+inline fun <reified T> Serializer.load(file: File): T = load(file, javaTypeOf<T>())
 //endregion

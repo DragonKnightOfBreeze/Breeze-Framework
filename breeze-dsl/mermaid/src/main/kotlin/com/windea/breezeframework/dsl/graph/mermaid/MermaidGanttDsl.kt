@@ -116,7 +116,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	
 	/**Mermaid甘特图任务的状态。*/
 	@MermaidGanttDsl
-	enum class Status(internal val text: String?) {
+	enum class Status(val text: String?) {
 		ToDo(null), Done("done"), Active("active")
 	}
 }
@@ -136,11 +136,7 @@ inline fun MermaidGantt.dateFormat(expression: String) =
 	MermaidGanttDateFormat(expression).also { dateFormat = it }
 
 @MermaidGanttDsl
-inline fun MermaidGanttDslEntry.section(name: String) =
-	MermaidGanttSection(name).also { sections += it }
-
-@MermaidGanttDsl
-inline fun MermaidGanttDslEntry.section(name: String, block: MermaidGanttSection.() -> Unit) =
+inline fun MermaidGanttDslEntry.section(name: String, block: MermaidGanttSection.() -> Unit = {}) =
 	MermaidGanttSection(name).also { it.block() }.also { sections += it }
 
 @MermaidGanttDsl

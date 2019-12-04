@@ -3,6 +3,11 @@ package com.windea.breezeframework.data.serializers.json
 import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.reflect.extensions.*
 
+/**
+ * Json的序列化器。
+ *
+ * 注意：其实现依赖于第三方库，如`jackson`, `gson`, `fastjson`。
+ */
 interface JsonSerializer : Serializer {
 	companion object {
 		val instance: JsonSerializer = when {

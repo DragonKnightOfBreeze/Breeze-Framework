@@ -8,10 +8,10 @@ class SequenceDiagramDslTest {
 	fun test1() {
 		println(sequenceDiagram {
 			title("Here is title")
-			message("A", Arrow, "B", "Normal line")
-			message("B", DashedArrow, "C", "Dashed line")
-			message("C", OpenArrow, "D", "Open arrow")
-			note(leftOf("A"), "Note")
+			message("A", Arrow, "B") text "Normal line"
+			message("B", DashedArrow, "C") text "Dashed line"
+			message("C", OpenArrow, "D") text "Open arrow"
+			note(leftOf("A")) text "Note"
 		})
 	}
 }

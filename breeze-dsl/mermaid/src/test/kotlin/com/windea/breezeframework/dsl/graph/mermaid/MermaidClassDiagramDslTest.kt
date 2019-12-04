@@ -10,12 +10,12 @@ class MermaidClassDiagramDslTest {
 		println(mermaidClassDiagram {
 			`class`("Person") {
 				property("name")
-				"Gender"(property("gender"))
+				property("gender") type "Gender"
 			}
 			`class`("BreezeKnight") {
-				property("weapons")
-				property("magics")
-				protected("Int"(property("memberId")))
+				property("weapons") type "List<Weapon>"
+				property("magics") type "List<Magic>"
+				protected(property("memberId")) type "Int"
 				public(method("tellStoriesAndTales"()))
 				method("helloBreezeFramework"())
 				method("weaponAttack"("weaponName"))
@@ -29,8 +29,10 @@ class MermaidClassDiagramDslTest {
 				property("ImmortalMale")
 				property("ImmortalFemale")
 			}
-			//relation("Person", "BreezeKnight", MermaidClassDiagramRelationType.Inheritance)
-			"BreezeKnight" inherits "Person" text "Here are dragon knights!" cardinality ("*" to "1")
+			`class`("Weapon")
+			`class`("Magic")
+			
+			"Person" inheritedBy "BreezeKnights" text "Here are dragon knights!" cardinality ("1" to "*")
 		})
 	}
 }

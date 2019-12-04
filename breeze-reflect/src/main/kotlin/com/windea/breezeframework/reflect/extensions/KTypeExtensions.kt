@@ -1,4 +1,4 @@
-package com.windea.breezeframework.reflect.extensions.kotlin
+package com.windea.breezeframework.reflect.extensions
 
 import kotlin.reflect.*
 import kotlin.reflect.jvm.*

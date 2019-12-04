@@ -9,8 +9,7 @@ import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//DELAY puml is too complex to write dsl
-//TODO fully support
+//DELAY fully support
 
 //region top annotations and interfaces
 /**PlantUml的Dsl。*/
@@ -240,25 +239,25 @@ class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement
 //region enumerations and constants
 /**PlantUml顶级元素的位置。*/
 @PumlDsl
-enum class PumlTopElementPosition(internal val text: String) {
+enum class PumlTopElementPosition(val text: String) {
 	Right("right"), Left("left"), Center("center")
 }
 
 /**PlantUml箭头的形状。*/
 @PumlDsl
-enum class PumlArrowShape(internal val text: String) {
+enum class PumlArrowShape(val text: String) {
 	Dotted("dotted"), Dashed("dashed"), Bold("bold"), Hidden("hidden")
 }
 
 /**PlantUml箭头的方向。*/
 @PumlDsl
-enum class PumlArrowDirection(internal val text: String) {
+enum class PumlArrowDirection(val text: String) {
 	Down("down"), Up("up"), Left("left"), Right("right")
 }
 
 /**PlantUml注释的位置。*/
 @PumlDsl
-enum class PumlNotePosition(internal val text: String) {
+enum class PumlNotePosition(val text: String) {
 	RightOf("right of"), LeftOf("left of"), TopOf("top of"), BottomOf("bottom of")
 }
 //endregion

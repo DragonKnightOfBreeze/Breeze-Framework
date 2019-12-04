@@ -8,8 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//DELAY puml is too complex to write dsl
-//TODO fully support
+//DELAY fully support
 
 //region top annotations and interfaces
 /**PlantUml序列图的Dsl。*/
@@ -79,8 +78,8 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	var arrowShape: PumlSequenceDiagramMessageArrowShape = PumlSequenceDiagramMessageArrowShape.Arrow
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
 	
-	override val fromNodeId: String get() = fromActorName
-	override val toNodeId: String get() = toActorName
+	override val sourceNodeId: String get() = fromActorName
+	override val targetNodeId: String get() = toActorName
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
@@ -98,7 +97,7 @@ class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 //region enumerations and constants
 /**PlantUml序列图参与者的形状。*/
 @PumlSequenceDiagramDsl
-enum class PumlSequenceDiagramParticipantShape(internal val text: String) {
+enum class PumlSequenceDiagramParticipantShape(val text: String) {
 	Actor("actor"), Boundary("boundary"), Control("control"),
 	Entity("entity"), Database("database"), Collections("collections")
 }

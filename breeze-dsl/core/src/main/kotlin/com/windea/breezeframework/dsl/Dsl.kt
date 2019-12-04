@@ -29,7 +29,6 @@ annotation class GenericDsl
  *
  * 对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。
  */
-@DslMarker
 @MustBeDocumented
 annotation class InlineDsl
 
@@ -139,11 +138,11 @@ interface WithUniqueId : WithId {
 /**包含一对可被视为节点的子元素。*/
 @GenericDsl
 interface WithNode<N : WithId> {
-	val fromNodeId: String
-	val toNodeId: String
+	val sourceNodeId: String
+	val targetNodeId: String
 }
 
-/**包含可被视为转换的子元素。*/
+/**包含有可被视为转换的子元素。*/
 @GenericDsl
 interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
@@ -164,11 +163,11 @@ interface WithTransition<N : WithId, T : WithNode<N>> {
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.toNodeId fromTo other }
+	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other }
 	
 	/**根据节点元素连续创建过渡元素。*/
 	@GenericDsl
-	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.toNodeId fromTo other.id }
+	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other.id }
 }
 //endregion
 

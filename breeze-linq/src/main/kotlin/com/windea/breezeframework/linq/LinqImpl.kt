@@ -37,11 +37,11 @@ class LinqImpl<S, T>(
 	}
 	
 	override fun limit(start: Int, end: Int): Linq<S, T> {
-		return LinqImpl { statement(it).toList().subList(start, end) }
+		return LinqImpl { statement(it).toList().let { list -> list.subList(start, end.coerceAtMost(list.size)) } }
 	}
 	
 	override fun limitDesc(start: Int, end: Int): Linq<S, T> {
-		return LinqImpl { statement(it).toList().let { list -> list.subList(list.size - end, list.size - start) } }
+		return LinqImpl { statement(it).toList().let { list -> list.subList(list.size - end.coerceAtMost(list.size), list.size - start) } }
 	}
 	
 	override fun <R> select(transform: (T) -> R): Linq<S, R> {

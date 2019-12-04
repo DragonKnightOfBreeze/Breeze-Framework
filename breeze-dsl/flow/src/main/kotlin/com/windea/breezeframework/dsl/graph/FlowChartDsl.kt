@@ -63,11 +63,13 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 @FlowChartDsl
 interface FlowChartDslElement : DslElement
 
+/**带有流程图方向。*/
 @FlowChartDsl
 interface WithFlowChartDirection {
 	val direction: FlowChartConnection.Direction?
 }
 
+/**流程图连接的绑定器。*/
 @FlowChartDsl
 interface FlowChartConnectionBinder {
 	var status: FlowChartConnection.Status?
@@ -81,10 +83,10 @@ interface FlowChartConnectionBinder {
 @FlowChartDsl
 class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
-	val type: Type,
-	@Multiline("\n")
-	val text: String? = null
+	val type: Type
 ) : FlowChartDslElement, WithUniqueId {
+	@Multiline("\n")
+	var text: String? = null
 	var flowState: String? = null
 	var urlLink: String? = null
 	var openNewTab: Boolean = false
@@ -103,6 +105,8 @@ class FlowChartNode @PublishedApi internal constructor(
 		return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 	}
 	
+	/**流程图节点的类型。*/
+	@FlowChartDsl
 	enum class Type(val text: String) {
 		Start("start"), End("end"), Operation("operation"), InputOutput("inputoutput"),
 		Subroutine("subroutine"), Condition("condition"), Parallel("parallel")
@@ -112,26 +116,32 @@ class FlowChartNode @PublishedApi internal constructor(
 /**流程图连接。*/
 @FlowChartDsl
 class FlowChartConnection @PublishedApi internal constructor(
-	val fromNodeName: String,
-	val toNodeName: String
+	val fromNodeId: String,
+	val toNodeId: String
 ) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.pollLast() ?: Binder() {
-	override val fromNodeId get() = fromNodeName
-	override val toNodeId get() = toNodeName
+	override val sourceNodeId get() = fromNodeId
+	override val targetNodeId get() = toNodeId
 	
-	//NOTE syntax: $fromNodeName($specifications)->$toNodeName
+	//NOTE syntax: $fromNodeId($specifications)->$toNodeId
 	override fun toString(): String {
 		val specificationsSnippet = listOfNotNull(status?.text, path?.text, direction?.text).joinToStringOrEmpty(", ", "(", ")")
-		return "$fromNodeName$specificationsSnippet->$toNodeName"
+		return "$fromNodeId$specificationsSnippet->$toNodeId"
 	}
 	
+	/**流程图连接的状态。*/
+	@FlowChartDsl
 	enum class Status(val text: String) {
 		Yes("yes"), No("no")
 	}
 	
+	/**流程图连接的路径。*/
+	@FlowChartDsl
 	enum class Path(val text: String) {
 		Path1("path1"), Path2("path2"), Path3("path3")
 	}
 	
+	/**流程图连接的方向。*/
+	@FlowChartDsl
 	enum class Direction(val text: String) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
 	}
@@ -144,7 +154,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 	
 	//NOTE 使用委托在外部存储数据，等到必要时传递回来
 	companion object {
-		@PublishedApi internal val binderQueue = LinkedList<Binder>()
+		internal val binderQueue = LinkedList<Binder>()
 	}
 }
 //endregion
@@ -155,40 +165,44 @@ inline fun flowChart(block: FlowChart.() -> Unit) =
 	FlowChart().also { it.block() }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.start(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.Start, text).also { nodes += it }
+inline fun FlowChartDslEntry.start(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.Start).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.end(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.End, text).also { nodes += it }
+inline fun FlowChartDslEntry.end(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.End).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.operation(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.Operation, text).also { nodes += it }
+inline fun FlowChartDslEntry.operation(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.Operation).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.inputOutput(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.InputOutput, text).also { nodes += it }
+inline fun FlowChartDslEntry.inputOutput(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.InputOutput).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.subroutine(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.Subroutine, text).also { nodes += it }
+inline fun FlowChartDslEntry.subroutine(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.Subroutine).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.condition(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.Condition, text).also { nodes += it }
+inline fun FlowChartDslEntry.condition(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.Condition).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.parallel(name: String, text: String? = null) =
-	FlowChartNode(name, FlowChartNode.Type.Parallel, text).also { nodes += it }
+inline fun FlowChartDslEntry.parallel(name: String) =
+	FlowChartNode(name, FlowChartNode.Type.Parallel).also { nodes += it }
 
 @FlowChartDsl
-inline fun FlowChartDslEntry.connection(fromNodeName: String, toNodeName: String) =
-	FlowChartConnection(fromNodeName, toNodeName).also { connections += it }
+inline fun FlowChartDslEntry.connection(fromNodeId: String, toNodeId: String) =
+	FlowChartConnection(fromNodeId, toNodeId).also { connections += it }
 
 @FlowChartDsl
 inline fun FlowChartDslEntry.connection(fromNode: FlowChartNode, toNode: FlowChartNode) =
-	FlowChartConnection(fromNode.name, toNode.name).also { connections += it }
+	FlowChartConnection(fromNode.id, toNode.id).also { connections += it }
+
+@FlowChartDsl
+inline infix fun FlowChartNode.text(text: String) =
+	this.also { it.text = text }
 
 @FlowChartDsl
 inline infix fun FlowChartNode.flowState(flowState: String) =

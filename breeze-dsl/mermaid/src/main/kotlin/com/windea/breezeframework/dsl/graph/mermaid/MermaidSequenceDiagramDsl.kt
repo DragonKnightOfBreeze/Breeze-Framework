@@ -86,22 +86,24 @@ class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 /**Mermaid序列图消息。*/
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
-	val fromActorName: String,
-	val toActorName: String,
-	var text: String = ""//NOTE can not be null
+	val fromParticipantId: String,
+	val toParticipantId: String
 ) : MermaidSequenceDiagramDslElement, WithNode<MermaidSequenceDiagramParticipant> {
+	var text: String = ""
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 	var isActivated: Boolean? = null
 	
-	override val fromNodeId get() = fromActorName
-	override val toNodeId get() = toActorName
+	override val sourceNodeId get() = fromParticipantId
+	override val targetNodeId get() = toParticipantId
 	
 	override fun toString(): String {
 		val activateSnippet = isActivated?.let { if(it) "+ " else "- " }.orEmpty()
-		return "$fromActorName ${arrowShape.text} $activateSnippet$toActorName: $text"
+		return "$fromParticipantId ${arrowShape.text} $activateSnippet$toParticipantId: $text"
 	}
 	
-	enum class ArrowShape(internal val text: String) {
+	/**Mermaid序列图消息的箭头形状。*/
+	@MermaidSequenceDiagramDsl
+	enum class ArrowShape(val text: String) {
 		Arrow("->>"), DashedArrow("-->>"), Line("->"), DashedLine("-->"), Cross("-x"), DashedCross("--x")
 	}
 }
@@ -118,18 +120,22 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 		return "note $location: $textSnippet"
 	}
 	
+	/**Mermaid序列图注释的位置。*/
+	@MermaidSequenceDiagramDsl
 	class Location @PublishedApi internal constructor(
 		val position: Position,
-		val actorName1: String,
-		val actorName2: String? = null
+		val participantId1: String,
+		val participantId2: String? = null
 	) {
 		override fun toString(): String {
-			val targetActorName2Snippet = actorName2?.let { ", $it" }.orEmpty()
-			return "${position.text} $actorName1$targetActorName2Snippet"
+			val participantId2Snippet = participantId2?.let { ", $it" }.orEmpty()
+			return "${position.text} $participantId1$participantId2Snippet"
 		}
 	}
 	
-	enum class Position(internal val text: String) {
+	/**Mermaid序列图注释的方位。*/
+	@MermaidSequenceDiagramDsl
+	enum class Position(val text: String) {
 		RightOf("right of"), LeftOf("left of"), Over("over")
 	}
 }
@@ -200,30 +206,28 @@ class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
 //region build extensions
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
-fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) = MermaidSequenceDiagram().also { it.block() }
+fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) =
+	MermaidSequenceDiagram().also { it.block() }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.participant(name: String) =
 	MermaidSequenceDiagramParticipant(name).also { participants += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(fromActorName: String, toActorName: String, text: String = "") =
-	MermaidSequenceDiagramMessage(fromActorName, toActorName, text).also { messages += it }
+inline fun MermaidSequenceDiagramDslEntry.message(fromParticipantId: String, toParticipantId: String) =
+	MermaidSequenceDiagramMessage(fromParticipantId, toParticipantId).also { messages += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(fromActor: MermaidSequenceDiagramParticipant,
-	toActor: MermaidSequenceDiagramParticipant, text: String = "") =
-	MermaidSequenceDiagramMessage(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
-		.also { messages += it }
+inline fun MermaidSequenceDiagramDslEntry.message(fromParticipant: MermaidSequenceDiagramParticipant, toParticipant: MermaidSequenceDiagramParticipant) =
+	MermaidSequenceDiagramMessage(fromParticipant.id, toParticipant.id).also { messages += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.message(
-	fromActorName: String,
+	fromParticipantId: String,
 	arrowShape: MermaidSequenceDiagramMessage.ArrowShape,
 	isActivated: Boolean = false,
-	toActorName: String,
-	text: String = ""
-) = MermaidSequenceDiagramMessage(fromActorName, toActorName, text)
+	toParticipantId: String
+) = MermaidSequenceDiagramMessage(fromParticipantId, toParticipantId)
 	.also { it.arrowShape = arrowShape;it.isActivated = isActivated }
 	.also { messages += it }
 
@@ -233,18 +237,18 @@ inline fun MermaidSequenceDiagramDslEntry.note(location: MermaidSequenceDiagramN
 
 @InlineDsl
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.leftOf(actorName: String) =
-	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, actorName)
+inline fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, participantId)
 
 @InlineDsl
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.rightOf(actorName: String) =
-	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, actorName)
+inline fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId)
 
 @InlineDsl
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.over(actorName1: String, actorName2: String) =
-	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, actorName1, actorName2)
+inline fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.loop(text: String, block: MermaidSequenceDiagramLoop.() -> Unit) =

@@ -6,10 +6,16 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
+//region top annotations and interfaces
+/**Mermaid的Dsl。*/
 @ReferenceApi("[Mermaid](https://mermaidjs.github.io)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidDsl
+
+/**Mermaid的扩展特性。*/
+@MustBeDocumented
+internal annotation class MermaidDslExtendedFeature
 
 /**Mermaid。*/
 @MermaidDsl
@@ -35,6 +41,7 @@ interface MermaidDslEntry : DslEntry
 /**Mermaid Dsl的元素。*/
 @MermaidDsl
 interface MermaidDslElement : DslElement
+//endregion
 
 //region helpful extensions
 /**将`\n`或`\r`替换成`<br>`。*/

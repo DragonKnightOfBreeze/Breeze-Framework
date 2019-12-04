@@ -1,4 +1,4 @@
-package com.windea.breezeframework.reflect.extensions.java
+package com.windea.breezeframework.reflect.extensions
 
 import java.lang.reflect.*
 

@@ -27,7 +27,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 	
 	override fun toString(): String {
 		return arrayOf(
-			title?.toString().orEmpty(),
+			title.toStringOrEmpty(),
 			toContentString()
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
@@ -37,8 +37,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, Sequenc
 //region dsl interfaces
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
-interface SequenceDiagramDslEntry : DslEntry, CanSplit,
-	WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
+interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
 	val participants: MutableSet<SequenceDiagramParticipant>
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
@@ -94,20 +93,22 @@ class SequenceDiagramParticipant @PublishedApi internal constructor(
 /**序列图消息。*/
 @SequenceDiagramDsl
 class SequenceDiagramMessage @PublishedApi internal constructor(
-	val fromActorName: String,
-	val toActorName: String,
-	var text: String = "" //NOTE can not be null
+	val fromParticipantId: String,
+	val toParticipantId: String
 ) : SequenceDiagramDslElement, WithNode<SequenceDiagramParticipant> {
+	var text: String = ""
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 	
-	override val fromNodeId: String get() = fromActorName
-	override val toNodeId: String get() = toActorName
+	override val sourceNodeId: String get() = fromParticipantId
+	override val targetNodeId: String get() = toParticipantId
 	
 	override fun toString(): String {
-		return "$fromActorName ${arrowShape.text} $toActorName: $text"
+		return "$fromParticipantId ${arrowShape.text} $toParticipantId: $text"
 	}
 	
-	enum class ArrowShape(internal val text: String) {
+	/**序列图消息的箭头类型。*/
+	@SequenceDiagramDsl
+	enum class ArrowShape(val text: String) {
 		Arrow("->"), DashedArrow("-->"), OpenArrow("->>"), DashedOpenArrow("-->>")
 	}
 }
@@ -115,27 +116,32 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 /**序列图注释。*/
 @SequenceDiagramDsl
 class SequenceDiagramNote @PublishedApi internal constructor(
-	val location: Location,
-	@Multiline("\\n")
-	val text: String
+	val location: Location
 ) : SequenceDiagramDslElement {
+	@Multiline("\\n")
+	var text: String = ""
+	
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()
 		return "note $location: $textSnippet"
 	}
 	
+	/**序列图注释的位置。*/
+	@SequenceDiagramDsl
 	class Location @PublishedApi internal constructor(
 		val position: Position,
-		val actorName1: String,
-		val actorName2: String? = null
+		val participantId1: String,
+		val participantId2: String? = null
 	) {
 		override fun toString(): String {
-			val targetActorName2Snippet = actorName2?.let { ", $it" }.orEmpty()
-			return "${position.text} $actorName1$targetActorName2Snippet"
+			val participantId2Snippet = participantId2?.let { ", $it" }.orEmpty()
+			return "${position.text} $participantId1$participantId2Snippet"
 		}
 	}
 	
-	enum class Position(internal val text: String) {
+	/**序列图注释的方位。*/
+	@SequenceDiagramDsl
+	enum class Position(val text: String) {
 		LeftOf("left of"), RightOf("right of"), Over("over")
 	}
 }
@@ -154,43 +160,40 @@ inline fun SequenceDiagramDslEntry.participant(name: String) =
 	SequenceDiagramParticipant(name).also { participants += it }
 
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.message(fromActorName: String, toActorName: String, text: String = "") =
-	SequenceDiagramMessage(fromActorName, toActorName, text).also { messages += it }
+inline fun SequenceDiagramDslEntry.message(fromParticipantId: String, toParticipantId: String) =
+	SequenceDiagramMessage(fromParticipantId, toParticipantId).also { messages += it }
 
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.message(fromActor: SequenceDiagramParticipant,
-	toActor: SequenceDiagramParticipant, text: String = "") =
-	SequenceDiagramMessage(fromActor.alias ?: fromActor.name, toActor.alias ?: toActor.name, text)
-		.also { messages += it }
+inline fun SequenceDiagramDslEntry.message(fromParticipant: SequenceDiagramParticipant, toParticipant: SequenceDiagramParticipant) =
+	SequenceDiagramMessage(fromParticipant.id, toParticipant.id).also { messages += it }
 
 @SequenceDiagramDsl
 inline fun SequenceDiagramDslEntry.message(
-	fromActorName: String,
+	fromParticipantId: String,
 	arrowShape: SequenceDiagramMessage.ArrowShape,
-	toActorName: String,
-	text: String = ""
-) = SequenceDiagramMessage(fromActorName, toActorName, text)
+	toParticipantId: String
+) = SequenceDiagramMessage(fromParticipantId, toParticipantId)
 	.also { it.arrowShape = arrowShape }
 	.also { messages += it }
 
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.note(location: SequenceDiagramNote.Location, text: String) =
-	SequenceDiagramNote(location, text).also { notes += it }
+inline fun SequenceDiagramDslEntry.note(location: SequenceDiagramNote.Location) =
+	SequenceDiagramNote(location).also { notes += it }
 
 @InlineDsl
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.leftOf(actorName: String) =
-	SequenceDiagramNote.Location(SequenceDiagramNote.Position.LeftOf, actorName)
+inline fun SequenceDiagramDslEntry.leftOf(participantId: String) =
+	SequenceDiagramNote.Location(SequenceDiagramNote.Position.LeftOf, participantId)
 
 @InlineDsl
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.rightOf(actorName: String) =
-	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, actorName)
+inline fun SequenceDiagramDslEntry.rightOf(participantId: String) =
+	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId)
 
 @InlineDsl
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.over(actorName1: String, actorName2: String) =
-	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, actorName1, actorName2)
+inline fun SequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @SequenceDiagramDsl
 inline infix fun SequenceDiagramParticipant.alias(alias: String) =
@@ -203,6 +206,10 @@ inline infix fun SequenceDiagramMessage.text(text: String) =
 @SequenceDiagramDsl
 inline infix fun SequenceDiagramMessage.arrowShape(arrowShape: SequenceDiagramMessage.ArrowShape) =
 	this.also { it.arrowShape = arrowShape }
+
+@SequenceDiagramDsl
+inline infix fun SequenceDiagramNote.text(text: String) =
+	this.also { it.text = text }
 //endregion
 
 //region helpful extensions

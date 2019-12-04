@@ -5,6 +5,11 @@ import com.windea.breezeframework.reflect.extensions.*
 import java.lang.reflect.*
 import java.util.*
 
+/**
+ * Properties的序列化器。
+ *
+ * 注意：其实现依赖于第三方库，如`jackson`。
+ */
 interface PropertiesSerializer : Serializer {
 	/**从指定Java属性对象读取指定类型的数据。*/
 	fun <T> load(properties: Properties, type: Class<T>): T

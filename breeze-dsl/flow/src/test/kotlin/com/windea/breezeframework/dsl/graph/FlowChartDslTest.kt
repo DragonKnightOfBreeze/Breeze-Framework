@@ -24,13 +24,13 @@ class FlowChartDslTest {
 	@Test
 	fun test1() {
 		println(flowChart {
-			start("st", "Start") newUrlLink "http://www.google.com"
+			start("st") text "Start" newUrlLink "http://www.google.com"
 			end("e") urlLink "http://www.google.com"
-			operation("op1", "My Operation")
-			subroutine("sub1", "My Subroutine")
-			condition("cond", "Yes or No?") urlLink "http://www.google.com"
-			inputOutput("io", "catch something...")
-			parallel("para", "parallel tasks")
+			operation("op1") text "My Operation"
+			subroutine("sub1") text "My Subroutine"
+			condition("cond") text "Yes or No?" urlLink "http://www.google.com"
+			inputOutput("io") text "catch something..."
+			parallel("para") text "parallel tasks"
 			
 			"st" fromTo "op1" fromTo "cond"
 			"cond"(Yes) fromTo "io" fromTo "e"

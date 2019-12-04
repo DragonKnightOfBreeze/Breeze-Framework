@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("NOTHING_TO_INLINE", "unused", "GrazieInspection")
 
 package com.windea.breezeframework.dsl.graph.mermaid
 
@@ -49,7 +49,24 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	}
 	
 	@GenericDsl
-	override fun String.fromTo(other: String) = relation(this, other, MermaidClassDiagramRelation.Type.Link)
+	override fun String.fromTo(other: String) =
+		relation(this, other, MermaidClassDiagramRelation.Type.Link)
+	
+	@GenericDsl
+	infix fun String.inheritedBy(other: String) =
+		relation(this, other, MermaidClassDiagramRelation.Type.Inheritance)
+	
+	@GenericDsl
+	infix fun String.composedBy(other: String) =
+		relation(this, other, MermaidClassDiagramRelation.Type.Composition)
+	
+	@GenericDsl
+	infix fun String.aggregatedBy(other: String) =
+		relation(this, other, MermaidClassDiagramRelation.Type.Aggregation)
+	
+	@GenericDsl
+	infix fun String.associatedBy(other: String) =
+		relation(this, other, MermaidClassDiagramRelation.Type.Association)
 	
 	@GenericDsl
 	infix fun String.inherits(other: String) =
@@ -100,6 +117,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 		return "class $name {\n$contentSnippet\n}"
 	}
 	
+	@Deprecated("""Use kotlin-style build extensions. e,g: public(property("name")) type "String".""", ReplaceWith(""))
 	@MermaidClassDiagramDsl
 	operator fun String.invoke(member: MermaidClassDiagramMember) = member.also { it.type = this }
 	
@@ -111,7 +129,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 /**Mermaid类图注解。*/
 @MermaidClassDiagramDsl
 class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
-	val name: String //NOTE could be custom
+	val name: String
 ) : MermaidClassDiagramDslElement, WithId {
 	override val id: String get() = name
 	
@@ -141,9 +159,7 @@ sealed class MermaidClassDiagramMember(
 	/**Mermaid类图成员的可见性。*/
 	@MermaidClassDiagramDsl
 	enum class Visibility(val text: String) {
-		//no "internal"
-		Public("+"),
-		Private("-"), Protected("#"), Package("~")
+		Public("+"), Private("-"), Protected("#"), Package("~")
 	}
 }
 
@@ -183,27 +199,29 @@ class MermaidClassDiagramMethod @PublishedApi internal constructor(
 /**Mermaid类图关系。*/
 @MermaidClassDiagramDsl
 class MermaidClassDiagramRelation @PublishedApi internal constructor(
-	val fromClassName: String,
-	val toClassName: String,
-	val type: Type,
+	val fromClassId: String,
+	val toClassId: String,
+	val type: Type
+) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
 	@Multiline("<br>")
 	var text: String? = null
-) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	//NOTE syntax: "0", "0..1", "0..*", "many"
+	//NOTE syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null
 	var toCardinality: String? = null
 	
-	override val fromNodeId get() = fromClassName
-	override val toNodeId get() = toClassName
+	override val sourceNodeId get() = fromClassId
+	override val targetNodeId get() = toClassId
 	
-	//NOTE syntax: $fromClassName $fromCardinality? $relationType $toCardinality? $toClassName: $text?
+	//NOTE syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
 		return arrayOf(
-			fromClassName, fromCardinality?.wrapQuote(quote), type.text, toCardinality?.wrapQuote(quote), toClassName
+			fromClassId, fromCardinality?.wrapQuote(quote), type.text, toCardinality?.wrapQuote(quote), toClassId
 		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
 	}
 	
-	enum class Type(internal val text: String) {
+	/**Mermaid类图关系的类型。*/
+	@MermaidClassDiagramDsl
+	enum class Type(val text: String) {
 		//NOTE do not allow bidirectional arrows
 		Link("--"),
 		Inheritance("<|--"), Composition("*--"), Aggregation("o--"), Association("<--"),
@@ -218,28 +236,25 @@ inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
 	MermaidClassDiagram().also { it.block() }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit) =
+inline fun MermaidClassDiagramDslEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit = {}) =
 	MermaidClassDiagramClass(name).also { it.block() }.also { classes += it }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.relation(fromClassName: String, toClassName: String,
-	type: MermaidClassDiagramRelation.Type, text: String? = null) =
-	MermaidClassDiagramRelation(fromClassName, toClassName, type, text = text).also { relations += it }
+inline fun MermaidClassDiagramDslEntry.relation(fromClassId: String, toClassId: String, type: MermaidClassDiagramRelation.Type) =
+	MermaidClassDiagramRelation(fromClassId, toClassId, type).also { relations += it }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.relation(fromClass: MermaidClassDiagramClass, toClass: MermaidClassDiagramClass,
-	type: MermaidClassDiagramRelation.Type, text: String? = null) =
-	MermaidClassDiagramRelation(fromClass.name, toClass.name, type, text = text).also { relations += it }
+inline fun MermaidClassDiagramDslEntry.relation(fromClass: MermaidClassDiagramClass, toClass: MermaidClassDiagramClass, type: MermaidClassDiagramRelation.Type) =
+	MermaidClassDiagramRelation(fromClass.id, toClass.id, type).also { relations += it }
 
 @MermaidClassDiagramDsl
 inline fun MermaidClassDiagramDslEntry.relation(
-	fromClassName: String,
+	fromClassId: String,
 	fromCardinality: String?,
 	type: MermaidClassDiagramRelation.Type,
 	toCardinality: String?,
-	toClassName: String,
-	text: String? = null
-) = MermaidClassDiagramRelation(fromClassName, toClassName, type, text)
+	toClassId: String
+) = MermaidClassDiagramRelation(fromClassId, toClassId, type)
 	.also { it.fromCardinality = fromCardinality;it.toCardinality = toCardinality }
 	.also { relations += it }
 
@@ -255,7 +270,7 @@ inline fun MermaidClassDiagramClass.annotation(type: MermaidClassDiagramAnnotati
 inline fun MermaidClassDiagramClass.property(name: String) =
 	MermaidClassDiagramProperty(name).also { properties += it }
 
-@Deprecated("""Use code-like-style build extensions. e.g: method("name"()).""", ReplaceWith("method(name(*params))"))
+@Deprecated("""Use code-like-style build extensions. e.g: method("getName"()).""", ReplaceWith("method(name(*params))"))
 @MermaidClassDiagramDsl
 inline fun MermaidClassDiagramClass.method(name: String, vararg params: String) =
 	MermaidClassDiagramMethod(name, params).also { methods += it }
@@ -264,35 +279,35 @@ inline fun MermaidClassDiagramClass.method(name: String, vararg params: String) 
 inline fun MermaidClassDiagramClass.method(method: MermaidClassDiagramMethod) = method.also { methods += it }
 
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramClass.`public`(member: MermaidClassDiagramMember) =
+inline fun MermaidClassDiagramClass.`public`(member: MermaidClassDiagramMember) =
 	member.also { it.visibility = MermaidClassDiagramMember.Visibility.Public }
 
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramClass.`private`(member: MermaidClassDiagramMember) =
+inline fun MermaidClassDiagramClass.`private`(member: MermaidClassDiagramMember) =
 	member.also { it.visibility = MermaidClassDiagramMember.Visibility.Private }
 
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramClass.`protected`(member: MermaidClassDiagramMember) =
+inline fun MermaidClassDiagramClass.`protected`(member: MermaidClassDiagramMember) =
 	member.also { it.visibility = MermaidClassDiagramMember.Visibility.Protected }
 
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramClass.`package`(member: MermaidClassDiagramMember) =
+inline fun MermaidClassDiagramClass.`package`(member: MermaidClassDiagramMember) =
 	member.also { it.visibility = MermaidClassDiagramMember.Visibility.Protected }
+
+@Deprecated("""Use wrapped-style build extensions. e,g: public(property("name").""", ReplaceWith("public(this)"))
+@MermaidClassDiagramDsl
+inline infix fun <T : MermaidClassDiagramMember> T.visibility(visibility: MermaidClassDiagramMember.Visibility) =
+	this.also { it.visibility = visibility }
 
 @MermaidClassDiagramDsl
 inline infix fun <T : MermaidClassDiagramMember> T.type(type: String) =
 	this.also { it.type = type }
-
-@Deprecated("""Use wrapped-style build extensions. e,g: public(method("name"()).""", ReplaceWith("public(this)"))
-@MermaidClassDiagramDsl
-inline infix fun <T : MermaidClassDiagramMember> T.visibility(visibility: MermaidClassDiagramMember.Visibility) =
-	this.also { it.visibility = visibility }
 
 @MermaidClassDiagramDsl
 inline infix fun MermaidClassDiagramRelation.text(text: String) =
 	this.also { it.text = text }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramRelation.cardinality(from: String? = null, to: String? = null) =
-	this.also { it.fromCardinality = from;it.toCardinality = to }
+inline infix fun MermaidClassDiagramRelation.cardinality(cardinalityPair: Pair<String, String>) =
+	this.also { it.fromCardinality = cardinalityPair.first;it.toCardinality = cardinalityPair.second }
 //endregion

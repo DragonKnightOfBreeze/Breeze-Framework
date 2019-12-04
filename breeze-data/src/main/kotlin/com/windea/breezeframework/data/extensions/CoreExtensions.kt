@@ -6,7 +6,7 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*
-import com.windea.breezeframework.reflect.extensions.java.*
+import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 import kotlin.reflect.full.*
 

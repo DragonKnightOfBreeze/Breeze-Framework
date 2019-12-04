@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.graph.puml.PumlConfig.indent
 import com.windea.breezeframework.dsl.graph.puml.PumlConfig.quote
 import org.intellij.lang.annotations.*
 
-//DELAY puml is too complex to write dsl
+//DELAY fully support
 
 //region top annotations and interfaces
 /**PlantUml状态图的Dsl。*/
@@ -64,7 +64,7 @@ interface PumlStateDiagramDslElement : PumlDslElement
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
 sealed class PumlStateDiagramState(
-	@Language("Creole") @Multiline("\\n", "alias is not null.")
+	@Language("Creole") @Multiline("\\n", "Alias is not null.")
 	val name: String,
 	@Language("Creole") @Multiline("\\n")
 	val text: String? = null
@@ -217,8 +217,8 @@ class PumlStateDiagramTransition @PublishedApi internal constructor(
 	var arrowDirection: PumlArrowDirection? = null
 	var arrowLength: Int = 1
 	
-	override val fromNodeId get() = sourceStateName
-	override val toNodeId get() = targetStateName
+	override val sourceNodeId get() = sourceStateName
+	override val targetNodeId get() = targetStateName
 	
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${it.replaceWithEscapedWrap()}" }.orEmpty()
