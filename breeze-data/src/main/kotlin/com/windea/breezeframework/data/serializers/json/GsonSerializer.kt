@@ -38,5 +38,5 @@ internal object GsonJsonSerializer : JsonSerializer {
 }
 
 object GsonJsonSerializerConfig : JsonSerializerConfig {
-	fun configure(builder: (GsonBuilder) -> Unit) = builder(GsonJsonSerializer.gsonBuilder)
+	fun configure(block: (GsonBuilder) -> Unit) = block(GsonJsonSerializer.gsonBuilder)
 }

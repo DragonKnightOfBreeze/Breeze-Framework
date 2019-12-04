@@ -53,5 +53,5 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer {
 }
 
 object JacksonPropertiesSerializerConfig : PropertiesSerializerConfig {
-	fun configure(builder: (JavaPropsMapper) -> Unit) = builder(JacksonPropertiesSerializer.mapper)
+	fun configure(block: (JavaPropsMapper) -> Unit) = block(JacksonPropertiesSerializer.mapper)
 }

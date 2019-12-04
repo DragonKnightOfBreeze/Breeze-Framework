@@ -40,5 +40,5 @@ internal object JacksonXmlSerializer : XmlSerializer {
 }
 
 object JacksonXmlSerializerConfig : XmlSerializerConfig {
-	fun configure(builder: (XmlMapper) -> Unit) = builder(JacksonXmlSerializer.mapper)
+	fun configure(block: (XmlMapper) -> Unit) = block(JacksonXmlSerializer.mapper)
 }

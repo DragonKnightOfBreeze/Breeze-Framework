@@ -55,5 +55,5 @@ internal object JacksonYamlSerializer : YamlSerializer {
 }
 
 object JacksonYamlSerializerConfig : YamlSerializerConfig {
-	fun configure(builder: (YAMLMapper) -> Unit) = builder(JacksonYamlSerializer.mapper)
+	fun configure(block: (YAMLMapper) -> Unit) = block(JacksonYamlSerializer.mapper)
 }

@@ -22,14 +22,7 @@ class Tests {
 	}
 	
 	@Test
-	fun test2() {
-		SimpleLogger.info("INFO")
-		SimpleLogger.warn("WARN")
-		SimpleLogger.error("ERROR")
-	}
-	
-	@Test
-	fun test3() {
+	fun testKLogger() {
 		val kLogger = KotlinLogging.logger { }
 		kLogger.trace("trace")
 		kLogger.debug("debug")

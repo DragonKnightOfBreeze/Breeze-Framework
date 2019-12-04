@@ -39,5 +39,5 @@ internal object JacksonJsonSerializer : JsonSerializer {
 }
 
 object JacksonJsonSerializerConfig : JsonSerializerConfig {
-	fun configure(builder: (JsonMapper) -> Unit) = builder(JacksonJsonSerializer.mapper)
+	fun configure(block: (JsonMapper) -> Unit) = block(JacksonJsonSerializer.mapper)
 }

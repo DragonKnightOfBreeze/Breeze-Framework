@@ -205,7 +205,7 @@
 * [X] 整理代码。
 * [X] breeze-dsl 重构代码。
 * [X] breeze-data&breeze-reflect&breeze-dsl 重构与优化代码，排除bug。
-* [ ] breeze-logger 提供`SimpleLogger`。
+* [X] breeze-logger 提供`SimpleLogger`。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 ***
 * [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
