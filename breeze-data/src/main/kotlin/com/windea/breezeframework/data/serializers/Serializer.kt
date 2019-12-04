@@ -38,8 +38,8 @@ interface SerializerConfig
 
 //region reified extensions
 
-//FIXME use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
-//NOTE use user-defined javaTypeOf<T>() here, reference to jackson's TypeReference implementation.
+//NOTE use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
+//NOTE use user-defined javaTypeOf<T>() here instead, reference to jackson's TypeReference implementation.
 
 /**从指定字符串读取指定类型的数据。*/
 inline fun <reified T> Serializer.load(string: String): T = load(string, javaTypeOf<T>())
