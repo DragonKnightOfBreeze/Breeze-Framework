@@ -9,10 +9,11 @@ plugins {
 }
 
 allprojects {
-	//version需要写到allprojects里面
 	group = "com.windea.breezeframework"
 	version = "1.0.7"
-	
+}
+
+subprojects {
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
@@ -35,8 +36,6 @@ allprojects {
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
-		
-		implementation("org.jetbrains:annotations:17.0.0")
 	}
 	
 	//配置kotlin的一些选项，增量编译需在gradle.properties中配置
@@ -74,15 +73,10 @@ allprojects {
 	//构建javadoc jar
 	val javadocJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("javadoc")
-		group = JavaBasePlugin.DOCUMENTATION_GROUP
 		from(tasks.dokka)
 	}
 	
-	val siteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-	val gitUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
-	
 	//上传的配置
-	//虽然并不知道为什么会显示上传两次，但是不这样做就会报错，姑且这样了
 	publishing {
 		//配置包含的jar
 		publications {
@@ -113,17 +107,17 @@ allprojects {
 						}
 					}
 					scm {
-						connection.set(gitUrl)
-						developerConnection.set(gitUrl)
-						url.set(siteUrl)
+						connection.set("https://github.com/DragonKnightOfBreeze/breeze-framework.git")
+						developerConnection.set("https://github.com/DragonKnightOfBreeze/breeze-framework.git")
+						url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
 					}
 				}
 			}
-			//配置上传到的仓库
-			repositories {
-				//maven本地仓库
-				maven("$buildDir/repository")
-			}
+		}
+		//配置上传到的本地仓库
+		repositories {
+			//maven本地仓库
+			maven("$buildDir/repository")
 		}
 	}
 	
@@ -135,10 +129,10 @@ allprojects {
 		setPublications("maven")
 		pkg.repo = rootProject.name
 		pkg.name = project.name
-		pkg.websiteUrl = siteUrl
-		pkg.vcsUrl = gitUrl
 		pkg.setLabels("kotlin", "framework")
 		pkg.setLicenses("MIT")
+		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
 		pkg.version.name = version.toString()
 		pkg.version.vcsTag = version.toString()
 	}

@@ -20,14 +20,4 @@ class Tests {
 		logger.error("error")
 		logger.fatal("fatal")
 	}
-	
-	@Test
-	fun testKLogger() {
-		val kLogger = KotlinLogging.logger { }
-		kLogger.trace("trace")
-		kLogger.debug("debug")
-		kLogger.info("info")
-		kLogger.warn("warn")
-		kLogger.error("error")
-	}
 }
