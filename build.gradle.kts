@@ -8,7 +8,7 @@ plugins {
 	id("com.jfrog.bintray") version "1.8.4"
 }
 
-subprojects {
+allprojects {
 	group = "com.windea.breezeframework"
 	version = "1.0.7"
 	

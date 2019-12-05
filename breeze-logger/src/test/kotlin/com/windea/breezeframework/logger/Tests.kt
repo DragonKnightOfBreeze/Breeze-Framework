@@ -1,7 +1,6 @@
 package com.windea.breezeframework.logger
 
 import com.windea.breezeframework.logger.internal.*
-import mu.*
 import kotlin.test.*
 
 val logger = ColorfulLogger

@@ -17,7 +17,6 @@ class CoreExtensionsTest {
 		println(nameOf(A::class))
 		println(nameOf(A::foo))
 		println(nameOf(A::abc))
-		val a = A::abc.parameters[0]
 		println(nameOf(A::abc.parameters[0]))
 	}
 }

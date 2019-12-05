@@ -4,7 +4,7 @@ package com.windea.breezeframework.dsl.markup
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.core.*
 import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
 
