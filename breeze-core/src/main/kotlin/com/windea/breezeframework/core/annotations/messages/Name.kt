@@ -2,15 +2,11 @@ package com.windea.breezeframework.core.annotations.messages
 
 import kotlin.annotation.AnnotationTarget.*
 
-//NOTE Kotlin暂不支持非Source保留级别的可重复注解。
-
-/**本地化名字。*/
+/**名字。*/
 @MustBeDocumented
-@Target(CLASS, PROPERTY)
+@Target(CLASS, PROPERTY, FIELD)
 annotation class Name(
-	/**本地化文本。*/
-	val text: String,
-	/**语言环境。*/
-	val locale: String
+	/**名字一览。*/
+	vararg val value: String
 )
 
