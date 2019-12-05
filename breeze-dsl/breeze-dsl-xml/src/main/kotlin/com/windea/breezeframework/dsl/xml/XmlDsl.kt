@@ -4,7 +4,7 @@ package com.windea.breezeframework.dsl.xml
 
 import com.windea.breezeframework.core.enums.core.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.xml.XmlConfig.autoCloseTag
 import com.windea.breezeframework.dsl.xml.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.xml.XmlConfig.indent

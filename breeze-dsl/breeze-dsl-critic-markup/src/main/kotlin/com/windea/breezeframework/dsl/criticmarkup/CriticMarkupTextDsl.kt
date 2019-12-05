@@ -3,7 +3,7 @@
 package com.windea.breezeframework.dsl.criticmarkup
 
 import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 
 //region top annotations and interfaces
 /**CriticMarkup富文本的Dsl。*/

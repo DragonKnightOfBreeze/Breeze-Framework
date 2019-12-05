@@ -3,7 +3,7 @@
 package com.windea.breezeframework.dsl.markdown
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.criticmarkup.*
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.addPrefixHeadingMarkers
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.emptyColumnLength
@@ -15,7 +15,6 @@ import com.windea.breezeframework.dsl.markdown.MarkdownConfig.quote
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.repeatableMarkerCount
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.truncated
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.wrapLength
-import com.windea.breezeframework.dsl.text.*
 import org.intellij.lang.annotations.*
 
 //DELAY add dsl element: HtmlBlock

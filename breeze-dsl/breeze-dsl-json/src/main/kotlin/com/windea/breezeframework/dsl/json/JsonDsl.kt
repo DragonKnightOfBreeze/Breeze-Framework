@@ -3,7 +3,7 @@
 package com.windea.breezeframework.dsl.json
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.json.JsonConfig.indent
 import com.windea.breezeframework.dsl.json.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.json.JsonConfig.quote

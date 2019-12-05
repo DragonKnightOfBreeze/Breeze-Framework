@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.dsl.core
+package com.windea.breezeframework.dsl
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。

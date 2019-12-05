@@ -5,7 +5,6 @@ include(
 	"breeze-data",
 	"breeze-dsl",
 	"breeze-dsl:breeze-dsl-command-line",
-	"breeze-dsl:breeze-dsl-core",
 	"breeze-dsl:breeze-dsl-creole",
 	"breeze-dsl:breeze-dsl-critic-markup",
 	"breeze-dsl:breeze-dsl-flow",

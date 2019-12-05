@@ -3,7 +3,7 @@
 package com.windea.breezeframework.dsl.commandline
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 
 //https://github.com/ziggy42/kolor
 //https://msd.misuland.com/pd/3643782633961293732

@@ -1,12 +1,12 @@
 @file:Suppress("DuplicatedCode", "NOTHING_TO_INLINE", "unused")
 
-package com.windea.breezeframework.dsl.markup
+package com.windea.breezeframework.dsl.creole
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
-import com.windea.breezeframework.dsl.markup.CreoleConfig.emptyColumnText
-import com.windea.breezeframework.dsl.markup.CreoleConfig.repeatableMarkerCount
+import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.creole.CreoleConfig.emptyColumnText
+import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
 //DELAY add dsl element: HtmlBlock
 

@@ -4,7 +4,7 @@ package com.windea.breezeframework.dsl.flow
 
 import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.core.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.flow.FlowChartConnection.Companion.binderQueue
 import java.util.*
 
