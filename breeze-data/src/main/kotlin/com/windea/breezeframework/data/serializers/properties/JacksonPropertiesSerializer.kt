@@ -1,12 +1,19 @@
 package com.windea.breezeframework.data.serializers.properties
 
 import com.fasterxml.jackson.dataformat.javaprop.*
+import com.fasterxml.jackson.module.kotlin.*
+import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
 internal object JacksonPropertiesSerializer : PropertiesSerializer {
 	internal val mapper = JavaPropsMapper()
+	
+	init {
+		if(checkClassForName("com.fasterxml.jackson.module.kotlin.KotlinModule")) mapper.registerKotlinModule()
+	}
+	
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -46,5 +53,5 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer {
 }
 
 object JacksonPropertiesSerializerConfig : PropertiesSerializerConfig {
-	fun configure(builder: (JavaPropsMapper) -> Unit) = builder(JacksonPropertiesSerializer.mapper)
+	fun configure(block: (JavaPropsMapper) -> Unit) = block(JacksonPropertiesSerializer.mapper)
 }

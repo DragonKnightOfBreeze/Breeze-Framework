@@ -10,6 +10,9 @@ inline fun <reified R> Any?.cast(): R = this as R
 
 /**强制转化为指定类型，或者返回null。用于链式调用。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R
+
+/**转化为字符串。如果为null，则转化为空字符串。*/
+inline fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
 //endregion
 
 //region Standard.kt extensions (TODOs)

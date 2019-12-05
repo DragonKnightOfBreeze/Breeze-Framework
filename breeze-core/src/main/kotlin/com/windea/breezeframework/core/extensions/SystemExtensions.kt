@@ -54,7 +54,7 @@ object ScriptEngines {
 	/**
 	 * 得到kotlinScript的脚本引擎。
 	 *
-	 * 注意：其实现依赖于外部库，如：`kotlin-main-kts`。
+	 * 注意：其实现依赖于第三方库，如：`kotlin-main-kts`。
 	 */
 	val kotlinScript: ScriptEngine by lazy { engineManager.getEngineByExtension("kts") }
 	/**
@@ -64,19 +64,19 @@ object ScriptEngines {
 	/**
 	 * 得到typeScript的脚本引擎。
 	 *
-	 * 注意：其实现依赖于外部库。
+	 * 注意：其实现依赖于第三方库。
 	 */
 	val typeScript: ScriptEngine by lazy { engineManager.getEngineByExtension("ts") }
 	/**
 	 * 得到python的脚本引擎。
 	 *
-	 * 注意：其实现依赖于外部库。
+	 * 注意：其实现依赖于第三方库。
 	 */
 	val python: ScriptEngine by lazy { engineManager.getEngineByExtension("py") }
 	/**
 	 * 得到lua的脚本引擎。
 	 *
-	 * 注意：其实现依赖于外部库。
+	 * 注意：其实现依赖于第三方库。
 	 */
 	val lua: ScriptEngine by lazy { engineManager.getEngineByExtension("lua") }
 	

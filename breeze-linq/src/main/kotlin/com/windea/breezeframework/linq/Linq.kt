@@ -50,6 +50,7 @@ interface Linq<S, T> {
 	operator fun invoke(source: Collection<S>): List<T>
 }
 
+
 /**Linq的实现类型。*/
 enum class LinqImplementationType {
 	Default, ByStream, ByParallelStream
@@ -62,15 +63,6 @@ inline fun <reified T> from(type: LinqImplementationType = LinqImplementationTyp
 	LinqImplementationType.ByParallelStream -> StreamLinq.init(true)
 }
 
-//@Deprecated("Not implemented, use `from<Pair<T,O>>()` instead.")
-//inline fun <S, T, reified O> Linq<S, T>.join(): Linq<S, Pair<T, O>> {
-//
-//}
-
-//@Deprecated("Not implemented, use `from<Pair<T,O>>()` and then `where()` instead.")
-//inline fun <S, T, O> Linq<S, Pair<T, O>>.on(): Linq<S, Pair<T, O>> {
-//
-//}
 
 /**对当前字符串进行语言集成查询。*/
 inline infix fun <R> String.linq(linqStatement: Linq<Char, R>): List<R> = linqStatement(this.toList())

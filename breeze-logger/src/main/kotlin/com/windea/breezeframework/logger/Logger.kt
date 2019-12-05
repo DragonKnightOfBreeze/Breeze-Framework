@@ -1,15 +1,13 @@
 package com.windea.breezeframework.logger
 
+/**日志器。*/
 interface Logger {
-	val name: String
-	
-	val isTraceEnabled: Boolean
-	val isDebugEnabled: Boolean
-	val isInfoEnabled: Boolean
-	val isWarnEnabled: Boolean
-	val isErrorEnabled: Boolean
-	
-	val isFatalEnabled: Boolean
+	val isTraceEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Trace
+	val isDebugEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Debug
+	val isInfoEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Info
+	val isWarnEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Warn
+	val isErrorEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Error
+	val isFatalEnabled: Boolean get() = LoggerConfig.minLogLevel <= LogLevel.Fatal
 	
 	fun trace(message: Any?)
 	

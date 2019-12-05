@@ -1,11 +1,17 @@
 package com.windea.breezeframework.data.serializers.json
 
 import com.fasterxml.jackson.databind.json.*
+import com.fasterxml.jackson.module.kotlin.*
+import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 import java.lang.reflect.*
 
 internal object JacksonJsonSerializer : JsonSerializer {
 	internal val mapper = JsonMapper()
+	
+	init {
+		if(checkClassForName("com.fasterxml.jackson.module.kotlin.KotlinModule")) mapper.registerKotlinModule()
+	}
 	
 	override fun <T> load(string: String, type: Class<T>): T {
 		return mapper.readValue(string, type)
@@ -33,5 +39,5 @@ internal object JacksonJsonSerializer : JsonSerializer {
 }
 
 object JacksonJsonSerializerConfig : JsonSerializerConfig {
-	fun configure(builder: (JsonMapper) -> Unit) = builder(JacksonJsonSerializer.mapper)
+	fun configure(block: (JsonMapper) -> Unit) = block(JacksonJsonSerializer.mapper)
 }

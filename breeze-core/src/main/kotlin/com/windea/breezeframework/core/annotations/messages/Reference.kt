@@ -3,9 +3,10 @@ package com.windea.breezeframework.core.annotations.messages
 import kotlin.annotation.AnnotationTarget.*
 import kotlin.reflect.*
 
-/**外部引用。*/
+/**引用。*/
 @MustBeDocumented
-@Target(CLASS, PROPERTY)
+@Target(CLASS, PROPERTY, FIELD)
 annotation class Reference(
+	/**引用一览。*/
 	vararg val value: KClass<*>
 )

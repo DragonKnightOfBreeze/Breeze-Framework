@@ -37,8 +37,6 @@ class Tests {
 		
 		//true
 		println("Hello world" endsWithIc "World")
-		//[abc, def]
-		println("1abc2def3".substrings("""\d(\w*)\d(\w*)\d""".toRegex()))
 		//1{0}2{1}3{2}
 		println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
 		//**********

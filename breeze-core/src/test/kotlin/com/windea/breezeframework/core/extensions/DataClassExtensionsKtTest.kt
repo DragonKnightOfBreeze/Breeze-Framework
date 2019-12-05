@@ -16,8 +16,8 @@ class DataClassExtensionsKtTest {
 	@Test
 	fun testToString() {
 		val foo = Foo(123, "abc")
-		assertEquals(toStringBySelect(foo) { arrayOf("a" to a, "b" to b) }, "Foo(a=123, b='abc')")
-		assertEquals(toStringBySelectRef(foo) { arrayOf(::a, ::b) }, "Foo(a=123, b='abc')")
+		assertEquals("Foo(a=123, b=abc)", toStringBySelect(foo) { arrayOf("a" to a, "b" to b) })
+		assertEquals("Foo(a=123, b=abc)", toStringBySelectRef(foo) { arrayOf(::a, ::b) })
 	}
 	
 	class Foo(val a: Int, val b: String)

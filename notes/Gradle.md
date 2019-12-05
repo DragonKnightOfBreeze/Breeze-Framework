@@ -67,3 +67,6 @@
     * 需要配置是否是pom项目。
     * 点击Send，等待审核通过后，即可通过JCenter引用自己的库。
 * **注意：成功发布到bintray后，需要手动登录帐号并确认发布。**
+
+发布到Github：  
+<https://help.github.com/en/github/managing-packages-with-github-packages/configuring-gradle-for-use-with-github-packages>

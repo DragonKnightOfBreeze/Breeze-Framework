@@ -5,6 +5,11 @@ import com.windea.breezeframework.data.serializers.json.*
 import com.windea.breezeframework.reflect.extensions.*
 import java.io.*
 
+/**
+ * Yaml的序列化器。
+ *
+ * 注意：其实现依赖于第三方库，如`jackson`, `snakeyaml`。
+ */
 interface YamlSerializer : JsonSerializer {
 	/**从指定字符串读取所有数据。*/
 	fun loadAll(string: String): List<Any?>
@@ -22,7 +27,7 @@ interface YamlSerializer : JsonSerializer {
 		val instance: YamlSerializer = when {
 			checkClassForName("com.fasterxml.jackson.dataformat.yaml.YAMLMapper") -> JacksonYamlSerializer
 			checkClassForName("org.yaml.snakeyaml.Yaml") -> SnakeYamlSerializer
-			else -> throw IllegalStateException("Please contains at least one data serializer implementation in classpath.")
+			else -> throw IllegalStateException("Please contain at least one serializer implementation in classpath.")
 		}
 	}
 }

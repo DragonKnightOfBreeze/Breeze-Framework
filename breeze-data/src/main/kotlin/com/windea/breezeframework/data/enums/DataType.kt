@@ -1,7 +1,6 @@
 package com.windea.breezeframework.data.enums
 
 import com.windea.breezeframework.data.serializers.*
-import com.windea.breezeframework.data.serializers.csv.*
 import com.windea.breezeframework.data.serializers.json.*
 import com.windea.breezeframework.data.serializers.properties.*
 import com.windea.breezeframework.data.serializers.xml.*
@@ -13,8 +12,7 @@ enum class DataType(
 	val serializer: Serializer
 ) {
 	Json("json", JsonSerializer.instance),
-	Yaml("yml", YamlSerializer.instance),
-	Xml("xml", XmlSerializer.instance),
 	Properties("properties", PropertiesSerializer.instance),
-	Csv("csv", CsvSerializer.instance)
+	Xml("xml", XmlSerializer.instance),
+	Yaml("yml", YamlSerializer.instance)
 }

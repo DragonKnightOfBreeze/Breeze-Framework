@@ -58,6 +58,5 @@ internal object SnakeYamlSerializer : YamlSerializer {
 }
 
 object SnakeYamlSerializerConfig : YamlSerializerConfig {
-	fun configure(builder: (LoaderOptions, DumperOptions) -> Unit) =
-		builder(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
+	fun configure(block: (LoaderOptions, DumperOptions) -> Unit) = block(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 }

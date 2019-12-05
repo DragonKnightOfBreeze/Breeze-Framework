@@ -1,5 +1,3 @@
-allprojects {
-	dependencies {
-		api(project(":breeze-core"))
-	}
+dependencies {
+	api(project(":breeze-core"))
 }

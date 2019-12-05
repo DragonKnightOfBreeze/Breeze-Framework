@@ -1,5 +1,6 @@
 package com.windea.breezeframework.logger
 
+/**日志等级。*/
 enum class LogLevel(
 	val text: String
 ) {

@@ -1,44 +1,15 @@
 # Summary
 
-## Breeze-Framework
-
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
-[Bintray](https://bintray.com/windea/breeze-framework)
 
-Integrated code framework based on Kotlin, provide many useful extensions for standard library and some frameworks.
-Including: basic & functional & reflect & text & time extensions & linq & dsls & generators & delegated serializers and more.
+Integrated code framework based on Kotlin,
+provides many useful extensions for standard library and some frameworks.
+What it can do is more than what you think it can do.
 
-## NOTE
-
+NOTE：
 * This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
 * This framework is designed to be used by Kotlin-Jvm, rather than Java. Though you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
-
-## Usage
-
-build.gradle
-
-```groovy
-repositories{
-    maven { url "https://dl.bintray.com/windea/breeze-framework" }
-}
-
-dependencies {
-    implementation "com.windea.breezeframework:$module:$version"
-}
-```
-
-build.gradle.kts
-
-```kotlin
-repositories {
-    maven("https://dl.bintray.com/windea/breeze-framework")
-}
-
-dependencies {
-    implementation("com.windea.breezeframework:$module:$version")
-}
-```
 
 # Modules
 
@@ -67,35 +38,10 @@ Powerful and clear builders for various domain specific languages.
 * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
-Now support:
-
-* graph
-    * mermaid
-        * [X] MermaidClassDiagramDsl
-        * [X] MermaidFlowChartDsl
-        * [X] MermaidGanttDsl
-        * [X] MermaidPieChartDsl
-        * [X] MermaidSequenceDiagramDsl
-        * [X] MermaidStateDiagramDsl
-    * puml
-        * [ ] PumlSequenceDiagramDsl
-        * [ ] PumlStateDiagramDsl
-    * [X] FlowDsl
-    * [X] SequenceDsl 
-* markup
-    * [X] CreoleDsl
-    * [X] JsonDsl
-    * [X] MarkdownDsl
-    * [X] XmlDsl
-    * [ ] YamlDsl
-* text
-    * [X] CommandLineTextDsl (You can use it to print colorful text in command line)
-    * [X] CriticMarkupTextDsl
-    
 Note:
 * Dsl is used to generate text, and it's the only thing that dsl should do.
 * Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
-* Dsl can not deserialize data from generated string. 
+* Dsl can not deserialize data from generated string.
 * Less limit (either type or invocation) dsl is not a good dsl.
 
 ## breeze-functional
@@ -106,7 +52,6 @@ Note:
 ## breeze-game
 
 * [ ] Provide some useful extensions for game.
-* **Should be platform-independent.**
 
 ## breeze-generator
 
@@ -145,7 +90,14 @@ println(source linq linq)
 ## breeze-logger
 
 * Provide lightweight, individual, and powerful logger for Kotlin.
-* Default implementation is `ColorfulLogger`, which print colorful text in command line.
+* Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
+
+Usage:
+```
+val logger = ColorfulLogger
+logger.info("Some info.")
+logger.warn("Some warn.")
+```
 
 ## breeze-reflect
 
@@ -153,17 +105,13 @@ println(source linq linq)
 
 ## breeze-serialization
 
-* Provide serializers for common kotlin type. (e.g, `RangeSerializer`) 
+* Provide serializers for common kotlin type. (e.g, `RangeSerializer`)
 * [ ] Provide lightweight multi-data-type serializers implementations.
 * [ ] Linked with related Dsl.
 
 ## breeze-spring-boot
 
 * Provide some useful extensions for `SpringBoot` and it's optional modules.
-
-## breeze-spring-cloud
-
-* [ ] Provide some useful extensions for `SpringCloud` and it's optional modules.
 
 ## breeze-test
 
@@ -172,13 +120,12 @@ println(source linq linq)
 ## breeze-text
 
 * Provide some useful extensions for text, including i18n text and humanized text.
-* **Should be usage-specific.**
 
 ## breeze-time
 
 * Provide some useful extensions for time, including `Date`, `Temporal`, etc.
 * Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.) (**YEAH IT DO!**)
-* Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.) 
+* Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.)
 
 # Dependencies & Optional dependencies
 
@@ -209,6 +156,32 @@ println(source linq linq)
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
+# Usage
+
+build.gradle
+
+```groovy
+repositories {
+    maven { url "https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework" }
+}
+
+dependencies {
+    implementation "com.windea.breezeframework:$module:$version"
+}
+```
+
+build.gradle.kts
+
+```kotlin
+repositories {
+    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+}
+
+dependencies {
+    implementation("com.windea.breezeframework:$module:$version")
+}
+```
+
 # Example
 
 ```kotlin
@@ -219,16 +192,14 @@ fun example() {
     println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
     //{0=a, 1=b, 2=c}
     println(listOf("a", "b", "c").toIndexKeyMap())
-    
+
     //[a, b, c, a, b, c, a, b, c]
     println(listOf("a", "b", "c") * 3)
     //[b, c]
     println(listOf("a", "b", "c")[1..2])
-    
+
     //true
     println("Hello world" endsWithIc "World")
-    //[abc, def]
-    println("1abc2def3".substrings("""\d(\w*)\d(\w*)\d""".toRegex()))
     //1{0}2{1}3{2}
     println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
     //**********
@@ -243,7 +214,7 @@ fun example() {
         Here also indented.
       </element>
     """.trimRelativeIndent())
-    
+
     //abcAbc
     println("Abc abc".switchCaseBy(camelCase))
     //AbcAbc
@@ -251,6 +222,6 @@ fun example() {
     //ABC_ABC
     println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
     //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".switchCaseBy(StandardReference))
+    println("/a/b/1/2/c/3".switchCaseBy(Standard))
 }
 ```
