@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.8"
+	version = "1.0.9"
 	
 	//应用插件
 	apply {
