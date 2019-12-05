@@ -8,12 +8,10 @@ plugins {
 	id("com.jfrog.bintray") version "1.8.4"
 }
 
-allprojects {
+subprojects {
 	group = "com.windea.breezeframework"
 	version = "1.0.7"
-}
-
-subprojects {
+	
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
