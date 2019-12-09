@@ -26,59 +26,65 @@ inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
-/**判断字符串是否相等。忽略大小写。*/
+/**忽略大小写，判断两个字符串是否相等。*/
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
-/**判断字符串是否相等。忽略显示格式[LetterCase]。*/
+/**
+ * 忽略显示格式，判断两个字符串是否相等。
+ *
+ * @see com.windea.breezeframework.core.enums.core.LetterCase
+ */
 infix fun String?.equalsIlc(other: String?): Boolean {
-	if(this == other) return true
-	return this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
+	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
 }
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
-infix fun String.anyIn(other: String): Boolean = this.any { it in other }
+infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
+
+/**判断当前字符串中的所有字符是否被另一字符串包含。*/
+infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 
 
 /**判断当前字符串是否以指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
+infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, false)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
+infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
-/**判断当前字符串是否以指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
-	return this.endsWith(suffix, false)
-}
-
-/**判断当前字符串是否以任意指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
-	return suffixArray.any { this.endsWith(it, false) }
-}
-
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
+infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, true)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
+infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, true) }
 }
 
+/**判断当前字符串是否以指定后缀结尾。*/
+infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
+	return this.endsWith(suffix, false)
+}
+
+/**判断当前字符串是否以任意指定后缀结尾。*/
+infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
+	return suffixArray.any { this.endsWith(it, false) }
+}
+
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
+infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
+infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
 
 

@@ -221,6 +221,7 @@
 * [X] 清理注解。
 * [X] breeze-core 更新`DataClassExtensions`，将相关扩展提取为`AnyExtensions`，并提供`smartEquals`等方法。
 * [X] 清理废弃的代码。
+* [X] 清理代码。
 
 # 待办
 

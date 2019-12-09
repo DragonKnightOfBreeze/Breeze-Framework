@@ -96,34 +96,34 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in 
 
 
 /**判断当前数组是否以指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前序列是否以指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前序列是否以任意指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前数组是否以指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 
 /**判断当前序列是否为空。*/

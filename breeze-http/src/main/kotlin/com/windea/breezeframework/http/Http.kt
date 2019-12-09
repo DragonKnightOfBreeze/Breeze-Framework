@@ -4,7 +4,7 @@ import java.net.*
 import java.net.http.*
 
 /**
- * Http请求。基于java11的[HttpClient]实现。
+ * Http连接。基于java11的[HttpClient]实现。
  *
  * @see java.net.http.HttpClient
  * @see java.net.http.HttpRequest
