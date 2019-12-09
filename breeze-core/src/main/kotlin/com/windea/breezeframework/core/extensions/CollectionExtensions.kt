@@ -578,6 +578,12 @@ inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
+/**将当前序列转化成以键为值的映射。*/
+fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+	return this.withIndex().associate { (i, e) -> i.toString() to e }
+}
+
+
 /**将当前映射转换成以字符串为键的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this as? Map<String, V> ?: this.mapKeys { (k, _) -> k.toString() }
@@ -591,11 +597,6 @@ inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
 /**将当前映射转换成以字符串为键和值的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 	return this as? Map<String, String> ?: this.map { (k, v) -> k.toString() to v.toString() }.toMap()
-}
-
-/**将当前序列转化成以键为值的映射。*/
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 //endregion
 
