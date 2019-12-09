@@ -579,7 +579,7 @@ inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 }
 
 /**将当前序列转化成以键为值的映射。*/
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
