@@ -4,17 +4,15 @@ import com.windea.breezeframework.logger.*
 import java.text.*
 import java.util.*
 
-internal val currentDate
-	get() = SimpleDateFormat(LoggerConfig.dateFormat).format(Date())
+internal val currentDate get() = SimpleDateFormat(LoggerConfig.dateFormat).format(Date())
 
-internal val currentClassName
-	get() = RuntimeException().stackTrace[3].className
+internal val currentClassName get() = Exception().stackTrace[3].className
 
 internal val currentClassNameAbbreviation
 	get() = currentClassName.split(".").joinToString(".") { it.substring(0, 1) } +
 	        currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
 
-internal val LogLevel.colorCommandPair: Pair<String, String>
+internal val LogLevel.colorCommandPair
 	get() = when(this) {
 		LogLevel.Off -> "" to ""
 		LogLevel.Trace -> "\u001B[37m" to "\u001B[0m" //light gray

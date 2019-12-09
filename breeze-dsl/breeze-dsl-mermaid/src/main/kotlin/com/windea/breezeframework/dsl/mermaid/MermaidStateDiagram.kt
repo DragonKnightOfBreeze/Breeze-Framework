@@ -68,9 +68,9 @@ sealed class MermaidStateDiagramState(
 	
 	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 }
 
 /**Mermaid状态图简单状态。*/

@@ -75,9 +75,9 @@ sealed class PumlStateDiagramState(
 	
 	override val id: String get() = alias ?: name
 	
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 }
 
 /**

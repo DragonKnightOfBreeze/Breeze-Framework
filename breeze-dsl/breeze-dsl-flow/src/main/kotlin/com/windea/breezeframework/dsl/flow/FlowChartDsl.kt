@@ -93,9 +93,9 @@ class FlowChartNode @PublishedApi internal constructor(
 	
 	override val id: String get() = name
 	
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 	
 	//NOTE syntax: name=>$type: $text|$flowState?:>$urlLink
 	override fun toString(): String {

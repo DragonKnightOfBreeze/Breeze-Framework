@@ -355,7 +355,7 @@ inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstance
 }
 
 
-/**根据指定的条件，内连接当前数组和另一个列表。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
+/**根据指定的条件，内连接当前数组和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 inline fun <T, R : Any> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
