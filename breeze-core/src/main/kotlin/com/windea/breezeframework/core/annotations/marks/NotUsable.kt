@@ -9,7 +9,5 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotUsable(
 	/**备注信息。*/
-	val message: String = "",
-	/**替换项。*/
-	val replaceWith: ReplaceWith = ReplaceWith("")
+	val message: String = ""
 )

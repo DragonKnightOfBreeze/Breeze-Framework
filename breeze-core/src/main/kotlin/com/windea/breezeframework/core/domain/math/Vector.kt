@@ -15,3 +15,4 @@ interface Vector<T : Vector<T>> : Serializable {
 	val isUnitVector: Boolean
 }
 
+

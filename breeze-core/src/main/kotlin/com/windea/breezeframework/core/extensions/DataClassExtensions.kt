@@ -36,10 +36,10 @@ inline fun <reified T> hashCodeByOne(target: T?, deepOperation: Boolean = true, 
 
 /**通过选择指定类型中的属性，将指定对象转化为字符串。默认不忽略空值。默认使用简单类名。特殊对待数组类型，默认递归执行操作。*/
 inline fun <reified T> toStringBy(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, useFullClassName: Boolean = false,
+	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
 	deepOperation: Boolean = true, selector: T.() -> Array<Pair<String, *>>): String {
 	if(target == null) return "null"
-	val className = if(!useFullClassName) T::class.java.simpleName else T::class.java.name
+	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
 	return target.selector().toMap()
 		.let(omitNulls) { it.filterValueNotNull() }
 		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
@@ -47,10 +47,10 @@ inline fun <reified T> toStringBy(target: T?, delimiter: String = ", ", prefix: 
 
 /**通过选择指定类型中的属性引用，将指定对象转化为字符串。默认不忽略空值。默认使用简单类名。特殊对待数组类型，默认递归执行操作。*/
 inline fun <reified T> toStringByRef(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, useFullClassName: Boolean = false,
+	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
 	deepOperation: Boolean = true, selector: T.() -> Array<KProperty0<*>>): String {
 	if(target == null) return "null"
-	val className = if(!useFullClassName) T::class.java.simpleName else T::class.java.name
+	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
 	return target.selector().associateBy({ it.name }, { it.get() })
 		.let(omitNulls) { it.filterValueNotNull() }
 		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }

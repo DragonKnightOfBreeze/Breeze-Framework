@@ -41,6 +41,7 @@ subprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
+					"-Xinline-classes",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -52,6 +53,7 @@ subprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
+					"-Xinline-classes",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
