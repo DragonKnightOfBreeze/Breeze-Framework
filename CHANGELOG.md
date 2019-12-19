@@ -238,16 +238,15 @@
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
-***
-* [X] ~~breeze-core Uri构建和编码的扩展。~~
-* [X] ~~breeze-core 利用反射的类型转换的扩展。~~
-* [X] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
+* [ ] ~~breeze-core Uri构建和编码的扩展。~~
+* [ ] ~~breeze-core 利用反射的类型转换的扩展。~~
+* [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
-* [X] 同步项目到Bintray。
-* [ ] 发布项目到JCenter。
+* [X] ~~同步项目到Bintray。~~
+* [ ] ~~发布项目到JCenter。~~
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
