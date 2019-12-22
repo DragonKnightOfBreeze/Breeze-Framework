@@ -569,7 +569,7 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().
 
 
 /**将当前数组转化成以键为值的映射。*/
-inline fun <out T> Array<T>.toIndexKeyMap(): Map<String, T> {
+inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 

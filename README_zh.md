@@ -71,7 +71,7 @@ pom.xml
   ...
   <dependencies>
     <dependency>
-      <groupId>com.windea.breezeframework</groupId>
+      <groupId>com.windea.breJava设计模式.mdezeframework</groupId>
       <artifactId>${module}</artifactId>
       <version>${version}</version>
     </dependency>
@@ -79,8 +79,8 @@ pom.xml
   ...
   <repositories>
     <repository>
-      <id>github-package</id>
-      <name>Github Package</name>
+      <id>github-packages</id>
+      <name>Github Packages</name>
       <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
     </repository>
   </repositories>
