@@ -1,4 +1,4 @@
-rootProject.name = "breeze-framework"
+rootProject.name = "Breeze Framework"
 
 include(
 	"breeze-core",
