@@ -559,7 +559,7 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 
 
 /**将当前键值对数组转化为可变映射。*/
-fun <K, V> Array<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 /**将当前键值对列表转化为可变映射。*/
 fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
@@ -569,7 +569,7 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().
 
 
 /**将当前数组转化成以键为值的映射。*/
-inline fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
+inline fun <out T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
@@ -602,7 +602,7 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 
 //region specific operations
 /**得到指定索引的值，如果出错，则返回空字符串。*/
-inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 inline fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
