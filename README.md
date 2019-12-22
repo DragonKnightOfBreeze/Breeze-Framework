@@ -182,8 +182,8 @@ pom.xml
   ...
   <repositories>
     <repository>
-      <id>github-package</id>
-      <name>Github Package</name>
+      <id>github-packages</id>
+      <name>Github Packages</name>
       <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
     </repository>
   </repositories>
