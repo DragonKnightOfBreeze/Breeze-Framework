@@ -215,6 +215,18 @@
 * [X] 重新上传到bintray，并移除旧的上传。
 * [X] 改为上传到github。
 
+### 1.0.9
+
+* [X] 更新版本。
+* [X] 清理注解。
+* [X] breeze-core 更新`DataClassExtensions`，将相关扩展提取为`AnyExtensions`，并提供`smartEquals`等方法。
+* [X] 清理废弃的代码。
+* [X] 清理代码。
+* [X] 更新`Count`数据类的实现（待完善）。
+* [X] 清理注解和枚举，将不确定的代码移到`breeze-unstable`。
+* [X] 适用对数组的扩展的型变。
+* [X] 整理文档和代码。
+
 # 待办
 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
@@ -228,16 +240,15 @@
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
-***
-* [X] ~~breeze-core Uri构建和编码的扩展。~~
-* [X] ~~breeze-core 利用反射的类型转换的扩展。~~
-* [X] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
+* [ ] ~~breeze-core Uri构建和编码的扩展。~~
+* [ ] ~~breeze-core 利用反射的类型转换的扩展。~~
+* [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
-* [X] 同步项目到Bintray。
-* [ ] 发布项目到JCenter。
+* [X] ~~同步项目到Bintray。~~
+* [ ] ~~发布项目到JCenter。~~
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。

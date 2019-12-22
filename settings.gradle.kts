@@ -25,5 +25,6 @@ include(
 	"breeze-spring-boot",
 	"breeze-test",
 	"breeze-text",
-	"breeze-time"
+	"breeze-time",
+	"breeze-unstable"
 )

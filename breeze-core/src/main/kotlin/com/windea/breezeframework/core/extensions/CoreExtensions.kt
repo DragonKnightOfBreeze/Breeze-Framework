@@ -4,18 +4,7 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.contracts.*
 
-//region global extensions
-/**强制转化为指定类型，或者抛出异常。用于链式调用。*/
-inline fun <reified R> Any?.cast(): R = this as R
-
-/**强制转化为指定类型，或者返回null。用于链式调用。*/
-inline fun <reified R> Any?.castOrNull(): R? = this as? R
-
-/**转化为字符串。如果为null，则转化为空字符串。*/
-inline fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
-//endregion
-
-//region Standard.kt extensions (TODOs)
+//region Standard.kt extensions (Todo functions)
 /**表明一个操作推迟了实现。*/
 inline fun DELAY() = DELAY { Unit }
 
@@ -46,13 +35,11 @@ inline fun FIXME(message: String) = run {
 	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
 
-@PublishedApi
-internal inline val currentClassFullName
-	get() = RuntimeException().stackTrace.first().className
+@PublishedApi internal inline val currentClassFullName get() = Exception().stackTrace[0].className
 //endregion
 
 //region Standard.kt extensions (Scope functions)
-/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+/**当满足条件时，以接收者为代码体的接收者，执行一段代码并返回转化后的结果，否则返回自身。*/
 inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -60,7 +47,7 @@ inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
 	return if(condition) this.block() else this
 }
 
-/**当满足条件时，执行一段代码并返回转化后的结果，否则返回自身。*/
+/**当满足条件时，以接收者为代码体的参数，执行一段代码并返回转化后的结果，否则返回自身。*/
 inline fun <T> T.let(condition: Boolean, block: (T) -> T): T {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)

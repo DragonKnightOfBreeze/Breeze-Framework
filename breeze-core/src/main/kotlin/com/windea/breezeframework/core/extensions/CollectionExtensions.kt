@@ -96,34 +96,34 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in 
 
 
 /**判断当前数组是否以指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前序列是否以指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前序列是否以任意指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前数组是否以指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 
 /**判断当前序列是否为空。*/
@@ -355,7 +355,7 @@ inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstance
 }
 
 
-/**根据指定的条件，内连接当前数组和另一个列表。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
+/**根据指定的条件，内连接当前数组和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 inline fun <T, R : Any> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
@@ -559,7 +559,7 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 
 
 /**将当前键值对数组转化为可变映射。*/
-fun <K, V> Array<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
 
 /**将当前键值对列表转化为可变映射。*/
 fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
@@ -569,7 +569,7 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().
 
 
 /**将当前数组转化成以键为值的映射。*/
-inline fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
+inline fun <out T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
 
@@ -577,6 +577,12 @@ inline fun <T> Array<out T>.toIndexKeyMap(): Map<String, T> {
 inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associate { (i, e) -> i.toString() to e }
 }
+
+/**将当前序列转化成以键为值的映射。*/
+inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+	return this.withIndex().associate { (i, e) -> i.toString() to e }
+}
+
 
 /**将当前映射转换成以字符串为键的映射。*/
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
@@ -592,16 +598,11 @@ inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
 inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 	return this as? Map<String, String> ?: this.map { (k, v) -> k.toString() to v.toString() }.toMap()
 }
-
-/**将当前序列转化成以键为值的映射。*/
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associate { (i, e) -> i.toString() to e }
-}
 //endregion
 
 //region specific operations
 /**得到指定索引的值，如果出错，则返回空字符串。*/
-inline fun Array<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
 
 /**得到指定索引的值，如果出错，则返回空字符串。*/
 inline fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }

@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.8"
+	version = "1.0.9"
 	
 	//应用插件
 	apply {
@@ -41,6 +41,7 @@ subprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
+					"-Xinline-classes",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -52,6 +53,7 @@ subprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
+					"-Xinline-classes",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)

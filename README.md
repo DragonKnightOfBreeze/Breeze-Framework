@@ -7,6 +7,7 @@ provides many useful extensions for standard library and some frameworks.
 What it can do is more than what you think it can do.
 
 NOTE：
+
 * This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
 * This framework is designed to be used by Kotlin-Jvm, rather than Java. Though you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
@@ -16,11 +17,11 @@ NOTE：
 ## breeze-core
 
 * Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`.
-    * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`.)
-    * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`.)
-    * Including some powerful handler extensions for `String`. (e.g, `String.escapeBy`, `String.switchCaseBy`.)
-    * Including some deep operator extensions for `Collection`. (e.g, `List.deepGet`, `List.deepFlatten`.)
-    * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
+  * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`.)
+  * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`.)
+  * Including some powerful handler extensions for `String`. (e.g, `String.escapeBy`, `String.switchCaseBy`.)
+  * Including some deep operator extensions for `Collection`. (e.g, `List.deepGet`, `List.deepFlatten`.)
+  * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
 * Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`, `tryOrPrint`, `tryOrIgnore`.)
 * Provide basic annotations, consts, enums and interfaces.
 * Provide generator extensions for `equals`, `hashcode` and `toString`.
@@ -39,6 +40,7 @@ Powerful and clear builders for various domain specific languages.
 * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
 Note:
+
 * Dsl is used to generate text, and it's the only thing that dsl should do.
 * Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
 * Dsl can not deserialize data from generated string.
@@ -47,7 +49,7 @@ Note:
 ## breeze-functional
 
 * Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
-* Provide functional extensions for Functions from zero parameter to 11 parameter.
+* Provide functional extensions for Functions from 0 to 11 parameters.
 
 ## breeze-game
 
@@ -64,6 +66,7 @@ Note:
 * Based on string body, so you should provide external json serializer implementation such as `Gson`, `Jackson`.
 
 Usage:
+
 ```
 val http = Http()
 http.get("https://httpbin.org")
@@ -81,6 +84,7 @@ http.get("https://httpbin.org") { query("name", "Windea") }
 * Do not store collection information, and can be defined independent.
 
 Usage:
+
 ```
 val source = listOf("foo", "Bar", "FooBar", "abc","123", "Windea", "BreezesLanding", "Kotlin")
 val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.toLowerCase() }
@@ -93,6 +97,7 @@ println(source linq linq)
 * Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
 
 Usage:
+
 ```
 val logger = ColorfulLogger
 logger.info("Some info.")
@@ -135,7 +140,9 @@ logger.warn("Some warn.")
 * SpringBoot
 * SpringCloud
 * LibGDX
+
 ***
+
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)
@@ -144,7 +151,9 @@ logger.warn("Some warn.")
 # References
 
 * [Google Guava](https://github.com/google/guava)
+
 ***
+
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
@@ -157,6 +166,29 @@ logger.warn("Some warn.")
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 
 # Usage
+
+pom.xml
+
+```xml
+<project>
+  ...
+  <dependencies>
+    <dependency>
+      <groupId>com.windea.breezeframework</groupId>
+      <artifactId>${module}</artifactId>
+      <version>${version}</version>
+    </dependency>
+  </dependencies>
+  ...
+  <repositories>
+    <repository>
+      <id>github-package</id>
+      <name>Github Package</name>
+      <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
+    </repository>
+  </repositories>
+</project>
+```
 
 build.gradle
 

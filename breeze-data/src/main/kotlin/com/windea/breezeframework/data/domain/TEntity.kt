@@ -3,7 +3,7 @@ package com.windea.breezeframework.data.domain
 import java.io.*
 
 /**泛型实体类。此类的子类应当是开放的。不提供[toString]方法的默认实现。*/
-@Deprecated("使用基于顶级方法的通用方法实现。如：`equalsBySelect()`。")
+@Deprecated("Use related top-level extension. Such as: equalsBy(), hashCodeBy().")
 abstract class TEntity<ID> : Serializable {
 	open var id: ID? = null
 	

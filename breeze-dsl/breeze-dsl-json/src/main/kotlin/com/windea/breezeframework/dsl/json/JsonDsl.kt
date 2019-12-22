@@ -58,9 +58,9 @@ interface JsonDslElement : DslElement
 sealed class JsonElement<T>(
 	val value: T
 ) : JsonDslElement, JsonDslInlineEntry {
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { value }
+	override fun equals(other: Any?) = equalsByOne(this, other) { value }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { value }
+	override fun hashCode() = hashCodeByOne(this) { value }
 	
 	override fun toString(): String {
 		return value.toString()

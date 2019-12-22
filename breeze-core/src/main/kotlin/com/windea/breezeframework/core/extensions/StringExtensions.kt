@@ -26,59 +26,65 @@ inline operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
-/**判断字符串是否相等。忽略大小写。*/
+/**忽略大小写，判断两个字符串是否相等。*/
 infix fun String?.equalsIc(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
-/**判断字符串是否相等。忽略显示格式[LetterCase]。*/
+/**
+ * 忽略显示格式，判断两个字符串是否相等。
+ *
+ * @see com.windea.breezeframework.core.enums.core.LetterCase
+ */
 infix fun String?.equalsIlc(other: String?): Boolean {
-	if(this == other) return true
-	return this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
+	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
 }
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
-infix fun String.anyIn(other: String): Boolean = this.any { it in other }
+infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
+
+/**判断当前字符串中的所有字符是否被另一字符串包含。*/
+infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 
 
 /**判断当前字符串是否以指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
+infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, false)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
+infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
-/**判断当前字符串是否以指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
-	return this.endsWith(suffix, false)
-}
-
-/**判断当前字符串是否以任意指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
-	return suffixArray.any { this.endsWith(it, false) }
-}
-
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
+infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
 	return this.startsWith(prefix, true)
 }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
+infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
 	return prefixArray.any { this.startsWith(it, true) }
 }
 
+/**判断当前字符串是否以指定后缀结尾。*/
+infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
+	return this.endsWith(suffix, false)
+}
+
+/**判断当前字符串是否以任意指定后缀结尾。*/
+infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
+	return suffixArray.any { this.endsWith(it, false) }
+}
+
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
+infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
+infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
 	suffixArray.any { this.endsWith(it, true) }
 
 
@@ -366,26 +372,36 @@ internal fun String.toWords(): String {
 	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }
 
+/**
+ * 根据指定的正则表达式，基于结果分组，匹配并按顺序分割当前字符串。
+ * 不包含索引为0的分组，列表可能为空。
+ */
+fun CharSequence.substringMatch(regex: Regex): List<String> {
+	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
+}
 
 /**
- * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入空字符串。
  */
-fun String.substrings(vararg delimiters: String?): List<String> =
-	substringsOrElse(*delimiters) { _, _ -> "" }
+fun String.substringMatch(vararg delimiters: String?): List<String> =
+	privateSubstringMatch(*delimiters) { _, _ -> "" }
 
 /**
- * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
- * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值列表中的对应索引的值。
- */
-fun String.substringsOrDefault(vararg delimiters: String?, defaultValue: (Int, String) -> List<String>): List<String> =
-	substringsOrElse(*delimiters) { index, str -> defaultValue(index, str).getOrEmpty(index) }
-
-/**
- * 根据以null隔离的从前往后和从后往前的分隔符，按顺序分割字符串。
+ * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
  */
-fun String.substringsOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
+fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> =
+	privateSubstringMatch(*delimiters, defaultValue = defaultValue)
+
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
+ * 不包含分隔符时，加入基于剩余字符串得到的默认值数组中的对应索引的值。
+ */
+fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (String) -> Array<String>): List<String> =
+	privateSubstringMatch(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
+
+private fun String.privateSubstringMatch(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 	
 	var rawString = this
@@ -553,7 +569,7 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
 
-@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
+@Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 @Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
@@ -562,7 +578,7 @@ fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
-@Deprecated("使用具象化泛型。", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
+@Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
 	

@@ -4,7 +4,7 @@ import java.net.*
 import java.net.http.*
 
 /**
- * Http请求。基于java11的[HttpClient]实现。
+ * Http连接。基于java11的[HttpClient]实现。
  *
  * @see java.net.http.HttpClient
  * @see java.net.http.HttpRequest
@@ -92,12 +92,12 @@ class Http {
 		return request("DELETE", url, null, HttpRequestConfig().also(configBlock))
 	}
 	
-	fun header(url: String, body: String): HttpResponse<String> {
-		return request("HEADER", url, body, null)
+	fun head(url: String, body: String): HttpResponse<String> {
+		return request("HEAD", url, body, null)
 	}
 	
-	fun header(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("HEADER", url, body, HttpRequestConfig().also(configBlock))
+	fun head(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
+		return request("HEAD", url, body, HttpRequestConfig().also(configBlock))
 	}
 	
 	fun batch(url: String, body: String): HttpResponse<String> {

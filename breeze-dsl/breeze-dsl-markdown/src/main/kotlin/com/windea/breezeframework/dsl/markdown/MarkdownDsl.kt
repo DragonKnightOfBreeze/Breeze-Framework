@@ -798,9 +798,9 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 	
 	override fun toString(): String {
 		return "[^$reference]: $text"
@@ -814,9 +814,9 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	reference: String,
 	val text: String
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 	
 	override fun toString(): String {
 		return "*[$reference]: $text"
@@ -830,9 +830,9 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val url: String,
 	val title: String? = null
 ) : MarkdownReference(reference) {
-	override fun equals(other: Any?) = equalsBySelectId(this, other) { id }
+	override fun equals(other: Any?) = equalsByOne(this, other) { id }
 	
-	override fun hashCode() = hashCodeBySelectId(this) { id }
+	override fun hashCode() = hashCodeByOne(this) { id }
 	
 	override fun toString(): String {
 		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()

@@ -4,11 +4,9 @@ import com.windea.breezeframework.core.extensions.*
 
 /**查询参数映射。*/
 class QueryParamMap internal constructor(
-	map: Map<String, List<String>> = mapOf()
+	val map: Map<String, List<String>> = mapOf()
 ) : Map<String, List<String>> by map {
-	internal constructor(query: String) : this(
-		query.split("&").map { s -> s.split("=", limit = 2) }.groupBy({ it[0] }, { it[1] })
-	)
+	internal constructor(query: String) : this(query.split("&").groupBy({ it.substringBefore("=") }, { it.substringAfter("=") }))
 	
 	/**得到指定名字的单个查询参数。*/
 	fun getParam(name: String): String? {
