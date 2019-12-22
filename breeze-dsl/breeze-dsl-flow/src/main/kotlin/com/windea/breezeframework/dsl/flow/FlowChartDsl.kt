@@ -213,19 +213,19 @@ inline infix fun FlowChartNode.newUrlLink(urlLink: String) =
 	this.also { it.urlLink = urlLink;it.openNewTab = true }
 
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("""Use binding-to-node build extensions. e.g: "A"(status) fromTo "B".""")
+@Deprecated("""Use related binding-to-node build extension. Such as: "A"(status) fromTo "B".""")
 @FlowChartDsl
 inline infix fun FlowChartConnection.status(status: FlowChartConnection.Status) =
 	this.also { it.status = status }
 
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("""Use binding-to-node build extensions. e.g: "A"(path) fromTo "B".""")
+@Deprecated("""Use related binding-to-node build extension. Such as: "A"(path) fromTo "B".""")
 @FlowChartDsl
 inline infix fun FlowChartConnection.path(path: FlowChartConnection.Path) =
 	this.also { it.path = path }
 
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("""Use binding-to-node build extensions. e.g: "A"(direction) fromTo "B".""")
+@Deprecated("""Use related binding-to-node build extension. Such as: "A"(direction) fromTo "B".""")
 @FlowChartDsl
 inline infix fun FlowChartConnection.direction(direction: FlowChartConnection.Direction) =
 	this.also { it.direction = direction }

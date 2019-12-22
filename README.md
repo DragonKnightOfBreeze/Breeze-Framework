@@ -49,7 +49,7 @@ Note:
 ## breeze-functional
 
 * Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
-* Provide functional extensions for Functions from zero parameter to 11 parameter.
+* Provide functional extensions for Functions from 0 to 11 parameters.
 
 ## breeze-game
 

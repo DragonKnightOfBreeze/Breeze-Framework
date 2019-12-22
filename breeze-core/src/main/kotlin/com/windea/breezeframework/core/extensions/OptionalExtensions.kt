@@ -8,5 +8,5 @@ import java.util.*
 inline fun <T> Optional<T>.orNull(): T? = this.orElse(null)
 
 /**从一个可空对象创建Optional对象。*/
-@Deprecated("不建议在Kotlin中直接使用Optional对象。", level = DeprecationLevel.HIDDEN)
+@Deprecated("It is not recommended to use Optional objects in Kotlin directly.", level = DeprecationLevel.HIDDEN)
 inline fun <T> T?.toOptional(): Optional<T> = Optional.ofNullable(this)

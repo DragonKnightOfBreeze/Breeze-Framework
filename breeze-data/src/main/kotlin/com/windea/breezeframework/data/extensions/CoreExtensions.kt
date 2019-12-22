@@ -34,7 +34,7 @@ inline fun <reified T> File.deserialize(dataType: DataType): T {
 
 //region object and property map extensions
 /**将当前对象转化为对应的成员属性名-属性值映射。可指定是否递归转化，默认为false。*/
-@Deprecated("使用'kotlinx-serialization'的'Mapper.map()'。", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))
+@Deprecated("Use kotlinx-serialization's related function.", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))
 @LowPerformanceApi
 @Suppress("DEPRECATION")
 fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
@@ -52,7 +52,7 @@ fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 }
 
 /**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
-@Deprecated("使用'kotlinx-serialization'的'Mapper.unmapNullable()'。", ReplaceWith("kotlinx.serialization.Mapper.unmapNullable<T>(this)"))
+@Deprecated("Use kotlinx-serialization's related function.", ReplaceWith("kotlinx.serialization.Mapper.unmapNullable<T>(this)"))
 @LowPerformanceApi
 @Suppress("DEPRECATION")
 inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T {
@@ -60,7 +60,7 @@ inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T
 }
 
 /**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
-@Deprecated("使用具象化泛型。", ReplaceWith("this.toObject<T>(recursive)"))
+@Deprecated("Use related reified generic extension.", ReplaceWith("this.toObject<T>(recursive)"))
 @LowPerformanceApi
 fun <T> Map<String, Any?>.toObject(type: Class<T>, recursive: Boolean = false): T {
 	val newObject = type.getConstructor().newInstance()

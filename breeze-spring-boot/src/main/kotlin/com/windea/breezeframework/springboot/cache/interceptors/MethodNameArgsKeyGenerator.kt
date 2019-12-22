@@ -1,6 +1,5 @@
-package com.windea.breezeframework.springboot.cache.keygenerators
+package com.windea.breezeframework.springboot.cache.interceptors
 
-import com.windea.breezeframework.core.extensions.*
 import org.springframework.cache.interceptor.*
 import java.lang.reflect.*
 
@@ -13,7 +12,8 @@ import java.lang.reflect.*
 class MethodNameArgsKeyGenerator : KeyGenerator {
 	override fun generate(target: Any, method: Method, vararg params: Any?): Any {
 		val path = "/${method.name}"
-		val query = (method.parameters.map { it.name } zip params).joinToString("&") { (k, v) -> "$k=$v" }
-		return "$path${query.ifNotEmpty { "?$it" }}"
+		if(params.isEmpty()) return path
+		val query = (method.parameters zip params).joinToString("&") { (k, v) -> "${k.name}=$v" }
+		return "$path?$query"
 	}
 }
