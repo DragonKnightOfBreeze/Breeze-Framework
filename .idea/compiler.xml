@@ -8,12 +8,16 @@
       <module name="breeze-dsl-core_test" target="11" />
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
+      <module name="breeze-framework_main" target="11" />
+      <module name="breeze-framework_test" target="11" />
       <module name="breeze-fxgl_main" target="11" />
       <module name="breeze-fxgl_test" target="11" />
       <module name="breeze-spring-cloud_main" target="11" />
       <module name="breeze-spring-cloud_test" target="11" />
       <module name="breeze-study_main" target="11" />
       <module name="breeze-study_test" target="11" />
+      <module name="Breeze_Framework_main" target="11" />
+      <module name="Breeze_Framework_test" target="11" />
       <module name="command-line_main" target="11" />
       <module name="command-line_test" target="11" />
       <module name="core_main" target="11" />

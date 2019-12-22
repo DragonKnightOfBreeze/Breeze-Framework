@@ -1,5 +1,3 @@
-rootProject.name = "Breeze Framework"
-
 include(
 	"breeze-core",
 	"breeze-data",
