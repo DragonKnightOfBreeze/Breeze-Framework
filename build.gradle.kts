@@ -7,17 +7,17 @@ plugins {
 	id("org.jetbrains.dokka") version "0.9.18"
 }
 
-subprojects {
+allprojects {
 	group = "com.windea.breezeframework"
 	version = "1.0.9"
-	
+
 	//应用插件
 	apply {
 		plugin("org.gradle.maven-publish")
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
 	}
-	
+
 	//配置依赖仓库
 	repositories {
 		//使用阿里云代理解决Gradle构建过慢的问题
@@ -25,14 +25,14 @@ subprojects {
 		mavenCentral()
 		jcenter()
 	}
-	
+
 	//配置依赖
 	//implementation不能传递依赖，api能传递依赖，test为测试期，compile为编译器，runtime为运行时，optional需要依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
 	}
-	
+
 	//配置kotlin的编译选项
 	tasks {
 		compileKotlin {
@@ -60,7 +60,9 @@ subprojects {
 			}
 		}
 	}
-	
+}
+
+subprojects {
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
@@ -72,7 +74,7 @@ subprojects {
 		archiveClassifier.set("javadoc")
 		from(tasks.dokka)
 	}
-	
+
 	//上传的配置
 	publishing {
 		//配置包含的jar
@@ -115,7 +117,7 @@ subprojects {
 		repositories {
 			//上传到github仓库
 			maven {
-				name = "GitHubPackages"
+				name = "GitHub Packages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")

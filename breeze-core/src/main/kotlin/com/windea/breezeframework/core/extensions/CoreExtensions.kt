@@ -2,34 +2,41 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.core.*
 import kotlin.contracts.*
 
 //region Standard.kt extensions (Todo functions)
 /**表明一个操作推迟了实现。*/
+@TodoMarker
 inline fun DELAY() = DELAY { Unit }
 
 /**表明一个方法体推迟了实现，并指定原因。*/
+@TodoMarker
 inline fun DELAY(reason: String) = DELAY(reason) { Unit }
 
 /**表明一个操作推迟了实现。返回模拟结果。*/
+@TodoMarker
 inline fun <T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult().also {
 	println("An operation is delay implemented.".let { "\u001B[33m$it\u001B[0m" })
 	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
 
 /**表明一个方法体推迟了实现，并指定原因。返回模拟结果。*/
+@TodoMarker
 inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult().also {
 	println("An operation is delay implemented: $reason".let { "\u001B[33m$it\u001B[0m" })
 	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
 
 /**表明一个方法体中存在问题。*/
+@TodoMarker
 inline fun FIXME() = run {
 	println("An operation has an unresolved issue.".let { "\u001B[91m$it\u001B[0m" })
 	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
 }
 
 /**表明一个方法体中存在问题，并指明原因。*/
+@TodoMarker
 inline fun FIXME(message: String) = run {
 	println("An operation has an unresolved issue: $message".let { "\u001B[91m$it\u001B[0m" })
 	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
