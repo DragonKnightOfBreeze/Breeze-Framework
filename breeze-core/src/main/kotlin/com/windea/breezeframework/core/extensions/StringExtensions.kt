@@ -10,6 +10,7 @@ import java.text.*
 import java.time.*
 import java.time.format.*
 import java.util.*
+import kotlin.contracts.*
 
 //region operator overrides
 /**@see kotlin.text.slice*/
@@ -104,13 +105,6 @@ fun CharSequence.isAlphanumeric(): Boolean {
 }
 
 
-/**如果当前字符串为空，则返回null，否则返回自身。当includeBlank为true时，也包括为空白的情况，默认为false。*/
-inline fun <C : CharSequence> C.orNull(includeBlank: Boolean = false): C? {
-	val condition = if(includeBlank) this.isBlank() else this.isEmpty()
-	return if(condition) null else this
-}
-
-
 /**如果当前字符串不为空，则返回转换后的值。*/
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
 	return if(this.isEmpty()) this else transform(this)
@@ -121,11 +115,27 @@ inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 	return if(this.isBlank()) this else transform(this)
 }
 
+/**如果当前字符串满足指定条件，则返回本身，否则返回空字符串。*/
+inline fun String.takeStringIf(predicate: (String) -> Boolean): String {
+	contract {
+		callsInPlace(predicate, InvocationKind.EXACTLY_ONCE)
+	}
+	return if(predicate(this)) this else ""
+}
+
+/**如果当前字符串不满足指定条件，则返回本身，否则返回空字符串。*/
+inline fun String.takeStringUnless(predicate: (String) -> Boolean): String {
+	contract {
+		callsInPlace(predicate, InvocationKind.EXACTLY_ONCE)
+	}
+	return if(predicate(this)) "" else this
+}
+
 
 /**分别平滑重复当前字符串中的字符到指定次数。*/
 fun String.flatRepeat(n: Int): String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-	
+
 	return this.map { it.toString().repeat(n) }.joinToString("")
 }
 
@@ -403,13 +413,13 @@ fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (Strin
 
 private fun String.privateSubstringMatch(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
-	
+
 	var rawString = this
 	val fixedDelimiters = delimiters.filterNotNull()
 	val size = fixedDelimiters.size
 	val indexOfNull = delimiters.indexOf(null).let { if(it == -1) size else it }
 	val result = mutableListOf<String>()
-	
+
 	for((index, delimiter) in fixedDelimiters.withIndex()) {
 		if(index < indexOfNull) {
 			result += rawString.substringBefore(delimiter, defaultValue(index, rawString))
@@ -441,7 +451,7 @@ private val quoteChars = charArrayOf('\"', '\'', '`')
 /**使用指定的引号包围当前字符串。同时转义其中的对应引号。*/
 fun String.wrapQuote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
-	
+
 	return "$quote${this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }}$quote"
 }
 
@@ -531,7 +541,7 @@ fun String.trimWrap(): String {
  **/
 fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 	require(relativeIndentSize in -2..8) { "Relative indent size is not in range [-2, 8]." }
-	
+
 	val lines = this.lines()
 	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
@@ -573,7 +583,7 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 @Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
-	
+
 	return type.enumConstants.first { it.toString().equals(this, ignoreCase) }
 }
 
@@ -581,7 +591,7 @@ fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
-	
+
 	return type.enumConstants.firstOrNull { it.toString().equals(this, ignoreCase) }
 }
 
