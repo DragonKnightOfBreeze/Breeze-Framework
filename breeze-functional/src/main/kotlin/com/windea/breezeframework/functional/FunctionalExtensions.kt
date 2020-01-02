@@ -1,3 +1,5 @@
+@file:JvmName("FunctionalExtensions")
+
 package com.windea.breezeframework.functional
 
 import com.windea.breezeframework.core.domain.core.*
@@ -340,14 +342,12 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, R> ((P1, P2, P3, P4, P5, P6, P7, 
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8) = this(p1, p2, p3, p4, p5, p6, p7, p8, param)
 
 /**传入最后一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & c -> fun(a,b)`*/
-infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> R).pipeLast(
-	param: P10) =
+infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> R).pipeLast(param: P10) =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9) =
 		this(p1, p2, p3, p4, p5, p6, p7, p8, p9, param)
 
 /**传入最后一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & c -> fun(a,b)`*/
-infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).pipeLast(
-	param: P11) =
+infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).pipeLast(param: P11) =
 	fun(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10) =
 		this(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, param)
 //endregion

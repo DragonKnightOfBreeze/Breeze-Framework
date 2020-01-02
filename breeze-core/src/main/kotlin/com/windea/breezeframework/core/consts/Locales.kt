@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.consts
 
-/**语言环境的常量集。*/
+/**常见语言环境的常量集。*/
 object Locales {
 	const val english: String = "en"
 	const val french: String = "fr"
@@ -11,7 +11,7 @@ object Locales {
 	const val chinese: String = "zh"
 	const val simpleChinese: String = "zh_CN"
 	const val traditionalChinese: String = "zh_TW"
-	
+
 	const val france: String = "fr_FR"
 	const val germany: String = "de_DE"
 	const val italy: String = "it_IT"

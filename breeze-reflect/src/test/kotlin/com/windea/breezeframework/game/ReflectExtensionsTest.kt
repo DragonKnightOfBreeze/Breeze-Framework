@@ -1,6 +1,7 @@
 package com.windea.breezeframework.game
 
 import com.windea.breezeframework.reflect.extensions.*
+import kotlin.system.*
 import kotlin.test.*
 
 class CoreExtensionsTest {
@@ -10,14 +11,21 @@ class CoreExtensionsTest {
 		println(javaTypeOf<List<String>>())
 		println(javaTypeOf<Map<String, String>>())
 	}
-	
-	@Test
+
+	@Test //TESTED OK
 	fun testNameOf() {
 		println(nameOf<A>())
 		println(nameOf(A::class))
 		println(nameOf(A::foo))
 		println(nameOf(A::abc))
 		println(nameOf(A::abc.parameters[0]))
+	}
+
+	@Test
+	fun testClassAndKClass() {
+		measureNanoTime { A::class.simpleName }.also { println(it) }
+		measureNanoTime { A::class.java.simpleName }.also { println(it) }
+
 	}
 }
 

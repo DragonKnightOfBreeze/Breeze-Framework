@@ -1,3 +1,4 @@
+@file:JvmName("RandomExtensions")
 @file:Suppress("unused")
 
 package com.windea.breezeframework.javafx.extensions

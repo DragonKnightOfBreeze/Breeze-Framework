@@ -1,3 +1,4 @@
+@file:JvmName("CollectionExtensions")
 @file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
@@ -183,21 +184,21 @@ inline fun <T> Collection<T>.randomOrNull(random: Random): T? {
 /**重复当前集合中的元素到指定次数。*/
 fun <T> Iterable<T>.repeat(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-	
+
 	return mutableListOf<T>().also { list -> repeat(n) { list += this } }
 }
 
 /**分别重复当前集合中的元素到指定次数，并映射为子列表。*/
 fun <T> Iterable<T>.repeatChunked(n: Int): List<List<T>> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-	
+
 	return mutableListOf<List<T>>().also { list -> for(e in this) list += (mutableListOf<T>().also { l -> repeat(n) { l += e } }) }
 }
 
 /**分别平滑重复当前集合中的元素到指定次数。*/
 fun <T> Iterable<T>.flatRepeat(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-	
+
 	return mutableListOf<T>().also { list -> for(e in this) repeat(n) { list += e } }
 }
 
@@ -212,7 +213,7 @@ fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
 /**填充指定元素到当前列表之前，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
 fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
 	require(size >= 0) { "Desired size $size is less than zero." }
-	
+
 	if(size <= this.size) return this.subList(0, size)
 	return List(size - this.size) { value } + this
 }
@@ -220,7 +221,7 @@ fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
 /**填充指定元素到当前列表之后，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
 fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
 	require(size >= 0) { "Desired size $size is less than zero." }
-	
+
 	if(size <= this.size) return this.subList(0, size)
 	return this + List(size - this.size) { value }
 }

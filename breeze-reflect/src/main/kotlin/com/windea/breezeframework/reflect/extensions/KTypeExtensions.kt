@@ -1,3 +1,5 @@
+@file:JvmName("KTypeExtensions")
+
 package com.windea.breezeframework.reflect.extensions
 
 import kotlin.reflect.*

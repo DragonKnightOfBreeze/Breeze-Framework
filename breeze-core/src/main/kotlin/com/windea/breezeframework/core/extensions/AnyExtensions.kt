@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:JvmName("AnyExtensions")
 
 package com.windea.breezeframework.core.extensions
 
@@ -25,7 +25,7 @@ fun Any?.smartToString(deepOperation: Boolean = true) = when {
 
 
 /**将当期对象转化为字符串。如果为null，则转化为空字符串。*/
-inline fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
+fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
 
 
 /**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/

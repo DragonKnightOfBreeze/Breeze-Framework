@@ -1,10 +1,11 @@
+@file:JvmName("BooleanExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 
 import kotlin.contracts.*
 
-//region commmon extensions
+//region common extensions
 /**如果为true，则执行一段代码。总是返回自身。*/
 inline fun Boolean.onTrue(block: () -> Unit): Boolean {
 	contract {

@@ -1,3 +1,4 @@
+@file:JvmName("RandomExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package com.windea.breezeframework.core.extensions
@@ -41,7 +42,7 @@ fun Random.nextUUID(): String = UUID.randomUUID().toString()
 /**检查一个几率发生的事件是否发生。*/
 fun Random.checkChance(chance: Float): Boolean {
 	require(chance in 0f..1f) { "Chance must between 0 and 1, but was $chance." }
-	
+
 	return when {
 		chance == 1f -> true
 		chance == 0f -> false

@@ -1,3 +1,5 @@
+@file:JvmName("SingularAndPluralExtensions")
+
 package com.windea.breezeframework.text.extensions
 
 //https://github.com/cesarferreira/kotlin-pluralizer

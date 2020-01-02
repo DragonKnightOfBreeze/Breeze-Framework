@@ -21,7 +21,7 @@ allprojects {
 	//配置依赖仓库
 	repositories {
 		//使用阿里云代理解决Gradle构建过慢的问题
-		maven("http://maven.aliyun.com/nexus/content/groups/public/")
+		maven("https://maven.aliyun.com/nexus/content/groups/public/")
 		mavenCentral()
 		jcenter()
 	}

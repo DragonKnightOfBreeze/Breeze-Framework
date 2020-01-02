@@ -1,25 +1,12 @@
+@file:JvmName("DateExtensions")
+
 package com.windea.breezeframework.time.extensions
 
 import com.windea.breezeframework.time.domain.*
 import java.text.*
 import java.util.*
 
-//region factory extensions
-object Dates {
-	/**今天。*/
-	val today: Date get() = Date()
-	/**明天。*/
-	val tomorrow: Date get() = getDate(1)
-	/**昨天。*/
-	val yesterday: Date get() = getDate(-1)
-	
-	private fun getDate(amount: Int): Date {
-		calendar.time = Date()
-		calendar.add(Calendar.DATE, amount)
-		return calendar.time
-	}
-}
-//endregion
+internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
 //region operator overrides
 /**@see Calendar.add*/
@@ -73,9 +60,8 @@ val Date.isFriday: Boolean get() = this.assign().let { calendar.get(Calendar.DAY
 
 val Date.isSaturday: Boolean get() = this.assign().let { calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY }
 
-private fun Date.assign(): Date = this.also {
-	calendar.time = this
-}
+private fun Date.assign(): Date = this.also { calendar.time = this }
+
 
 /**更改日期。*/
 fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
@@ -90,6 +76,7 @@ fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, 
 	if(weekday > -1) calendar.set(Calendar.WEEK_OF_MONTH, weekday)
 	return calendar.time
 }
+
 
 /**将当前日期转化为格式化的字符串。*/
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)

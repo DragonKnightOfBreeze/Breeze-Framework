@@ -1,3 +1,4 @@
+@file:JvmName("NumberExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
 
 package com.windea.breezeframework.core.extensions

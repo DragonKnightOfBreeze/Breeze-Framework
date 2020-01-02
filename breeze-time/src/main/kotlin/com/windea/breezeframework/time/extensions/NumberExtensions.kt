@@ -1,3 +1,5 @@
+@file:JvmName("NumberExtensions")
+
 package com.windea.breezeframework.time.extensions
 
 import java.time.*

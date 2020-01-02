@@ -1,4 +1,5 @@
-@file:Suppress("UNUSED_PARAMETER", "NOTHING_TO_INLINE", "DuplicatedCode")
+@file:JvmName("StringExtensions")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 

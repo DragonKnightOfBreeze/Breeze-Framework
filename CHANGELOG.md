@@ -232,6 +232,7 @@
 * [X] 更新版本。
 * [X] 添加`@TodoMarker`。
 * [X] 将`DslBuilder`重命名为`DslDocument`，其他一些更改。
+* [X] 添加必要的Jvm注解，加强Java兼容性，其他一些相关更改。
 
 # 待办
 
@@ -244,6 +245,7 @@
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-text 英文单数与复数的转化。
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
+* [ ] 提供一种“延迟绑定”的实现，基于栈。
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~

@@ -1,3 +1,5 @@
+@file:JvmName("ClassExtensions")
+
 package com.windea.breezeframework.reflect.extensions
 
 import java.io.*

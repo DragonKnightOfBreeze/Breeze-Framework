@@ -1,3 +1,4 @@
+@file:JvmName("DataClassExtensions")
 @file:Suppress("DuplicatedCode")
 
 package com.windea.breezeframework.core.extensions

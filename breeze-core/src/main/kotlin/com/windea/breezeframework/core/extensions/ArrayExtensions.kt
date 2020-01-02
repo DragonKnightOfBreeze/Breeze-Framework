@@ -1,3 +1,5 @@
+@file:JvmName("ArrayExtensions")
+
 package com.windea.breezeframework.core.extensions
 
 import java.util.*

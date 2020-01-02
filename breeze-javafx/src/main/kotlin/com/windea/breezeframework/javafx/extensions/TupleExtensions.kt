@@ -1,3 +1,5 @@
+@file:JvmName("TupleExtensions")
+
 package com.windea.breezeframework.javafx.extensions
 
 import com.windea.breezeframework.core.types.*

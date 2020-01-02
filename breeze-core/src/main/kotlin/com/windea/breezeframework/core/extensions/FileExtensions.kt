@@ -1,3 +1,5 @@
+@file:JvmName("FileExtensions")
+
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*

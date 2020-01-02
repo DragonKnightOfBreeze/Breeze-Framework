@@ -1,3 +1,5 @@
+@file:JvmName("MultiValueMapExtensions")
+
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.types.*
