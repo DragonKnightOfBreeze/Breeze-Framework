@@ -233,6 +233,7 @@
 * [X] 添加`@TodoMarker`。
 * [X] 将`DslBuilder`重命名为`DslDocument`，其他一些更改。
 * [X] 添加必要的Jvm注解，加强Java兼容性，其他一些相关更改。
+* [X] breeze-core 添加一些类型别名。
 
 # 待办
 
