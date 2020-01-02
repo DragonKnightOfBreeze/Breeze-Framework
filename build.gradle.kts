@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.9"
+	version = "1.0.10"
 
 	//应用插件
 	apply {
@@ -107,8 +107,8 @@ subprojects {
 					}
 					scm {
 						url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
-						connection.set("scm:git:https://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
-						developerConnection.set("scm:git:https://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
+						connection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
+						developerConnection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
 					}
 				}
 			}
@@ -117,7 +117,7 @@ subprojects {
 		repositories {
 			//上传到github仓库
 			maven {
-				name = "GitHub Packages"
+				name = "GitHub-Packages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")

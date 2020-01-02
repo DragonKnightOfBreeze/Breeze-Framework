@@ -19,8 +19,8 @@ package com.windea.breezeframework.dsl
 @MustBeDocumented
 internal annotation class Dsl
 
-/**Dsl的构建器。*/
-interface DslBuilder {
+/**Dsl的文档。*/
+interface DslDocument {
 	override fun toString(): String
 }
 
@@ -42,10 +42,10 @@ interface DslElement {
 @Target(AnnotationTarget.FUNCTION)
 annotation class InlineDsl
 
-/**表示这个字符串属性换行。并注明对应的行分隔符和额外条件。*/
+/**表示这个字符串属性可换行。并注明对应的行分隔符和额外条件。*/
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class Multiline(
+annotation class MultilineProp(
 	/**行分隔符。*/
 	val lineSeparator: String,
 	/**额外条件。*/
@@ -58,7 +58,7 @@ annotation class Multiline(
 @Dsl
 interface CanWrap {
 	var wrapContent: Boolean
-	
+
 	val wrap: String get() = if(wrapContent) "\n" else ""
 }
 
@@ -66,7 +66,7 @@ interface CanWrap {
 @Dsl
 interface CanSplit {
 	var splitContent: Boolean
-	
+
 	val split: String get() = if(splitContent) "\n\n" else "\n"
 }
 
@@ -74,7 +74,7 @@ interface CanSplit {
 @Dsl
 interface CanIndent {
 	var indentContent: Boolean
-	
+
 	fun String.applyIndent(indent: String, condition: Boolean = true): String {
 		return if(indentContent && condition) this.prependIndent(indent) else this
 	}
@@ -84,7 +84,7 @@ interface CanIndent {
 @Dsl
 interface CanGenerate {
 	var generateContent: Boolean
-	
+
 	fun toGeneratedString(): String
 }
 
@@ -123,7 +123,7 @@ interface WithId {
 @Dsl
 interface WithUniqueId : WithId {
 	override fun equals(other: Any?): Boolean
-	
+
 	override fun hashCode(): Int
 }
 
@@ -140,23 +140,23 @@ interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
 	infix fun String.fromTo(other: String): T
-	
+
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
 	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other.id }
-	
+
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
 	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo.id fromTo other }
-	
+
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
 	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo.id fromTo other.id }
-	
+
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
 	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other }
-	
+
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
 	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other.id }

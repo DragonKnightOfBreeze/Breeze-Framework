@@ -19,9 +19,9 @@ internal annotation class CreoleDsl
 
 /**Creole。*/
 @CreoleDsl
-class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry, CreoleDslInlineEntry {
+class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
-	
+
 	override fun toString() = content.joinToStringOrEmpty("\n\n")
 }
 
@@ -31,7 +31,7 @@ class Creole @PublishedApi internal constructor() : DslBuilder, CreoleDslEntry, 
 object CreoleConfig : DslConfig {
 	private val indentSizeRange = -2..8
 	private val repeatableMarkerCountRange = 3..12
-	
+
 	var indentSize = 2
 		set(value) = run { if(value in indentSizeRange) field = value }
 	var repeatableMarkerCount = 4
@@ -39,7 +39,7 @@ object CreoleConfig : DslConfig {
 	var truncated = "..."
 	var preferDoubleQuote: Boolean = true
 	var emptyColumnSize: Int = 4
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
@@ -55,7 +55,7 @@ interface CreoleDslInlineEntry : DslEntry
 @CreoleDsl
 interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 	val content: MutableList<CreoleDslTopElement>
-	
+
 	@CreoleDsl
 	override fun String.unaryPlus() = CreoleTextBlock(this).also { content += it }
 }
@@ -181,7 +181,7 @@ open class CreoleHorizontalLine @PublishedApi internal constructor(
 	override fun toString(): String {
 		return type.text * repeatableMarkerCount
 	}
-	
+
 	enum class Type(val text: String) {
 		Normal("-"), Double("="), Strong("_"), Dotted(".")
 	}
@@ -239,7 +239,7 @@ class CreoleHeading4 @PublishedApi internal constructor(
 @CreoleDsl
 class CreoleList @PublishedApi internal constructor() : CreoleDslTopElement {
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
-	
+
 	override fun toString(): String {
 		return nodes.joinToStringOrEmpty("\n")
 	}
@@ -252,7 +252,7 @@ sealed class CreoleListNode(
 	val text: String
 ) : CreoleDslElement {
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
-	
+
 	override fun toString(): String {
 		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n") { "${it.prefixMarker}$it" }
 		return "$prefixMarker $text$nodesSnippet"
@@ -277,7 +277,7 @@ class CreoleTree @PublishedApi internal constructor(
 	val title: String
 ) : CreoleDslTopElement {
 	val nodes: MutableList<CreoleTreeNode> = mutableListOf()
-	
+
 	override fun toString(): String {
 		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n")
 		return "$title$nodesSnippet"
@@ -290,7 +290,7 @@ class CreoleTreeNode @PublishedApi internal constructor(
 	val text: String
 ) : CreoleDslElement {
 	val nodes: MutableList<CreoleTreeNode> = mutableListOf()
-	
+
 	override fun toString(): String {
 		//include prefix "|_", add it to first line, add spaces to other lines
 		val textSnippet = "|_ $text"
@@ -308,20 +308,20 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 	var header: CreoleTableHeader = CreoleTableHeader()
 	val rows: MutableList<CreoleTableRow> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		header.columnSize = actualColumnSize
 		rows.forEach { it.columnSize = actualColumnSize }
-		
+
 		val headerRowSnippet = header.toString()
 		val rowsSnippet = rows.joinToStringOrEmpty("\n")
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
-	
+
 	enum class Alignment(val textPair: Pair<String, String>) {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}
@@ -332,20 +332,20 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement, WithText<CreoleTableColumn> {
 	val columns: MutableList<CreoleTableColumn> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
 			else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty("|", "|", "|")
 	}
-	
+
 	@CreoleDsl
 	override fun String.unaryPlus() = column(this)
-	
+
 	@CreoleDsl
 	inline infix fun CreoleTableColumn.align(alignment: CreoleTable.Alignment) =
 		this.also { it.alignment = alignment }
@@ -356,17 +356,17 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElement, WithText<CreoleTableColumn> {
 	val columns: MutableList<CreoleTableColumn> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
-	
+
 	@CreoleDsl
 	override fun String.unaryPlus() = column(this)
 }
@@ -378,12 +378,12 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 ) : CreoleDslElement {
 	var color: String? = null
 	var alignment: CreoleTable.Alignment = CreoleTable.Alignment.None //only for columns in table header
-	
+
 	override fun toString(): String {
 		val colorSnippet = color?.let { "<$color> " }.orEmpty()
 		return "$colorSnippet$text"
 	}
-	
+
 	fun toStringInHeader(): String {
 		val colorSnippet = color?.let { "<$color> " }.orEmpty()
 		val (l, r) = alignment.textPair

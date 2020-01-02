@@ -31,12 +31,12 @@ internal annotation class MarkdownDslExtendedFeature
 
 /**Markdown。*/
 @MarkdownDsl
-class Markdown @PublishedApi internal constructor() : DslBuilder, MarkdownDslEntry {
+class Markdown @PublishedApi internal constructor() : DslDocument, MarkdownDslEntry {
 	var frontMatter: MarkdownFrontMatter? = null
 	var toc: MarkdownToc? = null
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 	val references: MutableSet<MarkdownReference> = mutableSetOf()
-	
+
 	override fun toString(): String {
 		return arrayOf(
 			frontMatter?.toString().orEmpty(),
@@ -56,7 +56,7 @@ object MarkdownConfig : DslConfig {
 	private val listNodeMarkerArray = charArrayOf('*', '-', '+')
 	private val horizontalListMarkerArray = charArrayOf('*', '-', '_')
 	private val codeFenceMarkerArray = charArrayOf('`', '~')
-	
+
 	var indentSize: Int = 4
 		set(value) = run { if(value in indentSizeRange) field = value }
 	var preferDoubleQuote: Boolean = true
@@ -72,10 +72,10 @@ object MarkdownConfig : DslConfig {
 		set(value) = run { if(value in horizontalListMarkerArray) field = value }
 	var codeFenceMarker: Char = '`'
 		set(value) = run { if(value in codeFenceMarkerArray) field = value }
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '\"' else '\''
-	
+
 	@PublishedApi internal val horizontalLineMarkers get() = horizontalLineMarker * repeatableMarkerCount
 	@PublishedApi internal val codeFenceMarkers get() = codeFenceMarker * repeatableMarkerCount
 	@PublishedApi internal val emptyColumnLength = 4
@@ -92,11 +92,11 @@ interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 @MarkdownDsl
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
-	
+
 	fun toContentString(): String {
 		return content.joinToStringOrEmpty("\n\n")
 	}
-	
+
 	@MarkdownDsl
 	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
 }
@@ -293,7 +293,7 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownDslTopElement, CanWrap {
 	override var wrapContent: Boolean = true
-	
+
 	override fun toString(): String {
 		return if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
@@ -419,9 +419,9 @@ sealed class MarkdownListNode(
 	val text: String
 ) : MarkdownDslElement, CanWrap {
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
-	
+
 	override var wrapContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val indent = " " * (prefixMarkers.length + 1)
 		val textSnippet = if(text.length > wrapLength)
@@ -460,12 +460,12 @@ class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String
 ) : MarkdownDslTopElement, CanWrap {
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
-	
+
 	override var wrapContent: Boolean = true
-	
+
 	override fun toString(): String {
 		require(nodes.isNotEmpty()) { "Definition node size must be positive." }
-		
+
 		val titleSnippet = if(title.length > wrapLength)
 			title.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
 		else title
@@ -481,7 +481,7 @@ class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownDslElement, CanWrap {
 	override var wrapContent: Boolean = true
-	
+
 	override fun toString(): String {
 		return if(text.length > wrapLength)
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
@@ -497,22 +497,22 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 	var header: MarkdownTableHeader = MarkdownTableHeader()
 	val rows: MutableList<MarkdownTableRow> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		//adjust column size
 		header.columnSize = actualColumnSize
 		rows.forEach { it.columnSize = actualColumnSize }
-		
+
 		val headerRowSnippet = header.toString()
 		val delimitersSnippet = header.toDelimitersString()
 		val rowsSnippet = rows.joinToStringOrEmpty("\n")
 		return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 	}
-	
+
 	enum class Alignment(val textPair: Pair<String, String>) {
 		None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 	}
@@ -523,29 +523,29 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElement, WithText<MarkdownTableColumn> {
 	val columns: MutableList<MarkdownTableColumn> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
-	
+
 	fun toDelimitersString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
-		
+
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toDelimitersString() }
 			else -> columns.map { it.toDelimitersString() }.fillEnd(columnSize!!, "-" * emptyColumnLength)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
-	
+
 	@MarkdownDsl
 	override fun String.unaryPlus() = column(this)
-	
+
 	@MarkdownDsl
 	inline infix fun MarkdownTableColumn.align(alignment: MarkdownTable.Alignment) =
 		this.also { it.alignment = alignment }
@@ -556,17 +556,17 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslElement, WithText<MarkdownTableColumn> {
 	val columns: MutableList<MarkdownTableColumn> = mutableListOf()
 	var columnSize: Int? = null
-	
+
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
-		
+
 		//NOTE actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
 		}.joinToStringOrEmpty(" | ", "| ", " |")
 	}
-	
+
 	@MarkdownDsl
 	override fun String.unaryPlus() = column(this)
 }
@@ -577,11 +577,11 @@ class MarkdownTableColumn @PublishedApi internal constructor(
 	val text: String = emptyColumnText
 ) : MarkdownDslElement {
 	var alignment: MarkdownTable.Alignment = MarkdownTable.Alignment.None //only for columns in table header
-	
+
 	override fun toString(): String {
 		return text
 	}
-	
+
 	fun toDelimitersString(): String {
 		val (l, r) = alignment.textPair
 		return "$l${" " * (emptyColumnLength - 2)}$r"
@@ -594,7 +594,7 @@ sealed class MarkdownQuote(
 	val prefixMarker: String
 ) : MarkdownDslTopElement, MarkdownDslEntry {
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
-	
+
 	override fun toString(): String {
 		return toContentString().prependIndent("$prefixMarker ")
 	}
@@ -633,7 +633,7 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 ) : MarkdownDslTopElement, MarkdownCode, WithMarkdownAttributes {
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
-	
+
 	override fun toString(): String {
 		val markersSnippet = horizontalLineMarkers
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
@@ -672,19 +672,19 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 	val type: Type = Type.Normal
 ) : MarkdownDslTopElement, MarkdownDslEntry {
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
-	
+
 	override fun toString(): String {
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
-		
+
 		val titleSnippet = title.wrapQuote(quote)
 		val contentSnippet = toContentString().prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
-	
+
 	enum class Type(val text: String) {
 		Normal("!!!"), Collapsed("???"), Opened("!!!+")
 	}
-	
+
 	enum class Qualifier(val style: String, val text: String) {
 		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 		Bug("bug", "bug"),
@@ -718,11 +718,11 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerate {
 	override var generateContent: Boolean = false
-	
+
 	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
-	
+
 	override fun toString(): String {
 		if(generateContent) return toGeneratedString()
 		return "[TOC]"
@@ -738,11 +738,11 @@ class MarkdownImport @PublishedApi internal constructor(
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
 	override var generateContent: Boolean = false
-	
+
 	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
-	
+
 	override fun toString(): String {
 		if(generateContent) return toGeneratedString()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
@@ -758,11 +758,11 @@ class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
 ) : MarkdownDslTopElement, CanGenerate {
 	override var generateContent: Boolean = false
-	
+
 	override fun toGeneratedString(): String {
 		TODO("not implemented")
 	}
-	
+
 	override fun toString(): String {
 		if(generateContent) return toGeneratedString()
 		return "<<< $name >>>"
@@ -776,7 +776,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	val name: String
 ) : MarkdownDslTopElement, MarkdownDslEntry {
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString()
 		return ">>> $name\n$contentSnippet\n<<<"
@@ -799,9 +799,9 @@ class MarkdownFootNoteReference @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownReference(reference) {
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		return "[^$reference]: $text"
 	}
@@ -815,9 +815,9 @@ class MarkdownAbbreviation @PublishedApi internal constructor(
 	val text: String
 ) : MarkdownReference(reference) {
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		return "*[$reference]: $text"
 	}
@@ -831,9 +831,9 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	val title: String? = null
 ) : MarkdownReference(reference) {
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
 		return "[$reference]: $url$titleSnippet"

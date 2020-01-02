@@ -16,13 +16,13 @@ internal annotation class JsonDsl
 
 /**Json。*/
 @JsonDsl
-class Json @PublishedApi internal constructor() : DslBuilder, JsonDslInlineEntry {
+class Json @PublishedApi internal constructor() : DslDocument, JsonDslInlineEntry {
 	lateinit var rootElement: JsonElement<*>
-	
+
 	override fun toString(): String {
 		return rootElement.toString()
 	}
-	
+
 	@JsonDsl
 	inline fun Any?.map() = this.toJsonElement()
 }
@@ -31,12 +31,12 @@ class Json @PublishedApi internal constructor() : DslBuilder, JsonDslInlineEntry
 @JsonDsl
 object JsonConfig : DslConfig {
 	private val indentSizeRange = -2..8
-	
+
 	var indentSize = 2
 		set(value) = run { if(value in indentSizeRange) field = value }
 	var preferDoubleQuote: Boolean = true
 	var prettyPrint: Boolean = true
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
@@ -59,9 +59,9 @@ sealed class JsonElement<T>(
 	val value: T
 ) : JsonDslElement, JsonDslInlineEntry {
 	override fun equals(other: Any?) = equalsByOne(this, other) { value }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { value }
-	
+
 	override fun toString(): String {
 		return value.toString()
 	}
@@ -104,7 +104,7 @@ class JsonArray @PublishedApi internal constructor(
 ) : JsonElement<List<*>>(value), List<JsonElement<*>> by value, CanWrap, CanIndent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
-	
+
 	override fun toString(): String {
 		return when {
 			wrapContent && indentContent -> value.joinToString(",\n", "[\n", "\n]") {
@@ -123,7 +123,7 @@ class JsonObject @PublishedApi internal constructor(
 ) : JsonElement<Map<String, *>>(value), Map<String, JsonElement<*>> by value, CanWrap, CanIndent {
 	override var wrapContent: Boolean = prettyPrint
 	override var indentContent: Boolean = prettyPrint
-	
+
 	override fun toString(): String {
 		return when {
 			wrapContent && indentContent -> value.joinToString(",\n", "{\n", "\n}") { (k, v) ->

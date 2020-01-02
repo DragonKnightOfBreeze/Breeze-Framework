@@ -46,13 +46,13 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 	var order: Int? = null
 	var color: String? = null
 	var shape: PumlSequenceDiagramParticipantShape = PumlSequenceDiagramParticipantShape.Actor
-	
+
 	override val id: String get() = alias ?: name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		val orderSnippet = order?.let { " order $order" }.orEmpty()
 		val colorSnippet = color?.let { " ${it.addPrefix("#")}" }.orEmpty()
@@ -70,17 +70,17 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromActorName: String,
 	val toActorName: String,
-	@Language("Creole") @Multiline("\\n")
+	@Language("Creole") @MultilineProp("\\n")
 	val text: String? = null,
 	val isBidirectional: Boolean = false
 ) : PumlSequenceDiagramDslElement, WithNode<PumlSequenceDiagramParticipant> {
 	var arrowColor: String? = null
 	var arrowShape: PumlSequenceDiagramMessageArrowShape = PumlSequenceDiagramMessageArrowShape.Arrow
 	var isPosted: Boolean? = null //TODO add support for bidirectional lost/post
-	
+
 	override val sourceNodeId: String get() = fromActorName
 	override val targetNodeId: String get() = toActorName
-	
+
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${text.replaceWithEscapedWrap()}" }.orEmpty()
 		val arrowColorSnippet = arrowColor?.let { "[${it.addPrefix("#")}]" }.orEmpty()

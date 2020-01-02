@@ -17,14 +17,14 @@ internal annotation class SequenceDiagramDsl
 
 /**序列图。*/
 @SequenceDiagramDsl
-class SequenceDiagram @PublishedApi internal constructor() : DslBuilder, SequenceDiagramDslEntry {
+class SequenceDiagram @PublishedApi internal constructor() : DslDocument, SequenceDiagramDslEntry {
 	var title: SequenceDiagramTitle? = null
 	override val participants: MutableSet<SequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<SequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<SequenceDiagramNote> = mutableListOf()
-	
+
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		return arrayOf(
 			title.toStringOrEmpty(),
@@ -41,7 +41,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 	val participants: MutableSet<SequenceDiagramParticipant>
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
@@ -49,7 +49,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 			notes.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@SequenceDiagramDsl
 	override fun String.fromTo(other: String) = message(this, other)
 }
@@ -63,7 +63,7 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	@Multiline("\\n")
+	@MultilineProp("\\n")
 	val text: String
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
@@ -77,13 +77,13 @@ class SequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
 ) : SequenceDiagramDslElement, WithUniqueId {
 	var alias: String? = null
-	
+
 	override val id: String get() = alias ?: name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		val aliasSnippet = alias?.let { "as $it" }.orEmpty()
 		return "participant $name$aliasSnippet"
@@ -98,14 +98,14 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 ) : SequenceDiagramDslElement, WithNode<SequenceDiagramParticipant> {
 	var text: String = ""
 	var arrowShape: ArrowShape = ArrowShape.Arrow
-	
+
 	override val sourceNodeId: String get() = fromParticipantId
 	override val targetNodeId: String get() = toParticipantId
-	
+
 	override fun toString(): String {
 		return "$fromParticipantId ${arrowShape.text} $toParticipantId: $text"
 	}
-	
+
 	/**序列图消息的箭头类型。*/
 	@SequenceDiagramDsl
 	enum class ArrowShape(val text: String) {
@@ -118,14 +118,14 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 class SequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : SequenceDiagramDslElement {
-	@Multiline("\\n")
+	@MultilineProp("\\n")
 	var text: String = ""
-	
+
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()
 		return "note $location: $textSnippet"
 	}
-	
+
 	/**序列图注释的位置。*/
 	@SequenceDiagramDsl
 	class Location @PublishedApi internal constructor(
@@ -138,7 +138,7 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 			return "${position.text} $participantId1$participantId2Snippet"
 		}
 	}
-	
+
 	/**序列图注释的方位。*/
 	@SequenceDiagramDsl
 	enum class Position(val text: String) {

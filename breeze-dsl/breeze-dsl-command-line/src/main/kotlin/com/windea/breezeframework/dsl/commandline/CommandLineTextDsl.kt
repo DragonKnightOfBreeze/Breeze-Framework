@@ -20,9 +20,9 @@ internal annotation class CommandLineTextDsl
 
 /**命令行富文本。*/
 @CommandLineTextDsl
-class CommandLineText @PublishedApi internal constructor() : DslBuilder, CommandLineTextDslInlineEntry {
+class CommandLineText @PublishedApi internal constructor() : DslDocument, CommandLineTextDslInlineEntry {
 	lateinit var text: String
-	
+
 	override fun toString(): String {
 		return text
 	}
@@ -116,7 +116,7 @@ enum class CommandLineColor(val code: Int) {
 	LightMagenta(95),
 	LightCyan(96),
 	White(97);
-	
+
 	val backgroundCode = code + 10
 }
 
@@ -137,7 +137,7 @@ enum class CommandLineDisplayMode(val code: Int) {
 	Blink(5),
 	/**反显。*/
 	Invert(7);
-	
+
 	val disableCode = code + 20
 }
 

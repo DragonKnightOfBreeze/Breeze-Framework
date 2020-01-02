@@ -19,17 +19,17 @@ internal annotation class MermaidDslExtendedFeature
 
 /**Mermaid。*/
 @MermaidDsl
-abstract class Mermaid : DslBuilder
+abstract class Mermaid : DslDocument
 
 /**Mermaid配置。*/
 @MermaidDsl
 object MermaidConfig : DslConfig {
 	private val indentSizeRange = -2..8
-	
+
 	var indentSize = 4
 		set(value) = run { field = value.coerceIn(-2, 8) }
 	var preferDoubleQuote: Boolean = true
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
