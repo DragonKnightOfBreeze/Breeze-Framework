@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
-//NOTE unstable raw api
+//unstable raw api
 
 //region top annotations and interfaces
 /**Mermaid状态图的Dsl。*/

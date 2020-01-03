@@ -5,6 +5,56 @@ package com.windea.breezeframework.core.extensions
 import java.util.*
 import java.util.stream.*
 
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun <T> Array<out T>.onEach(action: (T) -> Unit): Array<out T> {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun ByteArray.onEach(action: (Byte) -> Unit): ByteArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun ShortArray.onEach(action: (Short) -> Unit): ShortArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun IntArray.onEach(action: (Int) -> Unit): IntArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun LongArray.onEach(action: (Long) -> Unit): LongArray {
+	this.forEach(action)
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun FloatArray.onEach(action: (Float) -> Unit): FloatArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun DoubleArray.onEach(action: (Double) -> Unit): DoubleArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun BooleanArray.onEach(action: (Boolean) -> Unit): BooleanArray {
+	return apply { for(element in this) action(element) }
+}
+
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+inline fun CharArray.onEach(action: (Char) -> Unit): CharArray {
+	return apply { for(element in this) action(element) }
+}
+
+
+/**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
+fun <T> Array<out T>.stream(start: Int = 0, end: Int = this.size): Stream<T> = Arrays.stream(this, start, end)
+
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 fun IntArray.stream(start: Int = 0, end: Int = this.size): IntStream = Arrays.stream(this, start, end)
 
@@ -13,9 +63,6 @@ fun LongArray.stream(start: Int = 0, end: Int = this.size): LongStream = Arrays.
 
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 fun DoubleArray.stream(start: Int = 0, end: Int = this.size): DoubleStream = Arrays.stream(this, start, end)
-
-/**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
-fun <T> Array<out T>.stream(start: Int = 0, end: Int = this.size): Stream<T> = Arrays.stream(this, start, end)
 
 
 /**将当前字节数组编码为base64格式的字节数组。*/

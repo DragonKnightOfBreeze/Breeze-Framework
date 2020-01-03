@@ -97,7 +97,7 @@ class FlowChartNode @PublishedApi internal constructor(
 
 	override fun hashCode() = hashCodeByOne(this) { id }
 
-	//NOTE syntax: name=>$type: $text|$flowState?:>$urlLink
+	//syntax: name=>$type: $text|$flowState?:>$urlLink
 	override fun toString(): String {
 		val flowStateSnippet = flowState?.let { "|$it" }.orEmpty()
 		val urlLinkSnippet = urlLink?.let { ":>$it" }.orEmpty()
@@ -122,7 +122,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 	override val sourceNodeId get() = fromNodeId
 	override val targetNodeId get() = toNodeId
 
-	//NOTE syntax: $fromNodeId($specifications)->$toNodeId
+	//syntax: $fromNodeId($specifications)->$toNodeId
 	override fun toString(): String {
 		val specificationsSnippet = listOfNotNull(status?.text, path?.text, direction?.text).joinToStringOrEmpty(", ", "(", ")")
 		return "$fromNodeId$specificationsSnippet->$toNodeId"
@@ -152,7 +152,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 		override var direction: Direction? = null
 	) : FlowChartConnectionBinder
 
-	//NOTE 使用委托在外部存储数据，等到必要时传递回来
+	//使用委托在外部存储数据，等到必要时传递回来
 	companion object {
 		internal val binderQueue = LinkedList<Binder>()
 	}

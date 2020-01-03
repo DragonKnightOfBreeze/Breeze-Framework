@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.enums.core.*
 import java.util.concurrent.*
 import kotlin.random.*
@@ -247,17 +248,17 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 }
 
 
-/**将当前数组作为值的部分，与另一个数组组成映射。*/
-fun <K, V> Array<out V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
-
-/**将当前数组作为值的部分，与另一个列表组成映射。*/
-fun <K, V> Array<out V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
-
-/**将当前列表作为值的部分，与另一个数组组成映射。*/
-fun <K, V> List<V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
-
-/**将当前列表作为值的部分，与另一个列表组成映射。*/
-fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
+///**将当前数组作为值的部分，与另一个数组作为键的部分组成映射。*/
+//fun <K, V> Array<out V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
+//
+///**将当前数组作为值的部分，与另一个列表作为键的部分组成映射。*/
+//fun <K, V> Array<out V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
+//
+///**将当前列表作为值的部分，与另一个数组作为键的部分组成映射。*/
+//fun <K, V> List<V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
+//
+///**将当前列表作为值的部分，与另一个列表作为键的部分组成映射。*/
+//fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
 
 
 /**根据指定的转换操作，将映射中的键与值加入到指定的可添加对添加对象。默认的转换操作是`$k=$v`。*/
@@ -432,6 +433,7 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
  * @see ReferenceCase.JsonSchema
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -441,6 +443,7 @@ fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
  * @see ReferenceCase.JsonSchema
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -450,6 +453,7 @@ fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = Refer
  * @see ReferenceCase.JsonSchema
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -459,6 +463,7 @@ fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
  * @see ReferenceCase.JsonSchema
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -502,6 +507,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
  *
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Array<out T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 
@@ -510,6 +516,7 @@ fun <T> Array<out T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  *
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Iterable<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 
@@ -518,6 +525,7 @@ fun <T> Iterable<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  *
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepFlatten(depth)
 
@@ -526,6 +534,7 @@ fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  *
  * @see ReferenceCase.Standard
  */
+@LowPerformanceApi
 fun <T> Sequence<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 

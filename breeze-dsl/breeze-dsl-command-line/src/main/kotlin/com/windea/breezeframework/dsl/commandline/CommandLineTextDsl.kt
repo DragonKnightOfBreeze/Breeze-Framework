@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.*
 //https://blog.csdn.net/qq_37187976/article/details/79265667
 //https://blog.csdn.net/felix_f/article/details/12433171
 
-//NOTE not for all echo commands
+//not for all echo commands
 
 //region top annotations and interfaces
 /**命令行富文本的Dsl。*/

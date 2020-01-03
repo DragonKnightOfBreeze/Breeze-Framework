@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import org.intellij.lang.annotations.*
 
-//NOTE can have a title by `title: text`, but it is not introduced in official api
+//can have a title by `title: text`, but it is not introduced in official api
 
 //region top annotations and interfaces
 /**Mermaid序列图的Dsl。*/

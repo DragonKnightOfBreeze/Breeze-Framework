@@ -1,5 +1,5 @@
 @file:JvmName("CoreExtensions")
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
 
 package com.windea.breezeframework.core.extensions
 

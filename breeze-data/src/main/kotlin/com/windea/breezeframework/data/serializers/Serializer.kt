@@ -15,19 +15,19 @@ import java.lang.reflect.*
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
 	fun <T> load(string: String, type: Class<T>): T
-	
+
 	/**从指定文件读取指定类型的数据。*/
 	fun <T> load(file: File, type: Class<T>): T
-	
+
 	/**从指定字符串读取指定类型的数据。*/
 	fun <T> load(string: String, type: Type): T
-	
+
 	/**从指定文件读取指定类型的数据。*/
 	fun <T> load(file: File, type: Type): T
-	
+
 	/**转储数据到字符串。*/
 	fun <T> dump(data: T): String
-	
+
 	/**转储数据到文件。*/
 	fun <T> dump(data: T, file: File)
 }
@@ -38,8 +38,8 @@ interface SerializerConfig
 
 //region reified extensions
 
-//NOTE use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
-//NOTE use user-defined javaTypeOf<T>() here instead, reference to jackson's TypeReference implementation.
+//use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
+//use user-defined javaTypeOf<T>() here instead, reference to jackson's TypeReference implementation.
 
 /**从指定字符串读取指定类型的数据。*/
 inline fun <reified T> Serializer.load(string: String): T = load(string, javaTypeOf<T>())

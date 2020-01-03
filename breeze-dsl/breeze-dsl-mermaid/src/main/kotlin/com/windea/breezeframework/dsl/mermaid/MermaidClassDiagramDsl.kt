@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//NOTE unstable raw api
+//unstable raw api
 
 //region top annotations and interfaces
 /**Mermaid类图的Dsl。*/
@@ -171,14 +171,14 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
 	@MultilineProp("<br>")
 	var text: String? = null
-	//NOTE syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
+	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null
 	var toCardinality: String? = null
 
 	override val sourceNodeId get() = fromClassId
 	override val targetNodeId get() = toClassId
 
-	//NOTE syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
+	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
 		return arrayOf(
 			fromClassId, fromCardinality?.wrapQuote(quote), type.text, toCardinality?.wrapQuote(quote), toClassId
@@ -188,7 +188,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	/**Mermaid类图关系的类型。*/
 	@MermaidClassDiagramDsl
 	enum class Type(val text: String) {
-		//NOTE do not allow bidirectional arrows
+		//do not allow bidirectional arrows
 		Link("--"),
 		Inheritance("<|--"), Composition("*--"), Aggregation("o--"), Association("<--"),
 		ReversedInheritance("--|>"), ReversedComposition("--*"), ReversedAggregation("--o"), ReversedAssociation("-->")

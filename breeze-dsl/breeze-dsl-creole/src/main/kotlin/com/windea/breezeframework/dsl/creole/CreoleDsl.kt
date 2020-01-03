@@ -312,7 +312,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size, and can be user defined
+		//actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		header.columnSize = actualColumnSize
 		rows.forEach { it.columnSize = actualColumnSize }
@@ -336,7 +336,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size
+		//actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
 			else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, emptyColumnText)
@@ -360,7 +360,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size
+		//actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)

@@ -8,7 +8,7 @@ import java.io.*
 import java.net.*
 import java.nio.file.*
 
-//NOTE uri是编码后的url，当转换时可能需要进行适当的编码和解码
+//uri是编码后的url，当转换时可能需要进行适当的编码和解码
 
 /**包括主机名在内的完整路径。*/
 val URI.fullPath get() = "$host$path"

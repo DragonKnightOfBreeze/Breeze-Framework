@@ -501,7 +501,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 	override fun toString(): String {
 		require(rows.isNotEmpty()) { "Table row size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size, and can be user defined
+		//actual column size may not equal to columns.size, and can be user defined
 		val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
 		//adjust column size
 		header.columnSize = actualColumnSize
@@ -527,7 +527,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size
+		//actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
@@ -560,7 +560,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 	override fun toString(): String {
 		require(columns.isNotEmpty()) { "Table row column size must be positive." }
 
-		//NOTE actual column size may not equal to columns.size
+		//actual column size may not equal to columns.size
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
