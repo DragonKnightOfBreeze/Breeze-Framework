@@ -25,7 +25,7 @@ fun <T : Cloneable> T.shallowClone(): T {
 /**
  * 深克隆一个可克隆对象。自定进行类型转换。
  * 仅对可克隆可更改的字段采用深克隆操作。
- * 可选是否克隆集合字段中（可克隆可更改）的字段，默认为true。
+ * 可选是否克隆集合（如列表、集、映射）字段中（可克隆可更改）的字段，默认为true。
  */
 @NotRecommended("There is no guarantee that clone operation will succeed by reflection.")
 @LowPerformanceApi
