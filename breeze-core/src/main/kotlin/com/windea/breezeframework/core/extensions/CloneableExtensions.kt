@@ -31,19 +31,19 @@ fun <T : Cloneable> T.shallowClone(): T {
 @LowPerformanceApi
 fun <T : Cloneable> T.deepClone(includeCollection: Boolean = true): T {
 	return this.shallowClone().apply {
-		this::class.java.declaredFields.forEach { prop ->
-			//如果是不可变字段或静态字段，则不处理
-			if(Modifier.isFinal(prop.modifiers) || Modifier.isStatic(prop.modifiers)) return@forEach
-
+		this::class.java.declaredFields.filterNot { prop ->
+			Modifier.isFinal(prop.modifiers) || Modifier.isStatic(prop.modifiers)
+		}.forEach { prop ->
 			prop.isAccessible = true
 			val propValue = prop.get(this)
 			if(propValue is Cloneable) prop.set(this, propValue.deepClone())
 
-			if(!includeCollection) return@forEach
-			when(propValue) {
-				is List<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
-				is Set<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
-				is Map<*, *> -> prop.set(this, propValue.mapValues { (_, v) -> (v as? Cloneable)?.deepClone() ?: v })
+			if(includeCollection) {
+				when(propValue) {
+					is List<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
+					is Set<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
+					is Map<*, *> -> prop.set(this, propValue.mapValues { (_, v) -> (v as? Cloneable)?.deepClone() ?: v })
+				}
 			}
 		}
 	}

@@ -1,9 +1,8 @@
-package com.windea.breezeframework.core.tests
+package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
 
-class CloneableTest {
+class CloneableExtensionsTest {
 	class Obj : Cloneable
 
 	class DeepObj : Cloneable {
@@ -21,11 +20,11 @@ class CloneableTest {
 		val deepObj1 = DeepObj()
 		val deepObj2 = deepObj1.deepClone()
 
-		println(obj1 === obj2)
-		println(deepObj1 === deepObj2)
-		println(deepObj1.b === deepObj2.b)
-		println(deepObj1.c === deepObj2.c)
-		println(deepObj1.obj === deepObj2.obj)
+		assertNotEquals(obj1, obj2)
+		assertNotEquals(deepObj1, deepObj2)
+		assertNotEquals(deepObj1.b, deepObj2.b)
+		assertNotEquals(deepObj1.c, deepObj2.c)
+		assertNotEquals(deepObj1.obj, deepObj2.obj)
 	}
 }
 
