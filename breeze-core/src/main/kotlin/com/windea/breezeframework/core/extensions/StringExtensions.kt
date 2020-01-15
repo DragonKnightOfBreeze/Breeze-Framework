@@ -11,7 +11,6 @@ import java.text.*
 import java.time.*
 import java.time.format.*
 import java.util.*
-import kotlin.contracts.*
 
 //region operator overrides
 /**@see kotlin.text.slice*/
@@ -106,6 +105,12 @@ fun CharSequence.isAlphanumeric(): Boolean {
 }
 
 
+/**如果当前字符串满足指定条件，则返回空字符串，否则返回本身。*/
+inline fun String.orEmpty(predicate: (String) -> Boolean): String {
+	return if(predicate(this)) "" else this
+}
+
+
 /**如果当前字符串不为空，则返回转换后的值。*/
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
 	return if(this.isEmpty()) this else transform(this)
@@ -116,20 +121,15 @@ inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 	return if(this.isBlank()) this else transform(this)
 }
 
-/**如果当前字符串满足指定条件，则返回本身，否则返回空字符串。*/
-inline fun String.takeStringIf(predicate: (String) -> Boolean): String {
-	contract {
-		callsInPlace(predicate, InvocationKind.EXACTLY_ONCE)
-	}
-	return if(predicate(this)) this else ""
+
+/**如果当前发展处不为空，则返回本身，否则返回null。*/
+inline fun <C : CharSequence> C.takeIfNotEmpty(): C? {
+	return this.takeIf { it.isNotEmpty() }
 }
 
-/**如果当前字符串不满足指定条件，则返回本身，否则返回空字符串。*/
-inline fun String.takeStringUnless(predicate: (String) -> Boolean): String {
-	contract {
-		callsInPlace(predicate, InvocationKind.EXACTLY_ONCE)
-	}
-	return if(predicate(this)) "" else this
+/**如果当前发展处不为空白，则返回本身，否则返回null。*/
+inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
+	return this.takeIf { it.isNotBlank() }
 }
 
 
@@ -579,7 +579,6 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
-
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 @Suppress("DEPRECATION")
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
@@ -618,8 +617,7 @@ inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeForma
 	LocalDate.parse(this, formatter)
 
 /**将当前字符串转化为本地日期时间。*/
-inline fun CharSequence.toLocalDateTime(
-	formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
+inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
 
 /**将当前字符串转化为本地时间。*/

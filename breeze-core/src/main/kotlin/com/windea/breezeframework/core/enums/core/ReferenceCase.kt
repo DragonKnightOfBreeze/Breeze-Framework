@@ -27,6 +27,7 @@ enum class ReferenceCase(
 	 * * `Reference` 表示一个对象/属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 */
+	//TODO 更符合规范
 	Json(
 		//allow: $, ., words, [number]
 		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex(),

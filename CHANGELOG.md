@@ -183,7 +183,6 @@
 * [X] breeze-core 废弃`MultiValueMap`的实现，转而为`Map<K,List<V>>`提供别名扩展。
 * [X] breeze-logger 完成自己的日志器的实现。
 * [X] breeze-core 添加`String.alignLeft`等方法。
-* [X] breeze-core 添加`String.takeIfNotEmpty`和`String.takeIfNotBlank`。
 * [X] breeze-core 去除以上扩展，添加`String.orNull`和`Optional.orNull`扩展。
 * [X] breeze-core 重构和添加`String.alignStart`,`String.addPrefix`,`String.inline`,`String.trimWrap`等扩展。
 * [X] breeze-dsl 重构代码和整理目录。
@@ -235,6 +234,7 @@
 * [X] 添加必要的Jvm注解，加强Java兼容性，其他一些相关更改。
 * [X] breeze-core 添加一些类型别名。
 * [X] breeze-core 移除自定义的`Cloneable<T>`接口，添加不稳定的`shallowClone`和`deepClone`扩展。移除`List.withKeys`扩展。
+* [X] breeze-core 添加`String.orEmpty(predicate)`、`String.takeIfNotEmpty`和`String.takeIfNotBlank`。
 
 # 待办
 

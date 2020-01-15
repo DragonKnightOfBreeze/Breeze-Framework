@@ -29,16 +29,17 @@ fun <T : Cloneable> T.shallowClone(): T {
  */
 @NotRecommended("There is no guarantee that clone operation will succeed by reflection.")
 @LowPerformanceApi
-fun <T : Cloneable> T.deepClone(includeCollection: Boolean = true): T {
+fun <T : Cloneable> T.deepClone(includeCollection: Boolean = true, includeDataClass: Boolean = true): T {
 	return this.shallowClone().apply {
 		this::class.java.declaredFields.filterNot { prop ->
 			Modifier.isFinal(prop.modifiers) || Modifier.isStatic(prop.modifiers)
 		}.forEach { prop ->
 			prop.isAccessible = true
 			val propValue = prop.get(this)
-			if(propValue is Cloneable) prop.set(this, propValue.deepClone())
 
-			if(includeCollection) {
+			if(propValue is Cloneable) {
+				prop.set(this, propValue.deepClone())
+			} else if(includeCollection) {
 				when(propValue) {
 					is List<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
 					is Set<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
