@@ -24,10 +24,10 @@ inline fun Boolean.onFalse(block: () -> Unit): Boolean {
 	return this
 }
 
-/**如果为null，则返回true，否则返回本身。用于链式调用。*/
+/**如果为null，则返回true，否则返回本身。*/
 inline fun Boolean?.orTrue(): Boolean = this ?: true
 
-/**如果为null，则返回false，否则返回本身。用于链式调用。*/
+/**如果为null，则返回false，否则返回本身。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 //endregion
 

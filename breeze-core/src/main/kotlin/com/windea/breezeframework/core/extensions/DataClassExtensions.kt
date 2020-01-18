@@ -7,7 +7,7 @@ import kotlin.reflect.*
 
 //https://github.com/consoleau/kassava
 
-//为了避免污染Any?的代码提示，不要定义为扩展方法
+//为了避免污染Any?的代码提示，不要定义为Any?的扩展方法
 
 /**通过选择并比较指定类型中的属性，判断两个对象是否相等。特殊对待数组类型，默认递归执行操作。*/
 inline fun <reified T> equalsBy(target: T?, other: Any?, deepOperation: Boolean = true,

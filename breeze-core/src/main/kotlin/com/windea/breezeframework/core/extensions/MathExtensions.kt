@@ -39,15 +39,12 @@ fun Double.round(precision: Int): Double {
 
 
 ///**得到指定整数的阶乘。*/
-//@LowPerformanceApi
 //fun Int.factorial(): BigInteger = this.toBigInteger().privateFactorial()
 //
 ///**得到指定整数的阶乘。*/
-//@LowPerformanceApi
 //fun Long.factorial(): BigInteger = this.toBigInteger().privateFactorial()
 //
 ///**得到指定整数的阶乘。*/
-//@LowPerformanceApi
 //fun BigInteger.factorial(): BigInteger = this.privateFactorial()
 //
 //private tailrec fun BigInteger.privateFactorial(result: BigInteger = 1.toBigInteger()): BigInteger {
@@ -59,15 +56,12 @@ fun Double.round(precision: Int): Double {
 //
 //
 ///**得到指定整数的累加。*/
-//@LowPerformanceApi
 //fun Int.cumulative(): BigInteger = this.toBigInteger().privateCumulative()
 //
 ///**得到指定整数的累加。*/
-//@LowPerformanceApi
 //fun Long.cumulative(): BigInteger = this.toBigInteger().privateCumulative()
 //
 ///**得到指定整数的累加。*/
-//@LowPerformanceApi
 //fun BigInteger.cumulative(): BigInteger = this.privateCumulative()
 //
 //private tailrec fun BigInteger.privateCumulative(result: BigInteger = 1.toBigInteger()): BigInteger {
