@@ -236,6 +236,7 @@
 * [X] breeze-core 移除自定义的`Cloneable<T>`接口，添加不稳定的`shallowClone`和`deepClone`扩展。移除`List.withKeys`扩展。
 * [X] breeze-core 添加`String.orEmpty(predicate)`、`String.takeIfNotEmpty`和`String.takeIfNotBlank`。
 * [X] breeze-core&breeze-reflect 优化部分代码。
+* [X] 添加必要的`@JvmStatic`和`@JvmOverloads`注解。
 
 # 待办
 

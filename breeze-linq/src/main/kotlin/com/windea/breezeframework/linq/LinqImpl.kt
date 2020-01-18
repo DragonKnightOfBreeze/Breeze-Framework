@@ -69,6 +69,6 @@ class LinqImpl<S, T>(
 	}
 
 	companion object {
-		fun <T> init(): Linq<T, T> = LinqImpl { it }
+		internal fun <T> init(): Linq<T, T> = LinqImpl { it }
 	}
 }

@@ -38,6 +38,7 @@ inline fun <reified T> File.deserialize(dataType: DataType): T {
 @Deprecated("Use kotlinx-serialization's related function.", ReplaceWith("kotlinx.serialization.Mapper.map<T>(this)"))
 @LowPerformanceApi
 @Suppress("DEPRECATION")
+@JvmOverloads
 fun <T : Any> T.toPropertyMap(recursive: Boolean = false): Map<String, Any?> {
 	return this::class.memberProperties.associate { it.name to it.call(this) }.let { map ->
 		when {
@@ -63,6 +64,7 @@ inline fun <reified T> Map<String, Any?>.toObject(recursive: Boolean = false): T
 /**将当前映射转化为指定类型的对象。可指定是否递归转化，默认为false。*/
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toObject<T>(recursive)"))
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Map<String, Any?>.toObject(type: Class<T>, recursive: Boolean = false): T {
 	val newObject = type.getConstructor().newInstance()
 	val propertyMap = type.setterMap

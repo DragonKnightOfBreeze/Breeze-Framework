@@ -6,5 +6,5 @@ import kotlin.annotation.AnnotationTarget.*
 @MustBeDocumented
 @Retention(BINARY)
 @Target(FUNCTION)
-/**注明这个注解定义了一个TODO方法。*/
+/**注明这个注解定义了一个待办方法。*/
 annotation class TodoMarker

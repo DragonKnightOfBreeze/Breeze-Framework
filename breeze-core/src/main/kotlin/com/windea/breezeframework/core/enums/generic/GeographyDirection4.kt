@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.enums.normal
+package com.windea.breezeframework.core.enums.generic
 
 import com.windea.breezeframework.core.annotations.messages.*
 

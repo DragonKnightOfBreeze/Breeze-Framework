@@ -77,6 +77,6 @@ class StreamLinq<S, T>(
 	}
 
 	companion object {
-		fun <T> init(isParallel: Boolean = false) = StreamLinq<T, T>(isParallel) { it }
+		internal fun <T> init(isParallel: Boolean = false) = StreamLinq<T, T>(isParallel) { it }
 	}
 }

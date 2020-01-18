@@ -390,6 +390,7 @@ inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>,
  *
  * @see ReferenceCase.Standard
  */
+@JvmOverloads
 fun <T> Array<out T>.deepGet(path: String, referenceCase: ReferenceCase = ReferenceCase.Standard): Any? =
 	this.toIndexKeyMap().privateDeepGet(path.splitBy(referenceCase))
 
@@ -398,6 +399,7 @@ fun <T> Array<out T>.deepGet(path: String, referenceCase: ReferenceCase = Refere
  *
  * @see ReferenceCase.Standard
  */
+@JvmOverloads
 fun <T> List<T>.deepGet(path: String, referenceCase: ReferenceCase = ReferenceCase.Standard): Any? =
 	this.toIndexKeyMap().privateDeepGet(path.splitBy(referenceCase))
 
@@ -406,6 +408,7 @@ fun <T> List<T>.deepGet(path: String, referenceCase: ReferenceCase = ReferenceCa
  *
  * @see ReferenceCase.Standard
  */
+@JvmOverloads
 fun <K, V> Map<K, V>.deepGet(path: String, referenceCase: ReferenceCase = ReferenceCase.Standard): Any? =
 	this.toStringKeyMap().privateDeepGet(path.splitBy(referenceCase))
 
@@ -434,6 +437,7 @@ private tailrec fun Map<String, Any?>.privateDeepGet(subPaths: List<String>): An
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -444,6 +448,7 @@ fun <T> Array<out T>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -454,6 +459,7 @@ fun <T> Iterable<T>.deepQuery(path: String, referenceCase: ReferenceCase = Refer
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -464,6 +470,7 @@ fun <K, V> Map<K, V>.deepQuery(path: String, referenceCase: ReferenceCase = Refe
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Sequence<T>.deepQuery(path: String, referenceCase: ReferenceCase = ReferenceCase.JsonSchema): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepQuery(path.splitBy(referenceCase))
 
@@ -508,6 +515,7 @@ private fun Map<String, Any?>.privateDeepQuery(subPaths: List<String>, preSubPat
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Array<out T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 
@@ -517,6 +525,7 @@ fun <T> Array<out T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Iterable<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 
@@ -526,6 +535,7 @@ fun <T> Iterable<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toStringKeyMap().privateDeepFlatten(depth)
 
@@ -535,6 +545,7 @@ fun <K, V> Map<K, V>.deepFlatten(depth: Int = -1): Map<String, Any?> =
  * @see ReferenceCase.Standard
  */
 @LowPerformanceApi
+@JvmOverloads
 fun <T> Sequence<T>.deepFlatten(depth: Int = -1): Map<String, Any?> =
 	this.toIndexKeyMap().privateDeepFlatten(depth)
 

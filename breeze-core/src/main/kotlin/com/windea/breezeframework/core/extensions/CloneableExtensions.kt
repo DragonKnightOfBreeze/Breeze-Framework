@@ -51,7 +51,7 @@ fun <T : Cloneable> T.deepClone(): T {
 				is List<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
 				is Set<*> -> prop.set(this, propValue.map { (it as? Cloneable)?.deepClone() ?: it })
 				is Map<*, *> -> prop.set(this, propValue.mapValues { (_, v) -> (v as? Cloneable)?.deepClone() ?: v })
-				//认为所有用户可访问的可变集合类型，在Jvm中都实现了Cloneable接口
+				//认为所有用户可访问的常见可变集合类型，在Jvm中都实现了Cloneable接口
 			}
 		}
 	}

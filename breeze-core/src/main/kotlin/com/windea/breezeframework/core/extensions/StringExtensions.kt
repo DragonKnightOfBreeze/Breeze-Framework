@@ -143,24 +143,28 @@ fun String.flatRepeat(n: Int): String {
 
 /**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
 @JvmName("replaceAllByChar")
+@JvmOverloads
 fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
 /**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
 @JvmName("replaceAllByChar")
+@JvmOverloads
 fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
 /**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
+@JvmOverloads
 fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
 /**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
+@JvmOverloads
 fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
@@ -179,6 +183,7 @@ fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String 
 
 
 /**将字符串中的指定字符替换成根据索引得到的字符。*/
+@JvmOverloads
 fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldChar, ignoreCase = ignoreCase)
@@ -190,6 +195,7 @@ fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (
 }
 
 /**将字符串中的指定值替换成根据索引得到的字符串。*/
+@JvmOverloads
 fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldValue, ignoreCase = ignoreCase)
@@ -250,6 +256,7 @@ infix fun String.lineConcat(other: String): String {
 }
 
 /**逐行换行字符串，确保每行长度不超过指定长度。*/
+@JvmOverloads
 fun String.lineBreak(width: Int = 120): String {
 	//TODO 保持整个单词在同一行
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
@@ -305,6 +312,7 @@ infix fun String.addSurrounding(delimiter: CharSequence): String {
 
 
 /**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
 fun String.alignStart(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
@@ -313,6 +321,7 @@ fun String.alignStart(padChar: Char = ' '): String {
 }
 
 /**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
 fun String.alignEnd(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
@@ -321,6 +330,7 @@ fun String.alignEnd(padChar: Char = ' '): String {
 }
 
 /**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
 fun String.alignCenter(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
@@ -382,6 +392,7 @@ internal fun String.splitToWordList(delimiter: Char = ' '): List<String> {
 internal fun String.toWords(): String {
 	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }
+
 
 /**
  * 根据指定的正则表达式，基于结果分组，匹配并按顺序分割当前字符串。
@@ -465,15 +476,15 @@ fun String.unwrapQuote(): String {
 //endregion
 
 //region escape & unescape extensions
-/**根据指定的转义类型，转义当前字符串。默认采用Kotlin的转义。*/
-fun String.escapeBy(type: EscapeType = EscapeType.Kotlin): String {
+/**根据指定的转义类型，转义当前字符串。*/
+fun String.escapeBy(type: EscapeType): String {
 	//"\" should be escaped first
 	val tempString = if(type.escapeBackslash) this.replace("\\", "\\\\") else this
 	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
 }
 
-/**根据指定的转义类型，反转义当前字符串。默认采用Kotlin的转义。*/
-fun String.unescapeBy(type: EscapeType = EscapeType.Kotlin): String {
+/**根据指定的转义类型，反转义当前字符串。*/
+fun String.unescapeBy(type: EscapeType): String {
 	//"\" should be unescaped last
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
 	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
@@ -538,8 +549,9 @@ fun String.trimWrap(): String {
 }
 
 /**
- * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
+ * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。默认为0。
  **/
+@JvmOverloads
 fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 	require(relativeIndentSize in -2..8) { "Relative indent size is not in range [-2, 8]." }
 
@@ -581,6 +593,7 @@ inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase: Boolean = 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValue<T>(ignoreCase)"))
 @Suppress("DEPRECATION")
+@JvmOverloads
 fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
 
@@ -589,6 +602,7 @@ fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
+@JvmOverloads
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
 
@@ -606,21 +620,26 @@ inline fun String.toPath(): Path = Path.of(this)
 inline fun String.toUri(): URI = URI.create(this)
 
 /**将当前字符串转化为统一资源定位符。*/
+@JvmOverloads
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
 
 /**将当前字符串转化为日期。*/
+@JvmOverloads
 inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date = SimpleDateFormat(format).parse(this)
 
 /**将当前字符串转化为本地日期。*/
+@JvmOverloads
 inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate =
 	LocalDate.parse(this, formatter)
 
 /**将当前字符串转化为本地日期时间。*/
+@JvmOverloads
 inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
 
 /**将当前字符串转化为本地时间。*/
+@JvmOverloads
 inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalDateTime =
 	LocalDateTime.parse(this, formatter)
 //endregion

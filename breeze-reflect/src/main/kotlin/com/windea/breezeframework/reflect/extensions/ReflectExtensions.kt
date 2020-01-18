@@ -26,6 +26,7 @@ inline fun <reified T> nameOf(): String? {
 
 /**得到指定项的名字。适用于：类引用、属性引用、方法引用、实例。不适用于：类型参数，参数，局部变量。*/
 @TrickImplementationApi("Can never be implemented for all situations.")
+@JvmSynthetic
 inline fun nameOf(target: Any?): String? {
 	//无法直接通过方法的引用得到参数，无法得到局部变量的任何信息
 	return when {

@@ -13,11 +13,6 @@ class ClassExtensionsKtTest {
 	}
 
 	@Test
-	fun isString() {
-		assertTrue(String::class.java.isString)
-	}
-
-	@Test
 	fun isIterable() {
 		assertTrue(List::class.java.isIterable)
 		assertTrue(ArrayList::class.java.isIterable)

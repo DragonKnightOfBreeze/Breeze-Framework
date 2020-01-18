@@ -21,6 +21,9 @@ val <T> Class<T>.isBoxed: Boolean
 	        java.lang.Float::class.java == this || java.lang.Double::class.java == this ||
 	        java.lang.Character::class.java == this || java.lang.Boolean::class.java == this
 
+/**判断当前类型是否是字符序列类型。*/
+val <T> Class<T>.isCharSequence: Boolean get() = CharSequence::class.java isDeepAssignableFrom this
+
 /**判断当前类型是否是可迭代类型。*/
 val <T> Class<T>.isIterable: Boolean get() = Iterable::class.java isDeepAssignableFrom this
 

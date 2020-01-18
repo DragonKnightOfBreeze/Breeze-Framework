@@ -36,6 +36,8 @@
       <module name="breeze-dsl_test" target="11" />
       <module name="breeze-framework-breeze-core_main" target="11" />
       <module name="breeze-framework-breeze-core_test" target="11" />
+      <module name="Breeze-Framework.breeze-test.main" target="11" />
+      <module name="Breeze-Framework.breeze-test.test" target="11" />
       <module name="breeze-framework_main" target="11" />
       <module name="Breeze-Framework_main" target="11" />
       <module name="Breeze-Framework_test" target="11" />
