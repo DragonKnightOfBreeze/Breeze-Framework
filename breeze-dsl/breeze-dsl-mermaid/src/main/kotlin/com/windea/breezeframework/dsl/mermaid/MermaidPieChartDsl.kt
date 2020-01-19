@@ -76,7 +76,7 @@ class MermaidPieChartSection @PublishedApi internal constructor(
 	override fun hashCode() = hashCodeByOne(this) { id }
 
 	override fun toString(): String {
-		return "${key.wrapQuote(quote)}: $value"
+		return "${key.quote(quote)}: $value"
 	}
 }
 //endregion

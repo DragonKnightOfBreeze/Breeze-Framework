@@ -106,7 +106,7 @@ fun CharSequence.isAlphanumeric(): Boolean {
 }
 
 
-/**如果当前字符串满足指定条件，则返回空字符串，否则返回本身。*/
+/**如果当前字符串满足指定条件，则返回空字符串，否则返回自身。*/
 inline fun String.orEmpty(predicate: (String) -> Boolean): String {
 	return if(predicate(this)) "" else this
 }
@@ -123,12 +123,12 @@ inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 }
 
 
-/**如果当前发展处不为空，则返回本身，否则返回null。*/
+/**如果当前发展处不为空，则返回自身，否则返回null。*/
 inline fun <C : CharSequence> C.takeIfNotEmpty(): C? {
 	return this.takeIf { it.isNotEmpty() }
 }
 
-/**如果当前发展处不为空白，则返回本身，否则返回null。*/
+/**如果当前发展处不为空白，则返回自身，否则返回null。*/
 inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
 	return this.takeIf { it.isNotBlank() }
 }
@@ -170,40 +170,17 @@ fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolea
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
-@JvmName("replaceAllByRegex")
-fun String.replaceAll(vararg regexReplacementPairs: Pair<Regex, String>): String {
-	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
-}
-
-/**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
-@JvmName("replaceAllByRegex")
-fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String {
-	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
-}
-
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-tailrec fun String.replaceLooped(regex: Regex, replacement: String): String {
-	val newString = this.replace(regex, replacement)
-	//如果字符串长度不相等，则字符串一定不相等
-	return if(this.length != newString.length || this != newString) {
-		newString.replaceLooped(regex, replacement)
-	} else {
-		newString
-	}
-}
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-tailrec fun String.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
-	val newString = this.replace(regex, transform)
-	//如果字符串长度不相等，则字符串一定不相等
-	return if(this.length != newString.length || this != newString) {
-		newString.replaceLooped(regex, transform)
-	} else {
-		newString
-	}
-}
+///**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
+//@JvmName("replaceAllByRegex")
+//fun String.replaceAll(vararg regexReplacementPairs: Pair<Regex, String>): String {
+//	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
+//}
+//
+///**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
+//@JvmName("replaceAllByRegex")
+//fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String {
+//	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
+//}
 
 
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
@@ -227,6 +204,29 @@ inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, 
 			this.append(s)
 			if(i < splitStrings.count() - 1) this.append(newValue(i))
 		}
+	}
+}
+
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun String.replaceLooped(regex: Regex, replacement: String): String {
+	val newString = this.replace(regex, replacement)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(this.length != newString.length || this != newString) {
+		newString.replaceLooped(regex, replacement)
+	} else {
+		newString
+	}
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun String.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
+	val newString = this.replace(regex, transform)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(this.length != newString.length || this != newString) {
+		newString.replaceLooped(regex, transform)
+	} else {
+		newString
 	}
 }
 
@@ -482,18 +482,18 @@ private fun String.privateSubstringMatch(vararg delimiters: String?, defaultValu
 fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
-//region wrap & unwrap extensions
+//region quote & unquote extensions
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
-/**使用指定的引号包围当前字符串。同时转义其中的对应引号。*/
-fun String.wrapQuote(quote: Char): String {
+/**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。限定为单引号、双引号或反引号，否则会抛出异常。*/
+fun String.quote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
 
 	return "$quote${this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }}$quote"
 }
 
-/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。*/
-fun String.unwrapQuote(): String {
+/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。限定为单引号、双引号或反引号，否则会返回自身。*/
+fun String.unquote(): String {
 	val quote = this.first()
 	if(quote !in quoteChars) return this
 	return this.removeSurrounding(quote.toString()).ifNotEmpty { it.replace("\\$quote", quote.toString()) }

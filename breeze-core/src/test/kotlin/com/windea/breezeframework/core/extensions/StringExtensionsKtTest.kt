@@ -70,8 +70,8 @@ class StringExtensionsKtTest {
 
 	@Test //TESTED
 	fun quoteTest() {
-		assertEquals(""""'1\"2'"""", """'1"2'""".wrapQuote('"'))
-		assertEquals("""'1"2'""", """"'1\"2'"""".unwrapQuote())
+		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"'))
+		assertEquals("""'1"2'""", """"'1\"2'"""".unquote())
 	}
 
 	@Test //TESTED

@@ -104,7 +104,7 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 		return if(alias == null) {
 			"state $name$tagSnippet$colorSnippet: $textSnippet"
 		} else {
-			val nameSnippet = name.replaceWithEscapedWrap().wrapQuote(quote) //only escaped with an existing alias
+			val nameSnippet = name.replaceWithEscapedWrap().quote(quote) //only escaped with an existing alias
 			"state $nameSnippet as $alias$tagSnippet$colorSnippet: $textSnippet"
 		}
 	}
@@ -140,7 +140,7 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val nameSnippet = alias ?: name
-		val extraSnippet = alias?.let { "\nstate ${name.replaceWithEscapedWrap().wrapQuote(quote)} as $alias" }
+		val extraSnippet = alias?.let { "\nstate ${name.replaceWithEscapedWrap().quote(quote)} as $alias" }
 			.orEmpty()
 		val extraSnippetWithText = when {
 			text == null -> extraSnippet
@@ -175,7 +175,7 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 		val contentSnippet = sections.joinToStringOrEmpty("\n---\n")
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
-		val extraSnippet = alias?.let { "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias" }.orEmpty()
+		val extraSnippet = alias?.let { "\nstate ${name.replaceWithHtmlWrap().quote(quote)} as $alias" }.orEmpty()
 		val extraSnippetWithText = when {
 			text == null -> extraSnippet
 			extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithHtmlWrap()}"

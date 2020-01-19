@@ -5,48 +5,48 @@ package com.windea.breezeframework.core.extensions
 import java.util.*
 import java.util.stream.*
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun <T> Array<out T>.onEach(action: (T) -> Unit): Array<out T> {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun ByteArray.onEach(action: (Byte) -> Unit): ByteArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun ShortArray.onEach(action: (Short) -> Unit): ShortArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun IntArray.onEach(action: (Int) -> Unit): IntArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun LongArray.onEach(action: (Long) -> Unit): LongArray {
 	this.forEach(action)
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun FloatArray.onEach(action: (Float) -> Unit): FloatArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun DoubleArray.onEach(action: (Double) -> Unit): DoubleArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun BooleanArray.onEach(action: (Boolean) -> Unit): BooleanArray {
 	return apply { for(element in this) action(element) }
 }
 
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组本身。*/
+/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
 inline fun CharArray.onEach(action: (Char) -> Unit): CharArray {
 	return apply { for(element in this) action(element) }
 }

@@ -237,7 +237,8 @@
 * [X] breeze-core 添加`String.orEmpty(predicate)`、`String.takeIfNotEmpty`和`String.takeIfNotBlank`。
 * [X] breeze-core&breeze-reflect 优化部分代码。
 * [X] 添加必要的`@JvmStatic`和`@JvmOverloads`注解。
-* [X] 添加`String.replaceLooped`扩展。
+* [X] breeze-core 添加`String.replaceLooped`扩展。
+* [X] breeze-core 将`String.wrapQuote`、`String.unwrapQuote`重命名为`String.quote`、`String.unquote`。
 
 # 待办
 

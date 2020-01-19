@@ -181,7 +181,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
 		return arrayOf(
-			fromClassId, fromCardinality?.wrapQuote(quote), type.text, toCardinality?.wrapQuote(quote), toClassId
+			fromClassId, fromCardinality?.quote(quote), type.text, toCardinality?.quote(quote), toClassId
 		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
 	}
 

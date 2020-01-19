@@ -95,7 +95,7 @@ class MermaidFlowChartNode @PublishedApi internal constructor(
 	override fun hashCode() = hashCodeByOne(this) { id }
 
 	override fun toString(): String {
-		val textSnippet = text?.replaceWithHtmlWrap()?.wrapQuote(quote) ?: name
+		val textSnippet = text?.replaceWithHtmlWrap()?.quote(quote) ?: name
 		return "$name${shape.prefix}$textSnippet${shape.suffix}"
 	}
 

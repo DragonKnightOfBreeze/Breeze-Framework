@@ -180,7 +180,7 @@ class PumlNote @PublishedApi internal constructor(
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
 		} else {
 			val textSnippet = text.replaceWithEscapedWrap()
-			if(position == null) "note ${textSnippet.wrapQuote(quote)} as $alias"
+			if(position == null) "note ${textSnippet.quote(quote)} as $alias"
 			else "note$positionSnippet: $textSnippet"
 		}
 	}

@@ -74,7 +74,7 @@ class XmlStatement @PublishedApi internal constructor(
 	val attributes: Map<String, String> = mapOf()
 ) : XmlDslElement {
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
 		return "<?$name$attributesSnippet?>"
 	}
 }
@@ -123,7 +123,7 @@ class XmlElement @PublishedApi internal constructor(
 	override val id: String get() = name
 
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
 		val nodesSnippet = nodes.joinToStringOrEmpty(wrap).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"

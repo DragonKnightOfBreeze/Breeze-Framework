@@ -234,7 +234,7 @@ open class MarkdownInlineLink @PublishedApi internal constructor(
 	val title: String? = null
 ) : MarkdownLink(url) {
 	override fun toString(): String {
-		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
+		val titleSnippet = title?.let { " ${it.quote(quote)}" }.orEmpty()
 		return "[$name]($url$titleSnippet)"
 	}
 }
@@ -676,7 +676,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 	override fun toString(): String {
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
-		val titleSnippet = title.wrapQuote(quote)
+		val titleSnippet = title.quote(quote)
 		val contentSnippet = toContentString().prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
@@ -746,7 +746,7 @@ class MarkdownImport @PublishedApi internal constructor(
 	override fun toString(): String {
 		if(generateContent) return toGeneratedString()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		val urlSnippet = url.wrapQuote(quote)
+		val urlSnippet = url.quote(quote)
 		return "@import $urlSnippet$attributesSnippet"
 	}
 }
@@ -835,7 +835,7 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 	override fun hashCode() = hashCodeByOne(this) { id }
 
 	override fun toString(): String {
-		val titleSnippet = title?.let { " ${it.wrapQuote(quote)}" }.orEmpty()
+		val titleSnippet = title?.let { " ${it.quote(quote)}" }.orEmpty()
 		return "[$reference]: $url$titleSnippet"
 	}
 }
@@ -886,7 +886,7 @@ class MarkdownPropertyAttribute(
 	val value: String
 ) : MarkdownAttribute() {
 	override fun toString(): String {
-		return "$name=${value.wrapQuote(quote)}"
+		return "$name=${value.quote(quote)}"
 	}
 }
 //endregion

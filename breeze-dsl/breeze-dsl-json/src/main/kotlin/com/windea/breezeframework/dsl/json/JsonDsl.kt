@@ -93,7 +93,7 @@ class JsonString @PublishedApi internal constructor(
 	value: String
 ) : JsonPrimitive<String>(value) {
 	override fun toString(): String {
-		return value.wrapQuote(quote)
+		return value.quote(quote)
 	}
 }
 
@@ -127,10 +127,10 @@ class JsonObject @PublishedApi internal constructor(
 	override fun toString(): String {
 		return when {
 			wrapContent && indentContent -> value.joinToString(",\n", "{\n", "\n}") { (k, v) ->
-				"${k.wrapQuote(quote)}: $v".prependIndent(indent)
+				"${k.quote(quote)}: $v".prependIndent(indent)
 			}
-			wrapContent -> value.joinToString(",\n", "{\n", "\n}") { (k, v) -> "${k.wrapQuote(quote)}: $v" }
-			else -> value.joinToString(", ", "{", "}") { (k, v) -> "${k.wrapQuote(quote)}: $v" }
+			wrapContent -> value.joinToString(",\n", "{\n", "\n}") { (k, v) -> "${k.quote(quote)}: $v" }
+			else -> value.joinToString(", ", "{", "}") { (k, v) -> "${k.quote(quote)}: $v" }
 		}
 	}
 }

@@ -59,7 +59,7 @@ class PumlSequenceDiagramParticipant @PublishedApi internal constructor(
 		return if(alias == null) {
 			"$shape $name$orderSnippet$colorSnippet"
 		} else {
-			val nameSnippet = name.replaceWithEscapedWrap().wrapQuote(quote) //only escaped with an existing alias
+			val nameSnippet = name.replaceWithEscapedWrap().quote(quote) //only escaped with an existing alias
 			"$shape $nameSnippet as $alias$orderSnippet$colorSnippet"
 		}
 	}
