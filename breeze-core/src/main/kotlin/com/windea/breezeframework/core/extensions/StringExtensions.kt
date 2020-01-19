@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.enums.core.*
 import java.io.*
 import java.net.*
@@ -141,50 +142,73 @@ fun String.flatRepeat(n: Int): String {
 }
 
 
-/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。*/
 @JvmName("replaceAllByChar")
 @JvmOverloads
 fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
-/**根据一组字符元组，将字符串中的对应字符替换成对应的替换后字符。*/
+/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。*/
 @JvmName("replaceAllByChar")
 @JvmOverloads
 fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
-/**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
 @JvmOverloads
 fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByString")
 @JvmOverloads
 fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组正则表达式-替换字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByRegex")
 fun String.replaceAll(vararg regexReplacementPairs: Pair<Regex, String>): String {
 	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
 }
 
-/**根据一组正则表达式-替换字符串元组，将字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
 @JvmName("replaceAllByRegex")
 fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String {
 	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
 }
 
 
-/**将字符串中的指定字符替换成根据索引得到的字符。*/
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun String.replaceLooped(regex: Regex, replacement: String): String {
+	val newString = this.replace(regex, replacement)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(this.length != newString.length || this != newString) {
+		newString.replaceLooped(regex, replacement)
+	} else {
+		newString
+	}
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun String.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
+	val newString = this.replace(regex, transform)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(this.length != newString.length || this != newString) {
+		newString.replaceLooped(regex, transform)
+	} else {
+		newString
+	}
+}
+
+
+/**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
-fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
+inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldChar, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
@@ -194,9 +218,9 @@ fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (
 	}
 }
 
-/**将字符串中的指定值替换成根据索引得到的字符串。*/
+/**将当前字符串中的指定值替换成根据索引得到的字符串。*/
 @JvmOverloads
-fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
+inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldValue, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
@@ -225,6 +249,7 @@ fun String.messageFormat(vararg args: Any?): String {
  * * 示例：`"1{0}2{1}3".customFormat("{index}","a","b")`
  * * 示例：`"1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b")`
  */
+@NotRecommended("Use directly String.format() or String.messageFormat() to format strings.")
 fun String.customFormat(placeholder: String, vararg args: Any?): String {
 	return when {
 		"index" in placeholder -> {
