@@ -53,15 +53,15 @@ class LinqImpl<S, T>(
 	}
 
 	override fun <R> union(other: Linq<S, T>): Linq<S, T> {
-		return LinqImpl { statement(it) + (other as? LinqImpl<S, T> ?: throw typeMismatch()).statement(it) }
+		return LinqImpl { statement(it) + (other as? LinqImpl<S, T> ?: typeMismatched()).statement(it) }
 	}
 
 	override fun <R> unionAll(other: Linq<S, T>): Linq<S, T> {
-		return LinqImpl { statement(it) union (other as? LinqImpl<S, T> ?: throw typeMismatch()).statement(it) }
+		return LinqImpl { statement(it) union (other as? LinqImpl<S, T> ?: typeMismatched()).statement(it) }
 	}
 
-	private fun typeMismatch(): UnsupportedOperationException {
-		return UnsupportedOperationException("Linq implementation type mismatch, use both `LinqImpl` instead.")
+	private fun typeMismatched(): Nothing {
+		throw UnsupportedOperationException("Linq implementation type mismatch, use both `LinqImpl` instead.")
 	}
 
 	override fun invoke(source: Collection<S>): List<T> {

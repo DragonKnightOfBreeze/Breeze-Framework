@@ -60,16 +60,6 @@ infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean
 	return prefixArray.any { this.startsWith(it, false) }
 }
 
-/**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
-	return this.startsWith(prefix, true)
-}
-
-/**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
-	return prefixArray.any { this.startsWith(it, true) }
-}
-
 /**判断当前字符串是否以指定后缀结尾。*/
 infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, false)
@@ -80,14 +70,47 @@ infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
 	return suffixArray.any { this.endsWith(it, false) }
 }
 
+
+/**判断当前字符串是否以指定前缀开头。忽略大小写。*/
+infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
+	return this.startsWith(prefix, true)
+}
+
+/**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
+infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
+	return prefixArray.any { this.startsWith(it, true) }
+}
+
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
 infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
 	return this.endsWith(suffix, true)
 }
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean =
-	suffixArray.any { this.endsWith(it, true) }
+infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean {
+	return suffixArray.any { this.endsWith(it, true) }
+}
+
+
+/**判断当前字符串是否以指定前缀开始且以指定后缀结尾。默认不忽略大小写。*/
+fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
+}
+
+/**判断当前字符串是否以指定前后缀开头和结尾。默认不忽略大小写。*/
+fun CharSequence.surroundsWith(delimiter: Char, ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
+}
+
+/**判断当前字符串是否以指定前缀开始且以指定后缀结尾。默认不忽略大小写。*/
+fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
+}
+
+/**判断当前字符串是否以指定前后缀开头和结尾。默认不忽略大小写。*/
+fun CharSequence.surroundsWith(delimiter: CharSequence, ignoreCase: Boolean = false): Boolean {
+	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
+}
 
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
@@ -231,6 +254,12 @@ tailrec fun String.replaceLooped(regex: Regex, transform: (MatchResult) -> CharS
 }
 
 
+/**根据指定的限定长度和截断符截断当前字符串。截断符默认为英文省略号。*/
+fun String.truncate(limit: Int, truncated: CharSequence = "..."): String {
+	return if(this.length <= limit) this else this.substring(0, limit) + truncated
+}
+
+
 /**
  * 基于[MessageFormat]格式化当前字符串。自动转义单引号。
  *
@@ -307,7 +336,7 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 }
 
 /**设置指定的前后缀。即，添加前后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
-infix fun String.setSurrounding(delimiter: String): String {
+infix fun String.setSurrounding(delimiter: CharSequence): String {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
@@ -432,23 +461,23 @@ fun CharSequence.substringMatch(regex: Regex): List<String> {
  * 不包含分隔符时，加入空字符串。
  */
 fun String.substringMatch(vararg delimiters: String?): List<String> =
-	privateSubstringMatch(*delimiters) { _, _ -> "" }
+	substringMatch0(*delimiters) { _, _ -> "" }
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
  */
 fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> =
-	privateSubstringMatch(*delimiters, defaultValue = defaultValue)
+	substringMatch0(*delimiters, defaultValue = defaultValue)
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入基于剩余字符串得到的默认值数组中的对应索引的值。
  */
 fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (String) -> Array<String>): List<String> =
-	privateSubstringMatch(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
+	substringMatch0(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
 
-private fun String.privateSubstringMatch(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
+private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 
 	var rawString = this
@@ -632,6 +661,21 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 	requireNotNull(type.isEnum) { "$type is not an enum class." }
 
 	return type.enumConstants.firstOrNull { it.toString().equals(this, ignoreCase) }
+}
+
+
+/**将当前字符串转化为整数区间。*/
+fun String.toIntRange(): IntRange {
+	require(".." in this) { "'$this' cannot be resolved as a range." }
+
+	return this.split("..", limit = 2).let { it[0].toInt()..it[1].toInt() }
+}
+
+/**将当前字符串转化为长整数区间。*/
+fun String.toLongRange(): LongRange {
+	require(".." in this) { "'$this' cannot be resolved as a range." }
+
+	return this.split("..", limit = 2).let { it[0].toLong()..it[1].toLong() }
 }
 
 

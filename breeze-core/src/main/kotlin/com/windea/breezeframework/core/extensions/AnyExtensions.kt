@@ -34,5 +34,5 @@ fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
 /**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
-/**将当前对象强制转化为指定类型。如果转化失败，则返回null。*/
+/**将当前对象强制转化为指定类型。如果转化失败，则返回null。注意不同泛型类型的类型之间不会转化失败。*/
 inline fun <reified R> Any?.castOrNull(): R? = this as? R

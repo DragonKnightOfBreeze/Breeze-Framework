@@ -37,7 +37,7 @@ class StringExtensionsKtTest {
 		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(Standard))
 		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(Standard))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(Json))
-		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(JsonSchema))
+		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(Path))
 	}
 
 	@Test //TESTED
@@ -64,7 +64,7 @@ class StringExtensionsKtTest {
 		assertEquals("1a2b3", "1\${}2\${}3".customFormat("\${}", "a", "b"))
 		assertEquals("1a2b3","1{0}2{1}3".customFormat("{index}","a","b"))
 		assertEquals("1a2b3", "1{aaa}2{bbb}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
-		assertEquals("1b2a3","1{1}2{0}3".customFormat("{index}","a","b"))
+		assertEquals("1b2a3", "1{1}2{0}3".customFormat("{index}", "a", "b"))
 		assertEquals("1b2a3", "1{bbb}2{aaa}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
 	}
 
@@ -74,20 +74,20 @@ class StringExtensionsKtTest {
 		assertEquals("""'1"2'""", """"'1\"2'"""".unquote())
 	}
 
-	@Test //TESTED
-	fun progressiveTest() {
-		val a = """
-			123
-			123123
-		""".trimIndent()
-		val b = """
-			123
-			123123
-			123123123
-		""".trimIndent()
-
-		//println(a plusByLine b)
-		//println(a.padStartByLine())
-		//println(a.padEndByLine())
-	}
+	//@Test //TESTED
+	//fun progressiveTest() {
+	//	val a = """
+	//		123
+	//		123123
+	//	""".trimIndent()
+	//	val b = """
+	//		123
+	//		123123
+	//		123123123
+	//	""".trimIndent()
+	//
+	//	println(a plusByLine b)
+	//	println(a.padStartByLine())
+	//	println(a.padEndByLine())
+	//}
 }

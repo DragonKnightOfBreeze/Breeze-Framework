@@ -5,7 +5,7 @@ import org.junit.*
 import org.junit.Assert.*
 import java.io.*
 
-class ClassExtensionsKtTest {
+class ClassExtensionsTest {
 	@Test
 	fun isCharSequence() {
 		assertTrue(String::class.java.isCharSequence)

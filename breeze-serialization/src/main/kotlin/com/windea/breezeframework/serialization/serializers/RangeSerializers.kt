@@ -1,7 +1,9 @@
 @file:Suppress("UNCHECKED_CAST")
+@file:NotTested
 
 package com.windea.breezeframework.serialization.serializers
 
+import com.windea.breezeframework.core.annotations.marks.*
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.*
 

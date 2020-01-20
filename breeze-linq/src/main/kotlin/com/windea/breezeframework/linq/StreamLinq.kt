@@ -57,15 +57,15 @@ class StreamLinq<S, T>(
 	}
 
 	override fun <R> union(other: Linq<S, T>): Linq<S, T> {
-		return StreamLinq { Stream.concat(statement(it), (other as? StreamLinq<S, T> ?: throw typeMismatch()).statement(it)).distinct() }
+		return StreamLinq { Stream.concat(statement(it), (other as? StreamLinq<S, T> ?: typeMismatched()).statement(it)).distinct() }
 	}
 
 	override fun <R> unionAll(other: Linq<S, T>): Linq<S, T> {
-		return StreamLinq { Stream.concat(statement(it), (other as? StreamLinq<S, T> ?: throw typeMismatch()).statement(it)) }
+		return StreamLinq { Stream.concat(statement(it), (other as? StreamLinq<S, T> ?: typeMismatched()).statement(it)) }
 	}
 
-	private fun typeMismatch(): UnsupportedOperationException {
-		return UnsupportedOperationException("Linq implementation type mismatch, use both `StreamLinq` instead.")
+	private fun typeMismatched(): Nothing {
+		throw UnsupportedOperationException("Linq implementation type mismatch, use both `StreamLinq` instead.")
 	}
 
 	override fun invoke(source: Collection<S>): List<T> {

@@ -239,6 +239,7 @@
 * [X] 添加必要的`@JvmStatic`和`@JvmOverloads`注解。
 * [X] breeze-core 添加`String.replaceLooped`扩展。
 * [X] breeze-core 将`String.wrapQuote`、`String.unwrapQuote`重命名为`String.quote`、`String.unquote`。
+* [X] breeze-core 优化集合的`deepGet`、`deepSet`、`deepQuery`扩展，添加`String.surroundsWith`、`String.truncate`、`String.toIntRange`等扩展。
 
 # 待办
 
