@@ -19,6 +19,6 @@ class SystemExtensionsKtTest {
 	}
 
 	@Test
-	fun exacTest() {
+	fun execTest() {
 	}
 }

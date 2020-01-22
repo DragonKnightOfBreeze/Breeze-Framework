@@ -13,7 +13,6 @@ allprojects {
 
 	//应用插件
 	apply {
-		plugin("org.gradle.maven-publish")
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
 	}
@@ -21,7 +20,7 @@ allprojects {
 	//配置依赖仓库
 	repositories {
 		//使用阿里云代理解决Gradle构建过慢的问题
-		maven("https://maven.aliyun.com/nexus/content/groups/public/")
+		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
 		jcenter()
 	}
@@ -65,6 +64,10 @@ allprojects {
 }
 
 subprojects {
+	apply {
+		plugin("org.gradle.maven-publish")
+	}
+
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
@@ -82,12 +85,12 @@ subprojects {
 		//配置包含的jar
 		publications {
 			//创建maven的jar
-			create<MavenPublication>("maven") {
+			register<MavenPublication>("gpr") {
 				from(components["java"])
 				artifact(sourcesJar)
 				artifact(javadocJar)
 				pom {
-					name.set("Breeze Framework")
+					name.set("Breeze-Framework")
 					description.set("""
 						Integrated code framework based on Kotlin,
 						provides many useful extensions for standard library and some frameworks.
@@ -117,9 +120,7 @@ subprojects {
 		}
 		//配置上传到的仓库
 		repositories {
-			//上传到github仓库
 			maven {
-				name = "GitHub-Packages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")

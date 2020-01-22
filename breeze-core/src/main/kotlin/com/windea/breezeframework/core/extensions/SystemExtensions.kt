@@ -36,6 +36,6 @@ inline fun <reified T> eval(language: String, context: ScriptContext, lazyScript
 
 /**执行一段懒加载的命令。可指定工作目录，默认为当前目录；可指定环境变量，默认为空。*/
 @JvmSynthetic
-inline fun exac(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
+inline fun exec(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory)
 }
