@@ -241,6 +241,7 @@
 * [X] breeze-core 将`String.wrapQuote`、`String.unwrapQuote`重命名为`String.quote`、`String.unquote`。
 * [X] breeze-core 优化集合的`deepGet`、`deepSet`、`deepQuery`扩展，添加`String.surroundsWith`、`String.truncate`、`String.toIntRange`等扩展。
 * [X] breeze-core 将`exac`改为`exec`。
+* [X] breeze-core 默认使用路径引用。
 
 # 待办
 
