@@ -251,6 +251,7 @@
 
 * [X] 更新版本。
 * [X] 将使用`HashMap`的地方尽可能地改为使用`LinkedHashMap`（为了键的顺序的一致性），重构相关代码。
+* [X] breeze-core 让集合的`deepQuery`方法允许接受`-`作为数组占位符。
 
 # 待办
 

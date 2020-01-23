@@ -8,7 +8,6 @@ import com.windea.breezeframework.core.enums.core.*
 import java.util.*
 import java.util.concurrent.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
 
@@ -556,23 +555,23 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
 			when(value) {
 				is Array<*> -> when {
-					subPath == "[]" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
 					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
 					subPath.contains("..") -> {
-						val indexRange = subPath.toIntRange()
-						value.slice(indexRange).withIndex().map { (i, e) -> (key + i.toString()) to e }
+						val indices = subPath.toIntRange()
+						value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
 					}
 					else -> listOf((key + subPath) to value[subPath.toIntOrThrow()])
 				}
 				is Iterable<*> -> when {
-					subPath == "[]" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
 					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
 					subPath.contains("..") -> {
-						val indexRange = subPath.toIntRange()
+						val indices = subPath.toIntRange()
 						if(value is List<*>) {
-							value.slice(indexRange).withIndex().map { (i, e) -> (key + i.toString()) to e }
+							value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
 						} else {
-							value.withIndex().filter { (i, _) -> i in indexRange }.map { (i, e) -> (key + i.toString()) to e }
+							value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }
 						}
 					}
 					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
@@ -587,11 +586,11 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 					else -> listOf((key + subPath) to value[subPath])
 				}
 				is Sequence<*> -> when {
-					subPath == "[]" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
+					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
 					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
 					subPath.contains("..") -> {
-						val indexRange = subPath.toIntRange()
-						value.withIndex().filter { (i, _) -> i in indexRange }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
+						val indices = subPath.toIntRange()
+						value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
 					}
 					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
 				}
