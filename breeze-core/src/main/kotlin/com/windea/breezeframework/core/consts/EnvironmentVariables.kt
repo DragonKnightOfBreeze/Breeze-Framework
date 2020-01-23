@@ -4,10 +4,10 @@ package com.windea.breezeframework.core.consts
 object EnvironmentVariables {
 	private val env = System.getenv()
 
-	/**得到Java Home。*/
+	/**Java Home。*/
 	@JvmField
 	val javaHome: String? = env["JAVA_HOME"]
-	/**得到Kotlin Home。*/
+	/**Kotlin Home。*/
 	@JvmField
 	val kotlinHome: String? = env["KOTLIN_HOME"]
 
