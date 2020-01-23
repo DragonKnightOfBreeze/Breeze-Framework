@@ -58,3 +58,15 @@
 [2019-12-04 23:53:47] INFO com.windea.breezeframework.logger.Tests - INFO
 [2019-12-04 23:53:47] WARN com.windea.breezeframework.logger.Tests - WARN
 [2019-12-04 23:53:47] ERROR com.windea.breezeframework.logger.Tests - ERROR
+[2020-01-23 15:21:04] TRACE com.windea.breezeframework.logger.Tests - trace
+[2020-01-23 15:21:05] DEBUG com.windea.breezeframework.logger.Tests - debug
+[2020-01-23 15:21:05] INFO com.windea.breezeframework.logger.Tests - info
+[2020-01-23 15:21:05] WARN com.windea.breezeframework.logger.Tests - warn
+[2020-01-23 15:21:05] ERROR com.windea.breezeframework.logger.Tests - error
+[2020-01-23 15:21:05] FATAL com.windea.breezeframework.logger.Tests - fatal
+[2020-01-23 15:23:26] TRACE com.windea.breezeframework.logger.Tests - trace
+[2020-01-23 15:23:26] DEBUG com.windea.breezeframework.logger.Tests - debug
+[2020-01-23 15:23:26] INFO com.windea.breezeframework.logger.Tests - info
+[2020-01-23 15:23:26] WARN com.windea.breezeframework.logger.Tests - warn
+[2020-01-23 15:23:26] ERROR com.windea.breezeframework.logger.Tests - error
+[2020-01-23 15:23:26] FATAL com.windea.breezeframework.logger.Tests - fatal

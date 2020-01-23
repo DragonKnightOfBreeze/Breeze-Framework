@@ -38,7 +38,7 @@ class StringExtensionsKtTest {
 		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(JavaReference))
 		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(JavaReference))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(JsonReference))
-		assertEquals("#/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(PathReference))
+		assertEquals("/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(PathReference))
 	}
 
 	@Test //TESTED
@@ -47,7 +47,7 @@ class StringExtensionsKtTest {
 		println("abc".flatRepeat(3))
 	}
 
-	@Test
+	@Test //TESTED
 	fun replaceExtensionTest() {
 		val string = "abc123abc123"
 		println(string.replace("""([a-z])\d""".toRegex(), "$1"))
@@ -87,7 +87,7 @@ class StringExtensionsKtTest {
 		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/1..300", MatchType.PathReference))
 	}
 
-	//@Test //TESTED
+	//@Test
 	//fun progressiveTest() {
 	//	val a = """
 	//		123
