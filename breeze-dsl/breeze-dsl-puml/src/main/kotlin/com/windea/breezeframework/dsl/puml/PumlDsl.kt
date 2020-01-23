@@ -189,7 +189,7 @@ class PumlNote @PublishedApi internal constructor(
 //TODO
 /**PlantUml显示参数。*/
 @PumlDsl
-class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, MutableMap<String, Any> by HashMap() {
+class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, MutableMap<String, Any> by LinkedHashMap() {
 	override fun toString(): String {
 		return joinToString("\n") { (k, v) -> "skinparam $k $v" }
 	}
@@ -224,7 +224,7 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by LinkedHashMap() {
 	override var indentContent: Boolean = true
 
 	override fun toString(): String {

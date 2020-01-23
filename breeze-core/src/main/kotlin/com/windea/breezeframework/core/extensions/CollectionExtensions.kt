@@ -9,6 +9,7 @@ import java.util.*
 import java.util.concurrent.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
 
 //region portal extensions
@@ -317,12 +318,12 @@ fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix:
 
 
 /**过滤映射中值为null的键值对。*/
-inline fun <K, V : Any> Map<K, V?>.filterValueNotNull(): Map<K, V> {
-	return this.filterValueNotNullTo(HashMap())
+fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
+	return this.filterValuesNotNullTo(LinkedHashMap())
 }
 
 /**过滤映射中值为null的键值对，然后置入指定的映射。*/
-inline fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValueNotNullTo(destination: M): M {
+fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
 	for((key, value) in this) if(value != null) destination[key] = value
 	return destination
 }

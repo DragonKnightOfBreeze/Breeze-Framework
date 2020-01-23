@@ -42,7 +42,7 @@ inline fun <reified T> toStringBy(target: T?, delimiter: String = ", ", prefix: 
 	if(target == null) return "null"
 	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
 	return target.selector().toMap()
-		.let(omitNulls) { it.filterValueNotNull() }
+		.let(omitNulls) { it.filterValuesNotNull() }
 		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
 }
 
@@ -53,6 +53,6 @@ inline fun <reified T> toStringByRef(target: T?, delimiter: String = ", ", prefi
 	if(target == null) return "null"
 	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
 	return target.selector().associateBy({ it.name }, { it.get() })
-		.let(omitNulls) { it.filterValueNotNull() }
+		.let(omitNulls) { it.filterValuesNotNull() }
 		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
 }
