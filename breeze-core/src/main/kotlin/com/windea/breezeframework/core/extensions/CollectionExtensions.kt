@@ -30,7 +30,7 @@ inline fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V>
 
 //region operator overrides
 /**@see kotlin.collections.slice*/
-inline operator fun <T> Array<out T>.get(indexRange: IntRange): List<T> = this.slice(indexRange)
+inline operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 inline operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
@@ -39,7 +39,7 @@ inline operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repe
 inline operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
-inline operator fun <T> List<T>.get(range: IntRange): List<T> = this.slice(range)
+inline operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
@@ -98,34 +98,34 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in 
 
 
 /**判断当前数组是否以指定元素开始。*/
-infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前数组是否以任意指定元素开始。*/
-infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前集合是否以指定元素开始。*/
-infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前集合是否以任意指定元素开始。*/
-infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前序列是否以指定元素开始。*/
-infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**判断当前序列是否以任意指定元素开始。*/
-infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**判断当前数组是否以指定元素结束。*/
-infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**判断当前数组是否以任意指定元素结束。*/
-infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 /**判断当前集合是否以指定元素结束。*/
-infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.firstOrNull() == element
+inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**判断当前集合是否以任意指定元素结束。*/
-infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
 /**判断当前序列是否为空。*/
@@ -153,12 +153,12 @@ inline fun <T : Map<*, *>> T.ifNotEmpty(transform: (T) -> T): T {
 
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
-inline fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
+fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
-inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
+fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
 
@@ -167,7 +167,7 @@ inline fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
 
 /**得到随机元素。如果数组为空，则返回null。*/
-inline fun <T> Array<out T>.randomOrNull(random: Random): T? {
+fun <T> Array<out T>.randomOrNull(random: Random): T? {
 	if(this.isEmpty()) return null
 	return this[random.nextInt(size)]
 }
@@ -176,7 +176,7 @@ inline fun <T> Array<out T>.randomOrNull(random: Random): T? {
 inline fun <T> Collection<T>.randomOrNull(): T? = this.randomOrNull(Random)
 
 /**得到随机元素。如果集合为空，则返回null。*/
-inline fun <T> Collection<T>.randomOrNull(random: Random): T? {
+fun <T> Collection<T>.randomOrNull(random: Random): T? {
 	if(this.isEmpty()) return null
 	return this.elementAt(random.nextInt(size))
 }

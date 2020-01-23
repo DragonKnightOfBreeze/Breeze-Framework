@@ -36,7 +36,7 @@ fun <T : Cloneable> T.shallowClone(): T {
  *
  * 应当为可克隆对象提供一个公开的克隆方法的重载。
  */
-@NotSure
+@NotTested
 @LowPerformanceApi
 fun <T : Cloneable> T.deepClone(): T {
 	return this.shallowClone().apply {

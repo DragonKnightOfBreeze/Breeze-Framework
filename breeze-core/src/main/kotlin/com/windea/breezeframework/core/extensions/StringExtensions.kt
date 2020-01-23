@@ -15,7 +15,7 @@ import java.util.*
 
 //region operator overrides
 /**@see kotlin.text.slice*/
-inline operator fun String.get(indexRange: IntRange): String = this.slice(indexRange)
+inline operator fun String.get(indices: IntRange): String = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.remove*/
 inline operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
@@ -51,45 +51,32 @@ infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 
 
 /**判断当前字符串是否以指定前缀开头。*/
-infix fun CharSequence.startsWith(prefix: CharSequence): Boolean {
-	return this.startsWith(prefix, false)
-}
-
-/**判断当前字符串是否以任意指定前缀开头。*/
-infix fun CharSequence.startsWith(prefixArray: Array<out CharSequence>): Boolean {
-	return prefixArray.any { this.startsWith(it, false) }
-}
-
-/**判断当前字符串是否以指定后缀结尾。*/
-infix fun CharSequence.endsWith(suffix: CharSequence): Boolean {
-	return this.endsWith(suffix, false)
-}
-
-/**判断当前字符串是否以任意指定后缀结尾。*/
-infix fun CharSequence.endsWith(suffixArray: Array<out CharSequence>): Boolean {
-	return suffixArray.any { this.endsWith(it, false) }
-}
-
+inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean = this.startsWith(prefix, false)
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean {
-	return this.startsWith(prefix, true)
-}
+inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean = this.startsWith(prefix, true)
+
+/**判断当前字符串是否以任意指定前缀开头。*/
+inline infix fun CharSequence.startsWith(prefixes: Array<out CharSequence>): Boolean =
+	prefixes.any { this.startsWith(it, false) }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-infix fun CharSequence.startsWithIc(prefixArray: Array<out CharSequence>): Boolean {
-	return prefixArray.any { this.startsWith(it, true) }
-}
+inline infix fun CharSequence.startsWithIc(prefixes: Array<out CharSequence>): Boolean =
+	prefixes.any { this.startsWith(it, true) }
+
+/**判断当前字符串是否以指定后缀结尾。*/
+inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean = this.endsWith(suffixes, false)
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean {
-	return this.endsWith(suffix, true)
-}
+inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean = this.endsWith(suffix, true)
 
-/**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-infix fun CharSequence.endsWithIc(suffixArray: Array<out CharSequence>): Boolean {
-	return suffixArray.any { this.endsWith(it, true) }
-}
+/**判断当前字符串是否以任意指定后缀结尾。*/
+inline infix fun CharSequence.endsWith(suffixes: Array<out CharSequence>): Boolean =
+	suffixes.any { this.endsWith(it, false) }
+
+/**判断当前字符串是否以任意指定后缀结尾。忽略大小写。*/
+inline infix fun CharSequence.endsWithIc(suffixes: Array<out CharSequence>): Boolean =
+	suffixes.any { this.endsWith(it, true) }
 
 
 /**判断当前字符串是否以指定前缀开始且以指定后缀结尾。默认不忽略大小写。*/
@@ -402,27 +389,27 @@ fun String.alignCenter(padChar: Char = ' '): String {
 
 
 /**去除指定字符。*/
-inline fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
+fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
 	return this.replace(oldChar.toString(), "", ignoreCase)
 }
 
 /**去除指定字符串。*/
-inline fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
+fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 	return this.replace(oldValue, "", ignoreCase)
 }
 
 /**去除指定正则表达式的字符串。*/
-inline fun String.remove(regex: Regex): String {
+fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
 
 /**去除所有空格。*/
-inline fun String.removeWhiteSpace(): String {
+fun String.removeWhiteSpace(): String {
 	return this.replace(" ", "")
 }
 
 /**去除所有空白。*/
-inline fun String.removeBlank(): String {
+fun String.removeBlank(): String {
 	return this.replace("""\s+""".toRegex(), "")
 }
 
