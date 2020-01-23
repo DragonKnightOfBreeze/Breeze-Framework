@@ -4,6 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import java.io.*
+import java.util.concurrent.*
 import javax.script.*
 
 private val engineManager = ScriptEngineManager()
@@ -34,8 +35,21 @@ inline fun <reified T> eval(language: String, context: ScriptContext, lazyScript
 }
 
 
-/**执行一段懒加载的命令。可指定工作目录，默认为当前目录；可指定环境变量，默认为空。*/
+/**执行一段懒加载的命令。可指定工作目录，默认为当前目录；默认环境变量为空。*/
 @JvmSynthetic
 inline fun exec(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory)
+}
+
+/**执行一段懒加载的命令，并保持线程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
+@JvmSynthetic
+inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
+	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory).also { it.waitFor() }
+}
+
+/**执行一段懒加载的命令，并保持线程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
+@JvmSynthetic
+inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null,
+	timeout: Long, unit: TimeUnit, lazyCommand: () -> String): Process {
+	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory).also { it.waitFor(timeout, unit) }
 }

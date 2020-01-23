@@ -244,7 +244,8 @@
 * [X] breeze-core 默认使用路径引用。
 * [X] breeze-core 添加`String.matchesBy`扩展。添加`String.toIntRange`等扩展。重命名和添加`toNumber`、`toNumberOrNull`扩展。
 * [X] breeze-core 添加`IntRange.toCircledRange`扩展，用于兼容逆向索引。
-* [ ] breeze-core 添加`enumSetOf`、`enumMapOf`扩展。
+* [X] breeze-core 添加`enumSetOf`、`enumMapOf`等扩展。
+* [X] breeze-core 完善`exec`扩展，添加`execBlocking`扩展。
 
 # 待办
 
