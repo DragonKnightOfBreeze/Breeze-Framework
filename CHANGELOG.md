@@ -247,6 +247,10 @@
 * [X] breeze-core 添加`enumSetOf`、`enumMapOf`等扩展。
 * [X] breeze-core 完善`exec`扩展，添加`execBlocking`扩展。
 
+### 1.0.11
+
+* [X] 更新版本。 
+
 # 待办
 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
