@@ -42,52 +42,52 @@ class CollectionExtensionsKtTest {
 		mutableList.deepSet("/2/a", "abc")
 		println(mutableList)
 
-		//array.deepGet<Int>("/0").also { println(it) }
-		//array.deepGet<Int>("/3/0").also { println(it) }
-		//list.deepGet<Int>("/0").also { println(it) }
-		//list.deepGet<Int>("/1/0").also { println(it) }
-		//list.deepGet<Int>("/3/0").also { println(it) }
-		//list.deepGet<Int>("/5/a").also { println(it) }
-		//
-		//println()
-		//
-		//assertFailsWith<IllegalArgumentException> {
-		//	array.deepSet("/3/1/0", "abc")
-		//	array.deepGet<Int>("/3/1/0").also { println(it) }
-		//	println(array.contentDeepToString())
-		//}
-		//
-		//println()
-		//
-		//array.deepSet("/3/1/0", 111)
-		//array.deepGet<Int>("/3/1/0").also { println(it) }
-		//println(array.contentDeepToString())
-		//
-		//println()
-		//
-		//mutableList.deepSet("/0", 111)
-		//mutableList.deepGet<Int>("/0").also { println(it) }
-		//mutableList.deepSet("/1/0", 111)
-		//mutableList.deepGet<Int>("/1/0").also { println(it) }
-		//mutableList.deepSet("/2/a", 111)
-		//mutableList.deepGet<Int>("/2/a").also { println(it) }
-		//println(mutableList)
-		//
-		//mutableList.deepSet("/0", "abc")
-		//println(mutableList)
-		//
-		////返回值泛型会被擦除，因此这里会在方法外抛出ClassCastException
-		////mutableList.deepGet<String>("/0").also { println(it) }
-		//assertFailsWith<IllegalArgumentException> {
-		//	mutableList.deepSet("/0/0", 1)
-		//}
-		////输入值类型会被擦除，因此这里不会抛出异常，除非需要进行强制转换
-		//mutableList.deepSet("/1/0", "abc")
-		//mutableList.deepGet<Any>("/1/0").also { println(it) }
-		//println(mutableList)
-		//
-		//println(intMutableList[0])
-		//println(intMutableList)
+		array.deepGet<Int>("/0").also { println(it) }
+		array.deepGet<Int>("/3/0").also { println(it) }
+		list.deepGet<Int>("/0").also { println(it) }
+		list.deepGet<Int>("/1/0").also { println(it) }
+		list.deepGet<Int>("/3/0").also { println(it) }
+		list.deepGet<Int>("/5/a").also { println(it) }
+
+		println()
+
+		assertFailsWith<IllegalArgumentException> {
+			array.deepSet("/3/1/0", "abc")
+			array.deepGet<Int>("/3/1/0").also { println(it) }
+			println(array.contentDeepToString())
+		}
+
+		println()
+
+		array.deepSet("/3/1/0", 111)
+		array.deepGet<Int>("/3/1/0").also { println(it) }
+		println(array.contentDeepToString())
+
+		println()
+
+		mutableList.deepSet("/0", 111)
+		mutableList.deepGet<Int>("/0").also { println(it) }
+		mutableList.deepSet("/1/0", 111)
+		mutableList.deepGet<Int>("/1/0").also { println(it) }
+		mutableList.deepSet("/2/a", 111)
+		mutableList.deepGet<Int>("/2/a").also { println(it) }
+		println(mutableList)
+
+		mutableList.deepSet("/0", "abc")
+		println(mutableList)
+
+		//返回值泛型会被擦除，因此这里会在方法外抛出ClassCastException
+		//mutableList.deepGet<String>("/0").also { println(it) }
+		assertFailsWith<IllegalArgumentException> {
+			mutableList.deepSet("/0/0", 1)
+		}
+		//输入值类型会被擦除，因此这里不会抛出异常，除非需要进行强制转换
+		mutableList.deepSet("/1/0", "abc")
+		mutableList.deepGet<Any>("/1/0").also { println(it) }
+		println(mutableList)
+
+		println(intMutableList[0])
+		println(intMutableList)
 	}
 
 	@Test

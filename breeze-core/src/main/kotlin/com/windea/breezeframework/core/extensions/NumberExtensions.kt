@@ -77,8 +77,8 @@ inline fun Int.toHexString(): String = Integer.toHexString(this)
 inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 
-/**将当前数字转化为指定的数字类型。*/
-inline fun <reified T : Number> Number.to(): T {
+/**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
+inline fun <reified T : Number> Number.toNumber(): T {
 	//performance note: approach to 1/5
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T
@@ -89,7 +89,23 @@ inline fun <reified T : Number> Number.to(): T {
 		"java.lang.Short" -> this.toShort() as T
 		"java.math.BigInteger" -> this.toString().toBigInteger() as T
 		"java.math.BigDecimal" -> this.toString().toBigDecimal() as T
-		else -> throw UnsupportedOperationException("Unsupported reified type parameter '$typeName'.")
+		else -> throw UnsupportedOperationException("Unsupported reified number type: '$typeName'.")
+	}
+}
+
+/**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
+inline fun <reified T : Number> Number.toNumberOrNull(): T? {
+	//performance note: approach to 1/5
+	return when(T::class.java.name) {
+		"java.lang.Integer" -> this.toInt() as T?
+		"java.lang.Long" -> this.toLong() as T?
+		"java.lang.Float" -> this.toFloat() as T?
+		"java.lang.Double" -> this.toDouble() as T?
+		"java.lang.Byte" -> this.toByte() as T?
+		"java.lang.Short" -> this.toShort() as T?
+		"java.math.BigInteger" -> this.toString().toBigIntegerOrNull() as T?
+		"java.math.BigDecimal" -> this.toString().toBigDecimalOrNull() as T?
+		else -> null
 	}
 }
 

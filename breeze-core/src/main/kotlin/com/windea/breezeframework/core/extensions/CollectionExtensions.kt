@@ -468,7 +468,7 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
 fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
 
-internal fun <T> Any.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
+private fun <T> Any.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
 	val subPaths = path.splitBy(pathCase)
 	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' is an empty path.")
 	var currentValue: Any? = this

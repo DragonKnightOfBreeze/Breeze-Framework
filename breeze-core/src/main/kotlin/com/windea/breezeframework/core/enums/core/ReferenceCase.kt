@@ -9,7 +9,7 @@ enum class ReferenceCase(
 	/**
 	 * 路径引用。
 	 *
-	 * 示例：`/{Category}/0/Name`。
+	 * 示例：`/{Category}/0/Name`
 	 *
 	 * * `1` 表示一个列表的指定索引的元素。
 	 * * `1..10` 表示一个列表的指定索引范围内的元素。
@@ -29,7 +29,7 @@ enum class ReferenceCase(
 	/**
 	 * Java引用。
 	 *
-	 * 示例：`Category[0].name`。
+	 * 示例：`Category[0].name`
 	 *
 	 * * `Category` 表示一个对象/对象的属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
@@ -45,7 +45,7 @@ enum class ReferenceCase(
 	/**
 	 * Json引用。
 	 *
-	 * 示例：`$.Category.[0].Name`。
+	 * 示例：`$.Category.[0].Name`
 	 *
 	 * * `Category` 表示一个对象的属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
@@ -57,5 +57,6 @@ enum class ReferenceCase(
 		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
 		{ it.joinToString(".", "$.").replace("""(\d+)""".toRegex(), "[$1]") }
 	),
+	/**未知格式。*/
 	Unknown(".*".toRegex(), { listOf(it) }, { it.joinToString("") });
 }

@@ -1,5 +1,6 @@
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.enums.core.*
 import com.windea.breezeframework.core.enums.core.LetterCase.*
 import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import kotlin.test.*
@@ -72,6 +73,18 @@ class StringExtensionsKtTest {
 	fun quoteTest() {
 		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"'))
 		assertEquals("""'1"2'""", """"'1\"2'"""".unquote())
+	}
+
+	@Test //TESTED
+	fun matchesByTest() {
+		assertEquals(true, "/abc/123/ab".matchesBy("/abc/*/ab", MatchType.Ant))
+		assertEquals(true, "/abc/123/ab".matchesBy("/abc/**", MatchType.Ant))
+		assertEquals(true, "Test.kt".matchesBy("*.kt", MatchType.EditorConfig))
+		assertEquals(true, "Test.kt".matchesBy("*.{kt, java}", MatchType.EditorConfig))
+		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/123", MatchType.PathReference))
+		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/[]", MatchType.PathReference))
+		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/re:\\d*", MatchType.PathReference))
+		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/1..300", MatchType.PathReference))
 	}
 
 	//@Test //TESTED

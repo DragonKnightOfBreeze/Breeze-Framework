@@ -7,10 +7,10 @@ class KTypeExtensionsTest {
 	@Test
 	fun test1() {
 		typeOf<List<String>>().also { println(it) }
-		test2(1)
+		test2<Int>()
 	}
 
-	inline fun <reified T> test2(value: T) {
+	inline fun <reified T> test2() {
 		typeOf<List<T>>().also { println(it) }
 	}
 }

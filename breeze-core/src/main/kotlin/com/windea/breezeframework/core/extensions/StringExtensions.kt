@@ -511,9 +511,7 @@ private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (In
 fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
-//region quote & unquote extensions
-private val quoteChars = charArrayOf('\"', '\'', '`')
-
+//region specific type or case extensions
 /**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。限定为单引号、双引号或反引号，否则会抛出异常。*/
 fun String.quote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
@@ -527,9 +525,10 @@ fun String.unquote(): String {
 	if(quote !in quoteChars) return this
 	return this.removeSurrounding(quote.toString()).ifNotEmpty { it.replace("\\$quote", quote.toString()) }
 }
-//endregion
 
-//region escape & unescape extensions
+private val quoteChars = charArrayOf('\"', '\'', '`')
+
+
 /**根据指定的转义类型，转义当前字符串。*/
 fun String.escapeBy(type: EscapeType): String {
 	//"\" should be escaped first
@@ -543,9 +542,14 @@ fun String.unescapeBy(type: EscapeType): String {
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
 	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
 }
-//endregion
 
-//region case handling extensions
+
+/**根据指定的匹配类型，判断当前字符串是否匹配指定模式。*/
+fun String.matchesBy(pattern: String, type: MatchType): Boolean {
+	return type.predicate(this, pattern)
+}
+
+
 /**得到当前字母的字母显示格式。*/
 val String.letterCase: LetterCase
 	get() = enumValues<LetterCase>().first { this matches it.regex }
@@ -553,7 +557,6 @@ val String.letterCase: LetterCase
 /**得到当前字符串的引用显示格式。*/
 val String.referenceCase: ReferenceCase
 	get() = enumValues<ReferenceCase>().first { this matches it.regex }
-
 
 /**根据显示格式分割当前字符串。*/
 fun String.splitBy(case: FormatCase): List<String> {
@@ -580,7 +583,7 @@ fun String.switchCaseBy(case: FormatCase): String {
 }
 //endregion
 
-//region convert extensions
+//region handle extensions
 /**
  * 将当前字符串转为内联文本。
  *
@@ -615,10 +618,11 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 	return if(trimmedIndent.isEmpty()) this.trimIndent()
 	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
+//endregion
 
-
-/**将当前字符串转化为指定的数字类型。*/
-inline fun <reified T : Number> String.to(): T {
+//region convert extensions
+/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
+inline fun <reified T : Number> String.toNumber(): T {
 	//performance note: approach to 1/5
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T
@@ -629,7 +633,23 @@ inline fun <reified T : Number> String.to(): T {
 		"java.lang.Short" -> this.toShort() as T
 		"java.math.BigInteger" -> this.toBigInteger() as T
 		"java.math.BigDecimal" -> this.toBigDecimal() as T
-		else -> throw UnsupportedOperationException("Unsupported reified type parameter '$typeName'.")
+		else -> throw UnsupportedOperationException("Unsupported reified number type: '$typeName'.")
+	}
+}
+
+/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
+inline fun <reified T : Number> String.toNumberOrNull(): T? {
+	//performance note: approach to 1/5
+	return when(T::class.java.name) {
+		"java.lang.Integer" -> this.toIntOrNull() as T?
+		"java.lang.Long" -> this.toLongOrNull() as T?
+		"java.lang.Float" -> this.toFloatOrNull() as T?
+		"java.lang.Double" -> this.toDoubleOrNull() as T?
+		"java.lang.Byte" -> this.toByteOrNull() as T?
+		"java.lang.Short" -> this.toShortOrNull() as T?
+		"java.math.BigInteger" -> this.toBigIntegerOrNull() as T?
+		"java.math.BigDecimal" -> this.toBigDecimalOrNull() as T?
+		else -> null
 	}
 }
 
@@ -654,7 +674,7 @@ fun <T> String.toEnumValue(type: Class<T>, ignoreCase: Boolean = false): T {
 	return type.enumConstants.first { it.toString().equals(this, ignoreCase) }
 }
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则转化为null。*/
+/**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
 @Deprecated("Use related reified generic extension.", ReplaceWith("this.toEnumValueOrNull<T>(ignoreCase)"))
 @JvmOverloads
 fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T? {
@@ -664,18 +684,54 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为整数区间。*/
-fun String.toIntRange(): IntRange {
-	require(".." in this) { "'$this' cannot be resolved as a range." }
-
-	return this.split("..", limit = 2).let { it[0].toInt()..it[1].toInt() }
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+fun String.toCharRange(): CharRange {
+	return try {
+		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.single() + b }?.toRange() ?: notARange(this)
+	} catch(e: Exception) {
+		notARange(this)
+	}
 }
 
-/**将当前字符串转化为长整数区间。*/
-fun String.toLongRange(): LongRange {
-	require(".." in this) { "'$this' cannot be resolved as a range." }
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+fun String.toIntRange(): IntRange {
+	return try {
+		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toInt() + b }?.toRange() ?: notARange(this)
+	} catch(e: Exception) {
+		notARange(this)
+	}
+}
 
-	return this.split("..", limit = 2).let { it[0].toLong()..it[1].toLong() }
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+fun String.toLongRange(): LongRange {
+	return try {
+		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toLong() + b }?.toRange() ?: notARange(this)
+	} catch(e: Exception) {
+		notARange(this)
+	}
+}
+
+private fun String.toRangePairOrNull(): Pair<String, String>? {
+	return when {
+		this.contains("..") -> this.split("..", limit = 2).let { it[0].trim() to it[1].trim() }
+		this.contains("-") -> this.split("-", limit = 2).let { it[0].trim() to it[1].trim() }
+		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2).let { it[0].trim() to it[1].trim() }
+		else -> null
+	}
+}
+
+private fun String.toRangeSurrounding(): Pair<Int, Int> {
+	return when {
+		this.surroundsWith("[", "]") -> 0 to 0
+		this.surroundsWith("[", ")") -> 0 to -1
+		this.surroundsWith("(", "]") -> 1 to 0
+		this.surroundsWith("(", ")") -> 1 to -1
+		else -> 0 to 0
+	}
+}
+
+private fun notARange(string: String): Nothing {
+	throw IllegalArgumentException("'$string' cannot be resolved as a range.")
 }
 
 
@@ -696,6 +752,7 @@ inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null)
 /**将当前字符串转化为日期。*/
 @JvmOverloads
 inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date = SimpleDateFormat(format).parse(this)
+
 
 /**将当前字符串转化为本地日期。*/
 @JvmOverloads
