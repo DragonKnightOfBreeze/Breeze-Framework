@@ -13,7 +13,7 @@ import java.time.*
 import java.time.format.*
 import java.util.*
 
-//region operator overrides
+//region operator override extensions
 /**@see kotlin.text.slice*/
 operator fun String.get(indices: IntRange): String = this.slice(indices)
 
@@ -27,7 +27,7 @@ operator fun String.times(n: Int): String = this.repeat(n)
 operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
-//region common functions
+//region common extensions
 /**判断两个字符串是否相等。*/
 infix fun String?.equals(other: String?): Boolean = this.equals(other, false)
 
@@ -301,7 +301,7 @@ fun String.customFormat(placeholder: String, vararg args: Any?): String {
 
 
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-infix fun String.lineConcat(other: String): String {
+fun String.lineConcat(other: String): String {
 	val lines = this.lines()
 	val otherLines = other.lines()
 	return when {

@@ -50,7 +50,7 @@ inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
 fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = ConcurrentHashMap(pairs.toMap())
 //endregion
 
-//region operator overrides
+//region operator override extensions
 /**@see kotlin.collections.slice*/
 operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
 
@@ -70,7 +70,7 @@ operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 //endregion
 
-//region common functions
+//region common extensions
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
 	//NOTE 某些具体的实现类的equals方法与这个方法应是等效的
@@ -841,6 +841,12 @@ inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
 inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 	if(this.isEmpty() || this.entries.first().let { it.key is String && it.value is String }) return this as Map<String, String>
 	return this.map { (k, v) -> k.toString() to v.toString() }.toMap()
+}
+//endregion
+
+//region unsafe extensions
+inline fun <reified T : Any> Array<*>.isGenericTypeOf(): Boolean {
+	return this.isArrayOf<T>()
 }
 //endregion
 

@@ -5,7 +5,7 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.math.*
 
-//region operator overrides & infix extensions
+//region operator override extensions & infix extensions
 /**进行整乘运算。*/
 inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
 

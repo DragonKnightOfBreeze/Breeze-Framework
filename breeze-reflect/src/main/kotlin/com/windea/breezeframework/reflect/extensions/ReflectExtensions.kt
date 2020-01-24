@@ -4,9 +4,9 @@
 package com.windea.breezeframework.reflect.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
-import java.lang.reflect.*
 import kotlin.reflect.*
 
+//region generic extensions
 /**判断指定名字的Class是否在classpath中。*/
 fun checkClassForName(className: String): Boolean {
 	return try {
@@ -20,38 +20,23 @@ fun checkClassForName(className: String): Boolean {
 
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Cannot get actual name of a function parameter or a local variable.")
-inline fun <reified T> nameOf(): String? {
-	return T::class.java.simpleName
-}
+inline fun <reified T> nameOf(): String? = T::class.java.simpleName
 
 /**得到指定项的名字。适用于：类引用、属性引用、方法引用、实例。不适用于：类型参数，参数，局部变量。*/
 @TrickImplementationApi("Cannot get actual name of a function parameter or a local variable.")
 @JvmSynthetic
-inline fun nameOf(target: Any?): String? {
-	//无法直接通过方法的引用得到参数，无法得到局部变量的任何信息
-	return when {
-		target == null -> null
-		target is Class<*> -> target.simpleName
-		target is KClass<*> -> target.simpleName
-		target is KCallable<*> -> target.name
-		target is KParameter -> target.name
-		else -> target::class.java.simpleName
-	}
+inline fun nameOf(target: Any?): String? = when {
+	//无法直接通过方法的引用得到参数，也无法得到局部变量的任何信息
+	target == null -> null
+	target is Class<*> -> target.simpleName
+	target is KClass<*> -> target.simpleName
+	target is KCallable<*> -> target.name
+	target is KParameter -> target.name
+	else -> target::class.java.simpleName
 }
+//endregion
 
-
-/**得到指定类型的带有泛型参数信息的Java类型对象。*/
-inline fun <reified T> javaTypeOf(): Type {
-	return object : TypeReference<T>() {}.type
-}
-
-//com.fasterxml.jackson.core.type.TypeReference
-/**类型引用。*/
-@PublishedApi
-internal abstract class TypeReference<T> {
-	val type: Type = run {
-		val superClass = this::class.java.genericSuperclass
-		require(superClass !is Class<*>) { "TypeReference constructed without actual type information." }
-		(superClass as ParameterizedType).actualTypeArguments[0]
-	}
-}
+//region Any extensions
+/**判断当前对象是否是兼容指定类型的实例。*/
+infix fun Any.isInstanceOf(type: KClass<*>): Boolean = type.isInstance(this)
+//endregion

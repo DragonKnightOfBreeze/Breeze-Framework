@@ -4,6 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.core.*
+import java.lang.reflect.*
 import kotlin.contracts.*
 
 //region Standard.kt extensions (Todo functions)
@@ -155,4 +156,33 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 		return value
 	}
 }
+//endregion
+
+//region generic extensions
+/**得到指定类型的带有泛型参数信息的Java类型对象。*/
+inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
+
+//com.fasterxml.jackson.core.type.TypeReference
+/**类型引用。*/
+@PublishedApi
+internal abstract class TypeReference<T> {
+	val type: Type = run {
+		val superClass = this::class.java.genericSuperclass
+		require(superClass !is Class<*>) { "TypeReference is constructed without actual type information." }
+		(superClass as ParameterizedType).actualTypeArguments[0]
+	}
+}
+//endregion
+
+//region Any extensions
+//TODO 兼容原始类型
+/**判断当前对象是否是兼容指定类型的实例。*/
+infix fun Any.isInstanceOf(type: Class<*>): Boolean = type.isInstance(this)
+
+
+/**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
+inline fun <reified R> Any?.cast(): R = this as R
+
+/**将当前对象强制转化为指定类型。如果转化失败，则返回null。注意不同泛型类型的类型之间不会转化失败。*/
+inline fun <reified R> Any?.castOrNull(): R? = this as? R
 //endregion

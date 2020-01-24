@@ -29,10 +29,3 @@ fun Any?.smartToString(deepOperation: Boolean = true) = when {
 
 /**将当前对象转化为字符串。如果为null，则转化为空字符串。*/
 fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""
-
-
-/**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
-inline fun <reified R> Any?.cast(): R = this as R
-
-/**将当前对象强制转化为指定类型。如果转化失败，则返回null。注意不同泛型类型的类型之间不会转化失败。*/
-inline fun <reified R> Any?.castOrNull(): R? = this as? R
