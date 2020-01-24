@@ -1,6 +1,6 @@
 package com.windea.breezeframework.data.serializers
 
-import com.windea.breezeframework.reflect.extensions.*
+import com.windea.breezeframework.core.extensions.*
 import java.io.*
 import java.lang.reflect.*
 
@@ -38,8 +38,8 @@ interface SerializerConfig
 
 //region reified extensions
 
-//use typeOf<T>() here cause NotImplementedError (Java type is not yet supported for types created with ...)
-//use user-defined javaTypeOf<T>() here instead, reference to jackson's TypeReference implementation.
+//这里使用 typeOf<T>() 会导致错误 NotImplementedError (Java type is not yet supported for types created with ...)
+//因此这里需要使用 javaTypeOf<T>()，参考Jackson的TypeReference的实现
 
 /**从指定字符串读取指定类型的数据。*/
 inline fun <reified T> Serializer.load(string: String): T = load(string, javaTypeOf<T>())

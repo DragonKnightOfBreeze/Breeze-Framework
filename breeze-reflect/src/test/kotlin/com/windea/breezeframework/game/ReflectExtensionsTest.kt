@@ -1,5 +1,6 @@
 package com.windea.breezeframework.game
 
+import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.reflect.extensions.*
 import kotlin.system.*
 import kotlin.test.*
