@@ -81,7 +81,7 @@ class CollectionExtensionsKtTest {
 		assertFailsWith<IllegalArgumentException> {
 			mutableList.deepSet("/0/0", 1)
 		}
-		//输入值类型会被擦除，因此这里不会抛出异常，除非需要进行强制转换
+		//输入值类型会被擦除，因此这里不会抛出异常，除非需要进行强制转化
 		//mutableList.deepSet("/1/0", "abc")
 		//mutableList.deepGet<Any>("/1/0").also { println(it) }
 		//println(mutableList)

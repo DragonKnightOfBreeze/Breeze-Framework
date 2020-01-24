@@ -53,23 +53,23 @@ inline fun FIXME(message: String) = run {
 //endregion
 
 //region Standard.kt extensions (Scope functions)
-/**当满足条件时，以接收者为代码体的接收者，执行一段代码并返回转化后的结果，否则返回自身。*/
-@JvmSynthetic
-inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
-	contract {
-		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-	}
-	return if(condition) this.block() else this
-}
+///**当满足条件时，以接收者为代码体的接收者，执行一段代码并返回转化后的结果，否则返回自身。*/
+//@JvmSynthetic
+//inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
+//	contract {
+//		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+//	}
+//	return if(condition) this.block() else this
+//}
 
-/**当满足条件时，以接收者为代码体的参数，执行一段代码并返回转化后的结果，否则返回自身。*/
-@JvmSynthetic
-inline fun <T> T.let(condition: Boolean, block: (T) -> T): T {
-	contract {
-		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-	}
-	return if(condition) block(this) else this
-}
+///**当满足条件时，以接收者为代码体的参数，执行一段代码并返回转化后的结果，否则返回自身。*/
+//@JvmSynthetic
+//inline fun <T> T.let(condition: Boolean, block: (T) -> T): T {
+//	contract {
+//		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+//	}
+//	return if(condition) block(this) else this
+//}
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 @JvmSynthetic
@@ -96,9 +96,7 @@ inline fun tryOrIgnore(block: () -> Unit) {
 	}
 }
 
-@PublishedApi internal var enableOnce = false
-
-/**执行一段代码且仅执行一次。可指定是否重置单次状态。*/
+/**执行一段代码且仅执行一次。默认不重置单次状态。*/
 @JvmSynthetic
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
@@ -109,6 +107,8 @@ inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	enableOnce = true
 	block()
 }
+
+@PublishedApi internal var enableOnce = false
 //endregion
 
 //region Precondition.kt extensions

@@ -2,45 +2,63 @@ package com.windea.breezeframework.core.enums.core
 
 import com.windea.breezeframework.core.extensions.*
 
+//注意：这里不要使用String.replace(regex, replacement)方法，因为replacement中的"\Q"会变成"Q"
+
 /**匹配类型。*/
 enum class MatchType(
-	val predicate: (String, String) -> Boolean
+	/**转化为对应的正则表达式。*/
+	val regexTransform: (String) -> String
 ) {
 	/**
-	 * 正则表达式。用于匹配广义上的字符串。
-	 *
-	 * 不验证模式的合法性。
-	 */
-	Regex({ string, pattern ->
-		string matches pattern.toRegex()
-	}),
-	/**
-	 * Ant匹配模式。用于匹配多级的路径或链接。
+	 * Ant路径匹配模式。用于匹配路径。
 	 *
 	 * 示例：`/home/&#42;/detail`, `/home/&#42;&#42;`
 	 *
-	 * * `*` 用于匹配一级路径。
-	 * * `**` 用于匹配任意级路径。
-	 *
-	 * 不验证模式的合法性。
+	 * * `?` 匹配任意单个字符。
+	 * * `*` 匹配除了路径分隔符`/`之外的任意数量的任意字符。
+	 * * `**` 匹配任意数量的任意字符。
 	 */
-	Ant({ string, pattern ->
-		val regexPattern = pattern.replace("*", "[^/]*").replace("[^/]*[^/]*", ".*")
-		string matches regexPattern.toRegex()
+	AntPath({ pattern ->
+		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
+			.remove("\\Q\\E")
 	}),
 	/**
-	 * EditConfig匹配模式。用于匹配关注后缀名的文件名。
+	 * ignore文件（如.gitignore）的路径匹配模式。用于匹配路径。
+	 *
+	 * 示例：`test*.txt`, `test[0-9].txt`
+	 *
+	 * * `?` 匹配任意单个字符。
+	 * * `*` 匹配除了路径分隔符`/`之外的任意数量的任意字符。
+	 * * `**` 匹配任意数量的任意字符。
+	 * * `\[name]` 匹配指定的任意字符。
+	 * * `\[a-z]` 匹配指定范围内的任意字符。
+	 * * `!path` 对当前匹配规则取反。（暂不支持）
+	 */
+	IgnorePath({ pattern ->
+		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
+			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
+			.remove("\\Q\\E")
+	}),
+	/**
+	 * .editorconfig文件的路径匹配模式。用于匹配关注后缀名的路径。
 	 *
 	 * 示例：`*.kt`, `*.{java, kt}`
 	 *
-	 * * `*` 用于匹配任意数量的任意字符。
-	 * * `{java, kt}` 用于匹配一组后缀名。
-	 *
-	 * 不验证模式的合法性。
+	 * * `?` 匹配任意单个字符。
+	 * * `*` 匹配除了路径分隔符`/`之外的任意数量的任意字符。
+	 * * `**` 匹配任意数量的任意字符。
+	 * * `\[name]` 匹配指定的任意字符。
+	 * * `\[a-z]` 匹配指定范围内的任意字符。
+	 * * `{a, b, c}` 匹配任意指定的字符串。至少指定两个字符串。（暂不验证）
 	 */
-	EditorConfig({ string, pattern ->
-		val regexPattern = pattern.replace("*", ".*").replace("{", "(?:").replace("}", ")").replace("\\s*,\\s*".toRegex(), "|")
-		string matches regexPattern.toRegex()
+	EditorConfigPath({ pattern ->
+		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
+			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
+			.replace("\\{(.*?)}".toRegex()) { r -> r[1].split(",").joinToString("|", "\\E(", ")\\Q") { it.trim() } }
+			.remove("\\Q\\E")
 	}),
 	/**
 	 * 路径引用匹配模式。用于匹配关注查询的引用。
@@ -48,7 +66,7 @@ enum class MatchType(
 	 * 示例：`/{Category}/0/Name`
 	 *
 	 * * `1` 表示一个列表的指定索引的元素。
-	 * * `1..10` 表示一个列表的指定索引范围内的元素。
+	 * * `1..10` `1-10` 表示一个列表的指定索引范围内的元素。
 	 * * `[]`, `-` 表示一个列表。
 	 * * `\[List]` 表示一个注为指定占位符的列表。
 	 * * `Name` 表示一个映射的指定键的值。
@@ -56,22 +74,11 @@ enum class MatchType(
 	 * * `{}` 表示一个映射。
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
-	PathReference({ string, pattern ->
-		val subStrings = string.removePrefix("/").split("/")
-		val subPatterns = pattern.removePrefix("/").split("/")
-		if(subStrings.size != subPatterns.size) false
-		else (subStrings zip subPatterns).all { (a, b) ->
-			when {
-				b == "[]" || b == "-" -> a.isNumeric()
-				b.surroundsWith("[", "]") -> a.isNumeric()
-				b.contains("..") -> a.isNumeric() && a.toInt() in b.toIntRange()
-				b == "{}" -> true
-				b.surroundsWith("{", "}") -> true
-				b.startsWith("re:") -> a matches b.substring(3).toRegex()
-				else -> a == b
-			}
-		}
+	PathReference({ pattern ->
+		Regex.escape(pattern).replace("/(?:\\[]|-|\\[[^/]*?])".toRegex()) { "/\\E\\d+\\Q" }
+			.replace("/(?:\\{}|\\{[^/]*?})".toRegex()) { "/\\E[^/]*\\Q" }
+			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { r -> "/\\E${Regex.parseNumberRange("[${r[1]}-${r[2]}]")}\\Q" }
+			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r[1]}\\Q" } }
+			.remove("\\Q\\E")
 	})
-
-	//TODO 支持更多的匹配类型
 }

@@ -197,7 +197,7 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
 }
 
 /**
- * PlantUml状态图转换。
+ * PlantUml状态图转化。
  *
  * 语法示例：
  * * `A -> B`

@@ -2,9 +2,10 @@ package com.windea.breezeframework.core.enums.core
 
 /**引用的显示格式。*/
 enum class ReferenceCase(
-	override val regex: Regex,
-	override val splitFunction: (String) -> List<String>,
-	override val joinFunction: (List<String>) -> String
+	override val splitFunction: (String) -> List<String> = { listOf(it) },
+	override val joinFunction: (List<String>) -> String = { it.joinToString("") },
+	override val regex: Regex? = null,
+	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
 ) : FormatCase {
 	/**
 	 * 路径引用。
@@ -21,10 +22,9 @@ enum class ReferenceCase(
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
 	PathReference(
-		//allow: /, unchecked subPaths
-		"""(?:/.+)+""".toRegex(),
 		{ it.removePrefix("/").split("/") },
-		{ it.joinToString("/", "/") }
+		{ it.joinToString("/", "/") },
+		"""(?:/.+)+""".toRegex()
 	),
 	/**
 	 * Java引用。
@@ -32,15 +32,14 @@ enum class ReferenceCase(
 	 * 示例：`Category[0].name`
 	 *
 	 * * `Category` 表示一个对象/对象的属性/映射的值。
+	 * * `T(Category)` 表示一个类型。（暂不支持）
 	 * * `[0]` 表示一个列表的元素。
 	 * * `name` 表示一个对象的属性/映射的值。
 	 */
-	//TODO 支持静态成员/类型 `T(a).b`
 	JavaReference(
-		//allow: $, ., words, [number]
-		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex(),
 		{ it.replace("[", ".[").split(".").dropWhile { s -> s.isEmpty() }.map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".").replace("""(\d+)""".toRegex(), "[$1]").replace(".[", "[") }
+		{ it.joinToString(".").replace("""\d+""".toRegex(), "[$0]").replace(".[", "[") },
+		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex()
 	),
 	/**
 	 * Json引用。
@@ -50,13 +49,11 @@ enum class ReferenceCase(
 	 * * `Category` 表示一个对象的属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 */
-	//TODO 更符合规范
 	JsonReference(
-		//allow: $, ., words, [number]
-		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex(),
 		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".", "$.").replace("""(\d+)""".toRegex(), "[$1]") }
+		{ it.joinToString(".", "$.").replace("""\d+""".toRegex(), "[$0]") },
+		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex()
 	),
 	/**未知格式。*/
-	Unknown(".*".toRegex(), { listOf(it) }, { it.joinToString("") });
+	Unknown;
 }

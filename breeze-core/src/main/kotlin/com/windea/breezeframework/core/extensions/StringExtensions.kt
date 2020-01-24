@@ -15,16 +15,16 @@ import java.util.*
 
 //region operator overrides
 /**@see kotlin.text.slice*/
-inline operator fun String.get(indices: IntRange): String = this.slice(indices)
+operator fun String.get(indices: IntRange): String = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.remove*/
-inline operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
+operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**@see kotlin.text.repeat*/
-inline operator fun String.times(n: Int): String = this.repeat(n)
+operator fun String.times(n: Int): String = this.repeat(n)
 
 /**@see kotlin.text.chunked*/
-inline operator fun String.div(n: Int): List<String> = this.chunked(n)
+operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
@@ -122,12 +122,12 @@ inline fun String.orEmpty(predicate: (String) -> Boolean): String {
 }
 
 
-/**如果当前字符串不为空，则返回转换后的值。*/
+/**如果当前字符串不为空，则返回转化后的值。*/
 inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
 	return if(this.isEmpty()) this else transform(this)
 }
 
-/**如果当前字符串不为空白，则返回转换后的值。*/
+/**如果当前字符串不为空白，则返回转化后的值。*/
 inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
 	return if(this.isBlank()) this else transform(this)
 }
@@ -141,6 +141,19 @@ inline fun <C : CharSequence> C.takeIfNotEmpty(): C? {
 /**如果当前发展处不为空白，则返回自身，否则返回null。*/
 inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
 	return this.takeIf { it.isNotBlank() }
+}
+
+
+/**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+fun String.transformIn(prefix: String, suffix: String, transform: (String) -> String): String {
+	//前后缀会在转义后加入正则表达式，可以分别是\\Q和\\E
+	//TODO 前后缀可能会发生冲突
+	return this.replace("(?<=${Regex.escape(prefix)}).*?(?=${Regex.escape(suffix)})".toRegex()) { transform(it[0]) }
+}
+
+/**限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+fun String.transformIn(regex: Regex, transform: (String) -> String): String {
+	return this.replace(regex) { transform(it[0]) }
 }
 
 
@@ -435,13 +448,13 @@ internal fun String.toWords(): String {
 }
 
 
-/**
- * 根据指定的正则表达式，基于结果分组，匹配并按顺序分割当前字符串。
- * 不包含索引为0的分组，列表可能为空。
- */
-fun CharSequence.substringMatch(regex: Regex): List<String> {
-	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
-}
+///**
+// * 根据指定的正则表达式，基于结果分组，匹配并按顺序分割当前字符串。
+// * 不包含索引为0的分组，列表可能为空。
+// */
+//fun CharSequence.substringMatch(regex: Regex): List<String> {
+//	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
+//}
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
@@ -516,34 +529,42 @@ fun String.unquote(): String {
 private val quoteChars = charArrayOf('\"', '\'', '`')
 
 
-/**根据指定的转义类型，转义当前字符串。*/
-fun String.escapeBy(type: EscapeType): String {
-	//"\" should be escaped first
-	val tempString = if(type.escapeBackslash) this.replace("\\", "\\\\") else this
+/**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/
+fun String.escapeBy(type: EscapeType, includeBackslash: Boolean = false): String {
+	val tempString = if(includeBackslash) this.replace("\\", "\\\\") else this
 	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
 }
 
-/**根据指定的转义类型，反转义当前字符串。*/
-fun String.unescapeBy(type: EscapeType): String {
-	//"\" should be unescaped last
+/**根据指定的转义类型，反转义当前字符串。默认不反转一反斜线*/
+fun String.unescapeBy(type: EscapeType, includeBackslash: Boolean = false): String {
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
-	return if(type.escapeBackslash) tempString.replace("\\\\", "\\") else this
+	return if(includeBackslash) tempString.replace("\\\\", "\\") else this
 }
 
 
-/**根据指定的匹配类型，判断当前字符串是否匹配指定模式。*/
-fun String.matchesBy(pattern: String, type: MatchType): Boolean {
-	return type.predicate(this, pattern)
+/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+fun String.toRegexBy(type: MatchType): Regex {
+	return type.regexTransform(this).toRegex()
+}
+
+/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
+	return type.regexTransform(this).toRegex(option)
+}
+
+/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
+	return type.regexTransform(this).toRegex(options)
 }
 
 
 /**得到当前字母的字母显示格式。*/
 val String.letterCase: LetterCase
-	get() = enumValues<LetterCase>().first { this matches it.regex }
+	get() = enumValues<LetterCase>().first { it.predicate(this) }
 
 /**得到当前字符串的引用显示格式。*/
 val String.referenceCase: ReferenceCase
-	get() = enumValues<ReferenceCase>().first { this matches it.regex }
+	get() = enumValues<ReferenceCase>().first { it.predicate(this) }
 
 /**根据显示格式分割当前字符串。*/
 fun String.splitBy(case: FormatCase): List<String> {
@@ -608,33 +629,33 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 //endregion
 
 //region convert extensions
-/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
-inline fun <reified T : Number> String.toNumber(): T {
+/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
+inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	//performance note: approach to 1/5
 	return when(val typeName = T::class.java.name) {
-		"java.lang.Integer" -> this.toInt() as T
-		"java.lang.Long" -> this.toLong() as T
+		"java.lang.Integer" -> this.toInt(radix) as T
+		"java.lang.Long" -> this.toLong(radix) as T
 		"java.lang.Float" -> this.toFloat() as T
 		"java.lang.Double" -> this.toDouble() as T
-		"java.lang.Byte" -> this.toByte() as T
-		"java.lang.Short" -> this.toShort() as T
-		"java.math.BigInteger" -> this.toBigInteger() as T
+		"java.lang.Byte" -> this.toByte(radix) as T
+		"java.lang.Short" -> this.toShort(radix) as T
+		"java.math.BigInteger" -> this.toBigInteger(radix) as T
 		"java.math.BigDecimal" -> this.toBigDecimal() as T
 		else -> throw UnsupportedOperationException("Unsupported reified number type: '$typeName'.")
 	}
 }
 
-/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
-inline fun <reified T : Number> String.toNumberOrNull(): T? {
+/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。*/
+inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 	//performance note: approach to 1/5
 	return when(T::class.java.name) {
-		"java.lang.Integer" -> this.toIntOrNull() as T?
-		"java.lang.Long" -> this.toLongOrNull() as T?
+		"java.lang.Integer" -> this.toIntOrNull(radix) as T?
+		"java.lang.Long" -> this.toLongOrNull(radix) as T?
 		"java.lang.Float" -> this.toFloatOrNull() as T?
 		"java.lang.Double" -> this.toDoubleOrNull() as T?
-		"java.lang.Byte" -> this.toByteOrNull() as T?
-		"java.lang.Short" -> this.toShortOrNull() as T?
-		"java.math.BigInteger" -> this.toBigIntegerOrNull() as T?
+		"java.lang.Byte" -> this.toByteOrNull(radix) as T?
+		"java.lang.Short" -> this.toShortOrNull(radix) as T?
+		"java.math.BigInteger" -> this.toBigIntegerOrNull(radix) as T?
 		"java.math.BigDecimal" -> this.toBigDecimalOrNull() as T?
 		else -> null
 	}

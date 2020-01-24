@@ -76,31 +76,34 @@ class StringExtensionsKtTest {
 	}
 
 	@Test //TESTED
-	fun matchesByTest() {
-		assertEquals(true, "/abc/123/ab".matchesBy("/abc/*/ab", MatchType.Ant))
-		assertEquals(true, "/abc/123/ab".matchesBy("/abc/**", MatchType.Ant))
-		assertEquals(true, "Test.kt".matchesBy("*.kt", MatchType.EditorConfig))
-		assertEquals(true, "Test.kt".matchesBy("*.{kt, java}", MatchType.EditorConfig))
-		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/123", MatchType.PathReference))
-		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/[]", MatchType.PathReference))
-		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/re:\\d*", MatchType.PathReference))
-		assertEquals(true, "/abc/ab/123".matchesBy("/abc/{}/1..300", MatchType.PathReference))
+	fun transformInTest() {
+		"\\Q abc abc \\E..\\Q abc abc abc \\E abc abc \\Q abc abc 123 \\E".transformIn("\\Q", "\\E") {
+			it.trim().split(" ").joinToString(", ", "{", "}") { s -> s.dropLast(1) }
+		}.also { println(it) }
 	}
 
-	//@Test
-	//fun progressiveTest() {
-	//	val a = """
-	//		123
-	//		123123
-	//	""".trimIndent()
-	//	val b = """
-	//		123
-	//		123123
-	//		123123123
-	//	""".trimIndent()
-	//
-	//	println(a plusByLine b)
-	//	println(a.padStartByLine())
-	//	println(a.padEndByLine())
-	//}
+	@Test
+	fun toRegexByTest() {
+		assertEquals(true, "/home/123/detail" matches "/home/?23/detail".toRegexBy(MatchType.AntPath))
+		assertEquals(true, "/home/123/detail" matches "/home/*/detail".toRegexBy(MatchType.AntPath))
+		assertEquals(true, "/home/123/detail" matches "/home/**/detail".toRegexBy(MatchType.AntPath))
+		assertEquals(true, "/home/123/detail" matches "/home/**".toRegexBy(MatchType.AntPath))
+		assertEquals(true, "/home/123/detail" matches "/*/123/**".toRegexBy(MatchType.AntPath))
+		assertEquals(true, "/home/123/detail" matches "/home/123/detail".toRegexBy(MatchType.AntPath))
+
+		assertEquals(true, "Test.kt" matches "*.kt".toRegexBy(MatchType.EditorConfigPath))
+		assertEquals(true, "Test.kt" matches "*.{kt, kts}".toRegexBy(MatchType.EditorConfigPath))
+		assertEquals(true, "Test.kt" matches "Tes[a-z].kt".toRegexBy(MatchType.EditorConfigPath))
+		assertEquals(true, "Test.kt" matches "Test.kt".toRegexBy(MatchType.EditorConfigPath))
+
+		assertEquals(true, "/abc/123/def" matches "/abc/-/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/abc/[]/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/abc/[b]/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/abc/[b]/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/{}/123/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/{a}/123/def".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123" matches "/abc/[b]".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/abc/[b]/re:[def]*".toRegexBy(MatchType.PathReference))
+		assertEquals(true, "/abc/123/def" matches "/abc/123/def".toRegexBy(MatchType.PathReference))
+	}
 }

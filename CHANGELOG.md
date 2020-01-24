@@ -252,11 +252,13 @@
 * [X] 更新版本。
 * [X] 将使用`HashMap`的地方尽可能地改为使用`LinkedHashMap`（为了键的顺序的一致性），重构相关代码。
 * [X] breeze-core 让集合的`deepQuery`方法允许接受`-`作为数组占位符。
+* [X] breeze-core 添加`String.toRegexBy`扩展以及其所需要的`String.transformIn`扩展。
+* [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 
 # 待办
 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
-* [ ] breeze-dsl 优化：对于表示转换的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
+* [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-serialization 提供yaml的序列化实现。
 * [ ] breeze-serialization 提供xml的序列化实现。
 * [ ] breeze-dsl 编写一种泛用而灵活的富文本Dsl的规范。不提供实现。
@@ -268,7 +270,7 @@
 * [ ] 提供一种Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~
-* [ ] ~~breeze-core 利用反射的类型转换的扩展。~~
+* [ ] ~~breeze-core 利用反射的类型转化的扩展。~~
 * [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 
 # 长期

@@ -49,22 +49,22 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = Conc
 
 //region operator overrides
 /**@see kotlin.collections.slice*/
-inline operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
+operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
-inline operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
 
 /**@see kotlin.collections.chunked*/
-inline operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
+operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.slice*/
-inline operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
+operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
-inline operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**@see kotlin.collections.chunked*/
-inline operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 //endregion
 
 //region common functions

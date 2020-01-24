@@ -4,7 +4,7 @@ import org.springframework.core.convert.converter.*
 import org.springframework.data.domain.*
 
 /**
- * 字符串到排序对象的转换器。
+ * 字符串到排序对象的转化器。
  *
  * * 默认对属性进行升序排序。
  * * 不检查属性名的正确性。

@@ -138,7 +138,7 @@ class MermaidStateDiagramConcurrentSection : MermaidStateDiagramDslEntry {
 	override fun toString() = toContentString()
 }
 
-/**Mermaid状态图转换。*/
+/**Mermaid状态图转化。*/
 @MermaidStateDiagramDsl
 class MermaidStateDiagramTransition @PublishedApi internal constructor(
 	val fromStateId: String,

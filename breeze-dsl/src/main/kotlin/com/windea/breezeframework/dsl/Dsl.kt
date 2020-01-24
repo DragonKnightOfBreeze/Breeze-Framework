@@ -134,7 +134,7 @@ interface WithNode<N : WithId> {
 	val targetNodeId: String
 }
 
-/**包含有可被视为转换的子元素。*/
+/**包含有可被视为转化的子元素。*/
 @Dsl
 interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/

@@ -5,7 +5,7 @@ import org.springframework.core.convert.converter.*
 import org.springframework.data.domain.*
 
 /**
- * 字符串到分页对象的转换器。
+ * 字符串到分页对象的转化器。
  *
  * * 页面从1开始。
  * * 示例："", "1", "1,10", "1,10,+name"。

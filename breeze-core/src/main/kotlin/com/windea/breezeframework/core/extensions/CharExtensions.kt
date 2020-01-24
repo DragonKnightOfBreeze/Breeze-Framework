@@ -5,7 +5,7 @@ package com.windea.breezeframework.core.extensions
 
 //region operator overrides
 /**@see com.windea.breezeframework.core.extensions.repeat */
-inline operator fun Char.times(n: Int): String = String(CharArray(n) { this })
+operator fun Char.times(n: Int): String = this.repeat(n)
 //endregion
 
 //region other extensions
