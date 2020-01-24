@@ -11,6 +11,9 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
 
+//注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
+//注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
+
 //region portal extensions
 /**构建一个空的枚举集。*/
 inline fun <reified T : Enum<T>> enumSetOf(): EnumSet<T> = EnumSet.noneOf(T::class.java)
@@ -70,6 +73,7 @@ operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 //region common functions
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
+	//NOTE 某些具体的实现类的equals方法与这个方法应是等效的
 	return this == other || this.size == other.size && (this zip other).all { (a, b) -> a == b }
 }
 
@@ -154,16 +158,25 @@ inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 inline fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
 
 
+//public inline fun <C, R> C.ifEmpty(defaultValue: () -> R): R where C : Array<*>, C : R =
+//    if (isEmpty()) defaultValue() else this
+
 /**如果当前数组不为空，则返回转化后的值。*/
 @Suppress("UPPER_BOUND_CANNOT_BE_ARRAY")
-inline fun <T : Array<*>> T.ifNotEmpty(transform: (T) -> T): T {
-	return if(this.isEmpty()) this else transform(this)
-}
+inline fun <T : Array<*>> T.ifNotEmpty(transform: (T) -> T): T =
+	if(this.isEmpty()) this else transform(this)
+
+//@kotlin.internal.InlineOnly
+//public inline fun <C, R> C.ifEmpty(defaultValue: () -> R): R where C : Collection<*>, C : R =
+//    if (isEmpty()) defaultValue() else this
 
 /**如果当前集合不为空，则返回转化后的值。*/
-inline fun <T : Collection<*>> T.ifNotEmpty(transform: (T) -> T): T {
-	return if(this.isEmpty()) this else transform(this)
-}
+inline fun <T : Collection<*>> T.ifNotEmpty(transform: (T) -> T): T =
+	if(this.isEmpty()) this else transform(this)
+
+//@kotlin.internal.InlineOnly
+//public inline fun <M, R> M.ifEmpty(defaultValue: () -> R): R where M : Map<*, *>, M : R =
+//    if (isEmpty()) defaultValue() else this
 
 /**如果当前映射不为空，则返回转化后的值。*/
 inline fun <T : Map<*, *>> T.ifNotEmpty(transform: (T) -> T): T {
@@ -209,7 +222,7 @@ fun <T> Iterable<T>.repeat(n: Int): List<T> {
 }
 
 /**分别重复当前集合中的元素到指定次数，并映射为子列表。*/
-fun <T> Iterable<T>.repeatChunked(n: Int): List<List<T>> {
+fun <T> Iterable<T>.flatChunkedRepeat(n: Int): List<List<T>> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 
 	return mutableListOf<List<T>>().also { list -> for(e in this) list += (mutableListOf<T>().also { l -> repeat(n) { l += e } }) }
@@ -280,35 +293,35 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 //fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
 
 
-/**根据指定的转化操作，将映射中的键与值加入到指定的可添加对添加对象。默认的转化操作是`$k=$v`。*/
+/**根据指定的转化操作，将当前映射中的键与值加入到指定的容器。默认的转化操作是`$k=$v`。*/
 fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
 
-/**根据指定的转化操作，将映射中的键与值加入到字符串。默认的转化操作是`$k=$v`。*/
+/**根据指定的转化操作，将当前映射中的键与值加入到字符串。默认的转化操作是`$k=$v`。*/
 fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
 	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
 
 
-/**根据指定的转化操作，将数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
+/**根据指定的转化操作，将当前数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
 fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
 	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
 
-/**根据指定的转化操作，将集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
+/**根据指定的转化操作，将当前集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
 fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
 	return if(this.none()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
 
-/**根据指定的转化操作，将映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
+/**根据指定的转化操作，将当前映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
 fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
@@ -406,8 +419,9 @@ inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>, crossinline pr
 //region deep operation extensions
 /**
  * 根据指定路径得到当前数组中的元素。可指定路径的显示格式，默认为路径引用。
- *
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  *
  * @see ReferenceCase.PathReference
  */
@@ -418,7 +432,8 @@ fun <T> Array<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.P
 /**
  * 根据指定路径得到当前列表中的元素。可指定路径的显示格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回值的类型应当与指定的泛型类型一致。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  *
  * @see ReferenceCase.PathReference
  */
@@ -429,7 +444,8 @@ fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.Pa
 /**
  * 根据指定路径得到当前映射中的元素。可指定路径的显示格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回值的类型应当与指定的泛型类型一致。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  *
  * @see ReferenceCase.PathReference
  */
@@ -437,10 +453,10 @@ fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.Pa
 fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T =
 	this.deepGet0(path, pathCase)
 
-private fun <T> Any.deepGet0(path: String, pathCase: ReferenceCase): T {
+private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
 	val subPaths = path.splitBy(pathCase)
-	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' is an empty path.")
-	var currentValue: Any? = this
+	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' cannot be empty.")
+	var currentValue = this
 	for(subPath in subPaths) {
 		currentValue = currentValue.collectionGet(subPath)
 	}
@@ -452,6 +468,7 @@ private fun <T> Any.deepGet0(path: String, pathCase: ReferenceCase): T {
  * 根据指定路径设置当前数组中的元素。指定路径的显示格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
  *
  * @see ReferenceCase.PathReference
@@ -465,6 +482,7 @@ fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = Refer
  * 根据指定路径设置当前列表中的元素。指定路径的显示格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
  *
  * @see ReferenceCase.JavaReference
@@ -478,6 +496,7 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
  * 根据指定路径设置当前映射中的元素。指定路径的显示格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
  *
  * @see ReferenceCase.PathReference
@@ -487,10 +506,10 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
 fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
 
-private fun <T> Any.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
+private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
 	val subPaths = path.splitBy(pathCase)
-	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' is an empty path.")
-	var currentValue: Any? = this
+	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' cannot be empty.")
+	var currentValue = this
 	for(subPath in subPaths.dropLast(1)) {
 		currentValue = currentValue.collectionGet(subPath)
 	}
@@ -547,10 +566,9 @@ fun <T> Sequence<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceC
 	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> =
 	this.deepQuery0(path, pathCase, returnPathCase)
 
-private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
+private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
 	val subPaths = path.splitBy(pathCase)
-	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' is an empty path.")
-	var pathValuePairs = listOf<Pair<List<String>, Any?>>(listOf<String>() to this)
+	var pathValuePairs = listOf(arrayOf<String>() to this)
 	for(subPath in subPaths) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
 			when(value) {
@@ -598,45 +616,134 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 					}
 					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
 				}
+				//当尝试查询非集合类型的数据时，要求抛出异常
 				else -> notAValidCollection(this)
 			}
 		}
 	}
-	val result = pathValuePairs.toMap().mapKeys { (k, _) -> k.joinBy(returnPathCase) }
-	return result as Map<String, T>
+	return pathValuePairs.toPairValueMap(returnPathCase) as Map<String, T>
 }
 
 
-private fun Any?.collectionGet(path: String): Any? {
+/**
+ * 递归平滑映射当前数组，返回路径-值映射。默认递归映直到到找到非集合类型的元素为止。返回值中路径的显示格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun Array<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
+	this.deepFlatten0(depth, returnPathCase)
+
+/**
+ * 递归平滑映射当前集合，返回路径-值映射。默认递归映直到到找到非集合类型的元素为止。返回值中路径的显示格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun Iterable<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
+	this.deepFlatten0(depth, returnPathCase)
+
+/**
+ * 递归平滑映射当前映射，返回路径-值映射。默认递归映直到到找到非集合类型的元素为止。返回值中路径的显示格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun Map<*, *>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
+	this.deepFlatten0(depth, returnPathCase)
+
+/**
+ * 递归平滑映射当前序列，返回路径-值映射。默认递归映直到到找到非集合类型的元素为止。返回值中路径的显示格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun Sequence<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
+	this.deepFlatten0(depth, returnPathCase)
+
+private fun Any?.deepFlatten0(depth: Int = -1, returnPathCase: ReferenceCase): Map<String, Any?> {
+	var pathValuePairs = listOf(arrayOf<String>() to this)
+	var currentDepth = depth
+	val untilAnyNoCollectionElement = depth < 0
+	while(currentDepth != 0) {
+		//用来判断这次循环中是否找到集合类型的数据，以判断是否需要进行下一次循环
+		var hasNoneCollectionElement = true
+		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
+			when(value) {
+				is Array<*> -> {
+					hasNoneCollectionElement = false
+					value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+				}
+				is Iterable<*> -> {
+					hasNoneCollectionElement = false
+					value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+				}
+				is Map<*, *> -> {
+					hasNoneCollectionElement = false
+					value.map { (k, v) -> (key + k.toString()) to v }
+				}
+				is Sequence<*> -> {
+					hasNoneCollectionElement = false
+					value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
+				}
+				else -> if(untilAnyNoCollectionElement) {
+					//如果找到非集合类型的数据，且depth=-1，则直接返回上一次保存的映射
+					return pathValuePairs.toPairValueMap(returnPathCase)
+				} else {
+					listOf(key to value)
+				}
+			}
+		}
+		if(hasNoneCollectionElement) return pathValuePairs.toPairValueMap(returnPathCase)
+		currentDepth-- //这里会产生多余的操作，忽略
+	}
+	return pathValuePairs.toPairValueMap(returnPathCase)
+}
+
+
+private fun Array<String?>.copyAndSet(index: Int, value: Any?): Array<String?> {
+	val result = this.copyOf()
+	result[index] = value?.toString()
+	return result
+}
+
+private fun Any?.collectionGet(indexOrKey: String): Any? {
 	return when(this) {
-		is Array<*> -> this[path.toIntOrThrow()]
-		is Iterable<*> -> this.elementAt(path.toIntOrThrow())
-		is Map<*, *> -> this[path]
-		is Sequence<*> -> this.elementAt(path.toIntOrThrow())
+		is Array<*> -> this[indexOrKey.toIntOrThrow()]
+		is Iterable<*> -> this.elementAt(indexOrKey.toIntOrThrow())
+		is Map<*, *> -> this[indexOrKey]
+		is Sequence<*> -> this.elementAt(indexOrKey.toIntOrThrow())
 		else -> notAValidCollection(this)
 	}
 }
 
-private fun <T> Any?.collectionSet(path: String, value: T) {
+private fun Any?.collectionSet(indexOrKey: String, value: Any?) {
 	when(this) {
 		is Array<*> -> try {
-			(this as Array<T>)[path.toIntOrThrow()] = value
+			(this as Array<Any?>)[indexOrKey.toIntOrThrow()] = value
 		} catch(e: ArrayStoreException) {
 			typeMismatched(value)
 		}
 		is MutableList<*> -> {
 			//这里无法进行类型检查，忽略
-			(this as MutableList<T>)[path.toIntOrThrow()] = value
+			(this as MutableList<Any?>)[indexOrKey.toIntOrThrow()] = value
 		}
 		is MutableMap<*, *> -> {
 			if(this.isNotEmpty() && this.keys.first() !is String) notAStringKeyMap(this)
 			//这里无法进行类型检查，忽略
-			(this as MutableMap<String, T>)[path] = value
+			(this as MutableMap<String, Any?>)[indexOrKey] = value
 		}
 		else -> notAValidMutableCollection(this)
 	}
 }
-
 
 private fun String.toIntOrThrow(): Int {
 	return this.toIntOrNull() ?: notAnIndex(this)
@@ -662,60 +769,8 @@ private fun typeMismatched(value: Any?): Nothing {
 	throw IllegalArgumentException("Value '$value' is type mismatched (Incompatible generic type).")
 }
 
-
-/**
- * 递归平滑映射当前数组，返回路径-值映射。可指定层级，默认为全部层级。返回值中路径的显示格式默认为路径引用。
- *
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun Array<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
-	this.toIndexKeyMap().deepFlatten0(depth, returnPathCase)
-
-/**
- * 递归平滑映射当前集合，返回路径-值映射。可指定层级，默认为全部层级。返回值中路径的显示格式默认为路径引用。
- *
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun Iterable<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
-	this.toIndexKeyMap().deepFlatten0(depth, returnPathCase)
-
-/**
- * 递归平滑映射当前映射，返回路径-值映射。可指定层级，默认为全部层级。返回值中路径的显示格式默认为路径引用。
- *
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun Map<*, *>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
-	this.toStringKeyMap().deepFlatten0(depth, returnPathCase)
-
-/**
- * 递归平滑映射当前序列，返回路径-值映射。可指定层级，默认为全部层级。返回值中路径的显示格式默认为路径引用。
- *
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun Sequence<*>.deepFlatten(depth: Int = -1, returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, Any?> =
-	this.toIndexKeyMap().deepFlatten0(depth, returnPathCase)
-
-private fun Map<String, Any?>.deepFlatten0(depth: Int = -1, returnPathCase: ReferenceCase,
-	preSubPaths: List<String> = listOf()): Map<String, Any?> {
-	return this.flatMap { (key, value) ->
-		val currentHierarchy = if(depth <= 0) depth else depth - 1
-		//每次递归需要创建新的子路径列表
-		val currentPreSubPaths = preSubPaths + key
-		//如果不是集合类型，则拼接成完整路径，与值一同返回
-		val fixedValue = when {
-			currentHierarchy == 0 -> return@flatMap listOf(currentPreSubPaths.joinBy(returnPathCase) to value)
-			value is Array<*> -> value.toIndexKeyMap()
-			value is Iterable<*> -> value.toIndexKeyMap()
-			value is Map<*, *> -> value.toStringKeyMap()
-			value is Sequence<*> -> value.toIndexKeyMap()
-			else -> return@flatMap listOf(currentPreSubPaths.joinBy(returnPathCase) to value)
-		}
-		return@flatMap fixedValue.deepFlatten0(currentHierarchy, returnPathCase, currentPreSubPaths).toList()
-	}.toMap()
+private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: ReferenceCase): Map<String, Any?> {
+	return this.map { (p, v) -> p.joinToStringBy(returnPathCase) to v }.toMap()
 }
 //endregion
 
@@ -776,43 +831,63 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 //endregion
 
 //region specific operations
-/**得到指定索引的值，如果出错，则返回空字符串。*/
-inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+/**得到指定索引的字符串，如果索引越界，则返回空字符串。*/
+inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrDefault(index, "")
 
-/**得到指定索引的值，如果出错，则返回空字符串。*/
-inline fun List<String>.getOrEmpty(index: Int): String = this.getOrElse(index) { "" }
+/**得到指定索引的字符串，如果索引越界，则返回空字符串。*/
+inline fun List<String>.getOrEmpty(index: Int): String = this.getOrDefault(index, "")
+
+/**得到指定键的字符串，如果值为null，则返回空字符串。*/
+inline fun <K> Map<K, String>.getOrEmpty(key: K): String = this[key] ?: ""
 
 
-/**去除起始的空白行。*/
+/**去除起始的空字符串。*/
+inline fun <T : CharSequence> Array<out T>.dropEmpty(): List<T> = this.dropWhile { it.isEmpty() }
+
+/**去除起始的空字符串。*/
+inline fun <T : CharSequence> Iterable<T>.dropEmpty(): List<T> = this.dropWhile { it.isEmpty() }
+
+/**去除起始的空字符串。*/
+inline fun <T : CharSequence> Sequence<T>.dropEmpty(): Sequence<T> = this.dropWhile { it.isEmpty() }
+
+/**去除尾随的空字符串。*/
+inline fun <T : CharSequence> Array<out T>.dropLastEmpty(): List<T> = this.dropLastWhile { it.isEmpty() }
+
+/**去除尾随的空字符串。*/
+inline fun <T : CharSequence> List<T>.dropLastEmpty(): List<T> = this.dropLastWhile { it.isEmpty() }
+
+
+/**去除起始的空白字符串。*/
 inline fun <T : CharSequence> Array<out T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
 
-/**去除尾随的空白行。*/
-inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
-
-/**去除起始的空白行。*/
+/**去除起始的空白字符串。*/
 inline fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
 
-/**去除尾随的空白行。*/
-inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
-
-/**去除起始的空白行。*/
+/**去除起始的空白字符串。*/
 inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
+
+/**去除尾随的空白字符串。*/
+inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
+
+/**去除尾随的空白字符串。*/
+inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
 
 
 /**过滤空字符串。*/
 inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
-/**过滤空白字符串。*/
-inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
-
 /**过滤空字符串。*/
 inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filter { it.isNotEmpty() }
 
-/**过滤空白字符串。*/
-inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
-
 /**过滤空字符串。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
+
+
+/**过滤空白字符串。*/
+inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
+
+/**过滤空白字符串。*/
+inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filter { it.isNotBlank() }
 
 /**过滤空白字符串。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }

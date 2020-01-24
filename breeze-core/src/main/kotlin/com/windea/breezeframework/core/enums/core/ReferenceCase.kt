@@ -1,9 +1,12 @@
 package com.windea.breezeframework.core.enums.core
 
+import com.windea.breezeframework.core.extensions.*
+
 /**引用的显示格式。*/
 enum class ReferenceCase(
-	override val splitFunction: (String) -> List<String> = { listOf(it) },
-	override val joinFunction: (List<String>) -> String = { it.joinToString("") },
+	override val splitter: (CharSequence) -> Sequence<String> = { sequenceOf(it.toString()) },
+	override val joiner: (Iterable<CharSequence>) -> String = { it.joinToString("") },
+	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
 	override val regex: Regex? = null,
 	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
 ) : FormatCase {
@@ -22,7 +25,8 @@ enum class ReferenceCase(
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
 	PathReference(
-		{ it.removePrefix("/").split("/") },
+		{ it.removePrefix("/").splitToSequence('/') },
+		{ it.joinToString("/", "/") },
 		{ it.joinToString("/", "/") },
 		"""(?:/.+)+""".toRegex()
 	),
@@ -37,8 +41,9 @@ enum class ReferenceCase(
 	 * * `name` 表示一个对象的属性/映射的值。
 	 */
 	JavaReference(
-		{ it.replace("[", ".[").split(".").dropWhile { s -> s.isEmpty() }.map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".").replace("""\d+""".toRegex(), "[$0]").replace(".[", "[") },
+		{ it.splitToSequence('[', '.').dropEmpty().map { s -> s.removeSuffix("]") } },
+		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
+		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
 		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex()
 	),
 	/**
@@ -50,10 +55,17 @@ enum class ReferenceCase(
 	 * * `[0]` 表示一个列表的元素。
 	 */
 	JsonReference(
-		{ it.removePrefix("$.").split(".").map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".", "$.").replace("""\d+""".toRegex(), "[$0]") },
+		{ it.removePrefix("$.").splitToSequence('.').map { s -> s.removeSurrounding("[", "]") } },
+		{ it.joinToString(".", "$.").wrapIndex() },
+		{ it.joinToString(".", "$.").wrapIndex() },
 		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex()
 	),
 	/**未知格式。*/
 	Unknown;
+}
+
+
+/**使用方括号包围索引。*/
+private fun String.wrapIndex(): String {
+	return this.replace("""\d+""".toRegex(), "[$0]")
 }

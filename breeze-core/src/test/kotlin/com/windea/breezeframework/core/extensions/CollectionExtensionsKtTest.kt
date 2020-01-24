@@ -7,16 +7,16 @@ class CollectionExtensionsKtTest {
 	fun repeatExtensionTest() {
 		println(listOf(1, 2, 3).repeat(3))
 		println(listOf(1, 2, 3).flatRepeat(3))
-		println(listOf(1, 2, 3).repeatChunked(3))
+		println(listOf(1, 2, 3).flatChunkedRepeat(3))
 	}
 
 	@Test //TESTED
 	fun dropBlankTest() {
-		println(listOf("123").dropBlank())
-		println(listOf("", "123").dropBlank())
-		println(listOf("", "", "123").dropBlank())
-		println(listOf("123", "", "123").dropBlank())
-		println(listOf("", "123", "", "123").dropBlank())
+		assertEquals(1, listOf("123").dropBlank().size)
+		assertEquals(1, listOf("", "123").dropBlank().size)
+		assertEquals(1, listOf("", "", "123").dropBlank().size)
+		assertEquals(3, listOf("123", "", "123").dropBlank().size)
+		assertEquals(3, listOf("", "123", "", "123").dropBlank().size)
 	}
 
 	@Test //TESTED
@@ -90,7 +90,7 @@ class CollectionExtensionsKtTest {
 		//println(intMutableList)
 	}
 
-	@Test
+	@Test //TESTED
 	fun deepQuery() {
 		val list = listOf(
 			listOf(1, 2, 3),
@@ -108,5 +108,22 @@ class CollectionExtensionsKtTest {
 		println(list.deepQuery<Int>("/0..2/1..2"))
 		println(list.deepQuery<List<String>>("/3/{}"))
 		println(list.deepQuery<String>("/3/re:\\w/0"))
+	}
+
+	@Test //TESTED
+	fun deepFlatten() {
+		val list = listOf(
+			listOf(1, 2, 3),
+			listOf(11, 22, 33),
+			listOf(111, 222, 333, listOf(444)),
+			mapOf("a" to listOf("a"), "b" to listOf("b"))
+		)
+		list.deepFlatten(-2).also { println(it) }
+		list.deepFlatten().also { println(it) }
+		list.deepFlatten(0).also { println(it) }
+		list.deepFlatten(1).also { println(it) }
+		list.deepFlatten(2).also { println(it) }
+		list.deepFlatten(3).also { println(it) }
+		list.deepFlatten(4).also { println(it) }
 	}
 }

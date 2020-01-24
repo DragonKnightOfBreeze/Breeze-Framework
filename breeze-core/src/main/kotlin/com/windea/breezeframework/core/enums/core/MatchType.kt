@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 /**匹配类型。*/
 enum class MatchType(
 	/**转化为对应的正则表达式。*/
-	val regexTransform: (String) -> String
+	val transform: (String) -> String
 ) {
 	/**
 	 * Ant路径匹配模式。用于匹配路径。
@@ -19,9 +19,10 @@ enum class MatchType(
 	 * * `**` 匹配任意数量的任意字符。
 	 */
 	AntPath({ pattern ->
-		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+		pattern.escapeRegex()
+			.replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
 			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
-			.remove("\\Q\\E")
+			.trimRegex()
 	}),
 	/**
 	 * ignore文件（如.gitignore）的路径匹配模式。用于匹配路径。
@@ -36,10 +37,11 @@ enum class MatchType(
 	 * * `!path` 对当前匹配规则取反。（暂不支持）
 	 */
 	IgnorePath({ pattern ->
-		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+		pattern.escapeRegex()
+			.replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
 			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
 			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
-			.remove("\\Q\\E")
+			.trimRegex()
 	}),
 	/**
 	 * .editorconfig文件的路径匹配模式。用于匹配关注后缀名的路径。
@@ -54,11 +56,12 @@ enum class MatchType(
 	 * * `{a, b, c}` 匹配任意指定的字符串。至少指定两个字符串。（暂不验证）
 	 */
 	EditorConfigPath({ pattern ->
-		Regex.escape(pattern).replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
+		pattern.escapeRegex()
+			.replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
 			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
 			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
 			.replace("\\{(.*?)}".toRegex()) { r -> r[1].split(",").joinToString("|", "\\E(", ")\\Q") { it.trim() } }
-			.remove("\\Q\\E")
+			.trimRegex()
 	}),
 	/**
 	 * 路径引用匹配模式。用于匹配关注查询的引用。
@@ -75,10 +78,22 @@ enum class MatchType(
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
 	PathReference({ pattern ->
-		Regex.escape(pattern).replace("/(?:\\[]|-|\\[[^/]*?])".toRegex()) { "/\\E\\d+\\Q" }
+		pattern.escapeRegex()
+			.replace("/(?:\\[]|-|\\[[^/]*?])".toRegex()) { "/\\E\\d+\\Q" }
 			.replace("/(?:\\{}|\\{[^/]*?})".toRegex()) { "/\\E[^/]*\\Q" }
 			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { r -> "/\\E${Regex.parseNumberRange("[${r[1]}-${r[2]}]")}\\Q" }
 			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r[1]}\\Q" } }
-			.remove("\\Q\\E")
+			.trimRegex()
 	})
+}
+
+
+/**转义正则表达式字符串。*/
+private fun String.escapeRegex(): String {
+	return Regex.escape(this)
+}
+
+/**精简正则表达式字符串。*/
+private fun String.trimRegex(): String {
+	return this.remove("\\Q\\E")
 }

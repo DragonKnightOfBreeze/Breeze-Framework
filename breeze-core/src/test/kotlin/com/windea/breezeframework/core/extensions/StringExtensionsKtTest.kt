@@ -7,20 +7,6 @@ import kotlin.test.*
 
 class StringExtensionsKtTest {
 	@Test //TESTED
-	fun splitToWordListTest() {
-		assertEquals(listOf("abc", "abc", "abc"), "  abc abc  abc".splitToWordList())
-		assertEquals(listOf("abc", "abc", "abc"), "__abc_abc__abc".splitToWordList('_'))
-		assertEquals(listOf("abc", "abc", "abc"), "--abc-abc--abc-".splitToWordList('-'))
-	}
-
-	@Test //TESTED
-	fun toWordsTest() {
-		assertEquals("abc Abc", "abcAbc".toWords())
-		assertEquals("Abc Abc", "AbcAbc".toWords())
-		assertEquals("ABC Abc", "ABCAbc".toWords())
-	}
-
-	@Test //TESTED
 	fun letterCaseTest() {
 		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(camelCase))
 		assertEquals("AbcAbcAbc", "abcAbcAbc".switchCaseBy(PascalCase))

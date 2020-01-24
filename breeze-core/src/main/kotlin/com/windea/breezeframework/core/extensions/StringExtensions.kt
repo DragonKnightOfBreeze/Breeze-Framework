@@ -28,19 +28,20 @@ operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common functions
-/**忽略大小写，判断两个字符串是否相等。*/
-infix fun String?.equalsIc(other: String?): Boolean {
-	return this.equals(other, true)
-}
+/**判断两个字符串是否相等。*/
+infix fun String?.equals(other: String?): Boolean = this.equals(other, false)
 
-/**
- * 忽略显示格式，判断两个字符串是否相等。
- *
- * @see com.windea.breezeframework.core.enums.core.LetterCase
- */
-infix fun String?.equalsIlc(other: String?): Boolean {
-	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
-}
+/**判断两个字符串是否相等，忽略大小写。。*/
+infix fun String?.equalsIc(other: String?): Boolean = this.equals(other, true)
+
+///**
+// * 判断两个字符串是否相等，忽略显示格式。
+// *
+// * @see com.windea.breezeframework.core.enums.core.LetterCase
+// */
+//infix fun String?.equalsIlc(other: String?): Boolean {
+//	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
+//}
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
@@ -416,36 +417,15 @@ fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
 
-/**去除所有空格。*/
-fun String.removeWhiteSpace(): String {
-	return this.replace(" ", "")
-}
-
-/**去除所有空白。*/
-fun String.removeBlank(): String {
-	return this.replace("""\s+""".toRegex(), "")
-}
-
-
-/**将第一个字符转为大写。*/
-internal fun String.firstCharToUpperCase(): String {
-	return this[0].toUpperCase() + this.substring(1)
-}
-
-/**将第一个字符转为小写。*/
-internal fun String.firstCharToLowerCase(): String {
-	return this[0].toLowerCase() + this.substring(1)
-}
-
-/**将当前字符串分割为单词列表，基于任意长度的指定的分割符，默认为空格。允许位于首尾的分隔符。*/
-internal fun String.splitToWordList(delimiter: Char = ' '): List<String> {
-	return this.split(delimiter).filterNotEmpty()
-}
-
-/**将当前字符串转化为以空格分割的单词组成的字符串，基于大小写边界。允许全大写的单词。*/
-internal fun String.toWords(): String {
-	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
-}
+///**去除所有空格。*/
+//fun String.removeWhiteSpace(): String {
+//	return this.replace(" ", "")
+//}
+//
+///**去除所有空白。*/
+//fun String.removeBlank(): String {
+//	return this.replace("""\s+""".toRegex(), "")
+//}
 
 
 ///**
@@ -544,17 +524,17 @@ fun String.unescapeBy(type: EscapeType, includeBackslash: Boolean = false): Stri
 
 /**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType): Regex {
-	return type.regexTransform(this).toRegex()
+	return type.transform(this).toRegex()
 }
 
 /**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
-	return type.regexTransform(this).toRegex(option)
+	return type.transform(this).toRegex(option)
 }
 
 /**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
-	return type.regexTransform(this).toRegex(options)
+	return type.transform(this).toRegex(options)
 }
 
 
@@ -566,28 +546,38 @@ val String.letterCase: LetterCase
 val String.referenceCase: ReferenceCase
 	get() = enumValues<ReferenceCase>().first { it.predicate(this) }
 
-/**根据显示格式分割当前字符串。*/
+/**根据显示格式分割当前字符串，返回对应的字符串列表。*/
 fun String.splitBy(case: FormatCase): List<String> {
-	return case.splitFunction(this)
+	return case.splitter(this).toList()
 }
 
-/**根据显示格式连接当前字符串列表，组成完整字符串。*/
-fun List<String>.joinBy(case: FormatCase): String {
-	return case.joinFunction(this)
+/**根据显示格式分割当前字符串，返回对应的字符串序列。*/
+fun String.splitToSequenceBy(case: FormatCase): Sequence<String> {
+	return case.splitter(this)
+}
+
+/**根据指定的显示格式，将当前字符串数组中的元素加入到字符串。*/
+fun Array<out CharSequence>.joinToStringBy(case: FormatCase): String {
+	return case.arrayJoiner(this)
+}
+
+/**根据指定的显示格式，将当前字符串集合中的元素加入到字符串。*/
+fun Iterable<CharSequence>.joinToStringBy(case: FormatCase): String {
+	return case.joiner(this)
 }
 
 /**切换当前字符串的显示格式。*/
 fun String.switchCaseBy(fromCase: FormatCase, toCase: FormatCase): String {
-	return this.splitBy(fromCase).joinBy(toCase)
+	return this.splitBy(fromCase).joinToStringBy(toCase)
 }
 
 /**切换当前字符串的显示格式。根据目标显示格式的类型自动推导当前的显示格式，但某些显示格式需要显式指定。*/
 fun String.switchCaseBy(case: FormatCase): String {
-	return when(case) {
-		is LetterCase -> this.splitBy(this.letterCase)
-		is ReferenceCase -> this.splitBy(this.referenceCase)
-		else -> throw IllegalArgumentException("Target format case do not provide an actual way to get from a string.")
-	}.joinBy(case)
+	return this.splitBy(when(case) {
+		is LetterCase -> this.letterCase
+		is ReferenceCase -> this.referenceCase
+		else -> throw IllegalArgumentException("Cannot find an actual way to get same-type format case from a string.")
+	}).joinToStringBy(case)
 }
 //endregion
 
@@ -695,7 +685,8 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 /**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toCharRange(): CharRange {
 	return try {
-		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.single() + b }?.toRange() ?: notARange(this)
+		val (aOffset, bOffset) = this.toRangeOffsetPair()
+		this.toRangePairOrNull()?.let { (a, b) -> a.single() + aOffset..b.single() + bOffset } ?: notARange(this)
 	} catch(e: Exception) {
 		notARange(this)
 	}
@@ -704,7 +695,8 @@ fun String.toCharRange(): CharRange {
 /**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toIntRange(): IntRange {
 	return try {
-		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toInt() + b }?.toRange() ?: notARange(this)
+		val (aOffset, bOffset) = this.toRangeOffsetPair()
+		this.toRangePairOrNull()?.let { (a, b) -> a.toInt() + aOffset..b.toInt() + bOffset } ?: notARange(this)
 	} catch(e: Exception) {
 		notARange(this)
 	}
@@ -713,7 +705,8 @@ fun String.toIntRange(): IntRange {
 /**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toLongRange(): LongRange {
 	return try {
-		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toLong() + b }?.toRange() ?: notARange(this)
+		val (aOffset, bOffset) = this.toRangeOffsetPair()
+		this.toRangePairOrNull()?.let { (a, b) -> a.toLong() + aOffset..b.toLong() + bOffset } ?: notARange(this)
 	} catch(e: Exception) {
 		notARange(this)
 	}
@@ -728,7 +721,7 @@ private fun String.toRangePairOrNull(): Pair<String, String>? {
 	}
 }
 
-private fun String.toRangeSurrounding(): Pair<Int, Int> {
+private fun String.toRangeOffsetPair(): Pair<Int, Int> {
 	return when {
 		this.surroundsWith("[", "]") -> 0 to 0
 		this.surroundsWith("[", ")") -> 0 to -1
