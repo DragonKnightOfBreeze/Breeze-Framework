@@ -64,14 +64,16 @@
 
 ## 用法
 
-pom.xml
+可能需要用到的api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
+
+## Maven
 
 ```xml
 <project>
   ...
   <dependencies>
     <dependency>
-      <groupId>com.windea.breJava设计模式.mdezeframework</groupId>
+      <groupId>com.windea.breezeframework</groupId>
       <artifactId>${module}</artifactId>
       <version>${version}</version>
     </dependency>
@@ -87,7 +89,7 @@ pom.xml
 </project>
 ```
 
-build.gradle
+## Gradle
 
 ```groovy
 repositories {
@@ -99,11 +101,11 @@ dependencies {
 }
 ```
 
-build.gradle.kts
+## Gradle Kts
 
 ```kotlin
 repositories {
-    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
 }
 
 dependencies {

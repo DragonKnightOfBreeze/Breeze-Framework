@@ -195,6 +195,20 @@ fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 }
 
 
+/**交换当前数组中指定的两个索引对应的元素。*/
+fun <T> Array<T>.swap(index1: Int, index2: Int) {
+	val temp = this[index1]
+	this[index1] = this[index2]
+	this[index2] = temp
+}
+
+/**交换当前列表中指定的两个索引对应的元素。*/
+fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
+	//不委托给java.util.Collections.swap，因为数组的对应方法是私有的
+	this[index1] = this.set(index2, this[index1])
+}
+
+
 /**得到随机元素。如果数组为空，则返回null。*/
 inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
 

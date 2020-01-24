@@ -167,7 +167,9 @@ logger.warn("Some warn.")
 
 # Usage
 
-pom.xml
+Possible needed api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
+
+## Maven
 
 ```xml
 <project>
@@ -190,7 +192,7 @@ pom.xml
 </project>
 ```
 
-build.gradle
+## Gradle
 
 ```groovy
 repositories {
@@ -202,11 +204,11 @@ dependencies {
 }
 ```
 
-build.gradle.kts
+## Gradle Kts
 
 ```kotlin
 repositories {
-    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
 }
 
 dependencies {

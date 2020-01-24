@@ -256,6 +256,7 @@
 * [X] breeze-core 让集合的`deepQuery`方法允许接受`m-n`作为数组索引范围占位符。
 * [X] breeze-core 优化字符串的特定类型操作方法以及集合的深操作方法。
 * [X] breeze-core 移除一些认为是冗余的扩展。
+* [X] breeze-core 添加`Array.swap`、`MutableList.swap`扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 
 # 待办
