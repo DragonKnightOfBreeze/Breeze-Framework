@@ -555,18 +555,20 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
 			when(value) {
 				is Array<*> -> when {
-					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					subPath.contains("..") -> {
+					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
+						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+					}
+					subPath.contains("..") || subPath.contains("-") -> {
 						val indices = subPath.toIntRange()
 						value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
 					}
 					else -> listOf((key + subPath) to value[subPath.toIntOrThrow()])
 				}
 				is Iterable<*> -> when {
-					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					subPath.contains("..") -> {
+					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
+						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
+					}
+					subPath.contains("..") || subPath.contains("-") -> {
 						val indices = subPath.toIntRange()
 						if(value is List<*>) {
 							value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
@@ -577,8 +579,9 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
 				}
 				is Map<*, *> -> when {
-					subPath == "{}" -> value.map { (k, v) -> (key + k.toString()) to v }
-					subPath.surroundsWith("{", "}") -> value.map { (k, v) -> (key + k.toString()) to v }
+					subPath == "{}" || subPath.surroundsWith("{", "}") -> {
+						value.map { (k, v) -> (key + k.toString()) to v }
+					}
 					subPath.startsWith("re:") -> {
 						val regex = subPath.substring(3).toRegex()
 						value.filterKeys { it.toString() matches regex }.map { (k, v) -> (key + k.toString()) to v }
@@ -586,9 +589,10 @@ private fun <T> Any.deepQuery0(path: String, pathCase: ReferenceCase, returnPath
 					else -> listOf((key + subPath) to value[subPath])
 				}
 				is Sequence<*> -> when {
-					subPath == "[]" || subPath == "-" -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					subPath.surroundsWith("[", "]") -> value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					subPath.contains("..") -> {
+					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
+						value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
+					}
+					subPath.contains("..") || subPath.contains("-") -> {
 						val indices = subPath.toIntRange()
 						value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
 					}

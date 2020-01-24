@@ -692,7 +692,7 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toCharRange(): CharRange {
 	return try {
 		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.single() + b }?.toRange() ?: notARange(this)
@@ -701,7 +701,7 @@ fun String.toCharRange(): CharRange {
 	}
 }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toIntRange(): IntRange {
 	return try {
 		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toInt() + b }?.toRange() ?: notARange(this)
@@ -710,7 +710,7 @@ fun String.toIntRange(): IntRange {
 	}
 }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n)`。*/
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
 fun String.toLongRange(): LongRange {
 	return try {
 		this.toRangePairOrNull()?.zip(this.toRangeSurrounding()) { a, b -> a.toLong() + b }?.toRange() ?: notARange(this)

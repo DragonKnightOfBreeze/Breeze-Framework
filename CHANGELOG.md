@@ -253,6 +253,7 @@
 * [X] 将使用`HashMap`的地方尽可能地改为使用`LinkedHashMap`（为了键的顺序的一致性），重构相关代码。
 * [X] breeze-core 让集合的`deepQuery`方法允许接受`-`作为数组占位符。
 * [X] breeze-core 添加`String.toRegexBy`扩展以及其所需要的`String.transformIn`扩展。
+* [X] breeze-core 让集合的`deepQuery`方法允许接受`m-n`作为数组索引范围占位符。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 
 # 待办
