@@ -37,9 +37,6 @@
 * SpringBoot
 * SpringCloud
 * LibGDX
-
-***
-
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)
@@ -48,9 +45,6 @@
 # 参考
 
 * [Google Guava](https://github.com/google/guava)
-
-***
-
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
@@ -120,7 +114,7 @@ fun example() {
     //true
     println(arrayOf(1, 2, 3) anyIn arrayOf(3, 4, 5))
     //{[0]=1, [1]=2, [2]=3, [3][0]=4, [3][1]=5, [4].a=6}
-    println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
+    println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten(2))
     //{0=a, 1=b, 2=c}
     println(listOf("a", "b", "c").toIndexKeyMap())
 
