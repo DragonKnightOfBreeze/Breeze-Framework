@@ -127,11 +127,19 @@ class CollectionExtensionsKtTest {
 		list.deepFlatten(4).also { println(it) }
 	}
 
-	@Test
+	@Test //TESTED
 	fun ifNotEmptyTest() {
 		assertTrue(listOf<Int>().ifEmpty { listOf(123) }.isNotEmpty())
 		assertTrue(arrayOf(1, 2, 3).ifNotEmpty { it.sliceArray(1..2) }.isNotEmpty())
 		assertTrue(listOf(1, 2, 3).ifNotEmpty { it.slice(1..2) }.isNotEmpty())
 		assertTrue(mapOf(1 to 1).ifNotEmpty { it.mapValues { (_, v) -> v + 1 } }.isNotEmpty())
+	}
+
+	@Test
+	fun typeCheckTest() {
+		assertTrue(arrayOf("a").isArrayOf<String>())
+		assertTrue(listOf("a").isIterableOf<String>())
+		assertTrue(mapOf("a" to "a").isMapOf<String, String>())
+		assertTrue(sequenceOf("a").isSequenceOf<String>())
 	}
 }

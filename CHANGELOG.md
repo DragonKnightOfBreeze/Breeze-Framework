@@ -260,7 +260,11 @@
 * [X] breeze-core&breeze-reflect 添加`Any.isInstanceOf`扩展。
 * [X] breeze-core&breeze-reflect 让`Any.isInstanceOf`扩展兼容原始类型。
 * [X] 尽可能地抑制编译器错误以匹配标准库中的对应扩展方法。
+* [X] breeze-core 添加用于元素的类型检查的`Iterable.isIterableOf`等扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
+
+# 待办
+ 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-serialization 提供yaml的序列化实现。

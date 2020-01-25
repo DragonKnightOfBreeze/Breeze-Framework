@@ -81,7 +81,7 @@ enum class MatchType(
 		pattern.escapeRegex()
 			.replace("/(?:\\[]|-|\\[[^/]*?])".toRegex()) { "/\\E\\d+\\Q" }
 			.replace("/(?:\\{}|\\{[^/]*?})".toRegex()) { "/\\E[^/]*\\Q" }
-			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { r -> "/\\E${Regex.parseNumberRange("[${r[1]}-${r[2]}]")}\\Q" }
+			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { r -> "/\\E${Regex.fromIntRange(r[1].toInt(), r[2].toInt())}\\Q" }
 			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r[1]}\\Q" } }
 			.trimRegex()
 	})

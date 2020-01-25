@@ -3,7 +3,7 @@ package com.windea.breezeframework.core.annotations.marks
 import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
-/**不推荐的项。可以用作弱化版的[Deprecated]。*/
+/**不推荐的项。*/
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)

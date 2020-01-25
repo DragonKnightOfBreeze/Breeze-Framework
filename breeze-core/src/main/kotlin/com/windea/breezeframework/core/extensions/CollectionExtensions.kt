@@ -4,6 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.marks.*
 import com.windea.breezeframework.core.enums.core.*
 import java.util.*
 import java.util.concurrent.*
@@ -347,11 +348,14 @@ fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullT
 
 
 /**按照类型以及附加条件过滤数组。*/
+@Deprecated("Redundant extension method.")
+@Suppress("DEPRECATION")
 inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
+@Deprecated("Redundant extension method.")
 inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -359,11 +363,14 @@ inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(
 }
 
 /**按照类型以及附加条件过滤列表。*/
+@Deprecated("Redundant extension method.")
+@Suppress("DEPRECATION")
 inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
+@Deprecated("Redundant extension method.")
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -371,24 +378,15 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(d
 }
 
 /**按照类型以及附加条件过滤集。*/
+@Deprecated("Redundant extension method.")
+@Suppress("DEPRECATION")
 inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤集，然后置入指定的集合。*/
+@Deprecated("Redundant extension method.")
 inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
-	predicate: (R) -> Boolean): C {
-	for(element in this) if(element is R && predicate(element)) destination.add(element)
-	return destination
-}
-
-/**按照类型以及附加条件过滤序列。*/
-inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> Boolean): Sequence<R> {
-	return this.filterIsInstance<R>().filter(predicate)
-}
-
-/**按照类型以及附加条件过滤序列，然后置入指定的集合。*/
-inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
 	return destination
@@ -837,25 +835,27 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 
 //region unsafe extensions
 /**尝试检查当前集合的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
-@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
 @TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-inline fun <reified T : Any> isIterableOf(): Boolean {
-	TODO()
+@NotRecommended("Type check for generic type is not actually supported in Java.")
+inline fun <reified T : Any> Iterable<*>.isIterableOf(): Boolean {
+	return this.take(typeCheckLimit).all { it is T }
 }
 
 /**尝试检查当前映射的泛型。即，遍历限定个数的键值对，推断出最接近的类型。*/
-@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
 @TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-inline fun <reified K : Any, V : Any> isMapOf(): Boolean {
-	TODO()
+@NotRecommended("Type check for generic type is not actually supported in Java.")
+inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(): Boolean {
+	return this.entries.take(typeCheckLimit).all { it.key is K && it.value is V }
 }
 
 /**尝试检查当前映射的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
-@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
 @TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-inline fun <reified T : Any> isSequenceOf(): Boolean {
-	TODO()
+@NotRecommended("Type check for generic type is not actually supported in Java.")
+inline fun <reified T : Any> Sequence<*>.isSequenceOf(): Boolean {
+	return this.take(typeCheckLimit).all { it is T }
 }
+
+@PublishedApi internal const val typeCheckLimit = 10
 //endregion
 
 //region specific operations
