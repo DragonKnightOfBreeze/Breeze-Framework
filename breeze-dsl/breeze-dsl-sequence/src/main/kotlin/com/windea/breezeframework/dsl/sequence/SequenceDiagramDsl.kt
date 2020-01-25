@@ -6,8 +6,6 @@ import com.windea.breezeframework.core.annotations.api.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//TODO
-
 //region top annotations and interfaces
 /**序列图的Dsl。*/
 @ReferenceApi("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")

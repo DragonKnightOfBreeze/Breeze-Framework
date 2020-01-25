@@ -2,13 +2,12 @@
 
 package com.windea.breezeframework.linq
 
-//TODO 语句的编写顺序与执行顺序的问题
-
 /**
  * Linq（语言集成查询）。
  *
- * Linq仅存储查询语句，而不存储查询源。
- * Linq的语法类似Sql，但是以`from`语句开始。
+ * * Linq仅存储查询语句，而不存储查询源。
+ * * Linq的语法类似Sql，但是以`from`语句开始。
+ * * 这个实现按照正序执行Linq。
  */
 interface Linq<S, T> {
 	infix fun where(predicate: (T) -> Boolean): Linq<S, T>
