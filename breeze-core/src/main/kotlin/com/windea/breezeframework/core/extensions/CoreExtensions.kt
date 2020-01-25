@@ -176,6 +176,7 @@ internal abstract class TypeReference<T> {
 
 //region Any extensions
 /**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@JvmSynthetic
 infix fun Any.isInstanceOf(type: Class<*>): Boolean =
 	type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
 

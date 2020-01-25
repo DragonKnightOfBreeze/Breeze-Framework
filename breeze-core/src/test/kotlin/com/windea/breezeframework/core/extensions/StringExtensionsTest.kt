@@ -5,7 +5,7 @@ import com.windea.breezeframework.core.enums.core.LetterCase.*
 import com.windea.breezeframework.core.enums.core.ReferenceCase.*
 import kotlin.test.*
 
-class StringExtensionsKtTest {
+class StringExtensionsTest {
 	@Test //TESTED
 	fun letterCaseTest() {
 		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(camelCase))
@@ -91,5 +91,11 @@ class StringExtensionsKtTest {
 		assertTrue("/abc/123" matches "/abc/[b]".toRegexBy(MatchType.PathReference))
 		assertTrue("/abc/123/def" matches "/abc/[b]/re:[def]*".toRegexBy(MatchType.PathReference))
 		assertTrue("/abc/123/def" matches "/abc/123/def".toRegexBy(MatchType.PathReference))
+	}
+
+	@Test
+	fun ifNotEmptyOrBlankTest() {
+		println("123".ifNotEmpty { "/" })
+		println("123".ifNotBlank { "/" })
 	}
 }

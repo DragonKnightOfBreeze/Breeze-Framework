@@ -158,30 +158,21 @@ inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 inline fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
 
 
-//public inline fun <C, R> C.ifEmpty(defaultValue: () -> R): R where C : Array<*>, C : R =
-//    if (isEmpty()) defaultValue() else this
-
+//直接参照标准库的写法编写扩展方法，会报编译器错误
 /**如果当前数组不为空，则返回转化后的值。*/
-@Suppress("UPPER_BOUND_CANNOT_BE_ARRAY")
-inline fun <T : Array<*>> T.ifNotEmpty(transform: (T) -> T): T =
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
+inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R =
 	if(this.isEmpty()) this else transform(this)
-
-//@kotlin.internal.InlineOnly
-//public inline fun <C, R> C.ifEmpty(defaultValue: () -> R): R where C : Collection<*>, C : R =
-//    if (isEmpty()) defaultValue() else this
 
 /**如果当前集合不为空，则返回转化后的值。*/
-inline fun <T : Collection<*>> T.ifNotEmpty(transform: (T) -> T): T =
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, C : R =
 	if(this.isEmpty()) this else transform(this)
 
-//@kotlin.internal.InlineOnly
-//public inline fun <M, R> M.ifEmpty(defaultValue: () -> R): R where M : Map<*, *>, M : R =
-//    if (isEmpty()) defaultValue() else this
-
 /**如果当前映射不为空，则返回转化后的值。*/
-inline fun <T : Map<*, *>> T.ifNotEmpty(transform: (T) -> T): T {
-	return if(this.isEmpty()) this else transform(this)
-}
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R =
+	if(this.isEmpty()) this else transform(this)
 
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
@@ -845,8 +836,25 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 //endregion
 
 //region unsafe extensions
-inline fun <reified T : Any> Array<*>.isGenericTypeOf(): Boolean {
-	return this.isArrayOf<T>()
+/**尝试检查当前集合的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
+@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
+@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
+inline fun <reified T : Any> isIterableOf(): Boolean {
+	TODO()
+}
+
+/**尝试检查当前映射的泛型。即，遍历限定个数的键值对，推断出最接近的类型。*/
+@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
+@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
+inline fun <reified K : Any, V : Any> isMapOf(): Boolean {
+	TODO()
+}
+
+/**尝试检查当前映射的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
+@Deprecated("Type check for generic type is not actually supported in Java.", level = DeprecationLevel.HIDDEN)
+@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
+inline fun <reified T : Any> isSequenceOf(): Boolean {
+	TODO()
 }
 //endregion
 

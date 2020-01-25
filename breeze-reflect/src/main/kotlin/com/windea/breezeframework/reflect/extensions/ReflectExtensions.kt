@@ -38,5 +38,6 @@ inline fun nameOf(target: Any?): String? = when {
 
 //region Any extensions
 /**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@JvmSynthetic
 infix fun Any.isInstanceOf(type: KClass<*>): Boolean = type.isInstance(this)
 //endregion

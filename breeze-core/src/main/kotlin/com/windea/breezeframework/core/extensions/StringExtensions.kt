@@ -123,13 +123,16 @@ inline fun String.orEmpty(predicate: (String) -> Boolean): String {
 }
 
 
+//直接参照标准库的写法编写扩展方法，会报编译器错误
 /**如果当前字符串不为空，则返回转化后的值。*/
-inline fun <C : CharSequence> C.ifNotEmpty(transform: (C) -> C): C {
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : CharSequence, C : R {
 	return if(this.isEmpty()) this else transform(this)
 }
 
 /**如果当前字符串不为空白，则返回转化后的值。*/
-inline fun <C : CharSequence> C.ifNotBlank(transform: (C) -> C): C {
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+inline fun <C, R> C.ifNotBlank(transform: (C) -> R): R where C : CharSequence, C : R {
 	return if(this.isBlank()) this else transform(this)
 }
 
