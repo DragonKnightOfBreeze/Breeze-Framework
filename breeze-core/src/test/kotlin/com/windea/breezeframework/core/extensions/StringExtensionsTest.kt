@@ -49,7 +49,7 @@ class StringExtensionsTest {
 	fun customFormatTest() {
 		assertEquals("1a2b3", "1{}2{}3".customFormat("{}", "a", "b"))
 		assertEquals("1a2b3", "1\${}2\${}3".customFormat("\${}", "a", "b"))
-		assertEquals("1a2b3","1{0}2{1}3".customFormat("{index}","a","b"))
+		assertEquals("1a2b3", "1{0}2{1}3".customFormat("{index}", "a", "b"))
 		assertEquals("1a2b3", "1{aaa}2{bbb}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
 		assertEquals("1b2a3", "1{1}2{0}3".customFormat("{index}", "a", "b"))
 		assertEquals("1b2a3", "1{bbb}2{aaa}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))

@@ -11,7 +11,7 @@ val optional: Action<ExternalModuleDependency> = (extra["optional"] as Closure<*
 
 dependencies {
 	api(project(":breeze-core"))
-	
+
 	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE"))
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web", optional)
@@ -21,7 +21,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mail", optional)
 	implementation("org.springframework.boot:spring-boot-starter-security", optional)
 	testImplementation("org.springframework.boot:spring-boot-starter-test", optional)
-	
+
 	compileOnly("com.querydsl:querydsl-apt", optional)
 	implementation("com.querydsl:querydsl-jpa", optional)
 }

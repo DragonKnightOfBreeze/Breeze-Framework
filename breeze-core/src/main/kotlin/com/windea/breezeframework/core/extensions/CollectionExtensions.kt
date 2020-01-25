@@ -476,7 +476,7 @@ private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
  *
  * @see ReferenceCase.PathReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection.")
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
@@ -490,7 +490,7 @@ fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = Refer
  *
  * @see ReferenceCase.JavaReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection.")
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
@@ -504,7 +504,7 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
  *
  * @see ReferenceCase.PathReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection.")
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
@@ -838,23 +838,23 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 //endregion
 
 //region unsafe extensions
-/**尝试检查当前集合的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
-@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-@NotRecommended("Type check for generic type is not actually supported in Java.")
+/**尝试检查当前集合的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@NotRecommended("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Iterable<*>.isIterableOf(): Boolean {
 	return this.take(typeCheckLimit).all { it is T }
 }
 
-/**尝试检查当前映射的泛型。即，遍历限定个数的键值对，推断出最接近的类型。*/
-@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-@NotRecommended("Type check for generic type is not actually supported in Java.")
+/**尝试检查当前映射的泛型。即，遍历限定个数的键值对，判断是否全部兼容指定的类型。*/
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@NotRecommended("Cannot check actual generic type of a collection in Java.")
 inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(): Boolean {
 	return this.entries.take(typeCheckLimit).all { it.key is K && it.value is V }
 }
 
-/**尝试检查当前映射的泛型。即，遍历限定个数的元素，推断出最接近的类型。*/
-@TrickImplementationApi("Type check for generic type is not actually supported in Java.")
-@NotRecommended("Type check for generic type is not actually supported in Java.")
+/**尝试检查当前映射的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@NotRecommended("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Sequence<*>.isSequenceOf(): Boolean {
 	return this.take(typeCheckLimit).all { it is T }
 }

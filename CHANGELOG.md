@@ -255,18 +255,20 @@
 * [X] breeze-core 添加`String.toRegexBy`扩展以及其所需要的`String.transformIn`扩展。
 * [X] breeze-core 让集合的`deepQuery`方法允许接受`m-n`作为数组索引范围占位符。
 * [X] breeze-core 优化字符串的特定类型操作方法以及集合的深操作方法。
-* [X] breeze-core 移除一些认为是冗余的扩展。
+* [X] 移除一些认为是冗余的扩展。
 * [X] breeze-core 添加`Array.swap`、`MutableList.swap`扩展。
 * [X] breeze-core&breeze-reflect 添加`Any.isInstanceOf`扩展。
 * [X] breeze-core&breeze-reflect 让`Any.isInstanceOf`扩展兼容原始类型。
 * [X] 尽可能地抑制编译器错误以匹配标准库中的对应扩展方法。
 * [X] breeze-core 添加用于元素的类型检查的`Iterable.isIterableOf`等扩展。
 * [X] 更新项目文档。
+* [X] 移除或废弃一些认为是冗余的扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
-* [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串。
+* [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
+* [ ] ~~breeze-core 实现基于`ConcurrentHashMap`的线程安全的单例模式。~~
 
 # 待办
- 
+
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-serialization 提供yaml的序列化实现。
@@ -291,3 +293,4 @@
 * [ ] ~~发布项目到JCenter。~~
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
+* [ ] 按照功能而非类型更改项目代码的目录结构。

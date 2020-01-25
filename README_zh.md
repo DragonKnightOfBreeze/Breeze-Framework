@@ -99,7 +99,7 @@ dependencies {
 
 ```kotlin
 repositories {
-    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
+    maven { url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
 }
 
 dependencies {
@@ -110,5 +110,3 @@ dependencies {
 # 示例
 
 参见：[ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
-
-链接：[Github Link](https://github.com/DragonKnightOfBreeze/Breeze-Framework/blob/master/breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
