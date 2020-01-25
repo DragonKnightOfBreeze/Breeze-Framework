@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.marks.*
-import com.windea.breezeframework.core.enums.core.*
+import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.enums.text.*
 import java.io.*
 import java.net.*
 import java.nio.file.*
@@ -37,7 +37,7 @@ infix fun String?.equalsIc(other: String?): Boolean = this.equals(other, true)
 ///**
 // * 判断两个字符串是否相等，忽略显示格式。
 // *
-// * @see com.windea.breezeframework.core.enums.core.LetterCase
+// * @see com.windea.breezeframework.core.enums.text.LetterCase
 // */
 //infix fun String?.equalsIlc(other: String?): Boolean {
 //	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other

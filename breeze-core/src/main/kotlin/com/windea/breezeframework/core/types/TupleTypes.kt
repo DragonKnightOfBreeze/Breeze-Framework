@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.types
 
-import com.windea.breezeframework.core.domain.core.*
+import com.windea.breezeframework.core.domain.*
 
 typealias Tuple2<A, B> = Pair<A, B>
 

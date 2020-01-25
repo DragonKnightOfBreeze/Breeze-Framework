@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.quote
@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.*
 
 //region top annotations and interfaces
 /**PlantUml序列图的Dsl。*/
-@ReferenceApi("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
+@Reference("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class PumlSequenceDiagramDsl

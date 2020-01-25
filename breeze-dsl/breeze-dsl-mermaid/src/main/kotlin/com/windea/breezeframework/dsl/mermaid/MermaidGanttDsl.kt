@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -10,7 +10,7 @@ import java.time.*
 
 //region top annotations and interfaces
 /**Mermaid甘特图的Dsl。*/
-@ReferenceApi("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
+@Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidGanttDsl
@@ -21,10 +21,10 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = false
-	
+
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
 			title.toStringOrEmpty(),
@@ -41,7 +41,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 @MermaidGanttDsl
 interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {
 	val sections: MutableList<MermaidGanttSection>
-	
+
 	fun toContentString(): String {
 		return sections.joinToStringOrEmpty(split)
 	}
@@ -79,14 +79,14 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
 ) : MermaidGanttDslElement, CanIndent, WithId {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
-	
+
 	override var indentContent: Boolean = false
-	
+
 	override val id: String get() = name
-	
+
 	override fun toString(): String {
 		if(tasks.isEmpty()) return "section $name"
-		
+
 		val contentSnippet = tasks.joinToStringOrEmpty("\n").applyIndent(indent)
 		return "section $name\n$contentSnippet"
 	}
@@ -104,16 +104,16 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	var initTime: String? = null
 	//LocalDate format or Duration format
 	var finishTime: String? = null
-	
+
 	override val id: String get() = name
-	
+
 	override fun toString(): String {
 		val critSnippet = if(isCrit) "crit" else null
 		val statusSnippet = status.text
 		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).filterNotNull().joinToStringOrEmpty()
 		return "$name: $paramsSnippet"
 	}
-	
+
 	/**Mermaid甘特图任务的状态。*/
 	@MermaidGanttDsl
 	enum class Status(val text: String?) {

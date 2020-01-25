@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.flow.FlowChartConnection.Companion.binderQueue
@@ -10,7 +10,7 @@ import java.util.*
 
 //region top annotations and interfaces
 /**流程图的Dsl。*/
-@ReferenceApi("[Github](https://github.com/adrai/flowchart.js)")
+@Reference("[Github](https://github.com/adrai/flowchart.js)")
 @DslMarker
 @MustBeDocumented
 internal annotation class FlowChartDsl

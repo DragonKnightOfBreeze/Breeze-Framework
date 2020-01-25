@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.text.extensions
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 

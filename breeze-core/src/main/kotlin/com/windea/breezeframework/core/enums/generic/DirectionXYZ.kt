@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.enums.generic
 
-import com.windea.breezeframework.core.annotations.messages.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.enums.generic.Dimension.*
 
 /**基于XYZ轴的三维方向。*/

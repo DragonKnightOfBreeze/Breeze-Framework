@@ -12,7 +12,7 @@ inline infix fun <T : Enum<T>> T.nameEqualsIc(other: T): Boolean = this.name equ
 ///**
 // * 判断两个枚举的枚举值名是否相等，忽略显示格式。
 // *
-// * @see com.windea.breezeframework.core.enums.core.LetterCase
+// * @see com.windea.breezeframework.core.enums.text.LetterCase
 // */
 //inline infix fun <T : Enum<T>> T.nameEqualsIlc(other: T): Boolean {
 //	return this.name equalsIlc other.name

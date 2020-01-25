@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.puml
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.puml.PumlConfig.indent
@@ -13,7 +13,7 @@ import org.intellij.lang.annotations.*
 
 //region top annotations and interfaces
 /**PlantUml状态图的Dsl。*/
-@ReferenceApi("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
+@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class PumlStateDiagramDsl

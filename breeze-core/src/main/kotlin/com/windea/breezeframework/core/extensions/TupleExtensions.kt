@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.core.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.domain.math.*
 
 //region build extensions

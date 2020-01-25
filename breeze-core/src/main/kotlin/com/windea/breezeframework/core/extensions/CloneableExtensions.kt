@@ -3,8 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.*
 import java.lang.reflect.*
 
 //由于java.lang.Object的clone方法默认是受保护的，不能直接在扩展方法中访问

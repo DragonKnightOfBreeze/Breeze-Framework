@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.core.*
+import com.windea.breezeframework.core.annotations.*
 import java.lang.reflect.*
 import kotlin.contracts.*
 
@@ -33,6 +33,7 @@ inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyRes
 	println("An operation is delay implemented: $reason".let { "\u001B[33m$it\u001B[0m" })
 	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
+
 
 /**表明一个方法体中存在问题。*/
 @TodoMarker

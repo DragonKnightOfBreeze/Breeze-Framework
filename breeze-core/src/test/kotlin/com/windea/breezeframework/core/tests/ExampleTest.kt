@@ -1,8 +1,8 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.enums.core.*
-import com.windea.breezeframework.core.enums.core.LetterCase.*
-import com.windea.breezeframework.core.enums.core.ReferenceCase.*
+import com.windea.breezeframework.core.enums.text.*
+import com.windea.breezeframework.core.enums.text.LetterCase.*
+import com.windea.breezeframework.core.enums.text.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
 

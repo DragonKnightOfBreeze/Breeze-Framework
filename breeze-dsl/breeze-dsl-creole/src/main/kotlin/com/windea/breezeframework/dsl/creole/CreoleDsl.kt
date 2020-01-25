@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.creole
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.creole.CreoleConfig.emptyColumnText
@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
 //region top annotations and interfaces
 /**Creole的Dsl。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+@Reference("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
 @MustBeDocumented
 internal annotation class CreoleDsl
@@ -26,7 +26,7 @@ class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry,
 }
 
 /**Creole的配置。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+@Reference("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 object CreoleConfig : DslConfig {
 	private val indentSizeRange = -2..8
@@ -95,7 +95,7 @@ class CreoleEscapedText @PublishedApi internal constructor(
 }
 
 /**Creole图标。可以使用open iconic图标。*/
-@ReferenceApi("[OpenIconic](https://useiconic.com/open/)")
+@Reference("[OpenIconic](https://useiconic.com/open/)")
 @CreoleDsl
 class CreoleIcon @PublishedApi internal constructor(
 	val name: String

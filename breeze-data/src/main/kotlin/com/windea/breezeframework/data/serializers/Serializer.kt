@@ -8,9 +8,8 @@ import java.lang.reflect.*
 /**
  * 序列化器。
  *
- * 注意：其实现依赖于第三方库，如`jackson`, `gson`。
- *
- * 注意：当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
+ * * 其实现依赖于第三方库，如`Jackson`, `Gson`。
+ * * 当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
  */
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/

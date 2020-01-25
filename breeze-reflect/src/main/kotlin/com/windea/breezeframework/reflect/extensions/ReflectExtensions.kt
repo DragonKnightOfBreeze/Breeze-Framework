@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.reflect.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import kotlin.reflect.*
 
 //region generic extensions

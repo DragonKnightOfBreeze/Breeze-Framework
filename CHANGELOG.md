@@ -263,9 +263,10 @@
 * [X] breeze-core 添加用于元素的类型检查的`Iterable.isIterableOf`等扩展。
 * [X] 更新项目文档。
 * [X] 移除或废弃一些认为是冗余的扩展。
+* [X] （较大的更新）调整代码目录结构。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
-* [ ] ~~breeze-core 实现基于`ConcurrentHashMap`的线程安全的单例模式。~~
+* [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。
 
 # 待办
 

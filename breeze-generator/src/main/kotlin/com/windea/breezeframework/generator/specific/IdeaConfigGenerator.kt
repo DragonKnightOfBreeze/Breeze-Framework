@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.enums.core.*
+import com.windea.breezeframework.core.enums.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*

@@ -2,12 +2,12 @@
 
 package com.windea.breezeframework.dsl.criticmarkup
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.dsl.*
 
 //region top annotations and interfaces
 /**CriticMarkup富文本的Dsl。*/
-@ReferenceApi("[Critic Markup](http://criticmarkup.com/users-guide.php)")
+@Reference("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @DslMarker
 @MustBeDocumented
 internal annotation class CriticMarkupTextDsl

@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.functional
 
-import com.windea.breezeframework.core.domain.core.*
+import com.windea.breezeframework.core.domain.*
 
 //https://github.com/MarioAriasC/funKTionale
 

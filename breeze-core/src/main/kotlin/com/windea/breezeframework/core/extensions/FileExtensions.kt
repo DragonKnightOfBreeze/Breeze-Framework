@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import java.io.*
 import java.net.*
 

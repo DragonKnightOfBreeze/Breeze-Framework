@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.*
 
 //region top annotations and interfaces
 /**Mermaid序列图的Dsl。*/
-@ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
+@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidSequenceDiagramDsl

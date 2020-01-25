@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.data.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.data.enums.*
 import com.windea.breezeframework.data.serializers.*

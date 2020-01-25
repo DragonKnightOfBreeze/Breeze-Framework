@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //region top annotations and interfaces
 /**Mermaid流程图的Dsl。*/
-@ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
+@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidFlowChartDsl

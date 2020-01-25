@@ -2,13 +2,13 @@
 
 package com.windea.breezeframework.dsl.sequence
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
 //region top annotations and interfaces
 /**序列图的Dsl。*/
-@ReferenceApi("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
+@Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
 @MustBeDocumented
 internal annotation class SequenceDiagramDsl
