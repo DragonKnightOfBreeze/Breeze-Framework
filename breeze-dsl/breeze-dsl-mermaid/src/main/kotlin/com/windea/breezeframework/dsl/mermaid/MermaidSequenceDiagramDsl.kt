@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import org.intellij.lang.annotations.*
 
-//NOTE can have a title by `title: text`, but it is not introduced in official api
+//can have a title by `title: text`, but it is not introduced in official api
 
 //region top annotations and interfaces
 /**Mermaid序列图的Dsl。*/
@@ -24,10 +24,10 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString().applyIndent(indent)
 		return "sequenceDiagram\n$contentSnippet"
@@ -44,7 +44,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val messages: MutableList<MermaidSequenceDiagramMessage>
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			participants.joinToStringOrEmpty("\n"),
@@ -53,7 +53,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 			scopes.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@MermaidFlowChartDsl
 	override fun String.fromTo(other: String) = message(this, other)
 }
@@ -70,13 +70,13 @@ class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
 ) : MermaidSequenceDiagramDslElement, WithUniqueId {
 	var alias: String? = null
-	
+
 	override val id: String get() = alias ?: name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		val aliasSnippet = alias?.let { "$it as " }.orEmpty()
 		return "participant $aliasSnippet$name"
@@ -92,15 +92,15 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 	var text: String = ""
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 	var isActivated: Boolean? = null
-	
+
 	override val sourceNodeId get() = fromParticipantId
 	override val targetNodeId get() = toParticipantId
-	
+
 	override fun toString(): String {
 		val activateSnippet = isActivated?.let { if(it) "+ " else "- " }.orEmpty()
 		return "$fromParticipantId ${arrowShape.text} $activateSnippet$toParticipantId: $text"
 	}
-	
+
 	/**Mermaid序列图消息的箭头形状。*/
 	@MermaidSequenceDiagramDsl
 	enum class ArrowShape(val text: String) {
@@ -112,14 +112,14 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
-	@Multiline("<br>")
+	@MultilineProp("<br>")
 	val text: String
 ) : MermaidSequenceDiagramDslElement {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()
 		return "note $location: $textSnippet"
 	}
-	
+
 	/**Mermaid序列图注释的位置。*/
 	@MermaidSequenceDiagramDsl
 	class Location @PublishedApi internal constructor(
@@ -132,7 +132,7 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 			return "${position.text} $participantId1$participantId2Snippet"
 		}
 	}
-	
+
 	/**Mermaid序列图注释的方位。*/
 	@MermaidSequenceDiagramDsl
 	enum class Position(val text: String) {
@@ -150,10 +150,10 @@ sealed class MermaidSequenceDiagramScope(
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
 	override val scopes: MutableList<MermaidSequenceDiagramScope> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" }.orEmpty()
 		val contentSnippet = toContentString().applyIndent(indent)
@@ -179,14 +179,14 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	text: String
 ) : MermaidSequenceDiagramScope("alt", text) {
 	val elseScopes: MutableList<MermaidSequenceDiagramElse> = mutableListOf()
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
 		return "$contentSnippet$elseScopesSnippet"
 	}
-	
+
 }
 
 /**Mermaid序列图其余作用域。*/

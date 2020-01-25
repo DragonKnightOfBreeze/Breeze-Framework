@@ -14,9 +14,9 @@ internal annotation class CriticMarkupTextDsl
 
 /**CriticMarkup富文本。*/
 @CriticMarkupTextDsl
-class CriticMarkupText @PublishedApi internal constructor() : DslBuilder, CriticMarkupTextDslInlineEntry {
+class CriticMarkupText @PublishedApi internal constructor() : DslDocument, CriticMarkupTextDslInlineEntry {
 	lateinit var text: String
-	
+
 	override fun toString(): String {
 		return text
 	}
@@ -65,7 +65,7 @@ class CriticMarkupReplacedText @PublishedApi internal constructor(
 	val replacedText: String
 ) : CriticMarkupRichText("{--", text, "--}") {
 	private val infixMarkers: String = "~>"
-	
+
 	override fun toString(): String {
 		return "$prefixMarkers $text $infixMarkers $replacedText $suffixMarkers"
 	}

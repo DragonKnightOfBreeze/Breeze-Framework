@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//NOTE unstable raw api
+//unstable raw api
 
 //region top annotations and interfaces
 /**Mermaid饼图的Dsl。*/
@@ -22,10 +22,10 @@ internal annotation class MermaidPieChartDsl
 class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndent, CanSplit {
 	var title: MermaidPieChartTitle? = null
 	override val sections: MutableSet<MermaidPieChartSection> = mutableSetOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = false
-	
+
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
 			title.toStringOrEmpty(),
@@ -41,7 +41,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val sections: MutableSet<MermaidPieChartSection>
-	
+
 	fun toContentString(): String {
 		return sections.joinToStringOrEmpty("\n")
 	}
@@ -70,13 +70,13 @@ class MermaidPieChartSection @PublishedApi internal constructor(
 	val value: Number
 ) : MermaidPieChartDslElement, WithUniqueId {
 	override val id: String get() = key
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
-		return "${key.wrapQuote(quote)}: $value"
+		return "${key.quote(quote)}: $value"
 	}
 }
 //endregion

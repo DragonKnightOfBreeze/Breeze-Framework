@@ -6,15 +6,15 @@ import java.text.*
 import java.util.*
 
 @Serializer(Date::class)
-class DateSerializer(val format: String = "yyyy/MM/dd HH:mm:ss") : KSerializer<Date> {
+class DateSerializer(format: String = "yyyy/MM/dd HH:mm:ss") : KSerializer<Date> {
 	private val dateFormat: DateFormat = SimpleDateFormat(format)
-	
+
 	override val descriptor: SerialDescriptor = StringDescriptor.withName("java.util.Date")
-	
+
 	override fun serialize(encoder: Encoder, obj: Date) {
 		encoder.encodeString(dateFormat.format(obj))
 	}
-	
+
 	override fun deserialize(decoder: Decoder): Date {
 		return dateFormat.parse(decoder.decodeString())
 	}

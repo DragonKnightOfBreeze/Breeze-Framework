@@ -1,9 +1,11 @@
+@file:JvmName("TemporalExtensions")
+
 package com.windea.breezeframework.time.extensions
 
 import java.time.*
 import java.time.temporal.*
 
-//region operator overrides
+//region operator override extensions
 /**@see java.time.Year.plusYears*/
 operator fun Year.plus(years: Int): Year = this.plusYears(years.toLong())
 
@@ -55,7 +57,7 @@ operator fun DayOfWeek.inc(): DayOfWeek = this.plus(1L)
 operator fun DayOfWeek.dec(): DayOfWeek = this.minus(1L)
 //endregion
 
-//region inine build extensions
+//region build extensions
 /**得到当前月开始时的时间。*/
 inline val <T : Temporal> T.atStartOfMonth: Temporal get() = with(TemporalAdjusters.firstDayOfMonth())
 
@@ -77,16 +79,13 @@ inline val <T : Temporal> T.atStartOfNextYear: Temporal get() = with(TemporalAdj
 
 //region common extensions
 /**判断是否是今天。*/
-val LocalDate.isToday: Boolean
-	get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
+val LocalDate.isToday: Boolean get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
 
 /**判断是否是昨天。*/
-val LocalDate.isYesterday: Boolean
-	get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear - 1 }
+val LocalDate.isYesterday: Boolean get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear - 1 }
 
 /**判断是否是明天。*/
-val LocalDate.isTomorrow: Boolean
-	get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear + 1 }
+val LocalDate.isTomorrow: Boolean get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear + 1 }
 
 /**判断是否是过去。*/
 val LocalDate.isInPast: Boolean get() = this < LocalDate.now()
@@ -96,16 +95,13 @@ val LocalDate.isInFuture: Boolean get() = this > LocalDate.now()
 
 
 /**判断是否是今天。*/
-val LocalDateTime.isToday: Boolean
-	get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
+val LocalDateTime.isToday: Boolean get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
 
 /**判断是否是昨天。*/
-val LocalDateTime.isYesterday: Boolean
-	get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear - 1 }
+val LocalDateTime.isYesterday: Boolean get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear - 1 }
 
 /**判断是否是明天。*/
-val LocalDateTime.isTomorrow: Boolean
-	get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear + 1 }
+val LocalDateTime.isTomorrow: Boolean get() = LocalDateTime.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear + 1 }
 
 /**判断是否是过去。*/
 val LocalDateTime.isInPast: Boolean get() = this < LocalDateTime.now()

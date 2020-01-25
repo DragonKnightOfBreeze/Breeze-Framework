@@ -1,3 +1,5 @@
+@file:JvmName("NumberAndOrdinalExtensions")
+
 package com.windea.breezeframework.text.extensions
 
 //https://github.com/MehdiK/Humanizer.jvm/blob/master/src/main/kotlin/org/humanizer/jvm/Ordinalize.kt

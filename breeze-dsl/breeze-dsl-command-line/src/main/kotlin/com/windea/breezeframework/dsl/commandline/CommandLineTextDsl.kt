@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.*
 //https://blog.csdn.net/qq_37187976/article/details/79265667
 //https://blog.csdn.net/felix_f/article/details/12433171
 
-//NOTE not for all echo commands
+//not for all echo commands
 
 //region top annotations and interfaces
 /**命令行富文本的Dsl。*/
@@ -20,9 +20,9 @@ internal annotation class CommandLineTextDsl
 
 /**命令行富文本。*/
 @CommandLineTextDsl
-class CommandLineText @PublishedApi internal constructor() : DslBuilder, CommandLineTextDslInlineEntry {
+class CommandLineText @PublishedApi internal constructor() : DslDocument, CommandLineTextDslInlineEntry {
 	lateinit var text: String
-	
+
 	override fun toString(): String {
 		return text
 	}
@@ -116,7 +116,7 @@ enum class CommandLineColor(val code: Int) {
 	LightMagenta(95),
 	LightCyan(96),
 	White(97);
-	
+
 	val backgroundCode = code + 10
 }
 
@@ -137,7 +137,7 @@ enum class CommandLineDisplayMode(val code: Int) {
 	Blink(5),
 	/**反显。*/
 	Invert(7);
-	
+
 	val disableCode = code + 20
 }
 

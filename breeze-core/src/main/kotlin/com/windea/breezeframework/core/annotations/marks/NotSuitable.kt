@@ -1,11 +1,12 @@
 package com.windea.breezeframework.core.annotations.marks
 
+import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
-/**标注为不适用的项。*/
+/**不适用的项。*/
 @MustBeDocumented
 @Repeatable
-@Retention(AnnotationRetention.SOURCE)
+@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotSuitable(
 	/**备注信息。*/

@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//NOTE unstable raw api
+//unstable raw api
 
 //region top annotations and interfaces
 /**Mermaid类图的Dsl。*/
@@ -22,10 +22,10 @@ internal annotation class MermaidClassDiagramDsl
 class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
 	override val relations: MutableList<MermaidClassDiagramRelation> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString().applyIndent(indent)
 		return "classDiagram\n$contentSnippet"
@@ -40,50 +40,50 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	WithTransition<MermaidClassDiagramClass, MermaidClassDiagramRelation> {
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			classes.joinToStringOrEmpty("\n"),
 			relations.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@MermaidClassDiagramDsl
 	override fun String.fromTo(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Link)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.link(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Link)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.inheritedBy(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Inheritance)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.composedBy(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Composition)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.aggregatedBy(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Aggregation)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.associatedBy(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Association)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.inherits(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.ReversedInheritance)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.composes(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.ReversedComposition)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.aggregates(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.ReversedAggregation)
-	
+
 	@MermaidClassDiagramDsl
 	infix fun String.associates(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.ReversedAssociation)
@@ -102,15 +102,15 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 ) : MermaidClassDiagramDslElement, CanIndent, WithUniqueId {
 	var annotation: MermaidClassDiagramAnnotation? = null
 	val statements: MutableList<MermaidClassDiagramStatement> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
-	
+
 	override val id: String get() = name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
+
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
 			annotation.toStringOrEmpty(),
@@ -118,11 +118,11 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 		).filterNotEmpty().ifEmpty { return "class $name" }.joinToStringOrEmpty("\n").applyIndent(indent)
 		return "class $name {\n$contentSnippet\n}"
 	}
-	
+
 	@InlineDsl
 	@MermaidClassDiagramDsl
 	operator fun String.invoke(vararg params: String) = "$this(${params.joinToStringOrEmpty()})"
-	
+
 	@InlineDsl
 	@MermaidClassDiagramDsl
 	infix fun String.type(type: String) = "$this: $type"
@@ -136,7 +136,7 @@ class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 	override fun toString(): String {
 		return "<<$name>>"
 	}
-	
+
 	/**Mermaid类图注解的类型。*/
 	@MermaidClassDiagramDsl
 	enum class Type(val text: String) {
@@ -150,11 +150,11 @@ class MermaidClassDiagramStatement @PublishedApi internal constructor(
 	val expression: String
 ) : MermaidClassDiagramDslElement {
 	var visibility: Visibility = Visibility.None
-	
+
 	override fun toString(): String {
 		return "${visibility.text}$expression"
 	}
-	
+
 	/**Mermaid类图声明的可见性。*/
 	@MermaidClassDiagramDsl
 	enum class Visibility(val text: String) {
@@ -169,26 +169,26 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val toClassId: String,
 	val type: Type
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	@Multiline("<br>")
+	@MultilineProp("<br>")
 	var text: String? = null
-	//NOTE syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
+	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null
 	var toCardinality: String? = null
-	
+
 	override val sourceNodeId get() = fromClassId
 	override val targetNodeId get() = toClassId
-	
-	//NOTE syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
+
+	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
 		return arrayOf(
-			fromClassId, fromCardinality?.wrapQuote(quote), type.text, toCardinality?.wrapQuote(quote), toClassId
+			fromClassId, fromCardinality?.quote(quote), type.text, toCardinality?.quote(quote), toClassId
 		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
 	}
-	
+
 	/**Mermaid类图关系的类型。*/
 	@MermaidClassDiagramDsl
 	enum class Type(val text: String) {
-		//NOTE do not allow bidirectional arrows
+		//do not allow bidirectional arrows
 		Link("--"),
 		Inheritance("<|--"), Composition("*--"), Aggregation("o--"), Association("<--"),
 		ReversedInheritance("--|>"), ReversedComposition("--*"), ReversedAggregation("--o"), ReversedAssociation("-->")

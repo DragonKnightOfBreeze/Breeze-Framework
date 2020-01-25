@@ -18,12 +18,12 @@ internal annotation class XmlDsl
 
 /**Xml。*/
 @XmlDsl
-class Xml @PublishedApi internal constructor() : DslBuilder,
+class Xml @PublishedApi internal constructor() : DslDocument,
 	WithComment<XmlComment>, WithBlock<XmlElement> {
 	val statements: MutableList<XmlStatement> = mutableListOf()
 	val comments: MutableList<XmlComment> = mutableListOf()
 	var rootElement: XmlElement = XmlElement(defaultRootName)
-	
+
 	override fun toString(): String {
 		return arrayOf(
 			statements.joinToStringOrEmpty("\n"),
@@ -31,13 +31,13 @@ class Xml @PublishedApi internal constructor() : DslBuilder,
 			rootElement.toString()
 		).filterNotEmpty().joinToStringOrEmpty("\n")
 	}
-	
+
 	@XmlDsl
 	override fun String.unaryMinus() = comment(this)
-	
+
 	@XmlDsl
 	override fun String.invoke(block: XmlElement.() -> Unit) = element(this, block = block)
-	
+
 	@XmlDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 		element(this, *args, block = block)
@@ -47,14 +47,14 @@ class Xml @PublishedApi internal constructor() : DslBuilder,
 @XmlDsl
 object XmlConfig : DslConfig {
 	private val indentSizeRange = -2..8
-	
+
 	var indentSize: Int = 2
 		set(value) = run { if(value in indentSizeRange) field = value }
 	var preferDoubleQuote: Boolean = true
 	var defaultRootName: String = "root"
 		set(value) = run { if(value.isNotBlank()) field = value }
 	var autoCloseTag: Boolean = false
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
@@ -74,7 +74,7 @@ class XmlStatement @PublishedApi internal constructor(
 	val attributes: Map<String, String> = mapOf()
 ) : XmlDslElement {
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
 		return "<?$name$attributesSnippet?>"
 	}
 }
@@ -100,7 +100,7 @@ class XmlComment @PublishedApi internal constructor(
 ) : XmlNode(), CanWrap, CanIndent {
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val textSnippet = text.escapeBy(EscapeType.Xml).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
@@ -116,30 +116,30 @@ class XmlElement @PublishedApi internal constructor(
 ) : XmlNode(), CanWrap, CanIndent,
 	WithText<XmlText>, WithComment<XmlComment>, WithBlock<XmlElement>, WithId {
 	val nodes: MutableList<XmlNode> = mutableListOf()
-	
+
 	override var wrapContent: Boolean = true
 	override var indentContent: Boolean = true
-	
+
 	override val id: String get() = name
-	
+
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.wrapQuote(quote)}" }
+		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
 		val nodesSnippet = nodes.joinToStringOrEmpty(wrap).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"
 		return "$prefixSnippet$nodesSnippet$suffixSnippet"
 	}
-	
+
 	@XmlDsl
 	override fun String.unaryPlus() = text(this)
-	
+
 	@XmlDsl
 	override fun String.unaryMinus() = comment(this)
-	
+
 	@XmlDsl
 	override fun String.invoke(block: XmlElement.() -> Unit) = element(this, block = block)
-	
+
 	@XmlDsl
 	operator fun String.invoke(vararg args: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
 		element(this, *args, block = block)

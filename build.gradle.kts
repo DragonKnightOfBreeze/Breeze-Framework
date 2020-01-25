@@ -7,32 +7,31 @@ plugins {
 	id("org.jetbrains.dokka") version "0.9.18"
 }
 
-subprojects {
+allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.9"
-	
+	version = "1.0.11"
+
 	//应用插件
 	apply {
-		plugin("org.gradle.maven-publish")
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
 	}
-	
+
 	//配置依赖仓库
 	repositories {
 		//使用阿里云代理解决Gradle构建过慢的问题
-		maven("http://maven.aliyun.com/nexus/content/groups/public/")
+		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
 		jcenter()
 	}
-	
+
 	//配置依赖
 	//implementation不能传递依赖，api能传递依赖，test为测试期，compile为编译器，runtime为运行时，optional需要依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
 	}
-	
+
 	//配置kotlin的编译选项
 	tasks {
 		compileKotlin {
@@ -42,6 +41,7 @@ subprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
+					"-Xjvm-default=compatibility",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -54,13 +54,20 @@ subprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
+					"-Xjvm-default=enable",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
 			}
 		}
 	}
-	
+}
+
+subprojects {
+	apply {
+		plugin("org.gradle.maven-publish")
+	}
+
 	//构建source jar
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
@@ -72,18 +79,18 @@ subprojects {
 		archiveClassifier.set("javadoc")
 		from(tasks.dokka)
 	}
-	
+
 	//上传的配置
 	publishing {
 		//配置包含的jar
 		publications {
 			//创建maven的jar
-			create<MavenPublication>("maven") {
+			register<MavenPublication>("gpr") {
 				from(components["java"])
 				artifact(sourcesJar)
 				artifact(javadocJar)
 				pom {
-					name.set("Breeze Framework")
+					name.set("Breeze-Framework")
 					description.set("""
 						Integrated code framework based on Kotlin,
 						provides many useful extensions for standard library and some frameworks.
@@ -105,17 +112,15 @@ subprojects {
 					}
 					scm {
 						url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
-						connection.set("scm:git:https://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
-						developerConnection.set("scm:git:https://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
+						connection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
+						developerConnection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
 					}
 				}
 			}
 		}
 		//配置上传到的仓库
 		repositories {
-			//上传到github仓库
 			maven {
-				name = "GitHubPackages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")

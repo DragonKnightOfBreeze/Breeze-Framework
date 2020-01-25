@@ -6,6 +6,9 @@ import java.time.*
 import java.util.concurrent.*
 import javax.net.ssl.*
 
+/**
+ * Http的配置。
+ */
 data class HttpConfig(
 	val cookieHandler: CookieHandler? = null,
 	val connectTimeout: Duration? = null,

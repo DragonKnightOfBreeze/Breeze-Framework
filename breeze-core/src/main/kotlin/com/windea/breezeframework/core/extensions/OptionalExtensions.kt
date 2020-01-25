@@ -1,3 +1,4 @@
+@file:JvmName("OptionalExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
@@ -9,4 +10,4 @@ inline fun <T> Optional<T>.orNull(): T? = this.orElse(null)
 
 /**从一个可空对象创建Optional对象。*/
 @Deprecated("It is not recommended to use Optional objects in Kotlin directly.", level = DeprecationLevel.HIDDEN)
-inline fun <T> T?.toOptional(): Optional<T> = Optional.ofNullable(this)
+inline fun <T> T.toOptional(): Optional<T> = Optional.ofNullable(this)

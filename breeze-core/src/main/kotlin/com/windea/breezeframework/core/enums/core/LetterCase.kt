@@ -7,125 +7,168 @@ import com.windea.breezeframework.core.extensions.*
 
 /**字母的显示格式。*/
 enum class LetterCase(
-	override val regex: Regex,
-	override val splitFunction: (String) -> List<String>,
-	override val joinFunction: (List<String>) -> String
+	override val splitter: (CharSequence) -> Sequence<String> = { sequenceOf(it.toString()) },
+	override val joiner: (Iterable<CharSequence>) -> String = { it.joinToString("") },
+	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
+	override val regex: Regex? = null,
+	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
 ) : FormatCase {
+	/**全小写的单词。*/
 	`lowercase`(
-		//allow: only lower word
-		"""[a-z]+""".toRegex(),
-		{ listOf(it) },
-		{ it.joinToString("").toLowerCase() }
+		{ sequenceOf(it.toString()) },
+		{ it.joinToString("").toLowerCase() },
+		{ it.joinToString("").toLowerCase() },
+		"""[a-z]+""".toRegex()
 	),
+	/**全大写的单词。*/
 	`UPPERCASE`(
-		//allow: only upper word
-		"""[A-Z]+""".toRegex(),
-		{ listOf(it) },
-		{ it.joinToString("").toUpperCase() }
+		{ sequenceOf(it.toString()) },
+		{ it.joinToString("").toUpperCase() },
+		{ it.joinToString("").toUpperCase() },
+		"""[A-Z]+""".toRegex()
 	),
+	/**首字母大写的单词。*/
 	`Capitalized`(
-		//allow: only capitalized word
-		"""[A-Z][a-z]+""".toRegex(),
-		{ listOf(it) },
-		{ it.joinToString("").firstCharToUpperCase() }
+		{ sequenceOf(it.toString()) },
+		{ it.joinToString("").firstCharToUpperCase() },
+		{ it.joinToString("").firstCharToUpperCase() },
+		"""[A-Z][a-z]+""".toRegex()
 	),
+	/**全小写的单词组。*/
 	`lower case words`(
-		//allow: lower words, blank, `
-		"""[a-z']+(?:\s+[a-z']+)+""".toRegex(),
-		{ it.splitToWordList() },
-		{ it.joinToString(" ").toLowerCase() }
+		{ it.splitToWordSequence(' ') },
+		{ it.joinToString(" ").toLowerCase() },
+		{ it.joinToString(" ").toLowerCase() },
+		"""[a-z']+(?:\s+[a-z']+)+""".toRegex()
 	),
+	/**全大写的单词组。*/
 	`UPPER CASE WORDS`(
-		//allow: lower words, blank, `
-		"""[A-Z']+(?:\s+[A-Z']+)+""".toRegex(),
-		{ it.splitToWordList() },
-		{ it.joinToString(" ").toUpperCase() }
+		{ it.splitToWordSequence(' ') },
+		{ it.joinToString(" ").toUpperCase() },
+		{ it.joinToString(" ").toUpperCase() },
+		"""[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
 	),
+	/**首个单词的首字母大写的单词组。*/
 	`First word capitalized`(
-		//allow: first word capitalized, blank, '
-		"""[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex(),
-		{ it.splitToWordList() },
-		{ it.joinToString(" ").firstCharToUpperCase() }
+		{ it.splitToWordSequence(' ') },
+		{ it.joinToString(" ").firstCharToUpperCase() },
+		{ it.joinToString(" ").firstCharToUpperCase() },
+		"""[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
 	),
+	/**首字母大写的单词组。*/
 	`Capitalized Words`(
-		//allow: capitalized words, blank, '
-		"""[A-Z][a-z]*(?:\s+[a-z]+)+""".toRegex(),
-		{ it.splitToWordList() },
-		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } }
+		{ it.splitToWordSequence(' ') },
+		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } },
+		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } },
+		"""[A-Z][a-z]*(?:\s+[a-z]+)+""".toRegex()
 	),
+	/**单词组。*/
 	`Generic Words`(
-		//allow: just include blank
-		"""\S+(?:\s+\S+)+""".toRegex(),
-		{ it.splitToWordList() },
-		{ it.joinToString(" ") }
+		{ it.splitToWordSequence(' ') },
+		{ it.joinToString(" ") },
+		{ it.joinToString(" ") },
+		"""\S+(?:\s+\S+)+""".toRegex()
 	),
+	/**以单个点分割的格式。*/
 	`DotCase`(
-		//allow: words, $, _, ., {, }, [, ]
-		"""[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex(),
-		{ it.split(".") },
-		{ it.joinToString(".") }
+		{ it.splitToSequence('.') },
+		{ it.joinToString(".") },
+		{ it.joinToString(".") },
+		"""[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex()
 	),
+	/**以单词边界分割，首个单词全小写，后续单词首字母大写的格式。*/
 	`camelCase`(
-		//allow: lower word first, capitalized/upper words remain , $ surrounds a word, numbers
-		"""\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex(),
-		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
+		{ it.splitToWords().splitToSequence(' ') },
+		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() },
+		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() },
+		"""\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 	),
+	/**以单词边界分割，所有单词首字母大写的格式。*/
 	`PascalCase`(
-		//allow: capitalized/upper words , $ surrounds a word, numbers
-		"""\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex(),
-		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() } }
+		{ it.splitToWords().splitToSequence(' ') },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() } },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() } },
+		"""\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 	),
+	/**以单个下划线分割，所有单词全小写的格式。*/
 	`snake_case`(
-		//allow: lower words, $ surrounds a word, _, numbers
-		"""\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex(),
-		{ it.split("_") },
-		{ it.joinToString("_") { s -> s.toLowerCase() } }
+		{ it.splitToSequence('_') },
+		{ it.joinToString("_") { s -> s.toString().toLowerCase() } },
+		{ it.joinToString("_") { s -> s.toString().toLowerCase() } },
+		"""\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
 	),
+	/**以单个下划线分割，所有单词全大写的格式。*/
 	`SCREAMING_SNAKE_CASE`(
-		//allow: upper words, $ surrounds a word, _, numbers
-		"""\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex(),
-		{ it.split("_") },
-		{ it.joinToString("_") { s -> s.toUpperCase() } }
+		{ it.splitToSequence('_') },
+		{ it.joinToString("_") { s -> s.toString().toUpperCase() } },
+		{ it.joinToString("_") { s -> s.toString().toUpperCase() } },
+		"""\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
 	),
+	/**以数个下划线分割的格式。*/
 	`underscore_Words`(
-		//allow: words, $, _ may repeat and may at begin, numbers
-		"""_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex(),
-		{ it.splitToWordList('_') },
-		{ it.joinToString("_") }
+		{ it.splitToWordSequence('_') },
+		{ it.joinToString("_") },
+		{ it.joinToString("_") },
+		"""_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
 	),
+	/**以单个连接线分割，所有单词全小写的格式。*/
 	`kebab-case`(
-		//allow: lower words, -, numbers
-		"""[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex(),
-		{ it.split("-") },
-		{ it.joinToString("-") { s -> s.toLowerCase() } }
+		{ it.splitToSequence('-') },
+		{ it.joinToString("-") { s -> s.toString().toLowerCase() } },
+		{ it.joinToString("-") { s -> s.toString().toLowerCase() } },
+		"""[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
 	),
+	/**以单个连接线分割，所有单词全大写的格式。*/
 	`KEBAB-UPPERCASE`(
-		//allow: upper words, -, numbers
-		"""[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex(),
-		{ it.split("-") },
-		{ it.joinToString("-") { s -> s.toUpperCase() } }
+		{ it.splitToSequence('-') },
+		{ it.joinToString("-") { s -> s.toString().toUpperCase() } },
+		{ it.joinToString("-") { s -> s.toString().toUpperCase() } },
+		"""[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
 	),
+	/**以数个连接线分割的格式。*/
 	`hyphen-Words`(
-		//allow: words, - may repeat and may at begin, numbers
-		"""-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex(),
-		{ it.splitToWordList('-') },
-		{ it.joinToString("-") }
+		{ it.splitToWordSequence('-') },
+		{ it.joinToString("-") },
+		{ it.joinToString("-") },
+		"""-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
 	),
+	/**以单词边界或者数个下划线分割，首个单词全小写，后续单词首字母大写的格式。*/
 	@ExplicitUsageApi
 	`camelCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
-		"""_*\$?[a-z]+(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
-		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
+		{ it.splitToWords().splitToWordSequence(' ', '_') },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
+		"""_*\$?[a-z]+(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex()
 	),
+	/**以单词边界或者数个下划线分割，所有单词首字母大写的格式。*/
 	@ExplicitUsageApi
 	`PascalCase_AllowUnderscore`(
-		//allow: lower word first, capitalized/upper words remain, $ surrounds a word, numbers, _ may repeat & at begin
-		"""_*\$?(?:[A-Z][a-z]+|[A-Z]+)(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex(),
-		{ it.toWords().splitToWordList() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() }
+		{ it.splitToWords().splitToWordSequence(' ', '_') },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
+		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
+		"""_*\$?(?:[A-Z][a-z]+|[A-Z]+)(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex()
 	),
-	Unknown(""".*""".toRegex(), { listOf(it) }, { it.joinToString("") });
+	/**未知格式。*/
+	Unknown;
+}
+
+
+/**将第一个字符转为大写。*/
+private fun CharSequence.firstCharToUpperCase(): String {
+	return this[0].toUpperCase() + this.substring(1)
+}
+
+/**将第一个字符转为小写。*/
+private fun CharSequence.firstCharToLowerCase(): String {
+	return this[0].toLowerCase() + this.substring(1)
+}
+
+/**将当前字符串分割为单词序列，基于任意长度的指定的分割符。允许位于首尾的分隔符。*/
+private fun CharSequence.splitToWordSequence(vararg delimiters: Char): Sequence<String> {
+	return this.splitToSequence(*delimiters).filterNotEmpty()
+}
+
+/**基于小写字母与大写字母的边界，将当前字符串转化为以空格分割的单词组成的字符串。允许全大写的单词。*/
+private fun CharSequence.splitToWords(): String {
+	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }

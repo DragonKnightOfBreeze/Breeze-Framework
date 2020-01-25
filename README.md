@@ -16,15 +16,18 @@ NOTE：
 
 ## breeze-core
 
-* Provide general extensions for `String`, `Collection`, `Number`, `Boolean`, `Tuple`.
-  * Including many extra operator override extensions. (e.g, `String.times(Int)`, `Collection.get(IntRange)`.)
-  * Including many extended infix extensions. (e.g, `String.equalsIc`, `String.startsWith`, `Iterable.anyIn`.)
-  * Including some powerful handler extensions for `String`. (e.g, `String.escapeBy`, `String.switchCaseBy`.)
-  * Including some deep operator extensions for `Collection`. (e.g, `List.deepGet`, `List.deepFlatten`.)
-  * Including extra convert extensions for `Number`, `String`, etc. (e.g, `String.toFile`, `String.toEnumValue`.)
-* Provide global extensions missing in stdlib. (e.g, `FIXME`, `once`, `accept`, `tryOrPrint`, `tryOrIgnore`.)
+* Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
+  * Including some extra operator override extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
+  * Including some extended infix extensions for String, Collections. (e.g, `String.startsWith`, `Iterable.allIn`.)
+  * Including some powerful handle extensions for String. (e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.)
+  * Including some deep operator extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
+  * Including some convert extensions for Number, String etc. (e.g, `String.toFile`, `String.toEnumValue`.)
+* Provide global extensions missing in stdlib.
+  * Including some todo extensions. (e.g, `FIXME`, `DELAY`.)
+  * Including some scope extensions. (e.g, `once`, `tryOrPrint`, `tryOrIgnore`.)
+  * Including some useful extension associated to type. (e.g, `javaTypeOf<T>()`, `cast<T>()`)
 * Provide basic annotations, consts, enums and interfaces.
-* Provide generator extensions for `equals`, `hashcode` and `toString`.
+* Provide generator extensions for `equals`, `hashcode` and `toString`. (e,g, `equalsBy`, `equalsByOne`)
 
 ## breeze-data
 
@@ -95,11 +98,12 @@ println(source linq linq)
 
 * Provide lightweight, individual, and powerful logger for Kotlin.
 * Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
+* This implementation is a little simple, please consider for a while before use it.
 
 Usage:
 
 ```
-val logger = ColorfulLogger
+val logger = ColorfulLogger()
 logger.info("Some info.")
 logger.warn("Some warn.")
 ```
@@ -111,8 +115,8 @@ logger.warn("Some warn.")
 ## breeze-serialization
 
 * Provide serializers for common kotlin type. (e.g, `RangeSerializer`)
+* ~~Linked with related Dsl~~.
 * [ ] Provide lightweight multi-data-type serializers implementations.
-* [ ] Linked with related Dsl.
 
 ## breeze-spring-boot
 
@@ -121,6 +125,7 @@ logger.warn("Some warn.")
 ## breeze-test
 
 * [ ] Provide kotlin-style unit test support.
+* [ ] This implementation is a little simple, please consider for a while before use it.
 
 ## breeze-text
 
@@ -129,7 +134,7 @@ logger.warn("Some warn.")
 ## breeze-time
 
 * Provide some useful extensions for time, including `Date`, `Temporal`, etc.
-* Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.) (**YEAH IT DO!**)
+* Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.)
 * Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.)
 
 # Dependencies & Optional dependencies
@@ -167,7 +172,9 @@ logger.warn("Some warn.")
 
 # Usage
 
-pom.xml
+Possible needed api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
+
+## Maven
 
 ```xml
 <project>
@@ -190,7 +197,7 @@ pom.xml
 </project>
 ```
 
-build.gradle
+## Gradle
 
 ```groovy
 repositories {
@@ -202,11 +209,11 @@ dependencies {
 }
 ```
 
-build.gradle.kts
+## Gradle Kts
 
 ```kotlin
 repositories {
-    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
 }
 
 dependencies {

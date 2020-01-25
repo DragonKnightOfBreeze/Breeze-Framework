@@ -1,5 +1,6 @@
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.consts.*
 import org.junit.*
 
 class SystemExtensionsKtTest {
@@ -9,17 +10,15 @@ class SystemExtensionsKtTest {
 		println(SystemProperties.userCountry)
 		println(SystemProperties.userLanguage)
 	}
-	
-	//@Test
-	//fun eval() {
-	//	println("hello")
-	//	val a = eval<Int>("js") { "2+2" }
-	//	println(a)
-	//	val b = eval<Int> { "2+2" } //why null??
-	//	println(b)
-	//}
-	
+
+	@Test //TESTED
+	fun evalTest() {
+		eval<Int>("javascript") { "1+2" }.also { println(it) }
+		eval<Int>("JavaScript") { "1+2" }.also { println(it) }
+		eval<Int>("js") { "1+2" }.also { println(it) }
+	}
+
 	@Test
-	fun exac() {
+	fun execTest() {
 	}
 }

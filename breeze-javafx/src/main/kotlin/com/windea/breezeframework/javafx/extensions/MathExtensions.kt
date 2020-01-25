@@ -1,3 +1,4 @@
+@file:JvmName("MathExtensions")
 @file:Suppress("DuplicatedCode")
 
 package com.windea.breezeframework.javafx.extensions

@@ -23,9 +23,9 @@ internal annotation class PumlStateDiagramDsl
 class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
-	
+
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = arrayOf(
 			toPrefixString(),
@@ -43,14 +43,14 @@ class PumlStateDiagram @PublishedApi internal constructor() : Puml(), PumlStateD
 interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplit, WithTransition<PumlStateDiagramState, PumlStateDiagramTransition> {
 	val states: MutableSet<PumlStateDiagramState>
 	val links: MutableList<PumlStateDiagramTransition>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			states.joinToStringOrEmpty("\n"),
 			links.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@PumlDsl
 	override fun String.fromTo(other: String) = transition(this, other)
 }
@@ -64,19 +64,19 @@ interface PumlStateDiagramDslElement : PumlDslElement
 /**Puml状态图状态。*/
 @PumlStateDiagramDsl
 sealed class PumlStateDiagramState(
-	@Language("Creole") @Multiline("\\n", "Alias is not null.")
+	@Language("Creole") @MultilineProp("\\n", "Alias is not null.")
 	val name: String,
-	@Language("Creole") @Multiline("\\n")
+	@Language("Creole") @MultilineProp("\\n")
 	val text: String? = null
 ) : PumlStateDiagramDslElement, WithUniqueId {
 	var alias: String? = null
 	var tag: String? = null
 	var color: String? = null
-	
+
 	override val id: String get() = alias ?: name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
 }
 
@@ -104,7 +104,7 @@ class PumlStateDiagramSimpleState @PublishedApi internal constructor(
 		return if(alias == null) {
 			"state $name$tagSnippet$colorSnippet: $textSnippet"
 		} else {
-			val nameSnippet = name.replaceWithEscapedWrap().wrapQuote(quote) //only escaped with an existing alias
+			val nameSnippet = name.replaceWithEscapedWrap().quote(quote) //only escaped with an existing alias
 			"state $nameSnippet as $alias$tagSnippet$colorSnippet: $textSnippet"
 		}
 	}
@@ -132,15 +132,15 @@ class PumlStateDiagramCompositedState @PublishedApi internal constructor(
 ) : PumlStateDiagramState(name, text), PumlStateDiagramDslEntry, CanIndent {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
 		val nameSnippet = alias ?: name
-		val extraSnippet = alias?.let { "\nstate ${name.replaceWithEscapedWrap().wrapQuote(quote)} as $alias" }
+		val extraSnippet = alias?.let { "\nstate ${name.replaceWithEscapedWrap().quote(quote)} as $alias" }
 			.orEmpty()
 		val extraSnippetWithText = when {
 			text == null -> extraSnippet
@@ -168,14 +168,14 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 	text: String? = null
 ) : PumlStateDiagramState(name, text), CanIndent {
 	val sections: MutableList<PumlStateDiagramConcurrentSection> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = sections.joinToStringOrEmpty("\n---\n")
 		val indentedContentSnippet = if(indentContent) contentSnippet.prependIndent(indent) else contentSnippet
 		val nameSnippet = alias ?: name
-		val extraSnippet = alias?.let { "\nstate ${name.replaceWithHtmlWrap().wrapQuote(quote)} as $alias" }.orEmpty()
+		val extraSnippet = alias?.let { "\nstate ${name.replaceWithHtmlWrap().quote(quote)} as $alias" }.orEmpty()
 		val extraSnippetWithText = when {
 			text == null -> extraSnippet
 			extraSnippet.isEmpty() -> "\nstate $name: ${text.replaceWithHtmlWrap()}"
@@ -190,14 +190,14 @@ class PumlStateDiagramConcurrentState @PublishedApi internal constructor(
 class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
 	override val states: MutableSet<PumlStateDiagramState> = mutableSetOf()
 	override val links: MutableList<PumlStateDiagramTransition> = mutableListOf()
-	
+
 	override var splitContent: Boolean = true
-	
+
 	override fun toString() = toContentString()
 }
 
 /**
- * PlantUml状态图转换。
+ * PlantUml状态图转化。
  *
  * 语法示例：
  * * `A -> B`
@@ -209,17 +209,17 @@ class PumlStateDiagramConcurrentSection : PumlStateDiagramDslEntry {
 class PumlStateDiagramTransition @PublishedApi internal constructor(
 	val sourceStateName: String,
 	val targetStateName: String,
-	@Language("Creole") @Multiline("\\n")
+	@Language("Creole") @MultilineProp("\\n")
 	var text: String? = null
 ) : PumlStateDiagramDslElement, WithNode<PumlStateDiagramState> {
 	var arrowColor: String? = null
 	var arrowShape: PumlArrowShape? = null
 	var arrowDirection: PumlArrowDirection? = null
 	var arrowLength: Int = 1
-	
+
 	override val sourceNodeId get() = sourceStateName
 	override val targetNodeId get() = targetStateName
-	
+
 	override fun toString(): String {
 		val textSnippet = text?.let { ": ${it.replaceWithEscapedWrap()}" }.orEmpty()
 		val arrowParamsSnippet = arrayOf(arrowColor?.addPrefix("#"), arrowShape?.text).filterNotNull()

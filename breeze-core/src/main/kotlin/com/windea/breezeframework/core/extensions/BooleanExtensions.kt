@@ -1,10 +1,11 @@
+@file:JvmName("BooleanExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
 
 import kotlin.contracts.*
 
-//region commmon extensions
+//region common extensions
 /**如果为true，则执行一段代码。总是返回自身。*/
 inline fun Boolean.onTrue(block: () -> Unit): Boolean {
 	contract {
@@ -23,10 +24,10 @@ inline fun Boolean.onFalse(block: () -> Unit): Boolean {
 	return this
 }
 
-/**如果为null，则返回true，否则返回本身。用于链式调用。*/
+/**如果为null，则返回true，否则返回自身。*/
 inline fun Boolean?.orTrue(): Boolean = this ?: true
 
-/**如果为null，则返回false，否则返回本身。用于链式调用。*/
+/**如果为null，则返回false，否则返回自身。*/
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 //endregion
 

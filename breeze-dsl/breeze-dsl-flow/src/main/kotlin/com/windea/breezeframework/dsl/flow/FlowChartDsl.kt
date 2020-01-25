@@ -17,12 +17,12 @@ internal annotation class FlowChartDsl
 
 /**流程图。*/
 @FlowChartDsl
-class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslEntry {
+class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDslEntry {
 	override val nodes: MutableSet<FlowChartNode> = mutableSetOf()
 	override val connections: MutableList<FlowChartConnection> = mutableListOf()
-	
+
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		return toContentString()
 	}
@@ -35,25 +35,25 @@ class FlowChart @PublishedApi internal constructor() : DslBuilder, FlowChartDslE
 interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, FlowChartConnection> {
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			nodes.joinToStringOrEmpty("\n"),
 			connections.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@FlowChartDsl
 	override fun String.fromTo(other: String) = connection(this, other)
-	
+
 	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(null, null, direction)) }
-	
+
 	@FlowChartDsl
 	operator fun String.invoke(status: FlowChartConnection.Status, direction: FlowChartConnection.Direction? = null) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(status, null, direction)) }
-	
+
 	@FlowChartDsl
 	operator fun String.invoke(path: FlowChartConnection.Path, direction: FlowChartConnection.Direction? = null) =
 		this.also { binderQueue.push(FlowChartConnection.Binder(null, path, direction)) }
@@ -85,26 +85,26 @@ class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: Type
 ) : FlowChartDslElement, WithUniqueId {
-	@Multiline("\n")
+	@MultilineProp("\n")
 	var text: String? = null
 	var flowState: String? = null
 	var urlLink: String? = null
 	var openNewTab: Boolean = false
-	
+
 	override val id: String get() = name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
-	
-	//NOTE syntax: name=>$type: $text|$flowState?:>$urlLink
+
+	//syntax: name=>$type: $text|$flowState?:>$urlLink
 	override fun toString(): String {
 		val flowStateSnippet = flowState?.let { "|$it" }.orEmpty()
 		val urlLinkSnippet = urlLink?.let { ":>$it" }.orEmpty()
 		val blankSnippet = if(openNewTab) "[blank]" else ""
 		return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 	}
-	
+
 	/**流程图节点的类型。*/
 	@FlowChartDsl
 	enum class Type(val text: String) {
@@ -121,38 +121,38 @@ class FlowChartConnection @PublishedApi internal constructor(
 ) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.pollLast() ?: Binder() {
 	override val sourceNodeId get() = fromNodeId
 	override val targetNodeId get() = toNodeId
-	
-	//NOTE syntax: $fromNodeId($specifications)->$toNodeId
+
+	//syntax: $fromNodeId($specifications)->$toNodeId
 	override fun toString(): String {
 		val specificationsSnippet = listOfNotNull(status?.text, path?.text, direction?.text).joinToStringOrEmpty(", ", "(", ")")
 		return "$fromNodeId$specificationsSnippet->$toNodeId"
 	}
-	
+
 	/**流程图连接的状态。*/
 	@FlowChartDsl
 	enum class Status(val text: String) {
 		Yes("yes"), No("no")
 	}
-	
+
 	/**流程图连接的路径。*/
 	@FlowChartDsl
 	enum class Path(val text: String) {
 		Path1("path1"), Path2("path2"), Path3("path3")
 	}
-	
+
 	/**流程图连接的方向。*/
 	@FlowChartDsl
 	enum class Direction(val text: String) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
 	}
-	
+
 	internal class Binder(
 		override var status: Status? = null,
 		override var path: Path? = null,
 		override var direction: Direction? = null
 	) : FlowChartConnectionBinder
-	
-	//NOTE 使用委托在外部存储数据，等到必要时传递回来
+
+	//使用委托在外部存储数据，等到必要时传递回来
 	companion object {
 		internal val binderQueue = LinkedList<Binder>()
 	}

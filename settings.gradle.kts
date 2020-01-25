@@ -23,7 +23,6 @@ include(
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-spring-boot",
-	"breeze-test",
 	"breeze-text",
 	"breeze-time",
 	"breeze-unstable"

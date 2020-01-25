@@ -12,9 +12,9 @@ import java.util.concurrent.*
 /**Json Schema生成器。*/
 object SchemaGenerator : Generator {
 	private val multiSchemaRuleNames = listOf("oneOf", "allOf", "anyOf")
-	
+
 	private val dataMap = mutableMapOf<String, Any?>()
-	
+
 	private val extendedRuleMap = mutableMapOf<String, SchemaRule>(
 		"\$ref" to { (_, value) ->
 			//将对yaml schema文件的引用改为对json schema文件的引用
@@ -23,7 +23,7 @@ object SchemaGenerator : Generator {
 		},
 		"\$gen" to { (_, value) ->
 			//提取$dataMap中的路径`$value`对应的值列表
-			val newValue = dataMap.deepQuery(value as String)
+			val newValue = dataMap.deepQuery<Any?>(value as String)
 			when {
 				newValue.isNotEmpty() -> mapOf("enum" to newValue)
 				else -> mapOf()
@@ -50,13 +50,13 @@ object SchemaGenerator : Generator {
 			}
 		}
 	)
-	
+
 	/**配置数据映射。先前的数据映射会被清空。*/
 	fun setDataMap(dataMap: Map<String, Any?>) {
 		SchemaGenerator.dataMap.clear()
 		SchemaGenerator.dataMap += dataMap
 	}
-	
+
 	/**
 	 * 添加扩展约束规则。
 	 *
@@ -70,8 +70,8 @@ object SchemaGenerator : Generator {
 	fun addExtendedRules(vararg rules: Pair<String, SchemaRule>) {
 		extendedRuleMap += rules
 	}
-	
-	
+
+
 	/**
 	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
 	 *
@@ -82,7 +82,7 @@ object SchemaGenerator : Generator {
 		convertRules(inputMap)
 		return outputType.serializer.dump(inputMap)
 	}
-	
+
 	/**
 	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
 	 *
@@ -93,7 +93,7 @@ object SchemaGenerator : Generator {
 		convertRules(inputMap)
 		outputType.serializer.dump(inputMap, outputFile)
 	}
-	
+
 	private fun convertRules(map: MutableMap<String, Any?>) {
 		//递归遍历整个约束映射的深复制，处理原本的约束映射
 		//如果找到了自定义规则，则替换成规则集合中指定的官方规则

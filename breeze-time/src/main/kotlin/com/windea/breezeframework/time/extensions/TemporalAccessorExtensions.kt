@@ -1,3 +1,5 @@
+@file:JvmName("TemporalAccessorExtensions")
+
 package com.windea.breezeframework.time.extensions
 
 import java.time.*

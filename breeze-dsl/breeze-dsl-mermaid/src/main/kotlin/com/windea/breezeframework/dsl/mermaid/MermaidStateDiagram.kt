@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
-//NOTE unstable raw api
+//unstable raw api
 
 //region top annotations and interfaces
 /**Mermaid状态图的Dsl。*/
@@ -22,10 +22,10 @@ class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
 	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
 	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString().applyIndent(indent)
 		return "stateDiagram\n$contentSnippet"
@@ -40,7 +40,7 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 	val states: MutableSet<MermaidStateDiagramState>
 	val links: MutableList<MermaidStateDiagramTransition>
 	val notes: MutableList<MermaidStateDiagramNote>
-	
+
 	fun toContentString(): String {
 		return arrayOf(
 			states.joinToStringOrEmpty("\n"),
@@ -48,7 +48,7 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 			notes.joinToStringOrEmpty("\n")
 		).filterNotEmpty().joinToStringOrEmpty(split)
 	}
-	
+
 	@MermaidStateDiagramDsl
 	override fun String.fromTo(other: String) = transition(this, other)
 }
@@ -65,11 +65,11 @@ sealed class MermaidStateDiagramState(
 	val name: String
 ) : MermaidStateDiagramDslElement, WithUniqueId {
 	var text: String? = null
-	
+
 	override val id: String get() = name
-	
+
 	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-	
+
 	override fun hashCode() = hashCodeByOne(this) { id }
 }
 
@@ -79,13 +79,13 @@ class MermaidStateDiagramSimpleState @PublishedApi internal constructor(
 	name: String
 ) : MermaidStateDiagramState(name) {
 	var type: Type? = null
-	
+
 	override fun toString(): String {
 		val textSnippet = text?.let { ": $it" }.orEmpty()
 		val typeSnippet = type?.let { " <<${it.text}>>" }.orEmpty()
 		return "$name$textSnippet$typeSnippet"
 	}
-	
+
 	/**Mermaid状态图简单状态的类型。*/
 	@MermaidStateDiagramDsl
 	enum class Type(val text: String) {
@@ -101,10 +101,10 @@ class MermaidStateDiagramCompositedState @PublishedApi internal constructor(
 	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
 	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
 	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
 	override var splitContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = toContentString().applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
@@ -117,9 +117,9 @@ class MermaidStateDiagramConcurrentState @PublishedApi internal constructor(
 	name: String
 ) : MermaidStateDiagramState(name), CanIndent {
 	val sections: MutableList<MermaidStateDiagramConcurrentSection> = mutableListOf()
-	
+
 	override var indentContent: Boolean = true
-	
+
 	override fun toString(): String {
 		val contentSnippet = sections.joinToStringOrEmpty("\n--\n").applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
@@ -132,23 +132,23 @@ class MermaidStateDiagramConcurrentSection : MermaidStateDiagramDslEntry {
 	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
 	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
 	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
-	
+
 	override var splitContent: Boolean = true
-	
+
 	override fun toString() = toContentString()
 }
 
-/**Mermaid状态图转换。*/
+/**Mermaid状态图转化。*/
 @MermaidStateDiagramDsl
 class MermaidStateDiagramTransition @PublishedApi internal constructor(
 	val fromStateId: String,
 	val toStateId: String
 ) : MermaidStateDiagramDslElement, WithNode<MermaidStateDiagramState> {
 	var text: String? = null
-	
+
 	override val sourceNodeId get() = fromStateId
 	override val targetNodeId get() = toStateId
-	
+
 	override fun toString(): String {
 		val textSnippet = text?.let { ": $it" }.orEmpty()
 		return "$fromStateId --> $toStateId$textSnippet"
@@ -160,22 +160,22 @@ class MermaidStateDiagramTransition @PublishedApi internal constructor(
 class MermaidStateDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : MermaidStateDiagramDslElement, CanWrap, CanIndent {
-	@Multiline("\\n", "Inline note.")
+	@MultilineProp("\\n", "Inline note.")
 	var text: String = ""
-	
+
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true
-	
+
 	override fun toString(): String {
 		if("\n" in text || "\r" in text) wrapContent = true //wrap if necessary
-		
+
 		return when {
 			wrapContent && indentContent -> "note $location\n${text.applyIndent(indent)}\nend note"
 			wrapContent -> "note $location\n$text\nend note"
 			else -> "note $location: $text"
 		}
 	}
-	
+
 	/**Mermaid状态图注释的位置。*/
 	@MermaidStateDiagramDsl
 	class Location @PublishedApi internal constructor(
@@ -186,7 +186,7 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 			return "${position.text} $stateId"
 		}
 	}
-	
+
 	/**Mermaid状态图注释的方位。*/
 	@MermaidStateDiagramDsl
 	enum class Position(val text: String) {

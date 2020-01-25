@@ -12,7 +12,7 @@ class Tests {
 		//[, , , abc, , abc]
 		println("___abc__abc".split("_").map { s -> s.trim('_') })
 	}
-	
+
 	@Test
 	fun test2() {
 		val props = System.getProperties()
@@ -20,7 +20,7 @@ class Tests {
 			println(prop)
 		}
 	}
-	
+
 	@Test //TESTED
 	fun example() {
 		//true
@@ -29,12 +29,12 @@ class Tests {
 		println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
 		//{0=a, 1=b, 2=c}
 		println(listOf("a", "b", "c").toIndexKeyMap())
-		
+
 		//[a, b, c, a, b, c, a, b, c]
 		println(listOf("a", "b", "c") * 3)
 		//[b, c]
 		println(listOf("a", "b", "c")[1..2])
-		
+
 		//true
 		println("Hello world" endsWithIc "World")
 		//1{0}2{1}3{2}
@@ -51,7 +51,7 @@ class Tests {
 		    Here also indented.
 		  </element>
 		""".trimRelativeIndent())
-		
+
 		//abcAbc
 		println("Abc abc".switchCaseBy(camelCase))
 		//AbcAbc
@@ -59,20 +59,20 @@ class Tests {
 		//ABC_ABC
 		println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
 		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".switchCaseBy(Standard))
+		println("/a/b/1/2/c/3".switchCaseBy(JavaReference))
 	}
-	
+
 	@Test
 	fun testRange() {
 		(1..10).forEach(::println)
 	}
-	
+
 	//@Test
 	//fun testIntToChar(){
 	//	println(0.toChar())
 	//	println(25.toChar())
 	//}
-	
+
 	@Test
 	fun testToString() {
 		println(LocalDate.parse("2014-01-06")) //2014-01-06 OK
@@ -80,7 +80,7 @@ class Tests {
 		println(Duration.ofDays(1)) //PT24H
 		println(Duration.ofHours(20)) //PT20H
 	}
-	
+
 	@Test
 	fun testCollectionSize() {
 		val foo1 = Foo1()
@@ -88,7 +88,7 @@ class Tests {
 		foo1.list += 3
 		println(foo1.size)
 	}
-	
+
 	fun testAB() {
 		a {
 			testA()
@@ -97,7 +97,7 @@ class Tests {
 			}
 		}
 	}
-	
+
 	//fun testSwap() {
 	//	val a = 1
 	//	val b = 2

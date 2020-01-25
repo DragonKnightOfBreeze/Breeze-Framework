@@ -20,7 +20,7 @@ internal annotation class PumlDsl
 
 /**PlantUml。*/
 @PumlDsl
-abstract class Puml : DslBuilder, WithComment<PumlNote> {
+abstract class Puml : DslDocument, WithComment<PumlNote> {
 	var title: PumlTitle? = null
 	var legend: PumlLegend? = null
 	var header: PumlHeader? = null
@@ -29,12 +29,12 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 	var caption: PumlCaption? = null
 	val notes: MutableSet<PumlNote> = mutableSetOf()
 	val skinParams: PumlSkinParams = PumlSkinParams()
-	
+
 	//TODO need to generate alias for no-alias notes
 	fun toPrefixString(): String = TODO()
-	
+
 	fun toSuffixString(): String = TODO()
-	
+
 	@PumlDsl
 	override fun String.unaryMinus() = note(this)
 }
@@ -43,11 +43,11 @@ abstract class Puml : DslBuilder, WithComment<PumlNote> {
 @PumlDsl
 object PumlConfig : DslConfig {
 	private val indentSizeRange = -2..8
-	
+
 	var indentSize = 4
 		set(value) = run { if(value in indentSizeRange) field = value }
 	var preferDoubleQuote: Boolean = true
-	
+
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 }
@@ -70,10 +70,10 @@ sealed class PumlElement(
 	val text: String
 ) : PumlDslElement, CanWrap, CanIndent {
 	var position: PumlTopElementPosition? = null
-	
+
 	override var indentContent: Boolean = true
 	override var wrapContent: Boolean = "\n" in text || "\r" in text//wrap content when necessary
-	
+
 	override fun toString(): String {
 		val positionSnippet = position?.text?.let { "$it " }.orEmpty()
 		return if(wrapContent) {
@@ -151,28 +151,28 @@ class PumlCaption @PublishedApi internal constructor(
  */
 @PumlDsl
 class PumlNote @PublishedApi internal constructor(
-	@Language("Creole") @Multiline("\\n")
+	@Language("Creole") @MultilineProp("\\n")
 	val text: String
 ) : PumlDslElement, CanWrap, CanIndent {
 	//must: alias or (position & targetStateName), position win first.
 	var alias: String? = null
 	var position: PumlNotePosition? = null
 	var targetName: String? = null
-	
+
 	override var indentContent: Boolean = true
 	override var wrapContent: Boolean = false
-	
+
 	override fun equals(other: Any?): Boolean {
 		return this === other || (other is PumlNote && other.alias == alias)
 	}
-	
+
 	override fun hashCode(): Int {
 		return alias.hashCode()
 	}
-	
+
 	override fun toString(): String {
 		if("\n" in text || "\r" in text) wrapContent = true //wrap if necessary
-		
+
 		val aliasSnippet = if(position == null) " as $alias" else ""
 		val positionSnippet = position?.text?.let { " $it $targetName" }.orEmpty()
 		return if(wrapContent) {
@@ -180,7 +180,7 @@ class PumlNote @PublishedApi internal constructor(
 			"note$aliasSnippet$positionSnippet\n$indentedTextSnippet\nend note"
 		} else {
 			val textSnippet = text.replaceWithEscapedWrap()
-			if(position == null) "note ${textSnippet.wrapQuote(quote)} as $alias"
+			if(position == null) "note ${textSnippet.quote(quote)} as $alias"
 			else "note$positionSnippet: $textSnippet"
 		}
 	}
@@ -189,33 +189,33 @@ class PumlNote @PublishedApi internal constructor(
 //TODO
 /**PlantUml显示参数。*/
 @PumlDsl
-class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, MutableMap<String, Any> by HashMap() {
+class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, MutableMap<String, Any> by LinkedHashMap() {
 	override fun toString(): String {
 		return joinToString("\n") { (k, v) -> "skinparam $k $v" }
 	}
-	
+
 	@PumlDsl
 	inline fun defaultFontName(value: String) = run { this["defaultFontName"] = value }
-	
+
 	@PumlDsl
 	inline fun defaultFontColor(value: String) = run { this["defaultFontColor"] = value }
-	
+
 	@PumlDsl
 	inline fun defaultFontSize(value: Int) = run { this["defaultFontSize"] = value }
-	
+
 	@PumlDsl
 	inline fun backgroundColor(value: String) = run { this["backgroundColor"] = value }
-	
+
 	@PumlDsl
 	inline fun borderColor(value: String) = run { this["borderColor"] = value }
-	
+
 	@PumlDsl
 	inline fun roundCorner(value: Int) = run { this["roundCorner"] = value }
-	
+
 	/**Default to false.*/
 	@PumlDsl
 	inline fun handWritten(value: Boolean) = run { this["handWritten"] = value }
-	
+
 	/**Can be true/false/reverse.*/
 	@PumlDsl
 	inline fun monoChrome(value: Boolean?) = run { this["monoChrome"] = value ?: "reverse" }
@@ -224,9 +224,9 @@ class PumlSkinParams @PublishedApi internal constructor() : PumlDslElement, Muta
 //TODO
 /**PlantUml内嵌显示参数。*/
 @PumlDsl
-class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by HashMap() {
+class PumlNestedSkinParams @PublishedApi internal constructor() : PumlDslElement, CanIndent, MutableMap<String, Any> by LinkedHashMap() {
 	override var indentContent: Boolean = true
-	
+
 	override fun toString(): String {
 		if(isEmpty()) return "{}"
 		val paramsSnippet = joinToString("\n") { (k, v) -> "skinparam $k $v" }

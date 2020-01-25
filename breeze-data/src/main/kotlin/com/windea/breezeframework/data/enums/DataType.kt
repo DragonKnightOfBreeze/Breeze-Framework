@@ -11,8 +11,12 @@ enum class DataType(
 	val extension: String,
 	val serializer: Serializer
 ) {
+	/**Json。*/
 	Json("json", JsonSerializer.instance),
+	/**Properties。*/
 	Properties("properties", PropertiesSerializer.instance),
+	/**Xml。*/
 	Xml("xml", XmlSerializer.instance),
+	/**Yaml.*/
 	Yaml("yml", YamlSerializer.instance)
 }

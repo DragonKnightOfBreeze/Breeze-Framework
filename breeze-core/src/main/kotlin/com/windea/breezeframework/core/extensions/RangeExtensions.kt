@@ -1,15 +1,7 @@
+@file:JvmName("RangeExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions
-
-//region common extensions
-/**取在指定范围内的夹值。*/
-infix fun <T : Comparable<T>> T.clamp(range: ClosedRange<T>): T = this.coerceIn(range)
-
-/**转换范围的值。*/
-inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: (T) -> R): ClosedRange<R> =
-	transform(start)..transform(endInclusive)
-//endregion
 
 //region build extensions
 infix fun Long.downUntil(until: Byte): LongProgression {
@@ -75,8 +67,24 @@ infix fun Byte.downUntil(until: Short): IntProgression {
 infix fun Short.downUntil(until: Short): IntProgression {
 	return IntProgression.fromClosedRange(this.toInt(), until.toInt() - 1, -1)
 }
+//endregion
 
+//region convert extensions
+/**将范围转化为基于指定长度的循环范围。即，当上限或下限为负数时，尝试将其加上指定长度。用于兼容逆向索引。*/
+fun IntRange.toCircledRange(length: Int): IntRange {
+	return when {
+		this.last >= 0 && this.first < this.last -> this
+		this.last < 0 && this.first >= 0 -> this.first..length + this.last
+		this.last < 0 && this.first < this.last -> length + this.first..length + this.last
+		else -> IntRange.EMPTY
+	}
+}
 
+/**将范围转化为二元素元组。*/
+inline fun <T : Comparable<T>> ClosedRange<T>.toPair(): Pair<T, T> = this.start to this.endInclusive
+//endregion
+
+//region coerce extensions
 /**限定在0和1之间。*/
 inline fun Float.coerceIn(): Float = this.coerceIn(0f, 1f)
 
