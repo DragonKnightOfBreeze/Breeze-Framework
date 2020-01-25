@@ -261,6 +261,7 @@
 * [X] breeze-core&breeze-reflect 让`Any.isInstanceOf`扩展兼容原始类型。
 * [X] 尽可能地抑制编译器错误以匹配标准库中的对应扩展方法。
 * [X] breeze-core 添加用于元素的类型检查的`Iterable.isIterableOf`等扩展。
+* [X] 更新项目文档。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 
 # 待办
