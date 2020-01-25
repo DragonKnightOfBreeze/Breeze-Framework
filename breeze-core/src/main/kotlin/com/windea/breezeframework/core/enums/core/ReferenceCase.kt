@@ -44,7 +44,7 @@ enum class ReferenceCase(
 		{ it.splitToSequence('[', '.').dropEmpty().map { s -> s.removeSuffix("]") } },
 		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
 		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
-		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.(?:[a-zA-Z_$]+|\[\d+]))*""".toRegex()
+		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.[a-zA-Z_$]+|\[\d+])*""".toRegex()
 	),
 	/**
 	 * Json引用。
@@ -58,7 +58,7 @@ enum class ReferenceCase(
 		{ it.removePrefix("$.").splitToSequence('.').map { s -> s.removeSurrounding("[", "]") } },
 		{ it.joinToString(".", "$.").wrapIndex() },
 		{ it.joinToString(".", "$.").wrapIndex() },
-		"""\$(?:\.(?:[a-zA-Z_]+|\[\d+]))*""".toRegex()
+		"""\$\..*""".toRegex() //不严格验证
 	),
 	/**未知格式。*/
 	Unknown;

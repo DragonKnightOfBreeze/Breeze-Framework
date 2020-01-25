@@ -583,7 +583,7 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 						val indices = subPath.toIntRange()
 						value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
 					}
-					else -> listOf((key + subPath) to value[subPath.toIntOrThrow()])
+					else -> value.getOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
 				}
 				is Iterable<*> -> when {
 					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
@@ -597,7 +597,7 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 							value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }
 						}
 					}
-					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
+					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
 				}
 				is Map<*, *> -> when {
 					subPath == "{}" || subPath.surroundsWith("{", "}") -> {
@@ -607,7 +607,7 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 						val regex = subPath.substring(3).toRegex()
 						value.filterKeys { it.toString() matches regex }.map { (k, v) -> (key + k.toString()) to v }
 					}
-					else -> listOf((key + subPath) to value[subPath])
+					else -> value[subPath].toPairList(key + subPath)
 				}
 				is Sequence<*> -> when {
 					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
@@ -617,7 +617,7 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 						val indices = subPath.toIntRange()
 						value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
 					}
-					else -> listOf((key + subPath) to value.elementAt(subPath.toIntOrThrow()))
+					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
 				}
 				//当尝试查询非集合类型的数据时，要求抛出异常
 				else -> notAValidCollection(this)
@@ -750,6 +750,10 @@ private fun Any?.collectionSet(indexOrKey: String, value: Any?) {
 
 private fun String.toIntOrThrow(): Int {
 	return this.toIntOrNull() ?: notAnIndex(this)
+}
+
+private fun Any?.toPairList(path: Array<String>): List<Pair<Array<String>, Any?>> {
+	return if(this == null) listOf() else listOf(path to this)
 }
 
 private fun notAnIndex(path: String): Nothing {

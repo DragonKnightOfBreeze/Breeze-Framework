@@ -37,9 +37,6 @@
 * SpringBoot
 * SpringCloud
 * LibGDX
-
-***
-
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)
@@ -48,9 +45,6 @@
 # 参考
 
 * [Google Guava](https://github.com/google/guava)
-
-***
-
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
 * [hotchemi/khronos](https://github.com/hotchemi/khronos)
@@ -115,44 +109,6 @@ dependencies {
 
 # 示例
 
-```kotlin
-fun example() {
-    //true
-    println(arrayOf(1, 2, 3) anyIn arrayOf(3, 4, 5))
-    //{[0]=1, [1]=2, [2]=3, [3][0]=4, [3][1]=5, [4].a=6}
-    println(listOf(1, 2, 3, listOf(4, 5), mapOf("a" to 6)).deepFlatten())
-    //{0=a, 1=b, 2=c}
-    println(listOf("a", "b", "c").toIndexKeyMap())
+参见：[ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
 
-    //[a, b, c, a, b, c, a, b, c]
-    println(listOf("a", "b", "c") * 3)
-    //[b, c]
-    println(listOf("a", "b", "c")[1..2])
-
-    //true
-    println("Hello world" endsWithIc "World")
-    //1{0}2{1}3{2}
-    println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
-    //**********
-    println("*" * 10)
-    //[***, ***, ***]
-    println("*********" / 3)
-    //  <element>
-    //    Here also indented.
-    //  </element>
-    println("""
-      <element>
-        Here also indented.
-      </element>
-    """.trimRelativeIndent())
-
-    //abcAbc
-    println("Abc abc".switchCaseBy(camelCase))
-    //AbcAbc
-    println("ABC_ABC".switchCaseBy(PascalCase))
-    //ABC_ABC
-    println("abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
-    //a.b[1][2].c[3]
-    println("/a/b/1/2/c/3".switchCaseBy(Standard))
-}
-```
+链接：[Github Link](https://github.com/DragonKnightOfBreeze/Breeze-Framework/blob/master/breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
