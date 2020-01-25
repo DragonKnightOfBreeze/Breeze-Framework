@@ -175,9 +175,9 @@ internal abstract class TypeReference<T> {
 //endregion
 
 //region Any extensions
-//TODO 兼容原始类型
-/**判断当前对象是否是兼容指定类型的实例。*/
-infix fun Any.isInstanceOf(type: Class<*>): Boolean = type.isInstance(this)
+/**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+infix fun Any.isInstanceOf(type: Class<*>): Boolean =
+	type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
 
 
 /**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/

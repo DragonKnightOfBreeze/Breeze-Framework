@@ -2,10 +2,11 @@ package com.windea.breezeframework.game
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.reflect.extensions.*
+import java.math.*
 import kotlin.system.*
 import kotlin.test.*
 
-class CoreExtensionsTest {
+class ReflectExtensionsTest {
 	@Test //TESTED OK
 	fun test1() {
 		println(javaTypeOf<Int>())
@@ -26,7 +27,19 @@ class CoreExtensionsTest {
 	fun testClassAndKClass() {
 		measureNanoTime { A::class.simpleName }.also { println(it) }
 		measureNanoTime { A::class.java.simpleName }.also { println(it) }
+	}
 
+	@Test
+	fun isInstanceOfTest() {
+		assertTrue(1 isInstanceOf Int::class)
+		assertTrue(1 isInstanceOf Number::class)
+		assertTrue(1 isInstanceOf Comparable::class)
+		assertTrue(1 isInstanceOf Any::class)
+
+		assertTrue(1.toBigInteger() isInstanceOf BigInteger::class)
+		assertTrue(1.toBigInteger() isInstanceOf Number::class)
+		assertTrue(1.toBigInteger() isInstanceOf Comparable::class)
+		assertTrue(1.toBigInteger() isInstanceOf Any::class)
 	}
 }
 

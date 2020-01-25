@@ -170,5 +170,5 @@ private fun CharSequence.splitToWordSequence(vararg delimiters: Char): Sequence<
 
 /**基于小写字母与大写字母的边界，将当前字符串转化为以空格分割的单词组成的字符串。允许全大写的单词。*/
 private fun CharSequence.splitToWords(): String {
-	return this.replace(""".*\B([A-Z][a-z])""".toRegex(), " $1")
+	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 }

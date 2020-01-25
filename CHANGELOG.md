@@ -258,7 +258,7 @@
 * [X] breeze-core 移除一些认为是冗余的扩展。
 * [X] breeze-core 添加`Array.swap`、`MutableList.swap`扩展。
 * [X] breeze-core&breeze-reflect 添加`Any.isInstanceOf`扩展。
-* [ ] breeze-core 提供扩展以使原始类型兼容对应包装类型的类型判断。
+* [X] breeze-core&breeze-reflect 让`Any.isInstanceOf`扩展兼容原始类型。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
