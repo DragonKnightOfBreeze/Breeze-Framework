@@ -13,6 +13,7 @@ import kotlin.random.Random
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
+//注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
 //region portal extensions
 /**构建一个集并事先过滤空的元素。*/
@@ -173,18 +174,40 @@ inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 inline fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
 
 
-//直接参照标准库的写法编写扩展方法，会报编译器错误
-/**如果当前数组不为空，则返回转化后的值。*/
+/**如果当前数组不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <T> Array<out T>.orNull(): Array<out T>? = if(this.isEmpty()) null else this
+
+/**如果当前集合不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <T> Collection<T>.orNull(): Collection<T>? = if(this.isEmpty()) null else this
+
+/**如果当前列表不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <T> List<T>.orNull(): List<T>? = if(this.isEmpty()) null else this
+
+/**如果当前集不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <T> Set<T>.orNull(): Set<T>? = if(this.isEmpty()) null else this
+
+/**如果当前映射不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? = if(this.isEmpty()) null else this
+
+/**如果当前数组不为空，则返回转化后的值，否则返回本身。*/
+@JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R =
 	if(this.isEmpty()) this else transform(this)
 
-/**如果当前集合不为空，则返回转化后的值。*/
+/**如果当前集合不为空，则返回转化后的值，否则返回本身。*/
+@JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, C : R =
 	if(this.isEmpty()) this else transform(this)
 
-/**如果当前映射不为空，则返回转化后的值。*/
+/**如果当前映射不为空，则返回转化后的值，否则返回本身。*/
+@JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R =
 	if(this.isEmpty()) this else transform(this)
@@ -330,6 +353,7 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 
 
 /**根据指定的转化操作，将当前数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
+@WeakDeprecated("Redundant extension method that may contaminate code completion .")
 fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -337,6 +361,7 @@ fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix:
 }
 
 /**根据指定的转化操作，将当前集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
+@WeakDeprecated("Redundant extension method that may contaminate code completion .")
 fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -364,14 +389,14 @@ fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullT
 
 
 /**按照类型以及附加条件过滤数组。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 @Suppress("DEPRECATION")
 inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -379,14 +404,14 @@ inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(
 }
 
 /**按照类型以及附加条件过滤列表。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 @Suppress("DEPRECATION")
 inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -394,14 +419,14 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(d
 }
 
 /**按照类型以及附加条件过滤集。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 @Suppress("DEPRECATION")
 inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤集，然后置入指定的集合。*/
-@Deprecated("Redundant extension method.")
+@Deprecated("Redundant extension method that may contaminate code completion .")
 inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)

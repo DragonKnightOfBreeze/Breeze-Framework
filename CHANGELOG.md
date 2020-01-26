@@ -266,6 +266,8 @@
 * [X] （较大的更新）调整代码目录结构。
 * [X] （标准库缺失）添加`setOfNotNull`、`mapOfValueNotNull`扩展。
 * [X] 调整注解的添加逻辑。
+* [X] breeze-core 移除`String.orEmpty(predicate)`，提供`String.orNull()`、`Iterable.orNull`等扩展。
+* [ ] breeze-core 废弃一些冗余扩展，同时保证能够替换成规范且一致的链式调用写法。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。

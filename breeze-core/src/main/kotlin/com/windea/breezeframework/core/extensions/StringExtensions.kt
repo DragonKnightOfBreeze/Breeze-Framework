@@ -13,6 +13,8 @@ import java.time.*
 import java.time.format.*
 import java.util.*
 
+//注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
+
 //region operator override extensions
 /**@see kotlin.text.slice*/
 operator fun String.get(indices: IntRange): String = this.slice(indices)
@@ -116,36 +118,30 @@ fun CharSequence.isAlphanumeric(): Boolean {
 	return this matches "[1-9a-zA-Z_]+".toRegex()
 }
 
+/**如果当前字符串不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <C : CharSequence> C.orNull(): C? = if(this.isEmpty()) null else this
 
-/**如果当前字符串满足指定条件，则返回空字符串，否则返回自身。*/
-inline fun String.orEmpty(predicate: (String) -> Boolean): String {
-	return if(predicate(this)) "" else this
-}
-
-
-//直接参照标准库的写法编写扩展方法，会报编译器错误
-/**如果当前字符串不为空，则返回转化后的值。*/
+/**如果当前字符串不为空，则返回转化后的值，否则返回本身。*/
+@JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
-inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : CharSequence, C : R {
-	return if(this.isEmpty()) this else transform(this)
-}
+inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : CharSequence, C : R =
+	if(this.isEmpty()) this else transform(this)
 
-/**如果当前字符串不为空白，则返回转化后的值。*/
+/**如果当前字符串不为空白，则返回转化后的值，否则返回本身。*/
+@JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
-inline fun <C, R> C.ifNotBlank(transform: (C) -> R): R where C : CharSequence, C : R {
-	return if(this.isBlank()) this else transform(this)
-}
+inline fun <C, R> C.ifNotBlank(transform: (C) -> R): R where C : CharSequence, C : R =
+	if(this.isBlank()) this else transform(this)
 
 
-/**如果当前发展处不为空，则返回自身，否则返回null。*/
-inline fun <C : CharSequence> C.takeIfNotEmpty(): C? {
-	return this.takeIf { it.isNotEmpty() }
-}
+/**如果当前字符串不为空，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <C : CharSequence> C.takeIfNotEmpty(): C? = if(this.isEmpty()) null else this
 
-/**如果当前发展处不为空白，则返回自身，否则返回null。*/
-inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
-	return this.takeIf { it.isNotBlank() }
-}
+/**如果当前字符串不为空白，则返回本身，否则返回null。*/
+@JvmSynthetic
+inline fun <C : CharSequence> C.takeIfNotBlank(): C? = if(this.isBlank()) null else this
 
 
 /**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
