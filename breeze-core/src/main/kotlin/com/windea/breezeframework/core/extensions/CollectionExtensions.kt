@@ -5,6 +5,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.enums.text.*
+import com.windea.breezeframework.core.types.*
 import java.util.*
 import java.util.concurrent.*
 import kotlin.collections.ArrayList
@@ -48,16 +49,16 @@ fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMa
 
 
 /**构建一个空的线程安全的并发列表。*/
-inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
+inline fun <T> concurrentListOf(): ConcurrentList<T> = CopyOnWriteArrayList()
 
 /**构建一个线程安全的并发列表。*/
-fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
+fun <T> concurrentListOf(vararg elements: T): ConcurrentList<T> = CopyOnWriteArrayList(elements)
 
 /**构建一个空的线程安全的并发集。*/
-inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
+inline fun <T> concurrentSetOf(): ConcurrentSet<T> = CopyOnWriteArraySet()
 
 /**构建一个线程安全的并发集。*/
-fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
+fun <T> concurrentSetOf(vararg elements: T): ConcurrentSet<T> = CopyOnWriteArraySet(elements.toSet())
 
 /**构建一个空的线程安全的并发映射。*/
 inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
