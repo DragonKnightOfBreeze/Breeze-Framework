@@ -55,7 +55,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 	}
 
 	@MermaidFlowChartDsl
-	override fun String.fromTo(other: String) = message(this, other)
+	override fun String.links(other: String) = message(this, other)
 }
 
 /**Mermaid序列图Dsl的元素。*/

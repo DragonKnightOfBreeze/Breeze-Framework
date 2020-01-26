@@ -826,13 +826,13 @@ private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: Refer
 //endregion
 
 //region convert extensions
-/**将当前列表转化为并发列表。*/
+/**将当前列表转化为新的并发列表。*/
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
 
-/**将当前集转化为并发集。*/
+/**将当前集转化为新的并发集。*/
 fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
 
-/**将当前映射转化为并发映射。*/
+/**将当前映射转化为新的并发映射。*/
 fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
 
 
@@ -846,57 +846,50 @@ fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(Li
 fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 
-/**将当前数组转化成以键为值的映射。*/
+/**将当前数组转化为以键为值的映射。*/
 inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前集合转化成以键为值的映射。*/
+/**将当前集合转化为以键为值的映射。*/
 inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前序列转化成以键为值的映射。*/
+/**将当前序列转化为以键为值的映射。*/
 inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-
-/**将当前映射转化成以字符串为键的映射。如果原本的键不是字符串，则映射成字符串。否则返回自身。*/
+/**将当前映射转化为新的以字符串为键的映射。*/
+@NotOptimized
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
-	if(this.isEmpty() || this.keys.first() is String) return this as Map<String, V>
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 
-/**将当前映射转化成以字符串为值的映射。如果原本的值不是字符串，则映射成字符串。否则返回自身。*/
-inline fun <K, V> Map<K, V>.toStringValueMap(): Map<K, String> {
-	if(this.isEmpty() || this.values.first() is String) return this as Map<K, String>
+/**将当前映射转化为新的以字符串为键且以字符串为键的映射。*/
+@NotOptimized
+inline fun <V> Map<String, V>.toStringValueMap(): Map<String, String> {
 	return this.mapValues { (_, v) -> v.toString() }
-}
-
-/**将当前映射转化成以字符串为键和值的映射。如果原本的键和值不是字符串，则映射成字符串。否则返回自身。*/
-inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
-	if(this.isEmpty() || this.entries.first().let { it.key is String && it.value is String }) return this as Map<String, String>
-	return this.map { (k, v) -> k.toString() to v.toString() }.toMap()
 }
 //endregion
 
 //region unsafe extensions
-/**尝试检查当前集合的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+/**尝试检查当前集合的泛型，但不保证正确性。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Iterable<*>.isIterableOf(): Boolean {
 	return this.take(typeCheckLimit).all { it is T }
 }
 
-/**尝试检查当前映射的泛型。即，遍历限定个数的键值对，判断是否全部兼容指定的类型。*/
+/**尝试检查当前映射的泛型，但不保证正确性。即，遍历限定个数的键值对，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(): Boolean {
 	return this.entries.take(typeCheckLimit).all { it.key is K && it.value is V }
 }
 
-/**尝试检查当前映射的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+/**尝试检查当前映射的泛型，但不保证正确性。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Sequence<*>.isSequenceOf(): Boolean {

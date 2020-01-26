@@ -20,7 +20,7 @@ class FlowChartDslTest {
 	//cond(no)->para
 	//para(path1, bottom)->sub1(right)->op1
 	//para(path2, top)->op1
-	
+
 	@Test
 	fun test1() {
 		println(flowChart {
@@ -31,12 +31,12 @@ class FlowChartDslTest {
 			condition("cond") text "Yes or No?" urlLink "http://www.google.com"
 			inputOutput("io") text "catch something..."
 			parallel("para") text "parallel tasks"
-			
-			"st" fromTo "op1" fromTo "cond"
-			"cond"(Yes) fromTo "io" fromTo "e"
-			"cond"(No) fromTo "para"
-			"para"(Path1, Bottom) fromTo "sub1"(Right) fromTo "op1"
-			"para"(Path2, Top) fromTo "op1"
+
+			"st" links "op1" links "cond"
+			"cond"(Yes) links "io" links "e"
+			"cond"(No) links "para"
+			"para"(Path1, Bottom) links "sub1"(Right) links "op1"
+			"para"(Path2, Top) links "op1"
 		})
 	}
 }

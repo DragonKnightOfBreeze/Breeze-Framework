@@ -139,27 +139,27 @@ interface WithNode<N : WithId> {
 interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.fromTo(other: String): T
+	infix fun String.links(other: String): T
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other.id }
+	infix fun String.links(other: N): T = this@WithTransition.run { this@links links other.id }
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo.id fromTo other }
+	infix fun N.links(other: String): T = this@WithTransition.run { this@links.id links other }
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo.id fromTo other.id }
+	infix fun N.links(other: N): T = this@WithTransition.run { this@links.id links other.id }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
-	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other }
+	infix fun T.links(other: String): T = this@WithTransition.run { this@links.targetNodeId links other }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
-	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other.id }
+	infix fun T.links(other: N): T = this@WithTransition.run { this@links.targetNodeId links other.id }
 }
 //endregion
 

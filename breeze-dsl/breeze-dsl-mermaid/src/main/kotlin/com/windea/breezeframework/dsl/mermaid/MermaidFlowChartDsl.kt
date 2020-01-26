@@ -70,7 +70,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<M
 	}
 
 	@MermaidFlowChartDsl
-	override fun String.fromTo(other: String) = link(this, other)
+	override fun String.links(other: String) = link(this, other)
 }
 
 /**Mermaid流程图Dsl的元素。*/

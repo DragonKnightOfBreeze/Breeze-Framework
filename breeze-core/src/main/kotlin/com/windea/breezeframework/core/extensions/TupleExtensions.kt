@@ -3,61 +3,71 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.domain.math.*
+import com.windea.breezeframework.core.types.*
+
+//对于元组的需求：
+//元组的元素类型可以不同，并且元素个数应当是有限的（这里最多提供五元素元组）
+//元组应当是data class，实现自定义的toString方法，并且实现toList扩展方法。
+//应当提供一系列用于创建元组的中缀扩展。
+//提供其他必要的扩展方法。
 
 //region build extensions
 /**从二元素元组构造三元素元组。*/
-infix fun <A, B, C> Pair<A, B>.fromTo(that: C): Triple<A, B, C> = Triple(first, second, that)
+infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
 
 /**从三元素元组构造四元素元组。*/
-infix fun <A, B, C, D> Triple<A, B, C>.thenTo(that: D): Quadruple<A, B, C, D> = Quadruple(first, second, third, that)
+infix fun <A, B, C, D> Tuple3<A, B, C>.fromTo(that: D): Tuple4<A, B, C, D> = Tuple4(first, second, third, that)
+
+/**从四元素元组构造五元素元组。*/
+infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.fromTo(that: E): Tuple5<A, B, C, D, E> = Tuple5(first, second, third, fourth, that)
 //endregion
 
 //region common extensions
 /**映射单一元素类型的二元素元组的元素。*/
-inline fun <T, R> Pair<T, T>.map(transform: (T) -> R): Pair<R, R> =
-	Pair(transform(first), transform(second))
+inline fun <T, R> TypedTuple2<T>.map(transform: (T) -> R): TypedTuple2<R> =
+	TypedTuple2(transform(first), transform(second))
 
 /**映射单一元素类型的三元素元组的元素。*/
-inline fun <T, R> Triple<T, T, T>.map(transform: (T) -> R): Triple<R, R, R> =
-	Triple(transform(first), transform(second), transform(third))
+inline fun <T, R> TypedTuple3<T>.map(transform: (T) -> R): TypedTuple3<R> =
+	TypedTuple3(transform(first), transform(second), transform(third))
 
-/**映射单一元素类型的三元素元组的元素。*/
-inline fun <T, R> Quadruple<T, T, T, T>.map(transform: (T) -> R): Quadruple<R, R, R, R> =
-	Quadruple(transform(first), transform(second), transform(third), transform(fourth))
+/**映射单一元素类型的四元素元组的元素。*/
+inline fun <T, R> TypedTuple4<T>.map(transform: (T) -> R): TypedTuple4<R> =
+	TypedTuple4(transform(first), transform(second), transform(third), transform(fourth))
 
-
-///**根据当前二元素元组和另一个二元素元组，映射单一元素类型的二元素元组的元素。*/
-//inline fun <T, R, V> Pair<T, T>.zip(other: Pair<R, R>, transform: (T, R) -> V): Pair<V, V> =
-//	Pair(transform(first, other.first), transform(second, other.second))
-//
-///**根据当前三元素元组和另一个三元素元组，映射单一元素类型的三元素元组的元素。*/
-//inline fun <T, R, V> Triple<T, T, T>.zip(other: Triple<R, R, R>, transform: (T, R) -> V): Triple<V, V, V> =
-//	Triple(transform(first, other.first), transform(second, other.second), transform(third, other.third))
-//
-///**根据当前四元素元组和另一个三元素元组，映射单一元素类型的四元素元组的元素。*/
-//inline fun <T, R, V> Quadruple<T, T, T, T>.zip(other: Quadruple<R, R, R, R>, transform: (T, R) -> V): Quadruple<V, V, V, V> =
-//	Quadruple(transform(first, other.first), transform(second, other.second), transform(third, other.third), transform(fourth, other.fourth))
+/**映射单一元素类型的五元素元组的元素。*/
+inline fun <T, R> TypedTuple5<T>.map(transform: (T) -> R): TypedTuple5<R> =
+	TypedTuple5(transform(first), transform(second), transform(third), transform(fourth), transform(fifth))
 //endregion
 
 //region convert extensions
+/**将单一元素类型的三元素元组转化为列表。*/
+fun <T> TypedTuple3<T>.toList() = listOf(first, second, third)
+
+/**将单一元素类型的四元素元组转化为列表。*/
+fun <T> TypedTuple4<T>.toList() = listOf(first, second, third, fourth)
+
+/**将单一元素类型的五元素元组转化为列表。*/
+fun <T> TypedTuple5<T>.toList() = listOf(first, second, third, fourth, fifth)
+
+
 /**将字符类型的二元素元组转化为字符范围。*/
-inline fun Pair<Char, Char>.toRange(): CharRange = first..second
+inline fun TypedTuple2<Char>.toRange(): CharRange = first..second
 
 /**将整数类型的二元素元组转化为整数范围。*/
-inline fun Pair<Int, Int>.toRange(): IntRange = first..second
+inline fun TypedTuple2<Int>.toRange(): IntRange = first..second
 
 /**将长整数类型的二元素元组转化为长整数范围。*/
-inline fun Pair<Long, Long>.toRange(): LongRange = first..second
+inline fun TypedTuple2<Long>.toRange(): LongRange = first..second
 
 /**将单一元素类型的二元素元组转化为范围。*/
-inline fun <T : Comparable<T>> Pair<T, T>.toRange(): ClosedRange<T> = first..second
+inline fun <T : Comparable<T>> TypedTuple2<T>.toRange(): ClosedRange<T> = first..second
 
 
 /**将浮点数二元素元组转化为二维向量。*/
-inline fun Pair<Float, Float>.toVector2(): Vector2 = Vector2(first, second)
+inline fun TypedTuple2<Float>.toVector2(): Vector2 = Vector2(first, second)
 
 /**将浮点数三元素元组转化为三维向量。*/
-inline fun Triple<Float, Float, Float>.toVector3(): Vector3 = Vector3(first, second, third)
+inline fun TypedTuple3<Float>.toVector3(): Vector3 = Vector3(first, second, third)
 //endregion

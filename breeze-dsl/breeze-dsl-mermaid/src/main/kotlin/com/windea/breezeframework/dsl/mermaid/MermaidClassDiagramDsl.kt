@@ -49,11 +49,7 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	}
 
 	@MermaidClassDiagramDsl
-	override fun String.fromTo(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Link)
-
-	@MermaidClassDiagramDsl
-	infix fun String.link(other: String) =
+	override fun String.links(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Link)
 
 	@MermaidClassDiagramDsl

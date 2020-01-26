@@ -163,6 +163,7 @@ logger.warn("Some warn.")
 * [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
 # Usage
 

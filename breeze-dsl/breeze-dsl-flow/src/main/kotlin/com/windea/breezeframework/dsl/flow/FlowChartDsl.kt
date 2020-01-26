@@ -44,7 +44,7 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 	}
 
 	@FlowChartDsl
-	override fun String.fromTo(other: String) = connection(this, other)
+	override fun String.links(other: String) = connection(this, other)
 
 	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =

@@ -49,7 +49,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 	}
 
 	@SequenceDiagramDsl
-	override fun String.fromTo(other: String) = message(this, other)
+	override fun String.links(other: String) = message(this, other)
 }
 
 /**序列图Dsl的元素。*/

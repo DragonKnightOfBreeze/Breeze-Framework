@@ -524,17 +524,17 @@ fun String.unescapeBy(type: EscapeType, includeBackslash: Boolean = false): Stri
 }
 
 
-/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType): Regex {
 	return type.transform(this).toRegex()
 }
 
-/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
 	return type.transform(this).toRegex(option)
 }
 
-/**根据指定的匹配类型，将当前字符串转化成对应的正则表达式。*/
+/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
 	return type.transform(this).toRegex(options)
 }

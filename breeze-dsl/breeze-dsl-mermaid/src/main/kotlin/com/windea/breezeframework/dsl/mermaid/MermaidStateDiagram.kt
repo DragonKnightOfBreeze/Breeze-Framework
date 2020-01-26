@@ -50,7 +50,7 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 	}
 
 	@MermaidStateDiagramDsl
-	override fun String.fromTo(other: String) = transition(this, other)
+	override fun String.links(other: String) = transition(this, other)
 }
 
 /**Mermaid状态图Dsl的元素。*/
