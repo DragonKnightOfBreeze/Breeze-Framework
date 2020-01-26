@@ -1,4 +1,8 @@
+@file:NotTested
+
 package com.windea.breezeframework.core.domain.math
+
+import com.windea.breezeframework.core.annotations.*
 
 /**包含当前值和总计值的数量。*/
 data class Count @PublishedApi internal constructor(

@@ -15,6 +15,19 @@ import kotlin.random.Random
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
 
 //region portal extensions
+/**构建一个集并事先过滤空的元素。*/
+fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) else emptyList()
+
+/**构建一个集并事先过滤空的元素。*/
+fun <T : Any> setOfNotNull(vararg elements: T?) = elements.filterNotNull().toSet()
+
+/**构建一个映射并事先过滤值为空的键值对。*/
+fun <K, V : Any> mapOfValueNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
+
+/**构建一个映射并事先过滤值为空的键值对。*/
+fun <K, V : Any> mapOfValueNotNull(vararg pairs: Pair<K, V?>) = pairs.filterNotNull().toMap()
+
+
 /**构建一个空的枚举集。*/
 inline fun <reified T : Enum<T>> enumSetOf(): EnumSet<T> = EnumSet.noneOf(T::class.java)
 
@@ -792,13 +805,13 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 
 
 /**将当前键值对数组转化为可变映射。*/
-fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 /**将当前键值对列表转化为可变映射。*/
-fun <K, V> List<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 /**将当前键值对序列转化为可变映射。*/
-fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap().toMutableMap()
+fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 
 /**将当前数组转化成以键为值的映射。*/
