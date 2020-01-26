@@ -353,7 +353,7 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 
 
 /**根据指定的转化操作，将当前数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
-@WeakDeprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -361,7 +361,7 @@ fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix:
 }
 
 /**根据指定的转化操作，将当前集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
-@WeakDeprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -369,11 +369,14 @@ fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: 
 }
 
 /**根据指定的转化操作，将当前映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
+@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
 	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
 }
+
+private const val joinToStringSnippet = "joinToString(separator,prefix,postfix,limit,truncated,transform)"
 
 
 /**过滤映射中值为null的键值对。*/
@@ -389,14 +392,14 @@ fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullT
 
 
 /**按照类型以及附加条件过滤数组。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -404,14 +407,14 @@ inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(
 }
 
 /**按照类型以及附加条件过滤列表。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -419,14 +422,14 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(d
 }
 
 /**按照类型以及附加条件过滤集。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤集，然后置入指定的集合。*/
-@Deprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)

@@ -22,7 +22,7 @@ internal annotation class CreoleDsl
 class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
 
-	override fun toString() = content.joinToStringOrEmpty("\n\n")
+	override fun toString() = content.joinToString("\n\n")
 }
 
 /**Creole的配置。*/
@@ -241,7 +241,7 @@ class CreoleList @PublishedApi internal constructor() : CreoleDslTopElement {
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
 
 	override fun toString(): String {
-		return nodes.joinToStringOrEmpty("\n")
+		return nodes.joinToString("\n")
 	}
 }
 
@@ -254,7 +254,7 @@ sealed class CreoleListNode(
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
 
 	override fun toString(): String {
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n") { "${it.prefixMarker}$it" }
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { "${it.prefixMarker}$it" }.orEmpty()
 		return "$prefixMarker $text$nodesSnippet"
 	}
 }
@@ -279,7 +279,7 @@ class CreoleTree @PublishedApi internal constructor(
 	val nodes: MutableList<CreoleTreeNode> = mutableListOf()
 
 	override fun toString(): String {
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n")
+		val nodesSnippet = nodes.joinToString("\n", "\n")
 		return "$title$nodesSnippet"
 	}
 }
@@ -294,9 +294,7 @@ class CreoleTreeNode @PublishedApi internal constructor(
 	override fun toString(): String {
 		//include prefix "|_", add it to first line, add spaces to other lines
 		val textSnippet = "|_ $text"
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n") {
-			it.toString().prependIndent("   ")
-		}
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { it.toString().prependIndent("   ") }.orEmpty()
 		return "$textSnippet$nodesSnippet"
 	}
 }
@@ -318,7 +316,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		rows.forEach { it.columnSize = actualColumnSize }
 
 		val headerRowSnippet = header.toString()
-		val rowsSnippet = rows.joinToStringOrEmpty("\n")
+		val rowsSnippet = rows.joinToString("\n")
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
 
@@ -340,7 +338,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
 			else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty("|", "|", "|")
+		}.joinToString("|", "|", "|")
 	}
 
 	@CreoleDsl
@@ -364,7 +362,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty(" | ", "| ", " |")
+		}.joinToString(" | ", "| ", " |")
 	}
 
 	@CreoleDsl

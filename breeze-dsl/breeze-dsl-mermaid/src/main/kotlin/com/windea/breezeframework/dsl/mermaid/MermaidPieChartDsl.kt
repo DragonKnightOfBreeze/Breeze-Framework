@@ -27,10 +27,10 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 	override var splitContent: Boolean = false
 
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			title.toStringOrEmpty(),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(split).applyIndent(indent)
+		val contentSnippet = listOfNotNull(
+			title?.toString(),
+			toContentString().orNull()
+		).joinToString(split).applyIndent(indent)
 		return "pie\n$contentSnippet"
 	}
 }
@@ -43,7 +43,7 @@ interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val sections: MutableSet<MermaidPieChartSection>
 
 	fun toContentString(): String {
-		return sections.joinToStringOrEmpty("\n")
+		return sections.joinToString("\n")
 	}
 }
 

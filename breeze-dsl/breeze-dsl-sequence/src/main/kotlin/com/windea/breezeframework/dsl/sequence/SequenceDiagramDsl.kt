@@ -24,10 +24,10 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 	override var splitContent: Boolean = true
 
 	override fun toString(): String {
-		return arrayOf(
-			title.toStringOrEmpty(),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			title?.toString(),
+			toContentString().orNull()
+		).joinToString(split)
 	}
 }
 //endregion
@@ -41,11 +41,11 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 	val notes: MutableList<SequenceDiagramNote>
 
 	fun toContentString(): String {
-		return arrayOf(
-			participants.joinToStringOrEmpty("\n"),
-			messages.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			participants.orNull()?.joinToString("\n"),
+			messages.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@SequenceDiagramDsl

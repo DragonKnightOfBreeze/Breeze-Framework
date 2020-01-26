@@ -37,10 +37,10 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 	val connections: MutableList<FlowChartConnection>
 
 	fun toContentString(): String {
-		return arrayOf(
-			nodes.joinToStringOrEmpty("\n"),
-			connections.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			nodes.orNull()?.joinToString("\n"),
+			connections.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@FlowChartDsl
@@ -124,7 +124,9 @@ class FlowChartConnection @PublishedApi internal constructor(
 
 	//syntax: $fromNodeId($specifications)->$toNodeId
 	override fun toString(): String {
-		val specificationsSnippet = listOfNotNull(status?.text, path?.text, direction?.text).joinToStringOrEmpty(", ", "(", ")")
+		val specificationsSnippet = listOfNotNull(
+			status?.text, path?.text, direction?.text
+		).orNull()?.joinToString(", ", "(", ")").orEmpty()
 		return "$fromNodeId$specificationsSnippet->$toNodeId"
 	}
 

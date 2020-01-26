@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.dsl.commandline
 
-import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
 //https://github.com/ziggy42/kolor
@@ -85,7 +84,7 @@ class CommandLineColorfulText(
 	val color: CommandLineColor? = null,
 	val backgroundColor: CommandLineColor? = null,
 	text: String
-) : CommandLineRichText(listOfNotNull(color?.code, backgroundColor?.backgroundCode).joinToStringOrEmpty(";"), text)
+) : CommandLineRichText(listOfNotNull(color?.code, backgroundColor?.backgroundCode).joinToString(";"), text)
 
 @CommandLineTextDsl
 class CommandLineAdvanceText(
@@ -93,7 +92,7 @@ class CommandLineAdvanceText(
 	val backgroundColor: CommandLineColor? = null,
 	val displayMode: Array<out CommandLineDisplayMode> = arrayOf(),
 	text: String
-) : CommandLineRichText((listOfNotNull(color?.code, backgroundColor?.backgroundCode) + displayMode.map { it.code }).joinToStringOrEmpty(";"), text)
+) : CommandLineRichText((listOfNotNull(color?.code, backgroundColor?.backgroundCode) + displayMode.map { it.code }).joinToString(";"), text)
 //endregion
 
 //region enumerations and constants

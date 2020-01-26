@@ -42,11 +42,11 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 	val notes: MutableList<MermaidStateDiagramNote>
 
 	fun toContentString(): String {
-		return arrayOf(
-			states.joinToStringOrEmpty("\n"),
-			links.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			states.orNull()?.joinToString("\n"),
+			links.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidStateDiagramDsl
@@ -121,7 +121,7 @@ class MermaidStateDiagramConcurrentState @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 
 	override fun toString(): String {
-		val contentSnippet = sections.joinToStringOrEmpty("\n--\n").applyIndent(indent)
+		val contentSnippet = sections.joinToString("\n--\n").applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
 	}
 }

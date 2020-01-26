@@ -26,11 +26,11 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 	override var splitContent: Boolean = false
 
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			title.toStringOrEmpty(),
-			dateFormat.toStringOrEmpty(),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(split).applyIndent(indent)
+		val contentSnippet = listOfNotNull(
+			title?.toString(),
+			dateFormat?.toString(),
+			toContentString().orNull()
+		).joinToString(split).applyIndent(indent)
 		return "gantt\n$contentSnippet"
 	}
 }
@@ -43,7 +43,7 @@ interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {
 	val sections: MutableList<MermaidGanttSection>
 
 	fun toContentString(): String {
-		return sections.joinToStringOrEmpty(split)
+		return sections.joinToString(split)
 	}
 }
 
@@ -87,7 +87,7 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	override fun toString(): String {
 		if(tasks.isEmpty()) return "section $name"
 
-		val contentSnippet = tasks.joinToStringOrEmpty("\n").applyIndent(indent)
+		val contentSnippet = tasks.joinToString("\n").applyIndent(indent)
 		return "section $name\n$contentSnippet"
 	}
 }
@@ -110,7 +110,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 	override fun toString(): String {
 		val critSnippet = if(isCrit) "crit" else null
 		val statusSnippet = status.text
-		val paramsSnippet = arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).filterNotNull().joinToStringOrEmpty()
+		val paramsSnippet = listOfNotNull(critSnippet, statusSnippet, alias, initTime, finishTime).joinToString()
 		return "$name: $paramsSnippet"
 	}
 

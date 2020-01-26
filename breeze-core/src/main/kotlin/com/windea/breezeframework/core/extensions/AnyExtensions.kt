@@ -2,8 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.*
-
 /**智能地判断两个对象是否相等。特殊对待数组类型，默认递归执行操作。*/
 @JvmOverloads
 fun Any?.smartEquals(other: Any?, deepOperation: Boolean = true) = when {
@@ -30,5 +28,5 @@ fun Any?.smartToString(deepOperation: Boolean = true) = when {
 
 
 /**将当前对象转化为字符串。如果为null，则转化为空字符串。*/
-@WeakDeprecated("Redundant extension method that may contaminate code completion .")
+@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith("toString()"))
 fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""

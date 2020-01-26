@@ -42,10 +42,10 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val relations: MutableList<MermaidClassDiagramRelation>
 
 	fun toContentString(): String {
-		return arrayOf(
-			classes.joinToStringOrEmpty("\n"),
-			relations.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			classes.orNull()?.joinToString("\n"),
+			relations.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidClassDiagramDsl
@@ -112,16 +112,17 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 	override fun hashCode() = hashCodeByOne(this) { id }
 
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			annotation.toStringOrEmpty(),
-			statements.joinToStringOrEmpty("\n")
-		).filterNotEmpty().ifEmpty { return "class $name" }.joinToStringOrEmpty("\n").applyIndent(indent)
+		val contentSnippet = listOfNotNull(
+			annotation?.toString(),
+			statements.orNull()?.joinToString("\n")
+		).orNull()?.joinToString("\n")?.applyIndent(indent).orEmpty()
+		if(contentSnippet.isEmpty()) return "class $name"
 		return "class $name {\n$contentSnippet\n}"
 	}
 
 	@InlineDsl
 	@MermaidClassDiagramDsl
-	operator fun String.invoke(vararg params: String) = "$this(${params.joinToStringOrEmpty()})"
+	operator fun String.invoke(vararg params: String) = "$this(${params.joinToString()})"
 
 	@InlineDsl
 	@MermaidClassDiagramDsl
@@ -180,9 +181,9 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 
 	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
-		return arrayOf(
+		return listOfNotNull(
 			fromClassId, fromCardinality?.quote(quote), type.text, toCardinality?.quote(quote), toClassId
-		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
+		).orNull()?.joinToString(" ", "", text?.let { ": $it" }.orEmpty()).orEmpty()
 	}
 
 	/**Mermaid类图关系的类型。*/

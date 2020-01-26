@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode", "unused")
+@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode", "unused", "CanBeParameter")
 
 package com.windea.breezeframework.dsl.markdown
 
@@ -38,12 +38,12 @@ class Markdown @PublishedApi internal constructor() : DslDocument, MarkdownDslEn
 	val references: MutableSet<MarkdownReference> = mutableSetOf()
 
 	override fun toString(): String {
-		return arrayOf(
-			frontMatter?.toString().orEmpty(),
-			toc?.toString().orEmpty(),
-			toContentString(),
-			references.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty("\n\n")
+		return listOfNotNull(
+			frontMatter?.toString(),
+			toc?.toString(),
+			toContentString().orNull(),
+			references.orNull()?.joinToString("\n")
+		).joinToString("\n\n")
 	}
 }
 
@@ -94,7 +94,7 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 
 	fun toContentString(): String {
-		return content.joinToStringOrEmpty("\n\n")
+		return content.joinToString("\n\n")
 	}
 
 	@MarkdownDsl
@@ -408,7 +408,7 @@ class MarkdownList @PublishedApi internal constructor(
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 ) : MarkdownDslTopElement {
 	override fun toString(): String {
-		return nodes.joinToStringOrEmpty("\n")
+		return nodes.joinToString("\n")
 	}
 }
 
@@ -428,7 +428,7 @@ sealed class MarkdownListNode(
 			text.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
 				.prependIndent(indent).setPrefix(prefixMarkers)
 		else text
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n").ifNotEmpty { it.prependIndent(indent) }
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n")?.prependIndent(indent).orEmpty()
 		return "$textSnippet$nodesSnippet"
 	}
 }
@@ -469,7 +469,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 		val titleSnippet = if(title.length > wrapLength)
 			title.let { if(wrapContent) it.chunked(wrapLength).joinToString("\n") else it }
 		else title
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n")
+		val nodesSnippet = nodes.joinToString("\n")
 		return "$titleSnippet\n$nodesSnippet"
 	}
 }
@@ -509,7 +509,7 @@ class MarkdownTable @PublishedApi internal constructor() : MarkdownDslTopElement
 
 		val headerRowSnippet = header.toString()
 		val delimitersSnippet = header.toDelimitersString()
-		val rowsSnippet = rows.joinToStringOrEmpty("\n")
+		val rowsSnippet = rows.joinToString("\n")
 		return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 	}
 
@@ -531,7 +531,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty(" | ", "| ", " |")
+		}.joinToString(" | ", "| ", " |")
 	}
 
 	fun toDelimitersString(): String {
@@ -540,7 +540,7 @@ class MarkdownTableHeader @PublishedApi internal constructor() : MarkdownDslElem
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toDelimitersString() }
 			else -> columns.map { it.toDelimitersString() }.fillEnd(columnSize!!, "-" * emptyColumnLength)
-		}.joinToStringOrEmpty(" | ", "| ", " |")
+		}.joinToString(" | ", "| ", " |")
 	}
 
 	@MarkdownDsl
@@ -564,7 +564,7 @@ open class MarkdownTableRow @PublishedApi internal constructor() : MarkdownDslEl
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty(" | ", "| ", " |")
+		}.joinToString(" | ", "| ", " |")
 	}
 
 	@MarkdownDsl

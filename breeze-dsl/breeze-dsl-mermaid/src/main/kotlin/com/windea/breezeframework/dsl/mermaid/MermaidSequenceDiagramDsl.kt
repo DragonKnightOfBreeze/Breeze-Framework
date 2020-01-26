@@ -46,12 +46,12 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 
 	fun toContentString(): String {
-		return arrayOf(
-			participants.joinToStringOrEmpty("\n"),
-			messages.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n"),
-			scopes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			participants.orNull()?.joinToString("\n"),
+			messages.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n"),
+			scopes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidFlowChartDsl
@@ -183,7 +183,7 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	override fun toString(): String {
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
-		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
+		val elseScopesSnippet = elseScopes.orNull()?.joinToString("\n", "\n").orEmpty()
 		return "$contentSnippet$elseScopesSnippet"
 	}
 
