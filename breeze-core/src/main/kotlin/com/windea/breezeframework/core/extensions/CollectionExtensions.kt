@@ -19,13 +19,15 @@ import kotlin.random.Random
 fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) else emptyList()
 
 /**构建一个集并事先过滤空的元素。*/
+@NotOptimized
 fun <T : Any> setOfNotNull(vararg elements: T?) = elements.filterNotNull().toSet()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValueNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValueNotNull(vararg pairs: Pair<K, V?>) = pairs.filterNotNull().toMap()
+@NotOptimized
+fun <K, V : Any> mapOfValueNotNull(vararg pairs: Pair<K, V?>) = pairs.filter { it.second != null }.toMap()
 
 
 /**构建一个空的枚举集。*/
@@ -209,7 +211,9 @@ fun <T> Array<T>.swap(index1: Int, index2: Int) {
 /**交换当前列表中指定的两个索引对应的元素。*/
 fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
 	//不委托给java.util.Collections.swap，因为数组的对应方法是私有的
-	this[index1] = this.set(index2, this[index1])
+	val temp = this[index1]
+	this[index1] = this[index2]
+	this[index2] = temp
 }
 
 
@@ -816,17 +820,17 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(Li
 
 /**将当前数组转化成以键为值的映射。*/
 inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associate { (i, e) -> i.toString() to e }
+	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**将当前集合转化成以键为值的映射。*/
 inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associate { (i, e) -> i.toString() to e }
+	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**将当前序列转化成以键为值的映射。*/
 inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associate { (i, e) -> i.toString() to e }
+	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 
@@ -852,21 +856,21 @@ inline fun <K, V> Map<K, V>.toStringKeyValueMap(): Map<String, String> {
 //region unsafe extensions
 /**尝试检查当前集合的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
-@NotRecommended("Cannot check actual generic type of a collection in Java.")
+@WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Iterable<*>.isIterableOf(): Boolean {
 	return this.take(typeCheckLimit).all { it is T }
 }
 
 /**尝试检查当前映射的泛型。即，遍历限定个数的键值对，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
-@NotRecommended("Cannot check actual generic type of a collection in Java.")
+@WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(): Boolean {
 	return this.entries.take(typeCheckLimit).all { it.key is K && it.value is V }
 }
 
 /**尝试检查当前映射的泛型。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
-@NotRecommended("Cannot check actual generic type of a collection in Java.")
+@WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Sequence<*>.isSequenceOf(): Boolean {
 	return this.take(typeCheckLimit).all { it is T }
 }

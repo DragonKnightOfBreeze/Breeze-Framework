@@ -149,13 +149,15 @@ inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
 
 
 /**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+@NotOptimized
 fun String.transformIn(prefix: String, suffix: String, transform: (String) -> String): String {
 	//前后缀会在转义后加入正则表达式，可以分别是\\Q和\\E
-	//TODO 前后缀可能会发生冲突
+	//NOTE 前后缀可能会发生冲突
 	return this.replace("(?<=${Regex.escape(prefix)}).*?(?=${Regex.escape(suffix)})".toRegex()) { transform(it[0]) }
 }
 
 /**限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+@NotOptimized
 fun String.transformIn(regex: Regex, transform: (String) -> String): String {
 	return this.replace(regex) { transform(it[0]) }
 }
@@ -282,7 +284,7 @@ fun String.messageFormat(vararg args: Any?): String {
  * * 示例：`"1{0}2{1}3".customFormat("{index}","a","b")`
  * * 示例：`"1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b")`
  */
-@NotRecommended("Use directly String.format() or String.messageFormat() to format strings.")
+@WeakDeprecated("Use directly String.format() or String.messageFormat() to format strings.")
 fun String.customFormat(placeholder: String, vararg args: Any?): String {
 	return when {
 		"index" in placeholder -> {
@@ -460,6 +462,7 @@ fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (Int, 
 fun String.substringMatchOrElse(vararg delimiters: String?, defaultValue: (String) -> Array<String>): List<String> =
 	substringMatch0(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
 
+@NotOptimized
 private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (Int, String) -> String): List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 

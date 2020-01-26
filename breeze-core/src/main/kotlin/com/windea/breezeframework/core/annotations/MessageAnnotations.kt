@@ -21,7 +21,6 @@ annotation class Alias(
 
 /**引用。*/
 @MustBeDocumented
-@Repeatable
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class Reference(
 	/**引用一览。*/

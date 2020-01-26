@@ -23,30 +23,6 @@ annotation class NotIncluded(
 	val message: String = ""
 )
 
-/**不推荐的项。*/
-@MustBeDocumented
-@Repeatable
-@Retention(SOURCE)
-@Target(CLASS, PROPERTY, FUNCTION, FILE)
-annotation class NotRecommended(
-	/**备注信息。*/
-	val message: String = "",
-	/**替换项。*/
-	val replaceWith: ReplaceWith = ReplaceWith("")
-)
-
-/**不适用的项。*/
-@MustBeDocumented
-@Repeatable
-@Retention(SOURCE)
-@Target(CLASS, PROPERTY, FUNCTION, FILE)
-annotation class NotSuitable(
-	/**备注信息。*/
-	val message: String = "",
-	/**替换项。*/
-	val replaceWith: ReplaceWith = ReplaceWith("")
-)
-
 /**未确定的项。*/
 @MustBeDocumented
 @Repeatable
@@ -67,6 +43,36 @@ annotation class NotTested(
 	val message: String = ""
 )
 
+/**未优化的项。*/
+@MustBeDocumented
+@Repeatable
+@Retention(SOURCE)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
+annotation class NotOptimized(
+	/**备注信息。*/
+	val message: String = ""
+)
+
+/**不推荐的项。*/
+@MustBeDocumented
+@Repeatable
+@Retention(SOURCE)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
+annotation class NotRecommended(
+	/**备注信息。*/
+	val message: String = ""
+)
+
+/**不适用的项。*/
+@MustBeDocumented
+@Repeatable
+@Retention(SOURCE)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
+annotation class NotSuitable(
+	/**备注信息。*/
+	val message: String = ""
+)
+
 /**不可用的项。*/
 @MustBeDocumented
 @Repeatable
@@ -76,3 +82,4 @@ annotation class NotUsable(
 	/**备注信息。*/
 	val message: String = ""
 )
+
