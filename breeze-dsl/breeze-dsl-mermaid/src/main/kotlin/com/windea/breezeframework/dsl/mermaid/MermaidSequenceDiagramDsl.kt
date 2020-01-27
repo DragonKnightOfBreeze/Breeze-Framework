@@ -35,7 +35,7 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
 interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
@@ -112,7 +112,7 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	val text: String
 ) : MermaidSequenceDiagramDslElement {
 	override fun toString(): String {
@@ -231,19 +231,19 @@ inline fun MermaidSequenceDiagramDslEntry.message(
 inline fun MermaidSequenceDiagramDslEntry.note(location: MermaidSequenceDiagramNote.Location, text: String) =
 	MermaidSequenceDiagramNote(location, text).also { notes += it }
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
+fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
+fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @MermaidSequenceDiagramDsl

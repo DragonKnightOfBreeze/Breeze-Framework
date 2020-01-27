@@ -270,6 +270,7 @@
 * [X] 废弃一些冗余扩展，同时保证能够替换成规范且一致的链式调用写法。
 * [X] breeze-core 提供（最多到）五元素元组的实现，因为kotlin集合框架的解构方法最多到第五个元素。同时完善相关扩展。
 * [X] breeze-core 重构用于元素的类型检查的`Iterable.isIterableOf`等扩展。
+* [X] breeze-dsl 重构部分dsl的实现，去除内联的Dsl元素类。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。

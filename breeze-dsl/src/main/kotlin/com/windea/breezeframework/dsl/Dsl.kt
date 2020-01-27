@@ -38,24 +38,23 @@ interface DslElement {
 }
 //endregion
 
-//region dsl annotations
-/**表示这个Dsl构建方法是内联的。即，对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。*/
+//region dsl declarations
+/**注明这个注解对应的Dsl构建方法是内联的。即，不会自动注册对应的元素，而是直接返回元素或字符串。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
-annotation class InlineDsl
+annotation class InlineDslFunction
 
-/**表示这个字符串属性可换行。并注明对应的行分隔符和额外条件。*/
+/**注明这个注解对应的Dsl元素属性是可以换行的，并说明对应的行分隔符（默认为"\n"）和额外条件。*/
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class MultilineProp(
+annotation class MultilineDslProperty(
 	/**行分隔符。*/
-	val lineSeparator: String,
+	val lineSeparator: String = "",
 	/**额外条件。*/
 	val condition: String = ""
 )
-//endregion
 
-//region dsl interfaces
+
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @Dsl
 interface CanWrap {

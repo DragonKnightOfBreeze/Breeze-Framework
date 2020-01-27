@@ -17,8 +17,6 @@ import com.windea.breezeframework.dsl.markdown.MarkdownConfig.truncated
 import com.windea.breezeframework.dsl.markdown.MarkdownConfig.wrapLength
 import org.intellij.lang.annotations.*
 
-//DELAY add dsl element: HtmlBlock
-
 //region dsl top declarations
 /**Markdown的Dsl。*/
 @DslMarker
@@ -83,7 +81,7 @@ object MarkdownConfig : DslConfig {
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
 interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
@@ -105,10 +103,6 @@ interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 @MarkdownDsl
 interface MarkdownDslElement : DslElement
 
-/**Markdown Dsl的内联元素。*/
-@MarkdownDsl
-interface MarkdownDslInlineElement : MarkdownDslElement
-
 /**Markdown Dsl的顶级元素。*/
 @MarkdownDsl
 interface MarkdownDslTopElement : MarkdownDslElement
@@ -120,100 +114,11 @@ interface WithMarkdownAttributes {
 //endregion
 
 //region dsl elements
-/**Markdown文本。*/
-@MarkdownDsl
-class MarkdownText @PublishedApi internal constructor(
-	val text: String
-) : MarkdownDslInlineElement {
-	override fun toString(): String {
-		return text
-	}
-}
-
-/**Markdown图标。可以使用font awesome和emoji图标。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownIcon @PublishedApi internal constructor(
-	val name: String
-) : MarkdownDslInlineElement {
-	override fun toString(): String {
-		return ":$name:"
-	}
-}
-
-/**Markdown脚注。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownFootNote @PublishedApi internal constructor(
-	val reference: String
-) : MarkdownDslInlineElement {
-	override fun toString(): String {
-		return "[^$reference]"
-	}
-}
-
-/**Markdown富文本。*/
-@MarkdownDsl
-sealed class MarkdownRichText(
-	protected val markers: String,
-	val text: String
-) : MarkdownDslInlineElement {
-	override fun toString(): String {
-		return "$markers$text$markers"
-	}
-}
-
-/**Markdown加粗文本。*/
-@MarkdownDsl
-class MarkdownBoldText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("**", text)
-
-/**Markdown斜体文本。*/
-@MarkdownDsl
-class MarkdownItalicText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("*", text)
-
-/**Markdown删除文本。*/
-@MarkdownDsl
-class MarkdownStrokedText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("~~", text)
-
-/**Markdown下划线文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownUnderlinedText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("++", text)
-
-/**Markdown高亮文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownHighlightText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("==", text)
-
-/**Markdown上标文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownSuperscriptText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("^", text)
-
-/**Markdown下标文本。*/
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-class MarkdownSubscriptText @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText(text, "~")
-
 /**Markdown链接。*/
 @MarkdownDsl
 sealed class MarkdownLink(
 	val url: String
-) : MarkdownDslInlineElement
+) : MarkdownDslElement
 
 /**Markdown自动链接。*/
 @MarkdownDsl
@@ -616,20 +521,24 @@ class MarkdownSideBlock @PublishedApi internal constructor() : MarkdownQuote("|"
 /**Markdown代码。*/
 @MarkdownDsl
 interface MarkdownCode {
-	val text: String
+	val code: String
 }
 
 /**Markdown行内代码。*/
 @MarkdownDsl
 class MarkdownInlineCode @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("`", text), MarkdownCode
+	override val code: String
+) : MarkdownCode {
+	override fun toString(): String {
+		return "`$code`"
+	}
+}
 
 /**Markdown代码块。*/
 @MarkdownDsl
 class MarkdownCodeFence @PublishedApi internal constructor(
 	val language: String,
-	override val text: String
+	override val code: String
 ) : MarkdownDslTopElement, MarkdownCode, WithMarkdownAttributes {
 	//DONE extended classes and properties
 	override var attributes: MarkdownAttributes? = null
@@ -637,29 +546,33 @@ class MarkdownCodeFence @PublishedApi internal constructor(
 	override fun toString(): String {
 		val markersSnippet = horizontalLineMarkers
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-		return "$markersSnippet$language$attributesSnippet\n$text\n$markersSnippet"
+		return "$markersSnippet$language$attributesSnippet\n$code\n$markersSnippet"
 	}
 }
 
 /**Markdown数学表达式。*/
 @MarkdownDsl
 interface MarkdownMath {
-	val text: String
+	val code: String
 }
 
 /**Markdown行内数学表达式。*/
 @MarkdownDsl
 class MarkdownInlineMath @PublishedApi internal constructor(
-	text: String
-) : MarkdownRichText("$", text), MarkdownMath
+	override val code: String
+) : MarkdownMath {
+	override fun toString(): String {
+		return "$$code$"
+	}
+}
 
 /**Markdown多行数学表达式。*/
 @MarkdownDsl
 class MarkdownMultilineMath @PublishedApi internal constructor(
-	override val text: String
+	override val code: String
 ) : MarkdownDslTopElement, MarkdownMath {
 	override fun toString(): String {
-		return "$$\n$text\n$$"
+		return "$$\n$code\n$$"
 	}
 }
 
@@ -845,7 +758,7 @@ class MarkdownLinkReference @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownAttributes @PublishedApi internal constructor(
 	attributes: Set<MarkdownAttribute>
-) : MarkdownDslInlineElement, Set<MarkdownAttribute> by attributes {
+) : MarkdownDslElement, Set<MarkdownAttribute> by attributes {
 	override fun toString(): String {
 		return this.joinToString(" ", " {", "}")
 	}
@@ -859,7 +772,7 @@ sealed class MarkdownAttribute : MarkdownDslElement
 /**Markdown css id特性。*/
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-class MarkdownNameAttribute(
+class MarkdownIdAttribute(
 	val name: String
 ) : MarkdownAttribute() {
 	override fun toString(): String {
@@ -919,108 +832,139 @@ inline fun Markdown.footNoteRef(reference: String, text: String) =
 inline fun Markdown.linkRef(reference: String, url: String, title: String? = null) =
 	MarkdownLinkReference(reference, url, title).also { references += it }
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.text(text: String) = MarkdownText(text).toString()
+inline fun MarkdownDslInlineEntry.text(text: String): String {
+	return text
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.icon(text: String) = MarkdownIcon(text).toString()
+inline fun MarkdownDslInlineEntry.icon(name: String): String {
+	return ":$name:"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.footNote(reference: String) = MarkdownFootNote(reference).toString()
+inline fun MarkdownDslInlineEntry.footNote(reference: String): String {
+	return "[^$reference]"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.b(text: String) = MarkdownBoldText(text).toString()
+inline fun MarkdownDslInlineEntry.b(text: String): String { //bold
+	return "**$text**"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.i(text: String) = MarkdownItalicText(text).toString()
+inline fun MarkdownDslInlineEntry.i(text: String): String { //italic
+	return "*$text*"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.s(text: String) = MarkdownStrokedText(text).toString()
+inline fun MarkdownDslInlineEntry.s(text: String): String { //stroked
+	return "~~$text~~"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.u(text: String) = MarkdownUnderlinedText(text).toString()
+inline fun MarkdownDslInlineEntry.u(text: String): String { //underline
+	return "++$text++"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.em(text: String) = MarkdownHighlightText(text).toString()
+inline fun MarkdownDslInlineEntry.em(text: String): String { //emphasis
+	return "==$text=="
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sup(text: String) = MarkdownSuperscriptText(text).toString()
+inline fun MarkdownDslInlineEntry.sup(text: String): String { //superscript
+	return "^$text^"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sub(text: String) = MarkdownSubscriptText(text).toString()
+inline fun MarkdownDslInlineEntry.sub(text: String): String { //subscript
+	return "~$text~"
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.autoLink(url: String) = MarkdownAutoLink(url).toString()
+inline fun MarkdownDslInlineEntry.autoLink(url: String): String {
+	return MarkdownAutoLink(url).toString()
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null) =
-	MarkdownInlineLink(name, url, title).toString()
+inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null): String {
+	return MarkdownInlineLink(name, url, title).toString()
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null) =
-	MarkdownInlineImageLink(name, url, title).toString()
+inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null): String {
+	return MarkdownInlineImageLink(name, url, title).toString()
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null) =
-	MarkdownReferenceLink(reference, name).toString()
+inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null): String {
+	return MarkdownReferenceLink(reference, name).toString()
+}
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null) =
-	MarkdownReferenceImageLink(reference, name).toString()
+inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null): String {
+	return MarkdownReferenceImageLink(reference, name).toString()
+}
 
-@InlineDsl
-@MarkdownDsl
-@MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String) = MarkdownWikiLink(name, url).toString()
-
-@InlineDsl
-@MarkdownDsl
-inline fun MarkdownDslInlineEntry.code(text: String) = MarkdownInlineCode(text).toString()
-
-@InlineDsl
-@MarkdownDsl
-inline fun MarkdownDslInlineEntry.math(text: String) = MarkdownInlineMath(text).toString()
-
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) =
-	MarkdownAttributes(attributes.toSet()).toString()
+inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String): String {
+	return MarkdownWikiLink(name, url).toString()
+}
 
-@InlineDsl
+@InlineDslFunction
+@MarkdownDsl
+fun MarkdownDslInlineEntry.code(text: String): String {
+	return MarkdownInlineCode(text).toString()
+}
+
+@InlineDslFunction
+@MarkdownDsl
+fun MarkdownDslInlineEntry.math(text: String): String {
+	return MarkdownInlineMath(text).toString()
+}
+
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.id(name: String) = MarkdownNameAttribute(name)
+fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes(attributes.toSet())
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute(name)
+fun MarkdownDslInlineEntry.id(name: String) = MarkdownIdAttribute(name)
 
-@InlineDsl
+@InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
+fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute(name)
+
+@InlineDslFunction
+@MarkdownDsl
+@MarkdownDslExtendedFeature
+fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.textBlock(lazyText: () -> String) =

@@ -9,3 +9,4 @@
 # IDE或Kotlin的问题
 
 * 为什么`listOf`比`mutableListOf`速度要慢？
+* `MagicConstant`在Kotlin中似乎无效？

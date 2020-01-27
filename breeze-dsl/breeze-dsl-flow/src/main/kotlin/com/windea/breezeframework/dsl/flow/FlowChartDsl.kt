@@ -29,7 +29,7 @@ class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDsl
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**流程图Dsl的入口。*/
 @FlowChartDsl
 interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, FlowChartConnection> {
@@ -85,7 +85,7 @@ class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: Type
 ) : FlowChartDslElement, WithUniqueId {
-	@MultilineProp("\n")
+	@MultilineDslProperty
 	var text: String? = null
 	var flowState: String? = null
 	var urlLink: String? = null

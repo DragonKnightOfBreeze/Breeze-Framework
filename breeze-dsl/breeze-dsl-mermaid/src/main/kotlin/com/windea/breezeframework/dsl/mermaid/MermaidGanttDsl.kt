@@ -36,7 +36,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
 interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {

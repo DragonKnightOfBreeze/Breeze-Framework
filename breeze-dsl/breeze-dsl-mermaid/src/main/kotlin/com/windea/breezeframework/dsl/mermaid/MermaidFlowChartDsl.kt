@@ -45,7 +45,7 @@ class MermaidFlowChart @PublishedApi internal constructor(
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
 interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
@@ -84,7 +84,7 @@ interface MermaidFlowChartDslElement : MermaidDslElement
 class MermaidFlowChartNode @PublishedApi internal constructor(
 	val name: String
 ) : MermaidFlowChartDslElement, WithUniqueId {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	var shape: Shape = Shape.Rect
 
@@ -131,7 +131,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 	val fromNodeId: String,
 	val toNodeId: String
 ) : MermaidFlowChartDslElement, WithNode<MermaidFlowChartNode> {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 

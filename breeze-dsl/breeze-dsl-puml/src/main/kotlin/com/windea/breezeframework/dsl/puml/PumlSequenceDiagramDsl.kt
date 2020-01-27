@@ -26,7 +26,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region dsl interfaces
+////region dsl declarations
 ///**PlantUml序列图Dsl的入口。*/
 //@PumlSequenceDiagramDsl
 //interface PumlSequenceDiagramDslEntry : PumlDslEntry
@@ -70,7 +70,7 @@ package com.windea.breezeframework.dsl.puml
 //class PumlSequenceDiagramMessage @PublishedApi internal constructor(
 //	val fromActorName: String,
 //	val toActorName: String,
-//	@Language("Creole") @MultilineProp("\\n")
+//	@Language("Creole") @MultilineDslProperty("\\n")
 //	val text: String? = null,
 //	val isBidirectional: Boolean = false
 //) : PumlSequenceDiagramDslElement, WithNode<PumlSequenceDiagramParticipant> {
@@ -94,7 +94,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region enumerations and constants
+////region dsl enumerations and constants
 ///**PlantUml序列图参与者的形状。*/
 //@PumlSequenceDiagramDsl
 //enum class PumlSequenceDiagramParticipantShape(val text: String) {

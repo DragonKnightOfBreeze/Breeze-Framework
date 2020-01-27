@@ -36,7 +36,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry {

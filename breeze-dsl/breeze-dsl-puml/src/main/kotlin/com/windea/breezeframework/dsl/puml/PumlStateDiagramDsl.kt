@@ -37,7 +37,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region dsl interfaces
+////region dsl declarations
 ///**PlantUml状态图Dsl的入口。*/
 //@PumlStateDiagramDsl
 //interface PumlStateDiagramDslEntry : PumlDslEntry, CanSplit, WithTransition<PumlStateDiagramState, PumlStateDiagramTransition> {
@@ -64,9 +64,9 @@ package com.windea.breezeframework.dsl.puml
 ///**Puml状态图状态。*/
 //@PumlStateDiagramDsl
 //sealed class PumlStateDiagramState(
-//	@Language("Creole") @MultilineProp("\\n", "Alias is not null.")
+//	@Language("Creole") @MultilineDslProperty("\\n", "Alias is not null.")
 //	val name: String,
-//	@Language("Creole") @MultilineProp("\\n")
+//	@Language("Creole") @MultilineDslProperty("\\n")
 //	val text: String? = null
 //) : PumlStateDiagramDslElement, WithUniqueId {
 //	var alias: String? = null
@@ -209,7 +209,7 @@ package com.windea.breezeframework.dsl.puml
 //class PumlStateDiagramTransition @PublishedApi internal constructor(
 //	val sourceStateName: String,
 //	val targetStateName: String,
-//	@Language("Creole") @MultilineProp("\\n")
+//	@Language("Creole") @MultilineDslProperty("\\n")
 //	var text: String? = null
 //) : PumlStateDiagramDslElement, WithNode<PumlStateDiagramState> {
 //	var arrowColor: String? = null
@@ -240,11 +240,11 @@ package com.windea.breezeframework.dsl.puml
 //inline fun PumlStateDiagramDslEntry.state(name: String, text: String? = null) =
 //	PumlStateDiagramSimpleState(name, text).also { states += it }
 //
-//@InlineDsl
+//@InlineDslFunction
 //@PumlStateDiagramDsl
 //inline fun PumlStateDiagramDslEntry.initState() = "[*]"
 //
-//@InlineDsl
+//@InlineDslFunction
 //@PumlStateDiagramDsl
 //inline fun PumlStateDiagramDslEntry.finishState() = "[*]"
 //

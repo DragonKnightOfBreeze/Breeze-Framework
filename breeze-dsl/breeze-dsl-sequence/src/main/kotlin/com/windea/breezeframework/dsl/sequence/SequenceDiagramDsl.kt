@@ -32,7 +32,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
 interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
@@ -61,7 +61,7 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	@MultilineProp("\\n")
+	@MultilineDslProperty("\\n")
 	val text: String
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
@@ -116,7 +116,7 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 class SequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : SequenceDiagramDslElement {
-	@MultilineProp("\\n")
+	@MultilineDslProperty("\\n")
 	var text: String = ""
 
 	override fun toString(): String {
@@ -174,19 +174,19 @@ inline fun SequenceDiagramDslEntry.message(
 inline fun SequenceDiagramDslEntry.note(location: SequenceDiagramNote.Location) =
 	SequenceDiagramNote(location).also { notes += it }
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.leftOf(participantId: String) =
+fun SequenceDiagramDslEntry.leftOf(participantId: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.LeftOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.rightOf(participantId: String) =
+fun SequenceDiagramDslEntry.rightOf(participantId: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+fun SequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @SequenceDiagramDsl

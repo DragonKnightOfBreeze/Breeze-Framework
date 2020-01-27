@@ -33,7 +33,7 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
 interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
@@ -116,11 +116,11 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 		return "class $name {\n$contentSnippet\n}"
 	}
 
-	@InlineDsl
+	@InlineDslFunction
 	@MermaidClassDiagramDsl
 	operator fun String.invoke(vararg params: String) = "$this(${params.joinToString()})"
 
-	@InlineDsl
+	@InlineDslFunction
 	@MermaidClassDiagramDsl
 	infix fun String.type(type: String) = "$this: $type"
 }
@@ -166,7 +166,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val toClassId: String,
 	val type: Type
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null

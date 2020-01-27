@@ -42,7 +42,7 @@ object JsonConfig : DslConfig {
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Json Dsl的元素的内联入口。*/
 @JsonDsl
 interface JsonDslInlineEntry : DslEntry
@@ -143,37 +143,37 @@ inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.
 @JsonDsl
 inline fun json(block: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.block() }
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonNull() = JsonNull
+fun JsonDslInlineEntry.jsonNull() = JsonNull
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonBoolean(value: Boolean) = JsonBoolean(value)
+fun JsonDslInlineEntry.jsonBoolean(value: Boolean) = JsonBoolean(value)
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonNumber(value: Number) = JsonNumber(value)
+fun JsonDslInlineEntry.jsonNumber(value: Number) = JsonNumber(value)
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonString(value: Any?) = JsonString(value.toString())
+fun JsonDslInlineEntry.jsonString(value: Any?) = JsonString(value.toString())
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonObject(value: Map<String, JsonElement<*>>) = JsonObject(value)
+fun JsonDslInlineEntry.jsonObject(value: Map<String, JsonElement<*>>) = JsonObject(value)
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonObjectOf(vararg value: Pair<String, JsonElement<*>>) = JsonObject(value.toMap())
+fun JsonDslInlineEntry.jsonObjectOf(vararg value: Pair<String, JsonElement<*>>) = JsonObject(value.toMap())
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonArray(value: Iterable<JsonElement<*>>) = JsonArray(value.toList())
+fun JsonDslInlineEntry.jsonArray(value: Iterable<JsonElement<*>>) = JsonArray(value.toList())
 
-@InlineDsl
+@InlineDslFunction
 @JsonDsl
-inline fun JsonDslInlineEntry.jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
+fun JsonDslInlineEntry.jsonArrayOf(vararg value: JsonElement<*>) = JsonArray(value.toList())
 //endregion
 
 //region helpful extensions

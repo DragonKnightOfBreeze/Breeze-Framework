@@ -15,7 +15,7 @@ internal annotation class CriticMarkupTextDsl
 /**CriticMarkup富文本。*/
 @CriticMarkupTextDsl
 class CriticMarkupText @PublishedApi internal constructor() : DslDocument, CriticMarkupTextDslInlineEntry {
-	lateinit var text: String
+	@PublishedApi internal lateinit var text: String
 
 	override fun toString(): String {
 		return text
@@ -23,89 +23,43 @@ class CriticMarkupText @PublishedApi internal constructor() : DslDocument, Criti
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**CriticMarkup Dsl的内联入口。*/
 @CriticMarkupTextDsl
 interface CriticMarkupTextDslInlineEntry : DslEntry
-
-/**CriticMarkup Dsl的内联元素。*/
-@CriticMarkupTextDsl
-interface CriticMarkupTextDslInlineElement : DslElement
-//endregion
-
-//region dsl elements
-/**Critic Markup文本。*/
-@CriticMarkupTextDsl
-sealed class CriticMarkupRichText(
-	protected val prefixMarkers: String,
-	val text: String,
-	protected val suffixMarkers: String
-) : CriticMarkupTextDslInlineElement {
-	override fun toString(): String {
-		return "$prefixMarkers $text $suffixMarkers"
-	}
-}
-
-/**Critic Markup添加文本。*/
-@CriticMarkupTextDsl
-class CriticMarkupAppendedText @PublishedApi internal constructor(
-	text: String
-) : CriticMarkupRichText("{++", text, "++}")
-
-/**Critic Markup添加文本。*/
-@CriticMarkupTextDsl
-class CriticMarkupDeletedText @PublishedApi internal constructor(
-	text: String
-) : CriticMarkupRichText("{--", text, "--}")
-
-/**Critic Markup替换文本。*/
-@CriticMarkupTextDsl
-class CriticMarkupReplacedText @PublishedApi internal constructor(
-	text: String,
-	val replacedText: String
-) : CriticMarkupRichText("{--", text, "--}") {
-	private val infixMarkers: String = "~>"
-
-	override fun toString(): String {
-		return "$prefixMarkers $text $infixMarkers $replacedText $suffixMarkers"
-	}
-}
-
-/**Critic Markup注释文本。*/
-@CriticMarkupTextDsl
-class CriticMarkupCommentText @PublishedApi internal constructor(
-	text: String
-) : CriticMarkupRichText("{>>", text, "<<}")
-
-/**Critic Markup高亮文本。*/
-@CriticMarkupTextDsl
-class CriticMarkupHighlightText @PublishedApi internal constructor(
-	text: String
-) : CriticMarkupRichText("{==", text, "==}")
 //endregion
 
 //region dsl build extensions
 @CriticMarkupTextDsl
 inline fun criticMarkupText(block: CriticMarkupText.() -> String) = CriticMarkupText().also { it.text = it.block() }
 
-@InlineDsl
+@InlineDslFunction
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.append(text: String) = CriticMarkupAppendedText(text).toString()
+inline fun CriticMarkupTextDslInlineEntry.append(text: String): String {
+	return "{++ $text ++}"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.delete(text: String) = CriticMarkupDeletedText(text).toString()
+inline fun CriticMarkupTextDslInlineEntry.delete(text: String): String {
+	return "{-- $text --}"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.replace(text: String, replacedText: String) =
-	CriticMarkupReplacedText(text, replacedText).toString()
+inline fun CriticMarkupTextDslInlineEntry.replace(text: String, replacedText: String): String {
+	return "{~~ $text ~> $replacedText ~~}"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.comment(text: String) = CriticMarkupCommentText(text).toString()
+inline fun CriticMarkupTextDslInlineEntry.comment(text: String): String {
+	return "{>> $text <<}"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CriticMarkupTextDsl
-inline fun CriticMarkupTextDslInlineEntry.highlight(text: String) = CriticMarkupHighlightText(text).toString()
+inline fun CriticMarkupTextDslInlineEntry.highlight(text: String): String {
+	return "{== $text ==}"
+}
 //endregion

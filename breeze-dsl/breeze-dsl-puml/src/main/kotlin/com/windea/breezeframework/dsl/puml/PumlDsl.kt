@@ -151,7 +151,7 @@ package com.windea.breezeframework.dsl.puml
 // */
 //@PumlDsl
 //class PumlNote @PublishedApi internal constructor(
-//	@Language("Creole") @MultilineProp("\\n")
+//	@Language("Creole") @MultilineDslProperty("\\n")
 //	val text: String
 //) : PumlDslElement, CanWrap, CanIndent {
 //	//must: alias or (position & targetStateName), position win first.
@@ -236,7 +236,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region enumerations and constants
+////region dsl enumerations and constants
 ///**PlantUml顶级元素的位置。*/
 //@PumlDsl
 //enum class PumlTopElementPosition(val text: String) {

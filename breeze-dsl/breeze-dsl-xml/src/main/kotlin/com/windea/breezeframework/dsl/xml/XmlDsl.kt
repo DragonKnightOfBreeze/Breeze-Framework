@@ -62,7 +62,7 @@ object XmlConfig : DslConfig {
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement : DslElement
