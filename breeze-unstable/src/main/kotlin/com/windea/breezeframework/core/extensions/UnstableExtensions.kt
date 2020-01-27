@@ -8,11 +8,9 @@ inline fun <C : List<T>, T> C.initialize(block: (C) -> Unit): C {
 }
 
 fun main() {
-	repeat(100000) {
-		LinkedList<Int>().initialize {
-			it.add(1)
-			it.add(2)
-			it.add(3)
-		}
-	}
+	val a = Collections.unmodifiableMap(System.getProperties())
+	println(a)
+
+	val b = System.getenv()
+	println(b)
 }
