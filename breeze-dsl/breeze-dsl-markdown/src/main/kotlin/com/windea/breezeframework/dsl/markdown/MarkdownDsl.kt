@@ -19,7 +19,7 @@ import org.intellij.lang.annotations.*
 
 //DELAY add dsl element: HtmlBlock
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Markdown的Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -93,7 +93,7 @@ interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content: MutableList<MarkdownDslTopElement>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return content.joinToString("\n\n")
 	}
 
@@ -891,7 +891,7 @@ class MarkdownPropertyAttribute(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MarkdownDsl
 inline fun markdown(block: Markdown.() -> Unit) = Markdown().also { it.block() }
 

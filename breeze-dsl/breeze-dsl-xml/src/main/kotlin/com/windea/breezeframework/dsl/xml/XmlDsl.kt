@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.xml.XmlConfig.quote
 
 //TODO 参照kotlinx.html进行重构，调整dsl语法
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Xml的Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -148,7 +148,7 @@ class XmlElement @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @XmlDsl
 inline fun xml(block: Xml.() -> Unit) = Xml().also { it.block() }
 

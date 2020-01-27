@@ -6,7 +6,7 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid的Dsl。*/
 @Reference("[Mermaid](https://mermaidjs.github.io)")
 @DslMarker

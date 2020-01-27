@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.types.*
 //应当提供一系列用于创建元组的中缀扩展。
 //提供其他必要的扩展方法。
 
-//region build extensions
+//region dsl build extensions
 /**从二元素元组构造三元素元组。*/
 infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
 

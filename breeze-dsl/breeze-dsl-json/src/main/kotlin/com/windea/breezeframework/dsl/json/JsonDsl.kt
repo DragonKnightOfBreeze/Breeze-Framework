@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.json.JsonConfig.indent
 import com.windea.breezeframework.dsl.json.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.json.JsonConfig.quote
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Json的Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -136,7 +136,7 @@ class JsonObject @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @JsonDsl
 inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
 

@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid流程图的Dsl。*/
 @Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @DslMarker
@@ -57,7 +57,7 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<M
 	val classDefs: MutableSet<MermaidFlowChartClassDef>
 	val classRefs: MutableSet<MermaidFlowChartClassRef>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			nodes.orNull()?.joinToString("\n"),
 			links.orNull()?.joinToString("\n"),
@@ -222,7 +222,7 @@ class MermaidFlowChartClassRef @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidFlowChartDsl
 inline fun mermaidFlowChart(direction: MermaidFlowChart.Direction, block: MermaidFlowChart.() -> Unit) =
 	MermaidFlowChart(direction).also { it.block() }

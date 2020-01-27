@@ -10,7 +10,7 @@ import org.intellij.lang.annotations.*
 
 //can have a title by `title: text`, but it is not introduced in official api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid序列图的Dsl。*/
 @Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @DslMarker
@@ -45,7 +45,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			participants.orNull()?.joinToString("\n"),
 			messages.orNull()?.joinToString("\n"),
@@ -203,7 +203,7 @@ class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
 ) : MermaidSequenceDiagramScope("rect", color)
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
 fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) =

@@ -39,7 +39,7 @@ operator fun Period.component2(): Int = this.months
 operator fun Period.component3(): Int = this.days
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**得到距今当前时长之前的本地日期时间。*/
 inline val Duration.ago: LocalDateTime get() = LocalDateTime.now() - this
 

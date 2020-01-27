@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid类图的Dsl。*/
 @Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @DslMarker
@@ -41,7 +41,7 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			classes.orNull()?.joinToString("\n"),
 			relations.orNull()?.joinToString("\n")
@@ -193,7 +193,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidClassDiagramDsl
 inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
 	MermaidClassDiagram().also { it.block() }

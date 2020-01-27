@@ -11,7 +11,7 @@ package com.windea.breezeframework.dsl.puml
 //
 ////DELAY fully support
 //
-////region top annotations and interfaces
+////region dsl top declarations
 ///**PlantUml状态图的Dsl。*/
 //@Reference("[PlantUml State Diagram](http://plantuml.com/zh/state-diagram)")
 //@DslMarker
@@ -44,7 +44,7 @@ package com.windea.breezeframework.dsl.puml
 //	val states: MutableSet<PumlStateDiagramState>
 //	val links: MutableList<PumlStateDiagramTransition>
 //
-//	fun toContentString(): String {
+//	override fun toContentString(): String {
 //		return arrayOf(
 //			states.joinToStringOrEmpty("\n"),
 //			links.joinToStringOrEmpty("\n")
@@ -232,7 +232,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region build extensions
+////region dsl build extensions
 //@PumlStateDiagramDsl
 //inline fun pumlStateDiagram(block: PumlStateDiagram.() -> Unit) = PumlStateDiagram().also { it.block() }
 //

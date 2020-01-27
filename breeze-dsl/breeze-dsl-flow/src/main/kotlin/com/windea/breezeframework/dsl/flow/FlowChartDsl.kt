@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.flow.FlowChartConnection.Companion.binderQueue
 import java.util.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**流程图的Dsl。*/
 @Reference("[Github](https://github.com/adrai/flowchart.js)")
 @DslMarker
@@ -36,7 +36,7 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			nodes.orNull()?.joinToString("\n"),
 			connections.orNull()?.joinToString("\n")
@@ -161,7 +161,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @FlowChartDsl
 inline fun flowChart(block: FlowChart.() -> Unit) =
 	FlowChart().also { it.block() }

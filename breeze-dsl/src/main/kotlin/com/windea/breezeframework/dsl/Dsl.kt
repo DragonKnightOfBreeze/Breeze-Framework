@@ -13,7 +13,7 @@ package com.windea.breezeframework.dsl
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -28,7 +28,9 @@ interface DslDocument {
 interface DslConfig
 
 /**Dsl的入口。*/
-interface DslEntry
+interface DslEntry {
+	fun toContentString(): String = ""
+}
 
 /**Dsl的元素。*/
 interface DslElement {
@@ -163,7 +165,7 @@ interface WithTransition<N : WithId, T : WithNode<N>> {
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**设置是否换行内容。*/
 @Dsl
 inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { it.wrapContent = value }

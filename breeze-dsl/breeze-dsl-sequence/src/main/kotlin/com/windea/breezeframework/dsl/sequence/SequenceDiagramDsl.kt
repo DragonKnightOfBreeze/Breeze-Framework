@@ -6,7 +6,7 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**序列图的Dsl。*/
 @Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
@@ -40,7 +40,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			participants.orNull()?.joinToString("\n"),
 			messages.orNull()?.joinToString("\n"),
@@ -145,7 +145,7 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @SequenceDiagramDsl
 inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().also { it.block() }
 

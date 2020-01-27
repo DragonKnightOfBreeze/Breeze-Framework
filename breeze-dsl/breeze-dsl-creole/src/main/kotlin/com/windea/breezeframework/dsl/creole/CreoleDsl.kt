@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
 //DELAY add dsl element: HtmlBlock
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Creole的Dsl。*/
 @Reference("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
@@ -390,7 +390,7 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @CreoleDsl
 inline fun creole(block: Creole.() -> Unit) = Creole().also { it.block() }
 

@@ -11,7 +11,7 @@ package com.windea.breezeframework.dsl.puml
 //
 ////DELAY fully support
 //
-////region top annotations and interfaces
+////region dsl top declarations
 ///**PlantUml的Dsl。*/
 //@Reference("[PlantUml](http://plantuml.com)")
 //@DslMarker
@@ -262,7 +262,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region build extensions
+////region dsl build extensions
 //@PumlDsl
 //inline fun Puml.title(text: String) =
 //	PumlTitle(text).also { title = it }

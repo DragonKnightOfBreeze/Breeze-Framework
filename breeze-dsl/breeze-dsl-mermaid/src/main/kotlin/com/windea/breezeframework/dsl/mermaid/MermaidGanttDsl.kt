@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import java.time.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid甘特图的Dsl。*/
 @Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @DslMarker
@@ -42,7 +42,7 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {
 	val sections: MutableList<MermaidGanttSection>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return sections.joinToString(split)
 	}
 }
@@ -122,7 +122,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidGanttDsl
 inline fun mermaidGantt(block: MermaidGantt.() -> Unit) =
 	MermaidGantt().also { it.block() }

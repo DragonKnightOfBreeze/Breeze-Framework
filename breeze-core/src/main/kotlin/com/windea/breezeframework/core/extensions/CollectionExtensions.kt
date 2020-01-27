@@ -876,28 +876,38 @@ inline fun <V> Map<String, V>.toStringValueMap(): Map<String, String> {
 //endregion
 
 //region unsafe extensions
-/**尝试检查当前集合的泛型，但不保证正确性。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+/**尝试检查当前集合的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
-inline fun <reified T : Any> Iterable<*>.isIterableOf(): Boolean {
-	return this.take(typeCheckLimit).all { it is T }
+inline fun <reified T : Any> Iterable<*>.isIterableOf(limit: Int = 10): Boolean {
+	return when(limit) {
+		0 -> throw IllegalArgumentException("Type check limit cannot be zero.")
+		-1 -> this.all { it is T }
+		else -> this.take(limit).all { it is T }
+	}
 }
 
-/**尝试检查当前映射的泛型，但不保证正确性。即，遍历限定个数的键值对，判断是否全部兼容指定的类型。*/
+/**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个键值对，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
-inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(): Boolean {
-	return this.entries.take(typeCheckLimit).all { it.key is K && it.value is V }
+inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(limit: Int = 10): Boolean {
+	return when(limit) {
+		0 -> throw IllegalArgumentException("Type check limit cannot be zero.")
+		-1 -> this.entries.all { (k, v) -> k is K && v is V }
+		else -> this.entries.take(limit).all { it.key is K && it.value is V }
+	}
 }
 
-/**尝试检查当前映射的泛型，但不保证正确性。即，遍历限定个数的元素，判断是否全部兼容指定的类型。*/
+/**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
 @TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
-inline fun <reified T : Any> Sequence<*>.isSequenceOf(): Boolean {
-	return this.take(typeCheckLimit).all { it is T }
+inline fun <reified T : Any> Sequence<*>.isSequenceOf(limit: Int = 10): Boolean {
+	return when(limit) {
+		0 -> throw IllegalArgumentException("Type check limit cannot be zero.")
+		-1 -> this.all { it is T }
+		else -> this.take(limit).all { it is T }
+	}
 }
-
-@PublishedApi internal const val typeCheckLimit = 10
 //endregion
 
 //region specific operations

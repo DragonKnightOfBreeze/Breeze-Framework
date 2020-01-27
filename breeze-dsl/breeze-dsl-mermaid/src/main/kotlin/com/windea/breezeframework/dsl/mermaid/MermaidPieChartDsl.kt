@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid饼图的Dsl。*/
 @Reference("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @DslMarker
@@ -42,7 +42,7 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val sections: MutableSet<MermaidPieChartSection>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return sections.joinToString("\n")
 	}
 }
@@ -81,7 +81,7 @@ class MermaidPieChartSection @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidPieChartDsl
 inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
 	MermaidPieChart().also { it.block() }

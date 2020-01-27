@@ -10,7 +10,7 @@ package com.windea.breezeframework.dsl.puml
 //
 ////DELAY fully support
 //
-////region top annotations and interfaces
+////region dsl top declarations
 ///**PlantUml序列图的Dsl。*/
 //@Reference("[PlantUml Sequence Diagram](http://plantuml.com/zh/sequence-diagram)")
 //@DslMarker
@@ -112,7 +112,7 @@ package com.windea.breezeframework.dsl.puml
 //}
 ////endregion
 //
-////region build extensions
+////region dsl build extensions
 //@PumlSequenceDiagramDsl
 //inline fun pumlSequenceDiagram(block: PumlSequenceDiagram.() -> Unit) = PumlSequenceDiagram().also { it.block() }
 //

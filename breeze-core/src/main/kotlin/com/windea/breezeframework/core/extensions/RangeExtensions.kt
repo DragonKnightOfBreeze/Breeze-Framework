@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-//region build extensions
+//region dsl build extensions
 infix fun Long.downUntil(until: Byte): LongProgression {
 	return LongProgression.fromClosedRange(this, until.toLong() - 1, -1L)
 }

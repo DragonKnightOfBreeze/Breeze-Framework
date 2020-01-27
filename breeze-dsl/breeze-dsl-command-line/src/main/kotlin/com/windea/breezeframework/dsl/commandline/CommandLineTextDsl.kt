@@ -11,7 +11,7 @@ import com.windea.breezeframework.dsl.*
 
 //not for all echo commands
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**命令行富文本的Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -145,7 +145,7 @@ private const val defaultCommand = "\u001B[0m"
 private fun command(codes: String) = "\u001B[${codes}m"
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @CommandLineTextDsl
 inline fun commandLineText(block: CommandLineText.() -> String) = CommandLineText().also { it.text = it.block() }
 

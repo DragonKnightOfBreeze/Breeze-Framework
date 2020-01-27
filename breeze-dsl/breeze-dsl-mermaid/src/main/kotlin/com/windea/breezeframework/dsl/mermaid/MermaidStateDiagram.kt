@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid状态图的Dsl。*/
 @Reference("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
 @DslMarker
@@ -41,7 +41,7 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 	val links: MutableList<MermaidStateDiagramTransition>
 	val notes: MutableList<MermaidStateDiagramNote>
 
-	fun toContentString(): String {
+	override fun toContentString(): String {
 		return listOfNotNull(
 			states.orNull()?.joinToString("\n"),
 			links.orNull()?.joinToString("\n"),
@@ -195,7 +195,7 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidStateDiagramDsl
 inline fun mermaidStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().also { it.block() }
 
