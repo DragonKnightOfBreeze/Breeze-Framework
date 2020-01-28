@@ -610,7 +610,7 @@ fun String.trimWrap(): String {
  **/
 @JvmOverloads
 fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
-	require(relativeIndentSize in -2..8) { "Relative indent size is not in range [-2, 8]." }
+	require(relativeIndentSize in -2..8) { "Relative indent size should between -2 and 8, but was $relativeIndentSize." }
 
 	val lines = this.lines()
 	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize

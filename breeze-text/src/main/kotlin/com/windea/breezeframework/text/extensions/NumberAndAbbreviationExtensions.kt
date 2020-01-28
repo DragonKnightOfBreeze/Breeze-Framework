@@ -27,8 +27,8 @@ fun Long.toAbbreviation(scale: Int, precision: Int = 0): String {
 fun Float.toAbbreviation(scale: Int, precision: Int = 0): String {
 	require(scale in 1..9) { "Scale must between 1 and 9, but was $scale." }
 
-	val scaledValue = this / 10.pow(scale)
-	val valueSnippet = if(precision > 0) scaledValue.round(precision).toString() else scaledValue.roundToInt().toString()
+	val scaledValue = this / 10.positivePow(scale)
+	val valueSnippet = if(precision > 0) round(scaledValue, precision).toString() else scaledValue.roundToInt().toString()
 	return getAbbreviation(valueSnippet, scale)
 }
 
@@ -76,8 +76,8 @@ fun Long.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 fun Float.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 	require(scale in 1..9) { "Scale must between 1 and 9, but was $scale." }
 
-	val scaledValue = this / 10.pow(scale)
-	val valueSnippet = if(precision > 0) scaledValue.round(precision).toString() else scaledValue.roundToInt().toString()
+	val scaledValue = this / 10.positivePow(scale)
+	val valueSnippet = if(precision > 0) round(scaledValue, precision).toString() else scaledValue.roundToInt().toString()
 	return getChsAbbreviation(valueSnippet, scale)
 }
 

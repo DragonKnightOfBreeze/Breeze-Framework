@@ -274,6 +274,7 @@
 * [X] breeze-core 重构`SystemExtensions.kt`。
 * [X] breeze-core 实现`Regex.Companion.fromRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [X] breeze-core 移除`Int.exactXxx`等扩展，提供`Int.exact`等扩展。
+* [X] breeze-core 为`NumberExtensions`和`MathExtensions`补充一系列的扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。
 

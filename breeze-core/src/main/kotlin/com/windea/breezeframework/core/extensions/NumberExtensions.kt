@@ -18,6 +18,7 @@ inline fun Float.exact(block: (Float) -> Number): Float = block(this).toFloat()
 /**进行一次计算并将结果转化为双精度浮点型。*/
 inline fun Double.exact(block: (Double) -> Number): Double = block(this).toDouble()
 
+
 ///**进行整乘运算。*/
 //inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
 //
@@ -76,17 +77,54 @@ fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 		else -> abs(this.toFloat() - other.toFloat()) < precision
 	}
 }
+
+/**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
+fun Int.getDigitNumber(index: Int): Int {
+	require(index >= 0) { "Index must be non-negative, but was $index." }
+	return this / 10.positivePow(index) % 10
+}
+
+/**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
+fun Long.getDigitNumber(index: Int): Long {
+	require(index >= 0) { "Index must be non-negative, but was $index." }
+	return this / 10.positivePow(index) % 10
+}
 //endregion
 
 //region convert extensions
-/**将当前整数转化为二进制字符串。*/
-inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
+/**将当前整数转化为从低位到高位的每位数字组成的数组。*/
+fun Int.toDigitNumberArray(): IntArray {
+	val size = this.toString().length
+	var temp = this
+	val result = IntArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % 10
+		temp /= 10
+	}
+	return result
+}
 
-/**将当前整数转化为八进制字符串。*/
-inline fun Int.toHexString(): String = Integer.toHexString(this)
+/**将当前长整数转化为从低位到高位的每位数字组成的数组。*/
+fun Long.toDigitNumberArray(): LongArray {
+	val size = this.toString().length
+	var temp = this
+	val result = LongArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % 10
+		temp /= 10
+	}
+	return result
+}
 
-/**将当前整数转化为十六进制字符串。*/
-inline fun Int.toOctalString(): String = Integer.toOctalString(this)
+
+///**将当前整数转化为二进制字符串。*/
+//inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
+//
+///**将当前整数转化为八进制字符串。*/
+//inline fun Int.toHexString(): String = Integer.toHexString(this)
+//
+///**将当前整数转化为十六进制字符串。*/
+//inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/

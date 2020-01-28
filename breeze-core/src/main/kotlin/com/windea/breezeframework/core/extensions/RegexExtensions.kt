@@ -67,7 +67,7 @@ private fun coerceLastLimitAtLeast(firstLimit: Int): Int {
 		temp /= 10
 		digit++
 	}
-	return (firstLimit / 10.pow(digit) + 1) * 10.pow(digit) - 1
+	return (firstLimit / 10.positivePow(digit) + 1) * 10.positivePow(digit) - 1
 }
 
 private fun coerceLastLimitAtMost(firstLimit: Int, last: Int): Int {
@@ -81,5 +81,5 @@ private fun coerceLastLimitAtMost(firstLimit: Int, last: Int): Int {
 		temp2 /= 10
 		digit++
 	}
-	return if(digit == 1) last else last / 10.pow(digit - 1) * 10.pow(digit - 1) - 1
+	return if(digit == 1) last else last / 10.positivePow(digit - 1) * 10.positivePow(digit - 1) - 1
 }

@@ -291,7 +291,7 @@ fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
 
 /**填充指定元素到当前列表之前，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
 fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
-	require(size >= 0) { "Desired size $size is less than zero." }
+	require(size >= 0) { "Desired size must be non-negative, but was $size." }
 
 	if(size <= this.size) return this.subList(0, size)
 	return List(size - this.size) { value } + this
@@ -299,7 +299,7 @@ fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
 
 /**填充指定元素到当前列表之后，直到指定长度。如果指定长度比当前长度小，则切割当前列表。返回填充后的列表。*/
 fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
-	require(size >= 0) { "Desired size $size is less than zero." }
+	require(size >= 0) { "Desired size must be non-negative, but was $size." }
 
 	if(size <= this.size) return this.subList(0, size)
 	return this + List(size - this.size) { value }

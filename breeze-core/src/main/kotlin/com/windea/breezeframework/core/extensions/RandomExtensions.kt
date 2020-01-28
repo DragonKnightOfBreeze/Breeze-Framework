@@ -7,19 +7,21 @@ import java.util.*
 import kotlin.random.*
 import kotlin.random.Random
 
-/**得到指定范围内的随机单精度浮点数。包含上下限。可指定0-20的精确度，默认为3。*/
+/**得到指定范围内的随机单精度浮点数。包含上下限。可指定基于位数的-10到0的精确度，默认为-2。用0表示个位，用较大数表示较高位。*/
 @JvmOverloads
-fun Random.nextFloat(range: ClosedFloatingPointRange<Float>, precision: Int = 2): Float {
-	val fixedPrecision = precision.coerceIn(0, 20)
-	val ratio = 10.pow(fixedPrecision)
+fun Random.nextFloat(range: ClosedFloatingPointRange<Float>, precision: Int = -2): Float {
+	require(precision in -10..0) { "Precision for next float operation must between -10 and 0, but was $precision." }
+
+	val ratio = 10.positivePow(precision)
 	return this.nextInt((range.start * ratio).toInt()..(range.endInclusive * ratio).toInt()) / ratio.toFloat()
 }
 
-/**得到指定范围内的随机双精度浮点数。包含上下限。可指定0-20的精确度，默认为3。*/
+/**得到指定范围内的随机双精度浮点数。包含上下限。可指定基于位数的0到10的精确度，默认为-2。用0表示个位，用较大数表示较高位。*/
 @JvmOverloads
-fun Random.nextDouble(range: ClosedFloatingPointRange<Double>, precision: Int = 2): Double {
-	val fixedPrecision = precision.coerceIn(0, 20)
-	val ratio = 10.pow(fixedPrecision)
+fun Random.nextDouble(range: ClosedFloatingPointRange<Double>, precision: Int = -2): Double {
+	require(precision in -10..0) { "Precision for next double operation must between -10 and 0, but was $precision." }
+
+	val ratio = 10.positivePow(precision)
 	return this.nextLong((range.start * ratio).toLong()..(range.endInclusive * ratio).toLong()) / ratio.toDouble()
 }
 
