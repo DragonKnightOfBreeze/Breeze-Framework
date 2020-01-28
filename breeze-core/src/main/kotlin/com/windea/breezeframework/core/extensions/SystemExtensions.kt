@@ -7,13 +7,21 @@ import java.util.*
 import java.util.concurrent.*
 import javax.script.*
 
-/**访问环境变量。*/
+/**
+ * 访问环境变量。
+ *
+ * @see System.getenv
+ */
 @JvmSynthetic
 fun environmentVariables(): Map<String, String> {
 	return System.getenv()
 }
 
-/**访问系统属性。*/
+/**
+ * 访问系统属性。
+ *
+ * @see System.getProperties
+ */
 @JvmSynthetic
 @Suppress("UNCHECKED_CAST")
 fun systemProperties(): Map<String, String> {

@@ -3,14 +3,14 @@ package com.windea.breezeframework.core.extensions
 import kotlin.test.*
 
 class CollectionExtensionsKtTest {
-	@Test //TESTED
+	@Test
 	fun repeatExtensionTest() {
 		println(listOf(1, 2, 3).repeat(3))
 		println(listOf(1, 2, 3).flatRepeat(3))
 		println(listOf(1, 2, 3).flatChunkedRepeat(3))
 	}
 
-	@Test //TESTED
+	@Test
 	fun dropBlankTest() {
 		assertEquals(1, listOf("123").dropBlank().size)
 		assertEquals(1, listOf("", "123").dropBlank().size)
@@ -19,7 +19,7 @@ class CollectionExtensionsKtTest {
 		assertEquals(3, listOf("", "123", "", "123").dropBlank().size)
 	}
 
-	@Test //TESTED
+	@Test
 	fun fillToSize() {
 		val list = listOf("1", "2", "3")
 		println(list.toMutableList().also { it.fill("1") })
@@ -32,7 +32,7 @@ class CollectionExtensionsKtTest {
 		println(list)
 	}
 
-	@Test //TESTED
+	@Test
 	fun deepGetAndSet() {
 		val array = arrayOf(0, 1, 2, arrayOf(0, arrayOf(0, 1), 2))
 		val list = listOf(0, arrayOf(0, 1), 2, listOf(0, 1, 2), 4, mapOf("a" to 0))
@@ -90,7 +90,7 @@ class CollectionExtensionsKtTest {
 		//println(intMutableList)
 	}
 
-	@Test //TESTED
+	@Test
 	fun deepQuery() {
 		val list = listOf(
 			listOf(1, 2, 3),
@@ -110,7 +110,7 @@ class CollectionExtensionsKtTest {
 		println(list.deepQuery<String>("/3/re:\\w/0"))
 	}
 
-	@Test //TESTED
+	@Test
 	fun deepFlatten() {
 		val list = listOf(
 			listOf(1, 2, 3),
@@ -127,7 +127,7 @@ class CollectionExtensionsKtTest {
 		list.deepFlatten(4).also { println(it) }
 	}
 
-	@Test //TESTED
+	@Test
 	fun ifNotEmptyTest() {
 		assertTrue(listOf<Int>().ifEmpty { listOf(123) }.isNotEmpty())
 		assertTrue(arrayOf(1, 2, 3).ifNotEmpty { it.sliceArray(1..2) }.isNotEmpty())

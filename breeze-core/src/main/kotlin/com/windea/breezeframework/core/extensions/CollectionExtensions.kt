@@ -380,26 +380,38 @@ fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix:
 private const val joinToStringSnippet = "joinToString(separator,prefix,postfix,limit,truncated,transform)"
 
 
-/**过滤映射中值为null的键值对。*/
+/**映射当前映射中的值，并过滤转换后为null的值。*/
+inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?): Map<K, R> {
+	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
+}
+
+/**映射当前映射中的值，并过滤转换后为null的值，然后置入之地你个的映射。*/
+inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
+	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
+	return destination
+}
+
+
+/**过滤当前映射中值为null的键值对。*/
 fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
 	return this.filterValuesNotNullTo(LinkedHashMap())
 }
 
-/**过滤映射中值为null的键值对，然后置入指定的映射。*/
+/**过滤当前映射中值为null的键值对，然后置入指定的映射。*/
 fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
 	for((key, value) in this) if(value != null) destination[key] = value
 	return destination
 }
 
 
-/**按照类型以及附加条件过滤数组。*/
+/**按照类型以及附加条件过滤当前数组。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
-/**按照类型以及附加条件过滤数组，然后置入指定的集合。*/
+/**按照类型以及附加条件过滤当前数组，然后置入指定的集合。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
@@ -407,14 +419,14 @@ inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(
 	return destination
 }
 
-/**按照类型以及附加条件过滤列表。*/
+/**按照类型以及附加条件过滤当前列表。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
-/**按照类型以及附加条件过滤列表，然后置入指定的集合。*/
+/**按照类型以及附加条件过滤当前列表，然后置入指定的集合。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
@@ -422,14 +434,14 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(d
 	return destination
 }
 
-/**按照类型以及附加条件过滤集。*/
+/**按照类型以及附加条件过滤当前集。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
-/**按照类型以及附加条件过滤集，然后置入指定的集合。*/
+/**按照类型以及附加条件过滤当前集，然后置入指定的集合。*/
 @Deprecated("Redundant extension method:Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {

@@ -29,7 +29,7 @@ class NumberExtensionsKtTest {
 		println(1.99999f.round(2))
 	}
 
-	@Test //TESTED
+	@Test
 	fun toNumber() {
 		println(1.toNumber<Byte>())
 		println(1.toNumber<Short>())

@@ -14,7 +14,7 @@ class CloneableExtensionsTest {
 		var obj: Obj = Obj()
 	}
 
-	@Test //TESTED
+	@Test
 	fun test1() {
 		val obj1 = Obj()
 		val obj2 = obj1.shallowClone()

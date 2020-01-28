@@ -44,7 +44,7 @@ class ClassExtensionsTest {
 		assertTrue(HashMap::class.java.isMap)
 	}
 
-	@Test //TESTED
+	@Test
 	fun isSerializable() {
 		assertTrue(Foo::class.java.isSerializable)
 		assertTrue(Serializable::class.java.isSerializable)
@@ -56,13 +56,13 @@ class ClassExtensionsTest {
 		var b = 2
 	}
 
-	@Test //TESTED
+	@Test
 	fun getSetterMap() {
 		println(Foo::class.java.setterMap)
 		assertTrue(Foo::class.java.setterMap.size == 1)
 	}
 
-	@Test //TESTED
+	@Test
 	fun getGetterMap() {
 		println(Foo::class.java.getterMap)
 		assertTrue(Foo::class.java.getterMap.size == 2)

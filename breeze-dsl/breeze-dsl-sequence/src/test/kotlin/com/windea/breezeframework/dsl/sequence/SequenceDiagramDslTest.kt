@@ -4,7 +4,7 @@ import com.windea.breezeframework.dsl.sequence.SequenceDiagramMessage.ArrowShape
 import kotlin.test.*
 
 class SequenceDiagramDslTest {
-	@Test //TESTED
+	@Test
 	fun test1() {
 		println(sequenceDiagram {
 			title("Here is title")

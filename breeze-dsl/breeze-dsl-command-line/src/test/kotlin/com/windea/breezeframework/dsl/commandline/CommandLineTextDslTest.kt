@@ -5,14 +5,14 @@ import com.windea.breezeframework.dsl.commandline.CommandLineText.*
 import kotlin.test.*
 
 class CommandLineTextDslTest {
-	@Test //TESTED OK
+	@Test OK
 	fun test1() {
 		println(commandLineText {
 			color(Color.Red, "123")
 		})
 	}
 
-	@Test //TESTED OK
+	@Test OK
 	fun testColor() {
 		println(commandLineText { color(Color.Black, "hello world!") })
 		println(commandLineText { color(Color.Red, "hello world!") })
@@ -24,14 +24,14 @@ class CommandLineTextDslTest {
 		println(commandLineText { color(Color.LightGray, "hello world!") })
 	}
 
-	@Test //TESTED OK
+	@Test OK
 	fun test2() {
 		println(commandLineText {
 			bgColor(Color.Red, "123")
 		})
 	}
 
-	@Test //TESTED OK
+	@Test OK
 	fun test3() {
 		println(commandLineText {
 			"""
@@ -48,7 +48,7 @@ class CommandLineTextDslTest {
 		})
 	}
 
-	@Test //TESTED OK
+	@Test OK
 	fun test4() {
 		println(commandLineText {
 			"""

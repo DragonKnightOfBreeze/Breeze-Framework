@@ -9,31 +9,31 @@ class CoreExtensionsKtTest {
 	@Test
 	fun with() {
 	}
-	
+
 	@Test
 	fun clamp() {
 	}
-	
+
 	@Test
 	fun reject() {
 	}
-	
+
 	@Test
 	fun reject1() {
 	}
-	
+
 	@Test
 	fun nearestStackInfo() {
 		DELAY("delay!")
 		FIXME("fix me!")
 	}
-	
+
 	@Test
 	fun nearestLogger() {
 	}
-	
+
 	@ExperimentalContracts
-	@Test //TESTED
+	@Test
 	fun onceTest() {
 		//a, a
 		once { println("a") }

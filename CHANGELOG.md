@@ -272,8 +272,8 @@
 * [X] breeze-core 重构用于元素的类型检查的`Iterable.isIterableOf`等扩展。
 * [X] breeze-dsl 重构部分dsl的实现，去除内联的Dsl元素类。
 * [X] breeze-core 重构`SystemExtensions.kt`。
+* [X] breeze-core 实现`Regex.Companion.fromRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
-* [ ] breeze-core 实现`Regex.Companion.fromIntRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。
 
 # 待办

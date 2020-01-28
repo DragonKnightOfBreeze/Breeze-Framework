@@ -7,14 +7,14 @@ import kotlin.system.*
 import kotlin.test.*
 
 class ReflectExtensionsTest {
-	@Test //TESTED OK
+	@Test OK
 	fun test1() {
 		println(javaTypeOf<Int>())
 		println(javaTypeOf<List<String>>())
 		println(javaTypeOf<Map<String, String>>())
 	}
 
-	@Test //TESTED OK
+	@Test OK
 	fun testNameOf() {
 		println(nameOf<A>())
 		println(nameOf(A::class))

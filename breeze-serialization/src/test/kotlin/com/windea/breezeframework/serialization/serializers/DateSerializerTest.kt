@@ -6,12 +6,12 @@ import java.util.*
 import kotlin.test.*
 
 class DateSerializerTest {
-	@Test //TESTED
+	@Test
 	@ImplicitReflectionSerializer
 	fun test1() {
 		val map = Json.stringify(DateData(Date()))
 		println(map)
-		
+
 		val data = Json.parse<DateData>(map)
 		println(data)
 	}

@@ -13,57 +13,73 @@ fun Regex.matchGroupValues(string: String): List<String>? = this.matchEntire(str
 operator fun MatchResult.get(index: Int): String = this.groupValues[index]
 
 
-//DELAY 过于复杂的代码逻辑
-/**
- * 接收整数范围，转化为合法的正则表达式字符串。
- *
- * 例如：`[2-13] -> [1][0-3]|[3-9]`。
- */
-fun Regex.Companion.fromIntRange(first: Int, last: Int): String {
+/**将整数范围转化为合法的正则表达式字符串。*/
+fun Regex.Companion.fromRange(range: ClosedRange<Int>): String {
+	return fromRange(range.start, range.endInclusive)
+}
+
+/**将整数范围转化为合法的正则表达式字符串。*/
+fun Regex.Companion.fromRange(first: Int, last: Int): String {
+	//参考：[2-13] -> [2-9]|[10-13] -> [2-9]|1[0-3]
+	//参考：[23-45] -> [23-29]|[30-39]|[40-45] -> 2[3-9]|3[0-9]|4[0-5]
 	return when {
-		//如果a大于b，则抛出异常
+		//如果first大于last，则抛出异常
 		first > last -> throw IllegalArgumentException("first $first is greater than last $last.")
-		//如果a等于b，则直接返回这个数值
+		//如果first等于last，则直接返回这个数值
 		first == last -> return first.toString()
+		//如果first和last都小于10，则直接返回对应的范围字符串
+		first < 10 && last < 10 -> return "[$first-$last]"
 		//否则做进一步的复杂逻辑处理
 		else -> {
-			//每次只能改变一位数，其他必须相同，或者是0-9
-			//如果较高高位全部相同，则只有一种情况，如 [123-127]->123
-
-			//1. 找出比a大，比b小，然后最后一位是9的数
-			//2. 找出比(a/10+1)*10大，比b小，然后最后两位数尽可能是9的数
-			//3. 重复以上步骤，直到最后找出的数+1等于b%10^n*10^n n=位数-1
-			//4. 这时对应的数的最高位是相等的，忽略最高位，从步骤1重新开始
-			//5. 循环直到已经找不出满足条件的最后一位是9的数，这时只能找出b
+			//每个分组，除了m-9（最多一次）、0-9或0-n（允许多次）的情况以外，其他位必须相等
+			//首先找出first和比first大的满足上述情况的数
 			val pairs = mutableListOf<Pair<Int, Int>>()
 			var firstLimit = first
-			var lastLimit = toNumberWhereLastBitIs9In(firstLimit, last)
+			var lastLimit = findLastLimitIn(firstLimit, last)
+			pairs.add(firstLimit to lastLimit)
+			//然后遍历找出后者+1和比后者+1大的满足上述情况的数，直到后者超出b
 			while(lastLimit < last) {
-				firstLimit = toNumberWhereLastBitIs0Gt(first)
-				lastLimit = toNumberWhereLastBitIs9In(firstLimit, last)
+				firstLimit = lastLimit + 1
+				lastLimit = findLastLimitIn(firstLimit, last)
 				pairs.add(firstLimit to lastLimit)
-				if(lastLimit + 1 == toNumberWhereRoundToFirstBit(last)) {
-					TODO()
-				}
 			}
-			pairs.joinToString("]|[", "[", "]") {
-				//参考：10-13|2-9 ->  -> 1][0-3 2-9 -> [1][0-3]|[2-9]
-				(a, b) ->
-				a.toString().toCharArray().zip(b.toString().toCharArray()) { a1, b1 -> "$a1-$b1" }.joinToString("][")
+			// 2-9, 10-13 -> [2-9]|1[0-3]
+			pairs.joinToString("|") { (a, b) ->
+				a.toString().toCharArray().zip(b.toString().toCharArray()) { a1, b1 ->
+					if(a1 == b1) "$a1" else "[$a1-$b1]"
+				}.joinToString("")
 			}
 		}
 	}
 }
 
-private fun toNumberWhereRoundToFirstBit(a: Int): Int {
-	TODO()
+private fun findLastLimitIn(firstLimit: Int, last: Int): Int {
+	val lastLimitAtLeast = coerceLastLimitAtLeast(firstLimit)
+	val lastLimitAtMost = coerceLastLimitAtMost(firstLimit, last)
+	return minOf(lastLimitAtLeast, lastLimitAtMost)
 }
 
-private fun toNumberWhereLastBitIs0Gt(a: Int): Int {
-	TODO()
+private fun coerceLastLimitAtLeast(firstLimit: Int): Int {
+	//返回比firstLimit大，最低位是9的数，如果是0-9，那么可以处理更高位
+	var temp = firstLimit
+	var bit = 1
+	while(temp % 10 == 0) {
+		temp /= 10
+		bit++
+	}
+	return (firstLimit / 10.pow(bit) + 1) * 10.pow(bit) - 1
 }
 
-private fun toNumberWhereLastBitIs9In(a: Int, b: Int): Int {
-	TODO()
+private fun coerceLastLimitAtMost(firstLimit: Int, last: Int): Int {
+	//返回比last小，最低位尽可能地是9的数
+	var temp1 = firstLimit / 10
+	var temp2 = last / 10
+	var bit = 1
+	//得到firstLimit和last的一位数字不同的最高位数
+	while(temp1 != temp2) {
+		temp1 /= 10
+		temp2 /= 10
+		bit++
+	}
+	return if(bit == 1) last else last / 10.pow(bit - 1) * 10.pow(bit - 1) - 1
 }
-
