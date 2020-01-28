@@ -1,8 +1,8 @@
 package com.windea.breezeframework.core.tests
 
 import com.windea.breezeframework.core.annotations.*
-import org.junit.*
 import kotlin.reflect.*
+import kotlin.test.*
 
 class StudyTests {
 	@Test
@@ -82,6 +82,12 @@ class StudyTests {
 		println("abc123abc" matches "^abc\\d+abc$".toRegex())
 		println("abc\nabc123abc\nabc" matches "^abc\\d+abc$".toRegex())
 		println("\\d+".toRegex().find("abc123abc")?.groupValues?.forEach { println(it) })
+	}
+
+	@Test
+	fun test0() {
+		println(12345.takeHighestOneBit())
+		println(12345.takeLowestOneBit())
 	}
 }
 

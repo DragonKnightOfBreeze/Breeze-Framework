@@ -5,55 +5,67 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.math.*
 
-//region operator override extensions & infix extensions
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
+//region common extensions
+/**进行一次计算并将结果转化为整型。*/
+inline fun Int.exact(block: (Int) -> Number): Int = block(this).toInt()
 
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Long): Int = this.times(other).toInt()
+/**进行一次计算并将结果转化为长整型。*/
+inline fun Long.exact(block: (Long) -> Number): Long = block(this).toLong()
 
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
+/**进行一次计算并将结果转化为单精度浮点型。*/
+inline fun Float.exact(block: (Float) -> Number): Float = block(this).toFloat()
 
-/**进行整乘运算。*/
-inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
+/**进行一次计算并将结果转化为双精度浮点型。*/
+inline fun Double.exact(block: (Double) -> Number): Double = block(this).toDouble()
 
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Int): Long = this.times(other)
-
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Long): Long = this.times(other)
-
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
-
-/**进行整乘运算。*/
-inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
-
-
-/**进行整除运算。*/
-inline infix fun Int.exactDiv(other: Int): Int = this.div(other)
-
-/**进行整除运算。*/
-inline infix fun Int.exactDiv(other: Long): Int = this.div(other).toInt()
-
-/**进行整除运算。*/
-inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
-
-/**进行整除运算。*/
-inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
-
-/**进行整除运算。*/
-inline infix fun Long.exactDiv(other: Int): Long = this.div(other)
-
-/**进行整除运算。*/
-inline infix fun Long.exactDiv(other: Long): Long = this.div(other)
-
-/**进行整除运算。*/
-inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
-
-/**进行整除运算。*/
-inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
+///**进行整乘运算。*/
+//inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
+//
+///**进行整乘运算。*/
+//inline infix fun Int.exactTimes(other: Long): Int = this.times(other).toInt()
+//
+///**进行整乘运算。*/
+//inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
+//
+///**进行整乘运算。*/
+//inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
+//
+///**进行整乘运算。*/
+//inline infix fun Long.exactTimes(other: Int): Long = this.times(other)
+//
+///**进行整乘运算。*/
+//inline infix fun Long.exactTimes(other: Long): Long = this.times(other)
+//
+///**进行整乘运算。*/
+//inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
+//
+///**进行整乘运算。*/
+//inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
+//
+//
+///**进行整除运算。*/
+//inline infix fun Int.exactDiv(other: Int): Int = this.div(other)
+//
+///**进行整除运算。*/
+//inline infix fun Int.exactDiv(other: Long): Int = this.div(other).toInt()
+//
+///**进行整除运算。*/
+//inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
+//
+///**进行整除运算。*/
+//inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
+//
+///**进行整除运算。*/
+//inline infix fun Long.exactDiv(other: Int): Long = this.div(other)
+//
+///**进行整除运算。*/
+//inline infix fun Long.exactDiv(other: Long): Long = this.div(other)
+//
+///**进行整除运算。*/
+//inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
+//
+///**进行整除运算。*/
+//inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
 /**判断两个数是否近似相等。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/

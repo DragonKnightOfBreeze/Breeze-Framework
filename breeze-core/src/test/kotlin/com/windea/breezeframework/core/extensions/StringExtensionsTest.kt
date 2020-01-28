@@ -19,7 +19,7 @@ class StringExtensionsTest {
 		assertEquals("ABCABC", "ABcABc".switchCaseBy(UPPERCASE))
 	}
 
-	@Test ALMOST
+	@Test
 	fun referenceCaseTest() {
 		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(JavaReference))
 		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(JavaReference))

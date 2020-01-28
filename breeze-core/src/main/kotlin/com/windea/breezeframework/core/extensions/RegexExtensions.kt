@@ -62,24 +62,24 @@ private fun findLastLimitIn(firstLimit: Int, last: Int): Int {
 private fun coerceLastLimitAtLeast(firstLimit: Int): Int {
 	//返回比firstLimit大，最低位是9的数，如果是0-9，那么可以处理更高位
 	var temp = firstLimit
-	var bit = 1
+	var digit = 1
 	while(temp % 10 == 0) {
 		temp /= 10
-		bit++
+		digit++
 	}
-	return (firstLimit / 10.pow(bit) + 1) * 10.pow(bit) - 1
+	return (firstLimit / 10.pow(digit) + 1) * 10.pow(digit) - 1
 }
 
 private fun coerceLastLimitAtMost(firstLimit: Int, last: Int): Int {
 	//返回比last小，最低位尽可能地是9的数
 	var temp1 = firstLimit / 10
 	var temp2 = last / 10
-	var bit = 1
+	var digit = 1
 	//得到firstLimit和last的一位数字不同的最高位数
 	while(temp1 != temp2) {
 		temp1 /= 10
 		temp2 /= 10
-		bit++
+		digit++
 	}
-	return if(bit == 1) last else last / 10.pow(bit - 1) * 10.pow(bit - 1) - 1
+	return if(digit == 1) last else last / 10.pow(digit - 1) * 10.pow(digit - 1) - 1
 }
