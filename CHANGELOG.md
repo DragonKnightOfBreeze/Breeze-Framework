@@ -275,8 +275,9 @@
 * [X] breeze-core 实现`Regex.Companion.fromRange`，接收整数范围，转化为合法的正则表达式字符串（难！）。
 * [X] breeze-core 移除`Int.exactXxx`等扩展，提供`Int.exact`等扩展。
 * [X] breeze-core 为`NumberExtensions`和`MathExtensions`补充一系列的扩展。
+* [X] breeze-core 将`mapOfValueNotNull`重命名为`mapOfValuesNotNull`。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
-* [ ] breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。
+* [ ] ~~breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。~~
 
 # 待办
 
@@ -289,8 +290,8 @@
 * [ ] breeze-game 初步完成有限状态机的规范。
 * [ ] breeze-text 英文单数与复数的转化。
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
-* [ ] 提供一种“延迟绑定”的实现，基于栈。
-* [ ] 提供一种Result的实现。
+* [ ] 提供一种“延迟绑定”的实现，基于队列。
+* [ ] 提供一种用于http请求的返回结果的Result的实现。
 * [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~
 * [ ] ~~breeze-core 利用反射的类型转化的扩展。~~

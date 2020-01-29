@@ -25,11 +25,11 @@ fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) el
 fun <T : Any> setOfNotNull(vararg elements: T?) = elements.filterNotNull().toSet()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValueNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
+fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 @NotOptimized
-fun <K, V : Any> mapOfValueNotNull(vararg pairs: Pair<K, V?>) = pairs.filter { it.second != null }.toMap()
+fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>) = pairs.filter { it.second != null }.toMap()
 
 
 /**构建一个空的枚举集。*/

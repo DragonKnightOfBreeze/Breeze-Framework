@@ -48,15 +48,15 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 
 	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(null, null, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(null, null, direction)) }
 
 	@FlowChartDsl
 	operator fun String.invoke(status: FlowChartConnection.Status, direction: FlowChartConnection.Direction? = null) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(status, null, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(status, null, direction)) }
 
 	@FlowChartDsl
 	operator fun String.invoke(path: FlowChartConnection.Path, direction: FlowChartConnection.Direction? = null) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(null, path, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(null, path, direction)) }
 }
 
 /**流程图Dsl的元素。*/
@@ -118,7 +118,7 @@ class FlowChartNode @PublishedApi internal constructor(
 class FlowChartConnection @PublishedApi internal constructor(
 	val fromNodeId: String,
 	val toNodeId: String
-) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.pollLast() ?: Binder() {
+) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.poll() ?: Binder() {
 	override val sourceNodeId get() = fromNodeId
 	override val targetNodeId get() = toNodeId
 
@@ -156,7 +156,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 
 	//使用委托在外部存储数据，等到必要时传递回来
 	companion object {
-		internal val binderQueue = LinkedList<Binder>()
+		internal val binderQueue: Queue<Binder> = ArrayDeque(2)
 	}
 }
 //endregion
