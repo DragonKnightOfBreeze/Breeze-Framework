@@ -276,6 +276,7 @@
 * [X] breeze-core 移除`Int.exactXxx`等扩展，提供`Int.exact`等扩展。
 * [X] breeze-core 为`NumberExtensions`和`MathExtensions`补充一系列的扩展。
 * [X] breeze-core 将`mapOfValueNotNull`重命名为`mapOfValuesNotNull`。
+* [X] breeze-http&breeze-logger 重构代码。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
 * [ ] ~~breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。~~
 

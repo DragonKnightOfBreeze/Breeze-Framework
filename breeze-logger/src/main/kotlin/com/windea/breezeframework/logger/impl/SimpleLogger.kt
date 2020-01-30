@@ -8,15 +8,7 @@ import java.text.*
 import java.util.*
 
 class SimpleLogger : Logger {
-	override val config: LoggerConfig
-
-	constructor() {
-		config = LoggerConfig()
-	}
-
-	constructor(configBlock: LoggerConfig.() -> Unit) {
-		config = LoggerConfig().also(configBlock)
-	}
+	override val config: LoggerConfig = LoggerConfig()
 
 	override fun trace(message: Any?) = log(LogLevel.Trace, message)
 

@@ -6,13 +6,14 @@ import java.time.*
 /**
  * Http请求的配置。
  */
-data class HttpRequestConfig(
-	val headers: MutableMap<String, List<String>> = mutableMapOf(),
-	val query: MutableMap<String, List<String>> = mutableMapOf(),
-	val timeout: Duration? = null,
-	val version: HttpClient.Version? = null,
-	val expectContinue: Boolean? = null
-) {
+class HttpRequestConfig {
+	val headers: MutableMap<String, List<String>> = mutableMapOf()
+	val query: MutableMap<String, List<String>> = mutableMapOf()
+	var timeout: Duration? = null
+	var version: HttpClient.Version? = null
+	var expectContinue: Boolean? = null
+	var encoding: String = "UTF-8"
+
 	fun header(name: String, value: String) {
 		this.headers[name] = listOf(value)
 	}

@@ -2,6 +2,7 @@ package com.windea.breezeframework.http
 
 import java.net.*
 import java.net.http.*
+import java.nio.charset.*
 
 /**
  * Http连接。基于java11的[HttpClient]。
@@ -11,44 +12,137 @@ import java.net.http.*
  * @see java.net.http.HttpResponse
  */
 class Http {
-	private var config: HttpConfig
-	private var client: HttpClient
+	private var config: HttpConfig = HttpConfig()
+	internal var client: HttpClient = buildClient()
 
-	constructor() {
-		this.config = HttpConfig()
-		this.client = HttpClient.newHttpClient()
-	}
-
-	constructor(configBlock: HttpConfig.() -> Unit) {
-		this.config = HttpConfig().also(configBlock)
-		this.client = buildHttpClient()
-	}
-
+	/**复制Http连接。*/
 	fun copy(): Http {
-		return Http().also {
-			it.config = config
-			it.client = client
+		val http = Http()
+		http.client = client
+		http.config = config
+		return http
+	}
+
+	/**配置Http连接。*/
+	fun configure(block: HttpConfig.() -> Unit) {
+		config = HttpConfig().also(block)
+		client = buildClient()
+
+	}
+
+	private fun buildClient(): HttpClient {
+		return HttpClient.newBuilder().also { builder ->
+			config.cookieHandler?.let { builder.cookieHandler(it) }
+			config.connectTimeout?.let { builder.connectTimeout(it) }
+			config.sslContext?.let { builder.sslContext(it) }
+			config.sslParameters?.let { builder.sslParameters(it) }
+			config.executor?.let { builder.executor(it) }
+			config.followRedirects?.let { builder.followRedirects(it) }
+			config.version?.let { builder.version(it) }
+			config.priority?.let { builder.priority(it) }
+			config.proxy?.let { builder.proxy(it) }
+			config.authenticator?.let { builder.authenticator(it) }
+		}.build()
+	}
+
+	/**发送GET请求。*/
+	fun get(url: String): HttpRequest {
+		return request("GET", url, null, null)
+	}
+
+	/**发送GET请求，附带额外配置。*/
+	fun get(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("GET", url, null, HttpRequestConfig().also(configBlock))
+	}
+
+	/**发送POST请求。*/
+	fun post(url: String, body: String): HttpRequest {
+		return request("POST", url, body, null)
+	}
+
+	/**发送POST请求，附带额外配置。*/
+	fun post(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("POST", url, null, HttpRequestConfig().also(configBlock))
+	}
+
+	/**发送PUT请求。*/
+	fun put(url: String, body: String): HttpRequest {
+		return request("PUT", url, body, null)
+	}
+
+	/**发送PUT请求，附带额外配置。*/
+	fun put(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("PUT", url, body, HttpRequestConfig().also(configBlock))
+	}
+
+	/**发送DELETE请求。*/
+	fun delete(url: String): HttpRequest {
+		return request("DELETE", url, null, null)
+	}
+
+	/**发送DELETE请求，附带额外参数。*/
+	fun delete(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("DELETE", url, null, HttpRequestConfig().also(configBlock))
+	}
+
+	/**发送HEAD请求。*/
+	fun head(url: String, body: String): HttpRequest {
+		return request("HEAD", url, body, null)
+	}
+
+	/**发送HEAD请求，附带额外参数。*/
+	fun head(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("HEAD", url, body, HttpRequestConfig().also(configBlock))
+	}
+
+	/**发送BATCH请求。*/
+	fun batch(url: String, body: String): HttpRequest {
+		return request("BATCH", url, body, null)
+	}
+
+	/**发送BATCH请求，附带额外参数。*/
+	fun batch(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpRequest {
+		return request("BATCH", url, body, HttpRequestConfig().also(configBlock))
+	}
+
+	private fun request(method: String, url: String, body: String?, config: HttpRequestConfig?): HttpRequest {
+		val charset = Charset.forName(config?.encoding ?: "UTF-8")
+		val bodyPublisher = if(body != null) HttpRequest.BodyPublishers.ofString(body, charset) else null
+		return buildRequest(method, url, bodyPublisher, config)
+	}
+
+	private fun buildRequest(method: String, url: String, bodyPublisher: HttpRequest.BodyPublisher?,
+		config: HttpRequestConfig?): HttpRequest {
+		return if(config == null) {
+			val uri = URI.create(url)
+			HttpRequest.newBuilder(uri).buildMethodRequest(method, bodyPublisher).build()
+		} else {
+			val uri = URI.create(url.withQuery(config.query))
+			HttpRequest.newBuilder(uri).buildMethodRequest(method, bodyPublisher).also { builder ->
+				config.headers.forEach { (name, values) ->
+					values.forEach { value ->
+						builder.header(name, value)
+					}
+				}
+				config.timeout?.let { builder.timeout(it) }
+				config.expectContinue?.let { builder.expectContinue(it) }
+				config.version?.let { builder.version(it) }
+			}.build()
 		}
 	}
 
-	private fun buildHttpClient(): HttpClient {
-		val (cookieHandler, connectTimeout, sslContext, sslParameters, executor, followRedirects, version, priority, proxy, authenticator) = config
-		return HttpClient.newBuilder()
-			.also { if(cookieHandler != null) it.cookieHandler(cookieHandler) }
-			.also { if(connectTimeout != null) it.connectTimeout(connectTimeout) }
-			.also { if(sslContext != null) it.sslContext(sslContext) }
-			.also { if(sslParameters != null) it.sslParameters(sslParameters) }
-			.also { if(executor != null) it.executor(executor) }
-			.also { if(followRedirects != null) it.followRedirects(followRedirects) }
-			.also { if(version != null) it.version(version) }
-			.also { if(priority != null) it.priority(priority) }
-			.also { if(proxy != null) it.proxy(proxy) }
-			.also { if(authenticator != null) it.authenticator(authenticator) }
-			.build()
+	private fun HttpRequest.Builder.buildMethodRequest(method: String, bodyPublisher: HttpRequest.BodyPublisher?): HttpRequest.Builder {
+		return when(method) {
+			"GET" -> this.GET()
+			"POST" -> this.POST(bodyPublisher)
+			"PUT" -> this.PUT(bodyPublisher)
+			"DELETE" -> this.DELETE()
+			"HEADER", "BATCH" -> this.method(method, bodyPublisher)
+			else -> throw IllegalArgumentException("Http request method is invalid. Current: '$method'.")
+		}
 	}
 
 	private fun String.withQuery(query: Map<String, List<String>>): String {
-		//allow query in url
 		val delimiter = if("?" in this) "&" else "?"
 		val querySnippet = if(query.isEmpty()) "" else query.entries.joinToString("&", delimiter) { (name, values) ->
 			values.joinToString("&") { value -> "$name=${value.urlEncoded()}" }
@@ -57,99 +151,6 @@ class Http {
 	}
 
 	private fun String.urlEncoded(): String {
-		return URLEncoder.encode(this, "UTF-8")
-	}
-
-	fun get(url: String): HttpResponse<String> {
-		return request("GET", url, null, null)
-	}
-
-	fun get(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("GET", url, null, HttpRequestConfig().also(configBlock))
-	}
-
-	fun post(url: String, body: String): HttpResponse<String> {
-		return request("POST", url, body, null)
-	}
-
-	fun post(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("POST", url, null, HttpRequestConfig().also(configBlock))
-	}
-
-	fun put(url: String, body: String): HttpResponse<String> {
-		return request("PUT", url, body, null)
-	}
-
-	fun put(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("PUT", url, body, HttpRequestConfig().also(configBlock))
-	}
-
-	fun delete(url: String): HttpResponse<String> {
-		return request("DELETE", url, null, null)
-	}
-
-	fun delete(url: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("DELETE", url, null, HttpRequestConfig().also(configBlock))
-	}
-
-	fun head(url: String, body: String): HttpResponse<String> {
-		return request("HEAD", url, body, null)
-	}
-
-	fun head(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("HEAD", url, body, HttpRequestConfig().also(configBlock))
-	}
-
-	fun batch(url: String, body: String): HttpResponse<String> {
-		return request("BATCH", url, body, null)
-	}
-
-	fun batch(url: String, body: String, configBlock: HttpRequestConfig.() -> Unit): HttpResponse<String> {
-		return request("BATCH", url, body, HttpRequestConfig().also(configBlock))
-	}
-
-	private fun request(method: String, url: String, body: String?, config: HttpRequestConfig?): HttpResponse<String> {
-		val bodyPublisher = if(body != null) HttpRequest.BodyPublishers.ofString(body) else null
-		val bodyHandler = HttpResponse.BodyHandlers.ofString()
-		return buildResponse(method, url, bodyPublisher, bodyHandler, config)
-	}
-
-	private fun buildResponse(method: String, url: String, bodyPublisher: HttpRequest.BodyPublisher?, bodyHandler: HttpResponse.BodyHandler<String>?, config: HttpRequestConfig?): HttpResponse<String> {
-		val httpRequest = if(config == null) {
-			val uri = URI.create(url)
-			HttpRequest.newBuilder(uri)
-				.buildMethodRequest(method, bodyPublisher)
-				.build()
-		} else {
-			val (headers, query, timeout, version, expectContinue) = config
-			val uri = URI.create(url.withQuery(query))
-			HttpRequest.newBuilder(uri)
-				.buildMethodRequest(method, bodyPublisher)
-				.also {
-					for((name, values) in headers) {
-						for(value in values) {
-							it.header(name, value)
-						}
-					}
-				}
-				.also { if(timeout != null) it.timeout(timeout) }
-				.also { if(expectContinue != null) it.expectContinue(expectContinue) }
-				.also { if(version != null) it.version(version) }
-				.build()
-		}
-		return client.send(httpRequest, bodyHandler)
-	}
-
-	private fun HttpRequest.Builder.buildMethodRequest(method: String, bodyPublisher: HttpRequest.BodyPublisher?): HttpRequest.Builder {
-		return this.let {
-			when(method) {
-				"GET" -> it.GET()
-				"POST" -> it.POST(bodyPublisher)
-				"PUT" -> it.PUT(bodyPublisher)
-				"DELETE" -> it.DELETE()
-				"HEADER", "BATCH" -> it.method(method, bodyPublisher)
-				else -> throw IllegalArgumentException("Http request method is invalid. Current: '$method'.")
-			}
-		}
+		return URLEncoder.encode(this, config.encoding)
 	}
 }
