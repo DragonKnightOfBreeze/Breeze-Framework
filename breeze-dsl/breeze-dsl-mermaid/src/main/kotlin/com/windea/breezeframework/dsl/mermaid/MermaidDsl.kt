@@ -46,5 +46,5 @@ interface MermaidDslElement : DslElement
 //region helpful extensions
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
-internal fun String.replaceWithHtmlWrap() = this.replaceAll("\n" to "<br>", "\r" to "<br>")
+internal fun String.replaceWithHtmlWrap() = this.replace("\n", "<br>").replace("\r", "<br>")
 //endregion

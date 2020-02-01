@@ -209,5 +209,5 @@ inline infix fun SequenceDiagramNote.text(text: String) =
 //region helpful extensions
 /**将`\n`或`\r`替换成`\\n`和`\\r`。*/
 @PublishedApi
-internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
+internal fun String.replaceWithEscapedWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 //endregion
