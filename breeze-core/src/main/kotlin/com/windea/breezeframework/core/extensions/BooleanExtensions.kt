@@ -3,13 +3,18 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.*
 import kotlin.contracts.*
 
 //region common extensions
 /**如果为null，则返回true，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Boolean?.orTrue(): Boolean = this ?: true
 
 /**如果为null，则返回false，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Boolean?.orFalse(): Boolean = this ?: false
 
 

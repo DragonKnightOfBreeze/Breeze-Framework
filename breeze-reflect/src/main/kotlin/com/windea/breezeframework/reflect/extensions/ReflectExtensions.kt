@@ -38,9 +38,16 @@ inline fun nameOf(target: Any?): String? = when {
 
 //region Any extensions
 /**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@ImpliesSmartCast
+@JvmSynthetic
+infix fun Any.isInstanceOf(type: Class<*>): Boolean {
+	return type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
+}
+
+/**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@ImpliesSmartCast
 @JvmSynthetic
 infix fun Any.isInstanceOf(type: KClass<*>): Boolean {
-	//NOTE 找不到合适的方式适用智能类型转换
 	return type.isInstance(this)
 }
 //endregion

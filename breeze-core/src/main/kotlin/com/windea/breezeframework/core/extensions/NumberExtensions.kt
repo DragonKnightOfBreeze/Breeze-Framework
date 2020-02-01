@@ -3,25 +3,38 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.*
 import kotlin.math.*
 
 //region common extensions
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Byte?.orZero(): Byte = this ?: 0
 
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Short?.orZero(): Short = this ?: 0
 
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Int?.orZero(): Int = this ?: 0
 
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Long?.orZero(): Long = this ?: 0
 
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Float?.orZero(): Float = this ?: 0f
 
 /**如果为null，则返回0，否则返回自身。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
 inline fun Double?.orZero(): Double = this ?: 0.0
 
 

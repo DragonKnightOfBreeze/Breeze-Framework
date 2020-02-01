@@ -36,15 +36,6 @@ infix fun String?.equals(other: String?): Boolean = this.equals(other, false)
 /**判断两个字符串是否相等，忽略大小写。。*/
 infix fun String?.equalsIc(other: String?): Boolean = this.equals(other, true)
 
-///**
-// * 判断两个字符串是否相等，忽略显示格式。
-// *
-// * @see com.windea.breezeframework.core.enums.text.LetterCase
-// */
-//infix fun String?.equalsIlc(other: String?): Boolean {
-//	return this == other || this != null && other != null && this.switchCaseBy(this.letterCase, other.letterCase) == other
-//}
-
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
 infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
@@ -117,6 +108,7 @@ fun CharSequence.isNumeric(): Boolean {
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this matches "[1-9a-zA-Z_]+".toRegex()
 }
+
 
 /**如果当前字符串不为空，则返回本身，否则返回null。*/
 @JvmSynthetic

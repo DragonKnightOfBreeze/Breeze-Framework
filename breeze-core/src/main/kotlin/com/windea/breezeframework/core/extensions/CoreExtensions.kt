@@ -176,14 +176,6 @@ internal abstract class TypeReference<T> {
 //endregion
 
 //region Any extensions
-/**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
-@JvmSynthetic
-infix fun Any.isInstanceOf(type: Class<*>): Boolean {
-	//NOTE 找不到合适的方式适用智能类型转换
-	return type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
-}
-
-
 /**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
