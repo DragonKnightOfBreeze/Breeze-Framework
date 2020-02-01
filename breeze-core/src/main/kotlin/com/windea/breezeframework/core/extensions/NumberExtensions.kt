@@ -6,6 +6,25 @@ package com.windea.breezeframework.core.extensions
 import kotlin.math.*
 
 //region common extensions
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Byte?.orZero(): Byte = this ?: 0
+
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Short?.orZero(): Short = this ?: 0
+
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Int?.orZero(): Int = this ?: 0
+
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Long?.orZero(): Long = this ?: 0
+
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Float?.orZero(): Float = this ?: 0f
+
+/**如果为null，则返回0，否则返回自身。*/
+inline fun Double?.orZero(): Double = this ?: 0.0
+
+
 /**进行一次计算并将结果转化为整型。*/
 inline fun Int.exact(block: (Int) -> Number): Int = block(this).toInt()
 
@@ -69,15 +88,6 @@ inline fun Double.exact(block: (Double) -> Number): Double = block(this).toDoubl
 //inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
 
 
-/**判断两个数是否近似相等。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
-fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
-	return when {
-		this == null && other == null -> true
-		this == null || other == null -> false
-		else -> abs(this.toFloat() - other.toFloat()) < precision
-	}
-}
-
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
 fun Int.getDigitNumber(index: Int): Int {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
@@ -88,6 +98,16 @@ fun Int.getDigitNumber(index: Int): Int {
 fun Long.getDigitNumber(index: Int): Long {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
 	return this / 10.positivePow(index) % 10
+}
+
+
+/**判断两个数是否近似相等。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
+fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
+	return when {
+		this == null && other == null -> true
+		this == null || other == null -> false
+		else -> abs(this.toFloat() - other.toFloat()) < precision
+	}
 }
 //endregion
 
@@ -115,16 +135,6 @@ fun Long.toDigitNumberArray(): LongArray {
 	}
 	return result
 }
-
-
-///**将当前整数转化为二进制字符串。*/
-//inline fun Int.toBinaryString(): String = Integer.toBinaryString(this)
-//
-///**将当前整数转化为八进制字符串。*/
-//inline fun Int.toHexString(): String = Integer.toHexString(this)
-//
-///**将当前整数转化为十六进制字符串。*/
-//inline fun Int.toOctalString(): String = Integer.toOctalString(this)
 
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
