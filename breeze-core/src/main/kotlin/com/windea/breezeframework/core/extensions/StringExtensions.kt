@@ -170,7 +170,7 @@ fun String.flatRepeat(n: Int): String {
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmOverloads
 fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
-	val size = minOf(oldChars.size, v.size)
+	val size = minOf(oldChars.size, newChars.size)
 	var result = this
 	for(i in 0 until size) {
 		result = result.replace(oldChars[i], newChars[i], ignoreCase)
@@ -320,24 +320,6 @@ fun String.customFormat(placeholder: String, vararg args: Any?): String {
 		}
 		else -> this.replaceIndexed(placeholder) { args.getOrNull(it)?.toString().orEmpty() }
 	}
-}
-
-
-/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-fun String.lineConcat(other: String): String {
-	val lines = this.lines()
-	val otherLines = other.lines()
-	return when {
-		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
-		else -> lines zip otherLines.fillEnd(lines.size, "")
-	}.joinToString("\n") { (a, b) -> "$a$b" }
-}
-
-/**逐行换行字符串，确保每行长度不超过指定长度。*/
-@JvmOverloads
-fun String.lineBreak(width: Int = 120): String {
-	//TODO 保持整个单词在同一行
-	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
 }
 
 
@@ -516,6 +498,23 @@ fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
 //region specific type or case extensions
+/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+infix fun String.lineConcat(other: String): String {
+	val lines = this.lines()
+	val otherLines = other.lines()
+	return when {
+		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
+		else -> lines zip otherLines.fillEnd(lines.size, "")
+	}.joinToString("\n") { (a, b) -> "$a$b" }
+}
+
+/**逐行换行字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
+@JvmOverloads
+fun String.lineBreak(width: Int = 120): String {
+	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
+}
+
+
 /**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。限定为单引号、双引号或反引号，否则会抛出异常。*/
 fun String.quote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
@@ -706,7 +705,7 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
 fun String.toCharRange(): CharRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -716,7 +715,7 @@ fun String.toCharRange(): CharRange {
 	}
 }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
 fun String.toIntRange(): IntRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -726,7 +725,7 @@ fun String.toIntRange(): IntRange {
 	}
 }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, [m, n)。*/
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
 fun String.toLongRange(): LongRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -777,7 +776,6 @@ inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null)
 /**将当前字符串转化为日期。*/
 @JvmOverloads
 inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date = SimpleDateFormat(format).parse(this)
-
 
 /**将当前字符串转化为本地日期。*/
 @JvmOverloads
