@@ -167,28 +167,28 @@ fun String.flatRepeat(n: Int): String {
 }
 
 
-/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。*/
+/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。默认不忽略大小写。*/
 @JvmName("replaceAllByChar")
 @JvmOverloads
 fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
-/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。*/
+/**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。默认不忽略大小写。*/
 @JvmName("replaceAllByChar")
 @JvmOverloads
 fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
 	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
 }
 
-/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmName("replaceAllByString")
 @JvmOverloads
 fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
 	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
 }
 
-/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
+/**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmName("replaceAllByString")
 @JvmOverloads
 fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
@@ -512,15 +512,15 @@ private val quoteChars = charArrayOf('\"', '\'', '`')
 
 
 /**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/
-fun String.escapeBy(type: EscapeType, includeBackslash: Boolean = false): String {
-	val tempString = if(includeBackslash) this.replace("\\", "\\\\") else this
+fun String.escapeBy(type: EscapeType, omitBackslash: Boolean = true): String {
+	val tempString = if(omitBackslash) this else this.replace("\\", "\\\\")
 	return tempString.replaceAll(type.escapeStrings zip type.escapedStrings)
 }
 
 /**根据指定的转义类型，反转义当前字符串。默认不反转一反斜线*/
-fun String.unescapeBy(type: EscapeType, includeBackslash: Boolean = false): String {
+fun String.unescapeBy(type: EscapeType, omitBackslash: Boolean = true): String {
 	val tempString = this.replaceAll(type.escapedStrings zip type.escapeStrings)
-	return if(includeBackslash) tempString.replace("\\\\", "\\") else this
+	return if(omitBackslash) tempString else tempString.replace("\\\\", "\\")
 }
 
 

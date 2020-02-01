@@ -22,9 +22,20 @@ enum class EscapeType(
 		arrayOf(".", "^", "$", "[", "{", "(", "|", "-", "*", "?", "+"), //可能不适用于所有情况
 		arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "-", "\\*", "\\?", "\\+")
 	),
+	//com.google.common.xml.XmlEscapers
 	/**Xml转义。*/
 	Xml(
 		arrayOf("<", ">", "&", "'", "\""),
-		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "quot;")
+		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
+	),
+	XmlAttribute(
+		arrayOf("<", ">", "&", "'", "\"", "\t", "\n", "\r"),
+		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#x9", "&#xA", "&#xD")
+	),
+	//com.google.common.html.HtmlEscapers
+	/**Html转义。*/
+	Html(
+		arrayOf("<", ">", "&", "'", "\""),
+		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	)
 }

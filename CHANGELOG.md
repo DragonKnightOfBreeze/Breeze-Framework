@@ -277,8 +277,13 @@
 * [X] breeze-core 为`NumberExtensions`和`MathExtensions`补充一系列的扩展。
 * [X] breeze-core 将`mapOfValueNotNull`重命名为`mapOfValuesNotNull`。
 * [X] breeze-http&breeze-logger 重构代码。
+* [X] breeze-core 完善对html和xml的转义逻辑。（来自guava）
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
-* [ ] ~~breeze-unstable 实现基于`ConcurrentHashMap`的线程安全的单例模式。~~
+* [ ] breeze-core 从类型推断出对应的默认值。（来自guava）
+* [ ] breeze-unstable 新的集合类型：`Tree`。
+* [ ] breeze-unstable 新的集合类型：`Table`。
+* [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
+* [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 
 # 待办
 
