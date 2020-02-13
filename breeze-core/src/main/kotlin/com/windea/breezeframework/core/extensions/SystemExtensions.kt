@@ -2,10 +2,12 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.*
 import java.io.*
 import java.util.*
 import java.util.concurrent.*
 import javax.script.*
+import kotlin.system.*
 
 /**
  * 访问环境变量。
@@ -68,4 +70,17 @@ inline fun execBlocking(vararg environmentVariables: String, workDirectory: File
 inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null,
 	timeout: Long, unit: TimeUnit, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory).also { it.waitFor(timeout, unit) }
+}
+
+
+/**循环扫描命令行的下一行输入命令，以执行相应的操作。默认的退出命令是"exit"且不区分大小写。*/
+@NotSure
+@JvmSynthetic
+inline fun executeCommand(exitCommand: String = "exit", block: (String) -> Unit) {
+	val scanner = Scanner(System.`in`)
+	val command = scanner.nextLine()
+	while(true) {
+		if(command equalsIc exitCommand) exitProcess(0)
+		block(command)
+	}
 }

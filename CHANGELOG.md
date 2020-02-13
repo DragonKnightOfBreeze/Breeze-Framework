@@ -282,6 +282,7 @@
 * [X] breeze-core 添加可空数字类型的`orZero`扩展。
 * [X] 添加并适用一些临时性的注解。
 * [X] breeze-core 重命名一些方法名，将一些方法改为顺序，优化一些代码逻辑。
+* [X] breeze-core 为`SystemExtensions`添加`executeCommand`扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
