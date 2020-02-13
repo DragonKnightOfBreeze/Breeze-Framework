@@ -5,11 +5,11 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.enums.text.*
-import com.windea.breezeframework.core.types.*
 import java.util.*
 import java.util.concurrent.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
+import kotlin.collections.LinkedHashSet
 import kotlin.random.Random
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
@@ -21,15 +21,15 @@ import kotlin.random.Random
 fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) else emptyList()
 
 /**构建一个集并事先过滤空的元素。*/
-@NotOptimized
-fun <T : Any> setOfNotNull(vararg elements: T?) = elements.filterNotNull().toSet()
+fun <T : Any> setOfNotNull(vararg elements: T?): Set<T> =
+	LinkedHashSet<T>().apply { for(element in elements) if(element != null) add(element) }
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-@NotOptimized
-fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>) = pairs.filter { it.second != null }.toMap()
+fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>) =
+	LinkedHashMap<K, V>().apply { for((key, value) in pairs) if(value != null) put(key, value) }
 
 
 /**构建一个空的枚举集。*/
@@ -49,39 +49,39 @@ fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMa
 
 
 /**构建一个空的线程安全的并发列表。*/
-inline fun <T> concurrentListOf(): ConcurrentList<T> = CopyOnWriteArrayList()
+inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
 
 /**构建一个线程安全的并发列表。*/
-fun <T> concurrentListOf(vararg elements: T): ConcurrentList<T> = CopyOnWriteArrayList(elements)
+fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
 
 /**构建一个空的线程安全的并发集。*/
-inline fun <T> concurrentSetOf(): ConcurrentSet<T> = CopyOnWriteArraySet()
+inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
 
 /**构建一个线程安全的并发集。*/
-fun <T> concurrentSetOf(vararg elements: T): ConcurrentSet<T> = CopyOnWriteArraySet(elements.toSet())
+fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
 
 /**构建一个空的线程安全的并发映射。*/
-inline fun <K, V> concurrentMapOf(): ConcurrentMap<K, V> = ConcurrentHashMap()
+inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
 
 /**构建一个线程安全的并发映射。*/
-fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, V> = ConcurrentHashMap(pairs.toMap())
+fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 //endregion
 
 //region operator override extensions
 /**@see kotlin.collections.slice*/
 operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
 
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
-
-/**@see kotlin.collections.chunked*/
-operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
-
 /**@see kotlin.collections.slice*/
 operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
+operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+
+/**@see com.windea.breezeframework.core.extensions.repeat*/
 operator fun <T> Iterable<T>.times(n: Int): List<T> = this.repeat(n)
+
+/**@see kotlin.collections.chunked*/
+operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.chunked*/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
@@ -354,7 +354,7 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 
 
 /**根据指定的转化操作，将当前数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
+@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -362,7 +362,7 @@ fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix:
 }
 
 /**根据指定的转化操作，将当前集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
+@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((T) -> CharSequence)? = null): String {
@@ -370,7 +370,7 @@ fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: 
 }
 
 /**根据指定的转化操作，将当前映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
+@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
 fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
@@ -405,14 +405,14 @@ fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullT
 
 
 /**按照类型以及附加条件过滤当前数组。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤当前数组，然后置入指定的集合。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -420,14 +420,14 @@ inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(
 }
 
 /**按照类型以及附加条件过滤当前列表。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤当前列表，然后置入指定的集合。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -435,14 +435,14 @@ inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(d
 }
 
 /**按照类型以及附加条件过滤当前集。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 @Suppress("DEPRECATION")
 inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
 	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
 }
 
 /**按照类型以及附加条件过滤当前集，然后置入指定的集合。*/
-@Deprecated("Redundant extension method:Please consider checking nullability instead.")
+@Deprecated("Redundant extension method: Please consider checking nullability instead.")
 inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
 	predicate: (R) -> Boolean): C {
 	for(element in this) if(element is R && predicate(element)) destination.add(element)
@@ -768,12 +768,6 @@ private fun Any?.deepFlatten0(depth: Int = -1, returnPathCase: ReferenceCase): M
 	return pathValuePairs.toPairValueMap(returnPathCase)
 }
 
-
-private fun Array<String?>.copyAndSet(index: Int, value: Any?): Array<String?> {
-	val result = this.copyOf()
-	result[index] = value?.toString()
-	return result
-}
 
 private fun Any?.collectionGet(indexOrKey: String): Any? {
 	return when(this) {

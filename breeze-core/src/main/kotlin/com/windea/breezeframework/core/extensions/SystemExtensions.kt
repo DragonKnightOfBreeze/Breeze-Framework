@@ -12,21 +12,15 @@ import javax.script.*
  *
  * @see System.getenv
  */
-@JvmSynthetic
-fun environmentVariables(): Map<String, String> {
-	return System.getenv()
-}
+val environmentVariables: Map<String, String> = System.getenv()
 
 /**
  * 访问系统属性。
  *
  * @see System.getProperties
  */
-@JvmSynthetic
 @Suppress("UNCHECKED_CAST")
-fun systemProperties(): Map<String, String> {
-	return Collections.unmodifiableMap(System.getProperties()) as Map<String, String>
-}
+val systemProperties: Map<String, String> = Collections.unmodifiableMap(System.getProperties()) as Map<String, String>
 
 
 /**执行一段懒加载的脚本。需要指定脚本语言的名字或扩展名。其实现依赖于对应的第三方库。*/
