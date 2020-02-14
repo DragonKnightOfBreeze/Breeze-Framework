@@ -394,15 +394,10 @@ inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNul
 
 /**过滤当前映射中值为null的键值对。*/
 fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
-	return this.filterValuesNotNullTo(LinkedHashMap())
+	val result = LinkedHashMap<K, V>()
+	for((key, value) in this) if(value != null) result[key] = value
+	return result
 }
-
-/**过滤当前映射中值为null的键值对，然后置入指定的映射。*/
-fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
-	for((key, value) in this) if(value != null) destination[key] = value
-	return destination
-}
-
 
 /**按照类型以及附加条件过滤当前数组。*/
 @Deprecated("Redundant extension method: Please consider checking nullability instead.")
@@ -939,73 +934,95 @@ inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropL
 inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
 
 
-/**过滤空字符串。*/
+/**过滤当前数组中为空字符串的元素。*/
 inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filterNotEmptyTo(ArrayList())
 
-/**过滤空字符串。*/
+/**过滤当前集合中为空字符串的元素。*/
 inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filterNotEmptyTo(ArrayList())
 
-/**过滤空字符串。*/
+/**过滤当前映射中值为空字符串的键值对。*/
+inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotEmpty(): Map<K, V> {
+	val result = LinkedHashMap<K, V>()
+	for((key, value) in this) if(value.isNotEmpty()) result[key] = value
+	return result
+}
+
+/**过滤当前序列中为空字符串的元素。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isEmpty() }
 
 
-/**过滤空字符串，然后加入指定的集合。*/
+/**过滤当前数组中为空字符串的元素，然后加入到指定的集合。*/
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotEmptyTo(destination: C): C {
 	for(element in this) if(element.isNotEmpty()) destination += element
 	return destination
 }
 
-/**过滤空字符串，然后加入指定的集合。*/
+/**过滤当前集合中为空字符串的元素，然后加入到指定的集合。*/
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNotEmptyTo(destination: C): C {
 	for(element in this) if(element.isNotEmpty()) destination += element
 	return destination
 }
 
 
-/**过滤空白字符串。*/
+/**过滤当前数组中为空白字符串的元素。*/
 inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filterNotBlankTo(ArrayList())
 
-/**过滤空白字符串。*/
+/**过滤当前集合中为空白字符串的元素。*/
 inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filterNotBlankTo(ArrayList())
 
-/**过滤空白字符串。*/
+/**过滤当前映射中值为空白字符串的键值对。*/
+inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotBlank(): Map<K, V> {
+	val result = LinkedHashMap<K, V>()
+	for((key, value) in this) if(value.isNotBlank()) result[key] = value
+	return result
+}
+
+/**过滤当前序列中为空白字符串的元素。*/
 inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isBlank() }
 
 
-/**过滤空白字符串，然后加入指定的集合。*/
+/**过滤当前数组中为空白字符串的元素，然后加入到指定的集合。*/
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotBlankTo(destination: C): C {
 	for(element in this) if(element.isNotBlank()) destination += element
 	return destination
 }
 
-/**过滤空白字符串，然后加入指定的集合。*/
+/**过滤当前集合中为空白字符串的元素，然后加入到指定的集合。*/
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNotBlankTo(destination: C): C {
 	for(element in this) if(element.isNotBlank()) destination += element
 	return destination
 }
 
 
-/**过滤null和空字符串。*/
+/**过滤当前数组中为null或空字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Array<out T?>.filterNotNullOrEmpty(): List<T> = this.filterNotNullOrEmptyTo(ArrayList())
 
-/**过滤null和空字符串。*/
+/**过滤当前集合中为null或空字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrEmpty(): List<T> = this.filterNotNullOrEmptyTo(ArrayList())
 
-/**过滤null和空字符串。*/
+/**过滤当前映射中值为null或空字符串的键值对。*/
+@UselessCallOnNotNullType
+inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrEmpty(): Map<K, V> {
+	val result = LinkedHashMap<K, V>()
+	for((key, value) in this) if(value.isNotNullOrEmpty()) result[key] = value
+	return result
+}
+
+/**过滤当前序列中为null或空字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrEmpty(): Sequence<T> = this.filter { it.isNotNullOrEmpty() } as Sequence<T>
 
 
-/**过滤null和空字符串，然后加入指定的集合。*/
+/**过滤当前数组中为null或空字符串的元素，然后加入到指定的集合。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterNotNullOrEmptyTo(destination: C): C {
 	for(element in this) if(element.isNotNullOrEmpty()) destination += element
 	return destination
 }
 
-/**过滤null和空字符串，然后加入指定的集合。*/
+/**过滤当前集合中为null或空字符串的元素，然后加入到指定的集合。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNotNullOrEmptyTo(destination: C): C {
 	for(element in this) if(element.isNotNullOrEmpty()) destination += element
@@ -1013,27 +1030,35 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNo
 }
 
 
-/**过滤null和空白字符串。*/
+/**过滤当前数组中为null或空白字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Array<out T?>.filterNotNullOrBlank(): List<T> = this.filterNotNullOrBlankTo(ArrayList())
 
-/**过滤null和空白字符串。*/
+/**过滤当前集合中为null或空白字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrBlank(): List<T> = this.filterNotNullOrBlankTo(ArrayList())
 
-/**过滤null和空白字符串。*/
+/**过滤当前映射中值为null或空白字符串的键值对。*/
+@UselessCallOnNotNullType
+inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrBlank(): Map<K, V> {
+	val result = LinkedHashMap<K, V>()
+	for((key, value) in this) if(value.isNotNullOrBlank()) result[key] = value
+	return result
+}
+
+/**过滤当前序列中为null或空白字符串的元素。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrBlank(): Sequence<T> = this.filter { it.isNotNullOrBlank() } as Sequence<T>
 
 
-/**过滤null和空白字符串，然后加入指定的集合。*/
+/**过滤当前数组中为null或空白字符串的元素，然后加入到指定的集合。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterNotNullOrBlankTo(destination: C): C {
 	for(element in this) if(element.isNotNullOrBlank()) destination += element
 	return destination
 }
 
-/**过滤null和空白字符串，然后加入指定的集合。*/
+/**过滤当前集合中为null或空白字符串的元素，然后加入到指定的集合。*/
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNotNullOrBlankTo(destination: C): C {
 	for(element in this) if(element.isNotNullOrBlank()) destination += element
