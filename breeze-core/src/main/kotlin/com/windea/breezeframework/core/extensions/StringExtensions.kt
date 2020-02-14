@@ -154,8 +154,8 @@ inline fun <C : CharSequence> C.takeIfNotEmpty(): C? = if(this.isEmpty()) null e
 inline fun <C : CharSequence> C.takeIfNotBlank(): C? = if(this.isBlank()) null else this
 
 
-/**分别平滑重复当前字符串中的字符到指定次数。*/
-fun CharSequence.flatRepeat(n: Int): String {
+/**分别依次重复当前字符串中的字符到指定次数。*/
+fun CharSequence.repeatOrdinal(n: Int): String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 
 	return this.map { it.repeat(n) }.joinToString("")

@@ -267,19 +267,17 @@ fun <T> List<T>.repeat(n: Int): List<T> {
 	return ArrayList<T>(this.size * n).also { list -> repeat(n) { list += this } }
 }
 
-/**分别平滑重复当前列表中的元素到指定次数。*/
-fun <T> List<T>.flatRepeat(n: Int): List<T> {
+/**分别重复当前列表中的元素到指定次数。*/
+fun <T> List<T>.repeatOrdinal(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-
 	return ArrayList<T>(this.size * n).also { list -> for(e in this) repeat(n) { list += e } }
 }
 
-/**分别重复当前列表中的元素到指定次数，并映射为子列表。*/
-fun <T> List<T>.repeatChunked(n: Int): List<List<T>> {
-	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-
-	return ArrayList<List<T>>(this.size).also { list -> for(e in this) list += List(n) { e } }
-}
+///**分别重复当前列表中的元素到指定次数，并映射为子列表。*/
+//fun <T> List<T>.repeatChunked(n: Int): List<List<T>> {
+//	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+//	return ArrayList<List<T>>(this.size).also { list -> for(e in this) list += List(n) { e } }
+//}
 
 
 /**填充指定索引范围内的元素到当前列表。如果索引超出当前列表的长度，或为负数，则忽略。*/

@@ -30,7 +30,7 @@ class StringExtensionsTest {
 	@Test
 	fun repeatExtensionTest() {
 		println("abc".repeat(3))
-		println("abc".flatRepeat(3))
+		println("abc".repeatOrdinal(3))
 	}
 
 	@Test
