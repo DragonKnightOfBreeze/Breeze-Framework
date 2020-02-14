@@ -20,7 +20,7 @@ NOTE：
   * Including some extra operator override extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
   * Including some extended infix extensions for String, Collections. (e.g, `String.startsWith`, `Iterable.allIn`.)
   * Including some powerful handle extensions for String. (e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.)
-  * Including some deep operator extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
+  * Including some deep operation extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
   * Including some convert extensions for Number, String etc. (e.g, `String.toFile`, `String.toEnumValue`.)
 * Provide global extensions missing in stdlib.
   * Including some todo extensions. (e.g, `FIXME`, `DELAY`.)
