@@ -80,7 +80,7 @@ inline fun executeCommand(exitCommand: String = "exit", block: (String) -> Unit)
 	val scanner = Scanner(System.`in`)
 	val command = scanner.nextLine()
 	while(true) {
-		if(command equalsIc exitCommand) exitProcess(0)
+		if(command equalsIgnoreCase exitCommand) exitProcess(0)
 		block(command)
 	}
 }

@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.mermaid
 import org.junit.*
 
 class MermaidPieChartDslTest {
-	@Test SO EASY
+	@Test //SO EASY
 	fun test1() {
 		println(mermaidPieChart {
 			section("Study", 20)

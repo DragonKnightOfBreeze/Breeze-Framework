@@ -7,7 +7,7 @@ import kotlin.reflect.*
 import kotlin.test.*
 
 class JsonSerializerTest {
-	@Test NO PROBLEM
+	@Test //NO PROBLEM
 	fun testForString() {
 		val json = """
 			{"name":"Windea","age":"5000+"}
@@ -26,7 +26,7 @@ class JsonSerializerTest {
 		println(jsonString2)
 	}
 
-	@Test PRETTY PRINTED
+	@Test //PRETTY PRINTED
 	fun testForFile() {
 		val jsonFile = javaClass.getResource("/test.json").toFile()
 

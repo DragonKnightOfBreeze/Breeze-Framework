@@ -7,7 +7,7 @@ class CollectionExtensionsKtTest {
 	fun repeatExtensionTest() {
 		println(listOf(1, 2, 3).repeat(3))
 		println(listOf(1, 2, 3).flatRepeat(3))
-		println(listOf(1, 2, 3).flatChunkedRepeat(3))
+		println(listOf(1, 2, 3).repeatChunked(3))
 	}
 
 	@Test

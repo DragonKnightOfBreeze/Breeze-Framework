@@ -12,6 +12,7 @@ import java.text.*
 import java.time.*
 import java.time.format.*
 import java.util.*
+import kotlin.contracts.*
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
@@ -30,11 +31,8 @@ operator fun String.div(n: Int): List<String> = this.chunked(n)
 //endregion
 
 //region common extensions
-/**判断两个字符串是否相等。*/
-infix fun String?.equals(other: String?): Boolean = this.equals(other, false)
-
 /**判断两个字符串是否相等，忽略大小写。。*/
-infix fun String?.equalsIc(other: String?): Boolean = this.equals(other, true)
+infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
 /**判断当前字符串中的任意字符是否被另一字符串包含。*/
@@ -48,28 +46,28 @@ infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean = this.startsWith(prefix, false)
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefix: CharSequence): Boolean = this.startsWith(prefix, true)
+inline infix fun CharSequence.startsWithIgnoreCase(prefix: CharSequence): Boolean = this.startsWith(prefix, true)
 
 /**判断当前字符串是否以任意指定前缀开头。*/
 inline infix fun CharSequence.startsWith(prefixes: Array<out CharSequence>): Boolean =
 	prefixes.any { this.startsWith(it, false) }
 
 /**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIc(prefixes: Array<out CharSequence>): Boolean =
+inline infix fun CharSequence.startsWithIgnoreCase(prefixes: Array<out CharSequence>): Boolean =
 	prefixes.any { this.startsWith(it, true) }
 
 /**判断当前字符串是否以指定后缀结尾。*/
 inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean = this.endsWith(suffixes, false)
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffix: CharSequence): Boolean = this.endsWith(suffix, true)
+inline infix fun CharSequence.endsWithIgnoreCase(suffix: CharSequence): Boolean = this.endsWith(suffix, true)
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
 inline infix fun CharSequence.endsWith(suffixes: Array<out CharSequence>): Boolean =
 	suffixes.any { this.endsWith(it, false) }
 
 /**判断当前字符串是否以任意指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIc(suffixes: Array<out CharSequence>): Boolean =
+inline infix fun CharSequence.endsWithIgnoreCase(suffixes: Array<out CharSequence>): Boolean =
 	suffixes.any { this.endsWith(it, true) }
 
 
@@ -93,6 +91,26 @@ fun CharSequence.surroundsWith(delimiter: CharSequence, ignoreCase: Boolean = fa
 	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
 }
 
+
+/**判断当前字符串是否不为null，且不为空字符串。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return !this.isNullOrEmpty()
+}
+
+/**判断当前字符串是否不为null，且不为空白字符串。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun CharSequence?.isNotNullOrBlank(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrBlank != null)
+	}
+	return !this.isNullOrBlank()
+}
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
 fun CharSequence.isAlphabetic(): Boolean {
@@ -136,6 +154,14 @@ inline fun <C : CharSequence> C.takeIfNotEmpty(): C? = if(this.isEmpty()) null e
 inline fun <C : CharSequence> C.takeIfNotBlank(): C? = if(this.isBlank()) null else this
 
 
+/**分别平滑重复当前字符串中的字符到指定次数。*/
+fun CharSequence.flatRepeat(n: Int): String {
+	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+
+	return this.map { it.repeat(n) }.joinToString("")
+}
+
+
 /**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
 @NotOptimized
 fun String.transformIn(prefix: String, suffix: String, transform: (String) -> String): String {
@@ -150,12 +176,14 @@ fun String.transformIn(regex: Regex, transform: (String) -> String): String {
 	return this.replace(regex) { transform(it[0]) }
 }
 
-
-/**分别平滑重复当前字符串中的字符到指定次数。*/
-fun String.flatRepeat(n: Int): String {
-	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-
-	return this.map { it.toString().repeat(n) }.joinToString("")
+/**并行处理当前字符串。注意应在作为参数的代码块中使用[replaceFirst]方法替换字符串，而非[replace]方法。*/
+@NotSure
+tailrec fun String.sequential(vararg blocks: (String) -> String): String {
+	var result = this
+	for(block in blocks) {
+		result = block(this)
+	}
+	return if(this != result) this.sequential(*blocks) else this
 }
 
 
@@ -181,50 +209,10 @@ fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignore
 	return result
 }
 
-///**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。默认不忽略大小写。*/
-//@JvmName("replaceAllByChar")
-//@JvmOverloads
-//fun String.replaceAll(vararg charPairs: Pair<Char, Char>, ignoreCase: Boolean = false): String {
-//	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
-//}
-//
-///**根据一组字符元组，将当前字符串中的对应字符替换成对应的替换后字符。默认不忽略大小写。*/
-//@JvmName("replaceAllByChar")
-//@JvmOverloads
-//fun String.replaceAll(charPairs: List<Pair<Char, Char>>, ignoreCase: Boolean = false): String {
-//	return charPairs.fold(this) { str, (oldChar, newChar) -> str.replace(oldChar, newChar, ignoreCase) }
-//}
-//
-///**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-//@JvmName("replaceAllByString")
-//@JvmOverloads
-//fun String.replaceAll(vararg valuePairs: Pair<String, String>, ignoreCase: Boolean = false): String {
-//	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
-//}
-//
-///**根据一组字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-//@JvmName("replaceAllByString")
-//@JvmOverloads
-//fun String.replaceAll(valuePairs: List<Pair<String, String>>, ignoreCase: Boolean = false): String {
-//	return valuePairs.fold(this) { str, (oldValue, newValue) -> str.replace(oldValue, newValue, ignoreCase) }
-//}
-
-///**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
-//@JvmName("replaceAllByRegex")
-//fun String.replaceAll(vararg regexReplacementPairs: Pair<Regex, String>): String {
-//	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
-//}
-//
-///**根据一组正则表达式-替换字符串元组，将当前字符串中的对应字符串替换成对应的替换后字符串。*/
-//@JvmName("replaceAllByRegex")
-//fun String.replaceAll(regexReplacementPairs: List<Pair<Regex, String>>): String {
-//	return regexReplacementPairs.fold(this) { str, (regex, replacement) -> str.replace(regex, replacement) }
-//}
-
 
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
-inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
+inline fun CharSequence.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldChar, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
@@ -236,7 +224,7 @@ inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, new
 
 /**将当前字符串中的指定值替换成根据索引得到的字符串。*/
 @JvmOverloads
-inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
+inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldValue, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
@@ -247,19 +235,20 @@ inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, 
 }
 
 
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-tailrec fun String.replaceLooped(regex: Regex, replacement: String): String {
-	val newString = this.replace(regex, replacement)
-	//如果字符串长度不相等，则字符串一定不相等
-	return if(this.length != newString.length || this != newString) {
-		newString.replaceLooped(regex, replacement)
-	} else {
-		newString
-	}
+/**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun String.replaceLooped(oldValue: String, newValue: String): String {
+	val result = this.replace(oldValue, newValue)
+	return if(this != result) result.replaceLooped(oldValue, newValue) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-tailrec fun String.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
+tailrec fun CharSequence.replaceLooped(regex: Regex, replacement: String): String {
+	val result = this.replace(regex, replacement)
+	return if(this != result) result.replaceLooped(regex, replacement) else result
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+tailrec fun CharSequence.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
 	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等
 	return if(this.length != newString.length || this != newString) {
@@ -489,7 +478,7 @@ private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (In
 fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
-//region specific type or case extensions
+//region specific extensions
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
 infix fun String.lineConcat(other: String): String {
 	val lines = this.lines()

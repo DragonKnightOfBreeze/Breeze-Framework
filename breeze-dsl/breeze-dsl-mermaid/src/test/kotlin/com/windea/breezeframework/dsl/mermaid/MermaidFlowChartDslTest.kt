@@ -5,7 +5,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidFlowChartLink.ArrowShape.*
 import kotlin.test.*
 
 class MermaidFlowChartDslTest {
-	@Test PERFECT!
+	@Test //PERFECT!
 	fun test4() {
 		println(mermaidFlowChart(LR) {
 			(node("S") text "Source") links (node("T") text "Target")
