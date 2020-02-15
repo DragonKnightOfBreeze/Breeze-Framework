@@ -403,24 +403,6 @@ fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
 
-///**去除所有空格。*/
-//fun String.removeWhiteSpace(): String {
-//	return this.replace(" ", "")
-//}
-//
-///**去除所有空白。*/
-//fun String.removeBlank(): String {
-//	return this.replace("""\s+""".toRegex(), "")
-//}
-
-
-///**
-// * 根据指定的正则表达式，基于结果分组，匹配并按顺序分割当前字符串。
-// * 不包含索引为0的分组，列表可能为空。
-// */
-//fun CharSequence.substringMatch(regex: Regex): List<String> {
-//	return regex.matchEntire(this)?.groupValues?.drop(1) ?: listOf()
-//}
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。

@@ -298,6 +298,11 @@
 * [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 * [ ] breeze-core 串行处理字符串的方法，保证可靠性和灵活性。
 
+### 1.0.13
+
+* [X] 更新版本。
+* [X] 移除一些废弃项。
+
 # 待办
 
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）

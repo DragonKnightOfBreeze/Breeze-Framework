@@ -25,8 +25,3 @@ fun Any?.smartToString(deepOperation: Boolean = true) = when {
 	!deepOperation -> this.contentToString()
 	else -> this.contentDeepToString()
 }
-
-
-/**将当前对象转化为字符串。如果为null，则转化为空字符串。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith("toString()"))
-fun Any?.toStringOrEmpty(): String = this?.toString() ?: ""

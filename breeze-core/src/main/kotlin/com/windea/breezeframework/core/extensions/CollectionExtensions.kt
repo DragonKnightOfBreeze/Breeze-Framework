@@ -273,12 +273,6 @@ fun <T> List<T>.repeatOrdinal(n: Int): List<T> {
 	return ArrayList<T>(this.size * n).also { list -> for(e in this) repeat(n) { list += e } }
 }
 
-///**分别重复当前列表中的元素到指定次数，并映射为子列表。*/
-//fun <T> List<T>.repeatChunked(n: Int): List<List<T>> {
-//	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-//	return ArrayList<List<T>>(this.size).also { list -> for(e in this) list += List(n) { e } }
-//}
-
 
 /**填充指定索引范围内的元素到当前列表。如果索引超出当前列表的长度，或为负数，则忽略。*/
 fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
@@ -324,19 +318,6 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 }
 
 
-///**将当前数组作为值的部分，与另一个数组作为键的部分组成映射。*/
-//fun <K, V> Array<out V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
-//
-///**将当前数组作为值的部分，与另一个列表作为键的部分组成映射。*/
-//fun <K, V> Array<out V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
-//
-///**将当前列表作为值的部分，与另一个数组作为键的部分组成映射。*/
-//fun <K, V> List<V>.withKeys(other: Array<out K>): Map<K, V> = (other zip this).toMap()
-//
-///**将当前列表作为值的部分，与另一个列表作为键的部分组成映射。*/
-//fun <K, V> List<V>.withKeys(other: List<K>): Map<K, V> = (other zip this).toMap()
-
-
 /**根据指定的转化操作，将当前映射中的键与值加入到指定的容器。默认的转化操作是`$k=$v`。*/
 fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
@@ -349,33 +330,6 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
-
-
-/**根据指定的转化操作，将当前数组中的元素加入到字符串。当数组为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
-fun <T> Array<out T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
-	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
-	transform: ((T) -> CharSequence)? = null): String {
-	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
-}
-
-/**根据指定的转化操作，将当前集合中的元素加入到字符串。当集合为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
-fun <T> Iterable<T>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
-	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
-	transform: ((T) -> CharSequence)? = null): String {
-	return if(this.none()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
-}
-
-/**根据指定的转化操作，将当前映射中的元素加入到字符串。当映射为空时，直接返回空字符串且忽略前后缀。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.", ReplaceWith(joinToStringSnippet))
-fun <K, V> Map<K, V>.joinToStringOrEmpty(separator: CharSequence = ", ", prefix: CharSequence = "",
-	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
-	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
-	return if(this.isEmpty()) "" else this.joinToString(separator, prefix, postfix, limit, truncated, transform)
-}
-
-private const val joinToStringSnippet = "joinToString(separator,prefix,postfix,limit,truncated,transform)"
 
 
 /**映射当前映射中的值，并过滤转换后为null的值。*/
@@ -395,51 +349,6 @@ fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
 	val result = LinkedHashMap<K, V>()
 	for((key, value) in this) if(value != null) result[key] = value
 	return result
-}
-
-/**按照类型以及附加条件过滤当前数组。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-@Suppress("DEPRECATION")
-inline fun <reified R> Array<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
-	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
-}
-
-/**按照类型以及附加条件过滤当前数组，然后置入指定的集合。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-inline fun <reified R, C : MutableCollection<in R>> Array<*>.filterIsInstanceTo(destination: C,
-	predicate: (R) -> Boolean): C {
-	for(element in this) if(element is R && predicate(element)) destination.add(element)
-	return destination
-}
-
-/**按照类型以及附加条件过滤当前列表。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-@Suppress("DEPRECATION")
-inline fun <reified R> List<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
-	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
-}
-
-/**按照类型以及附加条件过滤当前列表，然后置入指定的集合。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-inline fun <reified R, C : MutableCollection<in R>> List<*>.filterIsInstanceTo(destination: C,
-	predicate: (R) -> Boolean): C {
-	for(element in this) if(element is R && predicate(element)) destination.add(element)
-	return destination
-}
-
-/**按照类型以及附加条件过滤当前集。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-@Suppress("DEPRECATION")
-inline fun <reified R> Set<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
-	return this.filterIsInstanceTo<R, MutableList<R>>(ArrayList(), predicate)
-}
-
-/**按照类型以及附加条件过滤当前集，然后置入指定的集合。*/
-@Deprecated("Redundant extension method: Please consider checking nullability instead.")
-inline fun <reified R, C : MutableCollection<in R>> Set<*>.filterIsInstanceTo(destination: C,
-	predicate: (R) -> Boolean): C {
-	for(element in this) if(element is R && predicate(element)) destination.add(element)
-	return destination
 }
 
 
@@ -946,7 +855,7 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotEmpty(): Map<K, V>
 }
 
 /**过滤当前序列中为空字符串的元素。*/
-inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isEmpty() }
+inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
 
 
 /**过滤当前数组中为空字符串的元素，然后加入到指定的集合。*/
@@ -976,7 +885,7 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotBlank(): Map<K, V>
 }
 
 /**过滤当前序列中为空白字符串的元素。*/
-inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isBlank() }
+inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
 
 
 /**过滤当前数组中为空白字符串的元素，然后加入到指定的集合。*/

@@ -51,56 +51,6 @@ inline fun Float.exact(block: (Float) -> Number): Float = block(this).toFloat()
 inline fun Double.exact(block: (Double) -> Number): Double = block(this).toDouble()
 
 
-///**进行整乘运算。*/
-//inline infix fun Int.exactTimes(other: Int): Int = this.times(other)
-//
-///**进行整乘运算。*/
-//inline infix fun Int.exactTimes(other: Long): Int = this.times(other).toInt()
-//
-///**进行整乘运算。*/
-//inline infix fun Int.exactTimes(other: Float): Int = this.times(other).toInt()
-//
-///**进行整乘运算。*/
-//inline infix fun Int.exactTimes(other: Double): Int = this.times(other).toInt()
-//
-///**进行整乘运算。*/
-//inline infix fun Long.exactTimes(other: Int): Long = this.times(other)
-//
-///**进行整乘运算。*/
-//inline infix fun Long.exactTimes(other: Long): Long = this.times(other)
-//
-///**进行整乘运算。*/
-//inline infix fun Long.exactTimes(other: Float): Long = this.times(other).toLong()
-//
-///**进行整乘运算。*/
-//inline infix fun Long.exactTimes(other: Double): Long = this.times(other).toLong()
-//
-//
-///**进行整除运算。*/
-//inline infix fun Int.exactDiv(other: Int): Int = this.div(other)
-//
-///**进行整除运算。*/
-//inline infix fun Int.exactDiv(other: Long): Int = this.div(other).toInt()
-//
-///**进行整除运算。*/
-//inline infix fun Int.exactDiv(other: Float): Int = this.div(other).toInt()
-//
-///**进行整除运算。*/
-//inline infix fun Int.exactDiv(other: Double): Int = this.div(other).toInt()
-//
-///**进行整除运算。*/
-//inline infix fun Long.exactDiv(other: Int): Long = this.div(other)
-//
-///**进行整除运算。*/
-//inline infix fun Long.exactDiv(other: Long): Long = this.div(other)
-//
-///**进行整除运算。*/
-//inline infix fun Long.exactDiv(other: Float): Long = this.div(other).toLong()
-//
-///**进行整除运算。*/
-//inline infix fun Long.exactDiv(other: Double): Long = this.div(other).toLong()
-
-
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
 fun Int.getDigitNumber(index: Int): Int {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
