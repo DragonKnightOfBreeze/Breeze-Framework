@@ -176,6 +176,7 @@ fun String.transformIn(regex: Regex, transform: (String) -> String): String {
 	return this.replace(regex) { transform(it[0]) }
 }
 
+
 /**并行处理当前字符串。注意应在作为参数的代码块中使用[replaceFirst]方法替换字符串，而非[replace]方法。*/
 @NotSure
 tailrec fun String.sequential(vararg blocks: (String) -> String): String {
@@ -184,6 +185,55 @@ tailrec fun String.sequential(vararg blocks: (String) -> String): String {
 		result = block(this)
 	}
 	return if(this != result) this.sequential(*blocks) else this
+}
+
+
+/**根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceIn(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + 1, lastIndex, replacement)
+}
+
+/**根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceIn(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
+}
+
+/**根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceInLast(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + 1, lastIndex, replacement)
+}
+
+/**根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceInLast(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
+}
+
+/**根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceInEntire(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + 1, lastIndex, replacement)
+}
+
+/**根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
+@JvmOverloads
+fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
 
 
@@ -236,18 +286,21 @@ inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = f
 
 
 /**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
+@NotSure
 tailrec fun String.replaceLooped(oldValue: String, newValue: String): String {
 	val result = this.replace(oldValue, newValue)
 	return if(this != result) result.replaceLooped(oldValue, newValue) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@NotSure
 tailrec fun CharSequence.replaceLooped(regex: Regex, replacement: String): String {
 	val result = this.replace(regex, replacement)
 	return if(this != result) result.replaceLooped(regex, replacement) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@NotSure
 tailrec fun CharSequence.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
 	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等

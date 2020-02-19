@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-puml.main" target="11" />
+      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-puml.test" target="11" />
       <module name="Breeze-Framework.breeze-dsl.breeze-dsl-starbound.main" target="11" />
       <module name="Breeze-Framework.breeze-dsl.breeze-dsl-starbound.test" target="11" />
     </bytecodeTargetLevel>
