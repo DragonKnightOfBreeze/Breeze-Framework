@@ -5,7 +5,7 @@ package com.windea.breezeframework.time.extensions
 import java.time.*
 import java.time.temporal.*
 
-//region operator override extensions
+//region operator extensions
 /**@see java.time.Year.plusYears*/
 operator fun Year.plus(years: Int): Year = this.plusYears(years.toLong())
 

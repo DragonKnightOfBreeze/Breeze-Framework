@@ -67,7 +67,7 @@ inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap
 fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 //endregion
 
-//region operator override extensions
+//region operator extensions
 /**@see kotlin.collections.slice*/
 operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
 
@@ -417,7 +417,7 @@ fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.
 
 private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
 	val subPaths = path.splitBy(pathCase)
-	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' cannot be empty.")
+	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
 	var currentValue = this
 	for(subPath in subPaths) {
 		currentValue = currentValue.collectionGet(subPath)
@@ -435,7 +435,6 @@ private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
  *
  * @see ReferenceCase.PathReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
@@ -449,7 +448,6 @@ fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = Refer
  *
  * @see ReferenceCase.JavaReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
@@ -463,14 +461,13 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
  *
  * @see ReferenceCase.PathReference
  */
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
 @JvmOverloads
 fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
 	this.deepSet0(path, value, pathCase)
 
 private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
 	val subPaths = path.splitBy(pathCase)
-	if(subPaths.isEmpty()) throw IllegalArgumentException("Target path '$path' cannot be empty.")
+	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
 	var currentValue = this
 	for(subPath in subPaths.dropLast(1)) {
 		currentValue = currentValue.collectionGet(subPath)
@@ -513,18 +510,6 @@ fun <T> Iterable<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceC
  */
 @JvmOverloads
 fun <T> Map<*, *>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> =
-	this.deepQuery0(path, pathCase, returnPathCase)
-
-/**
- * 根据指定路径递归查询当前序列，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Sequence<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
 	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> =
 	this.deepQuery0(path, pathCase, returnPathCase)
 
@@ -579,7 +564,7 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
 				}
 				//当尝试查询非集合类型的数据时，要求抛出异常
-				else -> notAValidCollection(this)
+				else -> notAValidCollection()
 			}
 		}
 	}
@@ -588,50 +573,39 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 
 
 /**
- * 根据深度递归平滑映射当前数组，返回匹配的值列表。默认递归映射直到到找不到集合类型的元素为止。返回值中路径的格式默认为路径引用。
+ * 根据深度递归平滑映射当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
- *
- * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> =
-	this.deepFlatten0(depth)
+fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前集合，返回匹配的值列表。默认递归映射直到到找不到集合类型的元素为止。返回值中路径的格式默认为路径引用。
+ * 根据深度递归平滑映射当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
- *
- * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> =
-	this.deepFlatten0(depth)
+fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前映射，返回匹配的值列表。默认递归映射直到到找不到集合类型的元素为止。返回值中路径的格式默认为路径引用。
+ * 根据深度递归平滑映射当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
- *
- * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> =
-	this.deepFlatten0(depth)
+fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前序列，返回匹配的值列表。默认递归映射直到到找不到集合类型的元素为止。返回值中路径的格式默认为路径引用。
+ * 根据深度递归平滑映射当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
- *
- * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> =
-	this.deepFlatten0(depth)
+fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 private fun Any?.deepFlatten0(depth: Int = -1): List<Any?> {
+	require(depth == -1 || depth > 0) { "Target depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth
 	while(currentDepth != 0) {
@@ -663,7 +637,7 @@ private fun Any?.collectionGet(indexOrKey: String): Any? {
 		is Iterable<*> -> this.elementAt(indexOrKey.toIntOrThrow())
 		is Map<*, *> -> this[indexOrKey]
 		is Sequence<*> -> this.elementAt(indexOrKey.toIntOrThrow())
-		else -> notAValidCollection(this)
+		else -> notAValidCollection()
 	}
 }
 
@@ -677,7 +651,7 @@ private fun Any?.collectionSet(indexOrKey: String, value: Any?) {
 		}
 		is MutableList<*> -> (this as MutableList<Any?>)[indexOrKey.toIntOrThrow()] = value
 		is MutableMap<*, *> -> (this as MutableMap<String, Any?>)[indexOrKey] = value
-		else -> notAValidMutableCollection(this)
+		else -> notAValidMutableCollection()
 	}
 }
 
@@ -693,16 +667,16 @@ private fun notAnIndex(path: String): Nothing {
 	throw IllegalArgumentException("Path '$path' is not a valid index.")
 }
 
-private fun notAValidCollection(collection: Any?): Nothing {
-	throw IllegalArgumentException("'${collection.smartToString()}' is not a valid collection (Array, Iterable, Map or Sequence).")
+private fun notAValidCollection(): Nothing {
+	throw IllegalArgumentException("Receiver is  not a valid collection (Array, Iterable, Map or Sequence).")
 }
 
-private fun notAValidMutableCollection(collection: Any?): Nothing {
-	throw IllegalArgumentException("'${collection.smartToString()}' is not a valid collection (Array, MutableList or MutableMap).")
+private fun notAValidMutableCollection(): Nothing {
+	throw IllegalArgumentException("Receiver is not a valid collection (Array, MutableList or MutableMap).")
 }
 
-private fun notAStringKeyMap(collection: Any?): Nothing {
-	throw IllegalArgumentException("'${collection}' is a map but type of it's key is not String.")
+private fun notAStringKeyMap(): Nothing {
+	throw IllegalArgumentException("'Receiver is a map but type of it's key is not String.")
 }
 
 private fun typeMismatched(value: Any?): Nothing {

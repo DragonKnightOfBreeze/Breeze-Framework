@@ -9,12 +9,7 @@ import kotlin.reflect.*
 //region generic extensions
 /**判断指定名字的Class是否在classpath中。*/
 fun checkClassForName(className: String): Boolean {
-	return try {
-		Class.forName(className)
-		true
-	} catch(e: Error) {
-		false
-	}
+	return runCatching { Class.forName(className) }.isSuccess
 }
 
 
@@ -39,7 +34,6 @@ inline fun nameOf(target: Any?): String? = when {
 //region Any extensions
 /**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
 @ImpliesSmartCast
-@JvmSynthetic
 infix fun Any.isInstanceOf(type: Class<*>): Boolean {
 	return type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
 }

@@ -16,7 +16,7 @@ import kotlin.contracts.*
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
-//region operator override extensions
+//region operator extensions
 /**@see kotlin.text.slice*/
 operator fun String.get(indices: IntRange): String = this.slice(indices)
 

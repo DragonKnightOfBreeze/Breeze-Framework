@@ -37,7 +37,8 @@ interface SerializerConfig
 
 //region reified extensions
 
-//这里使用 typeOf<T>() 会导致错误 NotImplementedError (Java type is not yet supported for types created with ...)
+//这里使用 typeOf<T>() 会导致错误
+//NotImplementedError (Java type is not yet supported for types created with ...)
 //因此这里需要使用 javaTypeOf<T>()，参考Jackson的TypeReference的实现
 
 /**从指定字符串读取指定类型的数据。*/

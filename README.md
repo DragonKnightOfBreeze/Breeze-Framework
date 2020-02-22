@@ -17,7 +17,7 @@ NOTE：
 ## breeze-core
 
 * Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
-  * Including some extra operator override extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
+  * Including some extra operator extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
   * Including some extended infix extensions for String, Collections. (e.g, `String.startsWith`, `Iterable.allIn`.)
   * Including some powerful handle extensions for String. (e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.)
   * Including some deep operation extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
@@ -167,53 +167,26 @@ logger.warn("Some warn.")
 
 # Usage
 
-Possible needed api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
-
 ## Maven
 
 ```xml
-<project>
-  ...
-  <dependencies>
-    <dependency>
-      <groupId>com.windea.breezeframework</groupId>
-      <artifactId>${module}</artifactId>
-      <version>${version}</version>
-    </dependency>
-  </dependencies>
-  ...
-  <repositories>
-    <repository>
-      <id>github-packages</id>
-      <name>Github Packages</name>
-      <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
-    </repository>
-  </repositories>
-</project>
+<dependency>
+  <groupId>com.windea.breezeframework</groupId>
+  <artifactId>${module}</artifactId>
+  <version>${version}</version>
+</dependency>
 ```
 
 ## Gradle
 
 ```groovy
-repositories {
-    maven { url "https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework" }
-}
-
-dependencies {
-    implementation "com.windea.breezeframework:$module:$version"
-}
+implementation "com.windea.breezeframework:$module:$version"
 ```
 
 ## Gradle Kts
 
 ```kotlin
-repositories {
-    maven { url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
-}
-
-dependencies {
-    implementation("com.windea.breezeframework:$module:$version")
-}
+implementation("com.windea.breezeframework:$module:$version")
 ```
 
 # Example
