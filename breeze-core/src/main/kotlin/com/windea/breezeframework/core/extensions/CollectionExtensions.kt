@@ -608,7 +608,7 @@ fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth
 @JvmOverloads
 fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
-private fun Any?.deepFlatten0(depth: Int = -1): List<Any?> {
+private fun Any?.deepFlatten0(depth: Int): List<Any?> {
 	require(depth == -1 || depth > 0) { "Target depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth

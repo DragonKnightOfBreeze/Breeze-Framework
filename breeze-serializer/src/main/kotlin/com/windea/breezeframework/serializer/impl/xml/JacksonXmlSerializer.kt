@@ -1,6 +1,5 @@
 package com.windea.breezeframework.serializer.impl.xml
 
-import com.fasterxml.jackson.core.type.*
 import com.fasterxml.jackson.dataformat.xml.*
 import com.fasterxml.jackson.module.kotlin.*
 import com.windea.breezeframework.core.extensions.*
@@ -26,11 +25,11 @@ internal object JacksonXmlSerializer : XmlSerializer, JacksonSerializer<XmlMappe
 	}
 
 	override fun <T : Any> read(string: String, type: Type): T {
-		return mapper.readValue(string, object : TypeReference<T>() {})
+		return mapper.readValue(string, mapper.typeFactory.constructType(type))
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {
-		return mapper.readValue(file, object : TypeReference<T>() {})
+		return mapper.readValue(file, mapper.typeFactory.constructType(type))
 	}
 
 	override fun <T : Any> write(data: T): String {

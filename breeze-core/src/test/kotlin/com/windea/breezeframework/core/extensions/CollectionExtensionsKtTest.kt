@@ -118,9 +118,7 @@ class CollectionExtensionsKtTest {
 			listOf(111, 222, 333, listOf(444)),
 			mapOf("a" to listOf("a"), "b" to listOf("b"))
 		)
-		list.deepFlatten(-2).also { println(it) }
 		list.deepFlatten().also { println(it) }
-		list.deepFlatten(0).also { println(it) }
 		list.deepFlatten(1).also { println(it) }
 		list.deepFlatten(2).also { println(it) }
 		list.deepFlatten(3).also { println(it) }
