@@ -2,11 +2,11 @@
 
 package com.windea.breezeframework.generator.code
 
-import com.windea.breezeframework.core.enums.core.*
+import com.windea.breezeframework.core.enums.text.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.data.enums.*
-import com.windea.breezeframework.data.serializers.*
 import com.windea.breezeframework.generator.*
+import com.windea.breezeframework.serializer.*
+import com.windea.breezeframework.serializer.extensions.*
 import java.io.*
 
 /**Sql语句的生成器。*/
@@ -17,7 +17,7 @@ object SqlGenerator : Generator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.load<SqlDataMap>(inputText)
+		val inputMap = inputType.serializer.read<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
 
@@ -27,7 +27,7 @@ object SqlGenerator : Generator {
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
 	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.load<SqlDataMap>(inputFile)
+		val inputMap = inputType.serializer.read<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
 

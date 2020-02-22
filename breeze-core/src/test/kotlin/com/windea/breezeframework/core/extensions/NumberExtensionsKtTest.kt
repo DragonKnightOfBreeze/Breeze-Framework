@@ -22,14 +22,6 @@ class NumberExtensionsKtTest {
 	//}
 
 	@Test
-	fun round() {
-		println(1.11111f.round(2))
-		println(1.55555f.round(2))
-		println(1.50000f.round(2))
-		println(1.99999f.round(2))
-	}
-
-	@Test //TESTED
 	fun toNumber() {
 		println(1.toNumber<Byte>())
 		println(1.toNumber<Short>())

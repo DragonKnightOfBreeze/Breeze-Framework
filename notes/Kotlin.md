@@ -2,7 +2,7 @@
 
 ## 未整理
 
-* Kotlin中不可进行隐式转化，例如，将Int转化为Long，必须隐式调用`anInt.toLong()`方法。
+* Kotlin中不可进行隐式转化，例如，将Int转化为Long，必须调用`anInt.toLong()`方法。
 * Kotlin中的包名可以为lowercase、camelCase、snake_case或者中文，不能包含`-`。推荐使用camelCase。
 * Kotlin中的项名（类、变量等）可以为任意合法的utf-8字符，不能包含`.`。需要的时候可用反斜杠包起来。
 * `System.exit(0)`中作为参数的Int值表示的是错误码，可用16进制表示。应当提供错误码-错误提示表。
@@ -34,7 +34,7 @@
 * `getDeclaredMethod`：得到类中所有声明的方法
 * `getMethod`：得到类中所有有访问权限的方法。
 * 名如`XxxKt`的类在kotlin中是不可见的，但在java中可见。但可以通过`Class.forName()`得到。
-* 通过kotlin反射未属性设置值：`(kClass.memberProperties as KMutableProperty1<T,R>).set(...)`。
+* 通过kotlin反射为属性设置值：`(kClass.memberProperties as KMutableProperty1<T,R>).set(...)`。
 * `person.class`和`person.javaClass.kotlin`的区别：前者有协变，返回的是`KClass<out T>`，后者则是`KClass<T>`。
 * Kotlin反射的性能要比原生java反射的性能低很多。
 

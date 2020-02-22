@@ -2,13 +2,13 @@
 
 package com.windea.breezeframework.dsl.sequence
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**序列图的Dsl。*/
-@ReferenceApi("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
+@Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
 @MustBeDocumented
 internal annotation class SequenceDiagramDsl
@@ -24,15 +24,15 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 	override var splitContent: Boolean = true
 
 	override fun toString(): String {
-		return arrayOf(
-			title.toStringOrEmpty(),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(split)
+		return listOfNotNull(
+			title?.toString(),
+			toContentString().orNull()
+		).joinToString(split)
 	}
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
 interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
@@ -40,16 +40,16 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
 
-	fun toContentString(): String {
-		return arrayOf(
-			participants.joinToStringOrEmpty("\n"),
-			messages.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			participants.orNull()?.joinToString("\n"),
+			messages.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@SequenceDiagramDsl
-	override fun String.fromTo(other: String) = message(this, other)
+	override fun String.links(other: String) = message(this, other)
 }
 
 /**序列图Dsl的元素。*/
@@ -61,7 +61,7 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	@MultilineProp("\\n")
+	@MultilineDslProperty("\\n")
 	val text: String
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
@@ -116,7 +116,7 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 class SequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : SequenceDiagramDslElement {
-	@MultilineProp("\\n")
+	@MultilineDslProperty("\\n")
 	var text: String = ""
 
 	override fun toString(): String {
@@ -145,7 +145,7 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @SequenceDiagramDsl
 inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().also { it.block() }
 
@@ -174,19 +174,19 @@ inline fun SequenceDiagramDslEntry.message(
 inline fun SequenceDiagramDslEntry.note(location: SequenceDiagramNote.Location) =
 	SequenceDiagramNote(location).also { notes += it }
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.leftOf(participantId: String) =
+fun SequenceDiagramDslEntry.leftOf(participantId: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.LeftOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.rightOf(participantId: String) =
+fun SequenceDiagramDslEntry.rightOf(participantId: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @SequenceDiagramDsl
-inline fun SequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+fun SequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
 	SequenceDiagramNote.Location(SequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @SequenceDiagramDsl
@@ -209,5 +209,5 @@ inline infix fun SequenceDiagramNote.text(text: String) =
 //region helpful extensions
 /**将`\n`或`\r`替换成`\\n`和`\\r`。*/
 @PublishedApi
-internal fun String.replaceWithEscapedWrap() = this.replaceAll("\n" to "\\n", "\r" to "\\r")
+internal fun String.replaceWithEscapedWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 //endregion

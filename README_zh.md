@@ -55,60 +55,32 @@
 * [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
 ## 用法
-
-可能需要用到的api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
 
 ## Maven
 
 ```xml
-<project>
-  ...
-  <dependencies>
-    <dependency>
-      <groupId>com.windea.breezeframework</groupId>
-      <artifactId>${module}</artifactId>
-      <version>${version}</version>
-    </dependency>
-  </dependencies>
-  ...
-  <repositories>
-    <repository>
-      <id>github-packages</id>
-      <name>Github Packages</name>
-      <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
-    </repository>
-  </repositories>
-</project>
+<dependency>
+  <groupId>com.windea.breezeframework</groupId>
+  <artifactId>${module}</artifactId>
+  <version>${version}</version>
+</dependency>
 ```
 
 ## Gradle
 
 ```groovy
-repositories {
-    maven { url "https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework" }
-}
-
-dependencies {
-    implementation "com.windea.breezeframework:$module:$version"
-}
+implementation "com.windea.breezeframework:$module:$version"
 ```
 
 ## Gradle Kts
 
 ```kotlin
-repositories {
-    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
-}
-
-dependencies {
-    implementation("com.windea.breezeframework:$module:$version")
-}
+implementation("com.windea.breezeframework:$module:$version")
 ```
 
 # 示例
 
 参见：[ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
-
-链接：[Github Link](https://github.com/DragonKnightOfBreeze/Breeze-Framework/blob/master/breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).

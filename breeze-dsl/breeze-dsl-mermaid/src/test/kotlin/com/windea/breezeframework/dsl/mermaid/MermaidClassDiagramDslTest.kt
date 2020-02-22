@@ -4,7 +4,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidClassDiagramAnnotation.Type
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {
-	@Test //TESTED OK
+	@Test //OK
 	fun test1() {
 		println(mermaidClassDiagram {
 			`class`("Person") {
@@ -30,7 +30,7 @@ class MermaidClassDiagramDslTest {
 			}
 			`class`("Weapon")
 			`class`("Magic")
-			
+
 			"Person" inheritedBy "BreezeKnights" text "Here are dragon knights!" cardinality ("1" to "*")
 		})
 	}

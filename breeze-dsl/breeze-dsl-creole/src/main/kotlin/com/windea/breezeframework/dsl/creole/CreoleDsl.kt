@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.creole
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.creole.CreoleConfig.emptyColumnText
@@ -10,9 +10,9 @@ import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
 //DELAY add dsl element: HtmlBlock
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Creole的Dsl。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+@Reference("[Creole](http://plantuml.com/zh/creole)")
 @DslMarker
 @MustBeDocumented
 internal annotation class CreoleDsl
@@ -22,11 +22,11 @@ internal annotation class CreoleDsl
 class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
 
-	override fun toString() = content.joinToStringOrEmpty("\n\n")
+	override fun toString() = content.joinToString("\n\n")
 }
 
 /**Creole的配置。*/
-@ReferenceApi("[Creole](http://plantuml.com/zh/creole)")
+@Reference("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 object CreoleConfig : DslConfig {
 	private val indentSizeRange = -2..8
@@ -46,7 +46,7 @@ object CreoleConfig : DslConfig {
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Creole Dsl的内联入口。*/
 @CreoleDsl
 interface CreoleDslInlineEntry : DslEntry
@@ -64,105 +64,12 @@ interface CreoleDslEntry : DslEntry, WithText<CreoleTextBlock> {
 @CreoleDsl
 interface CreoleDslElement : DslElement, CreoleDslInlineEntry
 
-/**Creole Dsl的内联元素。*/
-@CreoleDsl
-interface CreoleDslInlineElement : CreoleDslElement
-
 /**Creole Dsl的顶级元素。*/
 @CreoleDsl
 interface CreoleDslTopElement : CreoleDslElement
 //endregion
 
 //region dsl elements
-/**Creole文本。*/
-@CreoleDsl
-class CreoleText @PublishedApi internal constructor(
-	val text: String
-) : CreoleDslInlineElement {
-	override fun toString(): String {
-		return text
-	}
-}
-
-/**Creole转义文本。*/
-@CreoleDsl
-class CreoleEscapedText @PublishedApi internal constructor(
-	val text: String
-) : CreoleDslInlineElement {
-	override fun toString(): String {
-		return "~$text"
-	}
-}
-
-/**Creole图标。可以使用open iconic图标。*/
-@ReferenceApi("[OpenIconic](https://useiconic.com/open/)")
-@CreoleDsl
-class CreoleIcon @PublishedApi internal constructor(
-	val name: String
-) : CreoleDslInlineElement {
-	override fun toString(): String {
-		return "<&$name>"
-	}
-}
-
-/**Creole Unicode字符。*/
-@CreoleDsl
-class CreoleUnicode @PublishedApi internal constructor(
-	val number: Int
-) : CreoleDslInlineElement {
-	override fun toString(): String {
-		return "<U+$number>"
-	}
-}
-
-/**Creole富文本。*/
-@CreoleDsl
-sealed class CreoleRichText(
-	val markers: String,
-	val text: String
-) : CreoleDslInlineElement {
-	override fun toString(): String {
-		return "$markers$text$markers"
-	}
-}
-
-/**Creole加粗文本。*/
-@CreoleDsl
-class CreoleBoldText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("**", text)
-
-/**Creole斜体文本。*/
-@CreoleDsl
-class CreoleItalicText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("//", text)
-
-/**Creole代码文本。*/
-@CreoleDsl
-class CreoleMonospacedText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("\"\"", text)
-
-/**Creole删除文本。*/
-@CreoleDsl
-class CreoleStrokedText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("--", text)
-
-/**Creole下划线文本。*/
-@CreoleDsl
-class CreoleUnderlinedText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("__", text)
-
-/**Creole波浪下划线文本。*/
-@CreoleDsl
-class CreoleWavedText @PublishedApi internal constructor(
-	text: String
-) : CreoleRichText("~~", text)
-
-
 /**Creole文本块。*/
 @CreoleDsl
 class CreoleTextBlock @PublishedApi internal constructor(
@@ -241,7 +148,7 @@ class CreoleList @PublishedApi internal constructor() : CreoleDslTopElement {
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
 
 	override fun toString(): String {
-		return nodes.joinToStringOrEmpty("\n")
+		return nodes.joinToString("\n")
 	}
 }
 
@@ -254,7 +161,7 @@ sealed class CreoleListNode(
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
 
 	override fun toString(): String {
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n") { "${it.prefixMarker}$it" }
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { "${it.prefixMarker}$it" }.orEmpty()
 		return "$prefixMarker $text$nodesSnippet"
 	}
 }
@@ -279,7 +186,7 @@ class CreoleTree @PublishedApi internal constructor(
 	val nodes: MutableList<CreoleTreeNode> = mutableListOf()
 
 	override fun toString(): String {
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n")
+		val nodesSnippet = nodes.joinToString("\n", "\n")
 		return "$title$nodesSnippet"
 	}
 }
@@ -294,9 +201,7 @@ class CreoleTreeNode @PublishedApi internal constructor(
 	override fun toString(): String {
 		//include prefix "|_", add it to first line, add spaces to other lines
 		val textSnippet = "|_ $text"
-		val nodesSnippet = nodes.joinToStringOrEmpty("\n", "\n") {
-			it.toString().prependIndent("   ")
-		}
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { it.toString().prependIndent("   ") }.orEmpty()
 		return "$textSnippet$nodesSnippet"
 	}
 }
@@ -318,7 +223,7 @@ class CreoleTable @PublishedApi internal constructor() : CreoleDslTopElement {
 		rows.forEach { it.columnSize = actualColumnSize }
 
 		val headerRowSnippet = header.toString()
-		val rowsSnippet = rows.joinToStringOrEmpty("\n")
+		val rowsSnippet = rows.joinToString("\n")
 		return "$headerRowSnippet\n$rowsSnippet"
 	}
 
@@ -340,7 +245,7 @@ class CreoleTableHeader @PublishedApi internal constructor() : CreoleDslElement,
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
 			else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty("|", "|", "|")
+		}.joinToString("|", "|", "|")
 	}
 
 	@CreoleDsl
@@ -364,7 +269,7 @@ open class CreoleTableRow @PublishedApi internal constructor() : CreoleDslElemen
 		return when {
 			columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
 			else -> columns.map { it.toString() }.fillEnd(columnSize!!, emptyColumnText)
-		}.joinToStringOrEmpty(" | ", "| ", " |")
+		}.joinToString(" | ", "| ", " |")
 	}
 
 	@CreoleDsl
@@ -392,49 +297,70 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @CreoleDsl
 inline fun creole(block: Creole.() -> Unit) = Creole().also { it.block() }
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.text(text: String) = CreoleText(text).toString()
+fun CreoleDslInlineEntry.text(text: String): String {
+	return text
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.escaped(text: String) = CreoleEscapedText(text).toString()
+fun CreoleDslInlineEntry.escaped(text: String): String {
+	return "~$text"
+}
 
-@InlineDsl
+@Reference("[OpenIconic](https://useiconic.com/open/)")
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.icon(name: String) = CreoleIcon(name).toString()
+fun CreoleDslInlineEntry.icon(name: String): String {
+	return "<&$name>"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.unicode(number: Int) = CreoleUnicode(number).toString()
+fun CreoleDslInlineEntry.unicode(number: Int): String {
+	return "<U+$number>"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.b(text: String) = CreoleBoldText(text).toString()
+fun CreoleDslInlineEntry.b(text: String): String { //bold
+	return "**$text**"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.i(text: String) = CreoleItalicText(text).toString()
+fun CreoleDslInlineEntry.i(text: String): String { //italic
+	return "//$text//"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.m(text: String) = CreoleMonospacedText(text).toString()
+fun CreoleDslInlineEntry.m(text: String): String { //monospaced
+	return "\"\"$text\"\""
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.s(text: String) = CreoleStrokedText(text).toString()
+fun CreoleDslInlineEntry.s(text: String): String { //stroked
+	return "--$text--"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.u(text: String) = CreoleUnderlinedText(text).toString()
+fun CreoleDslInlineEntry.u(text: String): String { //underline
+	return "__${text}__"
+}
 
-@InlineDsl
+@InlineDslFunction
 @CreoleDsl
-inline fun CreoleDslInlineEntry.w(text: String) = CreoleWavedText(text).toString()
+fun CreoleDslInlineEntry.w(text: String): String { //waved
+	return "~~$text~~"
+}
 
 @CreoleDsl
 inline fun CreoleDslEntry.textBlock(lazyText: () -> String) =
@@ -468,6 +394,7 @@ inline fun CreoleDslEntry.h3(text: String) =
 inline fun CreoleDslEntry.h4(text: String) =
 	CreoleHeading4(text).also { content += it }
 
+@CreoleDsl
 inline fun CreoleDslEntry.tree(title: String, block: CreoleTree.() -> Unit) =
 	CreoleTree(title).also { it.block() }.also { content += it }
 

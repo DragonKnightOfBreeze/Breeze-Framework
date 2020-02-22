@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -10,9 +10,9 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid类图的Dsl。*/
-@ReferenceApi("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
+@Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidClassDiagramDsl
@@ -33,7 +33,7 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
 interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
@@ -41,19 +41,15 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
 
-	fun toContentString(): String {
-		return arrayOf(
-			classes.joinToStringOrEmpty("\n"),
-			relations.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			classes.orNull()?.joinToString("\n"),
+			relations.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidClassDiagramDsl
-	override fun String.fromTo(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Link)
-
-	@MermaidClassDiagramDsl
-	infix fun String.link(other: String) =
+	override fun String.links(other: String) =
 		relation(this, other, MermaidClassDiagramRelation.Type.Link)
 
 	@MermaidClassDiagramDsl
@@ -112,18 +108,19 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 	override fun hashCode() = hashCodeByOne(this) { id }
 
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			annotation.toStringOrEmpty(),
-			statements.joinToStringOrEmpty("\n")
-		).filterNotEmpty().ifEmpty { return "class $name" }.joinToStringOrEmpty("\n").applyIndent(indent)
+		val contentSnippet = listOfNotNull(
+			annotation?.toString(),
+			statements.orNull()?.joinToString("\n")
+		).orNull()?.joinToString("\n")?.applyIndent(indent).orEmpty()
+		if(contentSnippet.isEmpty()) return "class $name"
 		return "class $name {\n$contentSnippet\n}"
 	}
 
-	@InlineDsl
+	@InlineDslFunction
 	@MermaidClassDiagramDsl
-	operator fun String.invoke(vararg params: String) = "$this(${params.joinToStringOrEmpty()})"
+	operator fun String.invoke(vararg params: String) = "$this(${params.joinToString()})"
 
-	@InlineDsl
+	@InlineDslFunction
 	@MermaidClassDiagramDsl
 	infix fun String.type(type: String) = "$this: $type"
 }
@@ -169,7 +166,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val toClassId: String,
 	val type: Type
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null
@@ -180,9 +177,9 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 
 	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
-		return arrayOf(
+		return listOfNotNull(
 			fromClassId, fromCardinality?.quote(quote), type.text, toCardinality?.quote(quote), toClassId
-		).filterNotNull().joinToStringOrEmpty(" ", "", text?.let { ": $it" }.orEmpty())
+		).orNull()?.joinToString(" ", "", text?.let { ": $it" }.orEmpty()).orEmpty()
 	}
 
 	/**Mermaid类图关系的类型。*/
@@ -196,7 +193,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidClassDiagramDsl
 inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
 	MermaidClassDiagram().also { it.block() }

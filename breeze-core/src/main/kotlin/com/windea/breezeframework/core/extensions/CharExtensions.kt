@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-//region operator override extensions
+//region operator extensions
 /**@see com.windea.breezeframework.core.extensions.repeat */
 operator fun Char.times(n: Int): String = this.repeat(n)
 //endregion

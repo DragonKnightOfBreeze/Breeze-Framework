@@ -5,11 +5,12 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.jetbrains.kotlin.jvm") version "1.3.60"
 	id("org.jetbrains.dokka") version "0.9.18"
+	id("com.jfrog.bintray") version "1.8.4"
 }
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.11"
+	version = "1.0.13"
 
 	//应用插件
 	apply {
@@ -41,7 +42,7 @@ allprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xjvm-default=compatibility",
+					"-Xuse-experimental=kotlin.Experimental",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -55,6 +56,7 @@ allprojects {
 					"-Xjsr305=strict",
 					"-Xinline-classes",
 					"-Xjvm-default=enable",
+					"-Xuse-experimental=kotlin.Experimental",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -66,6 +68,7 @@ allprojects {
 subprojects {
 	apply {
 		plugin("org.gradle.maven-publish")
+		plugin("com.jfrog.bintray")
 	}
 
 	//构建source jar
@@ -85,7 +88,7 @@ subprojects {
 		//配置包含的jar
 		publications {
 			//创建maven的jar
-			register<MavenPublication>("gpr") {
+			register<MavenPublication>("maven") {
 				from(components["java"])
 				artifact(sourcesJar)
 				artifact(javadocJar)
@@ -96,6 +99,7 @@ subprojects {
 						provides many useful extensions for standard library and some frameworks.
 						What it can do is more than what you think it can do.
 					""".trimIndent())
+					packaging = "jar"
 					url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
 					licenses {
 						license {
@@ -129,9 +133,20 @@ subprojects {
 			}
 		}
 	}
+
+	//bintray远程仓库，可间接上传到jcenter
+	bintray {
+		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
+		user = System.getenv("BINTRAY_USER")
+		key = System.getenv("BINTRAY_API_KEY")
+		setPublications("maven")
+		pkg.repo = rootProject.name
+		pkg.name = project.name
+		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
+		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+		pkg.setLicenses("MIT")
+		pkg.version.name = version.toString()
+		pkg.version.vcsTag = version.toString()
+		publish = true
+	}
 }
-
-
-
-
-

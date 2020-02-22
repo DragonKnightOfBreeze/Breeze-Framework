@@ -7,16 +7,12 @@ import java.io.*
 import java.text.*
 import java.util.*
 
-class SimpleLogger : Logger {
-	override val config: LoggerConfig
+/**简单的日志器。*/
+class SimpleLogger(
+	override val config: LoggerConfig = LoggerConfig()
+) : Logger {
+	constructor(block: LoggerConfig.() -> Unit) : this(LoggerConfig().apply(block))
 
-	constructor() {
-		config = LoggerConfig()
-	}
-
-	constructor(configBlock: LoggerConfig.() -> Unit) {
-		config = LoggerConfig().also(configBlock)
-	}
 
 	override fun trace(message: Any?) = log(LogLevel.Trace, message)
 

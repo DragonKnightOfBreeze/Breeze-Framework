@@ -1,8 +1,8 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.enums.core.*
-import com.windea.breezeframework.core.enums.core.LetterCase.*
-import com.windea.breezeframework.core.enums.core.ReferenceCase.*
+import com.windea.breezeframework.core.enums.text.*
+import com.windea.breezeframework.core.enums.text.LetterCase.*
+import com.windea.breezeframework.core.enums.text.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
 
@@ -38,7 +38,7 @@ class ExampleTest {
 		//true
 		println("Hello world" endsWith "world")
 		//true
-		println("Hello world" endsWithIc "World")
+		println("Hello world" endsWithIgnoreCase "World")
 
 		//1{0}2{1}3{2}
 		println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })

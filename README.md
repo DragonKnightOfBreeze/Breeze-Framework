@@ -1,5 +1,7 @@
 # Summary
 
+[中文文档](README_zh.md)
+
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
 Integrated code framework based on Kotlin,
@@ -17,22 +19,22 @@ NOTE：
 ## breeze-core
 
 * Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
-  * Including some extra operator override extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
+  * Including some extra operator extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
   * Including some extended infix extensions for String, Collections. (e.g, `String.startsWith`, `Iterable.allIn`.)
   * Including some powerful handle extensions for String. (e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.)
-  * Including some deep operator extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
+  * Including some deep operation extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
   * Including some convert extensions for Number, String etc. (e.g, `String.toFile`, `String.toEnumValue`.)
 * Provide global extensions missing in stdlib.
   * Including some todo extensions. (e.g, `FIXME`, `DELAY`.)
   * Including some scope extensions. (e.g, `once`, `tryOrPrint`, `tryOrIgnore`.)
   * Including some useful extension associated to type. (e.g, `javaTypeOf<T>()`, `cast<T>()`)
-* Provide basic annotations, consts, enums and interfaces.
+* Provide basic annotations, consts, enums and interfaces maybe useful.
 * Provide generator extensions for `equals`, `hashcode` and `toString`. (e,g, `equalsBy`, `equalsByOne`)
 
 ## breeze-data
 
-* Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
-* Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`, `Jackson`.
+* Provide some useful extensions for data-use. (e.g, `serialize`, `deserialize`, `reserialize`)
+* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
 
 ## breeze-dsl
 
@@ -72,8 +74,10 @@ Usage:
 
 ```
 val http = Http()
-http.get("https://httpbin.org")
-http.get("https://httpbin.org") { query("name", "Windea") }
+val response = http.get("https://httpbin.org/").send(http)
+println(response)
+val response2 = http.get("https://httpbin.org") {query("name", "Windea")}.send(http)
+println(response2)
 ```
 
 ## breeze-javafx
@@ -163,60 +167,32 @@ logger.warn("Some warn.")
 * [hankdavidson/ktime](https://github.com/hankdavidson/ktime)
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
+* [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
 # Usage
-
-Possible needed api key: `5558ef52e2a46a0b88182227efba5dcc60a77499`。
 
 ## Maven
 
 ```xml
-<project>
-  ...
-  <dependencies>
-    <dependency>
-      <groupId>com.windea.breezeframework</groupId>
-      <artifactId>${module}</artifactId>
-      <version>${version}</version>
-    </dependency>
-  </dependencies>
-  ...
-  <repositories>
-    <repository>
-      <id>github-packages</id>
-      <name>Github Packages</name>
-      <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
-    </repository>
-  </repositories>
-</project>
+<dependency>
+  <groupId>com.windea.breezeframework</groupId>
+  <artifactId>${module}</artifactId>
+  <version>${version}</version>
+</dependency>
 ```
 
 ## Gradle
 
 ```groovy
-repositories {
-    maven { url "https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework" }
-}
-
-dependencies {
-    implementation "com.windea.breezeframework:$module:$version"
-}
+implementation "com.windea.breezeframework:$module:$version"
 ```
 
 ## Gradle Kts
 
 ```kotlin
-repositories {
-    maven{ url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework") }
-}
-
-dependencies {
-    implementation("com.windea.breezeframework:$module:$version")
-}
+implementation("com.windea.breezeframework:$module:$version")
 ```
 
 # Example
 
 See example at [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
-
-Here is [Github Link](https://github.com/DragonKnightOfBreeze/Breeze-Framework/blob/master/breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).

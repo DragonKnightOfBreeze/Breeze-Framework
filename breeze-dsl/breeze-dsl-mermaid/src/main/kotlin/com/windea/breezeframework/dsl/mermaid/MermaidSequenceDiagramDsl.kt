@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -10,9 +10,9 @@ import org.intellij.lang.annotations.*
 
 //can have a title by `title: text`, but it is not introduced in official api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid序列图的Dsl。*/
-@ReferenceApi("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
+@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidSequenceDiagramDsl
@@ -35,7 +35,7 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
 interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
@@ -45,17 +45,17 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 
-	fun toContentString(): String {
-		return arrayOf(
-			participants.joinToStringOrEmpty("\n"),
-			messages.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n"),
-			scopes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			participants.orNull()?.joinToString("\n"),
+			messages.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n"),
+			scopes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidFlowChartDsl
-	override fun String.fromTo(other: String) = message(this, other)
+	override fun String.links(other: String) = message(this, other)
 }
 
 /**Mermaid序列图Dsl的元素。*/
@@ -112,7 +112,7 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	val text: String
 ) : MermaidSequenceDiagramDslElement {
 	override fun toString(): String {
@@ -183,7 +183,7 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	override fun toString(): String {
 		val contentSnippet = toContentString()
 			.let { if(indentContent) it.prependIndent(indent) else it }
-		val elseScopesSnippet = elseScopes.joinToStringOrEmpty("\n", "\n")
+		val elseScopesSnippet = elseScopes.orNull()?.joinToString("\n", "\n").orEmpty()
 		return "$contentSnippet$elseScopesSnippet"
 	}
 
@@ -203,7 +203,7 @@ class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
 ) : MermaidSequenceDiagramScope("rect", color)
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
 fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) =
@@ -231,19 +231,19 @@ inline fun MermaidSequenceDiagramDslEntry.message(
 inline fun MermaidSequenceDiagramDslEntry.note(location: MermaidSequenceDiagramNote.Location, text: String) =
 	MermaidSequenceDiagramNote(location, text).also { notes += it }
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
+fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
+fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId)
 
-@InlineDsl
+@InlineDslFunction
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @MermaidSequenceDiagramDsl

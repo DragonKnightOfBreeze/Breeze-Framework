@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.core.enums.core.*
+import com.windea.breezeframework.core.enums.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.xml.XmlConfig.autoCloseTag
@@ -10,7 +10,9 @@ import com.windea.breezeframework.dsl.xml.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.xml.XmlConfig.indent
 import com.windea.breezeframework.dsl.xml.XmlConfig.quote
 
-//region top annotations and interfaces
+//TODO 参照kotlinx.html进行重构，调整dsl语法
+
+//region dsl top declarations
 /**Xml的Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -25,11 +27,11 @@ class Xml @PublishedApi internal constructor() : DslDocument,
 	var rootElement: XmlElement = XmlElement(defaultRootName)
 
 	override fun toString(): String {
-		return arrayOf(
-			statements.joinToStringOrEmpty("\n"),
-			comments.joinToStringOrEmpty("\n"),
+		return listOfNotNull(
+			statements.orNull()?.joinToString("\n"),
+			comments.orNull()?.joinToString("\n"),
 			rootElement.toString()
-		).filterNotEmpty().joinToStringOrEmpty("\n")
+		).joinToString("\n")
 	}
 
 	@XmlDsl
@@ -60,7 +62,7 @@ object XmlConfig : DslConfig {
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Xml Dsl的元素。*/
 @XmlDsl
 interface XmlDslElement : DslElement
@@ -74,7 +76,7 @@ class XmlStatement @PublishedApi internal constructor(
 	val attributes: Map<String, String> = mapOf()
 ) : XmlDslElement {
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
+		val attributesSnippet = attributes.orNull()?.joinToString(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }.orEmpty()
 		return "<?$name$attributesSnippet?>"
 	}
 }
@@ -123,8 +125,8 @@ class XmlElement @PublishedApi internal constructor(
 	override val id: String get() = name
 
 	override fun toString(): String {
-		val attributesSnippet = attributes.joinToStringOrEmpty(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }
-		val nodesSnippet = nodes.joinToStringOrEmpty(wrap).applyIndent(indent, wrapContent)
+		val attributesSnippet = attributes.orNull()?.joinToString(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }.orEmpty()
+		val nodesSnippet = nodes.joinToString(wrap).applyIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"
@@ -146,7 +148,7 @@ class XmlElement @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @XmlDsl
 inline fun xml(block: Xml.() -> Unit) = Xml().also { it.block() }
 

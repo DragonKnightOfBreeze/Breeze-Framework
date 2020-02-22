@@ -3,11 +3,11 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.core.*
+import com.windea.breezeframework.core.annotations.*
 import java.lang.reflect.*
 import kotlin.contracts.*
 
-//region Standard.kt extensions (Todo functions)
+//region Standard.kt extensions
 /**表明一个操作推迟了实现。*/
 @TodoMarker
 @JvmSynthetic
@@ -34,6 +34,7 @@ inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyRes
 	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
 }
 
+
 /**表明一个方法体中存在问题。*/
 @TodoMarker
 @JvmSynthetic
@@ -51,26 +52,7 @@ inline fun FIXME(message: String) = run {
 }
 
 @PublishedApi internal inline val currentClassFullName get() = Exception().stackTrace[0].className
-//endregion
 
-//region Standard.kt extensions (Scope functions)
-///**当满足条件时，以接收者为代码体的接收者，执行一段代码并返回转化后的结果，否则返回自身。*/
-//@JvmSynthetic
-//inline fun <T> T.run(condition: Boolean, block: T.() -> T): T {
-//	contract {
-//		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-//	}
-//	return if(condition) this.block() else this
-//}
-
-///**当满足条件时，以接收者为代码体的参数，执行一段代码并返回转化后的结果，否则返回自身。*/
-//@JvmSynthetic
-//inline fun <T> T.let(condition: Boolean, block: (T) -> T): T {
-//	contract {
-//		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-//	}
-//	return if(condition) block(this) else this
-//}
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 @JvmSynthetic
@@ -156,6 +138,12 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 		return value
 	}
 }
+
+
+/**判断指定名字的Class是否出现在classpath中并且可加载。*/
+fun presentInClassPath(className: String): Boolean {
+	return runCatching { Class.forName(className) }.isSuccess
+}
 //endregion
 
 //region generic extensions
@@ -175,12 +163,6 @@ internal abstract class TypeReference<T> {
 //endregion
 
 //region Any extensions
-/**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
-@JvmSynthetic
-infix fun Any.isInstanceOf(type: Class<*>): Boolean =
-	type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
-
-
 /**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
 inline fun <reified R> Any?.cast(): R = this as R
 

@@ -8,7 +8,7 @@ import java.util.*
 
 internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
-//region operator override extensions
+//region operator extensions
 /**@see Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this

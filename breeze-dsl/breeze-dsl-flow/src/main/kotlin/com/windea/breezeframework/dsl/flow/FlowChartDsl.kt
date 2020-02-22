@@ -2,15 +2,15 @@
 
 package com.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.flow.FlowChartConnection.Companion.binderQueue
 import java.util.*
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**流程图的Dsl。*/
-@ReferenceApi("[Github](https://github.com/adrai/flowchart.js)")
+@Reference("[Github](https://github.com/adrai/flowchart.js)")
 @DslMarker
 @MustBeDocumented
 internal annotation class FlowChartDsl
@@ -29,34 +29,34 @@ class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDsl
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**流程图Dsl的入口。*/
 @FlowChartDsl
 interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, FlowChartConnection> {
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
 
-	fun toContentString(): String {
-		return arrayOf(
-			nodes.joinToStringOrEmpty("\n"),
-			connections.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			nodes.orNull()?.joinToString("\n"),
+			connections.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@FlowChartDsl
-	override fun String.fromTo(other: String) = connection(this, other)
+	override fun String.links(other: String) = connection(this, other)
 
 	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(null, null, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(null, null, direction)) }
 
 	@FlowChartDsl
 	operator fun String.invoke(status: FlowChartConnection.Status, direction: FlowChartConnection.Direction? = null) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(status, null, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(status, null, direction)) }
 
 	@FlowChartDsl
 	operator fun String.invoke(path: FlowChartConnection.Path, direction: FlowChartConnection.Direction? = null) =
-		this.also { binderQueue.push(FlowChartConnection.Binder(null, path, direction)) }
+		this.also { binderQueue.add(FlowChartConnection.Binder(null, path, direction)) }
 }
 
 /**流程图Dsl的元素。*/
@@ -85,7 +85,7 @@ class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: Type
 ) : FlowChartDslElement, WithUniqueId {
-	@MultilineProp("\n")
+	@MultilineDslProperty
 	var text: String? = null
 	var flowState: String? = null
 	var urlLink: String? = null
@@ -118,13 +118,15 @@ class FlowChartNode @PublishedApi internal constructor(
 class FlowChartConnection @PublishedApi internal constructor(
 	val fromNodeId: String,
 	val toNodeId: String
-) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.pollLast() ?: Binder() {
+) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.poll() ?: Binder() {
 	override val sourceNodeId get() = fromNodeId
 	override val targetNodeId get() = toNodeId
 
 	//syntax: $fromNodeId($specifications)->$toNodeId
 	override fun toString(): String {
-		val specificationsSnippet = listOfNotNull(status?.text, path?.text, direction?.text).joinToStringOrEmpty(", ", "(", ")")
+		val specificationsSnippet = listOfNotNull(
+			status?.text, path?.text, direction?.text
+		).orNull()?.joinToString(", ", "(", ")").orEmpty()
 		return "$fromNodeId$specificationsSnippet->$toNodeId"
 	}
 
@@ -154,12 +156,12 @@ class FlowChartConnection @PublishedApi internal constructor(
 
 	//使用委托在外部存储数据，等到必要时传递回来
 	companion object {
-		internal val binderQueue = LinkedList<Binder>()
+		internal val binderQueue: Queue<Binder> = ArrayDeque(2)
 	}
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @FlowChartDsl
 inline fun flowChart(block: FlowChart.() -> Unit) =
 	FlowChart().also { it.block() }

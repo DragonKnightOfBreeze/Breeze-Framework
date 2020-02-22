@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
 import java.io.*
 import java.net.*
 
@@ -18,8 +17,7 @@ val File.shotName: String get() = this.nameWithoutExtension
 val File.mimeType: String?
 	get() = URLConnection.guessContentTypeFromName(this.name)
 
-/**得到文件的真实MIME类型。*/
-@TrickImplementationApi("Performance and accuracy problem.")
+/**得到文件的真实MIME类型。不保证准确性。*/
 val File.actualMimeType: String?
 	get() = URLConnection.guessContentTypeFromStream(this.inputStream())
 

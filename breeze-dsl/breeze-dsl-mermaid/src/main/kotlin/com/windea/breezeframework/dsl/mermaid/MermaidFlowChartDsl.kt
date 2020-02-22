@@ -2,15 +2,15 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid流程图的Dsl。*/
-@ReferenceApi("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
+@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidFlowChartDsl
@@ -45,7 +45,7 @@ class MermaidFlowChart @PublishedApi internal constructor(
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid流程图Dsl的入口。*/
 @MermaidFlowChartDsl
 interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<MermaidFlowChartNode, MermaidFlowChartLink> {
@@ -57,20 +57,20 @@ interface MermaidFlowChartDslEntry : MermaidDslEntry, CanSplit, WithTransition<M
 	val classDefs: MutableSet<MermaidFlowChartClassDef>
 	val classRefs: MutableSet<MermaidFlowChartClassRef>
 
-	fun toContentString(): String {
-		return arrayOf(
-			nodes.joinToStringOrEmpty("\n"),
-			links.joinToStringOrEmpty("\n"),
-			subGraphs.joinToStringOrEmpty("\n"),
-			styles.joinToStringOrEmpty("\n"),
-			linkStyles.joinToStringOrEmpty("\n"),
-			classDefs.joinToStringOrEmpty("\n"),
-			classRefs.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			nodes.orNull()?.joinToString("\n"),
+			links.orNull()?.joinToString("\n"),
+			subGraphs.orNull()?.joinToString("\n"),
+			styles.orNull()?.joinToString("\n"),
+			linkStyles.orNull()?.joinToString("\n"),
+			classDefs.orNull()?.joinToString("\n"),
+			classRefs.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidFlowChartDsl
-	override fun String.fromTo(other: String) = link(this, other)
+	override fun String.links(other: String) = link(this, other)
 }
 
 /**Mermaid流程图Dsl的元素。*/
@@ -84,7 +84,7 @@ interface MermaidFlowChartDslElement : MermaidDslElement
 class MermaidFlowChartNode @PublishedApi internal constructor(
 	val name: String
 ) : MermaidFlowChartDslElement, WithUniqueId {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	var shape: Shape = Shape.Rect
 
@@ -131,7 +131,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 	val fromNodeId: String,
 	val toNodeId: String
 ) : MermaidFlowChartDslElement, WithNode<MermaidFlowChartNode> {
-	@MultilineProp("<br>")
+	@MultilineDslProperty("<br>")
 	var text: String? = null
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 
@@ -180,7 +180,7 @@ class MermaidFlowChartNodeStyle @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowChartDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "style $nodeName $styleMapSnippet"
 	}
 }
@@ -192,7 +192,7 @@ class MermaidFlowChartLinkStyle @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowChartDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "style $linkOrder $styleMapSnippet"
 	}
 }
@@ -204,7 +204,7 @@ class MermaidFlowChartClassDef @PublishedApi internal constructor(
 	val styles: Map<String, String>
 ) : MermaidFlowChartDslElement {
 	override fun toString(): String {
-		val styleMapSnippet = styles.joinToStringOrEmpty { (k, v) -> "$k: $v" }
+		val styleMapSnippet = styles.joinToString { (k, v) -> "$k: $v" }
 		return "classDef $className $styleMapSnippet"
 	}
 }
@@ -216,13 +216,13 @@ class MermaidFlowChartClassRef @PublishedApi internal constructor(
 	val className: String
 ) : MermaidFlowChartDslElement {
 	override fun toString(): String {
-		val nodeNameSetSnippet = nodeNames.joinToStringOrEmpty()
+		val nodeNameSetSnippet = nodeNames.joinToString()
 		return "class $nodeNameSetSnippet $className"
 	}
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidFlowChartDsl
 inline fun mermaidFlowChart(direction: MermaidFlowChart.Direction, block: MermaidFlowChart.() -> Unit) =
 	MermaidFlowChart(direction).also { it.block() }

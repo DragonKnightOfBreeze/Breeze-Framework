@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
@@ -10,9 +10,9 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid饼图的Dsl。*/
-@ReferenceApi("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
+@Reference("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidPieChartDsl
@@ -27,23 +27,23 @@ class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidP
 	override var splitContent: Boolean = false
 
 	override fun toString(): String {
-		val contentSnippet = arrayOf(
-			title.toStringOrEmpty(),
-			toContentString()
-		).filterNotEmpty().joinToStringOrEmpty(split).applyIndent(indent)
+		val contentSnippet = listOfNotNull(
+			title?.toString(),
+			toContentString().orNull()
+		).joinToString(split).applyIndent(indent)
 		return "pie\n$contentSnippet"
 	}
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid饼图Dsl的入口。*/
 @MermaidPieChartDsl
 interface MermaidPieChartDslEntry : MermaidDslEntry {
 	val sections: MutableSet<MermaidPieChartSection>
 
-	fun toContentString(): String {
-		return sections.joinToStringOrEmpty("\n")
+	override fun toContentString(): String {
+		return sections.joinToString("\n")
 	}
 }
 
@@ -81,7 +81,7 @@ class MermaidPieChartSection @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidPieChartDsl
 inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
 	MermaidPieChart().also { it.block() }

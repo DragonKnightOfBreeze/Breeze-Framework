@@ -2,16 +2,16 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
 
 //unstable raw api
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Mermaid状态图的Dsl。*/
-@ReferenceApi("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
+@Reference("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
 @DslMarker
 @MustBeDocumented
 internal annotation class MermaidStateDiagramDsl
@@ -33,7 +33,7 @@ class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 }
 //endregion
 
-//region dsl interfaces
+//region dsl declarations
 /**Mermaid状态图Dsl的入口。*/
 @MermaidStateDiagramDsl
 interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransition<MermaidStateDiagramState, MermaidStateDiagramTransition> {
@@ -41,16 +41,16 @@ interface MermaidStateDiagramDslEntry : MermaidDslEntry, CanSplit, WithTransitio
 	val links: MutableList<MermaidStateDiagramTransition>
 	val notes: MutableList<MermaidStateDiagramNote>
 
-	fun toContentString(): String {
-		return arrayOf(
-			states.joinToStringOrEmpty("\n"),
-			links.joinToStringOrEmpty("\n"),
-			notes.joinToStringOrEmpty("\n")
-		).filterNotEmpty().joinToStringOrEmpty(split)
+	override fun toContentString(): String {
+		return listOfNotNull(
+			states.orNull()?.joinToString("\n"),
+			links.orNull()?.joinToString("\n"),
+			notes.orNull()?.joinToString("\n")
+		).joinToString(split)
 	}
 
 	@MermaidStateDiagramDsl
-	override fun String.fromTo(other: String) = transition(this, other)
+	override fun String.links(other: String) = transition(this, other)
 }
 
 /**Mermaid状态图Dsl的元素。*/
@@ -121,7 +121,7 @@ class MermaidStateDiagramConcurrentState @PublishedApi internal constructor(
 	override var indentContent: Boolean = true
 
 	override fun toString(): String {
-		val contentSnippet = sections.joinToStringOrEmpty("\n--\n").applyIndent(indent)
+		val contentSnippet = sections.joinToString("\n--\n").applyIndent(indent)
 		return "state $name {\n$contentSnippet\n}"
 	}
 }
@@ -160,7 +160,7 @@ class MermaidStateDiagramTransition @PublishedApi internal constructor(
 class MermaidStateDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : MermaidStateDiagramDslElement, CanWrap, CanIndent {
-	@MultilineProp("\\n", "Inline note.")
+	@MultilineDslProperty("\\n", "Inline note.")
 	var text: String = ""
 
 	override var wrapContent: Boolean = false
@@ -195,22 +195,22 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 @MermaidStateDiagramDsl
 inline fun mermaidStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().also { it.block() }
 
-@InlineDsl
+@InlineDslFunction
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramDslEntry.initState() = "[*]"
+fun MermaidStateDiagramDslEntry.initState() = "[*]"
 
-@InlineDsl
+@InlineDslFunction
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramDslEntry.finishState() = "[*]"
+fun MermaidStateDiagramDslEntry.finishState() = "[*]"
 
-@InlineDsl
+@InlineDslFunction
 @MermaidStateDiagramDsl
 @MermaidDslExtendedFeature
-inline fun MermaidStateDiagramDslEntry.anyState() = "<Any State>"
+fun MermaidStateDiagramDslEntry.anyState() = "<Any State>"
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.state(name: String) =
@@ -232,14 +232,14 @@ inline fun MermaidStateDiagramDslEntry.transition(fromStateId: String, toStateId
 inline fun MermaidStateDiagramDslEntry.note(location: MermaidStateDiagramNote.Location) =
 	MermaidStateDiagramNote(location).also { notes += it }
 
-@InlineDsl
+@InlineDslFunction
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramDslEntry.leftOf(stateName: String) =
+fun MermaidStateDiagramDslEntry.leftOf(stateName: String) =
 	MermaidStateDiagramNote.Location(MermaidStateDiagramNote.Position.LeftOf, stateName)
 
-@InlineDsl
+@InlineDslFunction
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramDslEntry.rightOf(stateName: String) =
+fun MermaidStateDiagramDslEntry.rightOf(stateName: String) =
 	MermaidStateDiagramNote.Location(MermaidStateDiagramNote.Position.RightOf, stateName)
 
 @MermaidStateDiagramDsl

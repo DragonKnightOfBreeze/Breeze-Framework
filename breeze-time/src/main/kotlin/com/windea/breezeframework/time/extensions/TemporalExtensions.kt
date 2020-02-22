@@ -5,7 +5,7 @@ package com.windea.breezeframework.time.extensions
 import java.time.*
 import java.time.temporal.*
 
-//region operator override extensions
+//region operator extensions
 /**@see java.time.Year.plusYears*/
 operator fun Year.plus(years: Int): Year = this.plusYears(years.toLong())
 
@@ -57,7 +57,7 @@ operator fun DayOfWeek.inc(): DayOfWeek = this.plus(1L)
 operator fun DayOfWeek.dec(): DayOfWeek = this.minus(1L)
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**得到当前月开始时的时间。*/
 inline val <T : Temporal> T.atStartOfMonth: Temporal get() = with(TemporalAdjusters.firstDayOfMonth())
 

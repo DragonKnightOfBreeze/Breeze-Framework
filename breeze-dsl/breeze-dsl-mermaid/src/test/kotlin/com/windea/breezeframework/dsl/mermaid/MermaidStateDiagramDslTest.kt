@@ -8,13 +8,13 @@ class MermaidStateDiagramDslTest {
 		println(mermaidStateDiagram {
 			state("Attack") text "Attack with long sword."
 			state("Defence") text "Defence with middle shield."
-			
-			initState() fromTo "Idle"
-			"Idle" fromTo "Attack" text "When player is nearby."
-			"Idle" fromTo "Move" text "When player is escaping."
-			"<AnyState>" fromTo "Die" text "When this NPC's HP <= 0."
-			"Die" fromTo finishState()
-			
+
+			initState() links "Idle"
+			"Idle" links "Attack" text "When player is nearby."
+			"Idle" links "Move" text "When player is escaping."
+			"<AnyState>" links "Die" text "When this NPC's HP <= 0."
+			"Die" links finishState()
+
 			note(leftOf("Attack")) text "Here the NPC attack."
 		})
 	}

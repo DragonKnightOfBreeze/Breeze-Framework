@@ -1,6 +1,5 @@
 include(
 	"breeze-core",
-	"breeze-data",
 	"breeze-dsl",
 	"breeze-dsl:breeze-dsl-command-line",
 	"breeze-dsl:breeze-dsl-creole",
@@ -9,7 +8,6 @@ include(
 	"breeze-dsl:breeze-dsl-json",
 	"breeze-dsl:breeze-dsl-markdown",
 	"breeze-dsl:breeze-dsl-mermaid",
-	"breeze-dsl:breeze-dsl-puml",
 	"breeze-dsl:breeze-dsl-sequence",
 	"breeze-dsl:breeze-dsl-xml",
 	"breeze-dsl:breeze-dsl-yaml",
@@ -22,6 +20,7 @@ include(
 	"breeze-logger",
 	"breeze-reflect",
 	"breeze-serialization",
+	"breeze-serializer",
 	"breeze-spring-boot",
 	"breeze-text",
 	"breeze-time",

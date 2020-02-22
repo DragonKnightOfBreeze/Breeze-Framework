@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.enums.generic
 
-import com.windea.breezeframework.core.annotations.messages.*
+import com.windea.breezeframework.core.annotations.*
 
 /**地理方向。不包含斜向。*/
 @Name("地理方向")

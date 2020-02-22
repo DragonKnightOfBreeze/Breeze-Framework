@@ -3,21 +3,10 @@
 
 package com.windea.breezeframework.reflect.extensions
 
-import com.windea.breezeframework.core.annotations.api.*
+import com.windea.breezeframework.core.annotations.*
 import kotlin.reflect.*
 
 //region generic extensions
-/**判断指定名字的Class是否在classpath中。*/
-fun checkClassForName(className: String): Boolean {
-	return try {
-		Class.forName(className)
-		true
-	} catch(e: Error) {
-		false
-	}
-}
-
-
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Cannot get actual name of a function parameter or a local variable.")
 inline fun <reified T> nameOf(): String? = T::class.java.simpleName
@@ -38,6 +27,15 @@ inline fun nameOf(target: Any?): String? = when {
 
 //region Any extensions
 /**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@ImpliesSmartCast
+infix fun Any.isInstanceOf(type: Class<*>): Boolean {
+	return type.isInstance(this) || type.isPrimitive && type.kotlin.javaObjectType.isInstance(this)
+}
+
+/**判断当前对象是否是指定类型的实例。兼容Java原始类型。*/
+@ImpliesSmartCast
 @JvmSynthetic
-infix fun Any.isInstanceOf(type: KClass<*>): Boolean = type.isInstance(this)
+infix fun Any.isInstanceOf(type: KClass<*>): Boolean {
+	return type.isInstance(this)
+}
 //endregion

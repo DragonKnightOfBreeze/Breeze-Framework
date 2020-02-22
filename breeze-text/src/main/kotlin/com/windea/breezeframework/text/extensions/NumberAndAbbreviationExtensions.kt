@@ -3,37 +3,37 @@
 
 package com.windea.breezeframework.text.extensions
 
-import com.windea.breezeframework.core.annotations.marks.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 
 /**转化为简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Int.toAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toAbbreviation(scale, precision)
 }
 
 /**转化为简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Long.toAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toAbbreviation(scale, precision)
 }
 
 /**转化为简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Float.toAbbreviation(scale: Int, precision: Int = 0): String {
 	require(scale in 1..9) { "Scale must between 1 and 9, but was $scale." }
 
-	val scaledValue = this / 10.pow(scale)
-	val valueSnippet = if(precision > 0) scaledValue.round(precision).toString() else scaledValue.roundToInt().toString()
+	val scaledValue = this / 10.positivePow(scale)
+	val valueSnippet = if(precision > 0) round(scaledValue, precision).toString() else scaledValue.roundToInt().toString()
 	return getAbbreviation(valueSnippet, scale)
 }
 
 /**转化为简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Double.toAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toAbbreviation(scale, precision)
@@ -57,32 +57,32 @@ private fun getAbbreviation(valueSnippet: String, scale: Int): String {
 
 
 /**转化为中文简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Int.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toChsAbbreviation(scale, precision)
 }
 
 /**转化为中文简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Long.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toChsAbbreviation(scale, precision)
 }
 
 /**转化为中文简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Float.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 	require(scale in 1..9) { "Scale must between 1 and 9, but was $scale." }
 
-	val scaledValue = this / 10.pow(scale)
-	val valueSnippet = if(precision > 0) scaledValue.round(precision).toString() else scaledValue.roundToInt().toString()
+	val scaledValue = this / 10.positivePow(scale)
+	val valueSnippet = if(precision > 0) round(scaledValue, precision).toString() else scaledValue.roundToInt().toString()
 	return getChsAbbreviation(valueSnippet, scale)
 }
 
 /**转化为中文简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/
-@NotRecommended("Use java12's NumberFormat.getCompactNumberInstance() to format numbers.")
+@WeakDeprecated("Use Java12's NumberFormat.getCompactNumberInstance() to format numbers.")
 @JvmOverloads
 fun Double.toChsAbbreviation(scale: Int, precision: Int = 0): String {
 	return this.toFloat().toChsAbbreviation(scale, precision)

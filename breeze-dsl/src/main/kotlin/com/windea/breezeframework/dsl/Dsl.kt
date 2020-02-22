@@ -13,7 +13,7 @@ package com.windea.breezeframework.dsl
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
-//region top annotations and interfaces
+//region dsl top declarations
 /**Dsl。*/
 @DslMarker
 @MustBeDocumented
@@ -28,7 +28,9 @@ interface DslDocument {
 interface DslConfig
 
 /**Dsl的入口。*/
-interface DslEntry
+interface DslEntry {
+	fun toContentString(): String = ""
+}
 
 /**Dsl的元素。*/
 interface DslElement {
@@ -36,24 +38,23 @@ interface DslElement {
 }
 //endregion
 
-//region dsl annotations
-/**表示这个Dsl构建方法是内联的。即，对应的构建方法不会自动注册对应的元素，且允许直接返回字符串。*/
+//region dsl declarations
+/**注明这个注解对应的Dsl构建方法是内联的。即，不会自动注册对应的元素，而是直接返回元素或字符串。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
-annotation class InlineDsl
+annotation class InlineDslFunction
 
-/**表示这个字符串属性可换行。并注明对应的行分隔符和额外条件。*/
+/**注明这个注解对应的Dsl元素属性是可以换行的，并说明对应的行分隔符（默认为"\n"）和额外条件。*/
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
-annotation class MultilineProp(
+annotation class MultilineDslProperty(
 	/**行分隔符。*/
-	val lineSeparator: String,
+	val lineSeparator: String = "",
 	/**额外条件。*/
 	val condition: String = ""
 )
-//endregion
 
-//region dsl interfaces
+
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @Dsl
 interface CanWrap {
@@ -139,31 +140,31 @@ interface WithNode<N : WithId> {
 interface WithTransition<N : WithId, T : WithNode<N>> {
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.fromTo(other: String): T
+	infix fun String.links(other: String): T
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.fromTo(other: N): T = this@WithTransition.run { this@fromTo fromTo other.id }
+	infix fun String.links(other: N): T = this@WithTransition.run { this@links links other.id }
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun N.fromTo(other: String): T = this@WithTransition.run { this@fromTo.id fromTo other }
+	infix fun N.links(other: String): T = this@WithTransition.run { this@links.id links other }
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun N.fromTo(other: N): T = this@WithTransition.run { this@fromTo.id fromTo other.id }
+	infix fun N.links(other: N): T = this@WithTransition.run { this@links.id links other.id }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
-	infix fun T.fromTo(other: String): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other }
+	infix fun T.links(other: String): T = this@WithTransition.run { this@links.targetNodeId links other }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@Dsl
-	infix fun T.fromTo(other: N): T = this@WithTransition.run { this@fromTo.targetNodeId fromTo other.id }
+	infix fun T.links(other: N): T = this@WithTransition.run { this@links.targetNodeId links other.id }
 }
 //endregion
 
-//region build extensions
+//region dsl build extensions
 /**设置是否换行内容。*/
 @Dsl
 inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { it.wrapContent = value }

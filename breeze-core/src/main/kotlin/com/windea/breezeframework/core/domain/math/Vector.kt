@@ -14,5 +14,3 @@ interface Vector<T : Vector<T>> : Serializable {
 	/**是否是单位向量。*/
 	val isUnitVector: Boolean
 }
-
-

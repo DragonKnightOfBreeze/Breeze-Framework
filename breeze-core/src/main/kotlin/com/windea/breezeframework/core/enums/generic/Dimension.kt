@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.enums.generic
 
-import com.windea.breezeframework.core.annotations.messages.*
+import com.windea.breezeframework.core.annotations.*
 
 /**维度。*/
 @Name("维度")

@@ -31,12 +31,26 @@ val <T> Class<T>.isMap: Boolean get() = Map::class.java.isAssignableFrom(this)
 val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java.isAssignableFrom(this)
 
 
-/**得到当前类型的属性名-取值方法映射。忽略class属性。*/
+/**得到当前类型的默认值。*/
+val <T> Class<T>.defaultValue: Any?
+	get() = when(this) {
+		Byte::class.java -> 0.toByte()
+		Short::class.java -> 0.toShort()
+		Int::class.java -> 0
+		Long::class.java -> 0L
+		Float::class.java -> 0F
+		Double::class.java -> 0.0
+		Boolean::class.java -> false
+		Char::class.java -> '\u0000'
+		else -> null
+	}
+
+/**得到当前类型的属性名-取值方法映射。基于取值方法，而非私有字段，并且忽略class属性。*/
 val <T> Class<T>.getterMap: Map<String, Method>
 	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" }
 		.associateBy { it.name.substring(3).let { s -> s[0].toLowerCase() + s.substring(1, s.length) } }
 
-/**得到当前类型的属性名-赋值方法映射。*/
+/**得到当前类型的属性名-赋值方法映射。基于取值方法。*/
 val <T> Class<T>.setterMap: Map<String, Method>
 	get() = this.methods.filter { it.name.startsWith("set") }
 		.associateBy { it.name.substring(3).let { s -> s[0].toLowerCase() + s.substring(1, s.length) } }
