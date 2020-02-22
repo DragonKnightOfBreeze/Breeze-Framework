@@ -22,10 +22,10 @@ interface Serializer {
 	/**从指定文件读取指定类型的数据。*/
 	fun <T> read(file: File, type: Type): T
 
-	/**转储数据到字符串。*/
+	/**写入数据到字符串。*/
 	fun <T> write(data: T): String
 
-	/**转储数据到文件。*/
+	/**写入数据到文件。*/
 	fun <T> write(data: T, file: File)
 }
 

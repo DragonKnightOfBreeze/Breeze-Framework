@@ -18,10 +18,10 @@ interface YamlSerializer : JsonSerializer {
 	/**从指定文件读取所有数据。*/
 	fun readAll(file: File): List<Any?>
 
-	/**转储所有数据到字符串。*/
+	/**写入所有数据到字符串。*/
 	fun <T> writeAll(data: Iterable<T>): String
 
-	/**转储所有数据到文件。*/
+	/**写入所有数据到文件。*/
 	fun <T> writeAll(data: Iterable<T>, file: File)
 
 	companion object {

@@ -7,9 +7,13 @@ import java.io.*
 import java.text.*
 import java.util.*
 
+/**简单的日志器。*/
 class SimpleLogger(
 	override val config: LoggerConfig = LoggerConfig()
 ) : Logger {
+	constructor(block: LoggerConfig.() -> Unit) : this(LoggerConfig().apply(block))
+
+
 	override fun trace(message: Any?) = log(LogLevel.Trace, message)
 
 	override fun trace(lazyMessage: () -> Any?) = log(LogLevel.Trace, lazyMessage())

@@ -299,6 +299,7 @@
 * [X] breeze-core 添加`String.replaceIn`、`String.replaceInLast`、`String.replaceEntire`等扩展。
 * [X] 移除一些废弃项，更新项目文档。
 * [X] breeze-data 重构代码，重命名一些方法，让它们的用途更加容易理解，更改目录结构。
+* [X] 重构配置类以及相关类的代码逻辑。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。

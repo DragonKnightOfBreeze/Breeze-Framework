@@ -11,11 +11,6 @@ interface Logger {
 	val isErrorEnabled: Boolean get() = config.minLogLevel <= LogLevel.Error
 	val isFatalEnabled: Boolean get() = config.minLogLevel <= LogLevel.Fatal
 
-	/**配置日志器。*/
-	fun configure(block: LoggerConfig.() -> Unit) {
-		config.block()
-	}
-
 	fun trace(message: Any?)
 
 	fun trace(lazyMessage: () -> Any?)

@@ -22,7 +22,7 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer {
 		return mapper.readValue(file, type)
 	}
 
-	override fun <T> load(properties: Properties, type: Class<T>): T {
+	override fun <T> read(properties: Properties, type: Class<T>): T {
 		return mapper.readPropertiesAs(properties, type)
 	}
 
@@ -34,7 +34,7 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer {
 		return mapper.readValue(file, mapper.typeFactory.constructType(type))
 	}
 
-	override fun <T> load(properties: Properties, type: Type): T {
+	override fun <T> read(properties: Properties, type: Type): T {
 		return mapper.readPropertiesAs(properties, mapper.typeFactory.constructType(type))
 	}
 
@@ -46,7 +46,7 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer {
 		return mapper.writeValue(file, data)
 	}
 
-	override fun <T> dump(data: T, properties: Properties) {
+	override fun <T> write(data: T, properties: Properties) {
 		properties += mapper.writeValueAsProperties(data)
 	}
 }

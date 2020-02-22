@@ -12,14 +12,14 @@ import java.util.*
  * 注意：其实现依赖于第三方库，如`jackson`。
  */
 interface PropertiesSerializer : Serializer {
-	/**从指定Java属性对象读取指定类型的数据。*/
-	fun <T> load(properties: Properties, type: Class<T>): T
+	/**从指定Properties对象读取指定类型的数据。*/
+	fun <T> read(properties: Properties, type: Class<T>): T
 
-	/**从指定Java属性对象读取指定类型的数据。*/
-	fun <T> load(properties: Properties, type: Type): T
+	/**从指定Properties对象读取指定类型的数据。*/
+	fun <T> read(properties: Properties, type: Type): T
 
-	/**转储所有数据到Java属性对象。*/
-	fun <T> dump(data: T, properties: Properties)
+	/**写入所有数据到Properties对象。*/
+	fun <T> write(data: T, properties: Properties)
 
 	companion object {
 		private const val jacksonPropertiesClassName = "com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper"
