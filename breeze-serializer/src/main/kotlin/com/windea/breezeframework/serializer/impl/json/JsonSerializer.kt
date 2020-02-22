@@ -12,7 +12,6 @@ import kotlinx.serialization.json.*
  *
  * 注意：其实现依赖于第三方库，如``kotlinx-serialization`，`jackson`，`gson`，`fastjson`。
  */
-@UseExperimental(UnstableDefault::class)
 interface JsonSerializer : Serializer {
 	companion object {
 		private const val kotlinJsonClassName = "kotlinx.serialization.json.Json"
@@ -30,17 +29,18 @@ interface JsonSerializer : Serializer {
 		}
 
 
-		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置。*/
+		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
+		@UseExperimental(UnstableDefault::class)
 		fun configureKotlinJson(block: JsonBuilder.() -> Unit) {
 			block(KotlinJsonSerializer.jsonBuilder)
 		}
 
-		/**配置JacksonJson的序列化器。注意需要在使用前配置。*/
+		/**配置JacksonJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
 		fun configureJacksonJson(block: (JsonMapper) -> Unit) {
 			block(JacksonJsonSerializer.mapper)
 		}
 
-		/**配置Gson的序列化器。注意需要在使用前配置。*/
+		/**配置Gson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
 		fun configureGson(block: (GsonBuilder) -> Unit) {
 			block(GsonSerializer.gsonBuilder)
 		}
