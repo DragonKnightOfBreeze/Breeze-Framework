@@ -11,21 +11,21 @@ import java.lang.reflect.*
  */
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
-	fun <T> read(string: String, type: Class<T>): T
+	fun <T : Any> read(string: String, type: Class<T>): T
 
 	/**从指定字符串读取指定类型的数据。*/
-	fun <T> read(string: String, type: Type): T
+	fun <T : Any> read(string: String, type: Type): T
 
 	/**从指定文件读取指定类型的数据。*/
-	fun <T> read(file: File, type: Class<T>): T
+	fun <T : Any> read(file: File, type: Class<T>): T
 
 	/**从指定文件读取指定类型的数据。*/
-	fun <T> read(file: File, type: Type): T
+	fun <T : Any> read(file: File, type: Type): T
 
 	/**写入数据到字符串。*/
-	fun <T> write(data: T): String
+	fun <T : Any> write(data: T): String
 
-	/**写入数据到文件。*/
-	fun <T> write(data: T, file: File)
+	/**写入数据到文件。默认以易读格式输出。*/
+	fun <T : Any> write(data: T, file: File)
 }
 

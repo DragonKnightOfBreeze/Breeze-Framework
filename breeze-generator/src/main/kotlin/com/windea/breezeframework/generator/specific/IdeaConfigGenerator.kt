@@ -6,6 +6,7 @@ import com.windea.breezeframework.core.enums.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
+import com.windea.breezeframework.serializer.extensions.*
 import java.io.*
 
 /**Intellij IDEA配置文件文本的生成器。*/

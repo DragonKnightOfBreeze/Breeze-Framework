@@ -1,5 +1,7 @@
 # Summary
 
+[中文文档](README_zh.md)
+
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
 Integrated code framework based on Kotlin,

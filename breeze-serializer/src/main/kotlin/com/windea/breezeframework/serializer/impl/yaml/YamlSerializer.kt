@@ -19,10 +19,10 @@ interface YamlSerializer : JsonSerializer {
 	fun readAll(file: File): List<Any?>
 
 	/**写入所有数据到字符串。*/
-	fun <T> writeAll(data: Iterable<T>): String
+	fun <T : Any> writeAll(data: Iterable<T>): String
 
-	/**写入所有数据到文件。*/
-	fun <T> writeAll(data: Iterable<T>, file: File)
+	/**写入所有数据到文件。默认以易读格式输出。*/
+	fun <T : Any> writeAll(data: Iterable<T>, file: File)
 
 	companion object {
 		private const val jacksonYamlClassName = "com.fasterxml.jackson.dataformat.yaml.YAMLMapper"
@@ -36,12 +36,12 @@ interface YamlSerializer : JsonSerializer {
 		}
 
 
-		/**配置JacksonYaml的序列化器。*/
+		/**配置JacksonYaml的序列化器。注意需要在使用前配置。*/
 		fun configureJacksonYaml(block: (YAMLMapper) -> Unit) {
 			block(JacksonYamlSerializer.mapper)
 		}
 
-		/**配置SnakeYaml的序列化器。*/
+		/**配置SnakeYaml的序列化器。注意需要在使用前配置。*/
 		fun configureSnakeYaml(block: (LoaderOptions, DumperOptions) -> Unit) {
 			block(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 		}

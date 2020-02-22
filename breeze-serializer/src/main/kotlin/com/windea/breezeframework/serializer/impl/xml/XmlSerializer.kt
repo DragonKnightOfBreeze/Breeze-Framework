@@ -20,7 +20,7 @@ interface XmlSerializer : Serializer {
 		}
 
 
-		/**配置JacksonXml的序列化器。*/
+		/**配置JacksonXml的序列化器。注意需要在使用前配置。*/
 		fun configureJacksonXml(block: (XmlMapper) -> Unit) {
 			block(JacksonXmlSerializer.mapper)
 		}

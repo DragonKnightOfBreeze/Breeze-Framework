@@ -13,13 +13,13 @@ import java.util.*
  */
 interface PropertiesSerializer : Serializer {
 	/**从指定Properties对象读取指定类型的数据。*/
-	fun <T> read(properties: Properties, type: Class<T>): T
+	fun <T : Any> read(properties: Properties, type: Class<T>): T
 
 	/**从指定Properties对象读取指定类型的数据。*/
-	fun <T> read(properties: Properties, type: Type): T
+	fun <T : Any> read(properties: Properties, type: Type): T
 
 	/**写入所有数据到Properties对象。*/
-	fun <T> write(data: T, properties: Properties)
+	fun <T : Any> write(data: T, properties: Properties)
 
 	companion object {
 		private const val jacksonPropertiesClassName = "com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper"
@@ -31,7 +31,7 @@ interface PropertiesSerializer : Serializer {
 		}
 
 
-		/**配置JacksonProperties的序列化器。*/
+		/**配置JacksonProperties的序列化器。注意需要在使用前配置。*/
 		fun configureJacksonProperties(block: (JavaPropsMapper) -> Unit) {
 			block(JacksonPropertiesSerializer.mapper)
 		}

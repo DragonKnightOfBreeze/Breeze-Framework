@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.creole
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.creole.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
@@ -160,7 +161,7 @@ sealed class CreoleListNode(
 	val nodes: MutableList<CreoleListNode> = mutableListOf()
 
 	override fun toString(): String {
-		val nodesSnippet = nodes.orNull().joinToString("\n", "\n") { "${it.prefixMarker}$it" }.orEmpty()
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { "${it.prefixMarker}$it" }.orEmpty()
 		return "$prefixMarker $text$nodesSnippet"
 	}
 }
@@ -200,7 +201,7 @@ class CreoleTreeNode @PublishedApi internal constructor(
 	override fun toString(): String {
 		//include prefix "|_", add it to first line, add spaces to other lines
 		val textSnippet = "|_ $text"
-		val nodesSnippet = nodes.orNull().joinToString("\n", "\n") { it.toString().prependIndent("   ") }.orEmpty()
+		val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n") { it.toString().prependIndent("   ") }.orEmpty()
 		return "$textSnippet$nodesSnippet"
 	}
 }

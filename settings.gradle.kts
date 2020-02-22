@@ -1,6 +1,5 @@
 include(
 	"breeze-core",
-	"breeze-data",
 	"breeze-dsl",
 	"breeze-dsl:breeze-dsl-command-line",
 	"breeze-dsl:breeze-dsl-creole",
@@ -21,6 +20,7 @@ include(
 	"breeze-logger",
 	"breeze-reflect",
 	"breeze-serialization",
+	"breeze-serializer",
 	"breeze-spring-boot",
 	"breeze-text",
 	"breeze-time",

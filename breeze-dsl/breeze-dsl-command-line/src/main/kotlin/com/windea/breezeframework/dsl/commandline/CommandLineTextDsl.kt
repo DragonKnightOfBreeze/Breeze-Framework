@@ -3,6 +3,7 @@
 package com.windea.breezeframework.dsl.commandline
 
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.commandline.CommandLineText.*
 
 //https://github.com/ziggy42/kolor

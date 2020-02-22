@@ -1,4 +1,4 @@
 dependencies {
 	api(project(":breeze-core"))
-	api(project(":breeze-data"))
+	api(project(":breeze-serializer"))
 }
