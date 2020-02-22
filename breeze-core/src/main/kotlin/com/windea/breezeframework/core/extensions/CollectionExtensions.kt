@@ -225,6 +225,10 @@ fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 }
 
 
+/**将指定的键值对放入当前映射中。*/
+fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) = this.put(pair.first, pair.second)
+
+
 /**交换当前数组中指定的两个索引对应的元素。*/
 fun <T> Array<T>.swap(index1: Int, index2: Int) {
 	val temp = this[index1]
