@@ -11,24 +11,10 @@ import java.nio.charset.*
  * @see java.net.http.HttpRequest
  * @see java.net.http.HttpResponse
  */
-class Http {
-	private var config: HttpConfig = HttpConfig()
+class Http(
+	val config: HttpConfig = HttpConfig()
+) {
 	internal var client: HttpClient = buildClient()
-
-	/**复制Http连接。*/
-	fun copy(): Http {
-		val http = Http()
-		http.client = client
-		http.config = config
-		return http
-	}
-
-	/**配置Http连接。*/
-	fun configure(block: HttpConfig.() -> Unit) {
-		config = HttpConfig().also(block)
-		client = buildClient()
-
-	}
 
 	private fun buildClient(): HttpClient {
 		return HttpClient.newBuilder().also { builder ->
@@ -43,6 +29,16 @@ class Http {
 			config.proxy?.let { builder.proxy(it) }
 			config.authenticator?.let { builder.authenticator(it) }
 		}.build()
+	}
+
+	/**配置Http连接。*/
+	fun configure(block: HttpConfig.() -> Unit) {
+		config.block()
+	}
+
+	/**复制Http连接。*/
+	fun copy(): Http {
+		return Http(config)
 	}
 
 	/**发送GET请求。*/

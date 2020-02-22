@@ -6,7 +6,7 @@ import com.windea.breezeframework.core.extensions.*
 
 /**匹配类型。*/
 enum class MatchType(
-	/**转化为对应的正则表达式。*/
+	/**转化为对应的正则表达式的方法。*/
 	val transform: (String) -> String
 ) {
 	/**

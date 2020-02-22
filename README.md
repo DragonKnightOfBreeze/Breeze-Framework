@@ -26,13 +26,13 @@ NOTE：
   * Including some todo extensions. (e.g, `FIXME`, `DELAY`.)
   * Including some scope extensions. (e.g, `once`, `tryOrPrint`, `tryOrIgnore`.)
   * Including some useful extension associated to type. (e.g, `javaTypeOf<T>()`, `cast<T>()`)
-* Provide basic annotations, consts, enums and interfaces.
+* Provide basic annotations, consts, enums and interfaces maybe useful.
 * Provide generator extensions for `equals`, `hashcode` and `toString`. (e,g, `equalsBy`, `equalsByOne`)
 
 ## breeze-data
 
-* Provide some useful extensions for data-use. (e.g, `toPropertyMap`, `serialize`)
-* Provide multi-data-type serializers delegate to third-party libraries such as `Gson`, `SnakeYaml`, `Jackson`.
+* Provide some useful extensions for data-use. (e.g, `serialize`, `deserialize`, `reserialize`)
+* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
 
 ## breeze-dsl
 
@@ -72,8 +72,10 @@ Usage:
 
 ```
 val http = Http()
-http.get("https://httpbin.org")
-http.get("https://httpbin.org") { query("name", "Windea") }
+val response = http.get("https://httpbin.org/").send(http)
+println(response)
+val response2 = http.get("https://httpbin.org") {query("name", "Windea")}.send(http)
+println(response2)
 ```
 
 ## breeze-javafx

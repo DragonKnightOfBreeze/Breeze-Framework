@@ -1,5 +1,6 @@
 package com.windea.breezeframework.http
 
+import com.windea.breezeframework.http.extensions.*
 import java.net.*
 import java.net.http.*
 import kotlin.test.*
@@ -12,11 +13,7 @@ class HttpTest {
 		val response = http.get("https://httpbin.org/").send(http)
 		println(response)
 
-		val response2 = http.get("https://httpbin.org") {
-			query("name", "Windea")
-			query("weapon", "BreezesLanding")
-			query("weaponObject", """{"name":"BreezesLanding",category:"Katana"}""")
-		}.send(http)
+		val response2 = http.get("https://httpbin.org") { query("name", "Windea") }.send(http)
 		println(response2)
 	}
 

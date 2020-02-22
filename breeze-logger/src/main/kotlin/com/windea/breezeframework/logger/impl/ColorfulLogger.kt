@@ -7,9 +7,9 @@ import java.io.*
 import java.text.*
 import java.util.*
 
-class ColorfulLogger : Logger {
+class ColorfulLogger(
 	override val config: LoggerConfig = LoggerConfig()
-
+) : Logger {
 	override fun trace(message: Any?) = log(LogLevel.Trace, message)
 
 	override fun trace(lazyMessage: () -> Any?) = log(LogLevel.Trace, lazyMessage())

@@ -7,12 +7,6 @@ import com.windea.breezeframework.core.annotations.*
 import kotlin.reflect.*
 
 //region generic extensions
-/**判断指定名字的Class是否在classpath中。*/
-fun checkClassForName(className: String): Boolean {
-	return runCatching { Class.forName(className) }.isSuccess
-}
-
-
 /**得到指定类型的名字。*/
 @TrickImplementationApi("Cannot get actual name of a function parameter or a local variable.")
 inline fun <reified T> nameOf(): String? = T::class.java.simpleName

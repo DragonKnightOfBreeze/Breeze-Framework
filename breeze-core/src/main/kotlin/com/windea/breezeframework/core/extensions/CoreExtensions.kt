@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.annotations.*
 import java.lang.reflect.*
 import kotlin.contracts.*
 
-//region Standard.kt extensions (Todo functions)
+//region Standard.kt extensions
 /**表明一个操作推迟了实现。*/
 @TodoMarker
 @JvmSynthetic
@@ -52,9 +52,8 @@ inline fun FIXME(message: String) = run {
 }
 
 @PublishedApi internal inline val currentClassFullName get() = Exception().stackTrace[0].className
-//endregion
 
-//region Standard.kt extensions (Scope functions)
+
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
 @JvmSynthetic
 inline fun tryOrPrint(block: () -> Unit) {
@@ -138,6 +137,12 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	} else {
 		return value
 	}
+}
+
+
+/**判断指定名字的Class是否出现在classpath中并且可加载。*/
+fun presentInClassPath(className: String): Boolean {
+	return runCatching { Class.forName(className) }.isSuccess
 }
 //endregion
 
