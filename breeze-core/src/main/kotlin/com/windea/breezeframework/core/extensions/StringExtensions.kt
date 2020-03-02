@@ -737,17 +737,17 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toCharRange(): CharRange {
 	return this.toRangePair().let { (a, b, l, r) -> a.toChar() + l..b.toChar() + r }
 }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toIntRange(): IntRange {
 	return this.toRangePair().let { (a, b, l, r) -> a.toInt() + l..b.toInt() + r }
 }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toLongRange(): LongRange {
 	return this.toRangePair().let { (a, b, l, r) -> a.toLong() + l..b.toLong() + r }
 }
