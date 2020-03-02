@@ -4,6 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.enums.text.*
 import java.io.*
 import java.net.*
@@ -21,6 +22,9 @@ import kotlin.contracts.*
 /**@see kotlin.text.slice*/
 operator fun String.get(indices: IntRange): String = this.slice(indices)
 
+/**@see kotlin.text.substring*/
+operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
+
 /**@see com.windea.breezeframework.core.extensions.remove*/
 operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
@@ -36,11 +40,11 @@ operator fun String.div(n: Int): List<String> = this.chunked(n)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
-/**判断当前字符串中的任意字符是否被另一字符串包含。*/
-infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
-
 /**判断当前字符串中的所有字符是否被另一字符串包含。*/
 infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
+
+/**判断当前字符串中的任意字符是否被另一字符串包含。*/
+infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
 
 
 /**判断当前字符串是否以指定前缀开头。*/
@@ -238,29 +242,6 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
 }
 
 
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@JvmOverloads
-fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
-	val size = minOf(oldChars.size, newChars.size)
-	var result = this
-	for(i in 0 until size) {
-		result = result.replace(oldChars[i], newChars[i], ignoreCase)
-	}
-	return result
-}
-
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@JvmOverloads
-fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
-	val size = minOf(oldValues.size, newValues.size)
-	var result = this
-	for(i in 0 until size) {
-		result = result.replace(oldValues[i], newValues[i], ignoreCase)
-	}
-	return result
-}
-
-
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
 inline fun CharSequence.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
@@ -283,6 +264,31 @@ inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = f
 			if(i < splitStrings.count() - 1) this.append(newValue(i))
 		}
 	}
+}
+
+
+/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+@NotSure
+@JvmOverloads
+fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
+	val size = minOf(oldChars.size, newChars.size)
+	var result = this
+	for(i in 0 until size) {
+		result = result.replace(oldChars[i], newChars[i], ignoreCase)
+	}
+	return result
+}
+
+/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+@NotSure
+@JvmOverloads
+fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
+	val size = minOf(oldValues.size, newValues.size)
+	var result = this
+	for(i in 0 until size) {
+		result = result.replace(oldValues[i], newValues[i], ignoreCase)
+	}
+	return result
 }
 
 
@@ -661,6 +667,13 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 //endregion
 
 //region convert extensions
+/**将当前字符串转化为字符。如果转化失败，则抛出异常。这个方法由[String.single]委托实现。*/
+inline fun String.toChar(): Char = this.single()
+
+/**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.single]委托实现。*/
+inline fun String.toCharOrNull(): Char? = this.singleOrNull()
+
+
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
 inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	//performance note: approach to 1/5
@@ -724,60 +737,43 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
-@NotOptimized
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
 fun String.toCharRange(): CharRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.single() + aOffset..b.single() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toChar() + l..b.toChar() + r }
 }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
-@NotOptimized
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
 fun String.toIntRange(): IntRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.toInt() + aOffset..b.toInt() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toInt() + l..b.toInt() + r }
 }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
-@NotOptimized
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`[m, n]`，`[m, n)`等。*/
 fun String.toLongRange(): LongRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.toLong() + aOffset..b.toLong() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toLong() + l..b.toLong() + r }
 }
 
-private fun String.toRangePairOrNull(): Pair<String, String>? {
+private val rangeDelimiters = arrayOf("..", "-", "~")
+
+private fun String.toRangePair(): Quadruple<String, String, Int, Int> {
 	return when {
-		this.contains("..") -> this.split("..", limit = 2).let { it[0].trim() to it[1].trim() }
-		this.contains("-") -> this.split("-", limit = 2).let { it[0].trim() to it[1].trim() }
-		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2).let { it[0].trim() to it[1].trim() }
-		else -> null
+		rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
+			.let { it[0].trim() to it[1].trim() with 0 with 0 }
+		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
+			.let { it[0].trim() to it[1].trim() with this.getLeftRangeOffset() with this.getRightRangeOffset() }
+		else -> notARange()
 	}
 }
 
-private fun String.toRangeOffsetPair(): Pair<Int, Int> {
-	return when {
-		this.surroundsWith("[", "]") -> 0 to 0
-		this.surroundsWith("[", ")") -> 0 to -1
-		this.surroundsWith("(", "]") -> 1 to 0
-		this.surroundsWith("(", ")") -> 1 to -1
-		else -> 0 to 0
-	}
+private fun String.getLeftRangeOffset(): Int {
+	return if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else this.notARange()
 }
 
-private fun notARange(string: String): Nothing {
-	throw IllegalArgumentException("'$string' cannot be resolved as a range.")
+private fun String.getRightRangeOffset(): Int {
+	return if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else this.notARange()
+}
+
+private fun String.notARange(): Nothing {
+	throw IllegalArgumentException("String '$this' cannot be resolved as a range.")
 }
 
 

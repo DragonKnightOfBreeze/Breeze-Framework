@@ -69,19 +69,13 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = 
 
 //region operator extensions
 /**@see kotlin.collections.slice*/
-operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
-
-/**@see kotlin.collections.slice*/
 operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
+/**@see kotlin.collections.List.subList*/
+operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
 
 /**@see com.windea.breezeframework.core.extensions.repeat*/
 operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
-
-/**@see kotlin.collections.chunked*/
-operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
 
 /**@see kotlin.collections.chunked*/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
