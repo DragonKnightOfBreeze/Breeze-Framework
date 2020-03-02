@@ -7,6 +7,7 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.enums.text.*
 import java.io.*
 import java.net.*
+import java.nio.charset.*
 import java.nio.file.*
 import java.text.*
 import java.time.*
@@ -510,11 +511,12 @@ private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (In
 
 
 /**将当前字符串解码为base64格式的字节数组。*/
-fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
+fun String.decodeToBase64ByteArray(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
 //region specific extensions
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+@NotSure
 infix fun String.lineConcat(other: String): String {
 	val lines = this.lines()
 	val otherLines = other.lines()
@@ -525,6 +527,7 @@ infix fun String.lineConcat(other: String): String {
 }
 
 /**逐行换行字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
+@NotSure
 @JvmOverloads
 fun String.lineBreak(width: Int = 120): String {
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
@@ -722,6 +725,7 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 
 
 /**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+@NotOptimized
 fun String.toCharRange(): CharRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -732,6 +736,7 @@ fun String.toCharRange(): CharRange {
 }
 
 /**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+@NotOptimized
 fun String.toIntRange(): IntRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -742,6 +747,7 @@ fun String.toIntRange(): IntRange {
 }
 
 /**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+@NotOptimized
 fun String.toLongRange(): LongRange {
 	return try {
 		val (aOffset, bOffset) = this.toRangeOffsetPair()
@@ -787,6 +793,9 @@ inline fun String.toUri(): URI = URI.create(this)
 /**将当前字符串转化为统一资源定位符。*/
 @JvmOverloads
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
+
+/**将当前字符串转化为字符集。*/
+inline fun String.toCharset(): Charset = Charset.forName(this)
 
 
 /**将当前字符串转化为日期。*/

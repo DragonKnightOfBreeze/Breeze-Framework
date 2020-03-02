@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import java.nio.*
 import java.util.*
 import java.util.stream.*
 
@@ -72,8 +73,14 @@ fun DoubleArray.stream(start: Int = 0, end: Int = this.size): DoubleStream = Arr
 /**将当前字节数组编码为base64格式的字节数组。*/
 fun ByteArray.encodeToBase64(): ByteArray = Base64.getEncoder().encode(this)
 
+/**将当前字节数组解码为base64格式的字节数组。*/
+fun ByteArray.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
+
 /**将当前字节数组编码为base64格式的字符串。*/
 fun ByteArray.encodeToBase64String(): String = Base64.getEncoder().encodeToString(this)
 
-/**将当前字节数组解码为base64格式的字符串。*/
-fun ByteArray.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
+fun main() {
+	IntBuffer.allocate(1024).array()
+	intArrayOf(1).smartToString()
+	ByteBuffer.allocate(1024).array()
+}

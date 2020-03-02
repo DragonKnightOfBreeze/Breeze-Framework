@@ -310,6 +310,7 @@
 ### 1.0.15
  
 * [X] 更新版本。
+* [X] breeze-core 添加`String.toCharset`扩展。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
