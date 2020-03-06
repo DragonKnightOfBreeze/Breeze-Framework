@@ -11,7 +11,6 @@
         <language minSize="75" name="Kotlin" />
       </Languages>
     </inspection_tool>
-    <inspection_tool class="ExplicitThis" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="FromClosedRangeMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="GrazieInspection" enabled="false" level="TYPO" enabled_by_default="false" />
     <inspection_tool class="IntroduceWhenSubject" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

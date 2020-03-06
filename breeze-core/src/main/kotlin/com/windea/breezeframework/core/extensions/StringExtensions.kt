@@ -19,20 +19,40 @@ import kotlin.contracts.*
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
 //region operator extensions
-/**@see kotlin.text.slice*/
-operator fun String.get(indices: IntRange): String = this.slice(indices)
-
-/**@see kotlin.text.substring*/
-operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
-
-/**@see com.windea.breezeframework.core.extensions.remove*/
+/**
+ * 移除当前字符串中的指定子字符串。
+ *
+ * @see com.windea.breezeframework.core.extensions.remove
+ */
 operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
-/**@see kotlin.text.repeat*/
+/**
+ * 重复当前字符串到指定次数。
+ *
+ * @see kotlin.text.repeat
+ */
 operator fun String.times(n: Int): String = this.repeat(n)
 
-/**@see kotlin.text.chunked*/
+/**
+ * 切分当前字符串到指定个数。
+ *
+ * @see kotlin.text.chunked
+ */
 operator fun String.div(n: Int): List<String> = this.chunked(n)
+
+/**
+ * 得到索引指定范围内的子字符串。
+ *
+ * @see kotlin.text.slice
+ */
+operator fun String.get(indices: IntRange): String = this.slice(indices)
+
+/**
+ * 得到指定索引范围内的子字符串。
+ *
+ * @see kotlin.text.substring
+ */
+operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
 //endregion
 
 //region common extensions
@@ -48,10 +68,12 @@ infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in ot
 
 
 /**判断当前字符串是否以指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean = this.startsWith(prefix, false)
+inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean =
+	this.startsWith(prefix, false)
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIgnoreCase(prefix: CharSequence): Boolean = this.startsWith(prefix, true)
+inline infix fun CharSequence.startsWithIgnoreCase(prefix: CharSequence): Boolean =
+	this.startsWith(prefix, true)
 
 /**判断当前字符串是否以任意指定前缀开头。*/
 inline infix fun CharSequence.startsWith(prefixes: Array<out CharSequence>): Boolean =
@@ -62,10 +84,12 @@ inline infix fun CharSequence.startsWithIgnoreCase(prefixes: Array<out CharSeque
 	prefixes.any { this.startsWith(it, true) }
 
 /**判断当前字符串是否以指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean = this.endsWith(suffixes, false)
+inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean =
+	this.endsWith(suffixes, false)
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIgnoreCase(suffix: CharSequence): Boolean = this.endsWith(suffix, true)
+inline infix fun CharSequence.endsWithIgnoreCase(suffix: CharSequence): Boolean =
+	this.endsWith(suffix, true)
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
 inline infix fun CharSequence.endsWith(suffixes: Array<out CharSequence>): Boolean =
@@ -118,16 +142,19 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 }
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isAlphabetic(): Boolean {
 	return this matches "[a-zA-Z]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isNumeric(): Boolean {
 	return this matches "[1-9]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this matches "[1-9a-zA-Z_]+".toRegex()
 }

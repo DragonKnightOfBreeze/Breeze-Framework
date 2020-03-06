@@ -58,13 +58,13 @@ class ClassExtensionsTest {
 
 	@Test
 	fun getSetterMap() {
-		println(Foo::class.java.setterMap)
-		assertTrue(Foo::class.java.setterMap.size == 1)
+		println(Foo::class.java.setters)
+		assertTrue(Foo::class.java.setters.size == 1)
 	}
 
 	@Test
 	fun getGetterMap() {
-		println(Foo::class.java.getterMap)
-		assertTrue(Foo::class.java.getterMap.size == 2)
+		println(Foo::class.java.getters)
+		assertTrue(Foo::class.java.getters.size == 2)
 	}
 }

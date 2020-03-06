@@ -68,17 +68,33 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = 
 //endregion
 
 //region operator extensions
-/**@see kotlin.collections.slice*/
-operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
-
-/**@see kotlin.collections.List.subList*/
-operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
+/**
+ * 重复当前列表中的元素到指定次数。
+ *
+ * @see com.windea.breezeframework.core.extensions.repeat
+ */
 operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
 
-/**@see kotlin.collections.chunked*/
+/**
+ * 切分当前集合中的元素到指定个数。
+ *
+ * @see kotlin.collections.chunked
+ **/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+
+/**
+ * 得到索引指定范围内的子列表。
+ *
+ * @see kotlin.collections.slice
+ */
+operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
+
+/**
+ * 得到索引指定范围内的子列表。
+ *
+ * @see kotlin.collections.List.subList
+ */
+operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
 //endregion
 
 //region common extensions

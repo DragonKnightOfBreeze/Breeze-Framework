@@ -66,7 +66,7 @@ object SchemaGenerator : Generator {
 	 * * language: string
 	 * * deprecated: string | boolean
 	 * * enumConsts: {value: string, description: string}
-	 * */
+	 */
 	fun addExtendedRules(vararg rules: Pair<String, SchemaRule>) {
 		extendedRuleMap += rules
 	}
