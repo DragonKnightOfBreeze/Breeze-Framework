@@ -13,6 +13,9 @@ fun Regex.matchGroupValues(string: String): List<String>? = this.matchEntire(str
 operator fun MatchResult.get(index: Int): String = this.groupValues[index]
 
 
+//参考：[2-13] -> [2-9]|[10-13] -> [2-9]|1[0-3]
+//参考：[23-45] -> [23-29]|[30-39]|[40-45] -> 2[3-9]|3[0-9]|4[0-5]
+
 /**将整数范围转化为合法的正则表达式字符串。*/
 fun Regex.Companion.fromRange(range: ClosedRange<Int>): String {
 	return fromRange(range.start, range.endInclusive)
@@ -20,8 +23,6 @@ fun Regex.Companion.fromRange(range: ClosedRange<Int>): String {
 
 /**将整数范围转化为合法的正则表达式字符串。*/
 fun Regex.Companion.fromRange(first: Int, last: Int): String {
-	//参考：[2-13] -> [2-9]|[10-13] -> [2-9]|1[0-3]
-	//参考：[23-45] -> [23-29]|[30-39]|[40-45] -> 2[3-9]|3[0-9]|4[0-5]
 	return when {
 		//如果first大于last，则抛出异常
 		first > last -> throw IllegalArgumentException("first $first is greater than last $last.")

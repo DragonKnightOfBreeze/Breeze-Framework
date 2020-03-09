@@ -15,17 +15,17 @@ enum class ReferenceCase(
 	 *
 	 * 示例：`/{Category}/0/Name`
 	 *
-	 * * `1` 表示一个列表的指定索引的元素。
-	 * * `1..10`，`1-10` 表示一个列表的指定索引范围内的元素。
+	 * * `1` 表示一个指定索引的元素。
+	 * * `Name` 表示一个指定键的值。
+	 * * `1..10`，`1-10` 表示一个用指定索引范围过滤的子列表。
+	 * * ``re: *1` `re:.*Name` 表示一个用指定正则表达式过滤的子列表/映射。
 	 * * `[]`，`-` 表示一个列表。
-	 * * `\[List]` 表示一个注为指定占位符的列表。
-	 * * `Name` 表示一个映射的指定键的值。
-	 * * `re:.*Name` 表示一个映射的键符合指定正则的键值对。
+	 * * `\[List]` 表示一个用指定占位符表示的列表。
 	 * * `{}`，`-` 表示一个映射。
-	 * * `{Category}` 表示一个注为指定占位符的映射。
+	 * * `{Category}` 表示一个用指定占位符表示的映射。
 	 */
 	PathReference(
-		{ it.removePrefix("/").splitToSequence('/') },
+		{ it.removePrefix("/").splitToSequence('/').dropEmpty() },
 		{ it.joinToString("/", "/") },
 		{ it.joinToString("/", "/") },
 		"""(?:/.+)+""".toRegex()
@@ -46,6 +46,7 @@ enum class ReferenceCase(
 		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
 		"""(?:[a-zA-Z_$]+|\[\d+])(?:\.[a-zA-Z_$]+|\[\d+])*""".toRegex()
 	),
+	//TODO 有待完善
 	/**
 	 * Json引用。
 	 *
@@ -55,7 +56,7 @@ enum class ReferenceCase(
 	 * * `[0]` 表示一个列表的元素。
 	 */
 	JsonReference(
-		{ it.removePrefix("$.").splitToSequence('.').map { s -> s.removeSurrounding("[", "]") } },
+		{ it.removePrefix("$.").splitToSequence('.').dropEmpty().map { s -> s.removeSurrounding("[", "]") } },
 		{ it.joinToString(".", "$.").wrapIndex() },
 		{ it.joinToString(".", "$.").wrapIndex() },
 		"""\$\..*""".toRegex() //不严格验证

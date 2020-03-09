@@ -4,7 +4,6 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.enums.text.*
 import java.io.*
 import java.net.*
@@ -782,27 +781,22 @@ fun String.toLongRange(): LongRange {
 
 private val rangeDelimiters = arrayOf("..", "-", "~")
 
-private fun String.toRangePair(): Quadruple<String, String, Int, Int> {
-	return when {
-		rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
-			.let { it[0].trim() to it[1].trim() with 0 with 0 }
-		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
-			.let { it[0].trim() to it[1].trim() with this.getLeftRangeOffset() with this.getRightRangeOffset() }
-		else -> notARange()
-	}
+private fun String.toRangePair() = when {
+	rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
+		.let { it[0].trim() to it[1].trim() with 0 with 0 }
+	this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
+		.let { it[0].trim() to it[1].trim() with this.getLeftRangeOffset() with this.getRightRangeOffset() }
+	else -> this.notARange()
 }
 
-private fun String.getLeftRangeOffset(): Int {
-	return if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else this.notARange()
-}
+private fun String.getLeftRangeOffset() =
+	if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else this.notARange()
 
-private fun String.getRightRangeOffset(): Int {
-	return if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else this.notARange()
-}
+private fun String.getRightRangeOffset() =
+	if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else this.notARange()
 
-private fun String.notARange(): Nothing {
+private fun String.notARange(): Nothing =
 	throw IllegalArgumentException("String '$this' cannot be resolved as a range.")
-}
 
 
 /**将当前字符串转化为文件。*/

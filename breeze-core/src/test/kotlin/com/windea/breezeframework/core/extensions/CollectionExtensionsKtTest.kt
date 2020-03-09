@@ -92,15 +92,15 @@ class CollectionExtensionsKtTest {
 
 	@Test
 	fun deepQuery() {
+		Int::class.safeCast()
+
 		val list = listOf(
 			listOf(1, 2, 3),
 			listOf(11, 22, 33),
 			listOf(111, 222, 333),
 			mapOf("a" to listOf("a"), "b" to listOf("b"))
 		)
-		assertFailsWith<IllegalArgumentException> {
-			println(list.deepQuery<Any?>("/"))
-		}
+		println(list.deepQuery<Any>("/"))
 		println(list.deepQuery<Int>("/[]"))
 		println(list.deepQuery<Any>("/[]"))
 		println(list.deepQuery<List<Int>>("/0..2"))

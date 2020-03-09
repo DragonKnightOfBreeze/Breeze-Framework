@@ -165,6 +165,7 @@ fun presentInClassPath(className: String): Boolean {
 inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
 
 //com.fasterxml.jackson.core.type.TypeReference
+
 /**类型引用。*/
 @PublishedApi
 internal abstract class TypeReference<T> {
@@ -177,9 +178,9 @@ internal abstract class TypeReference<T> {
 //endregion
 
 //region Any extensions
-/**将当前对象强制转化为指定类型。如果转化失败，则抛出异常。*/
+/**将当前对象强制转换为指定类型。如果转化失败，则抛出异常。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
 inline fun <reified R> Any?.cast(): R = this as R
 
-/**将当前对象强制转化为指定类型。如果转化失败，则返回null。注意不同泛型类型的类型之间不会转化失败。*/
-inline fun <reified R> Any?.castOrNull(): R? = this as? R
+/**将当前对象安全地转换为指定类型。如果转化失败，则返回null。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
+inline fun <reified R> Any?.safeCast(): R? = this as? R
 //endregion

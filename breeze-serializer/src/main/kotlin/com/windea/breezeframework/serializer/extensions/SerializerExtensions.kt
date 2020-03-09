@@ -26,7 +26,7 @@ inline fun <reified T : Any> Serializer.read(file: File): T {
 }
 
 @PublishedApi
-@UseExperimental(ImplicitReflectionSerializer::class)
+@OptIn(ImplicitReflectionSerializer::class)
 internal inline fun <reified T : Any> KotlinSerializer<*>.readForKotlinSerializer(string: String): T {
 	return this.delegate.parse(string)
 }

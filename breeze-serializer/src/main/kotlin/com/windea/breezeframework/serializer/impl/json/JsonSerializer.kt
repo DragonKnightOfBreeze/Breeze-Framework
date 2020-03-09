@@ -30,7 +30,7 @@ interface JsonSerializer : Serializer {
 
 
 		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@UseExperimental(UnstableDefault::class)
+		@OptIn(UnstableDefault::class)
 		fun configureKotlinJson(block: JsonBuilder.() -> Unit) {
 			block(KotlinJsonSerializer.jsonBuilder)
 		}

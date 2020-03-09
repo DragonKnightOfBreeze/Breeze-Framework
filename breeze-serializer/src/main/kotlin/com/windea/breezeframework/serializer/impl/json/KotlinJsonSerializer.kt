@@ -9,7 +9,7 @@ import java.lang.reflect.*
 
 /**由KotlinxSerialization实现的json的序列化器。*/
 @Suppress("UNCHECKED_CAST")
-@UseExperimental(UnstableDefault::class, ImplicitReflectionSerializer::class)
+@OptIn(UnstableDefault::class, ImplicitReflectionSerializer::class)
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	internal val jsonBuilder = JsonBuilder()
 	internal val json by lazy { Json(jsonBuilder.buildConfiguration()) }

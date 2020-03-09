@@ -1,5 +1,5 @@
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
 
 package com.windea.breezeframework.core.extensions
 
@@ -358,12 +358,12 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 }
 
 
-/**映射当前映射中的值，并过滤转换后为null的值。*/
+/**映射当前映射中的值，并过滤转化后为null的值。*/
 inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?): Map<K, R> {
 	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
-/**映射当前映射中的值，并过滤转换后为null的值，然后加入指定的映射。*/
+/**映射当前映射中的值，并过滤转化后为null的值，然后加入指定的映射。*/
 inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
 	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
 	return destination
@@ -465,10 +465,57 @@ fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.
 
 private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
 	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
+	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
 	for(subPath in subPaths) {
 		currentValue = currentValue.collectionGet(subPath)
+	}
+	return currentValue as T
+}
+
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> List<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ *
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
+	val subPaths = path.splitBy(pathCase)
+	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	var currentValue = this
+	for(subPath in subPaths) {
+		currentValue = currentValue.collectionGetOrNull(subPath)
 	}
 	return currentValue as T
 }
@@ -515,7 +562,7 @@ fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase
 
 private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
 	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
+	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
 	for(subPath in subPaths.dropLast(1)) {
 		currentValue = currentValue.collectionGet(subPath)
@@ -566,57 +613,16 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 	var pathValuePairs = listOf(arrayOf<String>() to this)
 	for(subPath in subPaths) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
-			when(value) {
-				is Array<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					else -> value.getOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
-				}
-				is Iterable<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						if(value is List<*>) {
-							value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
-						} else {
-							value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }
-						}
-					}
-					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
-				}
-				is Map<*, *> -> when {
-					subPath == "{}" || subPath == "-" || subPath.surroundsWith("{", "}") -> {
-						value.map { (k, v) -> (key + k.toString()) to v }
-					}
-					subPath.startsWith("re:") -> {
-						val regex = subPath.substring(3).toRegex()
-						value.filterKeys { it.toString() matches regex }.map { (k, v) -> (key + k.toString()) to v }
-					}
-					else -> value[subPath].toPairList(key + subPath)
-				}
-				is Sequence<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					}
-					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
-				}
-				//当尝试查询非集合类型的数据时，要求抛出异常
-				else -> notAValidCollection()
+			when {
+				subPath.isPathOfMapLike() -> value.toPairList(key)
+				subPath.isPathOfListLike() -> value.toPairList(key)
+				subPath.isPathOfRegex() -> value.collectionSliceByRegex(subPath.substring(3).toRegex()).toPairList(key)
+				subPath.isPathOfIndices() -> value.collectionSliceByIndices(subPath.toIntRange()).toPairList(key)
+				else -> value.collectionGetOrNull(subPath).toSingletonPairList(key, subPath)
 			}
 		}
 	}
-	return pathValuePairs.toPairValueMap(returnPathCase) as Map<String, T>
+	return pathValuePairs.toPathValueMap(returnPathCase) as Map<String, T>
 }
 
 
@@ -625,7 +631,6 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -634,7 +639,6 @@ fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -643,7 +647,6 @@ fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(dep
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -652,12 +655,11 @@ fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 private fun Any?.deepFlatten0(depth: Int): List<Any?> {
-	require(depth == -1 || depth > 0) { "Target depth '$depth' cannot be non-positive except -1." }
+	require(depth == -1 || depth > 0) { "Depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth
 	while(currentDepth != 0) {
@@ -683,61 +685,64 @@ private fun Any?.deepFlatten0(depth: Int): List<Any?> {
 }
 
 
-private fun Any?.collectionGet(indexOrKey: String): Any? {
-	return when(this) {
-		is Array<*> -> this[indexOrKey.toIntOrThrow()]
-		is Iterable<*> -> this.elementAt(indexOrKey.toIntOrThrow())
-		is Map<*, *> -> this[indexOrKey]
-		is Sequence<*> -> this.elementAt(indexOrKey.toIntOrThrow())
-		else -> notAValidCollection()
-	}
+private fun Any?.collectionGet(indexOrKey: String) = when(this) {
+	is Array<*> -> this[indexOrKey.toInt()]
+	is Iterable<*> -> this.elementAt(indexOrKey.toInt())
+	is Map<*, *> -> this[indexOrKey]
+	is Sequence<*> -> this.elementAt(indexOrKey.toInt())
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun Any?.collectionSet(indexOrKey: String, value: Any?) {
-	//除了数组以外，无法进行类型检查
-	when(this) {
-		is Array<*> -> try {
-			(this as Array<Any?>)[indexOrKey.toIntOrThrow()] = value
-		} catch(e: ArrayStoreException) {
-			typeMismatched(value)
-		}
-		is MutableList<*> -> (this as MutableList<Any?>)[indexOrKey.toIntOrThrow()] = value
-		is MutableMap<*, *> -> (this as MutableMap<String, Any?>)[indexOrKey] = value
-		else -> notAValidMutableCollection()
-	}
+private fun Any?.collectionGetOrNull(indexOrKey: String) = when(this) {
+	is Array<*> -> this.getOrNull(indexOrKey.toInt())
+	is Iterable<*> -> this.elementAtOrNull(indexOrKey.toInt())
+	is Map<*, *> -> this[indexOrKey]
+	is Sequence<*> -> this.elementAtOrNull(indexOrKey.toInt())
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun String.toIntOrThrow(): Int {
-	return this.toIntOrNull() ?: notAnIndex(this)
+private fun Any?.collectionSet(indexOrKey: String, value: Any?) = when(this) {
+	is Array<*> -> (this as Array<Any?>)[indexOrKey.toInt()] = value //这里可能会发生ArrayStoreException
+	is MutableList<*> -> (this as MutableList<Any?>)[indexOrKey.toInt()] = value
+	is MutableMap<*, *> -> (this as MutableMap<String, Any?>)[indexOrKey] = value
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, MutableList or MutableMap).")
 }
 
-private fun Any?.toPairList(path: Array<String>): List<Pair<Array<String>, Any?>> {
-	return if(this == null) listOf() else listOf(path to this)
+private fun Any?.collectionSliceByIndices(indices: IntRange) = when(this) {
+	is Array<*> -> this.sliceArray(indices)
+	is List<*> -> this.slice(indices)
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, List).")
 }
 
-private fun notAnIndex(path: String): Nothing {
-	throw IllegalArgumentException("Path '$path' is not a valid index.")
+private fun Any?.collectionSliceByRegex(regex: Regex) = when(this) {
+	is Array<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	is Iterable<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	is Map<*, *> -> this.filterKeys { it.toString() matches regex }
+	is Sequence<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun notAValidCollection(): Nothing {
-	throw IllegalArgumentException("Receiver is  not a valid collection (Array, Iterable, Map or Sequence).")
+private fun String.isPathOfMapLike() = this == "-" || this == "{}" || this.surroundsWith("{", "}")
+
+private fun String.isPathOfListLike() = this == "-" || this == "[]" || this.surroundsWith("[", "]")
+
+private fun String.isPathOfRegex() = this.startsWith("re:")
+
+private fun String.isPathOfIndices() = this.contains("..") || this.contains("-") || this.contains("~")
+
+private fun Any?.toPairList(oldPaths: Array<String>) = when(this) {
+	is Array<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }
+	is Iterable<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }
+	is Map<*, *> -> this.map { (k, v) -> oldPaths + k.toString() to v }
+	is Sequence<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }.toList()
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun notAValidMutableCollection(): Nothing {
-	throw IllegalArgumentException("Receiver is not a valid collection (Array, MutableList or MutableMap).")
-}
+private fun Any?.toSingletonPairList(oldPaths: Array<String>, newPath: String) =
+	if(this == null) listOf() else listOf(oldPaths + newPath to this)
 
-private fun notAStringKeyMap(): Nothing {
-	throw IllegalArgumentException("'Receiver is a map but type of it's key is not String.")
-}
-
-private fun typeMismatched(value: Any?): Nothing {
-	throw IllegalArgumentException("Value '$value' is type mismatched (Incompatible generic type).")
-}
-
-private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: ReferenceCase): Map<String, Any?> {
-	return this.map { (p, v) -> p.joinToStringBy(returnPathCase) to v }.toMap()
-}
+private fun List<Pair<Array<String>, Any?>>.toPathValueMap(returnPathCase: ReferenceCase) =
+	this.toMap().mapKeys { (k, _) -> k.joinToStringBy(returnPathCase) }
 //endregion
 
 //region convert extensions
