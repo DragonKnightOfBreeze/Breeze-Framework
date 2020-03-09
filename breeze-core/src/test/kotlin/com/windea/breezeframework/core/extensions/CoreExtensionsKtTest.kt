@@ -26,7 +26,6 @@ class CoreExtensionsKtTest {
 	fun nearestStackInfo() {
 		DELAY()
 		FIXME()
-		TODO()
 	}
 
 	@Test

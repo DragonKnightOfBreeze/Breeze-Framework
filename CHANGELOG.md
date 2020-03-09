@@ -314,6 +314,7 @@
 * [X] breeze-core 重构`String.toIntRange`等扩展的逻辑，为字符串、集合和数组添加更多的运算符重载扩展。
 * [X] breeze-core 重构TODO方法。
 * [X] 更新项目文档。
+* [X] 上传到远程仓库。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。

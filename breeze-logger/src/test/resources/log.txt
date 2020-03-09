@@ -148,3 +148,15 @@
 [2020-02-22 18:56:09] WARN com.windea.breezeframework.logger.Tests - warn
 [2020-02-22 18:56:09] ERROR com.windea.breezeframework.logger.Tests - error
 [2020-02-22 18:56:09] FATAL com.windea.breezeframework.logger.Tests - fatal
+[2020-03-09 12:54:36] TRACE com.windea.breezeframework.logger.Tests - trace
+[2020-03-09 12:54:37] DEBUG com.windea.breezeframework.logger.Tests - debug
+[2020-03-09 12:54:37] INFO com.windea.breezeframework.logger.Tests - info
+[2020-03-09 12:54:38] WARN com.windea.breezeframework.logger.Tests - warn
+[2020-03-09 12:54:38] ERROR com.windea.breezeframework.logger.Tests - error
+[2020-03-09 12:54:38] FATAL com.windea.breezeframework.logger.Tests - fatal
+[2020-03-09 12:57:26] TRACE com.windea.breezeframework.logger.Tests - trace
+[2020-03-09 12:57:27] DEBUG com.windea.breezeframework.logger.Tests - debug
+[2020-03-09 12:57:27] INFO com.windea.breezeframework.logger.Tests - info
+[2020-03-09 12:57:27] WARN com.windea.breezeframework.logger.Tests - warn
+[2020-03-09 12:57:27] ERROR com.windea.breezeframework.logger.Tests - error
+[2020-03-09 12:57:27] FATAL com.windea.breezeframework.logger.Tests - fatal
