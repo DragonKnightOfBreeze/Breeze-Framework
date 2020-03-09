@@ -92,8 +92,6 @@ class CollectionExtensionsKtTest {
 
 	@Test
 	fun deepQuery() {
-		Int::class.safeCast()
-
 		val list = listOf(
 			listOf(1, 2, 3),
 			listOf(11, 22, 33),

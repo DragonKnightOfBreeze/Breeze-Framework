@@ -18,14 +18,16 @@ import kotlin.contracts.*
 
 //region portal extensions
 /**构建一个集并事先过滤空的元素。*/
-fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) else emptyList()
+fun <T : Any> setOfNotNull(element: T?) =
+	if(element != null) listOf(element) else emptyList()
 
 /**构建一个集并事先过滤空的元素。*/
 fun <T : Any> setOfNotNull(vararg elements: T?): Set<T> =
 	LinkedHashSet<T>().apply { for(element in elements) if(element != null) add(element) }
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
+fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) =
+	if(pair.second != null) mapOf(pair) else emptyMap()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>) =
@@ -464,11 +466,11 @@ fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.
 	this.deepGet0(path, pathCase)
 
 private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
-	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	val pathList = path.splitBy(pathCase)
+	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
-	for(subPath in subPaths) {
-		currentValue = currentValue.collectionGet(subPath)
+	for(p in pathList) {
+		currentValue = currentValue.collectionGet(p)
 	}
 	return currentValue as T
 }
@@ -511,11 +513,11 @@ fun <T> Map<*, *>.deepGetOrNull(path: String, pathCase: ReferenceCase = Referenc
 	this.deepGetOrNull0(path, pathCase)
 
 private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
-	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	val pathList = path.splitBy(pathCase)
+	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
-	for(subPath in subPaths) {
-		currentValue = currentValue.collectionGetOrNull(subPath)
+	for(p in pathList) {
+		currentValue = currentValue.collectionGetOrNull(p)
 	}
 	return currentValue as T
 }
@@ -561,13 +563,13 @@ fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase
 	this.deepSet0(path, value, pathCase)
 
 private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
-	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	val pathList = path.splitBy(pathCase)
+	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
-	for(subPath in subPaths.dropLast(1)) {
-		currentValue = currentValue.collectionGet(subPath)
+	for(p in pathList.dropLast(1)) {
+		currentValue = currentValue.collectionGet(p)
 	}
-	currentValue.collectionSet(subPaths.last(), value)
+	currentValue.collectionSet(pathList.last(), value)
 }
 
 
@@ -609,16 +611,20 @@ fun <T> Map<*, *>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCas
 	this.deepQuery0(path, pathCase, returnPathCase)
 
 private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
-	val subPaths = path.splitBy(pathCase)
+	val pathList = path.splitBy(pathCase)
 	var pathValuePairs = listOf(arrayOf<String>() to this)
-	for(subPath in subPaths) {
+	for(p in pathList) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
-			when {
-				subPath.isPathOfMapLike() -> value.toPairList(key)
-				subPath.isPathOfListLike() -> value.toPairList(key)
-				subPath.isPathOfRegex() -> value.collectionSliceByRegex(subPath.substring(3).toRegex()).toPairList(key)
-				subPath.isPathOfIndices() -> value.collectionSliceByIndices(subPath.toIntRange()).toPairList(key)
-				else -> value.collectionGetOrNull(subPath).toSingletonPairList(key, subPath)
+			try {
+				when {
+					p.isPathOfMapLike() -> value.toPairList(key)
+					p.isPathOfListLike() -> value.toPairList(key)
+					p.isPathOfRegex() -> value.collectionSliceByRegex(p.substring(3).toRegex()).toPairList(key)
+					p.isPathOfIndices() -> value.collectionSliceByIndices(p.toIntRange()).toPairList(key)
+					else -> value.collectionGetOrNull(p).toSingletonPairList(key, p)
+				}
+			} catch(e: Exception) {
+				value.collectionGetOrNull(p).toSingletonPairList(key, p)
 			}
 		}
 	}
