@@ -164,6 +164,7 @@ fun CharSequence.isAlphanumeric(): Boolean {
 @JvmSynthetic
 inline fun <C : CharSequence> C.orNull(): C? = if(this.isEmpty()) null else this
 
+
 /**如果当前字符串不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")

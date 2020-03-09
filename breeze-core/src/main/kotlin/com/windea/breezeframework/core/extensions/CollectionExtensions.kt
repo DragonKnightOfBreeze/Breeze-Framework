@@ -10,7 +10,7 @@ import java.util.concurrent.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
-import kotlin.random.Random
+import kotlin.contracts.*
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
@@ -178,6 +178,36 @@ inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull
 inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
+/**判断当前数组是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return !this.isNullOrEmpty()
+}
+
+/**判断当前集合是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return !this.isNullOrEmpty()
+}
+
+/**判断当前映射是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return !this.isNullOrEmpty()
+}
+
 /**判断当前序列是否为空。*/
 inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 
@@ -204,6 +234,7 @@ inline fun <T> Set<T>.orNull(): Set<T>? = if(this.isEmpty()) null else this
 /**如果当前映射不为空，则返回本身，否则返回null。*/
 @JvmSynthetic
 inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? = if(this.isEmpty()) null else this
+
 
 /**如果当前数组不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
@@ -252,25 +283,6 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
 	val temp = this[index1]
 	this[index1] = this[index2]
 	this[index2] = temp
-}
-
-
-/**得到随机元素。如果数组为空，则返回null。*/
-inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
-
-/**得到随机元素。如果数组为空，则返回null。*/
-fun <T> Array<out T>.randomOrNull(random: Random): T? {
-	if(this.isEmpty()) return null
-	return this[random.nextInt(size)]
-}
-
-/**得到随机元素。如果集合为空，则返回null。*/
-inline fun <T> Collection<T>.randomOrNull(): T? = this.randomOrNull(Random)
-
-/**得到随机元素。如果集合为空，则返回null。*/
-fun <T> Collection<T>.randomOrNull(random: Random): T? {
-	if(this.isEmpty()) return null
-	return this.elementAt(random.nextInt(size))
 }
 
 
@@ -704,13 +716,16 @@ private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: Refer
 
 //region convert extensions
 /**将当前列表转化为新的并发列表。*/
-fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
+fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> =
+	if(this is CopyOnWriteArrayList) this else CopyOnWriteArrayList(this)
 
 /**将当前集转化为新的并发集。*/
-fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
+fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> =
+	if(this is CopyOnWriteArraySet) this else CopyOnWriteArraySet(this)
 
 /**将当前映射转化为新的并发映射。*/
-fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
+fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> =
+	if(this is ConcurrentMap) this else ConcurrentHashMap(this)
 
 
 /**将当前键值对数组转化为可变映射。*/
@@ -744,7 +759,7 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 
-/**将当前映射转化为新的以字符串为键且以字符串为键的映射。*/
+/**将当前映射转化为新的以字符串为值的映射。*/
 @NotOptimized
 inline fun <V> Map<String, V>.toStringValueMap(): Map<String, String> {
 	return this.mapValues { (_, v) -> v.toString() }

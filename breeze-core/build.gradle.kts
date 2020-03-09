@@ -1,6 +1,6 @@
 plugins {
-	kotlin("plugin.noarg") version "1.3.60"
-	kotlin("plugin.allopen") version "1.3.60"
+	kotlin("plugin.noarg") version "1.3.70"
+	kotlin("plugin.allopen") version "1.3.70"
 }
 
 noArg {
@@ -13,7 +13,7 @@ allOpen {
 
 dependencies {
 	//implementation("com.google.guava:guava:28.2-jre")
-//	implementation("org.kodein.di:kodein-di-generic-jvm:6.3.3")
-//	testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek_version")
-//	testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
+	//implementation("org.kodein.di:kodein-di-generic-jvm:6.3.3")
+	//testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek_version")
+	//testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek_version")
 }
