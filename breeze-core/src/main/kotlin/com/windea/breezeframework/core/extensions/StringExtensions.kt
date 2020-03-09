@@ -128,7 +128,7 @@ inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
-	return !this.isNullOrEmpty()
+	return this != null && this.isNotEmpty()
 }
 
 /**判断当前字符串是否不为null，且不为空白字符串。*/
@@ -138,7 +138,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrBlank != null)
 	}
-	return !this.isNullOrBlank()
+	return this != null && this.isNotBlank()
 }
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/

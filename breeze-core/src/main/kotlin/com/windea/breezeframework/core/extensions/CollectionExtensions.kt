@@ -185,7 +185,7 @@ inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
-	return !this.isNullOrEmpty()
+	return this != null && this.isNotEmpty()
 }
 
 /**判断当前集合是否不为null，且不为空。*/
@@ -195,7 +195,7 @@ inline fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
-	return !this.isNullOrEmpty()
+	return this != null && this.isNotEmpty()
 }
 
 /**判断当前映射是否不为null，且不为空。*/
@@ -205,7 +205,7 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
-	return !this.isNullOrEmpty()
+	return this != null && this.isNotEmpty()
 }
 
 /**判断当前序列是否为空。*/
@@ -363,7 +363,7 @@ inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?):
 	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
-/**映射当前映射中的值，并过滤转换后为null的值，然后置入之地你个的映射。*/
+/**映射当前映射中的值，并过滤转换后为null的值，然后加入指定的映射。*/
 inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
 	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
 	return destination
@@ -401,6 +401,28 @@ inline fun <T, R : Any> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T,
 /**根据指定的条件，内连接当前序列和另一个序列。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+
+/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止。*/
+inline fun <T> expand(initial: T, operation: (T) -> Iterable<T>): List<T> {
+	return expandTo(ArrayList(), initial, operation)
+}
+
+/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止，然后加入指定的集合。*/
+inline fun <T, C : MutableCollection<in T>> expandTo(destination: C, initial: T, operation: (T) -> Iterable<T>): C {
+	var nextResult = operation(initial)
+	while(nextResult.any()) {
+		destination += nextResult
+		var hasNoneChange = true
+		nextResult = nextResult.flatMap {
+			operation(it).apply {
+				if(hasNoneChange && this.singleOrNull() != it) hasNoneChange = false
+			}
+		}
+		if(hasNoneChange) break
+	}
+	return destination
 }
 //endregion
 
@@ -599,34 +621,38 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 
 
 /**
- * 根据深度递归平滑映射当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 

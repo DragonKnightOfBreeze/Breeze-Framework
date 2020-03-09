@@ -140,4 +140,14 @@ class CollectionExtensionsKtTest {
 		assertTrue(mapOf("a" to "a").isMapOf<String, String>())
 		assertTrue(sequenceOf("a").isSequenceOf<String>())
 	}
+
+	@Test
+	fun expandTest2() {
+		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6)), 7)
+		val flatList = list.flatMap { if(it is List<*>) it else listOf(it) }
+		val extendList = expand<Any?>(list) { if(it is List<*>) it else listOf() }
+		println(list)
+		println(flatList)
+		println(extendList)
+	}
 }
