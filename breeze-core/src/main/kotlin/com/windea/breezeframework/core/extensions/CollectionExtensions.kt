@@ -10,7 +10,7 @@ import java.util.concurrent.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
-import kotlin.random.Random
+import kotlin.contracts.*
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
@@ -68,23 +68,33 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = 
 //endregion
 
 //region operator extensions
-/**@see kotlin.collections.slice*/
-operator fun <T> Array<out T>.get(indices: IntRange): List<T> = this.slice(indices)
-
-/**@see kotlin.collections.slice*/
-operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
-operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
-
-/**@see com.windea.breezeframework.core.extensions.repeat*/
+/**
+ * 重复当前列表中的元素到指定次数。
+ *
+ * @see com.windea.breezeframework.core.extensions.repeat
+ */
 operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
 
-/**@see kotlin.collections.chunked*/
-operator fun <T> Array<out T>.div(n: Int): List<List<T>> = this.toList().chunked(n)
-
-/**@see kotlin.collections.chunked*/
+/**
+ * 切分当前集合中的元素到指定个数。
+ *
+ * @see kotlin.collections.chunked
+ **/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+
+/**
+ * 得到索引指定范围内的子列表。
+ *
+ * @see kotlin.collections.slice
+ */
+operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
+
+/**
+ * 得到索引指定范围内的子列表。
+ *
+ * @see kotlin.collections.List.subList
+ */
+operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
 //endregion
 
 //region common extensions
@@ -168,6 +178,36 @@ inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull
 inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
+/**判断当前数组是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return this != null && this.isNotEmpty()
+}
+
+/**判断当前集合是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return this != null && this.isNotEmpty()
+}
+
+/**判断当前映射是否不为null，且不为空。*/
+@UselessCallOnNotNullType
+@JvmSynthetic
+inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return this != null && this.isNotEmpty()
+}
+
 /**判断当前序列是否为空。*/
 inline fun <T> Sequence<T>.isEmpty() = !this.isNotEmpty()
 
@@ -194,6 +234,7 @@ inline fun <T> Set<T>.orNull(): Set<T>? = if(this.isEmpty()) null else this
 /**如果当前映射不为空，则返回本身，否则返回null。*/
 @JvmSynthetic
 inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? = if(this.isEmpty()) null else this
+
 
 /**如果当前数组不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
@@ -242,25 +283,6 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
 	val temp = this[index1]
 	this[index1] = this[index2]
 	this[index2] = temp
-}
-
-
-/**得到随机元素。如果数组为空，则返回null。*/
-inline fun <T> Array<out T>.randomOrNull(): T? = this.randomOrNull(Random)
-
-/**得到随机元素。如果数组为空，则返回null。*/
-fun <T> Array<out T>.randomOrNull(random: Random): T? {
-	if(this.isEmpty()) return null
-	return this[random.nextInt(size)]
-}
-
-/**得到随机元素。如果集合为空，则返回null。*/
-inline fun <T> Collection<T>.randomOrNull(): T? = this.randomOrNull(Random)
-
-/**得到随机元素。如果集合为空，则返回null。*/
-fun <T> Collection<T>.randomOrNull(random: Random): T? {
-	if(this.isEmpty()) return null
-	return this.elementAt(random.nextInt(size))
 }
 
 
@@ -341,7 +363,7 @@ inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?):
 	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
-/**映射当前映射中的值，并过滤转换后为null的值，然后置入之地你个的映射。*/
+/**映射当前映射中的值，并过滤转换后为null的值，然后加入指定的映射。*/
 inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
 	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
 	return destination
@@ -379,6 +401,28 @@ inline fun <T, R : Any> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T,
 /**根据指定的条件，内连接当前序列和另一个序列。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
 inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+
+/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止。*/
+inline fun <T> expand(initial: T, operation: (T) -> Iterable<T>): List<T> {
+	return expandTo(ArrayList(), initial, operation)
+}
+
+/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止，然后加入指定的集合。*/
+inline fun <T, C : MutableCollection<in T>> expandTo(destination: C, initial: T, operation: (T) -> Iterable<T>): C {
+	var nextResult = operation(initial)
+	while(nextResult.any()) {
+		destination += nextResult
+		var hasNoneChange = true
+		nextResult = nextResult.flatMap {
+			operation(it).apply {
+				if(hasNoneChange && this.singleOrNull() != it) hasNoneChange = false
+			}
+		}
+		if(hasNoneChange) break
+	}
+	return destination
 }
 //endregion
 
@@ -577,38 +621,42 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
 
 
 /**
- * 根据深度递归平滑映射当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 /**
- * 根据深度递归平滑映射当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
+@NotSure
 @JvmOverloads
 fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
-private fun Any?.deepFlatten0(depth: Int = -1): List<Any?> {
+private fun Any?.deepFlatten0(depth: Int): List<Any?> {
 	require(depth == -1 || depth > 0) { "Target depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth
@@ -694,13 +742,16 @@ private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: Refer
 
 //region convert extensions
 /**将当前列表转化为新的并发列表。*/
-fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
+fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> =
+	if(this is CopyOnWriteArrayList) this else CopyOnWriteArrayList(this)
 
 /**将当前集转化为新的并发集。*/
-fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
+fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> =
+	if(this is CopyOnWriteArraySet) this else CopyOnWriteArraySet(this)
 
 /**将当前映射转化为新的并发映射。*/
-fun <K, V> Map<K, V>.asConcurrent(): ConcurrentHashMap<K, V> = ConcurrentHashMap(this)
+fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> =
+	if(this is ConcurrentMap) this else ConcurrentHashMap(this)
 
 
 /**将当前键值对数组转化为可变映射。*/
@@ -734,7 +785,7 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 
-/**将当前映射转化为新的以字符串为键且以字符串为键的映射。*/
+/**将当前映射转化为新的以字符串为值的映射。*/
 @NotOptimized
 inline fun <V> Map<String, V>.toStringValueMap(): Map<String, String> {
 	return this.mapValues { (_, v) -> v.toString() }

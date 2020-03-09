@@ -1,16 +1,25 @@
 import org.gradle.jvm.tasks.Jar
 
+buildscript {
+	//配置插件仓库
+	repositories {
+		maven("https://maven.aliyun.com/nexus/content/groups/public")
+		mavenCentral()
+		jcenter()
+	}
+}
+
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.3.60"
+	id("org.jetbrains.kotlin.jvm") version "1.3.70"
 	id("org.jetbrains.dokka") version "0.9.18"
 	id("com.jfrog.bintray") version "1.8.4"
 }
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.0.13"
+	version = "1.1.0"
 
 	//应用插件
 	apply {
@@ -20,14 +29,12 @@ allprojects {
 
 	//配置依赖仓库
 	repositories {
-		//使用阿里云代理解决Gradle构建过慢的问题
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
 		jcenter()
 	}
 
 	//配置依赖
-	//implementation不能传递依赖，api能传递依赖，test为测试期，compile为编译器，runtime为运行时，optional需要依靠插件实现
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))

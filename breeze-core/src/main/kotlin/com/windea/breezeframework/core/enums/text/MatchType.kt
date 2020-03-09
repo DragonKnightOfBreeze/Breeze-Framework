@@ -69,12 +69,12 @@ enum class MatchType(
 	 * 示例：`/{Category}/0/Name`
 	 *
 	 * * `1` 表示一个列表的指定索引的元素。
-	 * * `1..10`, `1-10` 表示一个列表的指定索引范围内的元素。
-	 * * `[]`, `-` 表示一个列表。
+	 * * `1..10`，`1-10` 表示一个列表的指定索引范围内的元素。
+	 * * `[]`，`-` 表示一个列表。
 	 * * `\[List]` 表示一个注为指定占位符的列表。
 	 * * `Name` 表示一个映射的指定键的值。
 	 * * `re:.*Name` 表示一个映射的键符合指定正则的键值对。
-	 * * `{}`, `-` 表示一个映射。
+	 * * `{}`，`-` 表示一个映射。
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
 	PathReference({ pattern ->
@@ -84,16 +84,17 @@ enum class MatchType(
 			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { r -> "/\\E${Regex.fromRange(r[1].toInt(), r[2].toInt())}\\Q" }
 			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r[1]}\\Q" } }
 			.trimRegex()
-	})
-}
+	});
 
+	companion object {
+		/**转义正则表达式字符串。*/
+		private fun String.escapeRegex(): String {
+			return Regex.escape(this)
+		}
 
-/**转义正则表达式字符串。*/
-private fun String.escapeRegex(): String {
-	return Regex.escape(this)
-}
-
-/**精简正则表达式字符串。*/
-private fun String.trimRegex(): String {
-	return this.remove("\\Q\\E")
+		/**精简正则表达式字符串。*/
+		private fun String.trimRegex(): String {
+			return this.remove("\\Q\\E")
+		}
+	}
 }

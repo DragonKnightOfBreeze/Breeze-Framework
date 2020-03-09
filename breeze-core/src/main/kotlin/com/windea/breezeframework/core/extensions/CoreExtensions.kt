@@ -8,50 +8,64 @@ import java.lang.reflect.*
 import kotlin.contracts.*
 
 //region Standard.kt extensions
+/**方法推迟实现时使用到的错误。这个错误不会在对应的TODO方法中被抛出。*/
+class DelayImplementedError(message: String = "An operation is delay implemented.") : Error(message)
+
 /**表明一个操作推迟了实现。*/
 @TodoMarker
 @JvmSynthetic
-inline fun DELAY() = DELAY { Unit }
+inline fun DELAY() {
+	printTodo(DelayImplementedError(), 32)
+}
 
 /**表明一个方法体推迟了实现，并指定原因。*/
 @TodoMarker
 @JvmSynthetic
-inline fun DELAY(reason: String) = DELAY(reason) { Unit }
+inline fun DELAY(reason: String) {
+	printTodo(DelayImplementedError("An operation is delay implemented: $reason"), 32)
+}
 
 /**表明一个操作推迟了实现。返回模拟结果。*/
 @TodoMarker
 @JvmSynthetic
-inline fun <T> DELAY(lazyDummyResult: () -> T): T = lazyDummyResult().also {
-	println("An operation is delay implemented.".let { "\u001B[33m$it\u001B[0m" })
-	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
+inline fun <T> DELAY(lazyDummyResult: () -> T): T {
+	printTodo(DelayImplementedError(), 32)
+	return lazyDummyResult()
 }
 
 /**表明一个方法体推迟了实现，并指定原因。返回模拟结果。*/
 @TodoMarker
 @JvmSynthetic
-inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T = lazyDummyResult().also {
-	println("An operation is delay implemented: $reason".let { "\u001B[33m$it\u001B[0m" })
-	println("Location: $currentClassFullName".let { "\u001B[33m$it\u001B[0m" })
+inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T {
+	printTodo(DelayImplementedError("An operation is delay implemented: $reason"), 32)
+	return lazyDummyResult()
 }
 
+
+/**方法存在问题时使用到的错误。这个错误不会在对应的TODO方法中被抛出。*/
+class ImplementedWithAnIssueError(message: String = "An operation is implemented with an issue.") : Error(message)
 
 /**表明一个方法体中存在问题。*/
 @TodoMarker
 @JvmSynthetic
-inline fun FIXME() = run {
-	println("An operation has an unresolved issue.".let { "\u001B[91m$it\u001B[0m" })
-	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
+inline fun FIXME() {
+	printTodo(ImplementedWithAnIssueError(), 33)
 }
 
 /**表明一个方法体中存在问题，并指明原因。*/
 @TodoMarker
 @JvmSynthetic
-inline fun FIXME(message: String) = run {
-	println("An operation has an unresolved issue: $message".let { "\u001B[91m$it\u001B[0m" })
-	println("Location: $currentClassFullName".let { "\u001B[91m$it\u001B[0m" })
+inline fun FIXME(message: String) {
+	printTodo(ImplementedWithAnIssueError("An operation is implemented with an issue: $message"), 33)
 }
 
-@PublishedApi internal inline val currentClassFullName get() = Exception().stackTrace[0].className
+
+@PublishedApi
+internal fun printTodo(throwable: Throwable, colorCode: Int) {
+	println()
+	throwable.message?.let { println("\u001B[${colorCode}m$it\u001B[0m") }
+	throwable.printStackTrace()
+}
 
 
 /**尝试执行一段代码，并在发生异常时打印堆栈信息。*/

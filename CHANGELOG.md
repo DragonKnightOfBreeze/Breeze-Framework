@@ -301,15 +301,34 @@
 * [X] breeze-data 重构代码，重命名一些方法，让它们的用途更加容易理解，更改目录结构。
 * [X] 重构配置类以及相关类的代码逻辑。
 * [X] 将breeze-data重命名为breeze-serializer，并添加`kotlinx-serialization`的代理实现。
+
+### 1.0.14
+ 
+* [X] 更新版本。
+* [X] 上传到远程仓库。
+
+### 1.0.15
+ 
+* [X] 更新版本。
+* [X] breeze-core 添加`String.toCharset`扩展。
+* [X] breeze-core 重构`String.toIntRange`等扩展的逻辑，为字符串、集合和数组添加更多的运算符重载扩展。
+* [X] breeze-core 重构TODO方法。
+* [X] 更新项目文档。
+* [X] 上传到远程仓库。
+
+## 1.1.x
+
+### 1.1.0
+ 
+* [X] 更新版本。更新Kotlin版本到1.3.70。
+* [X] breeze-core 移除集合类型的`randomOrNull`方法，其他一些更新。
+* [X] breeze-core 添加`expandTo`和`expand`方法，相当于`fold`的反操作，用于根据指定的操作展开初始值，并收集展开过程中的所有项。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
 * [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 * [ ] breeze-core 串行处理字符串的方法，保证可靠性和灵活性。
-
-# 待办
-
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
 * [ ] breeze-serialization 提供yaml的序列化实现。
@@ -330,8 +349,8 @@
 
 * [X] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
-* [X] ~~同步项目到Bintray。~~
-* [ ] 发布项目到JCenter或MavenCentral。（直到项目稳定之前不考虑）
+* [X] 同步项目到Bintray。
+* [X] 发布项目到JCenter或MavenCentral。
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
 * [ ] 按照功能而非类型更改项目代码的目录结构。

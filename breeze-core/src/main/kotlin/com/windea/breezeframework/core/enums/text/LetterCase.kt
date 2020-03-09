@@ -150,25 +150,26 @@ enum class LetterCase(
 	),
 	/**未知格式。*/
 	Unknown;
-}
 
+	companion object {
+		/**将第一个字符转为大写。*/
+		private fun CharSequence.firstCharToUpperCase(): String {
+			return this[0].toUpperCase() + this.substring(1)
+		}
 
-/**将第一个字符转为大写。*/
-private fun CharSequence.firstCharToUpperCase(): String {
-	return this[0].toUpperCase() + this.substring(1)
-}
+		/**将第一个字符转为小写。*/
+		private fun CharSequence.firstCharToLowerCase(): String {
+			return this[0].toLowerCase() + this.substring(1)
+		}
 
-/**将第一个字符转为小写。*/
-private fun CharSequence.firstCharToLowerCase(): String {
-	return this[0].toLowerCase() + this.substring(1)
-}
+		/**将当前字符串分割为单词序列，基于任意长度的指定的分割符。允许位于首尾的分隔符。*/
+		private fun CharSequence.splitToWordSequence(vararg delimiters: Char): Sequence<String> {
+			return this.splitToSequence(*delimiters).filterNotEmpty()
+		}
 
-/**将当前字符串分割为单词序列，基于任意长度的指定的分割符。允许位于首尾的分隔符。*/
-private fun CharSequence.splitToWordSequence(vararg delimiters: Char): Sequence<String> {
-	return this.splitToSequence(*delimiters).filterNotEmpty()
-}
-
-/**基于小写字母与大写字母的边界，将当前字符串转化为以空格分割的单词组成的字符串。允许全大写的单词。*/
-private fun CharSequence.splitToWords(): String {
-	return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
+		/**基于小写字母与大写字母的边界，将当前字符串转化为以空格分割的单词组成的字符串。允许全大写的单词。*/
+		private fun CharSequence.splitToWords(): String {
+			return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
+		}
+	}
 }

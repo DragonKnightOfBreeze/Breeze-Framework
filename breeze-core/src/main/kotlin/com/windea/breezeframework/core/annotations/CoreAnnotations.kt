@@ -21,7 +21,7 @@ annotation class AllOpen
 @Target(CLASS)
 annotation class NoArg
 
-/**注明这个注解对应的项一个待办方法。*/
+/**注明这个注解对应的项一个TODO方法。*/
 @MustBeDocumented
 @Retention(BINARY)
 @Target(FUNCTION)

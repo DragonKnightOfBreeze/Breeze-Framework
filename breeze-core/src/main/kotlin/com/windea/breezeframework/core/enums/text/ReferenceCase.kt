@@ -16,12 +16,12 @@ enum class ReferenceCase(
 	 * 示例：`/{Category}/0/Name`
 	 *
 	 * * `1` 表示一个列表的指定索引的元素。
-	 * * `1..10` 表示一个列表的指定索引范围内的元素。
-	 * * `[]`, `-` 表示一个列表。
+	 * * `1..10`，`1-10` 表示一个列表的指定索引范围内的元素。
+	 * * `[]`，`-` 表示一个列表。
 	 * * `\[List]` 表示一个注为指定占位符的列表。
 	 * * `Name` 表示一个映射的指定键的值。
 	 * * `re:.*Name` 表示一个映射的键符合指定正则的键值对。
-	 * * `{}` , `-` 表示一个映射。
+	 * * `{}`，`-` 表示一个映射。
 	 * * `{Category}` 表示一个注为指定占位符的映射。
 	 */
 	PathReference(
@@ -62,10 +62,11 @@ enum class ReferenceCase(
 	),
 	/**未知格式。*/
 	Unknown;
-}
 
-
-/**使用方括号包围索引。*/
-private fun String.wrapIndex(): String {
-	return this.replace("""\d+""".toRegex(), "[$0]")
+	companion object {
+		/**使用方括号包围索引。*/
+		private fun String.wrapIndex(): String {
+			return this.replace("""\d+""".toRegex(), "[$0]")
+		}
+	}
 }

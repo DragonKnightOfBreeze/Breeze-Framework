@@ -12,22 +12,82 @@
 
 # 模块
 
-* breeze-core
-* breeze-data
-* breeze-dsl
-* breeze-functional
-* breeze-game
-* breeze-generator
-* breeze-http
-* breeze-javafx
-* breeze-linq
-* breeze-logger
-* breeze-reflect
-* breeze-serialization
-* breeze-spring-boot
-* breeze-test
-* breeze-text
-* breeze-time
+## breeze-core
+
+为Kotlin标准库补充缺失的功能和扩展，并提供许多日常项目开发中经常用到的工具方法和扩展方法。
+如额外的字符串处理方法、集合操作方法、运算符重载方法、类型转化方法等。
+
+## breeze-dsl
+
+提供标准的dsl api，为一些语言提供dsl支持，便于生成对应的文本。
+如xml、markdown等标记语言以及mermaid等绘图语言。
+
+## breeze-functional
+
+提供一些函数式编程中可能用到的扩展方法。
+
+## breeze-game
+
+提供一些游戏开发中可能用到的通用工具和功能。
+
+**未完全实现。**
+
+## breeze-generator
+
+提供一些用于生成特定格式的字符串、json文件、yaml文件的生成器。
+
+## breeze-http
+
+提供一个直观优雅的api，封装java原生的http api，允许对其进行灵活的配置。
+可能需要配合第三方库如`Gson`使用。
+
+**有待完善的实现。**
+
+## breeze-javafx
+
+提供一些java-fx开发中可能用到的扩展方法。
+
+## breeze-linq
+
+提供一个api，允许以类似sql语句的形式，实现集合的集成查询操作。
+这个api本身不保存集合信息。
+
+**有待完善的实现。**
+
+## breeze-logger
+
+提供一个简单而独立的日志器，允许进行一定的自定义配置。
+可以用来输出带颜色的控制台文本。
+
+**有待完善的实现。**
+
+## breeze-reflect
+
+为Kotlin反射与java反射补充缺失的功能和扩展，并且额外补充一些有用的工具方法和扩展方法。
+
+## breeze-serialization
+
+为kotlinx-serialization补充可能有用的功能和扩展。
+
+**未完全实现。**
+
+## breeze-serializer
+
+提供一个api，允许以简洁而统一的方式，实现各种数据格式的序列化和反序列化操作。
+这个api本身不提供实现，由第三方库如`Gson`代理实现，并且支持多种实现方式。
+
+## breeze-spring-boot
+
+为spring boot及其可选模块提供缺失和可能有用的组件、自动配置和扩展方法。
+
+## breeze-text
+
+提供一些仅在特定情况下可能有用的用于字符串处理的扩展方法。
+
+## breeze-time
+
+提供一些与时间相关的扩展方法，便于生成和转换时间。
+支持传统的Date api以及Java8中新的时间api。
 
 # 依赖 & 可选依赖
 

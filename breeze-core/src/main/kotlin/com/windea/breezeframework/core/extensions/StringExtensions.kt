@@ -4,9 +4,11 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.enums.text.*
 import java.io.*
 import java.net.*
+import java.nio.charset.*
 import java.nio.file.*
 import java.text.*
 import java.time.*
@@ -17,17 +19,40 @@ import kotlin.contracts.*
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
 //region operator extensions
-/**@see kotlin.text.slice*/
-operator fun String.get(indices: IntRange): String = this.slice(indices)
-
-/**@see com.windea.breezeframework.core.extensions.remove*/
+/**
+ * 移除当前字符串中的指定子字符串。
+ *
+ * @see com.windea.breezeframework.core.extensions.remove
+ */
 operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
-/**@see kotlin.text.repeat*/
+/**
+ * 重复当前字符串到指定次数。
+ *
+ * @see kotlin.text.repeat
+ */
 operator fun String.times(n: Int): String = this.repeat(n)
 
-/**@see kotlin.text.chunked*/
+/**
+ * 切分当前字符串到指定个数。
+ *
+ * @see kotlin.text.chunked
+ */
 operator fun String.div(n: Int): List<String> = this.chunked(n)
+
+/**
+ * 得到索引指定范围内的子字符串。
+ *
+ * @see kotlin.text.slice
+ */
+operator fun String.get(indices: IntRange): String = this.slice(indices)
+
+/**
+ * 得到指定索引范围内的子字符串。
+ *
+ * @see kotlin.text.substring
+ */
+operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
 //endregion
 
 //region common extensions
@@ -35,18 +60,20 @@ operator fun String.div(n: Int): List<String> = this.chunked(n)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
-/**判断当前字符串中的任意字符是否被另一字符串包含。*/
-infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
-
 /**判断当前字符串中的所有字符是否被另一字符串包含。*/
 infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 
+/**判断当前字符串中的任意字符是否被另一字符串包含。*/
+infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
+
 
 /**判断当前字符串是否以指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean = this.startsWith(prefix, false)
+inline infix fun CharSequence.startsWith(prefix: CharSequence): Boolean =
+	this.startsWith(prefix, false)
 
 /**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIgnoreCase(prefix: CharSequence): Boolean = this.startsWith(prefix, true)
+inline infix fun CharSequence.startsWithIgnoreCase(prefix: CharSequence): Boolean =
+	this.startsWith(prefix, true)
 
 /**判断当前字符串是否以任意指定前缀开头。*/
 inline infix fun CharSequence.startsWith(prefixes: Array<out CharSequence>): Boolean =
@@ -57,10 +84,12 @@ inline infix fun CharSequence.startsWithIgnoreCase(prefixes: Array<out CharSeque
 	prefixes.any { this.startsWith(it, true) }
 
 /**判断当前字符串是否以指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean = this.endsWith(suffixes, false)
+inline infix fun CharSequence.endsWith(suffixes: CharSequence): Boolean =
+	this.endsWith(suffixes, false)
 
 /**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIgnoreCase(suffix: CharSequence): Boolean = this.endsWith(suffix, true)
+inline infix fun CharSequence.endsWithIgnoreCase(suffix: CharSequence): Boolean =
+	this.endsWith(suffix, true)
 
 /**判断当前字符串是否以任意指定后缀结尾。*/
 inline infix fun CharSequence.endsWith(suffixes: Array<out CharSequence>): Boolean =
@@ -99,7 +128,7 @@ inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
-	return !this.isNullOrEmpty()
+	return this != null && this.isNotEmpty()
 }
 
 /**判断当前字符串是否不为null，且不为空白字符串。*/
@@ -109,20 +138,23 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrBlank != null)
 	}
-	return !this.isNullOrBlank()
+	return this != null && this.isNotBlank()
 }
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isAlphabetic(): Boolean {
 	return this matches "[a-zA-Z]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isNumeric(): Boolean {
 	return this matches "[1-9]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
+@NotSure
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this matches "[1-9a-zA-Z_]+".toRegex()
 }
@@ -131,6 +163,7 @@ fun CharSequence.isAlphanumeric(): Boolean {
 /**如果当前字符串不为空，则返回本身，否则返回null。*/
 @JvmSynthetic
 inline fun <C : CharSequence> C.orNull(): C? = if(this.isEmpty()) null else this
+
 
 /**如果当前字符串不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
@@ -237,29 +270,6 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
 }
 
 
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@JvmOverloads
-fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
-	val size = minOf(oldChars.size, newChars.size)
-	var result = this
-	for(i in 0 until size) {
-		result = result.replace(oldChars[i], newChars[i], ignoreCase)
-	}
-	return result
-}
-
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@JvmOverloads
-fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
-	val size = minOf(oldValues.size, newValues.size)
-	var result = this
-	for(i in 0 until size) {
-		result = result.replace(oldValues[i], newValues[i], ignoreCase)
-	}
-	return result
-}
-
-
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
 inline fun CharSequence.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
@@ -282,6 +292,31 @@ inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = f
 			if(i < splitStrings.count() - 1) this.append(newValue(i))
 		}
 	}
+}
+
+
+/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+@NotSure
+@JvmOverloads
+fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
+	val size = minOf(oldChars.size, newChars.size)
+	var result = this
+	for(i in 0 until size) {
+		result = result.replace(oldChars[i], newChars[i], ignoreCase)
+	}
+	return result
+}
+
+/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+@NotSure
+@JvmOverloads
+fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
+	val size = minOf(oldValues.size, newValues.size)
+	var result = this
+	for(i in 0 until size) {
+		result = result.replace(oldValues[i], newValues[i], ignoreCase)
+	}
+	return result
 }
 
 
@@ -510,11 +545,12 @@ private fun String.substringMatch0(vararg delimiters: String?, defaultValue: (In
 
 
 /**将当前字符串解码为base64格式的字节数组。*/
-fun String.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
+fun String.decodeToBase64ByteArray(): ByteArray = Base64.getDecoder().decode(this)
 //endregion
 
 //region specific extensions
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+@NotSure
 infix fun String.lineConcat(other: String): String {
 	val lines = this.lines()
 	val otherLines = other.lines()
@@ -525,6 +561,7 @@ infix fun String.lineConcat(other: String): String {
 }
 
 /**逐行换行字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
+@NotSure
 @JvmOverloads
 fun String.lineBreak(width: Int = 120): String {
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
@@ -658,6 +695,13 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 //endregion
 
 //region convert extensions
+/**将当前字符串转化为字符。如果转化失败，则抛出异常。这个方法由[String.single]委托实现。*/
+inline fun String.toChar(): Char = this.single()
+
+/**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.single]委托实现。*/
+inline fun String.toCharOrNull(): Char? = this.singleOrNull()
+
+
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
 inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	//performance note: approach to 1/5
@@ -721,57 +765,43 @@ fun <T> String.toEnumValueOrNull(type: Class<T>, ignoreCase: Boolean = false): T
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toCharRange(): CharRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.single() + aOffset..b.single() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toChar() + l..b.toChar() + r }
 }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toIntRange(): IntRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.toInt() + aOffset..b.toInt() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toInt() + l..b.toInt() + r }
 }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式：`m..n`, `m-n`, `[m, n]`, `[m, n)`等。*/
+/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
 fun String.toLongRange(): LongRange {
-	return try {
-		val (aOffset, bOffset) = this.toRangeOffsetPair()
-		this.toRangePairOrNull()?.let { (a, b) -> a.toLong() + aOffset..b.toLong() + bOffset } ?: notARange(this)
-	} catch(e: Exception) {
-		notARange(this)
-	}
+	return this.toRangePair().let { (a, b, l, r) -> a.toLong() + l..b.toLong() + r }
 }
 
-private fun String.toRangePairOrNull(): Pair<String, String>? {
+private val rangeDelimiters = arrayOf("..", "-", "~")
+
+private fun String.toRangePair(): Quadruple<String, String, Int, Int> {
 	return when {
-		this.contains("..") -> this.split("..", limit = 2).let { it[0].trim() to it[1].trim() }
-		this.contains("-") -> this.split("-", limit = 2).let { it[0].trim() to it[1].trim() }
-		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2).let { it[0].trim() to it[1].trim() }
-		else -> null
+		rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
+			.let { it[0].trim() to it[1].trim() with 0 with 0 }
+		this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
+			.let { it[0].trim() to it[1].trim() with this.getLeftRangeOffset() with this.getRightRangeOffset() }
+		else -> notARange()
 	}
 }
 
-private fun String.toRangeOffsetPair(): Pair<Int, Int> {
-	return when {
-		this.surroundsWith("[", "]") -> 0 to 0
-		this.surroundsWith("[", ")") -> 0 to -1
-		this.surroundsWith("(", "]") -> 1 to 0
-		this.surroundsWith("(", ")") -> 1 to -1
-		else -> 0 to 0
-	}
+private fun String.getLeftRangeOffset(): Int {
+	return if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else this.notARange()
 }
 
-private fun notARange(string: String): Nothing {
-	throw IllegalArgumentException("'$string' cannot be resolved as a range.")
+private fun String.getRightRangeOffset(): Int {
+	return if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else this.notARange()
+}
+
+private fun String.notARange(): Nothing {
+	throw IllegalArgumentException("String '$this' cannot be resolved as a range.")
 }
 
 
@@ -787,6 +817,9 @@ inline fun String.toUri(): URI = URI.create(this)
 /**将当前字符串转化为统一资源定位符。*/
 @JvmOverloads
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
+
+/**将当前字符串转化为字符集。*/
+inline fun String.toCharset(): Charset = Charset.forName(this)
 
 
 /**将当前字符串转化为日期。*/
