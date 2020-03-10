@@ -4,12 +4,12 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
 
-//TODO 生成与解析标准格式的json
+//DONE 生成json
+//TODO 解析json
 //TODO 允许空格和换行
-//TODO 允许特殊情况：单引号，多行字符串，注释
-//TODO 对配置项进行验证
-//DELAY 允许映射一般对象
-//DELAY 允许特殊情况：（一般对象相关）
+//TODO 允许特殊情况：单引号，多行字符串，注释等
+//TODO 允许映射一般对象
+//TODO 允许特殊情况：默认参数，构造方法映射，忽略空值等
 
 class JsonMapper(
 	val config: Config = Config()
@@ -87,7 +87,7 @@ class JsonMapper(
 		indent(depth) + k.toString().quote(quote()) + kvSeparator() + v.mapJson(depth)
 	}
 
-	private fun Any.mapObject(depth: Int) = DELAY { "" }
+	private fun Any.mapObject(depth: Int) = Mapper.mapObject(this).mapObject(depth)
 
 
 	override fun <T> unmap(string: String, type: Class<T>): T {
