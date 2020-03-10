@@ -324,6 +324,7 @@
 * [X] breeze-core 移除集合类型的`randomOrNull`方法，其他一些更新。
 * [X] breeze-core 添加`expandTo`和`expand`方法，相当于`fold`的反操作，用于根据指定的操作展开初始值，并收集展开过程中的所有项。
 * [X] breeze-core 优化集合的深层操作方法，添加集合的`deepGetOrNull`扩展，重命名`castOrNull`为`safeCast`。
+* [X] 添加breeze-mapper模块，实现JsonMapper的map方法。更新一些字符串处理方法的代码逻辑。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。

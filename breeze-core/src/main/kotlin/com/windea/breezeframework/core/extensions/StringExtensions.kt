@@ -391,51 +391,51 @@ fun String.customFormat(placeholder: String, vararg args: Any?): String {
 }
 
 
-/**设置指定的前缀。即，添加前缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+/**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
 infix fun String.setPrefix(prefix: CharSequence): String {
 	if(this.length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
-/**设置指定的后缀。即，添加后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+/**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
 infix fun String.setSuffix(suffix: CharSequence): String {
 	if(this.length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
-/**设置指定的前缀和后缀。即，添加前缀和后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
+/**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
+infix fun String.setSurrounding(delimiter: CharSequence): String {
+	return this.setSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
 fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	if(this.length < prefix.length + suffix.length) return this
 	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
 }
 
-/**设置指定的前后缀。即，添加前后缀的同时去除对应位置的字符串。当长度不够时返回自身。*/
-infix fun String.setSurrounding(delimiter: CharSequence): String {
-	return this.setSurrounding(delimiter, delimiter)
-}
 
-
-/**添加指定的前缀。当已存在时或者为空字符串时返回自身。*/
+/**为当前字符串添加指定的前缀。如果已存在，则返回自身。*/
 infix fun String.addPrefix(prefix: CharSequence): String {
-	if(this.isEmpty() || this.startsWith(prefix)) return this
+	if(this.startsWith(prefix)) return this
 	return "$prefix$this"
 }
 
-/**添加指定的后缀。当已存在时或者为空字符串时返回自身。*/
+/**为当前字符串添加指定的后缀。如果已存在，则返回自身。*/
 infix fun String.addSuffix(suffix: CharSequence): String {
-	if(this.isEmpty() || this.endsWith(suffix)) return this
+	if(this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
-/**添加指定的前缀和后缀。当已存在时或者为空字符串时返回自身。*/
-fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
-	if(this.isEmpty() || (this.startsWith(prefix) && this.endsWith(suffix))) return this
-	return "$prefix$this$suffix"
-}
-
-/**添加指定的前后缀。当已存在时或者为空字符串时返回自身。*/
+/**为当前字符串添加指定的前后缀。如果已存在，则返回自身。*/
 infix fun String.addSurrounding(delimiter: CharSequence): String {
 	return this.addSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符串添加指定的前缀和后缀。如果已存在，则返回自身。*/
+fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
+	if(this.startsWith(prefix) && this.endsWith(suffix)) return this
+	return "$prefix$this$suffix"
 }
 
 
@@ -570,8 +570,7 @@ fun String.lineBreak(width: Int = 120): String {
 /**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。限定为单引号、双引号或反引号，否则会抛出异常。*/
 fun String.quote(quote: Char): String {
 	require(quote in quoteChars) { "Invalid quote char: $quote." }
-
-	return "$quote${this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }}$quote"
+	return this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }.addSurrounding(quote.toString())
 }
 
 /**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。限定为单引号、双引号或反引号，否则会返回自身。*/

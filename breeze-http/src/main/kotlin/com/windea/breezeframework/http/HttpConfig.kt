@@ -9,7 +9,7 @@ import javax.net.ssl.*
 /**
  * Http的配置。
  */
-data class HttpConfiguration(
+data class HttpConfig(
 	var cookieHandler: CookieHandler? = null,
 	var connectTimeout: Duration? = null,
 	var sslContext: SSLContext? = null,

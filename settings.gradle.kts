@@ -18,6 +18,7 @@ include(
 	"breeze-javafx",
 	"breeze-linq",
 	"breeze-logger",
+	"breeze-mapper",
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-serializer",

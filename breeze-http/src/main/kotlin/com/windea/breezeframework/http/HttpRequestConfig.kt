@@ -6,7 +6,7 @@ import java.time.*
 /**
  * Http请求的配置。
  */
-data class HttpRequestConfiguration(
+data class HttpRequestConfig(
 	val headers: MutableMap<String, List<String>> = mutableMapOf(),
 	val query: MutableMap<String, List<String>> = mutableMapOf(),
 	var timeout: Duration? = null,

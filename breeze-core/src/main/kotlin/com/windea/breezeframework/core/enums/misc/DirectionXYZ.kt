@@ -1,7 +1,7 @@
-package com.windea.breezeframework.core.enums.generic
+package com.windea.breezeframework.core.enums.misc
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.enums.generic.Dimension.*
+import com.windea.breezeframework.core.enums.misc.Dimension.*
 
 /**基于XYZ轴的三维方向。*/
 @Name("基于XYZ轴的三维方向")

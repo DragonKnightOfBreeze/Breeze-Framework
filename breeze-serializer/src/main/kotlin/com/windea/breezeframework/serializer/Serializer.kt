@@ -6,8 +6,10 @@ import java.lang.reflect.*
 /**
  * 序列化器。
  *
- * * 其实现依赖于第三方库，如`jackson`，`gson`，`kotlinx-serialization`等。
- * * 如果其实现为`jackson`，当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
+ * 序列化器用于将数据序列化为指定的数据格式，或者从指定的数据格式反序列化为数据。
+ *
+ * 序列化器的实现依赖于第三方库，如`jackson`，`gson`，`kotlinx-serialization`等。
+ * 如果其实现为`jackson`，当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
  */
 interface Serializer {
 	/**从指定字符串读取指定类型的数据。*/
