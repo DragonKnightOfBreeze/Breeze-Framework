@@ -18,6 +18,7 @@ import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 internal annotation class CreoleDsl
 
 /**Creole。*/
+@Reference("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
@@ -26,7 +27,6 @@ class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry,
 }
 
 /**Creole的配置。*/
-@Reference("[Creole](http://plantuml.com/zh/creole)")
 @CreoleDsl
 object CreoleConfig : DslConfig {
 	private val indentSizeRange = -2..8
@@ -299,7 +299,10 @@ open class CreoleTableColumn @PublishedApi internal constructor(
 
 //region dsl build extensions
 @CreoleDsl
-inline fun creole(block: Creole.() -> Unit) = Creole().also { it.block() }
+inline fun creole(block: Creole.() -> Unit) = Creole().apply(block)
+
+@CreoleDsl
+inline fun creoleConfig(block: CreoleConfig.() -> Unit) = CreoleConfig.apply(block)
 
 @InlineDslFunction
 @CreoleDsl
@@ -368,7 +371,7 @@ inline fun CreoleDslEntry.textBlock(lazyText: () -> String) =
 
 @CreoleDsl
 inline fun CreoleDslEntry.list(block: CreoleList.() -> Unit) =
-	CreoleList().also { it.block() }.also { content += it }
+	CreoleList().apply(block).also { content += it }
 
 @CreoleDsl
 inline fun CreoleDslEntry.hr(type: CreoleHorizontalLine.Type = CreoleHorizontalLine.Type.Normal) =
@@ -396,43 +399,43 @@ inline fun CreoleDslEntry.h4(text: String) =
 
 @CreoleDsl
 inline fun CreoleDslEntry.tree(title: String, block: CreoleTree.() -> Unit) =
-	CreoleTree(title).also { it.block() }.also { content += it }
+	CreoleTree(title).apply(block).also { content += it }
 
 @CreoleDsl
 inline fun CreoleDslEntry.table(block: CreoleTable.() -> Unit) =
-	CreoleTable().also { it.block() }.also { content += it }
+	CreoleTable().apply(block).also { content += it }
 
 @CreoleDsl
 inline fun CreoleList.ol(text: String, block: CreoleOrderedListNode.() -> Unit = {}) =
-	CreoleOrderedListNode(text).also { it.block() }.also { nodes += it }
+	CreoleOrderedListNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleList.ul(text: String, block: CreoleUnorderedListNode.() -> Unit = {}) =
-	CreoleUnorderedListNode(text).also { it.block() }.also { nodes += it }
+	CreoleUnorderedListNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleListNode.ol(text: String, block: CreoleOrderedListNode.() -> Unit = {}) =
-	CreoleOrderedListNode(text).also { it.block() }.also { nodes += it }
+	CreoleOrderedListNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleListNode.ul(text: String, block: CreoleUnorderedListNode.() -> Unit = {}) =
-	CreoleUnorderedListNode(text).also { it.block() }.also { nodes += it }
+	CreoleUnorderedListNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleTree.node(text: String, block: CreoleTreeNode.() -> Unit = {}) =
-	CreoleTreeNode(text).also { it.block() }.also { nodes += it }
+	CreoleTreeNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleTreeNode.node(text: String, block: CreoleTreeNode.() -> Unit = {}) =
-	CreoleTreeNode(text).also { it.block() }.also { nodes += it }
+	CreoleTreeNode(text).apply(block).also { nodes += it }
 
 @CreoleDsl
 inline fun CreoleTable.header(block: CreoleTableHeader.() -> Unit) =
-	CreoleTableHeader().also { it.block() }.also { header = it }
+	CreoleTableHeader().apply(block).also { header = it }
 
 @CreoleDsl
 inline fun CreoleTable.row(block: CreoleTableRow.() -> Unit) =
-	CreoleTableRow().also { it.block() }.also { rows += it }
+	CreoleTableRow().apply(block).also { rows += it }
 
 @CreoleDsl
 inline infix fun CreoleTable.columnSize(size: Int) =

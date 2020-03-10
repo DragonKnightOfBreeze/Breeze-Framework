@@ -54,16 +54,22 @@ class CommandLineText @PublishedApi internal constructor() : DslDocument, Comman
 	enum class Style(val code: Int) {
 		/**默认。*/
 		Default(0),
+
 		/**粗体。*/
 		Bold(1),
+
 		/**浅色。*/
 		LightColor(2),
+
 		/**下划线*/
 		Italic(3),
+
 		/**下划线。*/
 		Underline(4),
+
 		/**闪烁。*/
 		Blink(5),
+
 		/**反显。*/
 		Invert(7)
 	}

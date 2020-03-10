@@ -18,6 +18,7 @@ import org.intellij.lang.annotations.*
 internal annotation class MermaidSequenceDiagramDsl
 
 /**Mermaid序列图。*/
+@Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, CanIndent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
@@ -207,7 +208,7 @@ class MermaidSequenceDiagramHighlight @PublishedApi internal constructor(
 /**构建Mermaid序列图。*/
 @MermaidSequenceDiagramDsl
 fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) =
-	MermaidSequenceDiagram().also { it.block() }
+	MermaidSequenceDiagram().apply(block)
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.participant(name: String) =
@@ -248,19 +249,19 @@ fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: 
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.loop(text: String, block: MermaidSequenceDiagramLoop.() -> Unit) =
-	MermaidSequenceDiagramLoop(text).also { it.block() }.also { scopes += it }
+	MermaidSequenceDiagramLoop(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.opt(text: String, block: MermaidSequenceDiagramOptional.() -> Unit) =
-	MermaidSequenceDiagramOptional(text).also { it.block() }.also { scopes += it }
+	MermaidSequenceDiagramOptional(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.alt(text: String, block: MermaidSequenceDiagramAlternative.() -> Unit) =
-	MermaidSequenceDiagramAlternative(text).also { it.block() }.also { scopes += it }
+	MermaidSequenceDiagramAlternative(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
 inline fun MermaidSequenceDiagramDslEntry.highlight(text: String, block: MermaidSequenceDiagramHighlight.() -> Unit) =
-	MermaidSequenceDiagramHighlight(text).also { it.block() }.also { scopes += it }
+	MermaidSequenceDiagramHighlight(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
 inline infix fun MermaidSequenceDiagramParticipant.alias(alias: String) =

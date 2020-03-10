@@ -197,7 +197,7 @@ class MermaidStateDiagramNote @PublishedApi internal constructor(
 
 //region dsl build extensions
 @MermaidStateDiagramDsl
-inline fun mermaidStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().also { it.block() }
+inline fun mermaidStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().apply(block)
 
 @InlineDslFunction
 @MermaidStateDiagramDsl
@@ -218,11 +218,11 @@ inline fun MermaidStateDiagramDslEntry.state(name: String) =
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.compositedState(name: String, block: MermaidStateDiagramCompositedState.() -> Unit) =
-	MermaidStateDiagramCompositedState(name).also { it.block() }.also { states += it }
+	MermaidStateDiagramCompositedState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.concurrentState(name: String, block: MermaidStateDiagramConcurrentState.() -> Unit) =
-	MermaidStateDiagramConcurrentState(name).also { it.block() }.also { states += it }
+	MermaidStateDiagramConcurrentState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramDslEntry.transition(fromStateId: String, toStateId: String) =
@@ -248,7 +248,7 @@ inline infix fun MermaidStateDiagramState.text(text: String) =
 
 @MermaidStateDiagramDsl
 inline fun MermaidStateDiagramConcurrentState.section(block: MermaidStateDiagramConcurrentSection.() -> Unit) =
-	MermaidStateDiagramConcurrentSection().also { it.block() }.also { sections += it }
+	MermaidStateDiagramConcurrentSection().apply(block).also { sections += it }
 
 @MermaidStateDiagramDsl
 inline infix fun MermaidStateDiagramSimpleState.type(type: MermaidStateDiagramSimpleState.Type) =

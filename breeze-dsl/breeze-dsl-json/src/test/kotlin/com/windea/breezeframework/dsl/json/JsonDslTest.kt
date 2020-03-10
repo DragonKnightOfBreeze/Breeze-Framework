@@ -5,7 +5,7 @@ import org.junit.*
 class JsonDslTest {
 	@Test //OK
 	fun test1() {
-		jsonTree {
+		json {
 			listOf(
 				"a",
 				listOf("b1", "b2"),
@@ -16,7 +16,7 @@ class JsonDslTest {
 
 	@Test //OK
 	fun test2() {
-		json {
+		jsonTree {
 			jsonArrayOf(
 				jsonString("a"),
 				jsonArrayOf(jsonString("b1"), jsonString("b2")),
@@ -27,7 +27,7 @@ class JsonDslTest {
 
 	@Test //OK
 	fun test3() {
-		json {
+		jsonTree {
 			jsonArrayOf(
 				"a".map(),
 				jsonArrayOf("b1".map(), "b2".map()),
@@ -39,7 +39,7 @@ class JsonDslTest {
 	@Test //OK
 	fun test4() {
 		JsonConfig.prettyPrint = false
-		jsonTree {
+		json {
 			listOf(
 				"a",
 				listOf("b1", "b2"),
@@ -50,7 +50,7 @@ class JsonDslTest {
 
 	@Test //OK
 	fun test5() {
-		jsonTree {
+		json {
 			listOf(
 				"a",
 				listOf("b1", "b2"),

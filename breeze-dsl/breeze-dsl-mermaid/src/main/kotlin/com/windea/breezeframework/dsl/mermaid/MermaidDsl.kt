@@ -18,6 +18,7 @@ internal annotation class MermaidDsl
 internal annotation class MermaidDslExtendedFeature
 
 /**Mermaid。*/
+@Reference("[Mermaid](https://mermaidjs.github.io)")
 @MermaidDsl
 abstract class Mermaid : DslDocument
 
@@ -47,4 +48,9 @@ interface MermaidDslElement : DslElement
 /**将`\n`或`\r`替换成`<br>`。*/
 @PublishedApi
 internal fun String.replaceWithHtmlWrap() = this.replace("\n", "<br>").replace("\r", "<br>")
+//endregion
+
+//region build extensions
+@MermaidDsl
+inline fun mermaidConfig(block: MermaidConfig.() -> Unit) = MermaidConfig.apply(block)
 //endregion

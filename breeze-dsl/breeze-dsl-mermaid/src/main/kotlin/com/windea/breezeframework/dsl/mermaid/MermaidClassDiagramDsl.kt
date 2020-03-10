@@ -18,6 +18,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 internal annotation class MermaidClassDiagramDsl
 
 /**Mermaid类图。*/
+@Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @MermaidClassDiagramDsl
 class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
@@ -196,11 +197,11 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 //region dsl build extensions
 @MermaidClassDiagramDsl
 inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
-	MermaidClassDiagram().also { it.block() }
+	MermaidClassDiagram().apply(block)
 
 @MermaidClassDiagramDsl
 inline fun MermaidClassDiagramDslEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit = {}) =
-	MermaidClassDiagramClass(name).also { it.block() }.also { classes += it }
+	MermaidClassDiagramClass(name).apply(block).also { classes += it }
 
 @MermaidClassDiagramDsl
 inline fun MermaidClassDiagramDslEntry.relation(fromClassId: String, toClassId: String, type: MermaidClassDiagramRelation.Type) =

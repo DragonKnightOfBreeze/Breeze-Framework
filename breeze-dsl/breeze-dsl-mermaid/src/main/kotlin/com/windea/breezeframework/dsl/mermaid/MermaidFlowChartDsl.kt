@@ -16,6 +16,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 internal annotation class MermaidFlowChartDsl
 
 /**Mermaid流程图。*/
+@Reference("[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)")
 @MermaidFlowChartDsl
 class MermaidFlowChart @PublishedApi internal constructor(
 	val direction: Direction
@@ -225,7 +226,7 @@ class MermaidFlowChartClassRef @PublishedApi internal constructor(
 //region dsl build extensions
 @MermaidFlowChartDsl
 inline fun mermaidFlowChart(direction: MermaidFlowChart.Direction, block: MermaidFlowChart.() -> Unit) =
-	MermaidFlowChart(direction).also { it.block() }
+	MermaidFlowChart(direction).apply(block)
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.node(name: String) =
@@ -246,7 +247,7 @@ inline fun MermaidFlowChartDslEntry.link(
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.subGraph(name: String, block: MermaidFlowChartSubGraph.() -> Unit) =
-	MermaidFlowChartSubGraph(name).also { it.block() }.also { subGraphs += it }
+	MermaidFlowChartSubGraph(name).apply(block).also { subGraphs += it }
 
 @MermaidFlowChartDsl
 inline fun MermaidFlowChartDslEntry.style(nodeName: String, vararg styles: Pair<String, String>) =

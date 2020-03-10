@@ -14,6 +14,7 @@ import com.windea.breezeframework.dsl.*
 internal annotation class SequenceDiagramDsl
 
 /**序列图。*/
+@Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @SequenceDiagramDsl
 class SequenceDiagram @PublishedApi internal constructor() : DslDocument, SequenceDiagramDslEntry {
 	var title: SequenceDiagramTitle? = null
@@ -147,7 +148,7 @@ class SequenceDiagramNote @PublishedApi internal constructor(
 
 //region dsl build extensions
 @SequenceDiagramDsl
-inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().also { it.block() }
+inline fun sequenceDiagram(block: SequenceDiagram.() -> Unit) = SequenceDiagram().apply(block)
 
 @SequenceDiagramDsl
 inline fun SequenceDiagram.title(text: String) =

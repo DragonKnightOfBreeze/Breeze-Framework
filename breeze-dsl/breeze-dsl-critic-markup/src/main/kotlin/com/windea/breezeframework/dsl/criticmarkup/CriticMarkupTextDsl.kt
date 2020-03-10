@@ -13,6 +13,7 @@ import com.windea.breezeframework.dsl.*
 internal annotation class CriticMarkupTextDsl
 
 /**CriticMarkup富文本。*/
+@Reference("[Critic Markup](http://criticmarkup.com/users-guide.php)")
 @CriticMarkupTextDsl
 class CriticMarkupText @PublishedApi internal constructor() : DslDocument, CriticMarkupTextDslInlineEntry {
 	@PublishedApi internal lateinit var text: String

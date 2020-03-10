@@ -16,6 +16,7 @@ import java.time.*
 internal annotation class MermaidGanttDsl
 
 /**Mermaid甘特图。*/
+@Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
 class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndent, CanSplit {
 	var title: MermaidGanttTitle? = null
@@ -125,7 +126,7 @@ class MermaidGanttTask @PublishedApi internal constructor(
 //region dsl build extensions
 @MermaidGanttDsl
 inline fun mermaidGantt(block: MermaidGantt.() -> Unit) =
-	MermaidGantt().also { it.block() }
+	MermaidGantt().apply(block)
 
 @MermaidGanttDsl
 inline fun MermaidGantt.title(text: String) =
@@ -137,7 +138,7 @@ inline fun MermaidGantt.dateFormat(expression: String) =
 
 @MermaidGanttDsl
 inline fun MermaidGanttDslEntry.section(name: String, block: MermaidGanttSection.() -> Unit = {}) =
-	MermaidGanttSection(name).also { it.block() }.also { sections += it }
+	MermaidGanttSection(name).apply(block).also { sections += it }
 
 @MermaidGanttDsl
 inline fun MermaidGanttSection.task(name: String, status: MermaidGanttTask.Status = MermaidGanttTask.Status.ToDo) =

@@ -10,8 +10,6 @@ import com.windea.breezeframework.dsl.xml.XmlConfig.defaultRootName
 import com.windea.breezeframework.dsl.xml.XmlConfig.indent
 import com.windea.breezeframework.dsl.xml.XmlConfig.quote
 
-//TODO 参照kotlinx.html进行重构，调整dsl语法
-
 //region dsl top declarations
 /**Xml的Dsl。*/
 @DslMarker
@@ -150,7 +148,10 @@ class XmlElement @PublishedApi internal constructor(
 
 //region dsl build extensions
 @XmlDsl
-inline fun xml(block: Xml.() -> Unit) = Xml().also { it.block() }
+inline fun xml(block: Xml.() -> Unit) = Xml().apply(block)
+
+@XmlDsl
+inline fun xmlConfig(block: XmlConfig.() -> Unit) = XmlConfig.apply(block)
 
 @XmlDsl
 inline fun Xml.statement(name: String, vararg attributes: Pair<String, Any?>) =
@@ -162,7 +163,7 @@ inline fun Xml.comment(text: String) =
 
 @XmlDsl
 inline fun Xml.element(name: String, vararg attributes: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.block() }.also { rootElement = it }
+	XmlElement(name, attributes.toMap().toStringValueMap()).apply(block).also { rootElement = it }
 
 @XmlDsl
 inline fun XmlElement.text(text: String) =
@@ -174,5 +175,5 @@ inline fun XmlElement.comment(text: String) =
 
 @XmlDsl
 inline fun XmlElement.element(name: String, vararg attributes: Pair<String, Any?>, block: XmlElement.() -> Unit = {}) =
-	XmlElement(name, attributes.toMap().toStringValueMap()).also { it.block() }.also { nodes += it }
+	XmlElement(name, attributes.toMap().toStringValueMap()).apply(block).also { nodes += it }
 //endregion

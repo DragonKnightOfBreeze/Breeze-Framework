@@ -16,6 +16,7 @@ import java.util.*
 internal annotation class FlowChartDsl
 
 /**流程图。*/
+@Reference("[Github](https://github.com/adrai/flowchart.js)")
 @FlowChartDsl
 class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDslEntry {
 	override val nodes: MutableSet<FlowChartNode> = mutableSetOf()
@@ -164,7 +165,7 @@ class FlowChartConnection @PublishedApi internal constructor(
 //region dsl build extensions
 @FlowChartDsl
 inline fun flowChart(block: FlowChart.() -> Unit) =
-	FlowChart().also { it.block() }
+	FlowChart().apply(block)
 
 @FlowChartDsl
 inline fun FlowChartDslEntry.start(name: String) =

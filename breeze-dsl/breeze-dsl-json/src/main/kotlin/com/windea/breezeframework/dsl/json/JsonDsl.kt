@@ -138,10 +138,13 @@ class JsonObject @PublishedApi internal constructor(
 
 //region dsl build extensions
 @JsonDsl
-inline fun jsonTree(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
+inline fun json(block: Json.() -> Any?) = Json().also { it.rootElement = it.block().toJsonElement() }
 
 @JsonDsl
-inline fun json(block: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.block() }
+inline fun jsonTree(block: Json.() -> JsonElement<*>) = Json().also { it.rootElement = it.block() }
+
+@JsonDsl
+inline fun jsonConfig(block: JsonConfig.() -> Unit) = JsonConfig.apply(block)
 
 @InlineDslFunction
 @JsonDsl

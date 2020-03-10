@@ -18,6 +18,7 @@ import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
 internal annotation class MermaidPieChartDsl
 
 /**Mermaid饼图。*/
+@Reference("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
 @MermaidPieChartDsl
 class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndent, CanSplit {
 	var title: MermaidPieChartTitle? = null
@@ -84,7 +85,7 @@ class MermaidPieChartSection @PublishedApi internal constructor(
 //region dsl build extensions
 @MermaidPieChartDsl
 inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
-	MermaidPieChart().also { it.block() }
+	MermaidPieChart().apply(block)
 
 @MermaidPieChartDsl
 inline fun MermaidPieChart.title(text: String) =
