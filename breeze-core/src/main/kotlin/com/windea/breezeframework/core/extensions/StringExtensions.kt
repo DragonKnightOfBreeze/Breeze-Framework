@@ -567,20 +567,30 @@ fun String.lineBreak(width: Int = 120): String {
 }
 
 
-/**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。限定为单引号、双引号或反引号，否则会抛出异常。*/
-fun String.quote(quote: Char): String {
-	require(quote in quoteChars) { "Invalid quote char: $quote." }
-	return this.ifNotEmpty { it.replace(quote.toString(), "\\$quote") }.addSurrounding(quote.toString())
+/**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。如果指定null，则返回自身。默认转义对应的引号。*/
+fun String.quote(quote: Char?, escapeQuotes: Boolean = true): String {
+	return when {
+		quote == null -> this
+		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
+		this.surroundsWith(quote) -> this
+		escapeQuotes -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
+		else -> this.addSurrounding(quote.toString())
+	}
 }
 
-/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。限定为单引号、双引号或反引号，否则会返回自身。*/
-fun String.unquote(): String {
-	val quote = this.first()
-	if(quote !in quoteChars) return this
-	return this.removeSurrounding(quote.toString()).ifNotEmpty { it.replace("\\$quote", quote.toString()) }
+/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。如果没有，则返回自身。默认反转义对应的引号。*/
+fun String.unquote(unescapeQuotes: Boolean = true): String {
+	val quote = this.firstOrNull()
+	return when {
+		quote == null -> this
+		quote !in quotes -> this
+		!this.surroundsWith(quote) -> this
+		unescapeQuotes -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
+		else -> this.removeSurrounding(quote.toString())
+	}
 }
 
-private val quoteChars = charArrayOf('\"', '\'', '`')
+private val quotes = charArrayOf('\"', '\'', '`')
 
 
 /**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/

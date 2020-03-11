@@ -16,7 +16,7 @@ class PropertiesMapper(
 
 	data class Config(
 		val separator: String = "=",
-		val spaceAroundSeparator: Boolean = true,
+		val uglyFormat: Boolean = true,
 		val flattenKeys: Boolean = true
 	) : DataEntity {
 		init {
@@ -31,43 +31,51 @@ class PropertiesMapper(
 		}
 	}
 
-	companion object {
-		private const val lineBreakMarker = "\\"
-	}
-
-	private fun separator() = if(config.spaceAroundSeparator) " ${config.separator} " else config.separator
+	private fun separator() = if(config.uglyFormat) " ${config.separator} " else config.separator
 
 
 	override fun <T> map(data: T): String {
 		return data.mapProperties()
 	}
 
-	private fun Any?.mapProperties(): String = when {
-		this == null -> throw IllegalArgumentException("Cannot map null value to properties.")
-		this is Array<*> -> this.mapIndexedProperty()
-		this is Iterable<*> -> this.mapIndexedProperty()
-		this is Sequence<*> -> this.mapIndexedProperty()
-		this is Map<*, *> -> this.mapProperty()
-		else -> this.mapProperty()
+	private fun Any?.mapProperties(): String {
+		return when {
+			this == null -> throw IllegalArgumentException("Cannot map null value to properties.")
+			this is Array<*> -> this.mapIndexedProperty()
+			this is Iterable<*> -> this.mapIndexedProperty()
+			this is Sequence<*> -> this.mapIndexedProperty()
+			this is Map<*, *> -> this.mapProperty()
+			else -> this.mapProperty()
+		}
 	}
 
-	private fun Array<*>.mapIndexedProperty() = this.withIndex().joinToString("\n") { (i, e) ->
-		i.toString() + separator() + e.toString()
+	private fun Array<*>.mapIndexedProperty(): String {
+		return this.withIndex().joinToString("\n") { (i, e) ->
+			i.toString() + separator() + e.toString()
+		}
 	}
 
-	private fun Iterable<*>.mapIndexedProperty() = this.withIndex().joinToString("\n") { (i, e) ->
-		i.toString() + separator() + e.toString()
+	private fun Iterable<*>.mapIndexedProperty(): String {
+		return this.withIndex().joinToString("\n") { (i, e) ->
+			i.toString() + separator() + e.toString()
+		}
 	}
 
-	private fun Sequence<*>.mapIndexedProperty() = this.withIndex().joinToString("\n") { (i, e) ->
-		i.toString() + separator() + e.toString()
+	private fun Sequence<*>.mapIndexedProperty(): String {
+		return this.withIndex().joinToString("\n") { (i, e) ->
+			i.toString() + separator() + e.toString()
+		}
 	}
 
-	private fun Map<*, *>.mapProperty() = this.joinToString("\n") { (k, v) ->
-		k.toString() + separator() + v.toString()
+	private fun Map<*, *>.mapProperty(): String {
+		return this.joinToString("\n") { (k, v) ->
+			k.toString() + separator() + v.toString()
+		}
 	}
 
-	private fun Any.mapProperty() = Mapper.mapObject(this).mapProperty()
+	private fun Any.mapProperty(): String {
+		return Mapper.mapObject(this).mapProperty()
+	}
 
 
 	override fun <T> unmap(string: String, type: Class<T>): T {

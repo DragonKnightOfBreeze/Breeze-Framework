@@ -31,11 +31,6 @@ NOTE：
 * Provide basic annotations, consts, enums and interfaces maybe useful.
 * Provide generator extensions for `equals`, `hashcode` and `toString`. (e,g, `equalsBy`, `equalsByOne`)
 
-## breeze-data
-
-* Provide some useful extensions for data-use. (e.g, `serialize`, `deserialize`, `reserialize`)
-* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
-
 ## breeze-dsl
 
 Powerful and clear builders for various domain specific languages.
@@ -100,7 +95,7 @@ println(source linq linq)
 
 ## breeze-logger
 
-* Provide lightweight, individual, and powerful logger for Kotlin.
+* Provide lightweight, individual but enough powerful loggers for kotlin.
 * Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
 * This implementation is a little simple, please consider for a while before use it.
 
@@ -112,6 +107,11 @@ logger.info("Some info.")
 logger.warn("Some warn.")
 ```
 
+## breeze-mapper
+
+* Provide some useful extensions for data mapping. (e.g, `mapObject`, `unmapObject`)
+* Provide lightweight, individual but enough powerful mappers for data serialization.
+
 ## breeze-reflect
 
 * Provide some useful extensions for kotlin reflect & java reflect. (e.g, `checkClassForName`, `nameOf`.)
@@ -119,17 +119,15 @@ logger.warn("Some warn.")
 ## breeze-serialization
 
 * Provide serializers for common kotlin type. (e.g, `RangeSerializer`)
-* ~~Linked with related Dsl~~.
-* [ ] Provide lightweight multi-data-type serializers implementations.
+
+## breeze-serializer
+
+* Provide some useful extensions for data serialization. (e.g, `serialize`, `deserialize`)
+* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
 
 ## breeze-spring-boot
 
 * Provide some useful extensions for `SpringBoot` and it's optional modules.
-
-## breeze-test
-
-* [ ] Provide kotlin-style unit test support.
-* [ ] This implementation is a little simple, please consider for a while before use it.
 
 ## breeze-text
 

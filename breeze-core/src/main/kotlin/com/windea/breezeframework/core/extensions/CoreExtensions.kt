@@ -165,7 +165,6 @@ fun presentInClassPath(className: String): Boolean {
 inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
 
 //com.fasterxml.jackson.core.type.TypeReference
-
 /**类型引用。*/
 @PublishedApi
 internal abstract class TypeReference<T> {

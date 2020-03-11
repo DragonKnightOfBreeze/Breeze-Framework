@@ -34,21 +34,21 @@ val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java.isAssi
 /**得到当前类型的默认值。*/
 val <T> Class<T>.defaultValue: Any?
 	get() = when(this) {
-		Byte::class.java -> 0.toByte()
-		Short::class.java -> 0.toShort()
-		Int::class.java -> 0
-		Long::class.java -> 0L
-		Float::class.java -> 0F
-		Double::class.java -> 0.0
-		Boolean::class.java -> false
-		Char::class.java -> '\u0000'
+		Byte::class.javaPrimitiveType -> 0.toByte()
+		Short::class.javaPrimitiveType -> 0.toShort()
+		Int::class.javaPrimitiveType -> 0
+		Long::class.javaPrimitiveType -> 0L
+		Float::class.javaPrimitiveType -> 0F
+		Double::class.javaPrimitiveType -> 0.0
+		Boolean::class.javaPrimitiveType -> false
+		Char::class.javaPrimitiveType -> '\u0000'
 		else -> null
 	}
 
 /**得到当前类型的属性名-取值方法映射。基于取值方法，而非私有字段，并且忽略class属性。*/
 val <T> Class<T>.getters: List<Method>
-	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" }
+	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" && it.parameterCount == 0 }
 
 /**得到当前类型的属性名-赋值方法映射。基于取值方法。*/
 val <T> Class<T>.setters: List<Method>
-	get() = this.methods.filter { it.name.startsWith("set") }
+	get() = this.methods.filter { it.name.startsWith("set") && it.parameterCount == 1 }

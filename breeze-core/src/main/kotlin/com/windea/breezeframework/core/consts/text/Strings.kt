@@ -11,8 +11,8 @@ object Strings {
 	const val doubleQuote: String = "\""
 	const val backQuote: String = "`"
 
-	const val lSep: String = "\\"
-	const val rSep: String = "/"
+	const val separator: String = "/"
+	const val backSeparator: String = "\\"
 
 	const val tab: String = "\t"
 	const val cr: String = "\r"
