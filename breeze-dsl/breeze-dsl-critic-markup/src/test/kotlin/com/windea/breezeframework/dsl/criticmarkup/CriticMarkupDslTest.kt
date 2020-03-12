@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.criticmarkup
 import org.junit.*
 import kotlin.system.*
 
-class CriticMarkupTextDslTest {
+class CriticMarkupDslTest {
 	@Test
 	fun test1() {
 		criticMarkup {
@@ -16,16 +16,15 @@ class CriticMarkupTextDslTest {
 
 	@Test
 	fun test2() {
-		//110467199 内联block构建方法 ~=
-		//127938799 不内联构建方法 >=
-		//92082800 尽可能使用内联类
-		measureNanoTime {
-			criticMarkup {
-				"""
+		measureTimeMillis {
+			repeat(100000) {
+				criticMarkup {
+					"""
 				Hello, ${append("world")}!
 				Nice to ${highlight("meet")} you!
 			""".trimIndent()
-			}.toString()
+				}.toString()
+			}
 		}.also { println(it) }
 	}
 }
