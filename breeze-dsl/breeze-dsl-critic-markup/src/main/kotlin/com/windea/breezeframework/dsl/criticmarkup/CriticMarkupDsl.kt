@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.dsl.criticmarkup
 
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.criticmarkup.CriticMarkup.*
 
@@ -30,12 +31,7 @@ class CriticMarkup @PublishedApi internal constructor() : DslDocument, CriticMar
 
 	/**CriticMarkup富文本。*/
 	@CriticMarkupDsl
-	interface RichText : DslElement, CharSequence {
-		val text: CharSequence
-		override val length get() = text.length
-		override fun get(index: Int) = text[index]
-		override fun subSequence(startIndex: Int, endIndex: Int) = text.subSequence(startIndex, endIndex)
-	}
+	interface RichText : DslElement, HandledCharSequence
 
 	/**CriticMarkup添加文本。*/
 	@CriticMarkupDsl

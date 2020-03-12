@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.dsl.commandline
 
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.commandline.CommandLine.*
@@ -27,12 +28,7 @@ class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLin
 
 	/**命令行富文本。*/
 	@CommandLineDsl
-	interface RichText : DslElement, CharSequence {
-		val text: CharSequence
-		override val length get() = text.length
-		override fun get(index: Int) = text[index]
-		override fun subSequence(startIndex: Int, endIndex: Int) = text.subSequence(startIndex, endIndex)
-	}
+	interface RichText : DslElement, HandledCharSequence
 
 	/**命令行加粗文本。*/
 	@CommandLineDsl
