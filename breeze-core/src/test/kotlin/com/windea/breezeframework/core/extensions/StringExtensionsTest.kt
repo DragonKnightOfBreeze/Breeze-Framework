@@ -2,6 +2,11 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.enums.text.*
 import com.windea.breezeframework.core.enums.text.LetterCase.*
+import com.windea.breezeframework.core.enums.text.LetterCase.Companion.SCREAMING_SNAKE_CASE
+import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`Capitalized Words`
+import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`kebab-case`
+import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`lower case words`
+import com.windea.breezeframework.core.enums.text.LetterCase.Companion.camelCase
 import com.windea.breezeframework.core.enums.text.ReferenceCase.*
 import kotlin.test.*
 
@@ -38,21 +43,6 @@ class StringExtensionsTest {
 		val string = "abc123abc123"
 		println(string.replace("""([a-z])\d""".toRegex(), "$1"))
 		println(string.replaceLooped("""([a-z])\d""".toRegex(), "$1"))
-	}
-
-	@Test
-	fun messageFormatTest() {
-		assertEquals("123a123b123", "123{0}123{1}123".messageFormat("a", "b"))
-	}
-
-	@Test
-	fun customFormatTest() {
-		assertEquals("1a2b3", "1{}2{}3".customFormat("{}", "a", "b"))
-		assertEquals("1a2b3", "1\${}2\${}3".customFormat("\${}", "a", "b"))
-		assertEquals("1a2b3", "1{0}2{1}3".customFormat("{index}", "a", "b"))
-		assertEquals("1a2b3", "1{aaa}2{bbb}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
-		assertEquals("1b2a3", "1{1}2{0}3".customFormat("{index}", "a", "b"))
-		assertEquals("1b2a3", "1{bbb}2{aaa}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
 	}
 
 	@Test
