@@ -1,13 +1,13 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.enums.text.*
-import com.windea.breezeframework.core.enums.text.LetterCase.*
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.SCREAMING_SNAKE_CASE
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`Capitalized Words`
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`kebab-case`
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`lower case words`
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.camelCase
-import com.windea.breezeframework.core.enums.text.ReferenceCase.*
+import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.text.LetterCase.*
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.SCREAMING_SNAKE_CASE
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`Capitalized Words`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`kebab-case`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`lower case words`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.camelCase
+import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import kotlin.test.*
 
 class StringExtensionsTest {

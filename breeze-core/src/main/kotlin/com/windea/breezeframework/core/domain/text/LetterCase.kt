@@ -1,6 +1,6 @@
 @file:Suppress("ObjectPropertyName")
 
-package com.windea.breezeframework.core.enums.text
+package com.windea.breezeframework.core.domain.text
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*

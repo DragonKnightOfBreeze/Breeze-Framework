@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.consts.text
+package com.windea.breezeframework.core.constants.text
 
 //language=scss prefix=$color:
 

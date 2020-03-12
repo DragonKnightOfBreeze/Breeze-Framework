@@ -1,11 +1,11 @@
 package com.windea.breezeframework.core.tests
 
-import com.windea.breezeframework.core.enums.text.*
-import com.windea.breezeframework.core.enums.text.LetterCase.*
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.`kebab-case`
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.camelCase
-import com.windea.breezeframework.core.enums.text.LetterCase.Companion.snake_case
-import com.windea.breezeframework.core.enums.text.ReferenceCase.*
+import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.text.LetterCase.*
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`kebab-case`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.camelCase
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.snake_case
+import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
 

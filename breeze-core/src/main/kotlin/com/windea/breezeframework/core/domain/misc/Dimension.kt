@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.enums.misc
+package com.windea.breezeframework.core.domain.misc
 
 import com.windea.breezeframework.core.annotations.*
 

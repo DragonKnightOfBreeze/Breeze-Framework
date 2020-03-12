@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.core.enums.text.*
+import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.xml.XmlConfig.autoCloseTag

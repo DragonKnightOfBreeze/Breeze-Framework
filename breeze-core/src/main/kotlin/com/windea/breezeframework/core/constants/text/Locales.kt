@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.consts.text
+package com.windea.breezeframework.core.constants.text
 
 /**常见语言环境的常量集。*/
 object Locales {

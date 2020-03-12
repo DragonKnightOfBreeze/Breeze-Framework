@@ -1,7 +1,7 @@
-package com.windea.breezeframework.core.enums.misc
+package com.windea.breezeframework.core.domain.misc
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.enums.misc.Dimension.*
+import com.windea.breezeframework.core.domain.misc.Dimension.*
 
 /**基于XZ轴的二维方向。*/
 @Name("基于XZ轴的二维方向")

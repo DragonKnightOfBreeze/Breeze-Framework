@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.consts.text
+package com.windea.breezeframework.core.constants.text
 
 /**常用字符串的常量集。*/
 object Strings {

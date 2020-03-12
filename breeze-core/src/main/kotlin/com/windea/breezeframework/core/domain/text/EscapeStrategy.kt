@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.enums.text
+package com.windea.breezeframework.core.domain.text
 
 /**
  * 转义策略。
