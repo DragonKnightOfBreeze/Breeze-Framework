@@ -6,7 +6,7 @@ import kotlin.system.*
 class CriticMarkupTextDslTest {
 	@Test
 	fun test1() {
-		criticMarkupText {
+		criticMarkup {
 			"""
 				Hello, ${append("world")}!
 				Nice to ${highlight("meet")} you!
@@ -17,9 +17,10 @@ class CriticMarkupTextDslTest {
 	@Test
 	fun test2() {
 		//110467199 内联block构建方法 ~=
-		//127938799 不内联构建方法
+		//127938799 不内联构建方法 >=
+		//92082800 尽可能使用内联类
 		measureNanoTime {
-			criticMarkupText {
+			criticMarkup {
 				"""
 				Hello, ${append("world")}!
 				Nice to ${highlight("meet")} you!

@@ -13,6 +13,10 @@ package com.windea.breezeframework.dsl
 //toString()方法的具体实现不要要求过多，只要能够良好地打印字符串即可。
 //下划线开头的方法被认为是框架内部的，即使它实际上是公开的
 
+//通过抑制编译错误，可以做到：
+//内部可见性的内联类构造器
+//非顶级声明的内联类
+
 //region dsl top declarations
 /**Dsl。*/
 @DslMarker
@@ -39,7 +43,17 @@ interface DslElement {
 //endregion
 
 //region dsl declarations
-/**注明这个注解对应的Dsl构建方法是内联的。即，不会自动注册对应的元素，而是直接返回元素或字符串。*/
+/**注明这个注解定义了一个顶级的Dsl构建方法。*/
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION)
+annotation class TopDslFunction
+
+/**注明这个注解定义了一个Dsl构建方法。。*/
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION)
+annotation class DslFunction
+
+/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class InlineDslFunction

@@ -84,7 +84,7 @@ object MarkdownConfig : DslConfig {
 //region dsl declarations
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
-interface MarkdownInlineEntry : DslEntry, CriticMarkupTextInlineEntry
+interface MarkdownInlineEntry : DslEntry, CriticMarkupInlineEntry
 
 /**Markdown Dsl的入口。*/
 @MarkdownDsl
