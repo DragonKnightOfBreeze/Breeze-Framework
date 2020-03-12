@@ -113,8 +113,7 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
-	@MultilineDslProperty("<br>")
-	val text: String
+	val text: String //换行符：<br>
 ) : MermaidSequenceDiagramDslElement {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()

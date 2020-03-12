@@ -160,8 +160,7 @@ class MermaidStateDiagramTransition @PublishedApi internal constructor(
 class MermaidStateDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : MermaidStateDiagramDslElement, CanWrap, CanIndent {
-	@MultilineDslProperty("\\n", "Inline note.")
-	var text: String = ""
+	var text: String = ""  //换行符（内联注释）：\\n
 
 	override var wrapContent: Boolean = false
 	override var indentContent: Boolean = true

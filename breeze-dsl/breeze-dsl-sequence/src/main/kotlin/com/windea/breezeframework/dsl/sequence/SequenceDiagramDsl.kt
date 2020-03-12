@@ -62,8 +62,7 @@ interface SequenceDiagramDslElement : DslElement
 /**序列图标题。*/
 @SequenceDiagramDsl
 class SequenceDiagramTitle @PublishedApi internal constructor(
-	@MultilineDslProperty("\\n")
-	val text: String
+	val text: String //换行符：\\n
 ) : SequenceDiagramDslElement {
 	override fun toString(): String {
 		return "title: ${text.replaceWithEscapedWrap()}"
@@ -117,8 +116,7 @@ class SequenceDiagramMessage @PublishedApi internal constructor(
 class SequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location
 ) : SequenceDiagramDslElement {
-	@MultilineDslProperty("\\n")
-	var text: String = ""
+	var text: String = "" //换行符：\\n
 
 	override fun toString(): String {
 		val textSnippet = text.replaceWithEscapedWrap()

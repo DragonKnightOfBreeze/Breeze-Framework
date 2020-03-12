@@ -167,8 +167,8 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val toClassId: String,
 	val type: Type
 ) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
-	@MultilineDslProperty("<br>")
-	var text: String? = null
+	var text: String? = null //换行符：<br>
+
 	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
 	var fromCardinality: String? = null
 	var toCardinality: String? = null

@@ -86,8 +86,7 @@ class FlowChartNode @PublishedApi internal constructor(
 	val name: String,
 	val type: Type
 ) : FlowChartDslElement, WithUniqueId {
-	@MultilineDslProperty
-	var text: String? = null
+	var text: String? = null //换行符：\n
 	var flowState: String? = null
 	var urlLink: String? = null
 	var openNewTab: Boolean = false

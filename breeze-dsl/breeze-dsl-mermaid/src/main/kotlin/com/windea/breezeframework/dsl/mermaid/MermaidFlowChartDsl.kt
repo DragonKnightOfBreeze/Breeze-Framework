@@ -85,8 +85,7 @@ interface MermaidFlowChartDslElement : MermaidDslElement
 class MermaidFlowChartNode @PublishedApi internal constructor(
 	val name: String
 ) : MermaidFlowChartDslElement, WithUniqueId {
-	@MultilineDslProperty("<br>")
-	var text: String? = null
+	var text: String? = null //换行符：<br>
 	var shape: Shape = Shape.Rect
 
 	override val id: String get() = name
@@ -132,8 +131,7 @@ class MermaidFlowChartLink @PublishedApi internal constructor(
 	val fromNodeId: String,
 	val toNodeId: String
 ) : MermaidFlowChartDslElement, WithNode<MermaidFlowChartNode> {
-	@MultilineDslProperty("<br>")
-	var text: String? = null
+	var text: String? = null //换行符：<br>
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 
 	override val sourceNodeId get() = fromNodeId

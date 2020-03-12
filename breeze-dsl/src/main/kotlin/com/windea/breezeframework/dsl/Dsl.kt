@@ -21,28 +21,8 @@ package com.windea.breezeframework.dsl
 /**Dsl。*/
 @DslMarker
 @MustBeDocumented
-internal annotation class Dsl
+annotation class Dsl
 
-/**Dsl的文档。*/
-interface DslDocument {
-	override fun toString(): String
-}
-
-/**Dsl的配置。*/
-interface DslConfig
-
-/**Dsl的入口。*/
-interface DslEntry {
-	fun toContentString(): String = ""
-}
-
-/**Dsl的元素。*/
-interface DslElement {
-	override fun toString(): String
-}
-//endregion
-
-//region dsl declarations
 /**注明这个注解定义了一个顶级的Dsl构建方法。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
@@ -58,6 +38,26 @@ annotation class DslFunction
 @Target(AnnotationTarget.FUNCTION)
 annotation class InlineDslFunction
 
+/**Dsl的文档。*/
+interface DslDocument {
+	override fun toString(): String
+}
+
+/**Dsl的入口。*/
+interface DslEntry {
+	fun toContentString(): String = ""
+}
+
+/**Dsl的元素。*/
+interface DslElement {
+	override fun toString(): String
+}
+
+/**Dsl的配置。*/
+interface DslConfig
+//endregion
+
+//region dsl declarations
 /**注明这个注解对应的Dsl元素属性是可以换行的，并说明对应的行分隔符（默认为"\n"）和额外条件。*/
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
@@ -67,7 +67,6 @@ annotation class MultilineDslProperty(
 	/**额外条件。*/
 	val condition: String = ""
 )
-
 
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @Dsl
