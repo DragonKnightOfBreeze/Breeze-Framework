@@ -31,7 +31,7 @@ class CriticMarkup @PublishedApi internal constructor() : DslDocument, CriticMar
 	/**CriticMarkup富文本。*/
 	@CriticMarkupDsl
 	interface RichText : DslElement, CharSequence {
-		val text: String
+		val text: CharSequence
 		override val length get() = text.length
 		override fun get(index: Int) = text[index]
 		override fun subSequence(startIndex: Int, endIndex: Int) = text.subSequence(startIndex, endIndex)
@@ -39,31 +39,31 @@ class CriticMarkup @PublishedApi internal constructor() : DslDocument, CriticMar
 
 	/**CriticMarkup添加文本。*/
 	@CriticMarkupDsl
-	inline class AppendText internal constructor(override val text: String) : RichText {
+	inline class AppendText internal constructor(override val text: CharSequence) : RichText {
 		override fun toString() = "{++ $text ++}"
 	}
 
 	/**CriticMarkup删除文本。*/
 	@CriticMarkupDsl
-	inline class DeleteText internal constructor(override val text: String) : RichText {
+	inline class DeleteText internal constructor(override val text: CharSequence) : RichText {
 		override fun toString() = "{-- $text --}"
 	}
 
 	/**CriticMarkup替换文本。*/
 	@CriticMarkupDsl
-	class ReplaceText internal constructor(override val text: String, val replacedText: String) : RichText {
+	class ReplaceText internal constructor(override val text: CharSequence, val replacedText: CharSequence) : RichText {
 		override fun toString() = "{~~ $text ~> $replacedText ~~}"
 	}
 
 	/**CriticMarkup注释文本。*/
 	@CriticMarkupDsl
-	inline class CommentText internal constructor(override val text: String) : RichText {
+	inline class CommentText internal constructor(override val text: CharSequence) : RichText {
 		override fun toString() = "{>> $text <<}"
 	}
 
 	/**CriticMarkup强调文本。*/
 	@CriticMarkupDsl
-	inline class HighlightText constructor(override val text: String) : RichText {
+	inline class HighlightText constructor(override val text: CharSequence) : RichText {
 		override fun toString() = "{== $text ==}"
 	}
 }
@@ -79,20 +79,20 @@ inline fun criticMarkup(block: CriticMarkup.() -> CharSequence) = CriticMarkup()
 
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupInlineEntry.append(text: CharSequence) = AppendText("$text")
+fun CriticMarkupInlineEntry.append(text: CharSequence) = AppendText(text)
 
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupInlineEntry.delete(text: CharSequence) = DeleteText("$text")
+fun CriticMarkupInlineEntry.delete(text: CharSequence) = DeleteText(text)
 
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupInlineEntry.replace(text: CharSequence, replacedText: CharSequence) = ReplaceText("$text", "$replacedText")
+fun CriticMarkupInlineEntry.replace(text: CharSequence, replacedText: CharSequence) = ReplaceText(text, replacedText)
 
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupInlineEntry.comment(text: CharSequence) = CommentText("$text")
+fun CriticMarkupInlineEntry.comment(text: CharSequence) = CommentText(text)
 
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupInlineEntry.highlight(text: CharSequence) = HighlightText("$text")
+fun CriticMarkupInlineEntry.highlight(text: CharSequence) = HighlightText(text)

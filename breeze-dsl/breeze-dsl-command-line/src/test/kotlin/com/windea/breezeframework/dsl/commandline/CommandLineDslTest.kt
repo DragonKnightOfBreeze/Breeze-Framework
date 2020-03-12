@@ -5,14 +5,14 @@ import com.windea.breezeframework.dsl.commandline.CommandLine.*
 import kotlin.test.*
 
 class CommandLineDslTest {
-	@Test //OK
+	@Test
 	fun test1() {
 		println(commandLine {
 			color("123", Color.Red)
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun testColor() {
 		println(commandLine { color("hello world!", Color.Black) })
 		println(commandLine { color("hello world!", Color.Red) })
@@ -24,14 +24,14 @@ class CommandLineDslTest {
 		println(commandLine { color("hello world!", Color.LightGray) })
 	}
 
-	@Test //OK
+	@Test
 	fun test2() {
 		println(commandLine {
 			bgColor("123", Color.Red)
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun test3() {
 		println(commandLine {
 			"""
@@ -48,14 +48,14 @@ class CommandLineDslTest {
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun test4() {
 		println(commandLine {
 			"""
 			=================================================================
-			There is a story of ${underline(color("dragons and dragon knights", Color.LightBlue))}
+			There is a story of ${bold(color("dragons and dragon knights", Color.LightBlue))}
 			who have been ${style("traveling all over the known universes", Style.Underline, Style.Italic)}
-			and telling ${color("stories and legends", Color.Cyan)} to ${color("mortal beings", Color.DarkGray)}
+			and telling ${color("stories and legends", Color.Cyan)} to ${color("mortal beings", Color.Red)}
 			from time immemorial
 			for an immeasurable time,
 			which used to be very well-known ${color("across the galaxy", Color.Yellow)}
@@ -63,6 +63,8 @@ class CommandLineDslTest {
 
 			Few people know ${italic("who they are")},
 			but once all intelligence knew, that is, ${bold(color("Breeze Knights", Color.Blue))}.
+
+			${underline(color("And also, that is in the daydream fairy tale.", Color.DarkGray))}
 			=================================================================
 			""".trimIndent()
 		})

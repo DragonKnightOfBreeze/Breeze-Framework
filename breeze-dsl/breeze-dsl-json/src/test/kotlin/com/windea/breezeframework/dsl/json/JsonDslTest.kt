@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.json
 import org.junit.*
 
 class JsonDslTest {
-	@Test //OK
+	@Test
 	fun test1() {
 		json {
 			listOf(
@@ -14,7 +14,7 @@ class JsonDslTest {
 		}.also { println(it) }
 	}
 
-	@Test //OK
+	@Test
 	fun test2() {
 		jsonTree {
 			jsonArrayOf(
@@ -25,7 +25,7 @@ class JsonDslTest {
 		}.also { println(it) }
 	}
 
-	@Test //OK
+	@Test
 	fun test3() {
 		jsonTree {
 			jsonArrayOf(
@@ -36,7 +36,7 @@ class JsonDslTest {
 		}.also { println(it) }
 	}
 
-	@Test //OK
+	@Test
 	fun test4() {
 		JsonConfig.prettyPrint = false
 		json {
@@ -48,7 +48,7 @@ class JsonDslTest {
 		}.also { println(it) }
 	}
 
-	@Test //OK
+	@Test
 	fun test5() {
 		json {
 			listOf(
