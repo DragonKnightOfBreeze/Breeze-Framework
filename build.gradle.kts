@@ -49,7 +49,7 @@ allprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xuse-experimental=kotlin.Experimental",
+					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)
@@ -62,8 +62,7 @@ allprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xjvm-default=enable",
-					"-Xuse-experimental=kotlin.Experimental",
+					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
 					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
 				)

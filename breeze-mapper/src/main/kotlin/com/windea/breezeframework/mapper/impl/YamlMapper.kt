@@ -3,6 +3,7 @@ package com.windea.breezeframework.mapper.impl
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
+import java.lang.reflect.*
 
 class YamlMapper(
 	val config: Config = Config()
@@ -118,6 +119,10 @@ class YamlMapper(
 
 
 	override fun <T> unmap(string: String, type: Class<T>): T {
+		TODO("not implemented")
+	}
+
+	override fun <T> unmap(string: String, type: Type): T {
 		TODO("not implemented")
 	}
 }

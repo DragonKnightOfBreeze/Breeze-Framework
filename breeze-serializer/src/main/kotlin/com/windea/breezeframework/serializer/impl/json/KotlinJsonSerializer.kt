@@ -13,7 +13,6 @@ import java.lang.reflect.*
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	internal val jsonBuilder = JsonBuilder()
 	internal val json by lazy { Json(jsonBuilder.buildConfiguration()) }
-	internal val jsonWithPrettyPrint by lazy { Json(jsonBuilder.buildConfiguration()) }
 	override val delegate: Json get() = json
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {

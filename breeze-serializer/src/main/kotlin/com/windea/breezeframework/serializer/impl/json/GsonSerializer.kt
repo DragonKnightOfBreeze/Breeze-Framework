@@ -8,7 +8,6 @@ import java.lang.reflect.*
 internal object GsonSerializer : JsonSerializer {
 	internal val gsonBuilder = GsonBuilder()
 	internal val gson by lazy { gsonBuilder.create() }
-	internal val gsonWithPrettyPrint by lazy { gsonBuilder.setPrettyPrinting().create() }
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return gson.fromJson(string, type)
@@ -32,7 +31,6 @@ internal object GsonSerializer : JsonSerializer {
 
 	override fun <T : Any> write(data: T, file: File) {
 		//Do not use gson.toJson(Any, Appendable)
-		//Default to pretty print
-		gsonWithPrettyPrint.toJson(data).let { file.writeText(it) }
+		gson.toJson(data).let { file.writeText(it) }
 	}
 }

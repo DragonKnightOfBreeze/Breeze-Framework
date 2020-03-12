@@ -20,16 +20,16 @@ internal object SnakeYamlSerializer : YamlSerializer {
 		return yaml.loadAs(string, type)
 	}
 
+	override fun <T : Any> read(string: String, type: Type): T {
+		return yaml.load(string)
+	}
+
 	override fun <T : Any> read(file: File, type: Class<T>): T {
 		return yaml.loadAs(file.reader(), type)
 	}
 
-	override fun <T : Any> read(string: String, type: Type): T {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
-	}
-
 	override fun <T : Any> read(file: File, type: Type): T {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
+		throw yaml.load(file.reader())
 	}
 
 	override fun readAll(string: String): List<Any?> {

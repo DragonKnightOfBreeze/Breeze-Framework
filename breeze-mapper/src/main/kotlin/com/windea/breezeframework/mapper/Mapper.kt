@@ -1,6 +1,7 @@
 package com.windea.breezeframework.mapper
 
 import com.windea.breezeframework.reflect.extensions.*
+import java.lang.reflect.*
 
 /**
  * 映射器。
@@ -13,6 +14,9 @@ interface Mapper {
 
 	/**将字符串从特定的数据格式反映射为数据。*/
 	fun <T> unmap(string: String, type: Class<T>): T
+
+	/**将字符串从特定的数据格式反映射为数据。*/
+	fun <T> unmap(string: String, type: Type): T
 
 	companion object {
 		//kotlinx.serialization.Mapper.map

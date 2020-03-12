@@ -20,12 +20,12 @@ internal object JacksonXmlSerializer : XmlSerializer, JacksonSerializer<XmlMappe
 		return mapper.readValue(string, type)
 	}
 
-	override fun <T : Any> read(file: File, type: Class<T>): T {
-		return mapper.readValue(file, type)
-	}
-
 	override fun <T : Any> read(string: String, type: Type): T {
 		return mapper.readValue(string, mapper.typeFactory.constructType(type))
+	}
+
+	override fun <T : Any> read(file: File, type: Class<T>): T {
+		return mapper.readValue(file, type)
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {

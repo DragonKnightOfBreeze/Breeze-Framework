@@ -1,36 +1,29 @@
 package com.windea.breezeframework.serializer.impl.yaml
 
-import com.fasterxml.jackson.dataformat.yaml.*
-import com.fasterxml.jackson.module.kotlin.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Jackson实现的yaml的序列化器。*/
-internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMapper> {
-	internal val mapper = YAMLMapper()
-	override val delegate: YAMLMapper get() = mapper
-
-	init {
-		if(presentInClassPath("com.fasterxml.jackson.module.kotlin.KotlinModule")) mapper.registerKotlinModule()
-	}
+/**由BreezeYaml实现的yaml的序列化器。*/
+internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer {
+	internal val configBuilder = YamlMapper.Config.Builder()
+	internal val mapper by lazy { YamlMapper(configBuilder.build()) }
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
-		return mapper.readValue(string, type)
+		return mapper.unmap(string, type)
 	}
 
 	override fun <T : Any> read(string: String, type: Type): T {
-		return mapper.readValue(string, mapper.typeFactory.constructType(type))
+		return mapper.unmap(string, type)
 	}
 
 	override fun <T : Any> read(file: File, type: Class<T>): T {
-		mapper.readValue<Int>("")
-		return mapper.readValue(file, type)
+		return mapper.unmap(file.readText(), type)
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {
-		return mapper.readValue(file, mapper.typeFactory.constructType(type))
+		return mapper.unmap(file.readText(), type)
 	}
 
 	override fun readAll(string: String): List<Any?> {
@@ -42,11 +35,11 @@ internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMa
 	}
 
 	override fun <T : Any> write(data: T): String {
-		return mapper.writeValueAsString(data)
+		return mapper.map(data)
 	}
 
 	override fun <T : Any> write(data: T, file: File) {
-		return mapper.writeValue(file, data)
+		return mapper.map(data).let { file.writeText(it) }
 	}
 
 	override fun <T : Any> writeAll(data: Iterable<T>): String {
@@ -57,4 +50,3 @@ internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMa
 		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 }
-

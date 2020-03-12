@@ -1,15 +1,17 @@
 package com.windea.breezeframework.serializer.impl.yaml
 
-import com.fasterxml.jackson.dataformat.yaml.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.impl.json.*
 import org.yaml.snakeyaml.*
 import java.io.*
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper as JacksonYamlMapper
 
 /**
  * Yaml的序列化器。
  *
- * 注意：其实现依赖于第三方库，如`jackson`，`snakeyaml`。
+ * 其实现默认由`breeze-mapper`提供，但也可以依赖于第三方库，如`jackson`，`snakeyaml`。
  */
 interface YamlSerializer : JsonSerializer {
 	/**从指定字符串读取所有数据。*/
@@ -32,16 +34,24 @@ interface YamlSerializer : JsonSerializer {
 		val instance: YamlSerializer = when {
 			presentInClassPath(jacksonYamlClassName) -> JacksonYamlSerializer
 			presentInClassPath(snackYamlClassName) -> SnakeYamlSerializer
-			else -> throw IllegalStateException("No supported yaml serializer implementation found in classpath.")
+			else -> BreezeYamlSerializer
+			//else -> throw IllegalStateException("No supported yaml serializer implementation found in classpath.")
 		}
 
+		/**配置BreezeYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
+		@OptionalUsageApi
+		fun configureBreezeYaml(block: (YamlMapper.Config.Builder) -> Unit) {
+			block(BreezeYamlSerializer.configBuilder)
+		}
 
 		/**配置JacksonYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		fun configureJacksonYaml(block: (YAMLMapper) -> Unit) {
+		@OptionalUsageApi
+		fun configureJacksonYaml(block: (JacksonYamlMapper) -> Unit) {
 			block(JacksonYamlSerializer.mapper)
 		}
 
 		/**配置SnakeYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
+		@OptionalUsageApi
 		fun configureSnakeYaml(block: (LoaderOptions, DumperOptions) -> Unit) {
 			block(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 		}

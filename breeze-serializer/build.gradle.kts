@@ -1,5 +1,6 @@
 dependencies {
 	api(project(":breeze-core"))
+	api(project(":breeze-mapper"))
 
 	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0")
 	compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
