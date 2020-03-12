@@ -331,7 +331,7 @@
 * [X] breeze-mapper 更新一些字符串处理方法的代码逻辑，初步实现YamlMapper的map方法。
 * [X] breeze-core 提供更多的类型别名，对于~~原始类型相关类型~~和方法类型。
 * [X] breeze-core 将集合类型的`innerJoin`扩展重命名为`bind`方法，因为更加贴近需求。
-* [ ] breeze-core 重构已自定义枚举为参数的字符串处理方法，提高灵活性和规范性。
+* [X] breeze-core 重构已自定义枚举为参数的字符串处理方法，提高灵活性和规范性。
 * [ ] breeze-serializer 让breeze-serializer也委托breeze-mapper实现。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。

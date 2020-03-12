@@ -72,28 +72,24 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = 
 //region operator extensions
 /**
  * 重复当前列表中的元素到指定次数。
- *
  * @see com.windea.breezeframework.core.extensions.repeat
  */
 operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**
  * 切分当前集合中的元素到指定个数。
- *
  * @see kotlin.collections.chunked
  **/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 
 /**
  * 得到索引指定范围内的子列表。
- *
  * @see kotlin.collections.slice
  */
 operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**
  * 得到索引指定范围内的子列表。
- *
  * @see kotlin.collections.List.subList
  */
 operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
@@ -434,7 +430,6 @@ inline fun <T, C : MutableCollection<in T>> expandTo(destination: C, initial: T,
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -446,7 +441,6 @@ fun <T> Array<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.P
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -458,7 +452,6 @@ fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.Pa
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -481,7 +474,6 @@ private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -493,7 +485,6 @@ fun <T> Array<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = Reference
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -505,7 +496,6 @@ fun <T> List<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceC
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -529,7 +519,6 @@ private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -542,8 +531,7 @@ fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = Refer
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
- * @see ReferenceCase.JavaReference
+ * @see ReferenceCase.PathReference
  */
 @JvmOverloads
 fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
@@ -555,7 +543,6 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -577,9 +564,7 @@ private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
  * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
- * @see ReferenceCase.JavaReference
  */
 @JvmOverloads
 fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
@@ -590,7 +575,6 @@ fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase
  * 根据指定路径递归查询当前集合，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -602,7 +586,6 @@ fun <T> Iterable<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceC
  * 根据指定路径递归查询当前映射，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads

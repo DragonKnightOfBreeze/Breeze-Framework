@@ -20,35 +20,30 @@ import kotlin.contracts.*
 //region operator extensions
 /**
  * 移除当前字符串中的指定子字符串。
- *
  * @see com.windea.breezeframework.core.extensions.remove
  */
 operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**
  * 重复当前字符串到指定次数。
- *
  * @see kotlin.text.repeat
  */
 operator fun String.times(n: Int): String = this.repeat(n)
 
 /**
  * 切分当前字符串到指定个数。
- *
  * @see kotlin.text.chunked
  */
 operator fun String.div(n: Int): List<String> = this.chunked(n)
 
 /**
  * 得到索引指定范围内的子字符串。
- *
  * @see kotlin.text.slice
  */
 operator fun String.get(indices: IntRange): String = this.slice(indices)
 
 /**
  * 得到指定索引范围内的子字符串。
- *
  * @see kotlin.text.substring
  */
 operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
@@ -352,45 +347,6 @@ fun String.truncate(limit: Int, truncated: CharSequence = "..."): String {
 }
 
 
-/**
- * 基于[MessageFormat]格式化当前字符串。自动转义单引号。
- *
- * * 占位符格式：`{0}`, `{1,number}`, `{2,date,shot}`
- * * 示例：`"123{0}123{1}123".messageFormat("a","b")`
- */
-fun String.messageFormat(vararg args: Any?): String {
-	return MessageFormat.format(this.replace("'", "''"), *args)
-}
-
-/**
- * 基于指定的占位符格式化当前字符串。
- *
- * * 占位符格式：`{}`, `{index}`, `${}`, `${index}`, `${name}`
- * * 示例：`"1{}2{}3".customFormat("{}","a","b")`
- * * 示例：`"1{0}2{1}3".customFormat("{index}","a","b")`
- * * 示例：`"1{a}2{b}3".customFormat("{name}","a" to "a", "b" to "b")`
- */
-@WeakDeprecated("Use directly String.format() or String.messageFormat() to format strings.")
-fun String.customFormat(placeholder: String, vararg args: Any?): String {
-	return when {
-		"index" in placeholder -> {
-			val (prefix, suffix) = placeholder.split("index", limit = 2).map { it.escapeBy(EscapeType.Regex) }
-			this.replace("""$prefix(\d+)$suffix""".toRegex()) { r ->
-				args.getOrNull(r.groupValues[1].toInt())?.toString().orEmpty()
-			}
-		}
-		"name" in placeholder -> {
-			val argPairs = args.map { it as Pair<*, *> }.toMap()
-			val (prefix, suffix) = placeholder.split("name", limit = 2).map { it.escapeBy(EscapeType.Regex) }
-			this.replace("""$prefix([a-zA-Z_$]+)$suffix""".toRegex()) { r ->
-				argPairs[r.groupValues[1]]?.toString().orEmpty()
-			}
-		}
-		else -> this.replaceIndexed(placeholder) { args.getOrNull(it)?.toString().orEmpty() }
-	}
-}
-
-
 /**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
 infix fun String.setPrefix(prefix: CharSequence): String {
 	if(this.length < prefix.length) return this
@@ -593,70 +549,76 @@ fun String.unquote(unescapeQuotes: Boolean = true): String {
 private val quotes = charArrayOf('\"', '\'', '`')
 
 
-/**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/
-fun String.escapeBy(type: EscapeType, omitBackslash: Boolean = true): String {
+/**根据指定的转义策略，转义当前字符串。默认不转义反斜线。*/
+fun String.escapeBy(strategy: EscapeStrategy, omitBackslash: Boolean = true): String {
 	val tempString = if(omitBackslash) this else this.replace("\\", "\\\\")
-	return tempString.replaceAll(type.escapeStrings, type.escapedStrings)
+	return tempString.replaceAll(strategy.escapeStrings, strategy.escapedStrings)
 }
 
-/**根据指定的转义类型，反转义当前字符串。默认不反转一反斜线*/
-fun String.unescapeBy(type: EscapeType, omitBackslash: Boolean = true): String {
-	val tempString = this.replaceAll(type.escapedStrings, type.escapeStrings)
+/**根据指定的转义策略，反转义当前字符串。默认不反转一反斜线*/
+fun String.unescapeBy(strategy: EscapeStrategy, omitBackslash: Boolean = true): String {
+	val tempString = this.replaceAll(strategy.escapedStrings, strategy.escapeStrings)
 	return if(omitBackslash) tempString else tempString.replace("\\\\", "\\")
 }
 
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(type: MatchType): Regex {
-	return type.transform(this).toRegex()
+fun String.toRegexBy(strategy: MatchStrategy): Regex {
+	return strategy.regexTransform(this).toRegex()
 }
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
-	return type.transform(this).toRegex(option)
+fun String.toRegexBy(strategy: MatchStrategy, option: RegexOption): Regex {
+	return strategy.regexTransform(this).toRegex(option)
 }
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
-	return type.transform(this).toRegex(options)
+fun String.toRegexBy(strategy: MatchStrategy, options: Set<RegexOption>): Regex {
+	return strategy.regexTransform(this).toRegex(options)
 }
 
 
-/**得到当前字母的字母显示格式。*/
+/**根据指定的格式化策略，格式化当前字符串。*/
+fun String.format(strategy: FormatStrategy, vararg args: Any?, placeholder: String? = null): String {
+	return strategy.formatter(this, args, placeholder)
+}
+
+
+/**得到当前字符串的字母格式。*/
 val String.letterCase: LetterCase
 	get() = enumValues<LetterCase>().first { it.predicate(this) }
 
-/**得到当前字符串的引用显示格式。*/
+/**得到当前字符串的引用格式。*/
 val String.referenceCase: ReferenceCase
 	get() = enumValues<ReferenceCase>().first { it.predicate(this) }
 
-/**根据显示格式分割当前字符串，返回对应的字符串列表。*/
-fun String.splitBy(case: FormatCase): List<String> {
-	return case.splitter(this).toList()
-}
-
-/**根据显示格式分割当前字符串，返回对应的字符串序列。*/
-fun String.splitToSequenceBy(case: FormatCase): Sequence<String> {
+/**根据指定的格式策略，分割当前字符串，返回对应的字符串列表。*/
+fun String.splitBy(case: CaseStrategy): List<String> {
 	return case.splitter(this)
 }
 
-/**根据指定的显示格式，将当前字符串数组中的元素加入到字符串。*/
-fun Array<out CharSequence>.joinToStringBy(case: FormatCase): String {
+/**根据指定的格式策略，分割当前字符串，返回对应的字符串序列。*/
+fun String.splitToSequenceBy(case: CaseStrategy): Sequence<String> {
+	return case.sequenceSplitter(this)
+}
+
+/**根据指定的格式策略，将当前字符串数组中的元素加入到字符串。*/
+fun Array<out CharSequence>.joinToStringBy(case: CaseStrategy): String {
 	return case.arrayJoiner(this)
 }
 
-/**根据指定的显示格式，将当前字符串集合中的元素加入到字符串。*/
-fun Iterable<CharSequence>.joinToStringBy(case: FormatCase): String {
+/**根据指定的格式策略，将当前字符串集合中的元素加入到字符串。*/
+fun Iterable<CharSequence>.joinToStringBy(case: CaseStrategy): String {
 	return case.joiner(this)
 }
 
-/**切换当前字符串的显示格式。*/
-fun String.switchCaseBy(fromCase: FormatCase, toCase: FormatCase): String {
-	return this.splitBy(fromCase).joinToStringBy(toCase)
+/**根据指定的格式策略，切换当前字符串的格式。*/
+fun String.switchCaseBy(fromCase: CaseStrategy, case: CaseStrategy): String {
+	return this.splitBy(fromCase).joinToStringBy(case)
 }
 
-/**切换当前字符串的显示格式。根据目标显示格式的类型自动推导当前的显示格式，但某些显示格式需要显式指定。*/
-fun String.switchCaseBy(case: FormatCase): String {
+/**根据指定的格式策略，切换当前字符串的格式。根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。*/
+fun String.switchCaseBy(case: CaseStrategy): String {
 	return this.splitBy(when(case) {
 		is LetterCase -> this.letterCase
 		is ReferenceCase -> this.referenceCase
@@ -668,17 +630,15 @@ fun String.switchCaseBy(case: FormatCase): String {
 //region handle extensions
 /**
  * 将当前字符串转为内联文本。
- *
  * @see com.windea.breezeframework.core.extensions.trimWrap
  */
-inline val String.inline get() = this.trimWrap()
+inline val String.inline: String get() = this.trimWrap()
 
 /**
  * 将当前字符串转为多行文本。
- *
  * @see kotlin.text.trimIndent
  */
-inline val String.multiline get() = this.trimIndent()
+inline val String.multiline: String get() = this.trimIndent()
 
 /**
  * 去除当前字符串中的所有换行符以及换行符周围的空白。

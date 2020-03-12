@@ -11,15 +11,13 @@ import kotlin.system.*
 
 /**
  * 访问环境变量。
- *
- * @see System.getenv
+ * @see java.lang.System.getenv
  */
 val environmentVariables: Map<String, String> = System.getenv()
 
 /**
  * 访问系统属性。
- *
- * @see System.getProperties
+ * @see java.lang.System.getProperties
  */
 @Suppress("UNCHECKED_CAST")
 val systemProperties: Map<String, String> = Collections.unmodifiableMap(System.getProperties()) as Map<String, String>

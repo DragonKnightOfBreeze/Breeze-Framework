@@ -9,14 +9,14 @@ import java.util.*
 internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
 //region operator extensions
-/**@see Calendar.add*/
+/** @see java.util.Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, calendarField.amount)
 	return calendar.time
 }
 
-/**@see Calendar.add*/
+/** @see java.util.Calendar.add*/
 operator fun Date.minus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, -calendarField.amount)

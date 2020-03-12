@@ -15,8 +15,8 @@ class StringExtensionsTest {
 		assertEquals("abc abc", "AbcAbc".switchCaseBy(`lower case words`))
 		assertEquals("Abc Abc", "abcAbc".switchCaseBy(`Capitalized Words`))
 		assertEquals("abcAbc", "Abc Abc".switchCaseBy(camelCase))
-		assertEquals("abcabc", "AbcAbc".switchCaseBy(lowercase))
-		assertEquals("ABCABC", "ABcABc".switchCaseBy(UPPERCASE))
+		assertEquals("abcabc", "AbcAbc".switchCaseBy(LowerCase))
+		assertEquals("ABCABC", "ABcABc".switchCaseBy(UpperCase))
 	}
 
 	@Test

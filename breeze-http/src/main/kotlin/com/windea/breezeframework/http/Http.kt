@@ -6,7 +6,6 @@ import java.nio.charset.*
 
 /**
  * Http连接。基于java11的[HttpClient]。
- *
  * @see java.net.http.HttpClient
  * @see java.net.http.HttpRequest
  * @see java.net.http.HttpResponse
