@@ -5,7 +5,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由BreezeXml实现的xml的序列化器。*/
+/**由BreezeXml实现的Xml序列化器。*/
 internal object BreezeXmlSerializer : XmlSerializer, BreezeSerializer {
 	internal val configBuilder = XmlMapper.Config.Builder()
 	internal val mapper by lazy { XmlMapper(configBuilder.build()) }

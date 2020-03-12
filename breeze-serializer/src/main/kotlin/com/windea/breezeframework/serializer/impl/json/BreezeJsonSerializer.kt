@@ -5,7 +5,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由BreezeJson实现的json的序列化器。*/
+/**由BreezeJson实现的Json序列化器。*/
 internal object BreezeJsonSerializer : JsonSerializer, BreezeSerializer {
 	internal val configBuilder = JsonMapper.Config.Builder()
 	internal val mapper by lazy { JsonMapper(configBuilder.build()) }

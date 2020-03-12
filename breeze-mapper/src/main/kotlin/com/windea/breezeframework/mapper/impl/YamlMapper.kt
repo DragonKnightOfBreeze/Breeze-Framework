@@ -29,8 +29,8 @@ class YamlMapper(
 			var indicatorIndent: String = ""
 			var doubleQuoted: Boolean = true
 			var unquoted: Boolean = false
-			var blockStyle: Boolean = true
-			var literalStyle: Boolean = true
+			var blockStyle: Boolean = false
+			var literalStyle: Boolean = false
 			var uglyFormat: Boolean = false
 			var prettyFormat: Boolean = false
 			override fun build() = Config(indent, indicatorIndent, doubleQuoted, unquoted, blockStyle, literalStyle, uglyFormat, prettyFormat)

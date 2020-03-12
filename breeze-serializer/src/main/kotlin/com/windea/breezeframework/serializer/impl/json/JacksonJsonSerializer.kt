@@ -7,7 +7,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Jackson实现的json的序列化器。*/
+/**由Jackson实现的Json序列化器。*/
 internal object JacksonJsonSerializer : JsonSerializer, JacksonSerializer<JsonMapper> {
 	internal val mapper = JsonMapper()
 	override val delegate: JsonMapper get() = mapper

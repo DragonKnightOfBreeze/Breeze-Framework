@@ -7,7 +7,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Jackson实现的yaml的序列化器。*/
+/**由Jackson实现的Yaml序列化器。*/
 internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMapper> {
 	internal val mapper = YAMLMapper()
 	override val delegate: YAMLMapper get() = mapper

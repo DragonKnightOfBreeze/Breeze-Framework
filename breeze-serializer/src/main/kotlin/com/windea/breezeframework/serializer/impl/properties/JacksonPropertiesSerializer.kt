@@ -8,7 +8,7 @@ import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
-/**由Jackson实现的properties的序列化器。*/
+/**由Jackson实现的Properties序列化器。*/
 internal object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer<JavaPropsMapper> {
 	internal val mapper = JavaPropsMapper()
 	override val delegate: JavaPropsMapper get() = mapper

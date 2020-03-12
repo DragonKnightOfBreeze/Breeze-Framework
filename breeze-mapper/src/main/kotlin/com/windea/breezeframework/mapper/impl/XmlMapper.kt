@@ -25,7 +25,7 @@ class XmlMapper(
 			var doubleQuoted: Boolean = true
 			var unquoted: Boolean = false
 			var uglyFormat: Boolean = false
-			var prettyFormat: Boolean = false
+			var prettyFormat: Boolean = true
 			override fun build() = Config(indent, doubleQuoted, unquoted, uglyFormat, prettyFormat)
 		}
 	}

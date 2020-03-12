@@ -5,7 +5,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由BreezeYaml实现的yaml的序列化器。*/
+/**由BreezeYaml实现的Yaml序列化器。*/
 internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer {
 	internal val configBuilder = YamlMapper.Config.Builder()
 	internal val mapper by lazy { YamlMapper(configBuilder.build()) }

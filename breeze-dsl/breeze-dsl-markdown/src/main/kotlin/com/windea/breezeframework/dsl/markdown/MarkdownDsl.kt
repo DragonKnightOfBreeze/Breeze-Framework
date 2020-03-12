@@ -84,7 +84,7 @@ object MarkdownConfig : DslConfig {
 //region dsl declarations
 /**Markdown Dsl的内联入口。*/
 @MarkdownDsl
-interface MarkdownDslInlineEntry : DslEntry, CriticMarkupTextDslInlineEntry
+interface MarkdownInlineEntry : DslEntry, CriticMarkupTextInlineEntry
 
 /**Markdown Dsl的入口。*/
 @MarkdownDsl
@@ -837,137 +837,137 @@ inline fun Markdown.linkRef(reference: String, url: String, title: String? = nul
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.text(text: String): String {
+inline fun MarkdownInlineEntry.text(text: String): String {
 	return text
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.icon(name: String): String {
+inline fun MarkdownInlineEntry.icon(name: String): String {
 	return ":$name:"
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.footNote(reference: String): String {
+inline fun MarkdownInlineEntry.footNote(reference: String): String {
 	return "[^$reference]"
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.b(text: String): String { //bold
+inline fun MarkdownInlineEntry.b(text: String): String { //bold
 	return "**$text**"
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.i(text: String): String { //italic
+inline fun MarkdownInlineEntry.i(text: String): String { //italic
 	return "*$text*"
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.s(text: String): String { //stroked
+inline fun MarkdownInlineEntry.s(text: String): String { //stroked
 	return "~~$text~~"
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.u(text: String): String { //underline
+inline fun MarkdownInlineEntry.u(text: String): String { //underline
 	return "++$text++"
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.em(text: String): String { //emphasis
+inline fun MarkdownInlineEntry.em(text: String): String { //emphasis
 	return "==$text=="
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sup(text: String): String { //superscript
+inline fun MarkdownInlineEntry.sup(text: String): String { //superscript
 	return "^$text^"
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.sub(text: String): String { //subscript
+inline fun MarkdownInlineEntry.sub(text: String): String { //subscript
 	return "~$text~"
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.autoLink(url: String): String {
+inline fun MarkdownInlineEntry.autoLink(url: String): String {
 	return MarkdownAutoLink(url).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.link(name: String, url: String, title: String? = null): String {
+inline fun MarkdownInlineEntry.link(name: String, url: String, title: String? = null): String {
 	return MarkdownInlineLink(name, url, title).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.image(name: String, url: String, title: String? = null): String {
+inline fun MarkdownInlineEntry.image(name: String, url: String, title: String? = null): String {
 	return MarkdownInlineImageLink(name, url, title).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.refLink(reference: String, name: String? = null): String {
+inline fun MarkdownInlineEntry.refLink(reference: String, name: String? = null): String {
 	return MarkdownReferenceLink(reference, name).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-inline fun MarkdownDslInlineEntry.refImage(reference: String, name: String? = null): String {
+inline fun MarkdownInlineEntry.refImage(reference: String, name: String? = null): String {
 	return MarkdownReferenceImageLink(reference, name).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-inline fun MarkdownDslInlineEntry.wikiLink(name: String, url: String): String {
+inline fun MarkdownInlineEntry.wikiLink(name: String, url: String): String {
 	return MarkdownWikiLink(name, url).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.code(text: String): String {
+fun MarkdownInlineEntry.code(text: String): String {
 	return MarkdownInlineCode(text).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.math(text: String): String {
+fun MarkdownInlineEntry.math(text: String): String {
 	return MarkdownInlineMath(text).toString()
 }
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-fun MarkdownDslInlineEntry.attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes(attributes.toSet())
+fun MarkdownInlineEntry.attributes(vararg attributes: MarkdownAttribute) = MarkdownAttributes(attributes.toSet())
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-fun MarkdownDslInlineEntry.id(name: String) = MarkdownIdAttribute(name)
+fun MarkdownInlineEntry.id(name: String) = MarkdownIdAttribute(name)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-fun MarkdownDslInlineEntry.`class`(name: String) = MarkdownClassAttribute(name)
+fun MarkdownInlineEntry.`class`(name: String) = MarkdownClassAttribute(name)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownDslExtendedFeature
-fun MarkdownDslInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
+fun MarkdownInlineEntry.prop(name: String, value: String) = MarkdownPropertyAttribute(name, value)
 
 @MarkdownDsl
 inline fun MarkdownDslEntry.textBlock(lazyText: () -> String) =

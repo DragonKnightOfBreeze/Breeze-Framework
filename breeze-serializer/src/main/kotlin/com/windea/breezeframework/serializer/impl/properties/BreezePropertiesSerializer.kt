@@ -7,7 +7,7 @@ import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
-/**由BreezeProperties实现的properties的序列化器。*/
+/**由BreezeProperties实现的Properties序列化器。*/
 internal object BreezePropertiesSerializer : PropertiesSerializer, BreezeSerializer {
 	internal val configBuilder = PropertiesMapper.Config.Builder()
 	internal val mapper by lazy { PropertiesMapper(configBuilder.build()) }

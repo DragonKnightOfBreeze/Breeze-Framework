@@ -17,7 +17,7 @@ class PropertiesMapper(
 
 	data class Config(
 		val separator: String = "=",
-		val uglyFormat: Boolean = true,
+		val uglyFormat: Boolean = false,
 		val flattenKeys: Boolean = true
 	) : DataEntity {
 		init {

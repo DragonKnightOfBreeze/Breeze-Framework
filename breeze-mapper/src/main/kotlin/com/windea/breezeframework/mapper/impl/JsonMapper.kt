@@ -13,6 +13,7 @@ import java.lang.reflect.*
 //TODO 允许特殊情况：默认参数，构造方法映射，忽略空值等
 //TODO 支持锚点
 
+/**json的映射器。*/
 class JsonMapper(
 	val config: Config = Config()
 ) : Mapper {
@@ -22,27 +23,23 @@ class JsonMapper(
 		val indent: String = "  ",
 		val doubleQuoted: Boolean = true,
 		val unquoted: Boolean = false,
-		val uglyFormat: Boolean = false,
+		val trimSpaces: Boolean = false,
 		val prettyFormat: Boolean = false
 	) : DataEntity {
-		init {
-			require(!uglyFormat || !prettyFormat) { "Ugly format and pretty format cannot be both applied." }
-		}
-
 		class Builder : DataBuilder<Config> {
 			var indent: String = "  "
 			var doubleQuoted: Boolean = true
 			var unquoted: Boolean = false
-			var uglyFormat: Boolean = false
+			val trimSpaces: Boolean = false
 			var prettyFormat: Boolean = false
-			override fun build() = Config(indent, doubleQuoted, unquoted, uglyFormat, prettyFormat)
+			override fun build() = Config(indent, doubleQuoted, unquoted, trimSpaces, prettyFormat)
 		}
 	}
 
 	private fun indent(depth: Int) = if(config.prettyFormat) config.indent.repeat(depth) else ""
 	private val quote = if(config.unquoted) null else if(config.doubleQuoted) '\"' else '\''
-	private val separator = if(config.prettyFormat) ",\n" else if(config.uglyFormat) "," else ", "
-	private val kvSeparator = if(config.uglyFormat) ":" else ": "
+	private val separator = if(config.prettyFormat) ",\n" else if(config.trimSpaces) "," else ", "
+	private val kvSeparator = if(config.trimSpaces) ":" else ": "
 	private val arrayPrefix = if(config.prettyFormat) "[\n" else "["
 	private fun arraySuffix(depth: Int) = if(config.prettyFormat) "\n${indent(depth - 1)}]" else "]"
 	private val objectPrefix = if(config.prettyFormat) "{\n" else "{"
@@ -123,5 +120,16 @@ class JsonMapper(
 
 	override fun <T> unmap(string: String, type: Type): T {
 		TODO("not implemented")
+	}
+
+	private fun <T> String.unmapJson(type: Class<T>): T {
+		return this.reader().use {
+			val map = mutableMapOf<Any?, Any?>()
+			val char = it.read().toChar()
+			when {
+				char == '{' -> TODO()
+				else -> TODO()
+			}
+		}
 	}
 }

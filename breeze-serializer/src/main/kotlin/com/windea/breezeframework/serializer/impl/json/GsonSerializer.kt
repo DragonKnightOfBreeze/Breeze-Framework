@@ -4,7 +4,7 @@ import com.google.gson.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Gson实现的json的序列化器。*/
+/**由Gson实现的Json序列化器。*/
 internal object GsonSerializer : JsonSerializer {
 	internal val gsonBuilder = GsonBuilder()
 	internal val gson by lazy { gsonBuilder.create() }
