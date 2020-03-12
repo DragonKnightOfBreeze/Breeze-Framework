@@ -380,28 +380,28 @@ fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
 }
 
 
-/**根据指定的条件，内连接当前数组和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前数组和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Array<out T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前数组和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Array<out T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前数组和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R : Any> Array<out T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前集合和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Iterable<T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前集合和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Iterable<T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前集合和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前集合和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Iterable<T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前序列和另一个序列。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
+/**根据指定的条件，绑定当前序列和另一个序列中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
