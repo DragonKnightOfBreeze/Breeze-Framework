@@ -33,7 +33,7 @@ class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDsl
 //region dsl declarations
 /**流程图Dsl的入口。*/
 @FlowChartDsl
-interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, FlowChartConnection> {
+interface FlowChartDslEntry : DslEntry, CanSplitLine, WithTransition<FlowChartNode, FlowChartConnection> {
 	val nodes: MutableSet<FlowChartNode>
 	val connections: MutableList<FlowChartConnection>
 
@@ -41,7 +41,7 @@ interface FlowChartDslEntry : DslEntry, CanSplit, WithTransition<FlowChartNode, 
 		return listOfNotNull(
 			nodes.orNull()?.joinToString("\n"),
 			connections.orNull()?.joinToString("\n")
-		).joinToString(split)
+		).joinToString(splitSeparator)
 	}
 
 	@FlowChartDsl

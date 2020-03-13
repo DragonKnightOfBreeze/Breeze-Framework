@@ -1,97 +1,89 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("unused", "NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.constants.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
+import com.windea.breezeframework.dsl.mermaid.MermaidPieChart.*
 
-//unstable raw api
-
-//region dsl top declarations
-/**Mermaid饼图的Dsl。*/
-@Reference("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
+/**
+ * Mermaid饼图的Dsl。
+ * 参见：[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)
+ */
 @DslMarker
 @MustBeDocumented
-internal annotation class MermaidPieChartDsl
+annotation class MermaidPieChartDsl
 
-/**Mermaid饼图。*/
-@Reference("[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)")
+/**
+ * Mermaid饼图。
+ * 参见：[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)
+ * @property title （可选项）Mermaid饼图的标题。
+ */
 @MermaidPieChartDsl
-class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartDslEntry, CanIndent, CanSplit {
-	var title: MermaidPieChartTitle? = null
-	override val sections: MutableSet<MermaidPieChartSection> = mutableSetOf()
-
+class MermaidPieChart @PublishedApi internal constructor() : Mermaid(), MermaidPieChartEntry, CanIndent {
+	var title: Title? = null
+	override val sections: MutableSet<Section> = mutableSetOf()
 	override var indentContent: Boolean = true
-	override var splitContent: Boolean = false
 
-	override fun toString(): String {
-		val contentSnippet = listOfNotNull(
-			title?.toString(),
-			toContentString().orNull()
-		).joinToString(split).applyIndent(indent)
-		return "pie\n$contentSnippet"
+	override fun toString() = buildString {
+		appendln("pie")
+		if(title != null) append(config.indent).appendln(title)
+		append(contentString().applyIndent(config.indent))
 	}
-}
-//endregion
 
-//region dsl declarations
-/**Mermaid饼图Dsl的入口。*/
-@MermaidPieChartDsl
-interface MermaidPieChartDslEntry : MermaidDslEntry {
-	val sections: MutableSet<MermaidPieChartSection>
-
-	override fun toContentString(): String {
-		return sections.joinToString("\n")
+	/**
+	 * Mermaid饼图的标题。
+	 * @property text 标题的文本。
+	 */
+	@MermaidPieChartDsl
+	inline class Title @PublishedApi internal constructor(val text: String) : MermaidPieChartElement {
+		override fun toString() = "title $text"
 	}
-}
 
-/**Mermaid饼图Dsl的元素。*/
-@MermaidPieChartDsl
-interface MermaidPieChartDslElement : MermaidDslElement
-//endregion
+	/**
+	 * Mermaid饼图的分区。
+	 * @property key 分区的键。不能包含双引号，也不能进行转义。
+	 * @property value 分区的值。只能为数字，且不能为负数。
+	 * */
+	@MermaidPieChartDsl
+	class Section @PublishedApi internal constructor(val key: String, val value: String) : MermaidPieChartElement, WithId {
+		init {
+			require(value[0] != '-') { "Value of a section cannot be negative." }
+		}
 
-//region dsl elements
-/**Mermaid饼图标题。*/
-@MermaidPieChartDsl
-class MermaidPieChartTitle @PublishedApi internal constructor(
-	val text: String
-) : MermaidPieChartDslElement {
-	override fun toString(): String {
-		return "title $text"
+		override val id: String get() = key
+
+		override fun equals(other: Any?) = equalsByOne(this, other) { id }
+		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun toString(): String = "${key.quote(config.quote, false)}: $value"
 	}
 }
 
-/**Mermaid饼图部分。*/
+/**
+ * Mermaid饼图的入口。
+ * @property sections 分区组。舍弃重复的元素。
+ */
 @MermaidPieChartDsl
-class MermaidPieChartSection @PublishedApi internal constructor(
-	val key: String,
-	val value: Number
-) : MermaidPieChartDslElement, WithUniqueId {
-	override val id: String get() = key
+interface MermaidPieChartEntry : MermaidEntry {
+	val sections: MutableSet<Section>
 
-	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-
-	override fun hashCode() = hashCodeByOne(this) { id }
-
-	override fun toString(): String {
-		return "${key.quote(quote)}: $value"
-	}
+	override fun contentString() = sections.joinToString(SystemProperties.lineSeparator)
 }
-//endregion
 
-//region dsl build extensions
+/**Mermaid饼图的元素。*/
 @MermaidPieChartDsl
-inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) =
-	MermaidPieChart().apply(block)
+interface MermaidPieChartElement : MermaidElement
 
-@MermaidPieChartDsl
-inline fun MermaidPieChart.title(text: String) =
-	MermaidPieChartTitle(text).also { title = it }
 
+@TopDslFunction
 @MermaidPieChartDsl
-inline fun MermaidPieChartDslEntry.section(key: String, value: Number) =
-	MermaidPieChartSection(key, value).also { sections += it }
-//endregion
+inline fun mermaidPieChart(block: MermaidPieChart.() -> Unit) = MermaidPieChart().apply(block)
+
+@DslFunction
+@MermaidPieChartDsl
+fun MermaidPieChart.title(text: String) = Title(text).also { title = it }
+
+@DslFunction
+@MermaidPieChartDsl
+fun MermaidPieChartEntry.section(key: String, value: Number) = Section(key, value.toString()).also { sections += it }

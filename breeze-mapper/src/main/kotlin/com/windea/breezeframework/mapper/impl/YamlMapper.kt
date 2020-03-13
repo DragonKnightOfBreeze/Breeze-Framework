@@ -6,7 +6,7 @@ import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 
 class YamlMapper(
-	val config: Config = Config()
+	val config: Config = Config.Default
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
@@ -17,11 +17,12 @@ class YamlMapper(
 		val unquoted: Boolean = true,
 		val blockStyle: Boolean = true,
 		val literalStyle: Boolean = true,
-		val uglyFormat: Boolean = false,
+		val trimSpaces: Boolean = false,
 		val prettyFormat: Boolean = false
 	) : DataEntity {
-		init {
-			require(!uglyFormat || !prettyFormat) { "Ugly format and pretty format cannot be both applied." }
+		companion object {
+			@JvmStatic val Default = Config()
+			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
 		}
 
 		class Builder : DataBuilder<Config> {
@@ -41,8 +42,8 @@ class YamlMapper(
 	private fun indent(depth: Int) = if(config.prettyFormat) config.indent.repeat(depth) else ""
 	private val indicatorIndent = config.indicatorIndent
 	private val quote = if(config.unquoted) null else if(config.doubleQuoted) '\"' else '\''
-	private val separator = if(config.prettyFormat) ",\n" else if(config.uglyFormat) "," else ", "
-	private val kvSeparator = if(config.uglyFormat) ":" else ": "
+	private val separator = if(config.prettyFormat) ",\n" else if(config.trimSpaces) "," else ", "
+	private val kvSeparator = if(config.trimSpaces) ":" else ": "
 	private val arrayPrefix = if(config.prettyFormat) "[\n" else "["
 	private fun arraySuffix(depth: Int) = if(config.prettyFormat) "\n${indent(depth - 1)}]" else "]"
 	private val objectPrefix = if(config.prettyFormat) "{\n" else "{"

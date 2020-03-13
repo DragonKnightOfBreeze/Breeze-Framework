@@ -19,8 +19,7 @@ inline fun <reified T> equalsBy(target: T?, other: Any?, deepOperation: Boolean 
 /**通过选择并比较指定类型中的某个属性，判断两个对象是否相等。特殊对待数组类型。默认递归执行操作。*/
 inline fun <reified T> equalsByOne(target: T?, other: Any?, deepOperation: Boolean = true,
 	selector: T.() -> Any?): Boolean {
-	return target === other || target != null && other is T &&
-	       target.selector().smartEquals(other.selector(), deepOperation)
+	return target === other || target != null && other is T && target.selector().smartEquals(other.selector(), deepOperation)
 }
 
 /**通过选择指定类型中的属性，得到指定对象的哈希码。特殊对待数组类型。默认递归执行操作。*/

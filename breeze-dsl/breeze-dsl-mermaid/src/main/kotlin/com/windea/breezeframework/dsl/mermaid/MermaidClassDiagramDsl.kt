@@ -5,8 +5,7 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.quote
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 
 //unstable raw api
 
@@ -20,7 +19,7 @@ internal annotation class MermaidClassDiagramDsl
 /**Mermaid类图。*/
 @Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
 @MermaidClassDiagramDsl
-class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramDslEntry, CanIndent {
+class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramEntry, CanIndent {
 	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
 	override val relations: MutableList<MermaidClassDiagramRelation> = mutableListOf()
 
@@ -28,7 +27,7 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 	override var splitContent: Boolean = true
 
 	override fun toString(): String {
-		val contentSnippet = toContentString().applyIndent(indent)
+		val contentSnippet = contentString().applyIndent(config.indent)
 		return "classDiagram\n$contentSnippet"
 	}
 }
@@ -37,16 +36,16 @@ class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), Merm
 //region dsl declarations
 /**Mermaid类图Dsl元素的入口。*/
 @MermaidClassDiagramDsl
-interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
+interface MermaidClassDiagramEntry : MermaidEntry, CanSplitLine,
 	WithTransition<MermaidClassDiagramClass, MermaidClassDiagramRelation> {
 	val classes: MutableSet<MermaidClassDiagramClass>
 	val relations: MutableList<MermaidClassDiagramRelation>
 
-	override fun toContentString(): String {
+	override fun contentString(): String {
 		return listOfNotNull(
 			classes.orNull()?.joinToString("\n"),
 			relations.orNull()?.joinToString("\n")
-		).joinToString(split)
+		).joinToString(splitSeparator)
 	}
 
 	@MermaidClassDiagramDsl
@@ -88,7 +87,7 @@ interface MermaidClassDiagramDslEntry : MermaidDslEntry, CanSplit,
 
 /**Mermaid类图Dsl元素。*/
 @MermaidClassDiagramDsl
-interface MermaidClassDiagramDslElement : MermaidDslElement
+interface MermaidClassDiagramElement : MermaidElement
 //endregion
 
 //region dsl elements
@@ -96,7 +95,7 @@ interface MermaidClassDiagramDslElement : MermaidDslElement
 @MermaidClassDiagramDsl
 class MermaidClassDiagramClass @PublishedApi internal constructor(
 	val name: String
-) : MermaidClassDiagramDslElement, CanIndent, WithUniqueId {
+) : MermaidClassDiagramElement, CanIndent, WithUniqueId {
 	var annotation: MermaidClassDiagramAnnotation? = null
 	val statements: MutableList<MermaidClassDiagramStatement> = mutableListOf()
 
@@ -112,7 +111,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 		val contentSnippet = listOfNotNull(
 			annotation?.toString(),
 			statements.orNull()?.joinToString("\n")
-		).orNull()?.joinToString("\n")?.applyIndent(indent).orEmpty()
+		).orNull()?.joinToString("\n")?.applyIndent(config.indent).orEmpty()
 		if(contentSnippet.isEmpty()) return "class $name"
 		return "class $name {\n$contentSnippet\n}"
 	}
@@ -130,7 +129,7 @@ class MermaidClassDiagramClass @PublishedApi internal constructor(
 @MermaidClassDiagramDsl
 class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 	val name: String
-) : MermaidClassDiagramDslElement {
+) : MermaidClassDiagramElement {
 	override fun toString(): String {
 		return "<<$name>>"
 	}
@@ -146,7 +145,7 @@ class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
 @MermaidClassDiagramDsl
 class MermaidClassDiagramStatement @PublishedApi internal constructor(
 	val expression: String
-) : MermaidClassDiagramDslElement {
+) : MermaidClassDiagramElement {
 	var visibility: Visibility = Visibility.None
 
 	override fun toString(): String {
@@ -166,7 +165,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	val fromClassId: String,
 	val toClassId: String,
 	val type: Type
-) : MermaidClassDiagramDslElement, WithNode<MermaidClassDiagramClass> {
+) : MermaidClassDiagramElement, WithNode<MermaidClassDiagramClass> {
 	var text: String? = null //换行符：<br>
 
 	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
@@ -179,7 +178,7 @@ class MermaidClassDiagramRelation @PublishedApi internal constructor(
 	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 	override fun toString(): String {
 		return listOfNotNull(
-			fromClassId, fromCardinality?.quote(quote), type.text, toCardinality?.quote(quote), toClassId
+			fromClassId, fromCardinality?.quote(config.quote), type.text, toCardinality?.quote(config.quote), toClassId
 		).orNull()?.joinToString(" ", "", text?.let { ": $it" }.orEmpty()).orEmpty()
 	}
 
@@ -200,15 +199,15 @@ inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
 	MermaidClassDiagram().apply(block)
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit = {}) =
+inline fun MermaidClassDiagramEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit = {}) =
 	MermaidClassDiagramClass(name).apply(block).also { classes += it }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.relation(fromClassId: String, toClassId: String, type: MermaidClassDiagramRelation.Type) =
+inline fun MermaidClassDiagramEntry.relation(fromClassId: String, toClassId: String, type: MermaidClassDiagramRelation.Type) =
 	MermaidClassDiagramRelation(fromClassId, toClassId, type).also { relations += it }
 
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.relation(
+inline fun MermaidClassDiagramEntry.relation(
 	fromClassId: String,
 	fromCardinality: String?,
 	type: MermaidClassDiagramRelation.Type,

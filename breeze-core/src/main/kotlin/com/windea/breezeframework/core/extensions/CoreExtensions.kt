@@ -68,7 +68,23 @@ internal fun printTodo(throwable: Throwable, colorCode: Int) {
 }
 
 
-/**尝试执行一段代码，并在发生异常时打印堆栈信息。*/
+/**
+ * 如果条件满足，则执行一段代码并返回处理后的结果，否则返回自身。
+ *
+ * 这个作用域方法用于执行一段当前值需要根据条件转化的代码，将条件判断加入方法的链式调用。
+ */
+inline fun <T : R, R> T.where(condition: Boolean, block: T.() -> R): R {
+	contract {
+		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+	}
+	return if(condition) block() else this
+}
+
+/**
+ * 尝试执行一段代码，并在发生异常时打印错误信息。
+ *
+ * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时打印错误信息，并且没有返回值。
+ * */
 @JvmSynthetic
 inline fun tryOrPrint(block: () -> Unit) {
 	contract {
@@ -81,7 +97,11 @@ inline fun tryOrPrint(block: () -> Unit) {
 	}
 }
 
-/**尝试执行一段代码，并忽略异常。*/
+/**
+ * 尝试执行一段代码，并忽略异常。
+ *
+ * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时不做任何处理，并且没有返回值。
+ * */
 @JvmSynthetic
 inline fun tryOrIgnore(block: () -> Unit) {
 	contract {
@@ -93,7 +113,11 @@ inline fun tryOrIgnore(block: () -> Unit) {
 	}
 }
 
-/**执行一段代码且仅执行一次。默认不重置单次状态。*/
+/**
+ * 执行一段代码且仅执行一次。默认不重置单次状态。
+ *
+ * 这个作用域方法用于方便地执行那些仅需执行一次的方法。
+ * */
 @JvmSynthetic
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {

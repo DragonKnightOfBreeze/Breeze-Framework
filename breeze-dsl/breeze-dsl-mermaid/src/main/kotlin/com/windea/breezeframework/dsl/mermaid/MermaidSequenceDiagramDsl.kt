@@ -5,7 +5,7 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import org.intellij.lang.annotations.*
 
 //can have a title by `title: text`, but it is not introduced in official api
@@ -20,7 +20,7 @@ internal annotation class MermaidSequenceDiagramDsl
 /**Mermaid序列图。*/
 @Reference("[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)")
 @MermaidSequenceDiagramDsl
-class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramDslEntry, CanIndent {
+class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), MermaidSequenceDiagramEntry, CanIndent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
@@ -30,7 +30,7 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 	override var splitContent: Boolean = true
 
 	override fun toString(): String {
-		val contentSnippet = toContentString().applyIndent(indent)
+		val contentSnippet = contentString().applyIndent(config.indent)
 		return "sequenceDiagram\n$contentSnippet"
 	}
 }
@@ -39,20 +39,20 @@ class MermaidSequenceDiagram @PublishedApi internal constructor() : Mermaid(), M
 //region dsl declarations
 /**Mermaid序列图Dsl的入口。*/
 @MermaidSequenceDiagramDsl
-interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
+interface MermaidSequenceDiagramEntry : MermaidEntry, CanSplitLine,
 	WithTransition<MermaidSequenceDiagramParticipant, MermaidSequenceDiagramMessage> {
 	val participants: MutableSet<MermaidSequenceDiagramParticipant>
 	val messages: MutableList<MermaidSequenceDiagramMessage>
 	val notes: MutableList<MermaidSequenceDiagramNote>
 	val scopes: MutableList<MermaidSequenceDiagramScope>
 
-	override fun toContentString(): String {
+	override fun contentString(): String {
 		return listOfNotNull(
 			participants.orNull()?.joinToString("\n"),
 			messages.orNull()?.joinToString("\n"),
 			notes.orNull()?.joinToString("\n"),
 			scopes.orNull()?.joinToString("\n")
-		).joinToString(split)
+		).joinToString(splitSeparator)
 	}
 
 	@MermaidFlowChartDsl
@@ -61,7 +61,7 @@ interface MermaidSequenceDiagramDslEntry : MermaidDslEntry, CanSplit,
 
 /**Mermaid序列图Dsl的元素。*/
 @MermaidSequenceDiagramDsl
-interface MermaidSequenceDiagramDslElement : MermaidDslElement
+interface MermaidSequenceDiagramElement : MermaidElement
 //endregion
 
 //region dsl elements
@@ -69,7 +69,7 @@ interface MermaidSequenceDiagramDslElement : MermaidDslElement
 @MermaidSequenceDiagramDsl
 class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 	val name: String
-) : MermaidSequenceDiagramDslElement, WithUniqueId {
+) : MermaidSequenceDiagramElement, WithUniqueId {
 	var alias: String? = null
 
 	override val id: String get() = alias ?: name
@@ -89,7 +89,7 @@ class MermaidSequenceDiagramParticipant @PublishedApi internal constructor(
 class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 	val fromParticipantId: String,
 	val toParticipantId: String
-) : MermaidSequenceDiagramDslElement, WithNode<MermaidSequenceDiagramParticipant> {
+) : MermaidSequenceDiagramElement, WithNode<MermaidSequenceDiagramParticipant> {
 	var text: String = ""
 	var arrowShape: ArrowShape = ArrowShape.Arrow
 	var isActivated: Boolean? = null
@@ -114,7 +114,7 @@ class MermaidSequenceDiagramMessage @PublishedApi internal constructor(
 class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 	val location: Location,
 	val text: String //换行符：<br>
-) : MermaidSequenceDiagramDslElement {
+) : MermaidSequenceDiagramElement {
 	override fun toString(): String {
 		val textSnippet = text.replaceWithHtmlWrap()
 		return "note $location: $textSnippet"
@@ -145,7 +145,7 @@ class MermaidSequenceDiagramNote @PublishedApi internal constructor(
 sealed class MermaidSequenceDiagramScope(
 	val type: String,
 	val text: String?
-) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, CanIndent {
+) : MermaidSequenceDiagramElement, MermaidSequenceDiagramEntry, CanIndent {
 	override val participants: MutableSet<MermaidSequenceDiagramParticipant> = mutableSetOf()
 	override val messages: MutableList<MermaidSequenceDiagramMessage> = mutableListOf()
 	override val notes: MutableList<MermaidSequenceDiagramNote> = mutableListOf()
@@ -156,7 +156,7 @@ sealed class MermaidSequenceDiagramScope(
 
 	override fun toString(): String {
 		val textSnippet = text?.let { " $it" }.orEmpty()
-		val contentSnippet = toContentString().applyIndent(indent)
+		val contentSnippet = contentString().applyIndent(config.indent)
 		return "$type$textSnippet\n$contentSnippet\nend"
 	}
 }
@@ -181,8 +181,8 @@ class MermaidSequenceDiagramAlternative @PublishedApi internal constructor(
 	val elseScopes: MutableList<MermaidSequenceDiagramElse> = mutableListOf()
 
 	override fun toString(): String {
-		val contentSnippet = toContentString()
-			.let { if(indentContent) it.prependIndent(indent) else it }
+		val contentSnippet = contentString()
+			.let { if(indentContent) it.prependIndent(config.indent) else it }
 		val elseScopesSnippet = elseScopes.orNull()?.joinToString("\n", "\n").orEmpty()
 		return "$contentSnippet$elseScopesSnippet"
 	}
@@ -210,15 +210,15 @@ fun mermaidSequenceDiagram(block: MermaidSequenceDiagram.() -> Unit) =
 	MermaidSequenceDiagram().apply(block)
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.participant(name: String) =
+inline fun MermaidSequenceDiagramEntry.participant(name: String) =
 	MermaidSequenceDiagramParticipant(name).also { participants += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(fromParticipantId: String, toParticipantId: String) =
+inline fun MermaidSequenceDiagramEntry.message(fromParticipantId: String, toParticipantId: String) =
 	MermaidSequenceDiagramMessage(fromParticipantId, toParticipantId).also { messages += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.message(
+inline fun MermaidSequenceDiagramEntry.message(
 	fromParticipantId: String,
 	arrowShape: MermaidSequenceDiagramMessage.ArrowShape,
 	isActivated: Boolean = false,
@@ -228,38 +228,38 @@ inline fun MermaidSequenceDiagramDslEntry.message(
 	.also { messages += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.note(location: MermaidSequenceDiagramNote.Location, text: String) =
+inline fun MermaidSequenceDiagramEntry.note(location: MermaidSequenceDiagramNote.Location, text: String) =
 	MermaidSequenceDiagramNote(location, text).also { notes += it }
 
 @InlineDslFunction
 @MermaidSequenceDiagramDsl
-fun MermaidSequenceDiagramDslEntry.leftOf(participantId: String) =
+fun MermaidSequenceDiagramEntry.leftOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.LeftOf, participantId)
 
 @InlineDslFunction
 @MermaidSequenceDiagramDsl
-fun MermaidSequenceDiagramDslEntry.rightOf(participantId: String) =
+fun MermaidSequenceDiagramEntry.rightOf(participantId: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId)
 
 @InlineDslFunction
 @MermaidSequenceDiagramDsl
-fun MermaidSequenceDiagramDslEntry.over(participantId1: String, participantId2: String) =
+fun MermaidSequenceDiagramEntry.over(participantId1: String, participantId2: String) =
 	MermaidSequenceDiagramNote.Location(MermaidSequenceDiagramNote.Position.RightOf, participantId1, participantId2)
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.loop(text: String, block: MermaidSequenceDiagramLoop.() -> Unit) =
+inline fun MermaidSequenceDiagramEntry.loop(text: String, block: MermaidSequenceDiagramLoop.() -> Unit) =
 	MermaidSequenceDiagramLoop(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.opt(text: String, block: MermaidSequenceDiagramOptional.() -> Unit) =
+inline fun MermaidSequenceDiagramEntry.opt(text: String, block: MermaidSequenceDiagramOptional.() -> Unit) =
 	MermaidSequenceDiagramOptional(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.alt(text: String, block: MermaidSequenceDiagramAlternative.() -> Unit) =
+inline fun MermaidSequenceDiagramEntry.alt(text: String, block: MermaidSequenceDiagramAlternative.() -> Unit) =
 	MermaidSequenceDiagramAlternative(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl
-inline fun MermaidSequenceDiagramDslEntry.highlight(text: String, block: MermaidSequenceDiagramHighlight.() -> Unit) =
+inline fun MermaidSequenceDiagramEntry.highlight(text: String, block: MermaidSequenceDiagramHighlight.() -> Unit) =
 	MermaidSequenceDiagramHighlight(text).apply(block).also { scopes += it }
 
 @MermaidSequenceDiagramDsl

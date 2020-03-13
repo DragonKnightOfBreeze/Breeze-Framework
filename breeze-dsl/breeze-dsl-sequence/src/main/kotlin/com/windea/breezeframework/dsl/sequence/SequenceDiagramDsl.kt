@@ -28,7 +28,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 		return listOfNotNull(
 			title?.toString(),
 			toContentString().orNull()
-		).joinToString(split)
+		).joinToString(splitSeparator)
 	}
 }
 //endregion
@@ -36,7 +36,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 //region dsl declarations
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
-interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
+interface SequenceDiagramDslEntry : DslEntry, CanSplitLine, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
 	val participants: MutableSet<SequenceDiagramParticipant>
 	val messages: MutableList<SequenceDiagramMessage>
 	val notes: MutableList<SequenceDiagramNote>
@@ -46,7 +46,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplit, WithTransition<SequenceD
 			participants.orNull()?.joinToString("\n"),
 			messages.orNull()?.joinToString("\n"),
 			notes.orNull()?.joinToString("\n")
-		).joinToString(split)
+		).joinToString(splitSeparator)
 	}
 
 	@SequenceDiagramDsl

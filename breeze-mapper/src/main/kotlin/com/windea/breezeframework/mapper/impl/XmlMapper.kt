@@ -5,7 +5,7 @@ import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 
 class XmlMapper(
-	val config: Config = Config()
+	val config: Config = Config.Default
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
@@ -13,11 +13,12 @@ class XmlMapper(
 		val indent: String = "  ",
 		val doubleQuoted: Boolean = true,
 		val unquoted: Boolean = false,
-		val uglyFormat: Boolean = false,
+		val trimSpaces: Boolean = false,
 		val prettyFormat: Boolean = false
 	) : DataEntity {
-		init {
-			require(!uglyFormat || !prettyFormat) { "Ugly format and pretty format cannot be both applied." }
+		companion object {
+			@JvmStatic val Default = Config()
+			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
 		}
 
 		class Builder : DataBuilder<Config> {

@@ -2,6 +2,8 @@
 
 package com.windea.breezeframework.dsl
 
+import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
+
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。
 //所有的Dsl元素和Dsl构建方法都必须添加对应的DslMarker注解。
@@ -16,6 +18,9 @@ package com.windea.breezeframework.dsl
 //通过抑制编译错误，可以做到：
 //内部可见性的内联类构造器
 //非顶级声明的内联类
+
+//对于Dsl入口，以buildString的方式生成字符串，以提高性能（相比之下可以很快）
+//对于Dsl元素，可以直接使用模版字符串或joinToString
 
 //region dsl top declarations
 /**Dsl。*/
@@ -45,7 +50,7 @@ interface DslDocument {
 
 /**Dsl的入口。*/
 interface DslEntry {
-	fun toContentString(): String = ""
+	fun contentString(): String = ""
 }
 
 /**Dsl的元素。*/
@@ -58,48 +63,46 @@ interface DslConfig
 //endregion
 
 //region dsl declarations
-/**注明这个注解对应的Dsl元素属性是可以换行的，并说明对应的行分隔符（默认为"\n"）和额外条件。*/
-@MustBeDocumented
-@Target(AnnotationTarget.PROPERTY)
-annotation class MultilineDslProperty(
-	/**行分隔符。*/
-	val lineSeparator: String = "",
-	/**额外条件。*/
-	val condition: String = ""
-)
-
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @Dsl
-interface CanWrap {
+interface CanWrapLine {
+	/**是否需要对内容进行换行。*/
 	var wrapContent: Boolean
 
-	val wrap: String get() = if(wrapContent) "\n" else ""
+	/**用于换行的分隔符。*/
+	val wrapSeparator: String get() = if(wrapContent) lineSeparator else ""
 }
 
-/**包含可分割的内容。一般使用空行进行分割。*/
+/**包含可以空行分隔的内容。*/
 @Dsl
-interface CanSplit {
+interface CanSplitLine {
+	/**是否需要对内容以空行分隔。*/
 	var splitContent: Boolean
 
-	val split: String get() = if(splitContent) "\n\n" else "\n"
+	/**用于已空行分隔的分隔符。*/
+	val splitSeparator: String get() = if(splitContent) lineSeparator + lineSeparator else lineSeparator
 }
 
 /**包含可缩进的内容。*/
 @Dsl
 interface CanIndent {
+	/**是否需要对缩进内容。*/
 	var indentContent: Boolean
 
+	/**缩进文本。*/
 	fun String.applyIndent(indent: String, condition: Boolean = true): String {
 		return if(indentContent && condition) this.prependIndent(indent) else this
 	}
 }
 
-/**可生成文本。可能替换原始文本。*/
+/**包含可被生成的内容。*/
 @Dsl
 interface CanGenerate {
+	/**是否需要生成文本。*/
 	var generateContent: Boolean
 
-	fun toGeneratedString(): String
+	/**生成文本。*/
+	fun applyGenerate(): String
 }
 
 
@@ -180,7 +183,7 @@ interface WithTransition<N : WithId, T : WithNode<N>> {
 //region dsl build extensions
 /**设置是否换行内容。*/
 @Dsl
-inline infix fun <T : CanWrap> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
+inline infix fun <T : CanWrapLine> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
 
 /**设置是否缩进内容。*/
 @Dsl
@@ -188,7 +191,7 @@ inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { it.inden
 
 /**设置是否分割内容。*/
 @Dsl
-inline infix fun <T : CanSplit> T.split(value: Boolean) = this.also { it.splitContent = value }
+inline infix fun <T : CanSplitLine> T.split(value: Boolean) = this.also { it.splitContent = value }
 
 /**设置是否生成内容。*/
 @Dsl

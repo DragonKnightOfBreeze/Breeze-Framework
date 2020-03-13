@@ -8,17 +8,24 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.creole.CreoleConfig.emptyColumnText
 import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
 
-//DELAY add dsl element: HtmlBlock
+//http://plantuml.com/zh/creole
 
-//region dsl top declarations
-/**Creole的Dsl。*/
-@Reference("[Creole](http://plantuml.com/zh/creole)")
+//DELAY HtmlBlock
+
+/**
+ * Creole的Dsl。
+ *
+ * 参见：[Creole](http://plantuml.com/zh/creole)
+ * */
 @DslMarker
 @MustBeDocumented
-internal annotation class CreoleDsl
+annotation class CreoleDsl
 
-/**Creole。*/
-@Reference("[Creole](http://plantuml.com/zh/creole)")
+/**
+ * Creole。
+ *
+ * 参见：[Creole](http://plantuml.com/zh/creole)
+ * */
 @CreoleDsl
 class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()
@@ -44,7 +51,6 @@ object CreoleConfig : DslConfig {
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
 	@PublishedApi internal val emptyColumnText get() = " " * emptyColumnSize
 }
-//endregion
 
 //region dsl declarations
 /**Creole Dsl的内联入口。*/

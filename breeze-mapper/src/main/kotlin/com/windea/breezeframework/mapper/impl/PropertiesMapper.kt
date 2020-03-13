@@ -11,17 +11,21 @@ import java.lang.reflect.*
 //TODO 支持多级结构
 
 class PropertiesMapper(
-	val config: Config = Config()
+	val config: Config = Config.Default
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
 	data class Config(
 		val separator: String = "=",
-		val uglyFormat: Boolean = false,
+		val trimSpaces: Boolean = false,
 		val flattenKeys: Boolean = true
 	) : DataEntity {
 		init {
-			require(separator == "=" || separator == ":") { "Separator should be '=' or ':'." }
+			require(separator == "=" || separator == ":") { "Properties separator should be '=' or ':'." }
+		}
+
+		companion object {
+			@JvmStatic val Default = Config()
 		}
 
 		class Builder : DataBuilder<Config> {
@@ -32,7 +36,7 @@ class PropertiesMapper(
 		}
 	}
 
-	private fun separator() = if(config.uglyFormat) " ${config.separator} " else config.separator
+	private fun separator() = if(config.trimSpaces) " ${config.separator} " else config.separator
 
 
 	override fun <T> map(data: T): String {

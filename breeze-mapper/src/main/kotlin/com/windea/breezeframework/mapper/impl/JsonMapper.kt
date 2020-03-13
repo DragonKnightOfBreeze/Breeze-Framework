@@ -15,7 +15,7 @@ import java.lang.reflect.*
 
 /**json的映射器。*/
 class JsonMapper(
-	val config: Config = Config()
+	val config: Config = Config.Default
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
@@ -26,6 +26,11 @@ class JsonMapper(
 		val trimSpaces: Boolean = false,
 		val prettyFormat: Boolean = false
 	) : DataEntity {
+		companion object {
+			@JvmStatic val Default = Config()
+			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
+		}
+
 		class Builder : DataBuilder<Config> {
 			var indent: String = "  "
 			var doubleQuoted: Boolean = true

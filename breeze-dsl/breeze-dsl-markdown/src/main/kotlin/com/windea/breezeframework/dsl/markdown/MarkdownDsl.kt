@@ -196,7 +196,7 @@ class MarkdownWikiLink @PublishedApi internal constructor(
 @MarkdownDsl
 class MarkdownTextBlock @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslTopElement, CanWrap {
+) : MarkdownDslTopElement, CanWrapLine {
 	override var wrapContent: Boolean = true
 
 	override fun toString(): String {
@@ -211,7 +211,7 @@ class MarkdownTextBlock @PublishedApi internal constructor(
 sealed class MarkdownHeading(
 	val headingLevel: Int,
 	val text: String
-) : MarkdownDslTopElement, WithMarkdownAttributes, CanWrap {
+) : MarkdownDslTopElement, WithMarkdownAttributes, CanWrapLine {
 	override var attributes: MarkdownAttributes? = null
 	override var wrapContent: Boolean = true
 }
@@ -322,7 +322,7 @@ class MarkdownList @PublishedApi internal constructor(
 sealed class MarkdownListNode(
 	protected val prefixMarkers: String,
 	val text: String
-) : MarkdownDslElement, CanWrap {
+) : MarkdownDslElement, CanWrapLine {
 	val nodes: MutableList<MarkdownListNode> = mutableListOf()
 
 	override var wrapContent: Boolean = true
@@ -363,7 +363,7 @@ class MarkdownTaskListNode @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinition @PublishedApi internal constructor(
 	val title: String
-) : MarkdownDslTopElement, CanWrap {
+) : MarkdownDslTopElement, CanWrapLine {
 	val nodes: MutableList<MarkdownDefinitionNode> = mutableListOf()
 
 	override var wrapContent: Boolean = true
@@ -384,7 +384,7 @@ class MarkdownDefinition @PublishedApi internal constructor(
 @MarkdownDslExtendedFeature
 class MarkdownDefinitionNode @PublishedApi internal constructor(
 	val text: String
-) : MarkdownDslElement, CanWrap {
+) : MarkdownDslElement, CanWrapLine {
 	override var wrapContent: Boolean = true
 
 	override fun toString(): String {
@@ -632,12 +632,12 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerate {
 	override var generateContent: Boolean = false
 
-	override fun toGeneratedString(): String {
+	override fun applyGenerate(): String {
 		TODO("not implemented")
 	}
 
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return applyGenerate()
 		return "[TOC]"
 	}
 }
@@ -652,12 +652,12 @@ class MarkdownImport @PublishedApi internal constructor(
 	override var attributes: MarkdownAttributes? = null
 	override var generateContent: Boolean = false
 
-	override fun toGeneratedString(): String {
+	override fun applyGenerate(): String {
 		TODO("not implemented")
 	}
 
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return applyGenerate()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.quote(quote)
 		return "@import $urlSnippet$attributesSnippet"
@@ -672,12 +672,12 @@ class MarkdownMacros @PublishedApi internal constructor(
 ) : MarkdownDslTopElement, CanGenerate {
 	override var generateContent: Boolean = false
 
-	override fun toGeneratedString(): String {
+	override fun applyGenerate(): String {
 		TODO("not implemented")
 	}
 
 	override fun toString(): String {
-		if(generateContent) return toGeneratedString()
+		if(generateContent) return applyGenerate()
 		return "<<< $name >>>"
 	}
 }

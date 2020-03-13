@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
+@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
 
 package com.windea.breezeframework.dsl.commandline
 
@@ -21,14 +21,13 @@ annotation class CommandLineDsl
 /**命令行文本。*/
 @CommandLineDsl
 class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLineInlineEntry {
-	@PublishedApi internal lateinit var text: CharSequence
+	@PublishedApi internal lateinit var content: CharSequence
 
-	override fun toString() = text.toString()
-
+	override fun toString() = content.toString()
 
 	/**命令行富文本。*/
 	@CommandLineDsl
-	interface RichText : DslElement, HandledCharSequence
+	interface RichText : CommandLineElement, HandledCharSequence
 
 	/**命令行加粗文本。*/
 	@CommandLineDsl
@@ -66,19 +65,28 @@ class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLin
 		override fun toString() = richText(Style.Invert.code, text)
 	}
 
-	/**命令行前景色文本。*/
+	/**
+	 * 命令行前景色文本。
+	 * @property color 文本的前景色。
+	 */
 	@CommandLineDsl
 	class ColoredText internal constructor(override val text: CharSequence, val color: Color) : RichText {
 		override fun toString() = richText(color.code, text)
 	}
 
-	/**命令行背景色文本。*/
+	/**
+	 * 命令行背景色文本。
+	 * @property color 文本的背景色。
+	 * */
 	@CommandLineDsl
 	class BgColoredText internal constructor(override val text: CharSequence, val color: Color) : RichText {
 		override fun toString() = richText(color.code + 10, text)
 	}
 
-	/**命令行格式文本。*/
+	/**
+	 * 命令行格式文本。
+	 * @property styles 文本的格式组。
+	 * */
 	@CommandLineDsl
 	class StyledText internal constructor(override val text: CharSequence, vararg val styles: Style) : RichText {
 		override fun toString() = richText(styles.joinToString(";") { it.code.toString() }, text)
@@ -86,7 +94,7 @@ class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLin
 
 	/**命令行文本的颜色。*/
 	@CommandLineDsl
-	enum class Color(val code: Int) {
+	enum class Color(internal val code: Int) {
 		Black(30),
 		Red(31),
 		Green(32),
@@ -107,7 +115,7 @@ class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLin
 
 	/**命令行文本的风格。*/
 	@CommandLineDsl
-	enum class Style(val code: Int) {
+	enum class Style(internal val code: Int) {
 		/**默认。*/
 		Default(0),
 
@@ -131,52 +139,57 @@ class CommandLine @PublishedApi internal constructor() : DslDocument, CommandLin
 	}
 }
 
-/**命令行富文本的内联入口。*/
+/**命令行文本的内联入口。*/
 @CommandLineDsl
-interface CommandLineInlineEntry : DslEntry
+interface CommandLineInlineEntry : DslEntry {
+	@InlineDslFunction
+	@CommandLineDsl
+	fun bold(text: CharSequence) = BoldText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun light(text: CharSequence) = LightText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun italic(text: CharSequence) = ItalicText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun underline(text: CharSequence) = UnderlineText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun blink(text: CharSequence) = BlinkText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun invert(text: CharSequence) = InvertText(text)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun color(text: CharSequence, color: Color) = ColoredText(text, color)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun bgColor(text: CharSequence, color: Color) = BgColoredText(text, color)
+
+	@InlineDslFunction
+	@CommandLineDsl
+	fun style(text: CharSequence, vararg styles: Style) = StyledText(text, *styles)
+}
+
+/**命令行文本的元素。*/
+@CommandLineDsl
+interface CommandLineElement : DslElement
+
+
+@TopDslFunction
+@CommandLineDsl
+inline fun commandLine(block: CommandLine.() -> CharSequence) = CommandLine().apply { content = block() }
 
 
 private fun richText(code: Int, text: CharSequence) = text.toString().addSurrounding("\u001B[${code}m", "\u001B[0m")
 
 private fun richText(codes: String, text: CharSequence) = text.toString().addSurrounding("\u001B[${codes}m", "\u001B[0m")
 
-
-@TopDslFunction
-@CommandLineDsl
-inline fun commandLine(block: CommandLine.() -> CharSequence) = CommandLine().apply { text = block() }
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.bold(text: CharSequence) = BoldText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.light(text: CharSequence) = LightText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.italic(text: CharSequence) = ItalicText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.underline(text: CharSequence) = UnderlineText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.blink(text: CharSequence) = BlinkText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.invert(text: CharSequence) = InvertText(text)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.color(text: CharSequence, color: Color) = ColoredText(text, color)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.bgColor(text: CharSequence, color: Color) = BgColoredText(text, color)
-
-@InlineDslFunction
-@CommandLineDsl
-fun CommandLineInlineEntry.style(text: CharSequence, vararg styles: Style) = StyledText(text, *styles)

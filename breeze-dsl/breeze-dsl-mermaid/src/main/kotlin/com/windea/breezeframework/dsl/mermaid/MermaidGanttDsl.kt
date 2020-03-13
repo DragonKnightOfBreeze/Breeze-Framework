@@ -5,7 +5,7 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.MermaidConfig.indent
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import java.time.*
 
 //region dsl top declarations
@@ -18,7 +18,7 @@ internal annotation class MermaidGanttDsl
 /**Mermaid甘特图。*/
 @Reference("[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)")
 @MermaidGanttDsl
-class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttDslEntry, CanIndent, CanSplit {
+class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGanttEntry, CanIndent, CanSplitLine {
 	var title: MermaidGanttTitle? = null
 	var dateFormat: MermaidGanttDateFormat? = null
 	override val sections: MutableList<MermaidGanttSection> = mutableListOf()
@@ -30,8 +30,8 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 		val contentSnippet = listOfNotNull(
 			title?.toString(),
 			dateFormat?.toString(),
-			toContentString().orNull()
-		).joinToString(split).applyIndent(indent)
+			contentString().orNull()
+		).joinToString(splitSeparator).applyIndent(config.indent)
 		return "gantt\n$contentSnippet"
 	}
 }
@@ -40,17 +40,17 @@ class MermaidGantt @PublishedApi internal constructor() : Mermaid(), MermaidGant
 //region dsl declarations
 /**Mermaid甘特图Dsl的入口。*/
 @MermaidGanttDsl
-interface MermaidGanttDslEntry : MermaidDslEntry, CanSplit {
+interface MermaidGanttEntry : MermaidEntry, CanSplitLine {
 	val sections: MutableList<MermaidGanttSection>
 
-	override fun toContentString(): String {
-		return sections.joinToString(split)
+	override fun contentString(): String {
+		return sections.joinToString(splitSeparator)
 	}
 }
 
 /**Mermaid甘特图Dsl的元素。*/
 @MermaidGanttDsl
-interface MermaidGanttDslElement : MermaidDslElement
+interface MermaidGanttElement : MermaidElement
 //endregion
 
 //region dsl elements
@@ -58,7 +58,7 @@ interface MermaidGanttDslElement : MermaidDslElement
 @MermaidGanttDsl
 class MermaidGanttTitle @PublishedApi internal constructor(
 	val text: String
-) : MermaidGanttDslElement {
+) : MermaidGanttElement {
 	override fun toString(): String {
 		return "title $text"
 	}
@@ -68,7 +68,7 @@ class MermaidGanttTitle @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttDateFormat @PublishedApi internal constructor(
 	val expression: String
-) : MermaidGanttDslElement {
+) : MermaidGanttElement {
 	override fun toString(): String {
 		return "dateFormat $expression"
 	}
@@ -78,7 +78,7 @@ class MermaidGanttDateFormat @PublishedApi internal constructor(
 @MermaidGanttDsl
 class MermaidGanttSection @PublishedApi internal constructor(
 	val name: String
-) : MermaidGanttDslElement, CanIndent, WithId {
+) : MermaidGanttElement, CanIndent, WithId {
 	val tasks: MutableList<MermaidGanttTask> = mutableListOf()
 
 	override var indentContent: Boolean = false
@@ -88,7 +88,7 @@ class MermaidGanttSection @PublishedApi internal constructor(
 	override fun toString(): String {
 		if(tasks.isEmpty()) return "section $name"
 
-		val contentSnippet = tasks.joinToString("\n").applyIndent(indent)
+		val contentSnippet = tasks.joinToString("\n").applyIndent(config.indent)
 		return "section $name\n$contentSnippet"
 	}
 }
@@ -98,11 +98,13 @@ class MermaidGanttSection @PublishedApi internal constructor(
 class MermaidGanttTask @PublishedApi internal constructor(
 	val name: String,
 	var status: Status = Status.ToDo
-) : MermaidGanttDslElement, WithId {
+) : MermaidGanttElement, WithId {
 	var alias: String? = null
 	var isCrit: Boolean = false
+
 	//LocalDate format or "after $alias" format
 	var initTime: String? = null
+
 	//LocalDate format or Duration format
 	var finishTime: String? = null
 
@@ -137,7 +139,7 @@ inline fun MermaidGantt.dateFormat(expression: String) =
 	MermaidGanttDateFormat(expression).also { dateFormat = it }
 
 @MermaidGanttDsl
-inline fun MermaidGanttDslEntry.section(name: String, block: MermaidGanttSection.() -> Unit = {}) =
+inline fun MermaidGanttEntry.section(name: String, block: MermaidGanttSection.() -> Unit = {}) =
 	MermaidGanttSection(name).apply(block).also { sections += it }
 
 @MermaidGanttDsl

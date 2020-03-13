@@ -2,55 +2,58 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 
 //region dsl top declarations
-/**Mermaid的Dsl。*/
-@Reference("[Mermaid](https://mermaidjs.github.io)")
+/**
+ * Mermaid的Dsl。
+ * 参见：[Mermaid](https://mermaidjs.github.io)
+ * */
 @DslMarker
 @MustBeDocumented
-internal annotation class MermaidDsl
+annotation class MermaidDsl
 
 /**Mermaid的扩展特性。*/
 @MustBeDocumented
-internal annotation class MermaidDslExtendedFeature
+annotation class MermaidDslExtendedFeature
 
-/**Mermaid。*/
-@Reference("[Mermaid](https://mermaidjs.github.io)")
+/**
+ * Mermaid。
+ * 参见：[Mermaid](https://mermaidjs.github.io)
+ * @property config （可选项）Mermaid的配置。
+ * */
 @MermaidDsl
-abstract class Mermaid : DslDocument
+abstract class Mermaid : DslDocument {
+	companion object {
+		@JvmField @PublishedApi internal val config = Config()
+	}
 
-/**Mermaid配置。*/
-@MermaidDsl
-object MermaidConfig : DslConfig {
-	private val indentSizeRange = -2..8
-
-	var indentSize = 4
-		set(value) = run { field = value.coerceIn(-2, 8) }
-	var preferDoubleQuote: Boolean = true
-
-	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
-	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''
+	/**
+	 * Mermaid的配置。
+	 * @property indent 文本的缩进。
+	 * @property doubleQuoted 是否偏向使用双引号。
+	 */
+	data class Config(
+		var indent: String = "  ",
+		var doubleQuoted: Boolean = true
+	) {
+		val quote get() = if(doubleQuoted) '\"' else '\''
+	}
 }
 
-/**Mermaid Dsl的入口。*/
+/**Mermaid的入口。*/
 @MermaidDsl
-interface MermaidDslEntry : DslEntry
+interface MermaidEntry : DslEntry
 
-/**Mermaid Dsl的元素。*/
+/**Mermaid的元素。*/
 @MermaidDsl
-interface MermaidDslElement : DslElement
-//endregion
+interface MermaidElement : DslElement
 
-//region helpful extensions
-/**将`\n`或`\r`替换成`<br>`。*/
-@PublishedApi
-internal fun String.replaceWithHtmlWrap() = this.replace("\n", "<br>").replace("\r", "<br>")
-//endregion
 
-//region build extensions
+@TopDslFunction
 @MermaidDsl
-inline fun mermaidConfig(block: MermaidConfig.() -> Unit) = MermaidConfig.apply(block)
-//endregion
+inline fun mermaidConfig(block: Mermaid.Config.() -> Unit) = Mermaid.config.block()
+
+
+@PublishedApi internal fun String.replaceWithHtmlWrap() = this.replace("\n", "<br>").replace("\r", "<br>")
