@@ -337,6 +337,7 @@
 * [X] breeze-dsl-command-line 优化代码。
 * [X] breeze-dsl-critic-markup & breeze-dsl-command-line 优化代码。
 * [X] breeze-core 添加`HandledCharSequence`，这个接口的输出字符串可能需要经过额外的处理。
+* [X] breeze-core 添加用于特殊逻辑的字符串处理的`typing`和`typingAll`方法。
 * [ ] breeze-dsl 优化代码。
 * [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
