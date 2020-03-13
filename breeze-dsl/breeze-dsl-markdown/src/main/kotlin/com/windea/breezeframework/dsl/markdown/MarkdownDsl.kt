@@ -21,11 +21,11 @@ import org.intellij.lang.annotations.*
 /**Markdown的Dsl。*/
 @DslMarker
 @MustBeDocumented
-internal annotation class MarkdownDsl
+annotation class MarkdownDsl
 
 /**Markdown的扩展特性。*/
 @MustBeDocumented
-internal annotation class MarkdownDslExtendedFeature
+annotation class MarkdownDslExtendedFeature
 
 /**Markdown。*/
 @MarkdownDsl
@@ -39,7 +39,7 @@ class Markdown @PublishedApi internal constructor() : DslDocument, MarkdownDslEn
 		return listOfNotNull(
 			frontMatter?.toString(),
 			toc?.toString(),
-			toContentString().orNull(),
+			contentString().orNull(),
 			references.orNull()?.joinToString("\n")
 		).joinToString("\n\n")
 	}
@@ -89,9 +89,9 @@ interface MarkdownInlineEntry : DslEntry, CriticMarkupInlineEntry
 /**Markdown Dsl的入口。*/
 @MarkdownDsl
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
-	val content: MutableList<MarkdownDslTopElement>
+	val content:MutableList<MarkdownDslTopElement>
 
-	override fun toContentString(): String {
+	override fun contentString():String {
 		return content.joinToString("\n\n")
 	}
 
@@ -501,7 +501,7 @@ sealed class MarkdownQuote(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 
 	override fun toString(): String {
-		return toContentString().prependIndent("$prefixMarker ")
+		return contentString().prependIndent("$prefixMarker ")
 	}
 }
 
@@ -590,7 +590,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
 		val titleSnippet = title.quote(quote)
-		val contentSnippet = toContentString().prependIndent(indent)
+		val contentSnippet = contentString().prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
 
@@ -630,14 +630,14 @@ class MarkdownFrontMatter @PublishedApi internal constructor(
 @MarkdownDsl
 @MarkdownDslExtendedFeature
 class MarkdownToc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerate {
-	override var generateContent: Boolean = false
+	override var generateContent:Boolean = false
 
-	override fun applyGenerate(): String {
+	override fun doGenerate():String {
 		TODO("not implemented")
 	}
 
-	override fun toString(): String {
-		if(generateContent) return applyGenerate()
+	override fun toString():String {
+		if(generateContent) return doGenerate()
 		return "[TOC]"
 	}
 }
@@ -649,15 +649,15 @@ class MarkdownImport @PublishedApi internal constructor(
 	val url: String
 ) : MarkdownDslTopElement, CanGenerate, WithMarkdownAttributes {
 	//DONE extended classes and properties
-	override var attributes: MarkdownAttributes? = null
-	override var generateContent: Boolean = false
+	override var attributes:MarkdownAttributes? = null
+	override var generateContent:Boolean = false
 
-	override fun applyGenerate(): String {
+	override fun doGenerate():String {
 		TODO("not implemented")
 	}
 
-	override fun toString(): String {
-		if(generateContent) return applyGenerate()
+	override fun toString():String {
+		if(generateContent) return doGenerate()
 		val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 		val urlSnippet = url.quote(quote)
 		return "@import $urlSnippet$attributesSnippet"
@@ -670,14 +670,14 @@ class MarkdownImport @PublishedApi internal constructor(
 class MarkdownMacros @PublishedApi internal constructor(
 	val name: String
 ) : MarkdownDslTopElement, CanGenerate {
-	override var generateContent: Boolean = false
+	override var generateContent:Boolean = false
 
-	override fun applyGenerate(): String {
+	override fun doGenerate():String {
 		TODO("not implemented")
 	}
 
-	override fun toString(): String {
-		if(generateContent) return applyGenerate()
+	override fun toString():String {
+		if(generateContent) return doGenerate()
 		return "<<< $name >>>"
 	}
 }
@@ -691,7 +691,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 
 	override fun toString(): String {
-		val contentSnippet = toContentString()
+		val contentSnippet = contentString()
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }
@@ -699,9 +699,9 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 /**Markdown引用。*/
 @MarkdownDsl
 sealed class MarkdownReference(
-	val reference: String
-) : MarkdownDslElement, WithUniqueId {
-	override val id: String get() = reference
+	val reference:String
+) : MarkdownDslElement, WithId {
+	override val id:String get() = reference
 }
 
 /**Markdown脚注的引用。*/

@@ -1,5 +1,5 @@
 @file:JvmName("CoreExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UseWithIndex")
 
 package com.windea.breezeframework.core.extensions
 
@@ -84,7 +84,7 @@ inline fun <T : R, R> T.where(condition: Boolean, block: T.() -> R): R {
  * 尝试执行一段代码，并在发生异常时打印错误信息。
  *
  * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时打印错误信息，并且没有返回值。
- * */
+ */
 @JvmSynthetic
 inline fun tryOrPrint(block: () -> Unit) {
 	contract {
@@ -101,7 +101,7 @@ inline fun tryOrPrint(block: () -> Unit) {
  * 尝试执行一段代码，并忽略异常。
  *
  * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时不做任何处理，并且没有返回值。
- * */
+ */
 @JvmSynthetic
 inline fun tryOrIgnore(block: () -> Unit) {
 	contract {
@@ -117,7 +117,7 @@ inline fun tryOrIgnore(block: () -> Unit) {
  * 执行一段代码且仅执行一次。默认不重置单次状态。
  *
  * 这个作用域方法用于方便地执行那些仅需执行一次的方法。
- * */
+ */
 @JvmSynthetic
 inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
 	contract {
@@ -202,8 +202,62 @@ internal abstract class TypeReference<T> {
 
 //region Any extensions
 /**将当前对象强制转换为指定类型。如果转化失败，则抛出异常。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
-inline fun <reified R> Any?.cast(): R = this as R
+inline fun <reified R> Any?.cast():R = this as R
 
 /**将当前对象安全地转换为指定类型。如果转化失败，则返回null。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
-inline fun <reified R> Any?.safeCast(): R? = this as? R
+inline fun <reified R> Any?.safeCast():R? = this as? R
+
+
+/**
+ * 将当前对象转化成字符串，转化规则如下：
+ * * 空值和空字符串 -> 直接返回空字符串
+ */
+inline fun <T : Any> T?.typing(block:(String) -> String):String {
+	return this?.toString().let { if(it.isNullOrEmpty()) "" else block(it) }
+}
+
+/**
+ * 将当前布尔值转化成字符串，转化规则如下：
+ * * 空值 -> 直接返回空字符串
+ * * 其他情况 -> 对应的值
+ */
+fun Boolean?.typing(trueValue:String, falseValue:String = ""):String {
+	return if(this == null) "" else if(this) trueValue else falseValue
+}
+
+/**
+ * 将当前的一组对象转化成字符串，转化规则如下：
+ * * 没有有效值的数组 -> 直接返回空字符串
+ * * 空值和空字符串 -> 忽略该元素
+ */
+fun <T : Any> Array<out T?>.typingAll(
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = ""
+):String = buildString {
+	var count = 0
+	for(element in this@typingAll) {
+		val snippet = element?.toString()
+		if(snippet.isNullOrEmpty()) continue
+		if(count++ > 0) append(separator)
+		append(element)
+	}
+	if(length > 0) insert(0, prefix).append(postfix)
+}
+
+/**
+ * 将当前的一组对象转化成字符串，转化规则如下：
+ * * 没有有效值的数组 -> 直接返回空字符串
+ * * 空值和空字符串 -> 忽略该元素
+ */
+fun <T : Any> Iterable<T?>.typingAll(
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = ""
+):String = buildString {
+	var count = 0
+	for(element in this@typingAll) {
+		val snippet = element?.toString()
+		if(snippet.isNullOrEmpty()) continue
+		if(count++ > 0) append(separator)
+		append(element)
+	}
+	if(length > 0) insert(0, prefix).append(postfix)
+}
 //endregion

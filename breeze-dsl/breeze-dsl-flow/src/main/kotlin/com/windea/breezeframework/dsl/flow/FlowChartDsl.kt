@@ -13,7 +13,7 @@ import java.util.*
 @Reference("[Github](https://github.com/adrai/flowchart.js)")
 @DslMarker
 @MustBeDocumented
-internal annotation class FlowChartDsl
+annotation class FlowChartDsl
 
 /**流程图。*/
 @Reference("[Github](https://github.com/adrai/flowchart.js)")
@@ -25,7 +25,7 @@ class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDsl
 	override var splitContent: Boolean = true
 
 	override fun toString(): String {
-		return toContentString()
+		return contentString()
 	}
 }
 //endregion
@@ -34,10 +34,10 @@ class FlowChart @PublishedApi internal constructor() : DslDocument, FlowChartDsl
 /**流程图Dsl的入口。*/
 @FlowChartDsl
 interface FlowChartDslEntry : DslEntry, CanSplitLine, WithTransition<FlowChartNode, FlowChartConnection> {
-	val nodes: MutableSet<FlowChartNode>
-	val connections: MutableList<FlowChartConnection>
+	val nodes:MutableSet<FlowChartNode>
+	val connections:MutableList<FlowChartConnection>
 
-	override fun toContentString(): String {
+	override fun contentString():String {
 		return listOfNotNull(
 			nodes.orNull()?.joinToString("\n"),
 			connections.orNull()?.joinToString("\n")
@@ -45,7 +45,7 @@ interface FlowChartDslEntry : DslEntry, CanSplitLine, WithTransition<FlowChartNo
 	}
 
 	@FlowChartDsl
-	override fun String.links(other: String) = connection(this, other)
+	override fun String.links(other:String) = connection(this, other)
 
 	@FlowChartDsl
 	operator fun String.invoke(direction: FlowChartConnection.Direction) =
@@ -83,17 +83,17 @@ interface FlowChartConnectionBinder {
 /**流程图节点。*/
 @FlowChartDsl
 class FlowChartNode @PublishedApi internal constructor(
-	val name: String,
-	val type: Type
-) : FlowChartDslElement, WithUniqueId {
-	var text: String? = null //换行符：\n
-	var flowState: String? = null
-	var urlLink: String? = null
-	var openNewTab: Boolean = false
+	val name:String,
+	val type:Type
+) : FlowChartDslElement, WithId {
+	var text:String? = null //换行符：\n
+	var flowState:String? = null
+	var urlLink:String? = null
+	var openNewTab:Boolean = false
 
-	override val id: String get() = name
+	override val id:String get() = name
 
-	override fun equals(other: Any?) = equalsByOne(this, other) { id }
+	override fun equals(other:Any?) = equalsByOne(this, other) { id }
 
 	override fun hashCode() = hashCodeByOne(this) { id }
 
@@ -116,14 +116,14 @@ class FlowChartNode @PublishedApi internal constructor(
 /**流程图连接。*/
 @FlowChartDsl
 class FlowChartConnection @PublishedApi internal constructor(
-	val fromNodeId: String,
-	val toNodeId: String
-) : FlowChartDslElement, WithNode<FlowChartNode>, FlowChartConnectionBinder by binderQueue.poll() ?: Binder() {
+	val fromNodeId:String,
+	val toNodeId:String
+) : FlowChartDslElement, WithNode, FlowChartConnectionBinder by binderQueue.poll() ?: Binder() {
 	override val sourceNodeId get() = fromNodeId
 	override val targetNodeId get() = toNodeId
 
 	//syntax: $fromNodeId($specifications)->$toNodeId
-	override fun toString(): String {
+	override fun toString():String {
 		val specificationsSnippet = listOfNotNull(
 			status?.text, path?.text, direction?.text
 		).orNull()?.joinToString(", ", "(", ")").orEmpty()

@@ -82,7 +82,7 @@ class XmlComment @PublishedApi internal constructor(val text: String) : XmlNode,
 	override var indentContent = false
 
 	override fun toString(): String {
-		val textSnippet = text.escapeBy(EscapeType.Xml).applyIndent(indent, wrapContent)
+		val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		return "<!--$textSnippet-->"
 	}
@@ -101,7 +101,7 @@ class XmlElement @PublishedApi internal constructor(
 
 	override fun toString(): String {
 		val attributesSnippet = attributes.orNull()?.joinToString(" ", " ") { (k, v) -> "$k=${v.quote(quote)}" }.orEmpty()
-		val nodesSnippet = nodes.joinToString(wrapSeparator).applyIndent(indent, wrapContent)
+		val nodesSnippet = nodes.joinToString(wrapSeparator).doIndent(indent, wrapContent)
 			.let { if(wrapContent) "\n$it\n" else it }
 		val prefixSnippet = "<$name$attributesSnippet>"
 		val suffixSnippet = if(nodes.isEmpty() && autoCloseTag) "/>" else "</$name>"

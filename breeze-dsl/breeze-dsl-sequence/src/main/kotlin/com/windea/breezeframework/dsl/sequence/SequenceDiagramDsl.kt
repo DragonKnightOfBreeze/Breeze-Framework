@@ -11,7 +11,7 @@ import com.windea.breezeframework.dsl.*
 @Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
 @DslMarker
 @MustBeDocumented
-internal annotation class SequenceDiagramDsl
+annotation class SequenceDiagramDsl
 
 /**序列图。*/
 @Reference("[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)")
@@ -27,7 +27,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 	override fun toString(): String {
 		return listOfNotNull(
 			title?.toString(),
-			toContentString().orNull()
+			contentString().orNull()
 		).joinToString(splitSeparator)
 	}
 }
@@ -37,11 +37,11 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 /**序列图Dsl的入口。*/
 @SequenceDiagramDsl
 interface SequenceDiagramDslEntry : DslEntry, CanSplitLine, WithTransition<SequenceDiagramParticipant, SequenceDiagramMessage> {
-	val participants: MutableSet<SequenceDiagramParticipant>
-	val messages: MutableList<SequenceDiagramMessage>
-	val notes: MutableList<SequenceDiagramNote>
+	val participants:MutableSet<SequenceDiagramParticipant>
+	val messages:MutableList<SequenceDiagramMessage>
+	val notes:MutableList<SequenceDiagramNote>
 
-	override fun toContentString(): String {
+	override fun contentString():String {
 		return listOfNotNull(
 			participants.orNull()?.joinToString("\n"),
 			messages.orNull()?.joinToString("\n"),
@@ -50,7 +50,7 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplitLine, WithTransition<Seque
 	}
 
 	@SequenceDiagramDsl
-	override fun String.links(other: String) = message(this, other)
+	override fun String.links(other:String) = message(this, other)
 }
 
 /**序列图Dsl的元素。*/
@@ -72,17 +72,17 @@ class SequenceDiagramTitle @PublishedApi internal constructor(
 /**序列图参与者。*/
 @SequenceDiagramDsl
 class SequenceDiagramParticipant @PublishedApi internal constructor(
-	val name: String
-) : SequenceDiagramDslElement, WithUniqueId {
-	var alias: String? = null
+	val name:String
+) : SequenceDiagramDslElement, WithId {
+	var alias:String? = null
 
-	override val id: String get() = alias ?: name
+	override val id:String get() = alias ?: name
 
-	override fun equals(other: Any?) = equalsByOne(this, other) { id }
+	override fun equals(other:Any?) = equalsByOne(this, other) { id }
 
 	override fun hashCode() = hashCodeByOne(this) { id }
 
-	override fun toString(): String {
+	override fun toString():String {
 		val aliasSnippet = alias?.let { "as $it" }.orEmpty()
 		return "participant $name$aliasSnippet"
 	}
@@ -91,16 +91,16 @@ class SequenceDiagramParticipant @PublishedApi internal constructor(
 /**序列图消息。*/
 @SequenceDiagramDsl
 class SequenceDiagramMessage @PublishedApi internal constructor(
-	val fromParticipantId: String,
-	val toParticipantId: String
-) : SequenceDiagramDslElement, WithNode<SequenceDiagramParticipant> {
-	var text: String = ""
-	var arrowShape: ArrowShape = ArrowShape.Arrow
+	val fromParticipantId:String,
+	val toParticipantId:String
+) : SequenceDiagramDslElement, WithNode {
+	var text:String = ""
+	var arrowShape:ArrowShape = ArrowShape.Arrow
 
-	override val sourceNodeId: String get() = fromParticipantId
-	override val targetNodeId: String get() = toParticipantId
+	override val sourceNodeId:String get() = fromParticipantId
+	override val targetNodeId:String get() = toParticipantId
 
-	override fun toString(): String {
+	override fun toString():String {
 		return "$fromParticipantId ${arrowShape.text} $toParticipantId: $text"
 	}
 

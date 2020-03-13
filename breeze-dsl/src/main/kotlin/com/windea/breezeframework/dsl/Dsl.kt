@@ -50,7 +50,8 @@ interface DslDocument {
 
 /**Dsl的入口。*/
 interface DslEntry {
-	fun contentString(): String = ""
+	/**内容字符串。*/
+	fun contentString():String = ""
 }
 
 /**Dsl的元素。*/
@@ -90,7 +91,7 @@ interface CanIndent {
 	var indentContent: Boolean
 
 	/**缩进文本。*/
-	fun String.applyIndent(indent: String, condition: Boolean = true): String {
+	fun String.doIndent(indent:String, condition:Boolean = true):String {
 		return if(indentContent && condition) this.prependIndent(indent) else this
 	}
 }
@@ -102,7 +103,7 @@ interface CanGenerate {
 	var generateContent: Boolean
 
 	/**生成文本。*/
-	fun applyGenerate(): String
+	fun doGenerate():String
 }
 
 
@@ -130,37 +131,33 @@ interface WithBlock<T> {
 	operator fun String.invoke(block: T.() -> Unit = {}): T
 }
 
-/**带有一个可用于查询的id。这个id不是唯一的。*/
+/**带有一个可用于查询的编号。*/
 @Dsl
 interface WithId {
-	val id: String
-}
-
-/**带有一个可用于查询的id。这个id是唯一的。*/
-@Dsl
-interface WithUniqueId : WithId {
-	override fun equals(other: Any?): Boolean
-
-	override fun hashCode(): Int
+	/**编号。（不需要保证唯一性）*/
+	val id:String
 }
 
 /**包含一对可被视为节点的子元素。*/
 @Dsl
-interface WithNode<N : WithId> {
-	val sourceNodeId: String
-	val targetNodeId: String
+interface WithNode {
+	/**源结点的编号。*/
+	val sourceNodeId:String
+
+	/**目标结点的编号。*/
+	val targetNodeId:String
 }
 
 /**包含有可被视为转化的子元素。*/
 @Dsl
-interface WithTransition<N : WithId, T : WithNode<N>> {
+interface WithTransition<N : WithId, T : WithNode> {
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.links(other: String): T
+	infix fun String.links(other:String):T
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
-	infix fun String.links(other: N): T = this@WithTransition.run { this@links links other.id }
+	infix fun String.links(other:N):T = this@WithTransition.run { this@links links other.id }
 
 	/**根据节点元素创建过渡元素。*/
 	@Dsl

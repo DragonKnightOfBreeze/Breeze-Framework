@@ -1,258 +1,242 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
-
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
+import com.windea.breezeframework.dsl.mermaid.MermaidStateDiagram.*
 
-/**Mermaid状态图的Dsl。*/
-@Reference("[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)")
+/**
+ * Mermaid状态图的Dsl。
+ * 参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
+ */
 @DslMarker
 @MustBeDocumented
-internal annotation class MermaidStateDiagramDsl
+annotation class MermaidStateDiagramDsl
 
-/**Mermaid状态图。*/
+/**
+ * Mermaid状态图的入口。
+ * 参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
+ * @property states 状态一览。忽略重复的元素。
+ * @property links 连接一览。忽略重复的元素。
+ * @property notes 注释一览。
+ */
 @MermaidStateDiagramDsl
-class MermaidStateDiagram @PublishedApi internal constructor() : Mermaid(), MermaidStateDiagramEntry, CanIndent {
-	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
-	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
-	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
+interface MermaidStateDiagramEntry : MermaidEntry, CanSplitLine, WithTransition<State, Transition> {
+	val states:MutableSet<State>
+	val links:MutableList<Transition>
+	val notes:MutableList<Note>
 
-	override var indentContent: Boolean = true
-	override var splitContent: Boolean = true
+	override fun contentString() = buildString {
+		if(states.isNotEmpty()) appendJoin(states, lineSeparator).append(splitSeparator)
+		if(links.isNotEmpty()) appendJoin(links, lineSeparator).append(splitSeparator)
+		if(notes.isNotEmpty()) appendJoin(notes, lineSeparator).append(splitSeparator)
+	}.trimEnd()
 
-	override fun toString(): String {
-		val contentSnippet = contentString().applyIndent(config.indent)
-		return "stateDiagram\n$contentSnippet"
-	}
-}
-
-
-/**Mermaid状态图Dsl的入口。*/
-@MermaidStateDiagramDsl
-interface MermaidStateDiagramEntry : MermaidEntry, CanSplitLine, WithTransition<MermaidStateDiagramState, MermaidStateDiagramTransition> {
-	val states: MutableSet<MermaidStateDiagramState>
-	val links: MutableList<MermaidStateDiagramTransition>
-	val notes: MutableList<MermaidStateDiagramNote>
-
-	override fun contentString(): String {
-		return listOfNotNull(
-			states.orNull()?.joinToString("\n"),
-			links.orNull()?.joinToString("\n"),
-			notes.orNull()?.joinToString("\n")
-		).joinToString(splitSeparator)
-	}
-
+	@DslFunction
 	@MermaidStateDiagramDsl
-	override fun String.links(other: String) = transition(this, other)
+	override fun String.links(other:String) = transition(this, other)
+
+	@InlineDslFunction
+	@MermaidStateDiagramDsl
+	fun initState() = "[*]"
+
+	@InlineDslFunction
+	@MermaidStateDiagramDsl
+	fun finishState() = "[*]"
+
+	@InlineDslFunction
+	@MermaidStateDiagramDsl
+	@MermaidDslExtendedFeature
+	fun anyState() = "<Any State>"
+
+	@InlineDslFunction
+	@MermaidStateDiagramDsl
+	fun leftOf(stateName:String) = NoteLocation(NotePosition.LeftOf, stateName)
+
+	@InlineDslFunction
+	@MermaidStateDiagramDsl
+	fun rightOf(stateName:String) = NoteLocation(NotePosition.RightOf, stateName)
 }
 
-/**Mermaid状态图Dsl的元素。*/
+/**
+ * Mermaid状态图的元素。
+ * 参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
+ */
 @MermaidStateDiagramDsl
 interface MermaidStateDiagramElement : MermaidElement
 
-//region dsl elements
-/**Mermaid状态图状态。*/
+/**
+ * Mermaid状态图。
+ * 参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
+ */
 @MermaidStateDiagramDsl
-sealed class MermaidStateDiagramState(
-	val name: String
-) : MermaidStateDiagramElement, WithUniqueId {
-	var text: String? = null
+interface MermaidStateDiagram {
+	/**Mermaid状态图的文档。*/
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidStateDiagramEntry, CanIndent {
+		override val states:MutableSet<State> = mutableSetOf()
+		override val links:MutableList<Transition> = mutableListOf()
+		override val notes:MutableList<Note> = mutableListOf()
+		override var indentContent:Boolean = true
+		override var splitContent:Boolean = true
 
-	override val id: String get() = name
-
-	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-
-	override fun hashCode() = hashCodeByOne(this) { id }
-}
-
-/**Mermaid状态图简单状态。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramSimpleState @PublishedApi internal constructor(
-	name: String
-) : MermaidStateDiagramState(name) {
-	var type: Type? = null
-
-	override fun toString(): String {
-		val textSnippet = text?.let { ": $it" }.orEmpty()
-		val typeSnippet = type?.let { " <<${it.text}>>" }.orEmpty()
-		return "$name$textSnippet$typeSnippet"
+		override fun toString() = "stateDiagram$ls${contentString().doIndent(config.indent)}"
 	}
 
-	/**Mermaid状态图简单状态的类型。*/
+	/**
+	 * Mermaid状态图的状态。
+	 * @property name 状态名。
+	 * @property text （可选项）状态的文本。
+	 */
+	abstract class State(val name:String) : MermaidStateDiagramElement, WithId {
+		var text:String? = null
+		override val id:String get() = name
+
+		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun hashCode() = hashCodeByOne(this) { id }
+	}
+
+	/**
+	 * Mermaid状态图的简单状态。
+	 * @property type （可选项）状态的类型。
+	 */
 	@MermaidStateDiagramDsl
-	enum class Type(val text: String) {
-		Fork("fork"), Join("join")
+	class SimpleState @PublishedApi internal constructor(name:String) : State(name) {
+		var type:StateType? = null
+
+		override fun toString() = "$name${text.typing { ": $it" }}${type?.text.typing { " <<$it>>" }}"
 	}
-}
 
-/**Mermaid状态图复合状态。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramCompositedState @PublishedApi internal constructor(
-	name: String
-) : MermaidStateDiagramState(name), MermaidStateDiagramEntry, CanIndent {
-	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
-	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
-	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
+	/**Mermaid状态图的复合状态。*/
+	@MermaidStateDiagramDsl
+	class CompositedState @PublishedApi internal constructor(name:String) : State(name), MermaidStateDiagramEntry, CanIndent {
+		override val states:MutableSet<State> = mutableSetOf()
+		override val links:MutableList<Transition> = mutableListOf()
+		override val notes:MutableList<Note> = mutableListOf()
+		override var indentContent:Boolean = true
+		override var splitContent:Boolean = true
 
-	override var indentContent: Boolean = true
-	override var splitContent: Boolean = true
-
-	override fun toString(): String {
-		val contentSnippet = contentString().applyIndent(config.indent)
-		return "state $name {\n$contentSnippet\n}"
+		override fun toString() = "state $name{$ls${contentString().doIndent(config.indent)}$ls}"
 	}
-}
 
-/**Mermaid状态图并发状态。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramConcurrentState @PublishedApi internal constructor(
-	name: String
-) : MermaidStateDiagramState(name), CanIndent {
-	val sections: MutableList<MermaidStateDiagramConcurrentSection> = mutableListOf()
+	/**
+	 * Mermaid状态图的并发状态。
+	 * @property sections 并发状态的分块一览。
+	 */
+	@MermaidStateDiagramDsl
+	class ConcurrentState @PublishedApi internal constructor(name:String) : State(name), CanIndent {
+		val sections:MutableList<ConcurrentSection> = mutableListOf()
+		override var indentContent:Boolean = true
 
-	override var indentContent: Boolean = true
-
-	override fun toString(): String {
-		val contentSnippet = sections.joinToString("\n--\n").applyIndent(config.indent)
-		return "state $name {\n$contentSnippet\n}"
+		override fun toString() = "state $name{$ls${sections.typingAll("$ls---$ls").doIndent(config.indent)}$ls}"
 	}
-}
 
-/**Mermaid状态图并发状态部分。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramConcurrentSection : MermaidStateDiagramEntry {
-	override val states: MutableSet<MermaidStateDiagramState> = mutableSetOf()
-	override val links: MutableList<MermaidStateDiagramTransition> = mutableListOf()
-	override val notes: MutableList<MermaidStateDiagramNote> = mutableListOf()
+	/**Mermaid状态图的并发分块。*/
+	@MermaidStateDiagramDsl
+	class ConcurrentSection : MermaidStateDiagramEntry {
+		override val states:MutableSet<State> = mutableSetOf()
+		override val links:MutableList<Transition> = mutableListOf()
+		override val notes:MutableList<Note> = mutableListOf()
+		override var splitContent:Boolean = true
 
-	override var splitContent: Boolean = true
-
-	override fun toString() = contentString()
-}
-
-/**Mermaid状态图转化。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramTransition @PublishedApi internal constructor(
-	val fromStateId: String,
-	val toStateId: String
-) : MermaidStateDiagramElement, WithNode<MermaidStateDiagramState> {
-	var text: String? = null
-
-	override val sourceNodeId get() = fromStateId
-	override val targetNodeId get() = toStateId
-
-	override fun toString(): String {
-		val textSnippet = text?.let { ": $it" }.orEmpty()
-		return "$fromStateId --> $toStateId$textSnippet"
+		override fun toString() = contentString()
 	}
-}
 
-/**Mermaid状态图注释。*/
-@MermaidStateDiagramDsl
-class MermaidStateDiagramNote @PublishedApi internal constructor(
-	val location: Location
-) : MermaidStateDiagramElement, CanWrapLine, CanIndent {
-	var text: String = ""  //换行符（内联注释）：\\n
+	/**
+	 * Mermaid状态图的转化。
+	 * @property fromStateId 左状态的编号。
+	 * @property toStateId 右状态的编号。
+	 * @property text （可选项）转化的文本。
+	 */
+	class Transition @PublishedApi internal constructor(
+		val fromStateId:String, val toStateId:String
+	) : MermaidStateDiagramElement, WithNode {
+		var text:String? = null
+		override val sourceNodeId get() = fromStateId
+		override val targetNodeId get() = toStateId
 
-	override var wrapContent: Boolean = false
-	override var indentContent: Boolean = true
+		override fun toString() = "$fromStateId --> $toStateId${text.typing { ": $it" }}"
+	}
 
-	override fun toString(): String {
-		if("\n" in text || "\r" in text) wrapContent = true //wrapSeparator if necessary
+	/**
+	 * Mermaid状态图的注释。
+	 * @property location 注释的位置。
+	 * @property text 注释的文本。可以使用`<br>`换行。
+	 */
+	@MermaidStateDiagramDsl
+	class Note @PublishedApi internal constructor(
+		val location:NoteLocation, var text:String
+	) : MermaidStateDiagramElement, CanWrapLine, CanIndent {
+		override var wrapContent:Boolean = false
+		override var indentContent:Boolean = true
 
-		return when {
-			wrapContent && indentContent -> "note $location\n${text.applyIndent(config.indent)}\nend note"
-			wrapContent -> "note $location\n$text\nend note"
-			else -> "note $location: $text"
+		override fun toString() = when {
+			wrapContent -> "note $location$ls${text.doWrap().doIndent(config.indent)}${ls}end note"
+			else -> "note $location: ${text.doWrap()}"
 		}
+	}
+
+	/**Mermaid状态图状态的类型。*/
+	@MermaidStateDiagramDsl
+	enum class StateType(internal val text:String) {
+		Fork("fork"), Join("join")
 	}
 
 	/**Mermaid状态图注释的位置。*/
 	@MermaidStateDiagramDsl
-	class Location @PublishedApi internal constructor(
-		val position: Position,
-		val stateId: String
+	class NoteLocation @PublishedApi internal constructor(
+		internal val position:NotePosition, internal val stateId:String
 	) {
-		override fun toString(): String {
-			return "${position.text} $stateId"
-		}
+		override fun toString() = "${position.text} $stateId"
 	}
 
 	/**Mermaid状态图注释的方位。*/
 	@MermaidStateDiagramDsl
-	enum class Position(val text: String) {
+	enum class NotePosition(internal val text:String) {
 		LeftOf("left of"), RightOf("right of")
 	}
 }
-//endregion
 
-//region dsl build extensions
-@MermaidStateDiagramDsl
-inline fun mermaidStateDiagram(block: MermaidStateDiagram.() -> Unit) = MermaidStateDiagram().apply(block)
-
-@InlineDslFunction
-@MermaidStateDiagramDsl
-fun MermaidStateDiagramEntry.initState() = "[*]"
-
-@InlineDslFunction
-@MermaidStateDiagramDsl
-fun MermaidStateDiagramEntry.finishState() = "[*]"
-
-@InlineDslFunction
-@MermaidStateDiagramDsl
-@MermaidDslExtendedFeature
-fun MermaidStateDiagramEntry.anyState() = "<Any State>"
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramEntry.state(name: String) =
-	MermaidStateDiagramSimpleState(name).also { states += it }
+inline fun mermaidStateDiagram(block:Document.() -> Unit) = Document().apply(block)
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramEntry.compositedState(name: String, block: MermaidStateDiagramCompositedState.() -> Unit) =
-	MermaidStateDiagramCompositedState(name).apply(block).also { states += it }
+fun MermaidStateDiagramEntry.state(name:String) =
+	SimpleState(name).also { states += it }
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramEntry.concurrentState(name: String, block: MermaidStateDiagramConcurrentState.() -> Unit) =
-	MermaidStateDiagramConcurrentState(name).apply(block).also { states += it }
+inline fun MermaidStateDiagramEntry.compositedState(name:String, block:CompositedState.() -> Unit) =
+	CompositedState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramEntry.transition(fromStateId: String, toStateId: String) =
-	MermaidStateDiagramTransition(fromStateId, toStateId).also { links += it }
+inline fun MermaidStateDiagramEntry.concurrentState(name:String, block:ConcurrentState.() -> Unit) =
+	ConcurrentState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramEntry.note(location: MermaidStateDiagramNote.Location) =
-	MermaidStateDiagramNote(location).also { notes += it }
-
-@InlineDslFunction
-@MermaidStateDiagramDsl
-fun MermaidStateDiagramEntry.leftOf(stateName: String) =
-	MermaidStateDiagramNote.Location(MermaidStateDiagramNote.Position.LeftOf, stateName)
-
-@InlineDslFunction
-@MermaidStateDiagramDsl
-fun MermaidStateDiagramEntry.rightOf(stateName: String) =
-	MermaidStateDiagramNote.Location(MermaidStateDiagramNote.Position.RightOf, stateName)
+fun MermaidStateDiagramEntry.transition(fromStateId:String, toStateId:String) =
+	Transition(fromStateId, toStateId).also { links += it }
 
 @MermaidStateDiagramDsl
-inline infix fun MermaidStateDiagramState.text(text: String) =
-	this.also { it.text = text }
+fun MermaidStateDiagramEntry.note(location:NoteLocation, text:String = "") =
+	Note(location, text).also { notes += it }
 
 @MermaidStateDiagramDsl
-inline fun MermaidStateDiagramConcurrentState.section(block: MermaidStateDiagramConcurrentSection.() -> Unit) =
-	MermaidStateDiagramConcurrentSection().apply(block).also { sections += it }
+infix fun State.text(text:String) =
+	apply { this.text = text }
 
 @MermaidStateDiagramDsl
-inline infix fun MermaidStateDiagramSimpleState.type(type: MermaidStateDiagramSimpleState.Type) =
-	this.also { it.type = type }
+infix fun SimpleState.type(type:StateType) =
+	apply { this.type = type }
 
 @MermaidStateDiagramDsl
-inline infix fun MermaidStateDiagramTransition.text(text: String) =
-	this.also { it.text = text }
+inline fun ConcurrentState.section(block:ConcurrentSection.() -> Unit) =
+	ConcurrentSection().apply(block).also { sections += it }
 
 @MermaidStateDiagramDsl
-inline infix fun MermaidStateDiagramNote.text(text: String) =
-	this.also { it.text = text }
-//endregion
+infix fun Transition.text(text:String) =
+	apply { this.text = text }
+
+@MermaidStateDiagramDsl
+infix fun Note.text(text:String) =
+	apply { this.text = text }

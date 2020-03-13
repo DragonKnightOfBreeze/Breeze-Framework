@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.json.JsonConfig.quote
 /**Json的Dsl。*/
 @DslMarker
 @MustBeDocumented
-internal annotation class JsonDsl
+annotation class JsonDsl
 
 /**Json。*/
 @JsonDsl

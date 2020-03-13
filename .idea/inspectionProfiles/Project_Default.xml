@@ -1,30 +1,49 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="AddVarianceModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="CanBeParameter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="CanBePrimaryConstructorProperty" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="CascadeIf" enabled="false" level="INFO" enabled_by_default="false" />
     <inspection_tool class="ComplexRedundantLet" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConvertPairConstructorToToFunction" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConvertToStringTemplate" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConvertTwoComparisonsToRangeCheck" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="DeprecatedCallableAddReplaceWith" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="Destructure" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="DirectUseOfResultType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
         <language minSize="84" name="Kotlin" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="ExplicitThis" enabled="true" level="UNUSED ENTRY" enabled_by_default="true" />
+    <inspection_tool class="FoldInitializerAndIfToElvis" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="FromClosedRangeMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="GrazieInspection" enabled="false" level="TYPO" enabled_by_default="false" />
+    <inspection_tool class="IfThenToElvis" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="highlightStatement" value="true" />
+    </inspection_tool>
+    <inspection_tool class="IfThenToSafeAccess" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="IntroduceWhenSubject" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="KDocMissingDocumentation" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="KotlinUnusedImport" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="LiftReturnOrAssignment" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="LoopToCallChain" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="LossyEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="MemberVisibilityCanBePrivate" enabled="false" level="INFO" enabled_by_default="false" />
+    <inspection_tool class="MapGetWithNotNullAssertionOperator" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="MemberVisibilityCanBePrivate" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="NonAsciiCharacters" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NullableBooleanElvis" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ObjectLiteralToLambda" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="OptionalExpectation" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PublicApiImplicitType" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="RedundantCompanionReference" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantEmptyInitializerBlock" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantExplicitType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantModalityModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantNotNullExtensionReceiverOfInline" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="RedundantObjectTypeCheck" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSamConstructor" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSemicolon" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSuspendModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
@@ -40,11 +59,22 @@
     <inspection_tool class="RemoveRedundantSpreadOperator" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RemoveSetterParameterType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RemoveSingleExpressionStringTemplate" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceCollectionCountWithSize" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceGuardClauseWithFunctionCall" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceManualRangeWithIndicesCalls" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceNotNullAssertionWithElvisReturn" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceStringFormatWithLiteral" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceSubstringWithDropLast" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceSubstringWithIndexingOperation" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceSubstringWithSubstringAfter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceSubstringWithSubstringBefore" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ReplaceSubstringWithTake" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="SameParameterValue" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SimpleRedundantLet" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="SimplifyAssertNotNull" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="UnusedEquals" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="UnusedReceiverParameter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="UnusedSymbol" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="UseWithIndex" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
   </profile>
 </component>

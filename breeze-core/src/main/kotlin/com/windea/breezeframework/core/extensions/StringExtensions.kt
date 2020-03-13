@@ -523,26 +523,26 @@ fun String.lineBreak(width: Int = 120): String {
 }
 
 
-/**尝试使用指定的引号包围当前字符串。同时转义其中的对应引号。如果指定null，则返回自身。默认转义对应的引号。*/
-fun String.quote(quote: Char?, escapeQuotes: Boolean = true): String {
+/**尝试使用指定的引号包围当前字符串。如果指定null，则返回自身。默认忽略其中的引号，不对其进行转义。*/
+fun String.quote(quote:Char?, omitQuotes:Boolean = true):String {
 	return when {
 		quote == null -> this
 		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
 		this.surroundsWith(quote) -> this
-		escapeQuotes -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
-		else -> this.addSurrounding(quote.toString())
+		omitQuotes -> this.addSurrounding(quote.toString())
+		else -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
 	}
 }
 
-/**尝试去除当前字符串两侧的引号。同时反转义其中的对应引号。如果没有，则返回自身。默认反转义对应的引号。*/
-fun String.unquote(unescapeQuotes: Boolean = true): String {
+/**尝试去除当前字符串两侧的引号。如果没有，则返回自身。默认忽略其中的引号，不对其进行反转义。*/
+fun String.unquote(omitQuotes:Boolean = true):String {
 	val quote = this.firstOrNull()
 	return when {
 		quote == null -> this
 		quote !in quotes -> this
 		!this.surroundsWith(quote) -> this
-		unescapeQuotes -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
-		else -> this.removeSurrounding(quote.toString())
+		omitQuotes -> this.removeSurrounding(quote.toString())
+		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
 	}
 }
 
@@ -550,15 +550,15 @@ private val quotes = charArrayOf('\"', '\'', '`')
 
 
 /**根据指定的转义策略，转义当前字符串。默认不转义反斜线。*/
-fun String.escapeBy(strategy: EscapeStrategy, omitBackslash: Boolean = true): String {
-	val tempString = if(omitBackslash) this else this.replace("\\", "\\\\")
+fun String.escapeBy(strategy:EscapeStrategy, omitBackslashes:Boolean = true):String {
+	val tempString = if(omitBackslashes) this else this.replace("\\", "\\\\")
 	return tempString.replaceAll(strategy.escapeStrings, strategy.escapedStrings)
 }
 
 /**根据指定的转义策略，反转义当前字符串。默认不反转一反斜线*/
-fun String.unescapeBy(strategy: EscapeStrategy, omitBackslash: Boolean = true): String {
+fun String.unescapeBy(strategy:EscapeStrategy, omitBackslashes:Boolean = true):String {
 	val tempString = this.replaceAll(strategy.escapedStrings, strategy.escapeStrings)
-	return if(omitBackslash) tempString else tempString.replace("\\\\", "\\")
+	return if(omitBackslashes) tempString else tempString.replace("\\\\", "\\")
 }
 
 

@@ -16,7 +16,7 @@ import com.windea.breezeframework.dsl.creole.CreoleConfig.repeatableMarkerCount
  * Creole的Dsl。
  *
  * 参见：[Creole](http://plantuml.com/zh/creole)
- * */
+ */
 @DslMarker
 @MustBeDocumented
 annotation class CreoleDsl
@@ -25,7 +25,7 @@ annotation class CreoleDsl
  * Creole。
  *
  * 参见：[Creole](http://plantuml.com/zh/creole)
- * */
+ */
 @CreoleDsl
 class Creole @PublishedApi internal constructor() : DslDocument, CreoleDslEntry, CreoleDslInlineEntry {
 	override val content: MutableList<CreoleDslTopElement> = mutableListOf()

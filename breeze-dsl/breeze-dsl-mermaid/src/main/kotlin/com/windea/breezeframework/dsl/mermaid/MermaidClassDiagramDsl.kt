@@ -1,255 +1,365 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused", "GrazieInspection")
+@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL", "unused")
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
+import com.windea.breezeframework.dsl.mermaid.MermaidClassDiagram.*
+import com.windea.breezeframework.dsl.mermaid.MermaidClassDiagram.Annotation
 
-//unstable raw api
-
-//region dsl top declarations
-/**Mermaid类图的Dsl。*/
-@Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
+/**
+ * Mermaid类图的Dsl。
+ * 参见：[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)
+ */
 @DslMarker
 @MustBeDocumented
-internal annotation class MermaidClassDiagramDsl
+annotation class MermaidClassDiagramDsl
 
-/**Mermaid类图。*/
-@Reference("[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)")
+/**
+ * Mermaid类图的入口。
+ * 参见：[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)
+ * @property classes 类一览。忽略重复的元素。
+ * @property relations 关系一览。
+ */
 @MermaidClassDiagramDsl
-class MermaidClassDiagram @PublishedApi internal constructor() : Mermaid(), MermaidClassDiagramEntry, CanIndent {
-	override val classes: MutableSet<MermaidClassDiagramClass> = mutableSetOf()
-	override val relations: MutableList<MermaidClassDiagramRelation> = mutableListOf()
+interface MermaidClassDiagramEntry : MermaidEntry, CanSplitLine, WithTransition<Class, Relation> {
+	val classes:MutableSet<Class>
+	val relations:MutableList<Relation>
 
-	override var indentContent: Boolean = true
-	override var splitContent: Boolean = true
+	override fun contentString() = buildString {
+		if(classes.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
+		if(relations.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
+	}.trimEnd()
 
-	override fun toString(): String {
-		val contentSnippet = contentString().applyIndent(config.indent)
-		return "classDiagram\n$contentSnippet"
-	}
-}
-//endregion
-
-//region dsl declarations
-/**Mermaid类图Dsl元素的入口。*/
-@MermaidClassDiagramDsl
-interface MermaidClassDiagramEntry : MermaidEntry, CanSplitLine,
-	WithTransition<MermaidClassDiagramClass, MermaidClassDiagramRelation> {
-	val classes: MutableSet<MermaidClassDiagramClass>
-	val relations: MutableList<MermaidClassDiagramRelation>
-
-	override fun contentString(): String {
-		return listOfNotNull(
-			classes.orNull()?.joinToString("\n"),
-			relations.orNull()?.joinToString("\n")
-		).joinToString(splitSeparator)
-	}
-
+	@DslFunction
 	@MermaidClassDiagramDsl
-	override fun String.links(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Link)
+	override fun String.links(other:String) = relation(this, other, RelationType.Link)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.inheritedBy(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Inheritance)
+	infix fun String.inheritedBy(other:String) = relation(this, other, RelationType.Inheritance)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.composedBy(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Composition)
+	infix fun String.composedBy(other:String) = relation(this, other, RelationType.Composition)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.aggregatedBy(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Aggregation)
+	infix fun String.aggregatedBy(other:String) = relation(this, other, RelationType.Aggregation)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.associatedBy(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.Association)
+	infix fun String.associatedBy(other:String) = relation(this, other, RelationType.Association)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.inherits(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.ReversedInheritance)
+	infix fun String.inherits(other:String) = relation(this, other, RelationType.ReversedInheritance)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.composes(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.ReversedComposition)
+	infix fun String.composes(other:String) = relation(this, other, RelationType.ReversedComposition)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.aggregates(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.ReversedAggregation)
+	infix fun String.aggregates(other:String) = relation(this, other, RelationType.ReversedAggregation)
 
+	/**(No document.)*/
+	@DslFunction
 	@MermaidClassDiagramDsl
-	infix fun String.associates(other: String) =
-		relation(this, other, MermaidClassDiagramRelation.Type.ReversedAssociation)
+	infix fun String.associates(other:String) = relation(this, other, RelationType.ReversedAssociation)
 }
 
-/**Mermaid类图Dsl元素。*/
+/**
+ * Mermaid类图Dsl元素。
+ * 参见：[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)
+ */
 @MermaidClassDiagramDsl
 interface MermaidClassDiagramElement : MermaidElement
-//endregion
 
-//region dsl elements
-/**Mermaid类图类。*/
+/**
+ * Mermaid类图。
+ * 参见：[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)
+ */
 @MermaidClassDiagramDsl
-class MermaidClassDiagramClass @PublishedApi internal constructor(
-	val name: String
-) : MermaidClassDiagramElement, CanIndent, WithUniqueId {
-	var annotation: MermaidClassDiagramAnnotation? = null
-	val statements: MutableList<MermaidClassDiagramStatement> = mutableListOf()
+interface MermaidClassDiagram {
+	/**Mermaid类图的文档。*/
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidClassDiagramEntry, CanIndent {
+		override val classes:MutableSet<Class> = mutableSetOf()
+		override val relations:MutableList<Relation> = mutableListOf()
+		override var indentContent:Boolean = true
+		override var splitContent:Boolean = true
 
-	override var indentContent: Boolean = true
-
-	override val id: String get() = name
-
-	override fun equals(other: Any?) = equalsByOne(this, other) { id }
-
-	override fun hashCode() = hashCodeByOne(this) { id }
-
-	override fun toString(): String {
-		val contentSnippet = listOfNotNull(
-			annotation?.toString(),
-			statements.orNull()?.joinToString("\n")
-		).orNull()?.joinToString("\n")?.applyIndent(config.indent).orEmpty()
-		if(contentSnippet.isEmpty()) return "class $name"
-		return "class $name {\n$contentSnippet\n}"
+		override fun toString() = "classDiagram$ls${contentString().doIndent(config.indent)}"
 	}
 
-	@InlineDslFunction
+	/**
+	 * Mermaid类图类。
+	 * @property name 类的名字。
+	 * @property annotation （可选项）类的注解。
+	 * @property statements 类中的声明一览。
+	 */
 	@MermaidClassDiagramDsl
-	operator fun String.invoke(vararg params: String) = "$this(${params.joinToString()})"
+	class Class @PublishedApi internal constructor(
+		val name:String
+	) : MermaidClassDiagramElement, CanIndent, WithId {
+		var annotation:Annotation? = null
+		val statements:MutableList<Statement> = mutableListOf()
+		override var indentContent:Boolean = true
+		override val id:String get() = name
 
-	@InlineDslFunction
-	@MermaidClassDiagramDsl
-	infix fun String.type(type: String) = "$this: $type"
-}
+		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun toString() = "class $name" + when {
+			annotation == null && statements.isEmpty() -> ""
+			else -> "{$ls${arrayOf(annotation, statements.joinToString(ls)).typingAll(ls).doIndent(config.indent)}$ls}"
+		}
 
-/**Mermaid类图注解。*/
-@MermaidClassDiagramDsl
-class MermaidClassDiagramAnnotation @PublishedApi internal constructor(
-	val name: String
-) : MermaidClassDiagramElement {
-	override fun toString(): String {
-		return "<<$name>>"
+		/**(No document.)*/
+		@InlineDslFunction
+		@MermaidClassDiagramDsl
+		operator fun String.invoke(vararg params:String) = "$this(${params.joinToString()})"
+
+		/**(No document.)*/
+		@InlineDslFunction
+		@MermaidClassDiagramDsl
+		infix fun String.type(type:String) = "$this: $type"
 	}
 
-	/**Mermaid类图注解的类型。*/
+	/**
+	 * Mermaid类图的注解。
+	 * @property name 注解的名字。可以自定义。
+	 */
 	@MermaidClassDiagramDsl
-	enum class Type(val text: String) {
-		Interface("interface"), Abstract("abstract"), Service("service"), Enumeration("enumeration")
+	inline class Annotation @PublishedApi internal constructor(
+		val name:String
+	) : MermaidClassDiagramElement {
+		override fun toString() = "<<$name>>"
 	}
-}
 
-/**Mermaid类图声明。*/
-@MermaidClassDiagramDsl
-class MermaidClassDiagramStatement @PublishedApi internal constructor(
-	val expression: String
-) : MermaidClassDiagramElement {
-	var visibility: Visibility = Visibility.None
+	/**
+	 * Mermaid类图的声明。
+	 * @property expression 声明的表达式。可以使用`<br>`换行。
+	 * @property visibility 表达式的可见性。默认不设置。
+	 */
+	@MermaidClassDiagramDsl
+	class Statement @PublishedApi internal constructor(
+		val expression:String
+	) : MermaidClassDiagramElement {
+		var visibility:Visibility = Visibility.None
 
-	override fun toString(): String {
-		return "${visibility.text}$expression"
+		override fun toString() = "${visibility.text}${expression.doWrap()}"
+	}
+
+	/**
+	 * Mermaid类图的关系。
+	 * @property fromClassId 左边类的编号。
+	 * @property toClassId 右边类的编号。
+	 * @property type 关系类型。
+	 * @property text （可选的）关系的文本。可以使用`<br>`换行。
+	 * @property fromCardinality （可选的）左边的基数。只能使用双引号包围，不能包含双引号，也不能进行转义。
+	 * @property toCardinality （可选的）右边的基数。只能使用双引号包围，不能包含双引号，也不能进行转义。
+	 */
+	@MermaidClassDiagramDsl
+	class Relation @PublishedApi internal constructor(
+		val fromClassId:String, val toClassId:String, val type:RelationType
+	) : MermaidClassDiagramElement, WithNode {
+		var text:String? = null
+		var fromCardinality:String? = null //syntax: 0..1, 1, 0..*, 1..*, ls, 0..ls, 1..ls
+		var toCardinality:String? = null //syntax: 0..1, 1, 0..*, 1..*, ls, 0..ls, 1..ls
+		override val sourceNodeId get() = fromClassId
+		override val targetNodeId get() = toClassId
+
+		//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
+		override fun toString() = "$fromClassId ${fromCardinality.typing { it.quote('"') }}${type.text}" +
+		                          "${toCardinality.typing { it.quote('"') }} $toClassId" +
+		                          text?.doWrap().typing { ": $it" }
 	}
 
 	/**Mermaid类图声明的可见性。*/
 	@MermaidClassDiagramDsl
-	enum class Visibility(val text: String) {
-		None(""), Public("+"), Private("-"), Protected("#"), Package("~")
-	}
-}
+	enum class Visibility(internal val text:String) {
+		/**无。*/
+		None(""),
 
-/**Mermaid类图关系。*/
-@MermaidClassDiagramDsl
-class MermaidClassDiagramRelation @PublishedApi internal constructor(
-	val fromClassId: String,
-	val toClassId: String,
-	val type: Type
-) : MermaidClassDiagramElement, WithNode<MermaidClassDiagramClass> {
-	var text: String? = null //换行符：<br>
+		/**公共的。*/
+		Public("+"),
 
-	//syntax: 0..1, 1, 0..*, 1..*, n, 0..n, 1..n
-	var fromCardinality: String? = null
-	var toCardinality: String? = null
+		/**私有的。*/
+		Private("-"),
 
-	override val sourceNodeId get() = fromClassId
-	override val targetNodeId get() = toClassId
+		/**受保护的。*/
+		Protected("#"),
 
-	//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
-	override fun toString(): String {
-		return listOfNotNull(
-			fromClassId, fromCardinality?.quote(config.quote), type.text, toCardinality?.quote(config.quote), toClassId
-		).orNull()?.joinToString(" ", "", text?.let { ": $it" }.orEmpty()).orEmpty()
+		/**包级的可见性。*/
+		Package("~")
 	}
 
 	/**Mermaid类图关系的类型。*/
 	@MermaidClassDiagramDsl
-	enum class Type(val text: String) {
+	enum class RelationType(internal val text:String) {
 		//do not allow bidirectional arrows
+		/**连接。*/
 		Link("--"),
-		Inheritance("<|--"), Composition("*--"), Aggregation("o--"), Association("<--"),
-		ReversedInheritance("--|>"), ReversedComposition("--*"), ReversedAggregation("--o"), ReversedAssociation("-->")
+
+		/**继承。*/
+		Inheritance("<|--"),
+
+		/**组合。*/
+		Composition("*--"),
+
+		/**聚合。*/
+		Aggregation("o--"),
+
+		/**关联。*/
+		Association("<--"),
+
+		/**反向继承。*/
+		ReversedInheritance("--|>"),
+
+		/**反向组合。*/
+		ReversedComposition("--*"),
+
+		/**反向居合。*/
+		ReversedAggregation("--o"),
+
+		/**反向关联。*/
+		ReversedAssociation("-->")
+	}
+
+	/**Mermaid类图注解的类型。*/
+	@MermaidClassDiagramDsl
+	enum class AnnotationType(@PublishedApi internal val text:String) {
+		/**接口。*/
+		Interface("interface"),
+
+		/**抽象。*/
+		Abstract("abstract"),
+
+		/**服务。*/
+		Service("service"),
+
+		/**枚举。*/
+		Enumeration("enumeration")
 	}
 }
-//endregion
 
-//region dsl build extensions
-@MermaidClassDiagramDsl
-inline fun mermaidClassDiagram(block: MermaidClassDiagram.() -> Unit) =
-	MermaidClassDiagram().apply(block)
 
+/**
+ * (No document.)
+ */
+@TopDslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramEntry.`class`(name: String, block: MermaidClassDiagramClass.() -> Unit = {}) =
-	MermaidClassDiagramClass(name).apply(block).also { classes += it }
+inline fun mermaidClassDiagram(block:Document.() -> Unit) = Document().apply(block)
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramEntry.relation(fromClassId: String, toClassId: String, type: MermaidClassDiagramRelation.Type) =
-	MermaidClassDiagramRelation(fromClassId, toClassId, type).also { relations += it }
+inline fun MermaidClassDiagramEntry.`class`(name:String, block:Class.() -> Unit = {}) =
+	Class(name).apply(block).also { classes += it }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramEntry.relation(
-	fromClassId: String,
-	fromCardinality: String?,
-	type: MermaidClassDiagramRelation.Type,
-	toCardinality: String?,
-	toClassId: String
-) = MermaidClassDiagramRelation(fromClassId, toClassId, type)
-	.also { it.fromCardinality = fromCardinality;it.toCardinality = toCardinality }
+fun MermaidClassDiagramEntry.relation(fromClassId:String, toClassId:String, type:RelationType) =
+	Relation(fromClassId, toClassId, type).also { relations += it }
+
+/**
+ * (No document.)
+ */
+@DslFunction
+@MermaidClassDiagramDsl
+fun MermaidClassDiagramEntry.relation(
+	fromClassId:String,
+	fromCardinality:String?,
+	type:RelationType,
+	toCardinality:String?,
+	toClassId:String
+) = Relation(fromClassId, toClassId, type)
+	.apply { this.fromCardinality = fromCardinality }
+	.apply { this.toCardinality = toCardinality }
 	.also { relations += it }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.annotation(name: String) =
-	MermaidClassDiagramAnnotation(name).also { annotation = it }
+fun Class.annotation(name:String) =
+	Annotation(name).also { annotation = it }
 
+/**
+ *
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.annotation(type: MermaidClassDiagramAnnotation.Type) =
-	MermaidClassDiagramAnnotation(type.text).also { annotation = it }
+fun Class.annotation(type:AnnotationType) =
+	Annotation(type.text).also { annotation = it }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.statement(expression: String) =
-	MermaidClassDiagramStatement(expression).also { statements += it }
+fun Class.statement(expression:String) =
+	Statement(expression).also { statements += it }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.`public`(statement: MermaidClassDiagramStatement) =
-	statement.also { it.visibility = MermaidClassDiagramStatement.Visibility.Public }
+fun Class.`public`(statement:Statement) =
+	statement.apply { visibility = Visibility.Public }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.`private`(statement: MermaidClassDiagramStatement) =
-	statement.also { it.visibility = MermaidClassDiagramStatement.Visibility.Private }
+fun Class.`private`(statement:Statement) =
+	statement.apply { visibility = Visibility.Private }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.`protected`(statement: MermaidClassDiagramStatement) =
-	statement.also { it.visibility = MermaidClassDiagramStatement.Visibility.Protected }
+fun Class.`protected`(statement:Statement) =
+	statement.apply { visibility = Visibility.Protected }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramClass.`package`(statement: MermaidClassDiagramStatement) =
-	statement.also { it.visibility = MermaidClassDiagramStatement.Visibility.Package }
+fun Class.`package`(statement:Statement) =
+	statement.apply { visibility = Visibility.Package }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline infix fun MermaidClassDiagramRelation.text(text: String) =
-	this.also { it.text = text }
+infix fun Relation.text(text:String) = apply { this.text = text }
 
+/**
+ * (No document.)
+ */
+@DslFunction
 @MermaidClassDiagramDsl
-inline infix fun MermaidClassDiagramRelation.cardinality(cardinalityPair: Pair<String, String>) =
-	this.also { it.fromCardinality = cardinalityPair.first;it.toCardinality = cardinalityPair.second }
-//endregion
+infix fun Relation.cardinality(cardinalityPair:Pair<String, String>) =
+	apply { fromCardinality = cardinalityPair.first }.apply { toCardinality = cardinalityPair.second }
+
