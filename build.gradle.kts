@@ -19,7 +19,7 @@ plugins {
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.1.0"
+	version = "1.1.1"
 
 	//应用插件
 	apply {
@@ -42,15 +42,12 @@ allprojects {
 
 	//配置kotlin的编译选项
 	tasks {
-		this.create("CodeCleanup") {
+		this.create("codeCleanup") {
 			allprojects.asSequence().forEach {
-				File(it.path.let { "$it\\src\\main\\kotlin" }).walk()
-					.filter { it.extension == "kt" }
-					.forEach {
-						val text = it.readText()
-							.optimizeComment()
-						it.writeText(text)
-					}
+				File(it.path.let { "$it\\src\\main\\kotlin" }).walk().filter { it.extension == "kt" }.forEach {
+					val text = it.readText().optimizeComment()
+					it.writeText(text)
+				}
 			}
 		}
 

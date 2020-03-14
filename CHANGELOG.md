@@ -339,7 +339,11 @@
 * [X] breeze-core 添加`HandledCharSequence`，这个接口的输出字符串可能需要经过额外的处理。
 * [X] breeze-core 添加用于特殊逻辑的字符串处理的`typing`和`typingAll`方法。
 * [X] breeze-dsl 优化代码。
-* [X] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
+* [X] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
+
+# 1.1.1
+
+* [X] 更新版本。 
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。

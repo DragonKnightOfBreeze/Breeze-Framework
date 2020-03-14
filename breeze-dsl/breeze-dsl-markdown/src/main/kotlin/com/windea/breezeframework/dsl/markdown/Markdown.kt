@@ -12,6 +12,7 @@ import org.intellij.lang.annotations.*
 /**Markdown。*/
 @MarkdownDsl
 interface Markdown {
+	/**Markdown文档。*/
 	@MarkdownDsl
 	class Document @PublishedApi internal constructor() : DslDocument, MarkdownDslEntry {
 		@MarkdownExtendedFeature var frontMatter:FrontMatter? = null
@@ -773,6 +774,7 @@ interface Markdown {
 		var markerCount:Int = 3
 	) {
 		@PublishedApi internal val quote get() = if(doubleQuoted) '\"' else '\''
+
 		@PublishedApi
 		internal fun repeat(marker:Char) = marker.repeat(markerCount)
 	}
