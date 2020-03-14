@@ -30,48 +30,43 @@ import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 //~~对于Dsl元素，可以直接使用模版字符串或joinToString~~
 
 //region dsl top declarations
-/**Dsl。*/
+/**领域特定语言。*/
 @DslMarker
 @MustBeDocumented
 annotation class Dsl
-
-/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
-@MustBeDocumented
-@Target(AnnotationTarget.FUNCTION)
-annotation class InlineDslFunction
 
 /**注明这个注解定义了一个顶级的Dsl构建方法。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class TopDslFunction
 
+/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION)
+annotation class InlineDslFunction
+
 /**注明这个注解定义了一个Dsl构建方法。。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class DslFunction
 
-/**Dsl的文档。*/
+/**Dsl文档。*/
 interface DslDocument {
 	override fun toString(): String
 }
 
-/**Dsl的入口。*/
+/**Dsl入口。*/
 interface DslEntry {
 	@InternalUsageApi
-	val contentString:String
-		get() = ""
+	fun contentString():String = ""
 }
 
-/**Dsl的元素。*/
+/**Dsl元素。*/
 interface DslElement {
 	override fun toString():String
-
-	@InternalUsageApi
-	val elementString:String
-		get() = ""
 }
 
-/**Dsl的配置。*/
+/**Dsl配置。*/
 interface DslConfig
 //endregion
 

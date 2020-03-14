@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.json.JsonConfig.prettyPrint
 import com.windea.breezeframework.dsl.json.JsonConfig.quote
 
 //region dsl top declarations
-/**Json的Dsl。*/
+/**Json领域特定语言。*/
 @DslMarker
 @MustBeDocumented
 annotation class JsonDsl
@@ -27,7 +27,7 @@ class Json @PublishedApi internal constructor() : DslDocument, JsonDslInlineEntr
 	inline fun Any?.map() = this.toJsonElement()
 }
 
-/**Json的配置。*/
+/**Json配置。*/
 @JsonDsl
 object JsonConfig : DslConfig {
 	private val indentSizeRange = -2..8

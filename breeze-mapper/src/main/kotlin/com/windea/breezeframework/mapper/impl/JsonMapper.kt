@@ -13,7 +13,7 @@ import java.lang.reflect.*
 //TODO 允许特殊情况：默认参数，构造方法映射，忽略空值等
 //TODO 支持锚点
 
-/**json的映射器。*/
+/**json映射器。*/
 class JsonMapper(
 	val config: Config = Config.Default
 ) : Mapper {

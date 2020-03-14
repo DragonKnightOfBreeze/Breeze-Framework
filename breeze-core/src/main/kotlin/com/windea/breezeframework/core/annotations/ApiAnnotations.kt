@@ -6,10 +6,7 @@ import kotlin.annotation.AnnotationRetention.*
 @MustBeDocumented
 @RequiresOptIn("This api should be used only inside Breeze-Framework itself.", RequiresOptIn.Level.ERROR)
 @Retention(BINARY)
-annotation class InternalUsageApi(
-	/**备注信息。*/
-	val message:String = ""
-)
+annotation class InternalUsageApi
 
 /**需要显式使用的api。*/
 @MustBeDocumented
