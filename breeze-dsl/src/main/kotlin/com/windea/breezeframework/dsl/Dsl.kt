@@ -147,7 +147,7 @@ interface Invoke<out T> {
 }
 
 interface InvokeArgs<out T> : Invoke<T> {
-	operator fun String.invoke(vararg args:Args, block:Block<T> = {}):T
+	operator fun String.invoke(vararg args:Arg, block:Block<T> = {}):T
 }
 
 

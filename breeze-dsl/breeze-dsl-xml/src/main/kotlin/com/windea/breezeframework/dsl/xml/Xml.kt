@@ -30,7 +30,7 @@ interface Xml {
 
 		override fun String.unaryMinus() = comment(this)
 		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Args, block:Block<Element>) = element(this, *args, block = block)
+		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 	}
 
 	/**
@@ -119,7 +119,7 @@ interface Xml {
 		override fun String.unaryPlus() = text(this)
 		override fun String.unaryMinus() = comment(this)
 		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Args, block:Block<Element>) = element(this, *args, block = block)
+		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 	}
 
 	/**

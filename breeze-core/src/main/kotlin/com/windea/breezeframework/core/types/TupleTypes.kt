@@ -28,4 +28,5 @@ typealias TypedTuple4<T> = Quadruple<T, T, T, T>
 typealias TypedTuple5<T> = Quintuple<T, T, T, T, T>
 
 
-typealias Args = Pair<String, Any?>
+/**一组参数。*/
+typealias Arg = Pair<String, Any?>

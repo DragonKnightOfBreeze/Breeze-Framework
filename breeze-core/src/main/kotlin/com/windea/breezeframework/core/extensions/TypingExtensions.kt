@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 //这些特殊的字符串处理方法相比joinToString等更加灵活，更加适用于特殊情况
-//随着需求的重构这些方法，使之更加灵活
+//随着需求的增加重构这些方法，使之更加灵活
 
 /**
  * 将当前布尔值转化成字符串，转化规则如下：
