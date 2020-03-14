@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.mermaid.sequencediagram
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.doWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
 
 /**
  * Mermaid序列图。
@@ -73,7 +73,7 @@ interface MermaidSequenceDiagram {
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String = ""
 	) : MermaidSequenceDiagramDslElement {
-		override fun toString() = "note $location: ${text.doWrap()}"
+		override fun toString() = "note $location: ${text.htmlWrap()}"
 	}
 
 	/**

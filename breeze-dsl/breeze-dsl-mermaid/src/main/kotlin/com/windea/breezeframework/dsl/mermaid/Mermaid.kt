@@ -10,7 +10,7 @@ interface Mermaid {
 	abstract class Document : MermaidDslEntry
 
 	/**
-	 * Mermaid的配置。
+	 * Mermaid配置。
 	 * @property indent 文本的缩进。
 	 * @property doubleQuoted 是否偏向使用双引号。
 	 */
@@ -18,15 +18,14 @@ interface Mermaid {
 		var indent:String = "  ",
 		var doubleQuoted:Boolean = true
 	) {
-		@PublishedApi internal val quote get() = if(doubleQuoted) '\"' else '\''
+		val quote get() = if(doubleQuoted) '\"' else '\''
 	}
 
 	companion object {
 		@PublishedApi internal val config = Config()
-
 		@PublishedApi internal val ls = SystemProperties.lineSeparator
 
 		@PublishedApi
-		internal fun String.doWrap() = this.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>")
+		internal fun String.htmlWrap() = this.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>")
 	}
 }

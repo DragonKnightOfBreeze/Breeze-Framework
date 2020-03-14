@@ -17,7 +17,6 @@
         <language minSize="84" name="Kotlin" />
       </Languages>
     </inspection_tool>
-    <inspection_tool class="ExplicitThis" enabled="true" level="UNUSED ENTRY" enabled_by_default="true" />
     <inspection_tool class="FoldInitializerAndIfToElvis" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="FromClosedRangeMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="GrazieInspection" enabled="false" level="TYPO" enabled_by_default="false" />

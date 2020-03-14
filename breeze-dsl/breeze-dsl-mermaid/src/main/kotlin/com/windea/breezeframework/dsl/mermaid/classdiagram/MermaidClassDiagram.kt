@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.mermaid.classdiagram
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.doWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
 
 /**
  * Mermaid类图。
@@ -76,7 +76,7 @@ interface MermaidClassDiagram {
 	) : MermaidClassDiagramDslElement {
 		var visibility:Visibility = Visibility.None
 
-		override fun toString() = "${visibility.text}${expression.doWrap()}"
+		override fun toString() = "${visibility.text}${expression.htmlWrap()}"
 	}
 
 	/**
@@ -101,7 +101,7 @@ interface MermaidClassDiagram {
 		//syntax: $fromClassId $fromCardinality? $relationType $toCardinality? $toClassId: $text?
 		override fun toString() = "$fromClassId ${fromCardinality.typing { it.quote('"') }}${type.text}" +
 		                          "${toCardinality.typing { it.quote('"') }} $toClassId" +
-		                          text?.doWrap().typing { ": $it" }
+		                          text?.htmlWrap().typing { ": $it" }
 	}
 
 	/**Mermaid类图声明的可见性。*/

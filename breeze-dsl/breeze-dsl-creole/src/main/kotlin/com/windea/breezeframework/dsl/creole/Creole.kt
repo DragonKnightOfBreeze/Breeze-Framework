@@ -72,7 +72,7 @@ interface Creole {
 	/**
 	 * Creole的图标。
 	 * 参见：[OpenIconic](https://useiconic.com/open/)
-	 * */
+	 */
 	@CreoleDsl
 	inline class Icon @PublishedApi internal constructor(override val text:String) : RichText {
 		val name:String get() = text
@@ -212,7 +212,7 @@ interface Creole {
 
 	/**Creole表格头部。*/
 	@CreoleDsl
-	class TableHeader @PublishedApi internal constructor() : CreoleDslElement, WithText<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : CreoleDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -235,7 +235,7 @@ interface Creole {
 
 	/**Creole表格行。*/
 	@CreoleDsl
-	open class TableRow @PublishedApi internal constructor() : CreoleDslElement, WithText<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : CreoleDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 

@@ -26,13 +26,13 @@ interface SequenceDiagram {
 	/**
 	 * 序列图的标题。
 	 * @property text 标题的文本。可以使用`\\n`换行。
-	 * */
+	 */
 	@SequenceDiagramDsl
 	class Title @PublishedApi internal constructor(
 		val text:String
 	) : SequenceDiagramDslElement {
 		override fun toString():String {
-			return "title: ${text.doWrap()}"
+			return "title: ${text.normalWrap()}"
 		}
 	}
 
@@ -75,14 +75,14 @@ interface SequenceDiagram {
 	 * 序列图的注释。
 	 * @property location 注释的位置。
 	 * @property text 注释的文本。可以使用`\\n`换行。
-	 * */
+	 */
 	@SequenceDiagramDsl
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String = ""
 	) : SequenceDiagramDslElement {
 
 		override fun toString():String {
-			val textSnippet = text.doWrap()
+			val textSnippet = text.normalWrap()
 			return "note $location: $textSnippet"
 		}
 	}
@@ -116,6 +116,6 @@ interface SequenceDiagram {
 
 	companion object {
 		@PublishedApi
-		internal fun String.doWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
+		internal fun String.normalWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 	}
 }

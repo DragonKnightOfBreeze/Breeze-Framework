@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
+import com.windea.breezeframework.core.types.*
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。
@@ -35,24 +36,24 @@ import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 @MustBeDocumented
 annotation class Dsl
 
-/**注明这个注解定义了一个顶级的Dsl构建方法。*/
+/**注明这个注解定义了一个顶级的领域特定语言构建方法。这些方法用于生成文档或进行配置。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class TopDslFunction
 
-/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
+/**注明这个注解定义了一个内联的领域特定语言构建方法。这些方法不会自动注册对应的元素。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class InlineDslFunction
 
-/**注明这个注解定义了一个Dsl构建方法。。*/
+/**注明这个注解定义了一个领域特定语言构建方法。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 annotation class DslFunction
 
 /**Dsl文档。*/
 interface DslDocument {
-	override fun toString(): String
+	override fun toString():String
 }
 
 /**Dsl入口。*/
@@ -71,72 +72,84 @@ interface DslConfig
 //endregion
 
 //region dsl declarations
+/**包含可缩进的内容。*/
+@Dsl
+interface CanIndent {
+	/**是否需要对缩进内容。*/
+	var indentContent:Boolean
+
+	/**缩进文本。*/
+	@InternalUsageApi
+	fun String.doIndent(indent:String, condition:Boolean = true):String {
+		return if(indentContent && condition) prependIndent(indent) else this
+	}
+}
+
 /**包含可换行的内容。这个接口的优先级要高于[CanIndent]。*/
 @Dsl
 interface CanWrapLine {
 	/**是否需要对内容进行换行。*/
-	var wrapContent: Boolean
+	var wrapContent:Boolean
 
 	/**用于换行的分隔符。*/
-	val wrapSeparator: String get() = if(wrapContent) lineSeparator else ""
+	@InternalUsageApi
+	val wrapSeparator:String
+		get() = if(wrapContent) lineSeparator else ""
+
+	@InternalUsageApi
+	fun String.doWrap():String {
+		return if(wrapContent) "$lineSeparator$this$lineSeparator" else this
+	}
 }
 
 /**包含可以空行分隔的内容。*/
 @Dsl
 interface CanSplitLine {
 	/**是否需要对内容以空行分隔。*/
-	var splitContent: Boolean
+	var splitContent:Boolean
 
 	/**用于已空行分隔的分隔符。*/
-	val splitSeparator: String get() = if(splitContent) lineSeparator + lineSeparator else lineSeparator
-}
-
-/**包含可缩进的内容。*/
-@Dsl
-interface CanIndent {
-	/**是否需要对缩进内容。*/
-	var indentContent: Boolean
-
-	/**缩进文本。*/
-	fun String.doIndent(indent:String, condition:Boolean = true):String {
-		return if(indentContent && condition) this.prependIndent(indent) else this
-	}
+	@InternalUsageApi
+	val splitSeparator:String
+		get() = if(splitContent) lineSeparator + lineSeparator else lineSeparator
 }
 
 /**包含可被生成的内容。*/
 @Dsl
 interface CanGenerate {
 	/**是否需要生成文本。*/
-	var generateContent: Boolean
+	var generateContent:Boolean
 
 	/**生成文本。*/
+	@InternalUsageApi
 	fun doGenerate():String
 }
 
 
-/**包含可被视为文本的子元素。*/
+/**(No document.)*/
 @Dsl
-interface WithText<out T> {
-	/**添加主要的文本元素为子元素。*/
-	@Dsl
+interface UPlus<out T> {
+	/**(No document.)*/
 	operator fun String.unaryPlus():T
 }
 
-/**包含可被视为注释的子元素。*/
+/**(No document.)*/
 @Dsl
-interface WithComment<out T> {
-	/**添加注释元素为子元素。*/
-	@Dsl
+interface UMinus<out T> {
+	/**(No document.)*/
 	operator fun String.unaryMinus():T
 }
 
-/**包含可被视为块的子元素。*/
+/**(No document.)*/
 @Dsl
-interface WithBlock<out T> {
-	/**添加主要的块元素为子元素。*/
-	@Dsl
-	operator fun String.invoke(block:T.() -> Unit = {}):T
+interface Invoke<out T> {
+	operator fun String.invoke(block:Block<T> = {}):T
 }
+
+interface InvokeArgs<out T> : Invoke<T> {
+	operator fun String.invoke(vararg args:Args, block:Block<T> = {}):T
+}
+
 
 /**带有一个可用于查询的编号。*/
 @Dsl
@@ -159,45 +172,55 @@ interface WithNode {
 @Dsl
 interface WithTransition<in N : WithId, T : WithNode> {
 	/**根据节点元素创建过渡元素。*/
+	@DslFunction
 	@Dsl
 	infix fun String.links(other:String):T
 
 	/**根据节点元素创建过渡元素。*/
+	@DslFunction
 	@Dsl
 	infix fun String.links(other:N):T = this@WithTransition.run { this@links links other.id }
 
 	/**根据节点元素创建过渡元素。*/
+	@DslFunction
 	@Dsl
-	infix fun N.links(other: String): T = this@WithTransition.run { this@links.id links other }
+	infix fun N.links(other:String):T = this@WithTransition.run { this@links.id links other }
 
 	/**根据节点元素创建过渡元素。*/
+	@DslFunction
 	@Dsl
-	infix fun N.links(other: N): T = this@WithTransition.run { this@links.id links other.id }
+	infix fun N.links(other:N):T = this@WithTransition.run { this@links.id links other.id }
 
 	/**根据节点元素连续创建过渡元素。*/
+	@DslFunction
 	@Dsl
-	infix fun T.links(other: String): T = this@WithTransition.run { this@links.targetNodeId links other }
+	infix fun T.links(other:String):T = this@WithTransition.run { this@links.targetNodeId links other }
 
 	/**根据节点元素连续创建过渡元素。*/
+	@DslFunction
 	@Dsl
-	infix fun T.links(other: N): T = this@WithTransition.run { this@links.targetNodeId links other.id }
+	infix fun T.links(other:N):T = this@WithTransition.run { this@links.targetNodeId links other.id }
 }
 //endregion
 
 //region dsl build extensions
-/**设置是否换行内容。*/
-@Dsl
-inline infix fun <T : CanWrapLine> T.wrap(value: Boolean) = this.also { it.wrapContent = value }
-
 /**设置是否缩进内容。*/
+@InlineDslFunction
 @Dsl
-inline infix fun <T : CanIndent> T.indent(value: Boolean) = this.also { it.indentContent = value }
+inline infix fun <T : CanIndent> T.indent(value:Boolean) = apply { indentContent = value }
+
+/**设置是否换行内容。*/
+@InlineDslFunction
+@Dsl
+inline infix fun <T : CanWrapLine> T.wrap(value:Boolean) = apply { wrapContent = value }
 
 /**设置是否分割内容。*/
+@InlineDslFunction
 @Dsl
-inline infix fun <T : CanSplitLine> T.split(value: Boolean) = this.also { it.splitContent = value }
+inline infix fun <T : CanSplitLine> T.split(value:Boolean) = apply { splitContent = value }
 
 /**设置是否生成内容。*/
+@InlineDslFunction
 @Dsl
-inline infix fun <T : CanGenerate> T.generate(value: Boolean) = this.also { it.generateContent = value }
+inline infix fun <T : CanGenerate> T.generate(value:Boolean) = apply { generateContent = value }
 //endregion

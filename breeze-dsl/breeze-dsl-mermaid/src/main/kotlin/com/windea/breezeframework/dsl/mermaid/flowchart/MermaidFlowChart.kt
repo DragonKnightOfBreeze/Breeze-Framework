@@ -3,7 +3,7 @@ package com.windea.breezeframework.dsl.mermaid.flowchart
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.doWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
 
 /**
  * Mermaid流程图。
@@ -47,7 +47,7 @@ interface MermaidFlowChart {
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
 		override fun hashCode() = hashCodeByOne(this) { id }
-		override fun toString() = "$name${shape.prefix}${text?.doWrap()?.quote(Mermaid.config.quote) ?: name}${shape.suffix}"
+		override fun toString() = "$name${shape.prefix}${text?.htmlWrap()?.quote(Mermaid.config.quote) ?: name}${shape.suffix}"
 	}
 
 	/**
@@ -66,7 +66,7 @@ interface MermaidFlowChart {
 		override val sourceNodeId get() = fromNodeId
 		override val targetNodeId get() = toNodeId
 
-		override fun toString() = "$fromNodeId ${arrowShape.text}${text?.doWrap()?.quote(Mermaid.config.quote).typing { "|$it|" }} $toNodeId"
+		override fun toString() = "$fromNodeId ${arrowShape.text}${text?.htmlWrap()?.quote(Mermaid.config.quote).typing { "|$it|" }} $toNodeId"
 	}
 
 	/**

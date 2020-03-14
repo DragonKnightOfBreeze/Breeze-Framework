@@ -380,7 +380,7 @@ interface Markdown {
 
 	/**Markdown表格的头部。*/
 	@MarkdownDsl
-	class TableHeader @PublishedApi internal constructor() : MarkdownDslElement, WithText<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : MarkdownDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -412,7 +412,7 @@ interface Markdown {
 
 	/**Markdown表格的行。*/
 	@MarkdownDsl
-	open class TableRow @PublishedApi internal constructor() : MarkdownDslElement, WithText<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : MarkdownDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 

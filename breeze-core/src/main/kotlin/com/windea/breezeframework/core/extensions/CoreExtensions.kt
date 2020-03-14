@@ -73,11 +73,11 @@ internal fun printTodo(throwable: Throwable, colorCode: Int) {
  *
  * 这个作用域方法用于执行一段当前值需要根据条件转化的代码，将条件判断加入方法的链式调用。
  */
-inline fun <T : R, R> T.where(condition: Boolean, block: T.() -> R): R {
+inline fun <T : R, R> T.where(condition:Boolean, block:T.(T) -> R):R {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
 	}
-	return if(condition) block() else this
+	return if(condition) block(this) else this
 }
 
 /**

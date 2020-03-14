@@ -4,7 +4,7 @@ import com.windea.breezeframework.dsl.*
 
 /**Markdown领域特定语言的入口。*/
 @MarkdownDsl
-interface MarkdownDslEntry : DslEntry, WithText<Markdown.TextBlock> {
+interface MarkdownDslEntry : DslEntry, UPlus<Markdown.TextBlock> {
 	val content:MutableList<MarkdownDslTopElement>
 	override fun contentString():String = content.joinToString("\n\n")
 

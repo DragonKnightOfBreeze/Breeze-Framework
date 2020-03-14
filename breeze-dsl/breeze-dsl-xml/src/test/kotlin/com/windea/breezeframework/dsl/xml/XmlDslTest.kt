@@ -15,8 +15,6 @@ class XmlDslTest {
 				second line
 			""".trimIndent()) wrap true
 			"element"{
-				//"attr1"("value1")
-				
 				+"text"
 				+"""
 					text

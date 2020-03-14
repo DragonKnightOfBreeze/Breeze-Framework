@@ -4,7 +4,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.doWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
@@ -112,8 +112,8 @@ interface MermaidStateDiagram {
 		override var indentContent:Boolean = true
 
 		override fun toString() = when {
-			wrapContent -> "note $location$ls${text.doWrap().doIndent(config.indent)}${ls}end note"
-			else -> "note $location: ${text.doWrap()}"
+			wrapContent -> "note $location$ls${text.htmlWrap().doIndent(config.indent)}${ls}end note"
+			else -> "note $location: ${text.htmlWrap()}"
 		}
 	}
 
