@@ -2,7 +2,8 @@
 
 package com.windea.breezeframework.dsl
 
-import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
+import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 
 //规定：
 //所有的Dsl元素的构造方法都必须是@Published internal。
@@ -19,14 +20,25 @@ import com.windea.breezeframework.core.constants.text.SystemProperties.lineSepar
 //内部可见性的内联类构造器
 //非顶级声明的内联类
 
-//对于Dsl入口，以buildString的方式生成字符串，以提高性能（相比之下可以很快）
-//对于Dsl元素，可以直接使用模版字符串或joinToString
+//编写规则：
+//Dsl注解、通用入口接口、通用元素接口放到的顶层
+//Dsl文档、配置、元素、枚举放在Dsl接口的内部
+//Dsl字符串生成方法尽量不要使用表达式形式编写，因为可能很复杂。
+//Dsl构建方法使用表达式形式编写，不明确声明返回类型，尽量声明为扩展方法。
+//Dsl元素之上尽量使用接口，而非抽象类，必要时使用内联类
+//~~对于Dsl入口，以buildString的方式生成字符串，以提高性能（相比之下可以很快）~~
+//~~对于Dsl元素，可以直接使用模版字符串或joinToString~~
 
 //region dsl top declarations
 /**Dsl。*/
 @DslMarker
 @MustBeDocumented
 annotation class Dsl
+
+/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION)
+annotation class InlineDslFunction
 
 /**注明这个注解定义了一个顶级的Dsl构建方法。*/
 @MustBeDocumented
@@ -38,11 +50,6 @@ annotation class TopDslFunction
 @Target(AnnotationTarget.FUNCTION)
 annotation class DslFunction
 
-/**注明这个注解定义了一个内联的Dsl构建方法。即，不会自动注册对应的元素。*/
-@MustBeDocumented
-@Target(AnnotationTarget.FUNCTION)
-annotation class InlineDslFunction
-
 /**Dsl的文档。*/
 interface DslDocument {
 	override fun toString(): String
@@ -50,13 +57,18 @@ interface DslDocument {
 
 /**Dsl的入口。*/
 interface DslEntry {
-	/**内容字符串。*/
-	fun contentString():String = ""
+	@InternalUsageApi
+	val contentString:String
+		get() = ""
 }
 
 /**Dsl的元素。*/
 interface DslElement {
-	override fun toString(): String
+	override fun toString():String
+
+	@InternalUsageApi
+	val elementString:String
+		get() = ""
 }
 
 /**Dsl的配置。*/
@@ -109,26 +121,26 @@ interface CanGenerate {
 
 /**包含可被视为文本的子元素。*/
 @Dsl
-interface WithText<T> {
+interface WithText<out T> {
 	/**添加主要的文本元素为子元素。*/
 	@Dsl
-	operator fun String.unaryPlus(): T
+	operator fun String.unaryPlus():T
 }
 
 /**包含可被视为注释的子元素。*/
 @Dsl
-interface WithComment<T> {
+interface WithComment<out T> {
 	/**添加注释元素为子元素。*/
 	@Dsl
-	operator fun String.unaryMinus(): T
+	operator fun String.unaryMinus():T
 }
 
 /**包含可被视为块的子元素。*/
 @Dsl
-interface WithBlock<T> {
+interface WithBlock<out T> {
 	/**添加主要的块元素为子元素。*/
 	@Dsl
-	operator fun String.invoke(block: T.() -> Unit = {}): T
+	operator fun String.invoke(block:T.() -> Unit = {}):T
 }
 
 /**带有一个可用于查询的编号。*/
@@ -150,7 +162,7 @@ interface WithNode {
 
 /**包含有可被视为转化的子元素。*/
 @Dsl
-interface WithTransition<N : WithId, T : WithNode> {
+interface WithTransition<in N : WithId, T : WithNode> {
 	/**根据节点元素创建过渡元素。*/
 	@Dsl
 	infix fun String.links(other:String):T

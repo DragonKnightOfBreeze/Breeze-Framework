@@ -27,7 +27,7 @@ class SequenceDiagram @PublishedApi internal constructor() : DslDocument, Sequen
 	override fun toString(): String {
 		return listOfNotNull(
 			title?.toString(),
-			contentString().orNull()
+			contentString.orNull()
 		).joinToString(splitSeparator)
 	}
 }
@@ -41,13 +41,14 @@ interface SequenceDiagramDslEntry : DslEntry, CanSplitLine, WithTransition<Seque
 	val messages:MutableList<SequenceDiagramMessage>
 	val notes:MutableList<SequenceDiagramNote>
 
-	override fun contentString():String {
-		return listOfNotNull(
-			participants.orNull()?.joinToString("\n"),
-			messages.orNull()?.joinToString("\n"),
-			notes.orNull()?.joinToString("\n")
-		).joinToString(splitSeparator)
-	}
+	override val contentString:String
+		get() {
+			return listOfNotNull(
+				participants.orNull()?.joinToString("\n"),
+				messages.orNull()?.joinToString("\n"),
+				notes.orNull()?.joinToString("\n")
+			).joinToString(splitSeparator)
+		}
 
 	@SequenceDiagramDsl
 	override fun String.links(other:String) = message(this, other)

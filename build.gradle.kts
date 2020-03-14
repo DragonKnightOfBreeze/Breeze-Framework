@@ -42,6 +42,18 @@ allprojects {
 
 	//配置kotlin的编译选项
 	tasks {
+		this.create("CodeCleanup") {
+			allprojects.asSequence().forEach {
+				File(it.path.let { "$it\\src\\main\\kotlin" }).walk()
+					.filter { it.extension == "kt" }
+					.forEach {
+						val text = it.readText()
+							.optimizeComment()
+						it.writeText(text)
+					}
+			}
+		}
+
 		compileKotlin {
 			incremental = true
 			kotlinOptions {
@@ -49,9 +61,10 @@ allprojects {
 				freeCompilerArgs = listOf(
 					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts",
+					"-Xopt-in=kotlin.RequiresOptIn",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi"
 				)
 			}
 		}
@@ -155,4 +168,10 @@ subprojects {
 		pkg.version.vcsTag = version.toString()
 		publish = true
 	}
+}
+
+fun String.optimizeComment():String {
+	return replace("""(/\*\*)\s*\n(.*)\n\s*(\*/)""".toRegex(), "$1$2$3")
+		.replace("""(//|/\*|\*/) """.toRegex(), "$1")
+		.replace("* */", "*/")
 }

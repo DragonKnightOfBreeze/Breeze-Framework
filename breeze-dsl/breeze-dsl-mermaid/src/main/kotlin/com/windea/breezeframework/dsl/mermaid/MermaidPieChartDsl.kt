@@ -2,7 +2,7 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.*
+import com.windea.breezeframework.core.constants.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
@@ -24,7 +24,7 @@ annotation class MermaidPieChartDsl
 interface MermaidPieChartEntry : MermaidEntry {
 	val sections:MutableSet<Section>
 
-	override fun contentString() = sections.joinToString(SystemProperties.lineSeparator)
+	override val contentString get() = sections.joinToString(SystemProperties.lineSeparator)
 }
 
 /**
@@ -49,7 +49,7 @@ interface MermaidPieChart {
 		override val sections:MutableSet<Section> = mutableSetOf()
 		override var indentContent:Boolean = true
 
-		override fun toString() = "pie$ls${title.typing { "$it$ls" }}${contentString().doIndent(config.indent)}"
+		override fun toString() = "pie$ls${title.typing { "$it$ls" }}${contentString.doIndent(config.indent)}"
 	}
 
 	/**

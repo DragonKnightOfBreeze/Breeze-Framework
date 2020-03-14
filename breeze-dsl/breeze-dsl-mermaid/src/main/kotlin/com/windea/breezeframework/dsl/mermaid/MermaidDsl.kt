@@ -1,11 +1,10 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.*
+import com.windea.breezeframework.core.constants.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 
-//region dsl top declarations
 /**
  * Mermaid的Dsl。
  * 参见：[Mermaid](https://mermaidjs.github.io)
@@ -14,15 +13,24 @@ import com.windea.breezeframework.dsl.*
 @MustBeDocumented
 annotation class MermaidDsl
 
-/**Mermaid的扩展特性。*/
+/**
+ * Mermaid的扩展特性。
+ * 参见：[Mermaid](https://mermaidjs.github.io)
+ * */
 @MustBeDocumented
 annotation class MermaidDslExtendedFeature
 
-/**Mermaid的入口。*/
+/**
+ * Mermaid的入口。
+ * 参见：[Mermaid](https://mermaidjs.github.io)
+ * */
 @MermaidDsl
 interface MermaidEntry : DslEntry
 
-/**Mermaid的元素。*/
+/**
+ * Mermaid的元素。
+ * 参见：[Mermaid](https://mermaidjs.github.io)
+ * */
 @MermaidDsl
 interface MermaidElement : DslElement
 
@@ -32,25 +40,24 @@ interface MermaidElement : DslElement
  */
 @MermaidDsl
 interface Mermaid {
-	/**Mermaid的文档。*/
-	abstract class Document : MermaidEntry
-
 	/**
 	 * Mermaid的配置。
 	 * @property indent 文本的缩进。
 	 * @property doubleQuoted 是否偏向使用双引号。
-	 * @property quote 文本的引号。
 	 */
 	data class Config(
 		var indent:String = "  ",
 		var doubleQuoted:Boolean = true
 	) {
-		val quote get() = if(doubleQuoted) '\"' else '\''
+		@PublishedApi internal val quote get() = if(doubleQuoted) '\"' else '\''
 	}
 
 	companion object {
 		@PublishedApi internal val config = Config()
 	}
+
+	/**Mermaid的文档。*/
+	abstract class Document : MermaidEntry
 }
 
 
@@ -59,7 +66,7 @@ interface Mermaid {
  */
 @TopDslFunction
 @MermaidDsl
-inline fun mermaidConfig(block:Mermaid.Config.() -> Unit) = Mermaid.config.block()
+inline fun mermaidConfig(block:Config.() -> Unit) = config.block()
 
 
 @PublishedApi internal val ls = SystemProperties.lineSeparator

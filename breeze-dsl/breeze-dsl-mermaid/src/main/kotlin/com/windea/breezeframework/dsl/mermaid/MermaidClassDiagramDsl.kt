@@ -1,8 +1,8 @@
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL", "unused")
+@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
+import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
@@ -28,10 +28,11 @@ interface MermaidClassDiagramEntry : MermaidEntry, CanSplitLine, WithTransition<
 	val classes:MutableSet<Class>
 	val relations:MutableList<Relation>
 
-	override fun contentString() = buildString {
-		if(classes.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
-		if(relations.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
-	}.trimEnd()
+	override val contentString
+		get() = buildString {
+			if(classes.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
+			if(relations.isNotEmpty()) appendJoin(classes, lineSeparator).append(splitSeparator)
+		}.trimEnd()
 
 	@DslFunction
 	@MermaidClassDiagramDsl
@@ -98,7 +99,7 @@ interface MermaidClassDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "classDiagram$ls${contentString().doIndent(config.indent)}"
+		override fun toString() = "classDiagram$ls${contentString.doIndent(config.indent)}"
 	}
 
 	/**

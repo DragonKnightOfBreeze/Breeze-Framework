@@ -1,6 +1,6 @@
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
+import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
@@ -35,15 +35,16 @@ interface MermaidFlowChartEntry : MermaidEntry, CanSplitLine, WithTransition<Nod
 	val classDefs:MutableList<ClassDef>
 	val classRefs:MutableList<ClassRef>
 
-	override fun contentString() = buildString {
-		if(nodes.isNotEmpty()) appendJoin(nodes, lineSeparator).append(splitSeparator)
-		if(links.isNotEmpty()) appendJoin(links, lineSeparator).append(splitSeparator)
-		if(subGraphs.isNotEmpty()) appendJoin(subGraphs, lineSeparator).append(splitSeparator)
-		if(nodeStyles.isNotEmpty()) appendJoin(nodeStyles, lineSeparator).append(splitSeparator)
-		if(linkStyles.isNotEmpty()) appendJoin(linkStyles, lineSeparator).append(splitSeparator)
-		if(classDefs.isNotEmpty()) appendJoin(classDefs, lineSeparator).append(splitSeparator)
-		if(classRefs.isNotEmpty()) appendJoin(classRefs, lineSeparator).append(splitSeparator)
-	}.trimEnd()
+	override val contentString
+		get() = buildString {
+			if(nodes.isNotEmpty()) appendJoin(nodes, lineSeparator).append(splitSeparator)
+			if(links.isNotEmpty()) appendJoin(links, lineSeparator).append(splitSeparator)
+			if(subGraphs.isNotEmpty()) appendJoin(subGraphs, lineSeparator).append(splitSeparator)
+			if(nodeStyles.isNotEmpty()) appendJoin(nodeStyles, lineSeparator).append(splitSeparator)
+			if(linkStyles.isNotEmpty()) appendJoin(linkStyles, lineSeparator).append(splitSeparator)
+			if(classDefs.isNotEmpty()) appendJoin(classDefs, lineSeparator).append(splitSeparator)
+			if(classRefs.isNotEmpty()) appendJoin(classRefs, lineSeparator).append(splitSeparator)
+		}.trimEnd()
 
 	@DslFunction
 	@MermaidFlowChartDsl
@@ -80,7 +81,7 @@ interface MermaidFlowChart {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "graph ${direction.text}$ls${contentString().doIndent(config.indent)}"
+		override fun toString() = "graph ${direction.text}$ls${contentString.doIndent(config.indent)}"
 	}
 
 	/**
@@ -139,7 +140,7 @@ interface MermaidFlowChart {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "subgraph $name$ls${contentString().doIndent(config.indent)}${ls}end}"
+		override fun toString() = "subgraph $name$ls${contentString.doIndent(config.indent)}${ls}end}"
 	}
 
 	/**

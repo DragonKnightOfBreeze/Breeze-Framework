@@ -28,10 +28,11 @@ interface MermaidGanttEntry : MermaidEntry, CanSplitLine {
 	var dateFormat:DateFormat?
 	val sections:MutableList<Section>
 
-	override fun contentString() = buildString {
-		if(dateFormat != null) append(dateFormat).append(splitSeparator)
-		appendJoin(sections, splitSeparator)
-	}
+	override val contentString
+		get() = buildString {
+			if(dateFormat != null) append(dateFormat).append(splitSeparator)
+			appendJoin(sections, splitSeparator)
+		}
 }
 
 /**
@@ -59,7 +60,7 @@ interface MermaidGantt {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = false
 
-		override fun toString() = "gantt$ls${"${title.typing { "$it$ls" }}${contentString()}".doIndent(config.indent)}"
+		override fun toString() = "gantt$ls${"${title.typing { "$it$ls" }}${contentString}".doIndent(config.indent)}"
 	}
 
 	/**

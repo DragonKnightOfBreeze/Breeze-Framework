@@ -1,6 +1,6 @@
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.SystemProperties.lineSeparator
+import com.windea.breezeframework.core.constants.SystemProperties.lineSeparator
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
@@ -27,11 +27,12 @@ interface MermaidStateDiagramEntry : MermaidEntry, CanSplitLine, WithTransition<
 	val links:MutableList<Transition>
 	val notes:MutableList<Note>
 
-	override fun contentString() = buildString {
-		if(states.isNotEmpty()) appendJoin(states, lineSeparator).append(splitSeparator)
-		if(links.isNotEmpty()) appendJoin(links, lineSeparator).append(splitSeparator)
-		if(notes.isNotEmpty()) appendJoin(notes, lineSeparator).append(splitSeparator)
-	}.trimEnd()
+	override val contentString
+		get() = buildString {
+			if(states.isNotEmpty()) appendJoin(states, lineSeparator).append(splitSeparator)
+			if(links.isNotEmpty()) appendJoin(links, lineSeparator).append(splitSeparator)
+			if(notes.isNotEmpty()) appendJoin(notes, lineSeparator).append(splitSeparator)
+		}.trimEnd()
 
 	@DslFunction
 	@MermaidStateDiagramDsl
@@ -80,7 +81,7 @@ interface MermaidStateDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "stateDiagram$ls${contentString().doIndent(config.indent)}"
+		override fun toString() = "stateDiagram$ls${contentString.doIndent(config.indent)}"
 	}
 
 	/**
@@ -116,7 +117,7 @@ interface MermaidStateDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "state $name{$ls${contentString().doIndent(config.indent)}$ls}"
+		override fun toString() = "state $name{$ls${contentString.doIndent(config.indent)}$ls}"
 	}
 
 	/**
@@ -139,7 +140,7 @@ interface MermaidStateDiagram {
 		override val notes:MutableList<Note> = mutableListOf()
 		override var splitContent:Boolean = true
 
-		override fun toString() = contentString()
+		override fun toString() = contentString
 	}
 
 	/**

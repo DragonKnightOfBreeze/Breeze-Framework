@@ -1,11 +1,10 @@
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.text.*
+import com.windea.breezeframework.core.constants.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.MermaidSequenceDiagram.*
-import org.intellij.lang.annotations.*
 
 //can have a title by `title: text`, but it is not introduced in official api
 
@@ -32,12 +31,13 @@ interface MermaidSequenceDiagramEntry : MermaidEntry, CanSplitLine, WithTransiti
 	val notes:MutableList<Note>
 	val scopes:MutableList<Scope>
 
-	override fun contentString() = buildString {
-		if(participants.isNotEmpty()) appendJoin(participants, SystemProperties.lineSeparator).append(splitSeparator)
-		if(messages.isNotEmpty()) appendJoin(messages, SystemProperties.lineSeparator).append(splitSeparator)
-		if(notes.isNotEmpty()) appendJoin(notes, SystemProperties.lineSeparator).append(splitSeparator)
-		if(scopes.isNotEmpty()) appendJoin(scopes, SystemProperties.lineSeparator).append(splitSeparator)
-	}.trimEnd()
+	override val contentString
+		get() = buildString {
+			if(participants.isNotEmpty()) appendJoin(participants, SystemProperties.lineSeparator).append(splitSeparator)
+			if(messages.isNotEmpty()) appendJoin(messages, SystemProperties.lineSeparator).append(splitSeparator)
+			if(notes.isNotEmpty()) appendJoin(notes, SystemProperties.lineSeparator).append(splitSeparator)
+			if(scopes.isNotEmpty()) appendJoin(scopes, SystemProperties.lineSeparator).append(splitSeparator)
+		}.trimEnd()
 
 	@DslFunction
 	@MermaidSequenceDiagramDsl
@@ -78,7 +78,7 @@ interface MermaidSequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = contentString.doIndent(config.indent)
 			return "sequenceDiagram\n$contentSnippet"
 		}
 	}
@@ -150,7 +150,7 @@ interface MermaidSequenceDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "$type${text.typing { " $it" }}\n${contentString().doIndent(config.indent)}\nend"
+		override fun toString() = "$type${text.typing { " $it" }}\n${contentString.doIndent(config.indent)}\nend"
 	}
 
 	/**Mermaid序列图的循环作用域。*/
@@ -175,7 +175,7 @@ interface MermaidSequenceDiagram {
 	) : Scope("alt", text) {
 		val elseScopes:MutableList<Else> = mutableListOf()
 
-		override fun toString() = "${contentString().doIndent(config.indent)}${elseScopes.typingAll(ls, ls)}"
+		override fun toString() = "${contentString.doIndent(config.indent)}${elseScopes.typingAll(ls, ls)}"
 	}
 
 	/**Mermaid序列图的其余作用域。*/
@@ -187,7 +187,7 @@ interface MermaidSequenceDiagram {
 	/**Mermaid序列图的颜色高亮作用域。*/
 	@MermaidSequenceDiagramDsl
 	class Highlight @PublishedApi internal constructor(
-		@Language(value = "Less", prefix = "@color:") color:String
+		color:String
 	) : Scope("rect", color)
 
 	/**Mermaid序列图消息的箭头形状。*/

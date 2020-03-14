@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.constants.text
+package com.windea.breezeframework.core.constants
 
 /**系统属性集。*/
 object SystemProperties {

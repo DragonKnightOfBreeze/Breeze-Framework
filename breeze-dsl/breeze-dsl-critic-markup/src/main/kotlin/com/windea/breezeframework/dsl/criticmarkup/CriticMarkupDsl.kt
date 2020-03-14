@@ -16,10 +16,7 @@ import com.windea.breezeframework.dsl.criticmarkup.CriticMarkup.*
 @MustBeDocumented
 annotation class CriticMarkupDsl
 
-/**
- * CriticMarkup文本的内联入口。
- * 参见：[Critic Markup](http://criticmarkup.com/users-guide.php)
- */
+/**CriticMarkup文本的内联入口。*/
 @CriticMarkupDsl
 interface CriticMarkupInlineEntry : DslEntry {
 	/**(No document.)*/
@@ -48,60 +45,64 @@ interface CriticMarkupInlineEntry : DslEntry {
 	fun highlight(text:CharSequence) = HighlightText(text)
 }
 
-/**
- * CriticMarkup文本的元素。
- * 参见：[Critic Markup](http://criticmarkup.com/users-guide.php)
- */
+/**CriticMarkup文本的内联元素。*/
 @CriticMarkupDsl
-interface CriticMarkupElement : DslElement
+interface CriticMarkupInlineElement : DslElement
 
-/**
- * CriticMarkup文本。
- * 参见：[Critic Markup](http://criticmarkup.com/users-guide.php)
- */
+/**CriticMarkup文本。*/
 @CriticMarkupDsl
 interface CriticMarkup {
-	/**CriticMarkup文本的内联文档。*/
-	class InlineDocument @PublishedApi internal constructor() : DslDocument, CriticMarkupInlineEntry {
-		@PublishedApi internal lateinit var text:CharSequence
+	/**CriticMarkup文本的文档。*/
+	class Document @PublishedApi internal constructor() : DslDocument, CriticMarkupInlineEntry {
+		var text:CharSequence = ""
 
 		override fun toString() = text.toString()
 	}
 
-	/**CriticMarkup富文本。*/
+	/**CriticMarkup的富文本。*/
 	@CriticMarkupDsl
-	interface RichText : CriticMarkupElement, HandledCharSequence
+	interface RichText : CriticMarkupInlineElement, HandledCharSequence
 
-	/**CriticMarkup添加文本。*/
+	/**CriticMarkup的添加文本。*/
 	@CriticMarkupDsl
-	inline class AppendText internal constructor(override val text: CharSequence) : RichText {
+	inline class AppendText @PublishedApi internal constructor(
+		override val text:CharSequence
+	) : RichText {
 		override fun toString() = "{++ $text ++}"
 	}
 
-	/**CriticMarkup删除文本。*/
+	/**CriticMarkup的删除文本。*/
 	@CriticMarkupDsl
-	inline class DeleteText internal constructor(override val text: CharSequence) : RichText {
+	inline class DeleteText @PublishedApi internal constructor(
+		override val text:CharSequence
+	) : RichText {
 		override fun toString() = "{-- $text --}"
 	}
 
 	/**
-	 * CriticMarkup替换文本。
+	 * CriticMarkup的替换文本。
 	 * @property replacedText 替换后的文本。
 	 */
 	@CriticMarkupDsl
-	class ReplaceText internal constructor(override val text: CharSequence, val replacedText: CharSequence) : RichText {
+	class ReplaceText @PublishedApi internal constructor(
+		override val text:CharSequence, val replacedText:CharSequence
+	) : RichText {
 		override fun toString() = "{~~ $text ~> $replacedText ~~}"
 	}
 
-	/**CriticMarkup注释文本。*/
+	/**CriticMarkup的注释文本。*/
 	@CriticMarkupDsl
-	inline class CommentText internal constructor(override val text: CharSequence) : RichText {
+	inline class CommentText @PublishedApi internal constructor(
+		override val text:CharSequence)
+		: RichText {
 		override fun toString() = "{>> $text <<}"
 	}
 
-	/**CriticMarkup强调文本。*/
+	/**CriticMarkup的强调文本。*/
 	@CriticMarkupDsl
-	inline class HighlightText constructor(override val text: CharSequence) : RichText {
+	inline class HighlightText @PublishedApi internal constructor(
+		override val text:CharSequence
+	) : RichText {
 		override fun toString() = "{== $text ==}"
 	}
 }
@@ -110,4 +111,4 @@ interface CriticMarkup {
 /**(No document.)*/
 @TopDslFunction
 @CriticMarkupDsl
-inline fun criticMarkup(block:InlineDocument.() -> CharSequence) = InlineDocument().apply { text = block() }
+inline fun criticMarkup(block:Document.() -> CharSequence) = Document().apply { text = block() }

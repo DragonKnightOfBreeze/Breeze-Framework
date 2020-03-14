@@ -39,7 +39,7 @@ class Markdown @PublishedApi internal constructor() : DslDocument, MarkdownDslEn
 		return listOfNotNull(
 			frontMatter?.toString(),
 			toc?.toString(),
-			contentString().orNull(),
+			contentString.orNull(),
 			references.orNull()?.joinToString("\n")
 		).joinToString("\n\n")
 	}
@@ -91,9 +91,10 @@ interface MarkdownInlineEntry : DslEntry, CriticMarkupInlineEntry
 interface MarkdownDslEntry : DslEntry, WithText<MarkdownTextBlock> {
 	val content:MutableList<MarkdownDslTopElement>
 
-	override fun contentString():String {
-		return content.joinToString("\n\n")
-	}
+	override val contentString:String
+		get() {
+			return content.joinToString("\n\n")
+		}
 
 	@MarkdownDsl
 	override fun String.unaryPlus() = MarkdownTextBlock(this).also { content += it }
@@ -501,7 +502,7 @@ sealed class MarkdownQuote(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 
 	override fun toString(): String {
-		return contentString().prependIndent("$prefixMarker ")
+		return contentString.prependIndent("$prefixMarker ")
 	}
 }
 
@@ -590,7 +591,7 @@ class MarkdownAdmonition @PublishedApi internal constructor(
 		require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
 		val titleSnippet = title.quote(quote)
-		val contentSnippet = contentString().prependIndent(indent)
+		val contentSnippet = contentString.prependIndent(indent)
 		return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 	}
 
@@ -691,7 +692,7 @@ class MarkdownMacrosSnippet @PublishedApi internal constructor(
 	override val content: MutableList<MarkdownDslTopElement> = mutableListOf()
 
 	override fun toString(): String {
-		val contentSnippet = contentString()
+		val contentSnippet = contentString
 		return ">>> $name\n$contentSnippet\n<<<"
 	}
 }

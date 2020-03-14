@@ -2,12 +2,21 @@ package com.windea.breezeframework.core.annotations
 
 import kotlin.annotation.AnnotationRetention.*
 
+/**应当仅限在框架内部使用的api。*/
+@MustBeDocumented
+@RequiresOptIn("This api should be used only inside Breeze-Framework itself.", RequiresOptIn.Level.ERROR)
+@Retention(BINARY)
+annotation class InternalUsageApi(
+	/**备注信息。*/
+	val message:String = ""
+)
+
 /**需要显式使用的api。*/
 @MustBeDocumented
 @Retention(SOURCE)
 annotation class ExplicitUsageApi(
 	/**备注信息。*/
-	val message: String = ""
+	val message:String = ""
 )
 
 /**需要选择性使用的api。*/
