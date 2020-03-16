@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.constants.text
 
 //language=scss prefix=$color:
 
-/**标准颜色的常量集。*/
+/**Sets of common-used system colors.*/
 object Colors {
 	const val aliceblue: String = "aliceblue"
 	const val antiquewhite: String = "antiquewhite"

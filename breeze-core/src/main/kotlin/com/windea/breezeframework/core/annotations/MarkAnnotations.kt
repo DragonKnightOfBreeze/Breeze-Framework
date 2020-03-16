@@ -3,83 +3,98 @@ package com.windea.breezeframework.core.annotations
 import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
-/**未实现的项。*/
+/**
+ * Items that is not implemented (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotImplemented(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**未包含的项。*/
+/**
+ * Items that is not included (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotIncluded(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**未确定的项。*/
-@MustBeDocumented
-@Repeatable
-@Retention(SOURCE)
-@Target(CLASS, PROPERTY, FUNCTION, FILE)
-annotation class NotSure(
-	/**备注信息。*/
-	val message: String = ""
-)
-
-/**未测试的项。*/
+/**
+ * Items that is not tested (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotTested(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**未优化的项。*/
+/**
+ * Items that is not optimized (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotOptimized(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**不推荐的项。*/
+/**
+ * Items that is not recommended (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotRecommended(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**不适用的项。*/
+/**
+ * Items that is not included (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotSuitable(
-	/**备注信息。*/
 	val message: String = ""
 )
 
-/**不可用的项。*/
+/**
+ * Items that is not usable (yet, always or at most times).
+ * @property message additional note information.
+ */
 @MustBeDocumented
 @Repeatable
 @Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 annotation class NotUsable(
-	/**备注信息。*/
-	val message: String = ""
+	val message:String = ""
 )
 
+/**
+ * Items that is not sure (yet, always or at most times).
+ * @property message additional note information.
+ */
+@MustBeDocumented
+@Repeatable
+@Retention(SOURCE)
+@Target(CLASS, PROPERTY, FUNCTION, FILE)
+annotation class NotSure(
+	val message:String = ""
+)

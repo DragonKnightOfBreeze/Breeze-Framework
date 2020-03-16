@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.constants.text
 
-/**常用字符串的常量集。*/
+/**Sets of common-used strings.*/
 object Strings {
 	const val empty: String = ""
 	const val space: String = " "

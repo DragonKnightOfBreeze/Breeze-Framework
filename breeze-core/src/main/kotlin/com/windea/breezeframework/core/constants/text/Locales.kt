@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.constants.text
 
-/**常见语言环境的常量集。*/
+/**Sets of common-used locales.*/
 object Locales {
 	const val english: String = "en"
 	const val french: String = "fr"
