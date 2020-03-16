@@ -344,6 +344,7 @@
 # 1.1.1
 
 * [X] 更新版本。 
+* [ ] 完善代码……
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
