@@ -21,8 +21,38 @@ interface MermaidStateDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "stateDiagram$ls${contentString().doIndent(config.indent)}"
+		override fun toString():String {
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "stateDiagram$ls$contentSnippet"
+		}
 	}
+
+	/**
+	 * Mermaid状态图领域特定语言的入口。
+	 * @property states 状态一览。忽略重复的元素。
+	 * @property links 连接一览。忽略重复的元素。
+	 * @property notes 注释一览。
+	 */
+	@MermaidStateDiagramDsl
+	interface MermaidStateDiagramDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<State, Transition> {
+		val states:MutableSet<State>
+		val links:MutableList<Transition>
+		val notes:MutableList<Note>
+
+		override fun contentString():String {
+			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).typingAll(splitSeparator)
+		}
+
+		@DslFunction
+		@MermaidStateDiagramDsl
+		override fun String.links(other:String) = transition(this, other)
+	}
+
+	/**
+	 * Mermaid状态图领域特定语言的元素。
+	 */
+	@MermaidStateDiagramDsl
+	interface MermaidStateDiagramDslElement : Mermaid.IDslElement
 
 	/**
 	 * Mermaid状态图的状态。
@@ -34,6 +64,7 @@ interface MermaidStateDiagram {
 		override val id:String get() = name
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+
 		override fun hashCode() = hashCodeByOne(this) { id }
 	}
 
@@ -45,7 +76,11 @@ interface MermaidStateDiagram {
 	class SimpleState @PublishedApi internal constructor(name:String) : State(name) {
 		var type:StateType? = null
 
-		override fun toString() = "$name${text.typing { ": $it" }}${type?.text.typing { " <<$it>>" }}"
+		override fun toString():String {
+			val textSnippet = text.typing { ": $it" }
+			val typeSnippet = type?.text.typing { " <<$it>>" }
+			return "$name$textSnippet$typeSnippet"
+		}
 	}
 
 	/**Mermaid状态图的复合状态。*/
@@ -57,7 +92,10 @@ interface MermaidStateDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "state $name{$ls${contentString().doIndent(config.indent)}$ls}"
+		override fun toString():String {
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "state $name{$ls$contentSnippet$ls}"
+		}
 	}
 
 	/**
@@ -69,7 +107,10 @@ interface MermaidStateDiagram {
 		val sections:MutableList<ConcurrentSection> = mutableListOf()
 		override var indentContent:Boolean = true
 
-		override fun toString() = "state $name{$ls${sections.typingAll("$ls---$ls").doIndent(config.indent)}$ls}"
+		override fun toString():String {
+			val sectionsSnippet = sections.typingAll("$ls---$ls").doIndent(config.indent)
+			return "state $name{$ls$sectionsSnippet$ls}"
+		}
 	}
 
 	/**Mermaid状态图的并发分块。*/
@@ -80,7 +121,9 @@ interface MermaidStateDiagram {
 		override val notes:MutableList<Note> = mutableListOf()
 		override var splitContent:Boolean = true
 
-		override fun toString() = contentString()
+		override fun toString():String {
+			return contentString()
+		}
 	}
 
 	/**
@@ -96,7 +139,10 @@ interface MermaidStateDiagram {
 		override val sourceNodeId get() = fromStateId
 		override val targetNodeId get() = toStateId
 
-		override fun toString() = "$fromStateId --> $toStateId${text.typing { ": $it" }}"
+		override fun toString():String {
+			val textSnippet = text.typing { ": $it" }
+			return "$fromStateId --> $toStateId$textSnippet"
+		}
 	}
 
 	/**
@@ -111,16 +157,12 @@ interface MermaidStateDiagram {
 		override var wrapContent:Boolean = false
 		override var indentContent:Boolean = true
 
-		override fun toString() = when {
-			wrapContent -> "note $location$ls${text.htmlWrap().doIndent(config.indent)}${ls}end note"
-			else -> "note $location: ${text.htmlWrap()}"
+		override fun toString():String {
+			return when {
+				wrapContent -> "note $location$ls${text.htmlWrap().doIndent(config.indent)}${ls}end note"
+				else -> "note $location: ${text.htmlWrap()}"
+			}
 		}
-	}
-
-	/**Mermaid状态图状态的类型。*/
-	@MermaidStateDiagramDsl
-	enum class StateType(internal val text:String) {
-		Fork("fork"), Join("join")
 	}
 
 	/**Mermaid状态图注释的位置。*/
@@ -128,7 +170,16 @@ interface MermaidStateDiagram {
 	class NoteLocation @PublishedApi internal constructor(
 		internal val position:NotePosition, internal val stateId:String
 	) {
-		override fun toString() = "${position.text} $stateId"
+		override fun toString():String {
+			return "${position.text} $stateId"
+		}
+	}
+
+
+	/**Mermaid状态图状态的类型。*/
+	@MermaidStateDiagramDsl
+	enum class StateType(internal val text:String) {
+		Fork("fork"), Join("join")
 	}
 
 	/**Mermaid状态图注释的方位。*/

@@ -12,14 +12,14 @@ fun <T : Any> T?.typing(emptyValue:String = "", nullValue:String = "", block:(St
 	return this?.toString()?.let { if(it.isEmpty()) emptyValue else block(it) } ?: nullValue
 }
 
-/**
- * 将当前布尔值转化成字符串，转化规则如下：
- * * 空值 -> 返回对应的值（默认为空字符串）
- * * 其他情况 -> 返回对应的值
- */
-fun Boolean?.typing(trueValue:String, falseValue:String = "", nullValue:String = ""):String {
-	return this?.let { if(it) trueValue else falseValue } ?: nullValue
-}
+///**
+// * 将当前布尔值转化成字符串，转化规则如下：
+// * * 空值 -> 返回对应的值（默认为空字符串）
+// * * 其他情况 -> 返回对应的值
+// */
+//fun Boolean?.typing(trueValue:String, falseValue:String = "", nullValue:String = ""):String {
+//	return this?.let { if(it) trueValue else falseValue } ?: nullValue
+//}
 
 /**
  * 将当前的一组对象转化成字符串，转化规则如下：

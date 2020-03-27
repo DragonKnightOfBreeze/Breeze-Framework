@@ -16,19 +16,19 @@ inline fun mermaidClassDiagram(block:Document.() -> Unit) = Document().apply(blo
 /*** (No document.)*/
 @DslFunction
 @MermaidClassDiagramDsl
-inline fun MermaidClassDiagramDslEntry.`class`(name:String, block:Class.() -> Unit = {}) =
+inline fun IDslEntry.`class`(name:String, block:Class.() -> Unit = {}) =
 	Class(name).apply(block).also { classes += it }
 
 /*** (No document.)*/
 @DslFunction
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramDslEntry.relation(fromClassId:String, toClassId:String, type:RelationType) =
+fun IDslEntry.relation(fromClassId:String, toClassId:String, type:RelationType) =
 	Relation(fromClassId, toClassId, type).also { relations += it }
 
 /*** (No document.)*/
 @DslFunction
 @MermaidClassDiagramDsl
-fun MermaidClassDiagramDslEntry.relation(
+fun IDslEntry.relation(
 	fromClassId:String,
 	fromCardinality:String?,
 	type:RelationType,

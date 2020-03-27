@@ -66,9 +66,6 @@ interface DslEntry {
 interface DslElement {
 	override fun toString():String
 }
-
-/**Dsl配置。*/
-interface DslConfig
 //endregion
 
 //region dsl declarations

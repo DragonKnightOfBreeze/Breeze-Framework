@@ -9,7 +9,4 @@ package com.windea.breezeframework.dsl.commandline
 /**命令行文本的领域特定语言。*/
 @DslMarker
 @MustBeDocumented
-annotation class CommandLineDsl
-
-
-
+annotation class CommandLineTextDsl

@@ -21,48 +21,48 @@ inline fun Document.section(name:String, block:Section.() -> Unit = {}) =
 
 @MermaidGanttDsl
 fun Section.task(name:String, status:TaskStatus = TaskStatus.Todo) =
-	MermaidGanttTask(name, status).also { tasks += it }
+	Task(name, status).also { tasks += it }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.alias(alias:String) =
+infix fun Task.alias(alias:String) =
 	apply { this.alias = alias }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.status(status:TaskStatus) =
+infix fun Task.status(status:TaskStatus) =
 	apply { this.status = status }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.crit(isCrit:Boolean) =
+infix fun Task.crit(isCrit:Boolean) =
 	apply { this.isCrit = isCrit }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.initAt(time:String) =
+infix fun Task.initAt(time:String) =
 	apply { initTime = time }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.finishAt(time:String) =
+infix fun Task.finishAt(time:String) =
 	apply { finishTime = time }
 
 //LocalDateTime format causes error
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.initAt(time:LocalDate) =
+infix fun Task.initAt(time:LocalDate) =
 	apply { initTime = time.toString() }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.finishAt(time:LocalDate) =
+infix fun Task.finishAt(time:LocalDate) =
 	apply { finishTime = time.toString() }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.after(taskName:String) =
+infix fun Task.after(taskName:String) =
 	apply { initTime = "after $taskName" }
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.duration(duration:String) =
+infix fun Task.duration(duration:String) =
 	apply { finishTime = duration }
 
 //the output string format is "PTnHnMnS", but mermaid use "xd"/"xh"
 
 @MermaidGanttDsl
-infix fun MermaidGanttTask.duration(duration:Duration) =
+infix fun Task.duration(duration:Duration) =
 	apply { finishTime = duration.toString().drop(2).toLowerCase() }

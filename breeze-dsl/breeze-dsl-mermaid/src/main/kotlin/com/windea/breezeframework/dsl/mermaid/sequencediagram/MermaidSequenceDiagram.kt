@@ -3,7 +3,9 @@ package com.windea.breezeframework.dsl.mermaid.sequencediagram
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid序列图。
@@ -21,10 +23,41 @@ interface MermaidSequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(Mermaid.config.indent)
-			return "sequenceDiagram\n$contentSnippet"
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "sequenceDiagram$ls$contentSnippet"
 		}
 	}
+
+
+	/**
+	 * Mermaid序列图领域特定语言的入口。
+	 * @property participants 参与者一览。忽略重复的元素。
+	 * @property messages 消息一览。
+	 * @property notes 注释一览。
+	 * @property scopes 作用域一览。
+	 */
+	@MermaidSequenceDiagramDsl
+	interface MermaidSequenceDiagramDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<Participant, Message> {
+		val participants:MutableSet<Participant>
+		val messages:MutableList<Message>
+		val notes:MutableList<Note>
+		val scopes:MutableList<Scope>
+
+		override fun contentString():String {
+			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
+				.typingAll(splitSeparator)
+		}
+
+		@DslFunction
+		@MermaidSequenceDiagramDsl
+		override fun String.links(other:String) = message(this, other)
+	}
+
+	/**
+	 * Mermaid序列图领域特定语言的元素。
+	 */
+	@MermaidSequenceDiagramDsl
+	interface MermaidSequenceDiagramDslElement : Mermaid.IDslElement
 
 	/**
 	 * Mermaid序列图的参与者。
@@ -39,8 +72,13 @@ interface MermaidSequenceDiagram {
 		override val id:String get() = alias ?: name
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+
 		override fun hashCode() = hashCodeByOne(this) { id }
-		override fun toString() = "participant ${alias.typing { "$it as " }}$name"
+
+		override fun toString():String {
+			val aliasSnippet = alias.typing { "$it as " }
+			return "participant $aliasSnippet$name"
+		}
 	}
 
 	/**
@@ -61,7 +99,11 @@ interface MermaidSequenceDiagram {
 		override val sourceNodeId get() = fromParticipantId
 		override val targetNodeId get() = toParticipantId
 
-		override fun toString() = "$fromParticipantId ${arrowShape.text} ${isActivated.typing("+", "-")}$toParticipantId: $text"
+		override fun toString():String {
+			val arrowShapeSnippet = arrowShape.text
+			val activatedSnippet = if(isActivated == true) "+" else "-"
+			return "$fromParticipantId $arrowShapeSnippet $activatedSnippet$toParticipantId: $text"
+		}
 	}
 
 	/**
@@ -73,7 +115,22 @@ interface MermaidSequenceDiagram {
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String = ""
 	) : MermaidSequenceDiagramDslElement {
-		override fun toString() = "note $location: ${text.htmlWrap()}"
+		override fun toString():String {
+			val textSnippet = text.htmlWrap()
+			return "note $location: $textSnippet"
+		}
+	}
+
+	/**Mermaid序列图注释的位置。*/
+	@MermaidSequenceDiagramDsl
+	class NoteLocation @PublishedApi internal constructor(
+		internal val position:NotePosition, internal val participantId1:String, internal val participantId2:String?
+	) {
+		override fun toString():String {
+			val positionSnippet = position.text
+			val participantId2Snippet = participantId2.typing { ", $it" }
+			return "$positionSnippet $participantId1$participantId2Snippet"
+		}
 	}
 
 	/**
@@ -93,7 +150,10 @@ interface MermaidSequenceDiagram {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "$type${text.typing { " $it" }}\n${contentString().doIndent(Mermaid.config.indent)}\nend"
+		override fun toString():String {
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "$type $text$ls$contentSnippet${ls}end"
+		}
 	}
 
 	/**Mermaid序列图的循环作用域。*/
@@ -118,7 +178,11 @@ interface MermaidSequenceDiagram {
 	) : Scope("alt", text) {
 		val elseScopes:MutableList<Else> = mutableListOf()
 
-		override fun toString() = "${contentString().doIndent(Mermaid.config.indent)}${elseScopes.typingAll(Mermaid.ls, Mermaid.ls)}"
+		override fun toString():String {
+			val contentSnippet = contentString().doIndent(config.indent)
+			val elseScopesSnippet = elseScopes.typingAll(ls, ls)
+			return "$contentSnippet$elseScopesSnippet"
+		}
 	}
 
 	/**Mermaid序列图的其余作用域。*/
@@ -133,18 +197,11 @@ interface MermaidSequenceDiagram {
 		color:String
 	) : Scope("rect", color)
 
+
 	/**Mermaid序列图消息的箭头形状。*/
 	@MermaidSequenceDiagramDsl
 	enum class ArrowShape(internal val text:String) {
 		Arrow("->>"), DashedArrow("-->>"), Line("->"), DashedLine("-->"), Cross("-x"), DashedCross("--x")
-	}
-
-	/**Mermaid序列图注释的位置。*/
-	@MermaidSequenceDiagramDsl
-	class NoteLocation @PublishedApi internal constructor(
-		internal val position:NotePosition, internal val participantId1:String, internal val participantId2:String?
-	) {
-		override fun toString() = "${position.text} $participantId1${participantId2.typing { ", $it" }}"
 	}
 
 	/**Mermaid序列图注释的方位。*/

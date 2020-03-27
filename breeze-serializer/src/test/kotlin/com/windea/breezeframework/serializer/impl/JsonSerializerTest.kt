@@ -36,11 +36,11 @@ class JsonSerializerTest {
 		val jsonMap = jsonFile.deserialize<Map<*, *>>(DataType.Json)
 		println(jsonMap)
 
-		val newFile1 = jsonFile.changeName("test2.json").also { it.createNewFile() }
+		val newFile1 = jsonFile.resolveSibling("test2.json").also { it.createNewFile() }
 		jsonObj.serialize(DataType.Json, newFile1)
 		println(newFile1.readText())
 
-		val newFile2 = jsonFile.changeName("test3.json").also { it.createNewFile() }
+		val newFile2 = jsonFile.resolveSibling("test3.json").also { it.createNewFile() }
 		jsonMap.serialize(DataType.Json, jsonFile)
 		println(newFile2.readText())
 	}

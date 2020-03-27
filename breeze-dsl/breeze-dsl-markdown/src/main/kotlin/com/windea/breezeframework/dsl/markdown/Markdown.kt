@@ -5,8 +5,7 @@ package com.windea.breezeframework.dsl.markdown
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.markdown.MarkdownConfig.indent
-import com.windea.breezeframework.dsl.markdown.MarkdownConfig.quote
+import com.windea.breezeframework.dsl.criticmarkup.*
 import org.intellij.lang.annotations.*
 
 /**Markdown。*/
@@ -14,22 +13,49 @@ import org.intellij.lang.annotations.*
 interface Markdown {
 	/**Markdown文档。*/
 	@MarkdownDsl
-	class Document @PublishedApi internal constructor() : DslDocument, MarkdownDslEntry {
+	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
 		@MarkdownExtendedFeature var frontMatter:FrontMatter? = null
 		@MarkdownExtendedFeature var toc:Toc? = null
 		val references:MutableSet<Reference> = mutableSetOf()
-		override val content:MutableList<MarkdownDslTopElement> = mutableListOf()
+		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		@MarkdownExtendedFeature
 		override fun toString():String {
-			return listOfNotNull(
-				frontMatter?.toString(),
-				toc?.toString(),
-				contentString().orNull(),
-				references.orNull()?.joinToString("\n")
-			).joinToString("\n\n")
+			return arrayOf(
+				frontMatter,
+				toc,
+				contentString(),
+				references.typingAll(ls)
+			).typingAll("$ls$ls")
 		}
 	}
+
+
+	/**Markdown领域特定语言的入口。*/
+	@MarkdownDsl
+	interface IDslEntry : DslEntry, UPlus<TextBlock> {
+		val content:MutableList<TopDslElement>
+
+		override fun contentString():String = content.typingAll("$ls$ls")
+
+		override fun String.unaryPlus() = TextBlock(this).also { content += it }
+	}
+
+	/**Markdown领域特定语言的内联入口。*/
+	@MarkdownDsl
+	interface InlineDslEntry : DslEntry, CriticMarkup.InlineDslEntry
+
+	/**Markdown领域特定语言的元素。*/
+	@MarkdownDsl
+	interface IDslElement : DslElement, InlineDslEntry
+
+	/**Markdown领域特定语言的内联元素。*/
+	@MarkdownDsl
+	interface InlineDslElement : IDslElement, Inlineable
+
+	/**Markdown领域特定语言的顶级元素。*/
+	@MarkdownDsl
+	interface TopDslElement : IDslElement
 
 	/**带有Markdown的特性。*/
 	@MarkdownDsl
@@ -39,7 +65,7 @@ interface Markdown {
 
 	/**Markdown富文本。*/
 	@MarkdownDsl
-	interface RichText : MarkdownDslInlineElement, HandledCharSequence
+	interface RichText : InlineDslElement
 
 	/**Markdown加粗文本。*/
 	@MarkdownDsl
@@ -105,7 +131,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Link(
 		val name:String? = null, val url:String? = null
-	) : MarkdownDslInlineElement, DelegatedCharSequence {
+	) : InlineDslElement, Inlineable {
 		override fun toString():String = text.toString()
 	}
 
@@ -123,7 +149,7 @@ interface Markdown {
 	open class InlineLink @PublishedApi internal constructor(
 		name:String, url:String, val title:String? = null
 	) : Link(name, url) {
-		override val text:CharSequence get() = "[$name]($url${title?.let { " ${it.quote(quote)}" }.orEmpty()})"
+		override val text:CharSequence get() = "[$name]($url${title?.let { " ${it.quote(config.quote)}" }.orEmpty()})"
 	}
 
 	/**Markdown内联图片链接。*/
@@ -163,12 +189,12 @@ interface Markdown {
 	@MarkdownDsl
 	class TextBlock @PublishedApi internal constructor(
 		val text:String
-	) : MarkdownDslTopElement, CanWrapLine {
+	) : TopDslElement, CanWrapLine {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
-			return if(text.length > MarkdownConfig.wrapLength)
-				text.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
+			return if(text.length > config.wrapLength)
+				text.let { if(wrapContent) it.chunked(config.wrapLength).joinToString(ls) else it }
 			else text
 		}
 	}
@@ -177,7 +203,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Heading(
 		val headingLevel:Int, val text:String
-	) : MarkdownDslTopElement, WithAttributes, CanWrapLine {
+	) : TopDslElement, WithAttributes, CanWrapLine {
 		@MarkdownExtendedFeature override var attributes:AttributeGroup? = null
 		override var wrapContent:Boolean = true
 	}
@@ -189,12 +215,13 @@ interface Markdown {
 	) : Heading(headingLevel, text) {
 		@MarkdownExtendedFeature
 		override fun toString():String {
-			val textSnippet = if(text.length > MarkdownConfig.wrapLength)
-				text.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
-			else text
+			val textSnippet = when {
+				text.length > config.wrapLength -> text.let { if(wrapContent) it.chunked(config.wrapLength).typingAll(ls) else it }
+				else -> text
+			}
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val suffixMarkers = (if(headingLevel == 1) "=" else "-") * MarkdownConfig.repeatableMarkerCount
-			return "$textSnippet$attributesSnippet\n$suffixMarkers"
+			val suffixMarkers = (if(headingLevel == 1) "=" else "-").repeat(config.markerCount)
+			return "$textSnippet$attributesSnippet$ls$suffixMarkers"
 		}
 	}
 
@@ -219,12 +246,12 @@ interface Markdown {
 		override fun toString():String {
 			val indent = " " * (headingLevel + 1)
 			val prefixMarkers = "#" * headingLevel
-			val textSnippet = if(text.length > MarkdownConfig.wrapLength)
-				text.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
+			val textSnippet = if(text.length > config.wrapLength)
+				text.let { if(wrapContent) it.chunked(config.wrapLength).typingAll(ls) else it }
 					.prependIndent(indent).setPrefix(prefixMarkers)
 			else text
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val suffixMarkers = if(MarkdownConfig.addPrefixHeadingMarkers) " $prefixMarkers" else ""
+			val suffixMarkers = if(config.addPrefixHeadingMarkers) " $prefixMarkers" else ""
 			return "$textSnippet$attributesSnippet$suffixMarkers"
 		}
 	}
@@ -267,34 +294,36 @@ interface Markdown {
 
 	/**Markdown水平分割线。*/
 	@MarkdownDsl
-	object HorizontalLine : MarkdownDslTopElement {
-		override fun toString() = MarkdownConfig.horizontalLineMarkers
+	object HorizontalLine : TopDslElement {
+		override fun toString() = config.horizontalLineMarkers
 	}
 
 	/**Markdown列表。*/
 	@MarkdownDsl
 	class List @PublishedApi internal constructor(
 		val nodes:MutableList<ListNode> = mutableListOf()
-	) : MarkdownDslTopElement {
-		override fun toString() = nodes.joinToString("\n")
+	) : TopDslElement {
+		override fun toString() = nodes.typingAll(ls)
 	}
 
 	/**Markdown列表节点。*/
 	@MarkdownDsl
 	abstract class ListNode(
 		internal val prefixMarkers:String, val text:String
-	) : MarkdownDslElement, CanWrapLine {
+	) : IDslElement, CanWrapLine {
 		val nodes:MutableList<ListNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
 			val indent = " " * (prefixMarkers.length + 1)
-			val textSnippet = if(text.length > MarkdownConfig.wrapLength)
-				text.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
-					.prependIndent(indent).setPrefix(prefixMarkers)
-			else text
-			val nodesSnippet = nodes.orNull()?.joinToString("\n", "\n")?.prependIndent(indent).orEmpty()
+			val textSnippet = when {
+				text.length > config.wrapLength -> text.let {
+					if(wrapContent) it.chunked(config.wrapLength).typingAll(ls) else it
+				}.prependIndent(indent).setPrefix(prefixMarkers)
+				else -> text
+			}
+			val nodesSnippet = nodes.typingAll(ls, ls).ifNotEmpty { it.prependIndent(indent) }
 			return "$textSnippet$nodesSnippet"
 		}
 	}
@@ -310,20 +339,20 @@ interface Markdown {
 	@MarkdownDsl
 	class UnorderedListNode @PublishedApi internal constructor(
 		text:String
-	) : ListNode(MarkdownConfig.listNodeMarker.toString(), text)
+	) : ListNode(config.listNodeMarker.toString(), text)
 
 	/**Markdown任务列表节点。*/
 	@MarkdownDsl
 	class TaskListNode @PublishedApi internal constructor(
 		val isCompleted:Boolean, text:String
-	) : ListNode("${MarkdownConfig.listNodeMarker} [${if(isCompleted) "X" else " "}]", text)
+	) : ListNode("${config.listNodeMarker} [${if(isCompleted) "X" else " "}]", text)
 
 	/**Markdown定义列表。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
 	class Definition @PublishedApi internal constructor(
 		val title:String
-	) : MarkdownDslTopElement, CanWrapLine {
+	) : TopDslElement, CanWrapLine {
 		val nodes:MutableList<DefinitionNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
@@ -331,11 +360,11 @@ interface Markdown {
 		override fun toString():String {
 			require(nodes.isNotEmpty()) { "Definition node size must be positive." }
 
-			val titleSnippet = if(title.length > MarkdownConfig.wrapLength)
-				title.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
+			val titleSnippet = if(title.length > config.wrapLength)
+				title.let { if(wrapContent) it.chunked(config.wrapLength).typingAll(ls) else it }
 			else title
-			val nodesSnippet = nodes.joinToString("\n")
-			return "$titleSnippet\n$nodesSnippet"
+			val nodesSnippet = nodes.typingAll(ls)
+			return "$titleSnippet$ls$nodesSnippet"
 		}
 	}
 
@@ -344,13 +373,13 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class DefinitionNode @PublishedApi internal constructor(
 		val text:String
-	) : MarkdownDslElement, CanWrapLine {
+	) : IDslElement, CanWrapLine {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
-			return if(text.length > MarkdownConfig.wrapLength)
-				text.let { if(wrapContent) it.chunked(MarkdownConfig.wrapLength).joinToString("\n") else it }
-					.prependIndent(indent).setPrefix(":")
+			return if(text.length > config.wrapLength)
+				text.let { if(wrapContent) it.chunked(config.wrapLength).typingAll(ls) else it }
+					.prependIndent(config.indent).setPrefix(":")
 			else text
 		}
 	}
@@ -358,7 +387,7 @@ interface Markdown {
 	//DELAY pretty format
 	/**Markdown表格。*/
 	@MarkdownDsl
-	class Table @PublishedApi internal constructor() : MarkdownDslTopElement {
+	class Table @PublishedApi internal constructor() : TopDslElement {
 		var header:TableHeader = TableHeader()
 		val rows:MutableList<TableRow> = mutableListOf()
 		var columnSize:Int? = null
@@ -374,14 +403,14 @@ interface Markdown {
 
 			val headerRowSnippet = header.toString()
 			val delimitersSnippet = header.toDelimitersString()
-			val rowsSnippet = rows.joinToString("\n")
-			return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
+			val rowsSnippet = rows.typingAll(ls)
+			return "$headerRowSnippet$ls$delimitersSnippet$ls$rowsSnippet"
 		}
 	}
 
 	/**Markdown表格的头部。*/
 	@MarkdownDsl
-	class TableHeader @PublishedApi internal constructor() : MarkdownDslElement, UPlus<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -391,7 +420,7 @@ interface Markdown {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-				else -> columns.map { it.toString() }.fillEnd(columnSize!!, MarkdownConfig.emptyColumnText)
+				else -> columns.map { it.toString() }.fillEnd(columnSize!!, config.emptyColumnText)
 			}.joinToString(" | ", "| ", " |")
 		}
 
@@ -400,7 +429,7 @@ interface Markdown {
 
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toDelimitersString() }
-				else -> columns.map { it.toDelimitersString() }.fillEnd(columnSize!!, "-" * MarkdownConfig.emptyColumnLength)
+				else -> columns.map { it.toDelimitersString() }.fillEnd(columnSize!!, "---")
 			}.joinToString(" | ", "| ", " |")
 		}
 
@@ -413,7 +442,7 @@ interface Markdown {
 
 	/**Markdown表格的行。*/
 	@MarkdownDsl
-	open class TableRow @PublishedApi internal constructor() : MarkdownDslElement, UPlus<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -423,7 +452,7 @@ interface Markdown {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-				else -> columns.map { it.toString() }.fillEnd(columnSize!!, MarkdownConfig.emptyColumnText)
+				else -> columns.map { it.toString() }.fillEnd(columnSize!!, config.emptyColumnText)
 			}.joinToString(" | ", "| ", " |")
 		}
 
@@ -433,8 +462,8 @@ interface Markdown {
 	/**Markdown表格的列。*/
 	@MarkdownDsl
 	class TableColumn @PublishedApi internal constructor(
-		val text:String = MarkdownConfig.emptyColumnText
-	) : MarkdownDslElement {
+		val text:String = config.emptyColumnText
+	) : IDslElement {
 		var alignment:TableAlignment = TableAlignment.None //only for columns in table header
 
 		override fun toString():String {
@@ -443,7 +472,7 @@ interface Markdown {
 
 		fun toDelimitersString():String {
 			val (l, r) = alignment.textPair
-			return "$l${" " * (MarkdownConfig.emptyColumnLength - 2)}$r"
+			return "$l${" " * (config.emptyColumnLength - 2)}$r"
 		}
 	}
 
@@ -451,8 +480,8 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Quote(
 		val prefixMarker:String
-	) : MarkdownDslTopElement, MarkdownDslEntry {
-		override val content:MutableList<MarkdownDslTopElement> = mutableListOf()
+	) : TopDslElement, IDslEntry {
+		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString():String {
 			return contentString().prependIndent("$prefixMarker ")
@@ -482,7 +511,7 @@ interface Markdown {
 	@MarkdownDsl
 	class InlineCode @PublishedApi internal constructor(
 		override val code:String
-	) : MarkdownDslInlineElement, Code, HandledCharSequence {
+	) : InlineDslElement, Code {
 		override val text:String get() = code
 		override fun toString() = "`$text`"
 	}
@@ -492,16 +521,16 @@ interface Markdown {
 	class CodeFence @PublishedApi internal constructor(
 		val language:String,
 		override val code:String
-	) : MarkdownDslTopElement, Code, WithAttributes {
+	) : TopDslElement, Code, WithAttributes {
 		//DONE extended classes and properties
 		@MarkdownExtendedFeature
 		override var attributes:AttributeGroup? = null
 
 		@MarkdownExtendedFeature
 		override fun toString():String {
-			val markersSnippet = MarkdownConfig.horizontalLineMarkers
+			val markersSnippet = config.horizontalLineMarkers
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			return "$markersSnippet$language$attributesSnippet\n$code\n$markersSnippet"
+			return "$markersSnippet$language$attributesSnippet$ls$code$ls$markersSnippet"
 		}
 	}
 
@@ -515,7 +544,7 @@ interface Markdown {
 	@MarkdownDsl
 	class InlineMath @PublishedApi internal constructor(
 		override val code:String
-	) : MarkdownDslInlineElement, Math, HandledCharSequence {
+	) : InlineDslElement, Math {
 		override val text get() = code
 		override fun toString() = "$$text$"
 	}
@@ -524,9 +553,9 @@ interface Markdown {
 	@MarkdownDsl
 	class MultilineMath @PublishedApi internal constructor(
 		override val code:String
-	) : MarkdownDslTopElement, Math {
+	) : TopDslElement, Math {
 		override fun toString():String {
-			return "$$\n$code\n$$"
+			return "$$$ls$code$ls$$"
 		}
 	}
 
@@ -535,15 +564,15 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Admonition @PublishedApi internal constructor(
 		val qualifier:AdmonitionQualifier, val title:String = "", val type:AdmonitionType = AdmonitionType.Normal
-	) : MarkdownDslTopElement, MarkdownDslEntry {
-		override val content:MutableList<MarkdownDslTopElement> = mutableListOf()
+	) : TopDslElement, IDslEntry {
+		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString():String {
 			require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
-			val titleSnippet = title.quote(quote)
-			val contentSnippet = contentString().prependIndent(indent)
-			return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
+			val titleSnippet = title.quote(config.quote)
+			val contentSnippet = contentString().prependIndent(config.indent)
+			return "${type.text} ${qualifier.text} $titleSnippet$ls$contentSnippet"
 		}
 	}
 
@@ -552,16 +581,16 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class FrontMatter @PublishedApi internal constructor(
 		@Language("Yaml") val text:String
-	) : MarkdownDslElement {
+	) : IDslElement {
 		override fun toString():String {
-			return "---\n$text\n---"
+			return "---$ls$text$ls---"
 		}
 	}
 
 	/**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	class Toc @PublishedApi internal constructor() : MarkdownDslElement, CanGenerate {
+	class Toc @PublishedApi internal constructor() : IDslElement, CanGenerate {
 		override var generateContent:Boolean = false
 
 		override fun doGenerate():String {
@@ -579,7 +608,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Import @PublishedApi internal constructor(
 		val url:String
-	) : MarkdownDslTopElement, CanGenerate, WithAttributes {
+	) : TopDslElement, CanGenerate, WithAttributes {
 		//DONE extended classes and properties
 		override var attributes:AttributeGroup? = null
 		override var generateContent:Boolean = false
@@ -591,7 +620,7 @@ interface Markdown {
 		override fun toString():String {
 			if(generateContent) return doGenerate()
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val urlSnippet = url.quote(quote)
+			val urlSnippet = url.quote(config.quote)
 			return "@import $urlSnippet$attributesSnippet"
 		}
 	}
@@ -601,7 +630,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Macros @PublishedApi internal constructor(
 		val name:String
-	) : MarkdownDslTopElement, CanGenerate {
+	) : TopDslElement, CanGenerate {
 		override var generateContent:Boolean = false
 
 		override fun doGenerate():String {
@@ -619,12 +648,12 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class MacrosSnippet @PublishedApi internal constructor(
 		val name:String
-	) : MarkdownDslTopElement, MarkdownDslEntry {
-		override val content:MutableList<MarkdownDslTopElement> = mutableListOf()
+	) : TopDslElement, IDslEntry {
+		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString():String {
 			val contentSnippet = contentString()
-			return ">>> $name\n$contentSnippet\n<<<"
+			return ">>> $name$ls$contentSnippet$ls<<<"
 		}
 	}
 
@@ -632,7 +661,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Reference(
 		val reference:String
-	) : MarkdownDslElement, WithId {
+	) : IDslElement, WithId {
 		override val id:String get() = reference
 	}
 
@@ -676,7 +705,7 @@ interface Markdown {
 		override fun hashCode() = hashCodeByOne(this) { id }
 
 		override fun toString():String {
-			val titleSnippet = title?.let { " ${it.quote(quote)}" }.orEmpty()
+			val titleSnippet = title?.let { " ${it.quote(config.quote)}" }.orEmpty()
 			return "[$reference]: $url$titleSnippet"
 		}
 	}
@@ -686,7 +715,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class AttributeGroup @PublishedApi internal constructor(
 		attributes:Set<Attribute>
-	) : MarkdownDslInlineElement, DelegatedCharSequence, Set<Attribute> by attributes {
+	) : InlineDslElement, Inlineable, Set<Attribute> by attributes {
 		override val text:String get() = joinToString(" ", " {", "}")
 		override fun toString() = text
 	}
@@ -694,7 +723,7 @@ interface Markdown {
 	/**Markdown特性。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	interface Attribute : MarkdownDslInlineElement, DelegatedCharSequence
+	interface Attribute : InlineDslElement, Inlineable
 
 	/**Markdown css id特性。*/
 	@MarkdownDsl
@@ -716,7 +745,7 @@ interface Markdown {
 	@MarkdownDsl
 	@MarkdownExtendedFeature
 	inline class PropertyAttribute(val pair:Pair<String, String>) : Attribute {
-		override val text:String get() = "${pair.first}=${pair.second.quote(quote)}"
+		override val text:String get() = "${pair.first}=${pair.second.quote(config.quote)}"
 		override fun toString() = text
 	}
 
@@ -768,19 +797,34 @@ interface Markdown {
 	@MarkdownDsl
 	data class Config(
 		var indent:String = "  ",
-		var emptyColumnText:String = "  ",
 		var truncated:String = "...",
+		var listNodeMarker:Char = '*',
+		var horizontalLineMarker:Char = '*',
+		var codeFenceMarker:Char = '`',
 		var doubleQuoted:Boolean = true,
-		var markerCount:Int = 3
+		var addPrefixHeadingMarkers:Boolean = false,
+		var markerCount:Int = 3,
+		var emptyColumnLength:Int = 3,
+		var wrapLength:Int = 120
 	) {
-		@PublishedApi internal val quote get() = if(doubleQuoted) '\"' else '\''
+		init {
+			require(listNodeMarker in charArrayOf('*', '-', '+'))
+			require(horizontalLineMarker in charArrayOf('*', '-', '_'))
+			require(codeFenceMarker in charArrayOf('`', '~'))
+			require(markerCount in 3..12)
+			require(wrapLength in 60..240)
+		}
 
-		@PublishedApi
-		internal fun repeat(marker:Char) = marker.repeat(markerCount)
+		internal val quote get() = if(doubleQuoted) '\"' else '\''
+		internal val horizontalLineMarkers get() = horizontalLineMarker.repeat(markerCount)
+		internal val codeFenceMarkers get() = codeFenceMarker.repeat(markerCount)
+		internal val emptyColumnText:String get() = " ".repeat(emptyColumnLength)
+		internal val emptyColumnSeparatorText:String = "-".repeat(emptyColumnLength)
 	}
 
 	companion object {
 		@PublishedApi internal val config = Config()
+		@PublishedApi internal val ls = System.lineSeparator()
 
 		@PublishedApi
 		internal fun heading(text:String, headingLevel:Int) = "${"#".repeat(headingLevel)} $text"

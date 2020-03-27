@@ -18,99 +18,99 @@ inline fun creoleConfig(block:Config.() -> Unit) = config.block()
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.unicode(number:Int) = UnicodeText(number.toString())
+fun InlineDslEntry.unicode(number:Int) = UnicodeText(number.toString())
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.b(text:CharSequence) = BoldText(text)
+fun InlineDslEntry.b(text:CharSequence) = BoldText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.i(text:CharSequence) = ItalicText(text)
+fun InlineDslEntry.i(text:CharSequence) = ItalicText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.m(text:String) = MonospacedText(text)
+fun InlineDslEntry.m(text:String) = MonospacedText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.s(text:CharSequence) = StrokedText(text)
+fun InlineDslEntry.s(text:CharSequence) = StrokedText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.u(text:CharSequence) = UnderlineText(text)
+fun InlineDslEntry.u(text:CharSequence) = UnderlineText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.w(text:CharSequence) = WavedText(text)
+fun InlineDslEntry.w(text:CharSequence) = WavedText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.escaped(text:CharSequence) = EscapedText(text)
+fun InlineDslEntry.escaped(text:CharSequence) = EscapedText(text)
 
 @InlineDslFunction
 @CreoleDsl
-fun CreoleDslInlineEntry.icon(name:String) = Icon(name)
+fun InlineDslEntry.icon(name:String) = Icon(name)
 
 
 @DslFunction
 @CreoleDsl
-inline fun CreoleDslEntry.textBlock(lazyText:() -> String) =
+inline fun IDslEntry.textBlock(lazyText:() -> String) =
 	TextBlock(lazyText()).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.h1(text:String) =
+fun IDslEntry.h1(text:String) =
 	Heading1(text).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.h2(text:String) =
+fun IDslEntry.h2(text:String) =
 	Heading2(text).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.h3(text:String) =
+fun IDslEntry.h3(text:String) =
 	Heading3(text).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.h4(text:String) =
+fun IDslEntry.h4(text:String) =
 	Heading4(text).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.hr(type:HorizontalLineType = HorizontalLineType.Normal) =
+fun IDslEntry.hr(type:HorizontalLineType = HorizontalLineType.Normal) =
 	HorizontalLine(type).also { content += it }
 
 @DslFunction
 @CreoleDsl
-fun CreoleDslEntry.title(text:String, type:HorizontalLineType = HorizontalLineType.Normal) =
+fun IDslEntry.title(text:String, type:HorizontalLineType = HorizontalLineType.Normal) =
 	HorizontalTitle(text, type).also { content += it }
 
 @DslFunction
 @CreoleDsl
-inline fun CreoleDslEntry.list(block:Creole.List.() -> Unit) =
+inline fun IDslEntry.list(block:List.() -> Unit) =
 	List().apply(block).also { content += it }
 
 @DslFunction
 @CreoleDsl
-inline fun CreoleDslEntry.tree(title:String, block:Tree.() -> Unit) =
+inline fun IDslEntry.tree(title:String, block:Tree.() -> Unit) =
 	Tree(title).apply(block).also { content += it }
 
 @DslFunction
 @CreoleDsl
-inline fun CreoleDslEntry.table(block:Table.() -> Unit) =
+inline fun IDslEntry.table(block:Table.() -> Unit) =
 	Table().apply(block).also { content += it }
 
 @DslFunction
 @CreoleDsl
-inline fun Creole.List.ol(text:String, block:OrderedListNode.() -> Unit = {}) =
+inline fun List.ol(text:String, block:OrderedListNode.() -> Unit = {}) =
 	OrderedListNode(text).apply(block).also { nodes += it }
 
 @DslFunction
 @CreoleDsl
-inline fun Creole.List.ul(text:String, block:UnorderedListNode.() -> Unit = {}) =
+inline fun List.ul(text:String, block:UnorderedListNode.() -> Unit = {}) =
 	UnorderedListNode(text).apply(block).also { nodes += it }
 
 @DslFunction

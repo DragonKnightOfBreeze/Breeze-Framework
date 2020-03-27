@@ -29,13 +29,13 @@ class Json @PublishedApi internal constructor() : DslDocument, JsonDslInlineEntr
 
 /**Json配置。*/
 @JsonDsl
-object JsonConfig : DslConfig {
+object JsonConfig {
 	private val indentSizeRange = -2..8
 
 	var indentSize = 2
 		set(value) = run { if(value in indentSizeRange) field = value }
-	var preferDoubleQuote: Boolean = true
-	var prettyPrint: Boolean = true
+	var preferDoubleQuote:Boolean = true
+	var prettyPrint:Boolean = true
 
 	@PublishedApi internal val indent get() = if(indentSize <= -1) "\t" * indentSize else " " * indentSize
 	@PublishedApi internal val quote get() = if(preferDoubleQuote) '"' else '\''

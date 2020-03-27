@@ -2,7 +2,6 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.core.constants.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.core.types.*
@@ -33,6 +32,11 @@ interface Xml {
 		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 	}
 
+
+	/**Xml领域特定语言的元素。*/
+	@XmlDsl
+	interface IDslElement : DslElement
+
 	/**
 	 * Xml声明。
 	 * @property attributes 特性一览。
@@ -40,7 +44,7 @@ interface Xml {
 	@XmlDsl
 	class Statement @PublishedApi internal constructor(
 		val attributes:Map<String, Any?> = mapOf()
-	) : XmlDslElement {
+	) : IDslElement {
 		override fun toString():String {
 			val attributesSnippet = attributes.typingAll(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(config.quote)}"
@@ -51,7 +55,7 @@ interface Xml {
 
 	/**Xml结点。*/
 	@XmlDsl
-	interface Node : XmlDslElement
+	interface Node : IDslElement
 
 	/**
 	 * Xml文本。
@@ -139,6 +143,6 @@ interface Xml {
 
 	companion object {
 		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = SystemProperties.lineSeparator
+		@PublishedApi internal val ls = System.getProperty("line.separator")
 	}
 }

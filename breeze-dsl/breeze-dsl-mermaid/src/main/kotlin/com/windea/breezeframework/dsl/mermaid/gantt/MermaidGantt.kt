@@ -3,6 +3,8 @@ package com.windea.breezeframework.dsl.mermaid.gantt
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid甘特图。
@@ -15,15 +17,39 @@ interface MermaidGantt {
 	 * @property dateFormat （可选项）图标的日期格式化方式。
 	 */
 	@MermaidGanttDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidGanttDslEntry, CanIndent, CanSplitLine {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, CanIndent, CanSplitLine {
 		var title:Title? = null
-		override var dateFormat:DateFormat? = null
+		var dateFormat:DateFormat? = null
 		override val sections:MutableList<Section> = mutableListOf()
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = false
 
-		override fun toString() = "gantt${Mermaid.ls}${"${title.typing { "$it${Mermaid.ls}" }}${contentString()}".doIndent(Mermaid.config.indent)}"
+		override fun toString():String {
+			val contentSnippet = arrayOf(title, dateFormat, contentString()).typingAll(splitSeparator).doIndent(config.indent)
+			return "gantt$ls$contentSnippet"
+		}
 	}
+
+
+	/**
+	 * Mermaid甘特图领域特定语言的入口。
+	 * @property dateFormat 图标的日期格式化方式。
+	 * @property sections 图表的分区一览。
+	 */
+	@MermaidGanttDsl
+	interface IDslEntry : Mermaid.IDslEntry, CanSplitLine {
+		val sections:MutableList<Section>
+
+		override fun contentString():String {
+			return sections.typingAll(ls)
+		}
+	}
+
+	/**
+	 * Mermaid甘特图领域特定语言的元素。
+	 */
+	@MermaidGanttDsl
+	interface IDslElement : Mermaid.IDslElement
 
 	/**
 	 * Mermaid甘特图的标题。
@@ -32,8 +58,10 @@ interface MermaidGantt {
 	@MermaidGanttDsl
 	class Title @PublishedApi internal constructor(
 		val text:String
-	) : MermaidGanttDslElement {
-		override fun toString() = "title $text"
+	) : IDslElement {
+		override fun toString():String {
+			return "title $text"
+		}
 	}
 
 	/**
@@ -43,8 +71,10 @@ interface MermaidGantt {
 	@MermaidGanttDsl
 	class DateFormat @PublishedApi internal constructor(
 		val expression:String
-	) : MermaidGanttDslElement {
-		override fun toString() = "dateFormat $expression"
+	) : IDslElement {
+		override fun toString():String {
+			return "dateFormat $expression"
+		}
 	}
 
 	/**
@@ -55,12 +85,15 @@ interface MermaidGantt {
 	@MermaidGanttDsl
 	class Section @PublishedApi internal constructor(
 		val name:String
-	) : MermaidGanttDslElement, CanIndent, WithId {
-		val tasks:MutableList<MermaidGanttTask> = mutableListOf()
+	) : IDslElement, CanIndent, WithId {
+		val tasks:MutableList<Task> = mutableListOf()
 		override var indentContent:Boolean = false
 		override val id:String get() = name
 
-		override fun toString() = "section $name${tasks.ifNotEmpty { "${Mermaid.ls}${it.joinToString(Mermaid.ls).doIndent(Mermaid.config.indent)}" }}"
+		override fun toString():String {
+			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.typingAll(ls).doIndent(config.indent)}" }
+			return "section $name$tasksSnippet"
+		}
 	}
 
 	/**
@@ -72,17 +105,22 @@ interface MermaidGantt {
 	 * @property finishTime （可选项）结束时间。
 	 */
 	@MermaidGanttDsl
-	class MermaidGanttTask @PublishedApi internal constructor(
+	class Task @PublishedApi internal constructor(
 		val name:String, var status:TaskStatus = TaskStatus.Todo
-	) : MermaidGanttDslElement, WithId {
+	) : IDslElement, WithId {
 		var alias:String? = null
 		var isCrit:Boolean = false
 		var initTime:String? = null //LocalDate format or "after $alias" format
 		var finishTime:String? = null //LocalDate format or Duration format
 		override val id:String get() = name
 
-		override fun toString() = "$name: ${arrayOf(isCrit.typing("crit"), status.text, alias, initTime, finishTime).typingAll()}"
+		override fun toString():String {
+			val critSnippet = if(isCrit) "crit" else ""
+			val statusSnippet = status.text
+			return "$name: ${arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).typingAll()}"
+		}
 	}
+
 
 	/**Mermaid甘特图任务的状态。*/
 	@MermaidGanttDsl

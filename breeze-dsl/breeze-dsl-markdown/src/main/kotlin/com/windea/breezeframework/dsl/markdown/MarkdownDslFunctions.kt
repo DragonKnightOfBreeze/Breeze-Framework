@@ -18,78 +18,78 @@ inline fun markdownConfig(block:MarkdownConfig.() -> Unit) = MarkdownConfig.appl
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.b(text:CharSequence) = BoldText(text)
+fun InlineDslEntry.b(text:CharSequence) = BoldText(text)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.i(text:CharSequence) = ItalicText(text)
+fun InlineDslEntry.i(text:CharSequence) = ItalicText(text)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.s(text:CharSequence) = StrokedText(text)
-
-@InlineDslFunction
-@MarkdownDsl
-@MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.u(text:CharSequence) = UnderlinedText(text)
+fun InlineDslEntry.s(text:CharSequence) = StrokedText(text)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.em(text:CharSequence) = HighlightText(text)
+fun InlineDslEntry.u(text:CharSequence) = UnderlinedText(text)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.sup(text:CharSequence) = SuperscriptText(text)
+fun InlineDslEntry.em(text:CharSequence) = HighlightText(text)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.sub(text:CharSequence) = SubscriptText(text)
+fun InlineDslEntry.sup(text:CharSequence) = SuperscriptText(text)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.icon(name:String) = Icon(name)
+@MarkdownExtendedFeature
+fun InlineDslEntry.sub(text:CharSequence) = SubscriptText(text)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.footNote(reference:String) = FootNote(reference)
+fun InlineDslEntry.icon(name:String) = Icon(name)
+
+@InlineDslFunction
+@MarkdownDsl
+fun InlineDslEntry.footNote(reference:String) = FootNote(reference)
 
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.autoLink(url:String) = AutoLink(url)
+fun InlineDslEntry.autoLink(url:String) = AutoLink(url)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.link(name:String, url:String, title:String? = null) = InlineLink(name, url, title)
+fun InlineDslEntry.link(name:String, url:String, title:String? = null) = InlineLink(name, url, title)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.image(name:String = "", url:String, title:String? = null) = InlineImageLink(name, url, title)
+fun InlineDslEntry.image(name:String = "", url:String, title:String? = null) = InlineImageLink(name, url, title)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.refLink(reference:String, name:String? = null) = ReferenceLink(reference, name).toString()
+fun InlineDslEntry.refLink(reference:String, name:String? = null) = ReferenceLink(reference, name).toString()
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.refImage(reference:String, name:String? = null) = ReferenceImageLink(reference, name).toString()
+fun InlineDslEntry.refImage(reference:String, name:String? = null) = ReferenceImageLink(reference, name).toString()
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.wikiLink(name:String, url:String) = WikiLink(name, url)
+fun InlineDslEntry.wikiLink(name:String, url:String) = WikiLink(name, url)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.code(text:String) = InlineCode(text)
+fun InlineDslEntry.code(text:String) = InlineCode(text)
 
 @InlineDslFunction
 @MarkdownDsl
-fun MarkdownDslInlineEntry.math(text:String) = InlineMath(text)
+fun InlineDslEntry.math(text:String) = InlineMath(text)
 
 
 @DslFunction
@@ -123,120 +123,120 @@ fun Document.linkRef(reference:String, url:String, title:String? = null) =
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.textBlock(lazyText:() -> String) =
+inline fun IDslEntry.textBlock(lazyText:() -> String) =
 	TextBlock(lazyText()).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.mainHeading(text:String) =
+fun IDslEntry.mainHeading(text:String) =
 	MainHeading(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.subHeading(text:String) =
+fun IDslEntry.subHeading(text:String) =
 	SubHeading(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h1(text:String) =
+fun IDslEntry.h1(text:String) =
 	Heading1(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h2(text:String) =
+fun IDslEntry.h2(text:String) =
 	Heading2(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h3(text:String) =
+fun IDslEntry.h3(text:String) =
 	Heading3(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h4(text:String) =
+fun IDslEntry.h4(text:String) =
 	Heading4(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h5(text:String) =
+fun IDslEntry.h5(text:String) =
 	Heading5(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.h6(text:String) =
+fun IDslEntry.h6(text:String) =
 	Heading6(text).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-fun MarkdownDslEntry.hr() =
+fun IDslEntry.hr() =
 	HorizontalLine.also { content += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.list(block:Markdown.List.() -> Unit) =
+inline fun IDslEntry.list(block:Markdown.List.() -> Unit) =
 	List().apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-inline fun MarkdownDslEntry.def(title:String, block:Definition.() -> Unit) =
+inline fun IDslEntry.def(title:String, block:Definition.() -> Unit) =
 	Definition(title).apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.table(block:Table.() -> Unit) =
+inline fun IDslEntry.table(block:Table.() -> Unit) =
 	Table().apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.blockQueue(block:BlockQuote.() -> Unit) =
+inline fun IDslEntry.blockQueue(block:BlockQuote.() -> Unit) =
 	BlockQuote().apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-inline fun MarkdownDslEntry.indentedBlock(block:IndentedBlock.() -> Unit) =
+inline fun IDslEntry.indentedBlock(block:IndentedBlock.() -> Unit) =
 	IndentedBlock().apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-inline fun MarkdownDslEntry.sideBlock(block:SideBlock.() -> Unit) =
+inline fun IDslEntry.sideBlock(block:SideBlock.() -> Unit) =
 	SideBlock().apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.codeFence(language:String, lazyText:() -> String) =
+inline fun IDslEntry.codeFence(language:String, lazyText:() -> String) =
 	CodeFence(language, lazyText()).also { content += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun MarkdownDslEntry.multilineMath(lazyText:() -> String) =
+inline fun IDslEntry.multilineMath(lazyText:() -> String) =
 	MultilineMath(lazyText()).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-inline fun MarkdownDslEntry.admonition(qualifier:AdmonitionQualifier, title:String = "",
+inline fun IDslEntry.admonition(qualifier:AdmonitionQualifier, title:String = "",
 	type:AdmonitionType = AdmonitionType.Normal, block:Admonition.() -> Unit) =
 	Admonition(qualifier, title, type).apply(block).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslEntry.import(url:String) =
+fun IDslEntry.import(url:String) =
 	Import(url).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslEntry.macros(name:String) =
+fun IDslEntry.macros(name:String) =
 	Macros(name).also { content += it }
 
 @DslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-inline fun MarkdownDslEntry.macrosSnippet(name:String, block:MacrosSnippet.() -> Unit) =
+inline fun IDslEntry.macrosSnippet(name:String, block:MacrosSnippet.() -> Unit) =
 	MacrosSnippet(name).apply(block).also { content += it }
 
 @DslFunction
@@ -321,19 +321,19 @@ fun TableRow.colSpan() = column("^")
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.attributes(vararg attributes:Attribute) = AttributeGroup(attributes.toSet())
+fun InlineDslEntry.attributes(vararg attributes:Attribute) = AttributeGroup(attributes.toSet())
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.id(name:String) = IdAttribute(name)
+fun InlineDslEntry.id(name:String) = IdAttribute(name)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.`class`(name:String) = ClassAttribute(name)
+fun InlineDslEntry.`class`(name:String) = ClassAttribute(name)
 
 @InlineDslFunction
 @MarkdownDsl
 @MarkdownExtendedFeature
-fun MarkdownDslInlineEntry.prop(name:String, value:String) = PropertyAttribute(name to value)
+fun InlineDslEntry.prop(name:String, value:String) = PropertyAttribute(name to value)

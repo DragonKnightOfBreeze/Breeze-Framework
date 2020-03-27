@@ -12,15 +12,15 @@ inline fun sequenceDiagram(block:Document.() -> Unit) = Document().apply(block)
 
 @InlineDslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.leftOf(participantId:String) = NoteLocation(NotePosition.LeftOf, participantId)
+fun IDslEntry.leftOf(participantId:String) = NoteLocation(NotePosition.LeftOf, participantId)
 
 @InlineDslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.rightOf(participantId:String) = NoteLocation(NotePosition.RightOf, participantId)
+fun IDslEntry.rightOf(participantId:String) = NoteLocation(NotePosition.RightOf, participantId)
 
 @InlineDslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.over(participantId1:String, participantId2:String) = NoteLocation(NotePosition.Over, participantId1, participantId2)
+fun IDslEntry.over(participantId1:String, participantId2:String) = NoteLocation(NotePosition.Over, participantId1, participantId2)
 
 
 @DslFunction
@@ -30,17 +30,17 @@ fun Document.title(text:String) =
 
 @DslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.participant(name:String) =
+fun IDslEntry.participant(name:String) =
 	Participant(name).also { participants += it }
 
 @DslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.message(fromParticipantId:String, toParticipantId:String) =
+fun IDslEntry.message(fromParticipantId:String, toParticipantId:String) =
 	Message(fromParticipantId, toParticipantId).also { messages += it }
 
 @DslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.message(
+fun IDslEntry.message(
 	fromParticipantId:String,
 	arrowShape:ArrowShape,
 	toParticipantId:String
@@ -50,7 +50,7 @@ fun SequenceDiagramDslEntry.message(
 
 @DslFunction
 @SequenceDiagramDsl
-fun SequenceDiagramDslEntry.note(location:NoteLocation) =
+fun IDslEntry.note(location:NoteLocation) =
 	Note(location).also { notes += it }
 
 @DslFunction

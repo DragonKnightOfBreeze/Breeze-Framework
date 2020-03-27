@@ -10,42 +10,42 @@ inline fun flowChart(block:Document.() -> Unit) = Document().apply(block)
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.start(name:String) =
+fun IDslEntry.start(name:String) =
 	Node(name, NodeType.Start).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.end(name:String) =
+fun IDslEntry.end(name:String) =
 	Node(name, NodeType.End).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.operation(name:String) =
+fun IDslEntry.operation(name:String) =
 	Node(name, NodeType.Operation).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.inputOutput(name:String) =
+fun IDslEntry.inputOutput(name:String) =
 	Node(name, NodeType.InputOutput).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.subroutine(name:String) =
+fun IDslEntry.subroutine(name:String) =
 	Node(name, NodeType.Subroutine).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.condition(name:String) =
+fun IDslEntry.condition(name:String) =
 	Node(name, NodeType.Condition).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.parallel(name:String) =
+fun IDslEntry.parallel(name:String) =
 	Node(name, NodeType.Parallel).also { nodes += it }
 
 @DslFunction
 @FlowChartDsl
-fun FlowDslChartEntry.connection(fromNodeId:String, toNodeId:String) =
+fun IDslEntry.connection(fromNodeId:String, toNodeId:String) =
 	Connection(fromNodeId, toNodeId).also { connections += it }
 
 @DslFunction

@@ -3,6 +3,8 @@ package com.windea.breezeframework.dsl.mermaid.piechart
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid饼图。
@@ -19,16 +21,44 @@ interface MermaidPieChart {
 		override val sections:MutableSet<Section> = mutableSetOf()
 		override var indentContent:Boolean = true
 
-		override fun toString() = "pie${Mermaid.ls}${title.typing { "$it${Mermaid.ls}" }}${contentString().doIndent(Mermaid.config.indent)}"
+		override fun toString():String {
+			val titleSnippet = title.typing { "$it$ls" }
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "pie$ls$titleSnippet$contentSnippet"
+		}
 	}
+
+
+	/**
+	 * Mermaid饼图领域特定语言的入口。
+	 * @property sections 分区一览。忽略重复的元素。
+	 */
+	@MermaidPieChartDsl
+	interface MermaidPieChartDslEntry : Mermaid.IDslEntry {
+		val sections:MutableSet<Section>
+
+		override fun contentString():String {
+			return sections.typingAll(ls)
+		}
+	}
+
+	/**
+	 * Mermaid饼图领域特定语言的元素。
+	 */
+	@MermaidPieChartDsl
+	interface MermaidPieChartDslElement : Mermaid.IDslElement
 
 	/**
 	 * Mermaid饼图的标题。
 	 * @property text 标题的文本。
 	 */
 	@MermaidPieChartDsl
-	class Title @PublishedApi internal constructor(val text:String) : MermaidPieChartDslElement {
-		override fun toString() = "title $text"
+	class Title @PublishedApi internal constructor(
+		val text:String
+	) : MermaidPieChartDslElement {
+		override fun toString():String {
+			return "title $text"
+		}
 	}
 
 	/**
@@ -47,7 +77,11 @@ interface MermaidPieChart {
 		override val id:String get() = key
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+
 		override fun hashCode() = hashCodeByOne(this) { id }
-		override fun toString():String = "${key.quote('"')}: $value"
+
+		override fun toString():String {
+			return "${key.quote('"')}: $value"
+		}
 	}
 }

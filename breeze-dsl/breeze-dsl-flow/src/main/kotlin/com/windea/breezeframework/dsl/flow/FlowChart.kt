@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.flow
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.flow.FlowChart.Connection.*
 import java.util.*
 
 /**流程图。*/
@@ -11,13 +12,42 @@ import java.util.*
 interface FlowChart {
 	/**流程图的文档。*/
 	@FlowChartDsl
-	class Document @PublishedApi internal constructor() : DslDocument, FlowDslChartEntry {
+	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val connections:MutableList<Connection> = mutableListOf()
 		override var splitContent:Boolean = true
 
-		override fun toString() = contentString()
+		override fun toString():String {
+			return contentString()
+		}
 	}
+
+
+	/**流程图领域特定语言的入口。*/
+	@FlowChartDsl
+	interface IDslEntry : DslEntry, CanSplitLine, WithTransition<Node, Connection> {
+		val nodes:MutableSet<Node>
+		val connections:MutableList<Connection>
+
+		override fun contentString():String {
+			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).typingAll(splitSeparator)
+		}
+
+		override fun String.links(other:String) = connection(this, other)
+
+		operator fun String.invoke(direction:ConnectionDirection) =
+			apply { Connection.binderQueue.add(Binder(null, null, direction)) }
+
+		operator fun String.invoke(status:ConnectionStatus, direction:ConnectionDirection? = null) =
+			apply { Connection.binderQueue.add(Binder(status, null, direction)) }
+
+		operator fun String.invoke(path:ConnectionPath, direction:ConnectionDirection? = null) =
+			apply { Connection.binderQueue.add(Binder(null, path, direction)) }
+	}
+
+	/**流程图领域特定语言的元素。*/
+	@FlowChartDsl
+	interface IDslElement : DslElement
 
 	/**带有流程图的方向。*/
 	@FlowChartDsl
@@ -29,7 +59,7 @@ interface FlowChart {
 	@FlowChartDsl
 	class Node @PublishedApi internal constructor(
 		val name:String, val type:NodeType
-	) : FlowDslChartElement, WithId {
+	) : IDslElement, WithId {
 		var text:String? = null //换行符：\n
 		var flowState:String? = null
 		var urlLink:String? = null
@@ -37,14 +67,15 @@ interface FlowChart {
 		override val id:String get() = name
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+
 		override fun hashCode() = hashCodeByOne(this) { id }
 
-		//syntax: name=>$type: $text|$flowState?:>$urlLink
 		override fun toString():String {
-			val flowStateSnippet = flowState?.let { "|$it" }.orEmpty()
-			val urlLinkSnippet = urlLink?.let { ":>$it" }.orEmpty()
+			val typeSnippet = type.text
+			val flowStateSnippet = flowState.typing { "|$it" }
+			val urlLinkSnippet = urlLink.typing { ":>$it" }
 			val blankSnippet = if(openNewTab) "[blank]" else ""
-			return "$name=>${type.text}: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
+			return "$name=>$typeSnippet: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 		}
 	}
 
@@ -52,7 +83,7 @@ interface FlowChart {
 	@FlowChartDsl
 	class Connection @PublishedApi internal constructor(
 		val fromNodeId:String, val toNodeId:String
-	) : FlowDslChartElement, WithNode {
+	) : IDslElement, WithNode {
 		private val builder = binderQueue.poll() ?: Binder()
 
 		var status:ConnectionStatus? = builder.status
@@ -61,11 +92,8 @@ interface FlowChart {
 		override val sourceNodeId get() = fromNodeId
 		override val targetNodeId get() = toNodeId
 
-		//syntax: $fromNodeId($specifications)->$toNodeId
 		override fun toString():String {
-			val specificationsSnippet = listOfNotNull(
-				status?.text, path?.text, direction?.text
-			).orNull()?.joinToString(", ", "(", ")").orEmpty()
+			val specificationsSnippet = arrayOf(status?.text, path?.text, direction?.text).typingAll(", ", "(", ")")
 			return "$fromNodeId$specificationsSnippet->$toNodeId"
 		}
 
@@ -79,6 +107,7 @@ interface FlowChart {
 			internal val binderQueue:Queue<Binder> = ArrayDeque(2) //将部分属性存储在外部绑定器队列
 		}
 	}
+
 
 	/**流程图节点的类型。*/
 	@FlowChartDsl
@@ -111,5 +140,10 @@ interface FlowChart {
 		internal val text:String
 	) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
+	}
+
+
+	companion object {
+		@PublishedApi internal val ls = System.lineSeparator()
 	}
 }

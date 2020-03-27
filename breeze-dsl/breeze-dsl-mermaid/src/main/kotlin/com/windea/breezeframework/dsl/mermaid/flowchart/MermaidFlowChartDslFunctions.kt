@@ -13,49 +13,49 @@ inline fun mermaidFlowChart(direction:Direction, block:Document.() -> Unit) = Do
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.node(name:String) =
+fun IDslEntry.node(name:String) =
 	Node(name).also { nodes += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.link(fromNodeId:String, toNodeId:String) =
+fun IDslEntry.link(fromNodeId:String, toNodeId:String) =
 	Link(fromNodeId, toNodeId).also { links += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.link(fromNodeId:String, arrowShape:ArrowShape, toNodeId:String) =
+fun IDslEntry.link(fromNodeId:String, arrowShape:ArrowShape, toNodeId:String) =
 	Link(fromNodeId, toNodeId).apply { this.arrowShape = arrowShape }.also { links += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-inline fun MermaidFlowChartDslEntry.subGraph(name:String, block:SubGraph.() -> Unit) =
+inline fun IDslEntry.subGraph(name:String, block:SubGraph.() -> Unit) =
 	SubGraph(name).apply(block).also { subGraphs += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.nodeStyle(nodeName:String, vararg styles:Pair<String, String>) =
+fun IDslEntry.nodeStyle(nodeName:String, vararg styles:Pair<String, String>) =
 	NodeStyle(nodeName, styles.toMap()).also { nodeStyles += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.linkStyle(linkOrder:Int, vararg styles:Pair<String, String>) =
+fun IDslEntry.linkStyle(linkOrder:Int, vararg styles:Pair<String, String>) =
 	LinkStyle(linkOrder, styles.toMap()).also { linkStyles += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.classDef(className:String, vararg styles:Pair<String, String>) =
+fun IDslEntry.classDef(className:String, vararg styles:Pair<String, String>) =
 	ClassDef(className, styles.toMap()).also { classDefs += it }
 
 /**(No document.)*/
 @DslFunction
 @MermaidFlowChartDsl
-fun MermaidFlowChartDslEntry.classRef(className:String, vararg nodeNames:String) =
+fun IDslEntry.classRef(className:String, vararg nodeNames:String) =
 	ClassRef(className, nodeNames.toSet()).also { classRefs += it }
 
 /**(No document.)*/

@@ -10,29 +10,34 @@ import com.windea.breezeframework.dsl.*
 interface CriticMarkup {
 	/**CriticMarkup文本的文档。*/
 	@CriticMarkupDsl
-	class Document @PublishedApi internal constructor() : DslDocument, CriticMarkupDslInlineEntry {
+	class Document @PublishedApi internal constructor() : DslDocument, InlineDslEntry {
 		var text:CharSequence = ""
 
 		override fun toString() = text.toString()
 	}
 
+
+	/**CriticMarkup文本领域特定语言的内联入口。*/
+	@CriticMarkupDsl
+	interface InlineDslEntry : DslEntry
+
+	/**CriticMarkup文本领域特定语言的内联元素。*/
+	@CriticMarkupDsl
+	interface InlineDslElement : DslElement, Inlineable
+
 	/**CriticMarkup富文本。*/
 	@CriticMarkupDsl
-	interface RichText : CriticMarkupDslInlineElement, HandledCharSequence
+	interface RichText : InlineDslElement
 
 	/**CriticMarkup添加文本。*/
 	@CriticMarkupDsl
-	inline class AppendText @PublishedApi internal constructor(
-		override val text:CharSequence
-	) : RichText {
+	inline class AppendText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = "{++ $text ++}"
 	}
 
 	/**CriticMarkup删除线文本。*/
 	@CriticMarkupDsl
-	inline class DeleteText @PublishedApi internal constructor(
-		override val text:CharSequence
-	) : RichText {
+	inline class DeleteText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = "{-- $text --}"
 	}
 
@@ -49,17 +54,13 @@ interface CriticMarkup {
 
 	/**CriticMarkup注释文本。*/
 	@CriticMarkupDsl
-	inline class CommentText @PublishedApi internal constructor(
-		override val text:CharSequence
-	) : RichText {
+	inline class CommentText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = "{>> $text <<}"
 	}
 
 	/**CriticMarkup强调文本。*/
 	@CriticMarkupDsl
-	inline class HighlightText @PublishedApi internal constructor(
-		override val text:CharSequence
-	) : RichText {
+	inline class HighlightText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = "{== $text ==}"
 	}
 }

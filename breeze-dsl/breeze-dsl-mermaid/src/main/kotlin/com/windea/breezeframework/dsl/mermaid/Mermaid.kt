@@ -1,13 +1,27 @@
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.core.constants.*
+import com.windea.breezeframework.dsl.*
 
 /**Mermaid。*/
 @MermaidDsl
 interface Mermaid {
 	/**Mermaid文档。*/
 	@MermaidDsl
-	abstract class Document : MermaidDslEntry
+	abstract class Document : IDslEntry
+
+
+	/**
+	 * Mermaid领域特定语言的入口。
+	 */
+	@MermaidDsl
+	interface IDslEntry : DslEntry
+
+	/**
+	 * Mermaid领域特定语言的元素。
+	 */
+	@MermaidDsl
+	interface IDslElement : DslElement
+
 
 	/**
 	 * Mermaid配置。
@@ -23,9 +37,8 @@ interface Mermaid {
 
 	companion object {
 		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = SystemProperties.lineSeparator
+		@PublishedApi internal val ls = System.lineSeparator()
 
-		@PublishedApi
 		internal fun String.htmlWrap() = this.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>")
 	}
 }

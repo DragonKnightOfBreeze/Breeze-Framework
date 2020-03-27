@@ -3,7 +3,9 @@ package com.windea.breezeframework.dsl.mermaid.flowchart
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
+import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid流程图。
@@ -17,7 +19,7 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class Document @PublishedApi internal constructor(
 		val direction:Direction
-	) : Mermaid.Document(), MermaidFlowChartDslEntry, CanIndent {
+	) : Mermaid.Document(), IDslEntry, CanIndent {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val links:MutableList<Link> = mutableListOf()
 		override val subGraphs:MutableList<SubGraph> = mutableListOf()
@@ -28,8 +30,49 @@ interface MermaidFlowChart {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "graph ${direction.text}${Mermaid.ls}${contentString().doIndent(Mermaid.config.indent)}"
+		override fun toString():String {
+			val directionSnippet = direction.text
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "graph $directionSnippet$ls$contentSnippet"
+		}
 	}
+
+
+	/**
+	 * Mermaid流程图领域特定语言的入口。
+	 * @property nodes 节点一览。忽略重复的元素。
+	 * @property links 连接一览。
+	 * @property subGraphs 子图一览。
+	 * @property nodeStyles 节点风格一览。
+	 * @property linkStyles 连接风格一览。
+	 * @property classDefs CSS类定义一览。
+	 * @property classRefs CSS类引用一览。
+	 */
+	@MermaidFlowChartDsl
+	interface IDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<Node, Link> {
+		val nodes:MutableSet<Node>
+		val links:MutableList<Link>
+		val subGraphs:MutableList<SubGraph>
+		val nodeStyles:MutableList<NodeStyle>
+		val linkStyles:MutableList<LinkStyle>
+		val classDefs:MutableList<ClassDef>
+		val classRefs:MutableList<ClassRef>
+
+		override fun contentString():String {
+			return arrayOf(nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
+				linkStyles.typingAll(ls), classDefs.typingAll("ls"), classRefs.typingAll(ls)).typingAll(splitSeparator)
+		}
+
+		@DslFunction
+		@MermaidFlowChartDsl
+		override fun String.links(other:String) = link(this, other)
+	}
+
+	/**
+	 * Mermaid流程图领域特定语言的元素。
+	 */
+	@MermaidFlowChartDsl
+	interface IDslElement : Mermaid.IDslElement
 
 	/**
 	 * Mermaid流程图的节点。
@@ -40,14 +83,21 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class Node @PublishedApi internal constructor(
 		val name:String
-	) : MermaidFlowChartDslElement, WithId {
+	) : IDslElement, WithId {
 		var text:String? = null
 		var shape:NodeShape = NodeShape.Rect
 		override val id:String get() = name
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+
 		override fun hashCode() = hashCodeByOne(this) { id }
-		override fun toString() = "$name${shape.prefix}${text?.htmlWrap()?.quote(Mermaid.config.quote) ?: name}${shape.suffix}"
+
+		override fun toString():String {
+			val shapePrefixSnippet = shape.prefix
+			val textSnippet = text?.htmlWrap()?.quote(config.quote) ?: name
+			val shapeSuffixSnippet = shape.suffix
+			return "$name$shapePrefixSnippet$textSnippet$shapeSuffixSnippet"
+		}
 	}
 
 	/**
@@ -60,13 +110,17 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class Link @PublishedApi internal constructor(
 		val fromNodeId:String, val toNodeId:String
-	) : MermaidFlowChartDslElement, WithNode {
+	) : IDslElement, WithNode {
 		var text:String? = null
 		var arrowShape:ArrowShape = ArrowShape.Arrow
 		override val sourceNodeId get() = fromNodeId
 		override val targetNodeId get() = toNodeId
 
-		override fun toString() = "$fromNodeId ${arrowShape.text}${text?.htmlWrap()?.quote(Mermaid.config.quote).typing { "|$it|" }} $toNodeId"
+		override fun toString():String {
+			val arrowShapeSnippet = arrowShape.text
+			val textSnippet = text?.htmlWrap()?.quote(config.quote).typing { "|$it|" }
+			return "$fromNodeId $arrowShapeSnippet$textSnippet $toNodeId"
+		}
 	}
 
 	/**
@@ -76,7 +130,7 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class SubGraph @PublishedApi internal constructor(
 		val name:String
-	) : MermaidDslElement, MermaidFlowChartDslEntry, CanIndent {
+	) : IDslElement, IDslEntry, CanIndent {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val links:MutableList<Link> = mutableListOf()
 		override val subGraphs:MutableList<SubGraph> = mutableListOf()
@@ -87,7 +141,10 @@ interface MermaidFlowChart {
 		override var indentContent:Boolean = true
 		override var splitContent:Boolean = true
 
-		override fun toString() = "subgraph $name${Mermaid.ls}${contentString().doIndent(Mermaid.config.indent)}${Mermaid.ls}end}"
+		override fun toString():String {
+			val contentSnippet = contentString().doIndent(config.indent)
+			return "subgraph $name$ls$contentSnippet${ls}end}"
+		}
 	}
 
 	/**
@@ -98,8 +155,11 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class NodeStyle @PublishedApi internal constructor(
 		val nodeId:String, val styles:Map<String, String>
-	) : MermaidFlowChartDslElement {
-		override fun toString() = "style $nodeId ${styles.joinToString { (k, v) -> "$k: $v" }}"
+	) : IDslElement {
+		override fun toString():String {
+			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+			return "style $nodeId $stylesSnippet"
+		}
 	}
 
 	/**
@@ -110,8 +170,11 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class LinkStyle @PublishedApi internal constructor(
 		val linkOrder:Int, val styles:Map<String, String>
-	) : MermaidFlowChartDslElement {
-		override fun toString() = "style $linkOrder ${styles.joinToString { (k, v) -> "$k: $v" }}"
+	) : IDslElement {
+		override fun toString():String {
+			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+			return "style $linkOrder $stylesSnippet"
+		}
 	}
 
 	/**
@@ -122,8 +185,11 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class ClassDef @PublishedApi internal constructor(
 		val className:String, val styles:Map<String, String>
-	) : MermaidFlowChartDslElement {
-		override fun toString() = "classDef $className ${styles.joinToString { (k, v) -> "$k: $v" }}"
+	) : IDslElement {
+		override fun toString():String {
+			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
+			return "classDef $className $stylesSnippet"
+		}
 	}
 
 	/**
@@ -134,9 +200,13 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class ClassRef @PublishedApi internal constructor(
 		val className:String, val nodeIds:Set<String>
-	) : MermaidFlowChartDslElement {
-		override fun toString() = "class ${nodeIds.joinToString()} $className"
+	) : IDslElement {
+		override fun toString():String {
+			val nodeIdsSnippet = nodeIds.joinToString()
+			return "class $nodeIdsSnippet $className"
+		}
 	}
+
 
 	/**Mermaid流程图的方向。*/
 	@MermaidFlowChartDsl

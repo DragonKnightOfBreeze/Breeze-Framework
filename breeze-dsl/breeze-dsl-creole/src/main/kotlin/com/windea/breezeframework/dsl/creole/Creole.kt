@@ -11,15 +11,42 @@ import com.windea.breezeframework.dsl.*
 interface Creole {
 	/**Creole文档。*/
 	@CreoleDsl
-	class Document @PublishedApi internal constructor() : CreoleDslEntry, CreoleDslInlineEntry {
-		override val content:MutableList<CreoleDslTopElement> = mutableListOf()
+	class Document @PublishedApi internal constructor() : IDslEntry, InlineDslEntry {
+		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString() = contentString()
 	}
 
+
+	/**Creole领域特定语言的入口。*/
+	@CreoleDsl
+	interface IDslEntry : DslEntry, UPlus<TextBlock> {
+		val content:MutableList<TopDslElement>
+
+		override fun contentString() = content.joinToString("$ls$ls")
+
+		override fun String.unaryPlus() = textBlock { this }
+	}
+
+	/**Creole领域特定语言的内联入口。*/
+	@CreoleDsl
+	interface InlineDslEntry : DslEntry
+
+	/**Creole领域特定语言的元素。*/
+	@CreoleDsl
+	interface IDslElement : DslElement, InlineDslEntry
+
+	/**Creole领域特定语言的内联元素。*/
+	@CreoleDsl
+	interface InlineDslElement : IDslElement, Inlineable
+
+	/**Creole领域特定语言的顶级元素。*/
+	@CreoleDsl
+	interface TopDslElement : IDslElement
+
 	/**Creole富文本。*/
 	@CreoleDsl
-	interface RichText : CreoleDslInlineElement, HandledCharSequence
+	interface RichText : InlineDslElement
 
 	/**CreoleUnicode文本。*/
 	@CreoleDsl
@@ -83,7 +110,7 @@ interface Creole {
 	@CreoleDsl
 	class TextBlock @PublishedApi internal constructor(
 		val text:String
-	) : CreoleDslTopElement {
+	) : TopDslElement {
 		override fun toString() = text
 	}
 
@@ -91,7 +118,7 @@ interface Creole {
 
 	/**Creole标题。*/
 	@CreoleDsl
-	interface Heading : CreoleDslTopElement {
+	interface Heading : TopDslElement {
 		val text:String
 	}
 
@@ -131,7 +158,7 @@ interface Creole {
 	@CreoleDsl
 	class HorizontalLine @PublishedApi internal constructor(
 		val type:HorizontalLineType = HorizontalLineType.Normal
-	) : CreoleDslTopElement {
+	) : TopDslElement {
 		override fun toString() = type.marker.repeat(config.markerCount)
 	}
 
@@ -139,26 +166,26 @@ interface Creole {
 	@CreoleDsl
 	class HorizontalTitle @PublishedApi internal constructor(
 		val text:String, val type:HorizontalLineType = HorizontalLineType.Normal
-	) : CreoleDslTopElement {
+	) : TopDslElement {
 		override fun toString() = type.marker.repeat(config.markerCount).let { "$it$text$it" }
 	}
 
 	/**Creole列表。*/
 	@CreoleDsl
-	class List @PublishedApi internal constructor() : CreoleDslTopElement {
+	class List @PublishedApi internal constructor() : TopDslElement {
 		val nodes:MutableList<ListNode> = mutableListOf()
 
-		override fun toString() = nodes.joinToString("\n")
+		override fun toString() = nodes.joinToString(ls)
 	}
 
 	/**Creole列表节点。*/
 	@CreoleDsl
 	abstract class ListNode(
 		internal val prefixMarkers:String, val text:String
-	) : CreoleDslElement {
+	) : IDslElement {
 		val nodes:MutableList<ListNode> = mutableListOf()
 
-		override fun toString() = "$prefixMarkers $text${nodes.typingAll("\n", "\n")}"
+		override fun toString() = "$prefixMarkers $text${nodes.typingAll(ls, ls)}"
 	}
 
 	/**Creole有序列表节点。*/
@@ -173,26 +200,26 @@ interface Creole {
 	@CreoleDsl
 	class Tree @PublishedApi internal constructor(
 		val title:String
-	) : CreoleDslTopElement {
+	) : TopDslElement {
 		val nodes:MutableList<TreeNode> = mutableListOf()
 
-		override fun toString() = "$title${nodes.typingAll("\n", "\n")}"
+		override fun toString() = "$title${nodes.typingAll(ls, ls)}"
 	}
 
 	/**Creole树节点。*/
 	@CreoleDsl
 	class TreeNode @PublishedApi internal constructor(
 		val text:String
-	) : CreoleDslElement {
+	) : IDslElement {
 		val nodes:MutableList<TreeNode> = mutableListOf()
 
-		override fun toString() = "|_ $text${nodes.typingAll("\n", "\n").prependIndent(config.indent)}"
+		override fun toString() = "|_ $text${nodes.typingAll(ls, ls).prependIndent(config.indent)}"
 	}
 
 	//DELAY pretty format
 	/**Creole表格。*/
 	@CreoleDsl
-	class Table @PublishedApi internal constructor() : CreoleDslTopElement {
+	class Table @PublishedApi internal constructor() : TopDslElement {
 		var header:TableHeader = TableHeader()
 		val rows:MutableList<TableRow> = mutableListOf()
 		var columnSize:Int? = null
@@ -205,14 +232,14 @@ interface Creole {
 			header.columnSize = actualColumnSize
 			rows.forEach { it.columnSize = actualColumnSize }
 			val headerRowSnippet = header.toString()
-			val rowsSnippet = rows.joinToString("\n")
-			return "$headerRowSnippet\n$rowsSnippet"
+			val rowsSnippet = rows.joinToString(ls)
+			return "$headerRowSnippet$ls$rowsSnippet"
 		}
 	}
 
 	/**Creole表格头部。*/
 	@CreoleDsl
-	class TableHeader @PublishedApi internal constructor() : CreoleDslElement, UPlus<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -235,7 +262,7 @@ interface Creole {
 
 	/**Creole表格行。*/
 	@CreoleDsl
-	open class TableRow @PublishedApi internal constructor() : CreoleDslElement, UPlus<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -256,7 +283,7 @@ interface Creole {
 	@CreoleDsl
 	open class TableColumn @PublishedApi internal constructor(
 		val text:String = config.emptyColumnText
-	) : CreoleDslElement {
+	) : IDslElement {
 		var color:String? = null
 		var alignment:TableAlignment = TableAlignment.None //only for columns in table header
 
@@ -288,6 +315,7 @@ interface Creole {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}
 
+
 	/**
 	 * Creole的配置。
 	 * @property indent 文本的缩进。
@@ -299,21 +327,19 @@ interface Creole {
 	@CreoleDsl
 	data class Config(
 		var indent:String = "  ",
-		var emptyColumnText:String = "  ",
 		var truncated:String = "...",
 		var doubleQuoted:Boolean = true,
-		var markerCount:Int = 3
+		var markerCount:Int = 3,
+		var emptyColumnLength:Int = 3
 	) {
-		@PublishedApi internal val quote get() = if(doubleQuoted) '\"' else '\''
-
-		@PublishedApi
-		internal fun repeat(marker:Char) = marker.repeat(markerCount)
+		internal val quote get() = if(doubleQuoted) '\"' else '\''
+		internal val emptyColumnText:String get() = " ".repeat(emptyColumnLength)
 	}
 
 	companion object {
 		@PublishedApi internal val config = Config()
+		@PublishedApi internal val ls = System.lineSeparator()
 
-		@PublishedApi
 		internal fun heading(text:String, headingLevel:Int) = "${"#".repeat(headingLevel)} $text"
 	}
 }

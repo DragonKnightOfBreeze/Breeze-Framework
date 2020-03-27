@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 interface SequenceDiagram {
 	/**序列图的文档。*/
 	@SequenceDiagramDsl
-	class Document @PublishedApi internal constructor() : DslDocument, SequenceDiagramDslEntry {
+	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
 		var title:Title? = null
 		override val participants:MutableSet<Participant> = mutableSetOf()
 		override val messages:MutableList<Message> = mutableListOf()
@@ -16,12 +16,28 @@ interface SequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return listOfNotNull(
-				title?.toString(),
-				contentString().orNull()
-			).joinToString(splitSeparator)
+			return arrayOf(title, contentString()).typingAll(splitSeparator)
 		}
 	}
+
+
+	/**序列图领域特定语言的入口。*/
+	@SequenceDiagramDsl
+	interface IDslEntry : DslEntry, CanSplitLine, WithTransition<Participant, Message> {
+		val participants:MutableSet<Participant>
+		val messages:MutableList<Message>
+		val notes:MutableList<Note>
+
+		override fun contentString():String {
+			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).typingAll(splitSeparator)
+		}
+
+		override fun String.links(other:String) = message(this, other)
+	}
+
+	/**序列图领域特定语言的元素。*/
+	@SequenceDiagramDsl
+	interface IDslElement : DslElement
 
 	/**
 	 * 序列图的标题。
@@ -30,9 +46,10 @@ interface SequenceDiagram {
 	@SequenceDiagramDsl
 	class Title @PublishedApi internal constructor(
 		val text:String
-	) : SequenceDiagramDslElement {
+	) : IDslElement {
 		override fun toString():String {
-			return "title: ${text.normalWrap()}"
+			val textSnippet = text.normalWrap()
+			return "title: $textSnippet"
 		}
 	}
 
@@ -40,9 +57,8 @@ interface SequenceDiagram {
 	@SequenceDiagramDsl
 	class Participant @PublishedApi internal constructor(
 		val name:String
-	) : SequenceDiagramDslElement, WithId {
+	) : IDslElement, WithId {
 		var alias:String? = null
-
 		override val id:String get() = alias ?: name
 
 		override fun equals(other:Any?) = equalsByOne(this, other) { id }
@@ -50,7 +66,7 @@ interface SequenceDiagram {
 		override fun hashCode() = hashCodeByOne(this) { id }
 
 		override fun toString():String {
-			val aliasSnippet = alias?.let { "as $it" }.orEmpty()
+			val aliasSnippet = alias.typing { "as $it" }
 			return "participant $name$aliasSnippet"
 		}
 	}
@@ -59,15 +75,15 @@ interface SequenceDiagram {
 	@SequenceDiagramDsl
 	class Message @PublishedApi internal constructor(
 		val fromParticipantId:String, val toParticipantId:String
-	) : SequenceDiagramDslElement, WithNode {
+	) : IDslElement, WithNode {
 		var text:String = ""
 		var arrowShape:ArrowShape = ArrowShape.Arrow
-
 		override val sourceNodeId:String get() = fromParticipantId
 		override val targetNodeId:String get() = toParticipantId
 
 		override fun toString():String {
-			return "$fromParticipantId ${arrowShape.text} $toParticipantId: $text"
+			val arrowShapeSnippet = arrowShape.text
+			return "$fromParticipantId $arrowShapeSnippet $toParticipantId: $text"
 		}
 	}
 
@@ -79,20 +95,12 @@ interface SequenceDiagram {
 	@SequenceDiagramDsl
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String = ""
-	) : SequenceDiagramDslElement {
+	) : IDslElement {
 
 		override fun toString():String {
 			val textSnippet = text.normalWrap()
 			return "note $location: $textSnippet"
 		}
-	}
-
-	/**序列图消息的箭头类型。*/
-	@SequenceDiagramDsl
-	enum class ArrowShape(
-		internal val text:String
-	) {
-		Arrow("->"), DashedArrow("-->"), OpenArrow("->>"), DashedOpenArrow("-->>")
 	}
 
 	/**序列图注释的位置。*/
@@ -102,20 +110,28 @@ interface SequenceDiagram {
 	) {
 		override fun toString():String {
 			val participantId2Snippet = participantId2?.let { ", $it" }.orEmpty()
-			return "${position.text} $participantId1$participantId2Snippet"
+			val positionSnippet = position.text
+			return "$positionSnippet $participantId1$participantId2Snippet"
 		}
+	}
+
+
+	/**序列图消息的箭头类型。*/
+	@SequenceDiagramDsl
+	enum class ArrowShape(internal val text:String) {
+		Arrow("->"), DashedArrow("-->"), OpenArrow("->>"), DashedOpenArrow("-->>")
 	}
 
 	/**序列图注释的方位。*/
 	@SequenceDiagramDsl
-	enum class NotePosition(
-		internal val text:String
-	) {
+	enum class NotePosition(internal val text:String) {
 		LeftOf("left of"), RightOf("right of"), Over("over")
 	}
 
+
 	companion object {
-		@PublishedApi
+		@PublishedApi internal val ls = System.lineSeparator()
+
 		internal fun String.normalWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 	}
 }

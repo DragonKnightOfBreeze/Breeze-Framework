@@ -14,24 +14,24 @@ inline fun criticMarkup(block:Document.() -> CharSequence) = Document().apply { 
 /**(No document.)*/
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupDslInlineEntry.append(text:CharSequence) = AppendText(text)
+fun InlineDslEntry.append(text:CharSequence) = AppendText(text)
 
 /**(No document.)*/
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupDslInlineEntry.delete(text:CharSequence) = DeleteText(text)
+fun InlineDslEntry.delete(text:CharSequence) = DeleteText(text)
 
 /**(No document.)*/
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupDslInlineEntry.replace(text:CharSequence, replacedText:CharSequence) = ReplaceText(text, replacedText)
+fun InlineDslEntry.replace(text:CharSequence, replacedText:CharSequence) = ReplaceText(text, replacedText)
 
 /**(No document.)*/
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupDslInlineEntry.comment(text:CharSequence) = CommentText(text)
+fun InlineDslEntry.comment(text:CharSequence) = CommentText(text)
 
 /**(No document.)*/
 @InlineDslFunction
 @CriticMarkupDsl
-fun CriticMarkupDslInlineEntry.highlight(text:CharSequence) = HighlightText(text)
+fun InlineDslEntry.highlight(text:CharSequence) = HighlightText(text)

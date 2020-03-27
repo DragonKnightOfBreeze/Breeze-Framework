@@ -1,39 +1,39 @@
 package com.windea.breezeframework.dsl.commandline
 
 
-import com.windea.breezeframework.dsl.commandline.CommandLine.*
+import com.windea.breezeframework.dsl.commandline.CommandLineText.*
 import kotlin.test.*
 
-class CommandLineDslTest {
+class CommandLineTextDslTest {
 	@Test
 	fun test1() {
-		println(commandLine {
+		println(commandLineText {
 			color("123", Color.Red)
 		})
 	}
 
 	@Test
 	fun testColor() {
-		println(commandLine { color("hello world!", Color.Black) })
-		println(commandLine { color("hello world!", Color.Red) })
-		println(commandLine { color("hello world!", Color.Green) })
-		println(commandLine { color("hello world!", Color.Yellow) })
-		println(commandLine { color("hello world!", Color.Blue) })
-		println(commandLine { color("hello world!", Color.Magenta) })
-		println(commandLine { color("hello world!", Color.Cyan) })
-		println(commandLine { color("hello world!", Color.LightGray) })
+		println(commandLineText { color("hello world!", Color.Black) })
+		println(commandLineText { color("hello world!", Color.Red) })
+		println(commandLineText { color("hello world!", Color.Green) })
+		println(commandLineText { color("hello world!", Color.Yellow) })
+		println(commandLineText { color("hello world!", Color.Blue) })
+		println(commandLineText { color("hello world!", Color.Magenta) })
+		println(commandLineText { color("hello world!", Color.Cyan) })
+		println(commandLineText { color("hello world!", Color.LightGray) })
 	}
 
 	@Test
 	fun test2() {
-		println(commandLine {
+		println(commandLineText {
 			bgColor("123", Color.Red)
 		})
 	}
 
 	@Test
 	fun test3() {
-		println(commandLine {
+		println(commandLineText {
 			"""
 			=================================================================
 			There is a story of ${color("dragons and dragon knights", Color.LightBlue)}
@@ -50,7 +50,7 @@ class CommandLineDslTest {
 
 	@Test
 	fun test4() {
-		println(commandLine {
+		println(commandLineText {
 			"""
 			=================================================================
 			There is a story of ${bold(color("dragons and dragon knights", Color.LightBlue))}

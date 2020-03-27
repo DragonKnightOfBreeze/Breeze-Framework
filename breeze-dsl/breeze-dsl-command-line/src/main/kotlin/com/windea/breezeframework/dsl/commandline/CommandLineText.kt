@@ -6,54 +6,61 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.dsl.*
 
 /**命令行文本。*/
-@CommandLineDsl
-interface CommandLine {
+@CommandLineTextDsl
+interface CommandLineText {
 	/**命令行文本的文档。*/
-	@CommandLineDsl
-	class Document @PublishedApi internal constructor() : DslDocument, CommandLineDslInlineEntry {
+	@CommandLineTextDsl
+	class Document @PublishedApi internal constructor() : DslDocument, InlineDslEntry {
 		var text:CharSequence = ""
 
-		override fun toString():String {
-			return text.toString()
-		}
+		override fun toString() = text.toString()
 	}
 
+
+	/**命令行文本领域特定语言的内联入口。*/
+	@CommandLineTextDsl
+	interface InlineDslEntry : DslEntry
+
+	/**命令行文本领域特定语言的内联元素。*/
+	@CommandLineTextDsl
+	interface InlineDslElement : DslElement, Inlineable
+
 	/**命令行富文本。*/
-	@CommandLineDsl
-	interface RichText : CommandLineDslInlineElement, HandledCharSequence
+	@CommandLineTextDsl
+	interface RichText : InlineDslElement, Inlineable
 
 	/**命令行加粗文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class BoldText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Bold.code)
 	}
 
 	/**命令行浅色文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class LightText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Light.code)
 	}
 
 	/**命令行斜体文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class ItalicText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Italic.code)
 	}
 
 	/**命令行下划线文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class UnderlineText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Underline.code)
 	}
 
 	/**命令行闪烁文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class BlinkText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Blink.code)
 	}
 
 	/**命令行反显文本。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	inline class InvertText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
 		override fun toString() = richText(text, Style.Invert.code)
 	}
@@ -62,7 +69,7 @@ interface CommandLine {
 	 * 命令行前景色文本。
 	 * @property color 文本的前景色。
 	 */
-	@CommandLineDsl
+	@CommandLineTextDsl
 	class ColoredText @PublishedApi internal constructor(
 		override val text:CharSequence, val color:Color
 	) : RichText {
@@ -73,7 +80,7 @@ interface CommandLine {
 	 * 命令行背景色文本。
 	 * @property color 文本的背景色。
 	 */
-	@CommandLineDsl
+	@CommandLineTextDsl
 	class BgColoredText @PublishedApi internal constructor(
 		override val text:CharSequence, val color:Color
 	) : RichText {
@@ -84,15 +91,16 @@ interface CommandLine {
 	 * 命令行格式文本。
 	 * @property styles 文本的格式组。
 	 */
-	@CommandLineDsl
+	@CommandLineTextDsl
 	class StyledText @PublishedApi internal constructor(
 		override val text:CharSequence, vararg val styles:Style
 	) : RichText {
 		override fun toString() = richText(text, styles.joinToString(";") { it.code.toString() })
 	}
 
+
 	/**命令行文本的颜色。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	enum class Color(
 		internal val code:Int
 	) {
@@ -115,7 +123,7 @@ interface CommandLine {
 	}
 
 	/**命令行文本的风格。*/
-	@CommandLineDsl
+	@CommandLineTextDsl
 	enum class Style(
 		internal val code:Int
 	) {
@@ -127,6 +135,7 @@ interface CommandLine {
 		Blink(5),
 		Invert(7);
 	}
+
 
 	companion object {
 		private fun richText(text:CharSequence, code:Any) = "\u001B[${code}m$text\u001B[0m"
