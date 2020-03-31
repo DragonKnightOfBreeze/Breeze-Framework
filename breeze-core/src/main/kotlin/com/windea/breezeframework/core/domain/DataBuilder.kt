@@ -9,10 +9,10 @@ package com.windea.breezeframework.core.domain
  * 基于该数据实体的操作类，推荐拥有两个构造方法，
  * 主构造方法以该数据实体为默认参数，次构造方法以该数据实体的代码块为参数。
  */
-interface DataBuilder<T : DataEntity> {
+interface DataBuilder<out T : DataEntity> {
 	/**清空构建器中的缓存数据。**/
 	fun clear() {}
 
 	/**构建对应的数据实体。*/
-	fun build(): T
+	fun build():T
 }
