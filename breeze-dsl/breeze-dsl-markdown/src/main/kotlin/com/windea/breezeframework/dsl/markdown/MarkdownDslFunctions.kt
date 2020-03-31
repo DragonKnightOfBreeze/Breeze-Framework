@@ -4,8 +4,8 @@ package com.windea.breezeframework.dsl.markdown
 
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.markdown.Markdown.*
+import com.windea.breezeframework.dsl.markdown.Markdown.Companion.config
 import com.windea.breezeframework.dsl.markdown.Markdown.List
-import com.windea.breezeframework.dsl.markdown.MarkdownConfig.emptyColumnText
 
 @TopDslFunction
 @MarkdownDsl
@@ -13,7 +13,7 @@ inline fun markdown(block:Document.() -> Unit) = Document().apply(block)
 
 @TopDslFunction
 @MarkdownDsl
-inline fun markdownConfig(block:MarkdownConfig.() -> Unit) = MarkdownConfig.apply(block)
+inline fun markdownConfig(block:Config.() -> Unit) = config.apply(block)
 
 
 @InlineDslFunction
@@ -173,7 +173,7 @@ fun IDslEntry.hr() =
 
 @DslFunction
 @MarkdownDsl
-inline fun IDslEntry.list(block:Markdown.List.() -> Unit) =
+inline fun IDslEntry.list(block:List.() -> Unit) =
 	List().apply(block).also { content += it }
 
 @DslFunction
@@ -247,17 +247,17 @@ infix fun <T : WithAttributes> T.with(attributes:AttributeGroup) =
 
 @DslFunction
 @MarkdownDsl
-inline fun Markdown.List.ol(order:String, text:String, block:OrderedListNode.() -> Unit = {}) =
+inline fun List.ol(order:String, text:String, block:OrderedListNode.() -> Unit = {}) =
 	OrderedListNode(order, text).apply(block).also { nodes += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun Markdown.List.ul(text:String, block:UnorderedListNode.() -> Unit = {}) =
+inline fun List.ul(text:String, block:UnorderedListNode.() -> Unit = {}) =
 	UnorderedListNode(text).apply(block).also { nodes += it }
 
 @DslFunction
 @MarkdownDsl
-inline fun Markdown.List.task(status:Boolean, text:String, block:TaskListNode.() -> Unit = {}) =
+inline fun List.task(status:Boolean, text:String, block:TaskListNode.() -> Unit = {}) =
 	TaskListNode(status, text).apply(block).also { nodes += it }
 
 @DslFunction
@@ -298,12 +298,12 @@ infix fun Table.columnSize(size:Int) =
 
 @DslFunction
 @MarkdownDsl
-fun TableHeader.column(text:String = emptyColumnText) =
+fun TableHeader.column(text:String = config.emptyColumnText) =
 	TableColumn(text).also { columns += it }
 
 @DslFunction
 @MarkdownDsl
-fun TableRow.column(text:String = emptyColumnText) =
+fun TableRow.column(text:String = config.emptyColumnText) =
 	TableColumn(text).also { columns += it }
 
 

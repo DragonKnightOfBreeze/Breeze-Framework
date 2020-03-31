@@ -28,7 +28,7 @@ inline fun Boolean.onTrue(block: () -> Unit): Boolean {
 }
 
 /**如果为false，则执行一段代码。总是返回自身。*/
-inline fun Boolean.onFalse(block: () -> Unit): Boolean {
+inline fun Boolean.onFalse(block:() -> Unit):Boolean {
 	contract {
 		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
 	}
@@ -38,41 +38,50 @@ inline fun Boolean.onFalse(block: () -> Unit): Boolean {
 //endregion
 
 //region convert extensions
-/**转化为1或0。*/
-inline fun Boolean.toInt(): Int = if(this) 1 else 0
+/**将当前布尔值转化为对象。*/
+inline fun <T> Boolean.asObject(trueValue:T, falseValue:T):T = if(this) trueValue else falseValue
 
-/**转化为1或0。*/
-inline fun Boolean.toLong(): Long = if(this) 1 else 0
+/**将当前布尔值转化为字节类型的1或0。*/
+inline fun Boolean.toByte():Byte = if(this) 1 else 0
 
-/**转化为1或0。*/
-inline fun Boolean.toFloat(): Float = if(this) 1f else 0f
+/**将当前布尔值转化为短整数类型的1或0。*/
+inline fun Boolean.toShort():Short = if(this) 1 else 0
 
-/**转化为1或0。*/
-inline fun Boolean.toDouble(): Double = if(this) 1.0 else 0.0
+/**将当前布尔值转化为整数类型的1或0。*/
+inline fun Boolean.toInt():Int = if(this) 1 else 0
 
+/**将当前布尔值转化为长整数类型的1或0。*/
+inline fun Boolean.toLong():Long = if(this) 1 else 0
 
-/**转化为指定的相反数。默认为1或-1。*/
-inline fun Boolean.toOpsInt(value: Int = 1): Int = if(this) value else -value
+/**将当前布尔值转化为单精度浮点数类型的1或0。*/
+inline fun Boolean.toFloat():Float = if(this) 1f else 0f
 
-/**转化为指定的相反数。默认为1或-1。*/
-inline fun Boolean.toOpsLong(value: Long = 1): Long = if(this) value else -value
-
-/**转化为指定的相反数。默认为1或-1。*/
-inline fun Boolean.toOpsFloat(value: Float = 1f): Float = if(this) value else -value
-
-/**转化为指定的相反数。默认为1或-1。*/
-inline fun Boolean.toOpsDouble(value: Double = 1.0): Double = if(this) value else -value
+/**将当前布尔值转化为双精度浮点数类型的1或0。*/
+inline fun Boolean.toDouble():Double = if(this) 1.0 else 0.0
 
 
-/**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
-inline fun Boolean?.toOpsInt(value: Int = 1): Int = this?.toOpsInt(value) ?: 0
-
-/**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
-inline fun Boolean?.toOpsLong(value: Long = 1): Long = this?.toOpsLong(value) ?: 0
-
-/**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
-inline fun Boolean?.toOpsFloat(value: Float = 1f): Float = this?.toOpsFloat(value) ?: 0f
-
-/**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
-inline fun Boolean?.toOpsDouble(value: Double = 1.0): Double = this?.toOpsDouble(value) ?: 0.0
+///**转化为指定的相反数。默认为1或-1。*/
+//inline fun Boolean.toOpsInt(value: Int = 1): Int = if(this) value else -value
+//
+///**转化为指定的相反数。默认为1或-1。*/
+//inline fun Boolean.toOpsLong(value: Long = 1): Long = if(this) value else -value
+//
+///**转化为指定的相反数。默认为1或-1。*/
+//inline fun Boolean.toOpsFloat(value: Float = 1f): Float = if(this) value else -value
+//
+///**转化为指定的相反数。默认为1或-1。*/
+//inline fun Boolean.toOpsDouble(value: Double = 1.0): Double = if(this) value else -value
+//
+//
+///**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
+//inline fun Boolean?.toOpsInt(value: Int = 1): Int = this?.toOpsInt(value) ?: 0
+//
+///**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
+//inline fun Boolean?.toOpsLong(value: Long = 1): Long = this?.toOpsLong(value) ?: 0
+//
+///**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
+//inline fun Boolean?.toOpsFloat(value: Float = 1f): Float = this?.toOpsFloat(value) ?: 0f
+//
+///**转化为指定的相反数。默认为1或-1。如果为null，则转化为0。*/
+//inline fun Boolean?.toOpsDouble(value: Double = 1.0): Double = this?.toOpsDouble(value) ?: 0.0
 //endregion

@@ -2,11 +2,17 @@ package com.windea.breezeframework.dsl.xml
 
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.xml.Xml.*
+import com.windea.breezeframework.dsl.xml.Xml.Companion.config
 
 /**(No document.)*/
 @TopDslFunction
 @XmlDsl
 inline fun xml(block:Document.() -> Unit) = Document().apply(block)
+
+/**(No document.)*/
+@TopDslFunction
+@XmlDsl
+inline fun xmlConfig(block:Config.() -> Unit) = config.block()
 
 
 /**(No document.)*/
