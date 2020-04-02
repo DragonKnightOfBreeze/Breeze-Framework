@@ -2,6 +2,7 @@ package com.windea.breezeframework.dsl.sequence
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 
 /**序列图。*/
 @SequenceDiagramDsl
@@ -16,20 +17,20 @@ interface SequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return arrayOf(title, contentString()).typingAll(splitSeparator)
+			return arrayOf(title, contentString()).doSplitLine()
 		}
 	}
 
 
 	/**序列图领域特定语言的入口。*/
 	@SequenceDiagramDsl
-	interface IDslEntry : DslEntry, CanSplitLine, WithTransition<Participant, Message> {
+	interface IDslEntry : DslEntry, SplitLine, WithTransition<Participant, Message> {
 		val participants:MutableSet<Participant>
 		val messages:MutableList<Message>
 		val notes:MutableList<Note>
 
 		override fun contentString():String {
-			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).typingAll(splitSeparator)
+			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).doSplitLine()
 		}
 
 		override fun String.links(other:String) = message(this, other)
@@ -130,8 +131,6 @@ interface SequenceDiagram {
 
 
 	companion object {
-		@PublishedApi internal val ls = System.lineSeparator()
-
 		internal fun String.normalWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 	}
 }

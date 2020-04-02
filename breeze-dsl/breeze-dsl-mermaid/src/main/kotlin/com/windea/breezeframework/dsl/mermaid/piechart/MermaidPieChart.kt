@@ -2,9 +2,9 @@ package com.windea.breezeframework.dsl.mermaid.piechart
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid饼图。
@@ -16,7 +16,7 @@ interface MermaidPieChart {
 	 * @property title （可选项）图表的标题。
 	 */
 	@MermaidPieChartDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidPieChartDslEntry, CanIndent {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidPieChartDslEntry, Indent {
 		var title:Title? = null
 		override val sections:MutableSet<Section> = mutableSetOf()
 		override var indentContent:Boolean = true

@@ -2,10 +2,10 @@ package com.windea.breezeframework.dsl.mermaid.sequencediagram
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid序列图。
@@ -14,7 +14,7 @@ import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 interface MermaidSequenceDiagram {
 	/**Mermaid序列图的文档。*/
 	@MermaidSequenceDiagramDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidSequenceDiagramDslEntry, CanIndent {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidSequenceDiagramDslEntry, Indent {
 		override val participants:MutableSet<Participant> = mutableSetOf()
 		override val messages:MutableList<Message> = mutableListOf()
 		override val notes:MutableList<Note> = mutableListOf()
@@ -37,7 +37,7 @@ interface MermaidSequenceDiagram {
 	 * @property scopes 作用域一览。
 	 */
 	@MermaidSequenceDiagramDsl
-	interface MermaidSequenceDiagramDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<Participant, Message> {
+	interface MermaidSequenceDiagramDslEntry : Mermaid.IDslEntry, SplitLine, WithTransition<Participant, Message> {
 		val participants:MutableSet<Participant>
 		val messages:MutableList<Message>
 		val notes:MutableList<Note>
@@ -45,7 +45,7 @@ interface MermaidSequenceDiagram {
 
 		override fun contentString():String {
 			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
-				.typingAll(splitSeparator)
+				.doSplitLine()
 		}
 
 		@DslFunction
@@ -142,7 +142,7 @@ interface MermaidSequenceDiagram {
 	abstract class Scope(
 		val type:String,
 		val text:String?
-	) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, CanIndent {
+	) : MermaidSequenceDiagramDslElement, MermaidSequenceDiagramDslEntry, Indent {
 		override val participants:MutableSet<Participant> = mutableSetOf()
 		override val messages:MutableList<Message> = mutableListOf()
 		override val notes:MutableList<Note> = mutableListOf()

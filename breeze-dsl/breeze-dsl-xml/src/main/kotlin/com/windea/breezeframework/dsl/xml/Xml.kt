@@ -6,8 +6,11 @@ import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.core.types.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 
-/**Xml。*/
+/**
+ * Xml。
+ */
 @XmlDsl
 interface Xml {
 	/**
@@ -22,18 +25,20 @@ interface Xml {
 		val comments:MutableList<Comment> = mutableListOf()
 		var rootElement:Element? = null
 
+		override fun String.unaryMinus() = comment(this)
+		override fun String.invoke(block:Block<Element>) = element(this, block = block)
+		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
+
 		override fun toString():String {
 			require(rootElement != null) { "Root element of Xml document cannot be null." }
 			return arrayOf(declarations.typingAll(ls), comments.typingAll(ls), rootElement).typingAll(ls)
 		}
-
-		override fun String.unaryMinus() = comment(this)
-		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 	}
 
 
-	/**Xml领域特定语言的元素。*/
+	/**
+	 * Xml领域特定语言的元素。
+	 */
 	@XmlDsl
 	interface IDslElement : DslElement
 
@@ -53,7 +58,9 @@ interface Xml {
 		}
 	}
 
-	/**Xml结点。*/
+	/**
+	 * Xml结点。
+	 */
 	@XmlDsl
 	interface Node : IDslElement
 
@@ -72,9 +79,13 @@ interface Xml {
 	 * Xml CDATA文本。
 	 * @property text 内容文本。
 	 */
-	inline class CData @PublishedApi internal constructor(val text:String) : Node {
+	class CData @PublishedApi internal constructor(val text:String) : Node, WrapLine, Indent {
+		override var wrapContent = true
+		override var indentContent = true
+
 		override fun toString():String {
-			return "![CDATA[$ls$text$ls]]>"
+			val textSnippet = text.doIndent(config.indent, wrapContent).doWrapLine { "$ls$ls$ls" }
+			return "![CDATA[$textSnippet]]>"
 		}
 	}
 
@@ -83,14 +94,12 @@ interface Xml {
 	 * @property text 内容文本。
 	 */
 	@XmlDsl
-	class Comment @PublishedApi internal constructor(
-		val text:String
-	) : Node, CanWrapLine, CanIndent {
+	class Comment @PublishedApi internal constructor(val text:String) : Node, WrapLine, Indent {
 		override var wrapContent = false
 		override var indentContent = true
 
 		override fun toString():String {
-			val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(config.indent, wrapContent).doWrap()
+			val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(config.indent, wrapContent).doWrapLine { "$ls$it$ls" }
 			return "<!--$textSnippet-->"
 		}
 	}
@@ -103,15 +112,21 @@ interface Xml {
 	 */
 	@XmlDsl
 	class Element @PublishedApi internal constructor(
-		val name:String, val attributes:Map<String, Any?> = mapOf()
-	) : Node, CanWrapLine, CanIndent, UPlus<Text>, UMinus<Comment>, InvokeArgs<Element>, WithId {
+		val name:String,
+		val attributes:Map<String, Any?> = mapOf()
+	) : Node, WrapLine, Indent, UPlus<Text>, UMinus<Comment>, InvokeArgs<Element>, WithId {
 		val nodes:MutableList<Node> = mutableListOf()
 		override var wrapContent = true
 		override var indentContent = true
 		override val id get() = name
 
+		override fun String.unaryPlus() = text(this)
+		override fun String.unaryMinus() = comment(this)
+		override fun String.invoke(block:Block<Element>) = element(this, block = block)
+		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
+
 		override fun toString():String {
-			val nodesSnippet = nodes.typingAll(wrapSeparator).doIndent(config.indent, wrapContent).doWrap()
+			val nodesSnippet = nodes.typingAll(ls).doIndent(config.indent, wrapContent).doWrapLine { "$ls$it$ls" }
 			val attributesSnippet = attributes.typingAll(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(config.quote)}"
 			}
@@ -119,18 +134,14 @@ interface Xml {
 			val suffixSnippet = if(config.autoCloseTag && nodes.isEmpty()) "/>" else "</$name>"
 			return "$prefixSnippet$nodesSnippet$suffixSnippet"
 		}
-
-		override fun String.unaryPlus() = text(this)
-		override fun String.unaryMinus() = comment(this)
-		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 	}
+
 
 	/**
 	 * Xml配置。
-	 * @property indent 文本的缩进。
-	 * @property doubleQuoted 是否偏向使用双引号。
-	 * @property autoCloseTag 是否自关闭标签。
+	 * @property indent 文本的缩进。默认为2个空格。
+	 * @property doubleQuoted 是否偏向使用双引号。默认为是。
+	 * @property autoCloseTag 是否自关闭标签。默认为否。
 	 */
 	@XmlDsl
 	data class Config(
@@ -142,7 +153,6 @@ interface Xml {
 	}
 
 	companion object {
-		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = System.getProperty("line.separator")
+		val config = Config()
 	}
 }

@@ -2,9 +2,9 @@ package com.windea.breezeframework.dsl.mermaid.gantt
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid甘特图。
@@ -17,7 +17,7 @@ interface MermaidGantt {
 	 * @property dateFormat （可选项）图标的日期格式化方式。
 	 */
 	@MermaidGanttDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, CanIndent, CanSplitLine {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, Indent, SplitLine {
 		var title:Title? = null
 		var dateFormat:DateFormat? = null
 		override val sections:MutableList<Section> = mutableListOf()
@@ -25,7 +25,7 @@ interface MermaidGantt {
 		override var splitContent:Boolean = false
 
 		override fun toString():String {
-			val contentSnippet = arrayOf(title, dateFormat, contentString()).typingAll(splitSeparator).doIndent(config.indent)
+			val contentSnippet = arrayOf(title, dateFormat, contentString()).doSplitLine().doIndent(config.indent)
 			return "gantt$ls$contentSnippet"
 		}
 	}
@@ -37,7 +37,7 @@ interface MermaidGantt {
 	 * @property sections 图表的分区一览。
 	 */
 	@MermaidGanttDsl
-	interface IDslEntry : Mermaid.IDslEntry, CanSplitLine {
+	interface IDslEntry : Mermaid.IDslEntry, SplitLine {
 		val sections:MutableList<Section>
 
 		override fun contentString():String {
@@ -85,7 +85,7 @@ interface MermaidGantt {
 	@MermaidGanttDsl
 	class Section @PublishedApi internal constructor(
 		val name:String
-	) : IDslElement, CanIndent, WithId {
+	) : IDslElement, Indent, WithId {
 		val tasks:MutableList<Task> = mutableListOf()
 		override var indentContent:Boolean = false
 		override val id:String get() = name

@@ -2,10 +2,10 @@ package com.windea.breezeframework.dsl.mermaid.flowchart
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid流程图。
@@ -19,7 +19,7 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class Document @PublishedApi internal constructor(
 		val direction:Direction
-	) : Mermaid.Document(), IDslEntry, CanIndent {
+	) : Mermaid.Document(), IDslEntry, Indent {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val links:MutableList<Link> = mutableListOf()
 		override val subGraphs:MutableList<SubGraph> = mutableListOf()
@@ -49,7 +49,7 @@ interface MermaidFlowChart {
 	 * @property classRefs CSS类引用一览。
 	 */
 	@MermaidFlowChartDsl
-	interface IDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<Node, Link> {
+	interface IDslEntry : Mermaid.IDslEntry, SplitLine, WithTransition<Node, Link> {
 		val nodes:MutableSet<Node>
 		val links:MutableList<Link>
 		val subGraphs:MutableList<SubGraph>
@@ -59,8 +59,10 @@ interface MermaidFlowChart {
 		val classRefs:MutableList<ClassRef>
 
 		override fun contentString():String {
-			return arrayOf(nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
-				linkStyles.typingAll(ls), classDefs.typingAll("ls"), classRefs.typingAll(ls)).typingAll(splitSeparator)
+			return arrayOf(
+				nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
+				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
+			).doSplitLine()
 		}
 
 		@DslFunction
@@ -130,7 +132,7 @@ interface MermaidFlowChart {
 	@MermaidFlowChartDsl
 	class SubGraph @PublishedApi internal constructor(
 		val name:String
-	) : IDslElement, IDslEntry, CanIndent {
+	) : IDslElement, IDslEntry, Indent {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val links:MutableList<Link> = mutableListOf()
 		override val subGraphs:MutableList<SubGraph> = mutableListOf()

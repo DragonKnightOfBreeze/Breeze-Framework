@@ -4,6 +4,7 @@ package com.windea.breezeframework.dsl.flow
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.flow.FlowChart.Connection.*
 import java.util.*
 
@@ -25,12 +26,12 @@ interface FlowChart {
 
 	/**流程图领域特定语言的入口。*/
 	@FlowChartDsl
-	interface IDslEntry : DslEntry, CanSplitLine, WithTransition<Node, Connection> {
+	interface IDslEntry : DslEntry, SplitLine, WithTransition<Node, Connection> {
 		val nodes:MutableSet<Node>
 		val connections:MutableList<Connection>
 
 		override fun contentString():String {
-			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).typingAll(splitSeparator)
+			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplitLine()
 		}
 
 		override fun String.links(other:String) = connection(this, other)
@@ -140,10 +141,5 @@ interface FlowChart {
 		internal val text:String
 	) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
-	}
-
-
-	companion object {
-		@PublishedApi internal val ls = System.lineSeparator()
 	}
 }

@@ -5,6 +5,7 @@ package com.windea.breezeframework.dsl.creole
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 
 /**Creole。*/
 @CreoleDsl
@@ -337,8 +338,7 @@ interface Creole {
 	}
 
 	companion object {
-		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = System.lineSeparator()
+		val config = Config()
 
 		internal fun heading(text:String, headingLevel:Int) = "${"#".repeat(headingLevel)} $text"
 	}

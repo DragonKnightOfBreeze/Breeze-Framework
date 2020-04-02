@@ -36,8 +36,7 @@ interface Mermaid {
 	}
 
 	companion object {
-		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = System.lineSeparator()
+		val config = Config()
 
 		internal fun String.htmlWrap() = this.replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>")
 	}

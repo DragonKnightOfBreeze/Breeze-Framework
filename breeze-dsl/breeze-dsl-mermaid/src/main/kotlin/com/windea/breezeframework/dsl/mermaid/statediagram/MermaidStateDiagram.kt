@@ -2,10 +2,10 @@ package com.windea.breezeframework.dsl.mermaid.statediagram
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.config
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid状态图。
@@ -14,7 +14,7 @@ import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 interface MermaidStateDiagram {
 	/**Mermaid状态图的文档。*/
 	@MermaidStateDiagramDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidStateDiagramDslEntry, CanIndent {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), MermaidStateDiagramDslEntry, Indent {
 		override val states:MutableSet<State> = mutableSetOf()
 		override val links:MutableList<Transition> = mutableListOf()
 		override val notes:MutableList<Note> = mutableListOf()
@@ -34,13 +34,13 @@ interface MermaidStateDiagram {
 	 * @property notes 注释一览。
 	 */
 	@MermaidStateDiagramDsl
-	interface MermaidStateDiagramDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<State, Transition> {
+	interface MermaidStateDiagramDslEntry : Mermaid.IDslEntry, SplitLine, WithTransition<State, Transition> {
 		val states:MutableSet<State>
 		val links:MutableList<Transition>
 		val notes:MutableList<Note>
 
 		override fun contentString():String {
-			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).typingAll(splitSeparator)
+			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplitLine()
 		}
 
 		@DslFunction
@@ -85,7 +85,7 @@ interface MermaidStateDiagram {
 
 	/**Mermaid状态图的复合状态。*/
 	@MermaidStateDiagramDsl
-	class CompositedState @PublishedApi internal constructor(name:String) : State(name), MermaidStateDiagramDslEntry, CanIndent {
+	class CompositedState @PublishedApi internal constructor(name:String) : State(name), MermaidStateDiagramDslEntry, Indent {
 		override val states:MutableSet<State> = mutableSetOf()
 		override val links:MutableList<Transition> = mutableListOf()
 		override val notes:MutableList<Note> = mutableListOf()
@@ -103,7 +103,7 @@ interface MermaidStateDiagram {
 	 * @property sections 并发状态的分块一览。
 	 */
 	@MermaidStateDiagramDsl
-	class ConcurrentState @PublishedApi internal constructor(name:String) : State(name), CanIndent {
+	class ConcurrentState @PublishedApi internal constructor(name:String) : State(name), Indent {
 		val sections:MutableList<ConcurrentSection> = mutableListOf()
 		override var indentContent:Boolean = true
 
@@ -153,7 +153,7 @@ interface MermaidStateDiagram {
 	@MermaidStateDiagramDsl
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String
-	) : MermaidStateDiagramDslElement, CanWrapLine, CanIndent {
+	) : MermaidStateDiagramDslElement, WrapLine, Indent {
 		override var wrapContent:Boolean = false
 		override var indentContent:Boolean = true
 

@@ -5,6 +5,7 @@ package com.windea.breezeframework.dsl.markdown
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.criticmarkup.*
 import org.intellij.lang.annotations.*
 
@@ -189,7 +190,7 @@ interface Markdown {
 	@MarkdownDsl
 	class TextBlock @PublishedApi internal constructor(
 		val text:String
-	) : TopDslElement, CanWrapLine {
+	) : TopDslElement, WrapLine {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
@@ -203,7 +204,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Heading(
 		val headingLevel:Int, val text:String
-	) : TopDslElement, WithAttributes, CanWrapLine {
+	) : TopDslElement, WithAttributes, WrapLine {
 		@MarkdownExtendedFeature override var attributes:AttributeGroup? = null
 		override var wrapContent:Boolean = true
 	}
@@ -310,7 +311,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class ListNode(
 		internal val prefixMarkers:String, val text:String
-	) : IDslElement, CanWrapLine {
+	) : IDslElement, WrapLine {
 		val nodes:MutableList<ListNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
@@ -352,7 +353,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Definition @PublishedApi internal constructor(
 		val title:String
-	) : TopDslElement, CanWrapLine {
+	) : TopDslElement, WrapLine {
 		val nodes:MutableList<DefinitionNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
@@ -373,7 +374,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class DefinitionNode @PublishedApi internal constructor(
 		val text:String
-	) : IDslElement, CanWrapLine {
+	) : IDslElement, WrapLine {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
@@ -590,15 +591,10 @@ interface Markdown {
 	/**Markdown目录。只能位于文档顶部。用于生成当前文档的目录。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	class Toc @PublishedApi internal constructor() : IDslElement, CanGenerate {
+	class Toc @PublishedApi internal constructor() : IDslElement, Generate {
 		override var generateContent:Boolean = false
 
-		override fun doGenerate():String {
-			TODO("not implemented")
-		}
-
 		override fun toString():String {
-			if(generateContent) return doGenerate()
 			return "[TOC]"
 		}
 	}
@@ -608,17 +604,12 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Import @PublishedApi internal constructor(
 		val url:String
-	) : TopDslElement, CanGenerate, WithAttributes {
+	) : TopDslElement, Generate, WithAttributes {
 		//DONE extended classes and properties
 		override var attributes:AttributeGroup? = null
 		override var generateContent:Boolean = false
 
-		override fun doGenerate():String {
-			TODO("not implemented")
-		}
-
 		override fun toString():String {
-			if(generateContent) return doGenerate()
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 			val urlSnippet = url.quote(config.quote)
 			return "@import $urlSnippet$attributesSnippet"
@@ -630,15 +621,10 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Macros @PublishedApi internal constructor(
 		val name:String
-	) : TopDslElement, CanGenerate {
+	) : TopDslElement, Generate {
 		override var generateContent:Boolean = false
 
-		override fun doGenerate():String {
-			TODO("not implemented")
-		}
-
 		override fun toString():String {
-			if(generateContent) return doGenerate()
 			return "<<< $name >>>"
 		}
 	}
@@ -823,10 +809,8 @@ interface Markdown {
 	}
 
 	companion object {
-		@PublishedApi internal val config = Config()
-		@PublishedApi internal val ls = System.lineSeparator()
+		val config = Config()
 
-		@PublishedApi
 		internal fun heading(text:String, headingLevel:Int) = "${"#".repeat(headingLevel)} $text"
 	}
 }

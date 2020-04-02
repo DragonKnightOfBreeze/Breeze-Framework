@@ -2,9 +2,9 @@ package com.windea.breezeframework.dsl.mermaid.classdiagram
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.htmlWrap
-import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 
 /**
  * Mermaid类图。
@@ -13,7 +13,7 @@ import com.windea.breezeframework.dsl.mermaid.Mermaid.Companion.ls
 interface MermaidClassDiagram {
 	/**Mermaid类图的文档。*/
 	@MermaidClassDiagramDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, CanIndent {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, Indent {
 		override val classes:MutableSet<Class> = mutableSetOf()
 		override val relations:MutableList<Relation> = mutableListOf()
 		override var indentContent:Boolean = true
@@ -32,12 +32,12 @@ interface MermaidClassDiagram {
 	 * @property relations 关系一览。
 	 */
 	@MermaidClassDiagramDsl
-	interface IDslEntry : Mermaid.IDslEntry, CanSplitLine, WithTransition<Class, Relation> {
+	interface IDslEntry : Mermaid.IDslEntry, SplitLine, WithTransition<Class, Relation> {
 		val classes:MutableSet<Class>
 		val relations:MutableList<Relation>
 
 		override fun contentString():String {
-			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).typingAll(splitSeparator)
+			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplitLine()
 		}
 
 		@DslFunction
@@ -100,7 +100,7 @@ interface MermaidClassDiagram {
 	@MermaidClassDiagramDsl
 	class Class @PublishedApi internal constructor(
 		val name:String
-	) : IDslElement, CanIndent, WithId {
+	) : IDslElement, Indent, WithId {
 		var annotation:Annotation? = null
 		val statements:MutableList<Statement> = mutableListOf()
 		override var indentContent:Boolean = true
