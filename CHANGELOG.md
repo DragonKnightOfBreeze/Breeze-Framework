@@ -345,6 +345,7 @@
 
 * [X] 更新版本。 
 * [X] 为集合类型添加`query`扩展（基于`deepQuery`扩展）。
+* [X] 删除`breeze-dsl-json`和`breeze-dsl-yaml`。
 * [ ] 完善代码……
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。

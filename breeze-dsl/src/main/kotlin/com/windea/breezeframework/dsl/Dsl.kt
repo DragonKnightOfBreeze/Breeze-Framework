@@ -30,6 +30,8 @@ import com.windea.breezeframework.core.types.*
 //~~对于Dsl入口，以buildString的方式生成字符串，以提高性能（相比之下可以很快）~~
 //~~对于Dsl元素，可以直接使用模版字符串或joinToString~~
 
+//不为json和yaml提供dsl，因为它们可以非常方便地使用集合结构表示
+
 //region dsl top declarations
 /**领域特定语言。*/
 @DslMarker
