@@ -1,5 +1,5 @@
 @file:JvmName("DataClassExtensions")
-@file:Suppress("DuplicatedCode")
+@file:Suppress("DuplicatedCode", "UNCHECKED_CAST")
 
 package com.windea.breezeframework.core.extensions
 
@@ -8,75 +8,59 @@ import kotlin.reflect.*
 //https://github.com/consoleau/kassava
 
 //为了避免污染Any?的代码提示，不要定义为Any?的扩展方法
+//可以使用Kotlin委托为接口委托实现这些方法，但是结合Kotlin反射使用可能出现问题
 
-/**通过选择并比较指定类型中的属性，判断两个对象是否相等。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> equalsBy(target: T?, other: Any?, deepOperation: Boolean = true,
-	selector: T.() -> Array<*>): Boolean {
-	return target === other || target != null && other is T &&
-	       target.selector().zip(other.selector()) { a, b -> a.smartEquals(b, deepOperation) }.all { it }
+/**通过选择并比较指定类型中的属性，判断两个对象是否相等。特殊对待数组类型，并且默认递归执行操作。*/
+inline fun <T : Any> equalsBy(target:T?, other:Any?, deepOp:Boolean = true, selector:T.() -> Array<*>):Boolean {
+	return when {
+		target === other -> true
+		target == null || target.javaClass != other?.javaClass -> false
+		else -> target.selector().zip((other as T).selector()).all { (a, b) -> a.smartEquals(b, deepOp) }
+	}
 }
 
-/**通过选择并比较指定类型中的某个属性，判断两个对象是否相等。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> equalsByOne(target: T?, other: Any?, deepOperation: Boolean = true,
-	selector: T.() -> Any?): Boolean {
-	return target === other || target != null && other is T && target.selector().smartEquals(other.selector(), deepOperation)
+/**通过选择指定类型中的属性，得到指定对象的哈希码。特殊对待数组类型，并且默认递归执行操作。*/
+inline fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Array<*>):Int {
+	return target?.selector()?.fold(1) { r, k -> 31 * r + k.smartHashCode(deepOp) } ?: 0
 }
 
-/**通过选择指定类型中的属性，得到指定对象的哈希码。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> hashCodeBy(target: T?, deepOperation: Boolean = true, selector: T.() -> Array<*>): Int {
-	if(target == null) return 0
-	return target.selector().fold(1) { r, k -> 31 * r + k.smartHashCode(deepOperation) }
-}
-
-/**通过选择指定类型中的某个属性，得到指定对象的哈希码。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> hashCodeByOne(target: T?, deepOperation: Boolean = true, selector: T.() -> Any?): Int {
-	if(target == null) return 0
-	return target.selector().smartHashCode(deepOperation)
-}
-
-/**通过选择指定类型中的属性，将指定对象转化为字符串。特殊对待数组类型。默认不忽略空值。默认使用简单类名。默认递归执行操作。*/
-inline fun <reified T> toStringBy(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
-	deepOperation: Boolean = true, selector: T.() -> Array<Pair<String, *>>): String {
-	if(target == null) return "null"
-	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
-	return target.selector().toMap()
-		.let { if(omitNulls) it.filterValuesNotNull() else it }
-		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
-}
-
-/**通过选择指定类型中的属性引用，将指定对象转化为字符串。特殊对待数组类型。默认不忽略空值。默认使用简单类名。默认递归执行操作。*/
-inline fun <reified T> toStringByRef(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
-	deepOperation: Boolean = true, selector: T.() -> Array<KProperty0<*>>): String {
-	if(target == null) return "null"
-	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
-	return target.selector().associateBy({ it.name }, { it.get() })
-		.let { if(omitNulls) it.filterValuesNotNull() else it }
-		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
+/**通过选择指定类型中的属性引用，将指定对象转化为字符串。特殊对待数组类型，并且默认递归执行操作。*/
+inline fun <T : Any> toStringBy(target:T?, deepOp:Boolean = true, selector:T.() -> Array<KProperty0<*>>):String {
+	return when {
+		target == null -> "null"
+		else -> target.selector().associateBy({ it.name }, { it.get() }).joinToString(", ", "(", ")") { (k, v) ->
+			"$k=${v.smartToString(deepOp)}"
+		}.let { "${target.javaClass.simpleName}$it" }
+	}
 }
 
 
 /**智能地判断两个对象是否相等。特殊对待数组类型，默认递归执行操作。*/
 @PublishedApi
-internal fun Any?.smartEquals(other: Any?, deepOperation: Boolean = true) = when {
-	this !is Array<*> || other !is Array<*> -> this == other
-	!deepOperation -> this contentEquals other
-	else -> this contentDeepEquals other
+internal fun Any?.smartEquals(other:Any?, deepOp:Boolean = true):Boolean {
+	return when {
+		this !is Array<*> || other !is Array<*> -> this == other
+		!deepOp -> this.contentEquals(other)
+		else -> this.contentDeepEquals(other)
+	}
 }
 
 /**智能地得到当前对象的哈希码。特殊对待数组类型，默认递归执行操作。*/
 @PublishedApi
-internal fun Any?.smartHashCode(deepOperation: Boolean = true) = when {
-	this !is Array<*> -> this.hashCode()
-	!deepOperation -> this.contentHashCode()
-	else -> this.contentDeepHashCode()
+internal fun Any?.smartHashCode(deepOp:Boolean = true):Int {
+	return when {
+		this !is Array<*> -> this.hashCode()
+		!deepOp -> this.contentHashCode()
+		else -> this.contentDeepHashCode()
+	}
 }
 
 /**智能地将当前对象转化为字符串。特殊对待数组类型，默认递归执行操作。*/
 @PublishedApi
-internal fun Any?.smartToString(deepOperation: Boolean = true) = when {
-	this !is Array<*> -> this.toString()
-	!deepOperation -> this.contentToString()
-	else -> this.contentDeepToString()
+internal fun Any?.smartToString(deepOp:Boolean = true):String {
+	return when {
+		this !is Array<*> -> this.toString()
+		!deepOp -> this.contentToString()
+		else -> this.contentDeepToString()
+	}
 }

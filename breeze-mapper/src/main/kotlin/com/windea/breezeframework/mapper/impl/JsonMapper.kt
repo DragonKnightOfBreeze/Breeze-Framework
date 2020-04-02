@@ -128,13 +128,14 @@ class JsonMapper(
 	}
 
 	private fun <T> String.unmapJson(type: Class<T>): T {
-		return this.reader().use {
-			val map = mutableMapOf<Any?, Any?>()
-			val char = it.read().toChar()
-			when {
-				char == '{' -> TODO()
-				else -> TODO()
-			}
-		}
+		//return this.reader().use {
+		//	val map = mutableMapOf<Any?, Any?>()
+		//	val char = it.read().toChar()
+		//	when {
+		//		char == '{' -> TODO()
+		//		else -> TODO()
+		//	}
+		//}
+		TODO("not implemented")
 	}
 }

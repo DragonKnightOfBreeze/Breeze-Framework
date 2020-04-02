@@ -52,7 +52,7 @@ annotation class InlineDslFunction
 annotation class DslFunction
 
 //TODO 让注解处理器生效
-/**注明了这个注解定义了一个领域特定语言文件。这个文件是由Kotlin脚本编写的，其输出结构是一个[DslDocument]。*/
+/**注明了这个注解定义了一个领域特定语言文件。这个文件是由Kotlin脚本编写的，其输出结果是一个[DslDocument]。*/
 @MustBeDocumented
 @Target(AnnotationTarget.FILE)
 annotation class DslFile

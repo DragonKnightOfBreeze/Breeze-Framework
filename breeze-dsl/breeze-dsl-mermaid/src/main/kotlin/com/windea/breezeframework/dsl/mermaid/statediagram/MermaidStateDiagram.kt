@@ -63,9 +63,9 @@ interface MermaidStateDiagram {
 		var text:String? = null
 		override val id:String get() = name
 
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 	}
 
 	/**

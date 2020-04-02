@@ -671,9 +671,9 @@ interface Markdown {
 	class FootNoteReference @PublishedApi internal constructor(
 		reference:String, val text:String
 	) : Reference(reference) {
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
 			return "[^$reference]: $text"
@@ -686,9 +686,9 @@ interface Markdown {
 	class Abbreviation @PublishedApi internal constructor(
 		reference:String, val text:String
 	) : Reference(reference) {
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
 			return "*[$reference]: $text"
@@ -700,9 +700,9 @@ interface Markdown {
 	class LinkReference @PublishedApi internal constructor(
 		reference:String, val url:String, val title:String? = null
 	) : Reference(reference) {
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
 			val titleSnippet = title?.let { " ${it.quote(config.quote)}" }.orEmpty()

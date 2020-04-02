@@ -61,9 +61,9 @@ interface SequenceDiagram {
 		var alias:String? = null
 		override val id:String get() = alias ?: name
 
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
 			val aliasSnippet = alias.typing { "as $it" }

@@ -60,15 +60,15 @@ interface FlowChart {
 	class Node @PublishedApi internal constructor(
 		val name:String, val type:NodeType
 	) : IDslElement, WithId {
-		var text:String? = null //换行符：\n
+		var text:String? = null
 		var flowState:String? = null
 		var urlLink:String? = null
 		var openNewTab:Boolean = false
 		override val id:String get() = name
 
-		override fun equals(other:Any?) = equalsByOne(this, other) { id }
+		override fun equals(other:Any?) = equalsBy(this, other) { arrayOf(id) }
 
-		override fun hashCode() = hashCodeByOne(this) { id }
+		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
 			val typeSnippet = type.text
