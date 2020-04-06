@@ -319,7 +319,7 @@ interface Creole {
 
 	/**
 	 * Creole的配置。
-	 * @property indent 文本的缩进。
+	 * @property indent 文本缩进。
 	 * @property emptyColumnText 表格的空单元格的文本。
 	 * @property truncated 省略字符串。
 	 * @property doubleQuoted 是否偏向使用双引号。

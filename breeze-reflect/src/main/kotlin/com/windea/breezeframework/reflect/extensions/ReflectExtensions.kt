@@ -39,3 +39,4 @@ infix fun Any.isInstanceOf(type: KClass<*>): Boolean {
 	return type.isInstance(this)
 }
 //endregion
+

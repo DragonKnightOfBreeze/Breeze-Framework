@@ -12,7 +12,7 @@ val Type.erasure: Class<out Any>
 		is Class<*> -> this as Class<Any>
 		is ParameterizedType -> this.rawType.erasure
 		is GenericArrayType -> {
-			// getting the array type is a bit trickier
+			//getting the array type is a bit trickier
 			val elementType = this.genericComponentType.erasure
 			val testArray = java.lang.reflect.Array.newInstance(elementType, 0)
 			testArray.javaClass

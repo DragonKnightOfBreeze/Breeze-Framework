@@ -59,9 +59,9 @@ class ExampleTest {
 		    Here also indented.
 		  </element>
 		""".trimWrap())
-		//  <element>
-		//    Here also indented.
-		//  </element>
+		// <element>
+		//   Here also indented.
+		// </element>
 		println("""
 		  <element>
 		    Here also indented.

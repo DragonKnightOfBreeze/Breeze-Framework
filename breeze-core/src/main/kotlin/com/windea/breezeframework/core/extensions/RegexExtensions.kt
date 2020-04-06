@@ -44,7 +44,7 @@ fun Regex.Companion.fromRange(first: Int, last: Int): String {
 				lastLimit = findLastLimitIn(firstLimit, last)
 				pairs.add(firstLimit to lastLimit)
 			}
-			// 2-9, 10-13 -> [2-9]|1[0-3]
+			//2-9, 10-13 -> [2-9]|1[0-3]
 			pairs.joinToString("|") { (a, b) ->
 				a.toString().toCharArray().zip(b.toString().toCharArray()) { a1, b1 ->
 					if(a1 == b1) "$a1" else "[$a1-$b1]"

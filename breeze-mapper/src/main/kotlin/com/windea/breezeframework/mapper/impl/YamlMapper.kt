@@ -5,6 +5,9 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 
+/**
+ * Yaml映射器。
+ */
 class YamlMapper(
 	val config: Config = Config.Default
 ) : Mapper {
@@ -34,6 +37,7 @@ class YamlMapper(
 			var literalStyle: Boolean = false
 			var uglyFormat: Boolean = false
 			var prettyFormat: Boolean = false
+
 			override fun build() = Config(indent, indicatorIndent, doubleQuoted, unquoted, blockStyle, literalStyle, uglyFormat, prettyFormat)
 		}
 	}
@@ -67,7 +71,6 @@ class YamlMapper(
 			else -> this.mapObject(depth + 1)
 		}
 	}
-
 
 	private fun Any?.mapKey(): String {
 		return this.toString().quote(quote)

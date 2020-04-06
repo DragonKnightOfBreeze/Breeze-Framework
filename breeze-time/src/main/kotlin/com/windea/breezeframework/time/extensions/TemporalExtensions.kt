@@ -113,3 +113,4 @@ val LocalDateTime.isInFuture: Boolean get() = this > LocalDateTime.now()
 /**判断是否支持指定的时间单元。*/
 infix fun Temporal.supports(temporalUnit: TemporalUnit) = isSupported(temporalUnit)
 //endregion
+

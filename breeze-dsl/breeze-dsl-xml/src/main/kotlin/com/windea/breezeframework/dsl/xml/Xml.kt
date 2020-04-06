@@ -139,7 +139,7 @@ interface Xml {
 
 	/**
 	 * Xml配置。
-	 * @property indent 文本的缩进。默认为2个空格。
+	 * @property indent 文本缩进。默认为2个空格。
 	 * @property doubleQuoted 是否偏向使用双引号。默认为是。
 	 * @property autoCloseTag 是否自关闭标签。默认为否。
 	 */

@@ -81,3 +81,4 @@ fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, 
 /**将当前日期转化为格式化的字符串。*/
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
 //endregion
+

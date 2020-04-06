@@ -346,6 +346,9 @@
 * [X] 更新版本。 
 * [X] 为集合类型添加`query`扩展（基于`deepQuery`扩展）。
 * [X] 删除`breeze-dsl-json`和`breeze-dsl-yaml`。
+* [X] breeze-mapper 完善代码。
+  * PropertiesMapper 重构代码格式，完善注释，支持将数组类型的值映射为多行逗号分隔表达式。
+  * JsonMapper 重构代码格式，完善注释。
 * [ ] 完善代码……
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。

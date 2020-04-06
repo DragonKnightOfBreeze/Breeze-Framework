@@ -4,6 +4,9 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 
+/**
+ * Xml映射器。
+ */
 class XmlMapper(
 	val config: Config = Config.Default
 ) : Mapper {

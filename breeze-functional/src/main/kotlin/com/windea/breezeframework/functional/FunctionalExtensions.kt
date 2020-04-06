@@ -369,3 +369,4 @@ infix fun <P, I, R> ((P) -> I).compose(other: (I) -> R) = fun(p: P) = other(this
 /**组合当前函数和另一个函数。即，`fun(a,b) & fun(b,c) -> fun(a,c)`。*/
 infix fun <I, R> (() -> I).compose(other: (I) -> R) = fun() = other(this())
 //endregion
+

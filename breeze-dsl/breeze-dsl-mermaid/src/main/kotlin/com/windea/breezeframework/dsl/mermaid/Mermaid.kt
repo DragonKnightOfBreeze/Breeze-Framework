@@ -25,7 +25,7 @@ interface Mermaid {
 
 	/**
 	 * Mermaid配置。
-	 * @property indent 文本的缩进。
+	 * @property indent 文本缩进。
 	 * @property doubleQuoted 是否偏向使用双引号。
 	 */
 	data class Config(
