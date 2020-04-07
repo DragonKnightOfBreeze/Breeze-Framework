@@ -552,10 +552,9 @@ fun String.lineBreak(width:Int = 120):String {
 //endregion
 
 //region specific extensions
-/**尝试使用指定的引号包围当前字符串。如果指定null，则返回自身。默认忽略其中的引号，不对其进行转义。*/
-fun String.quote(quote:Char?, omitQuotes:Boolean = true):String {
+/**尝试使用指定的引号包围当前字符串。默认忽略其中的引号，不对其进行转义。*/
+fun String.quote(quote:Char, omitQuotes:Boolean = true):String {
 	return when {
-		quote == null -> this
 		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
 		this.surroundsWith(quote) -> this
 		omitQuotes -> this.addSurrounding(quote.toString())

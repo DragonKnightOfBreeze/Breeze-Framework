@@ -9,7 +9,6 @@ dependencies {
 	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE"))
 	implementation("org.springframework.boot:spring-boot-starter")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-
 	compileOnly("org.springframework.boot:spring-boot-starter-web")
 	compileOnly("org.springframework.boot:spring-boot-starter-aop")
 	compileOnly("org.springframework.boot:spring-boot-starter-data-jpa")

@@ -45,10 +45,10 @@ val <T> Class<T>.defaultValue: Any?
 		else -> null
 	}
 
-/**得到当前类型的属性名-取值方法映射。基于取值方法，而非私有字段，并且忽略class属性。*/
+/**得到当前类型的所有公开取值方法，但是忽略`getClass()`。*/
 val <T> Class<T>.getters: List<Method>
 	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" && it.parameterCount == 0 }
 
-/**得到当前类型的属性名-赋值方法映射。基于取值方法。*/
+/**得到当前类型的所有公开赋值方法。*/
 val <T> Class<T>.setters: List<Method>
 	get() = this.methods.filter { it.name.startsWith("set") && it.parameterCount == 1 }

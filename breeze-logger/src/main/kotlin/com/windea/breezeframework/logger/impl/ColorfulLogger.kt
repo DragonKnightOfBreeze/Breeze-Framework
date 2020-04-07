@@ -55,7 +55,7 @@ class ColorfulLogger(
 
 		config.outputPath?.let { File(it).appendText(logSnippet) }
 
-		val (prefix, suffix) = if(config.isColorful) level.colorCommandPair else "" to ""
+		val (prefix, suffix) = level.colorCommandPair
 		print(logSnippet.let { "$prefix$it$suffix" })
 	}
 
@@ -64,7 +64,7 @@ class ColorfulLogger(
 	private val currentClassName get() = Exception().stackTrace[3].className
 
 	private val currentClassNameAbbreviation
-		get() = currentClassName.split(".").joinToString(".") { it.substring(0, 1) } +
+		get() = currentClassName.split(".").joinToString(".") { it.take(1) } +
 		        currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
 
 	private val LogLevel.colorCommandPair

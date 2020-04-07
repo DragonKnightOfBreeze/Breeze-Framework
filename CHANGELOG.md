@@ -349,7 +349,7 @@
 * [X] breeze-mapper 完善代码。
   * PropertiesMapper 重构代码格式，完善注释，支持将数组类型的值映射为多行逗号分隔表达式。
   * JsonMapper 重构代码格式，完善注释。
-* [ ] 完善代码……
+* [ ] breeze-core 以一种简洁的方式委托实现Any类三大方法。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。

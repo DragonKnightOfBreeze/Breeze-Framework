@@ -18,6 +18,7 @@ class JsonMapper(
 	/**
 	 * Json映射器的配置。
 	 * @property indent 文本缩进。默认为`"  "`。
+	 * @property lineSeparator 行分隔符。默认为`"\n"`。
 	 * @property doubleQuoted 是否使用双引号括起。默认为`true`。
 	 * @property unquoted 是否不使用任何引号括起。默认为`false`。
 	 * @property trimSpaces 是否去除不必要的空格。默认为`false`。
@@ -56,7 +57,7 @@ class JsonMapper(
 
 
 	private val indent = config.indent
-	private val quote = if(config.unquoted) null else if(config.doubleQuoted) '\"' else '\''
+	private val quote = if(config.doubleQuoted) '\"' else '\''
 	private val lineSeparator = config.lineSeparator
 	private val separator = if(config.trimSpaces) ":" else ": "
 	private val valueSeparator = if(config.prettyFormat) ",$lineSeparator" else if(config.trimSpaces) "," else ", "
@@ -64,6 +65,10 @@ class JsonMapper(
 	private val arraySuffix = if(config.prettyFormat) "$lineSeparator]" else "]"
 	private val objectPrefix = if(config.prettyFormat) "{$lineSeparator" else "{"
 	private val objectSuffix = if(config.prettyFormat) "$lineSeparator}" else "}"
+
+	private val String.shouldQuoted get() = this.isEmpty() || this.first().isWhitespace() || this.last().isWhitespace()
+	private fun String.doIndent() = if(config.prettyFormat) this.prependIndent(indent) else this
+	private fun String.doQuote() = if(!config.unquoted || this.shouldQuoted) this.quote(quote) else this
 
 
 	override fun <T> map(data:T):String {
@@ -105,7 +110,7 @@ class JsonMapper(
 	}
 
 	private fun Any.mapString():String {
-		return this.toString().quote(quote)
+		return this.toString().doQuote()
 	}
 
 	private fun Array<*>.mapArray():String {
@@ -126,20 +131,16 @@ class JsonMapper(
 	}
 
 	private fun Any.mapObject():String {
-		return Mapper.mapObject(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
+		return ObjectMapper.mapObject(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 			.doIndent().let { "$objectPrefix$it$objectSuffix" }
 	}
 
 	private fun Any?.mapKey():String {
-		return this.toString().quote(quote)
+		return this.toString().doQuote()
 	}
 
 	private fun Any?.mapValue():String {
 		return this.mapJson()
-	}
-
-	private fun Any?.doIndent():String{
-		return if(config.prettyFormat) this.toString().prependIndent(indent) else this.toString()
 	}
 
 

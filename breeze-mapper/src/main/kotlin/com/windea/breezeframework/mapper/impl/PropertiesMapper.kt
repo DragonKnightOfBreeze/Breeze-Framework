@@ -59,6 +59,9 @@ class PropertiesMapper(
 	private val valueSeparator = if(config.trimSpaces) ",$lineJoint$lineSeparator" else ", $lineJoint$lineSeparator"
 	private val arrayPrefix = "$lineJoint$lineSeparator"
 
+	private fun Any?.doIndent() = this.toString().prependIndent(indent)
+	private fun Any?.doWrap() = this.toString().replace("\r\n", "\\\r\n").replace("\r", "\\\r").replace("\n", "\\\n")
+
 
 	override fun <T> map(data:T):String {
 		return data.mapProperties()
@@ -98,7 +101,7 @@ class PropertiesMapper(
 	}
 
 	private fun Any.mapMappedProperty():String {
-		return Mapper.mapObject(this).joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
+		return ObjectMapper.mapObject(this).joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 	}
 
 	//支持的类型（属性的名字）：
@@ -141,14 +144,6 @@ class PropertiesMapper(
 
 	private fun Any.mapNormalValue():String {
 		return this.doWrap()
-	}
-
-	private fun Any?.doIndent():String{
-		return this.toString().prependIndent(indent)
-	}
-
-	private fun Any?.doWrap():String {
-		return this.toString().replace("\r\n", "\\\r\n").replace("\r", "\\\r").replace("\n", "\\\n")
 	}
 
 
