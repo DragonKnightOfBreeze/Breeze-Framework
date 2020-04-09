@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.domain
 
 import java.io.*
+import kotlin.reflect.*
 
 /**
  * 数据实体。
