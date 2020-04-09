@@ -10,8 +10,8 @@ What it can do is more than what you think it can do.
 
 NOTE：
 
-* This framework is not fully implemented & tested. Though you can instantly use some of it's useful features.
-* This framework is designed to be used by Kotlin-Jvm, rather than Java. Though you can obviously use it in Java.
+* This framework is not fully implemented. But you can instantly use some of it's useful features.
+* This framework is designed to be used by Kotlin-JVM. But you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
 # Modules
@@ -33,11 +33,10 @@ NOTE：
 
 ## breeze-dsl
 
-Powerful and clear builders for various domain specific languages.
-
-* Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
-* Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
-* Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
+* Powerful and clear builders for various domain specific languages.
+  * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
+  * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
+  * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
 Note:
 
@@ -53,7 +52,8 @@ Note:
 
 ## breeze-game
 
-* [ ] Provide some useful extensions for game.
+* Provide some useful extensions for game design.
+* DO NOT FULLY IMPLEMENTED.
 
 ## breeze-generator
 
@@ -70,9 +70,7 @@ Usage:
 ```
 val http = Http()
 val response = http.get("https://httpbin.org/").send(http)
-println(response)
 val response2 = http.get("https://httpbin.org") {query("name", "Windea")}.send(http)
-println(response2)
 ```
 
 ## breeze-javafx
@@ -111,6 +109,8 @@ logger.warn("Some warn.")
 
 * Provide some useful extensions for data mapping. (e.g, `mapObject`, `unmapObject`)
 * Provide lightweight, individual but enough powerful mappers for data serialization.
+* Provide basic implementations such as `JsonMapper`, `YamlMapper`.
+* DO NOT FULLY IMPLEMENTED.
 
 ## breeze-reflect
 
@@ -119,6 +119,7 @@ logger.warn("Some warn.")
 ## breeze-serialization
 
 * Provide serializers for common kotlin type. (e.g, `RangeSerializer`)
+* DO NOT FULLY IMPLEMENTED.
 
 ## breeze-serializer
 
@@ -141,12 +142,12 @@ logger.warn("Some warn.")
 
 # Dependencies & Optional dependencies
 
-* Kodein-di
-* Spekframework
-* Anko
 * SpringBoot
 * SpringCloud
+* Anko
 * LibGDX
+* Kodein-di
+* Spekframework
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)

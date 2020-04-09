@@ -7,6 +7,9 @@ import java.time.*
 import java.time.temporal.*
 
 //region operator extensions
+/**(No document.)*/
+operator fun Duration.unaryPlus():Duration = this
+
 /** @see java.time.Duration.negated*/
 operator fun Duration.unaryMinus(): Duration = this.negated()
 
@@ -22,6 +25,9 @@ operator fun Duration.component1(): Long = this.seconds
 /** @see java.time.Duration.getNano*/
 operator fun Duration.component2(): Int = this.nano
 
+
+/**(No document.)*/
+operator fun Period.unaryPlus():Period = this
 
 /** @see java.time.Period.negated*/
 operator fun Period.unaryMinus(): Period = this.negated()

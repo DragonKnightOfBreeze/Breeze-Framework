@@ -56,12 +56,13 @@ allprojects {
 			kotlinOptions {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
-					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts",
 					"-Xopt-in=kotlin.RequiresOptIn",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi"
+					"-Xopt-in=kotlin.ExperimentalStdlibApi",
+					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickUsageApi"
 				)
 			}
 		}
@@ -70,11 +71,13 @@ allprojects {
 			kotlinOptions {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
-					"-Xjsr305=strict",
 					"-Xinline-classes",
 					"-Xopt-in=kotlin.RequiresOptIn",
-					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+					"-Xopt-in=kotlin.ExperimentalStdlibApi",
+					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickUsageApi"
 				)
 			}
 		}

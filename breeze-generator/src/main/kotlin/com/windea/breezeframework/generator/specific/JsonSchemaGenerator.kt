@@ -10,7 +10,7 @@ import java.io.*
 import java.util.concurrent.*
 
 /**Json Schema生成器。*/
-object SchemaGenerator : Generator {
+object JsonSchemaGenerator : Generator {
 	private val multiSchemaRuleNames = listOf("oneOf", "allOf", "anyOf")
 
 	private val dataMap = mutableMapOf<String, Any?>()
@@ -53,8 +53,8 @@ object SchemaGenerator : Generator {
 
 	/**配置数据映射。先前的数据映射会被清空。*/
 	fun setDataMap(dataMap: Map<String, Any?>) {
-		SchemaGenerator.dataMap.clear()
-		SchemaGenerator.dataMap += dataMap
+		JsonSchemaGenerator.dataMap.clear()
+		JsonSchemaGenerator.dataMap += dataMap
 	}
 
 	/**

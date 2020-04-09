@@ -28,7 +28,7 @@ annotation class NotIncluded(
 )
 
 /**
- * Items that is not tested (yet, always or at most times).
+ * Item that is not tested (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented
@@ -40,7 +40,7 @@ annotation class NotTested(
 )
 
 /**
- * Items that is not optimized (yet, always or at most times).
+ * Item that is not optimized (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented
@@ -52,7 +52,7 @@ annotation class NotOptimized(
 )
 
 /**
- * Items that is not recommended (yet, always or at most times).
+ * Item that is not recommended (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented
@@ -64,7 +64,7 @@ annotation class NotRecommended(
 )
 
 /**
- * Items that is not included (yet, always or at most times).
+ * Item that is not included (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented
@@ -76,7 +76,7 @@ annotation class NotSuitable(
 )
 
 /**
- * Items that is not usable (yet, always or at most times).
+ * Item that is not usable (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented
@@ -88,7 +88,7 @@ annotation class NotUsable(
 )
 
 /**
- * Items that is not sure (yet, always or at most times).
+ * Item that is not sure (yet, always or at most times).
  * @property message additional note information.
  */
 @MustBeDocumented

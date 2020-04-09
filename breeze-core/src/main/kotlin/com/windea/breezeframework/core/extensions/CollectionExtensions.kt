@@ -828,7 +828,7 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 
 //region unsafe extensions
 /**尝试检查当前集合的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Iterable<*>.isIterableOf(limit: Int = 10): Boolean {
 	return when(limit) {
@@ -839,7 +839,7 @@ inline fun <reified T : Any> Iterable<*>.isIterableOf(limit: Int = 10): Boolean 
 }
 
 /**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个键值对，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(limit: Int = 10): Boolean {
 	return when(limit) {
@@ -850,7 +850,7 @@ inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(limit: Int = 10)
 }
 
 /**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Sequence<*>.isSequenceOf(limit: Int = 10): Boolean {
 	return when(limit) {

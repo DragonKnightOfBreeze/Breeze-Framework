@@ -6,101 +6,125 @@
 
 注意：
 
-* 这个框架并未完全实现其功能，且未经过充分的测试。尽管它现在已经具备了许多有用的功能。
-* 这个框架是为Kotlin设计的，而非Java。尽管你自然可以在Java中使用它。
-* 这个框架正在更新中，未来会提供更多的模块和功能。
+* 这个框架仍然有待完善，但是你现在就可以使用它的一些有用的功能。
+* 这个框架是为Kotlin-JVM设计的，但是你自然可以在Java中使用它的一部分功能。
+* 这个框架仍在更新中，未来将会提供更多的模块和功能。
 
 # 模块
 
 ## breeze-core
 
-为Kotlin标准库补充缺失的功能和扩展，并提供许多日常项目开发中经常用到的工具方法和扩展方法。
-如额外的字符串处理方法、集合操作方法、运算符重载方法、类型转化方法等。
+为Kotlin标准库补充功能和扩展，并且提供许多日常项目开发中经常用到的工具和扩展。例如：
+* 额外的运算符重载方法。如`String.minus`、`String.times`、`String.div`。
+* 额外的类型转换方法。如`String.toFile`、`String.toLocalDateTime`和`String.toIntRange`。
+* 额外的字符串处理方法。如`String.quote`、`String.escapeBy`和`String.switchCaseBy`。
+* 额外的集合操作方法。如`List.bind`、`List.deepGet`、`List.deepSet`和`List.deepQuery`。
+* 用于委托实现`equals`、`hashCode`和`toString`的工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`和`toStringByReference`。
 
 ## breeze-dsl
 
-提供标准的dsl api，为一些语言提供dsl支持，便于生成对应的文本。
-如xml、markdown等标记语言以及mermaid等绘图语言。
+提供简洁而灵活的领域特定语言的api，为常见的标记语言提供支持，便于生成对应的文本，并允许进行充分的配置。例如：
+* Xml、Markdown、Creole等标记语言。
+* Mermaid、Flow、Sequence等绘图语言。
+* 其他一些特殊格式的文本。
 
 ## breeze-functional
 
-提供一些函数式编程中可能用到的扩展方法。
+提供一些函数式编程中可能用到的扩展方法。支持0到11个参数的函数。例如：
+* 用于柯里化/反柯里化当前函数的`curried`和`uncurried`方法。
+* 用于反转当前函数的参数的`reversed`方法。
+* 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
+* 用于得到当前函数的偏函数的`partial`和`partialLast`方法。
 
 ## breeze-game
 
 提供一些游戏开发中可能用到的通用工具和功能。
 
-**未完全实现。**
+> 尚未完全实现。
 
 ## breeze-generator
 
-提供一些用于生成特定格式的字符串、json文件、yaml文件的生成器。
+提供一些具有特定用途的生成器。例如：
+* 用于生成各种格式的链接的`UrlGenerator`。
+* 用于生成扩展Json Schema的`JsonSchemaGenerator`。
+
+> 有待完善。
 
 ## breeze-http
 
-提供一个直观优雅的api，封装java原生的http api，允许对其进行灵活的配置。
-可能需要配合第三方库如`Gson`使用。
+提供简洁而直观的Http链接的api，封装Java原生的Http api，并允许进行充分的配置。
 
-**有待完善的实现。**
+注意：可能需要配合第三方序列化库如`Gson`使用。
+
+> 有待完善。
 
 ## breeze-javafx
 
-提供一些java-fx开发中可能用到的扩展方法。
+**［有待完善］** 为JavaFX补充功能和扩展。
 
 ## breeze-linq
 
-提供一个api，允许以类似sql语句的形式，实现集合的集成查询操作。
-这个api本身不保存集合信息。
+**［有待完善］** 提供简洁而直观的语言集成查询的api，允许以类似sql的方式，实现集合的查询操作。
 
-**有待完善的实现。**
+注意：这个api本身不包含集合数据。
 
 ## breeze-logger
 
-提供一个简单而独立的日志器，允许进行一定的自定义配置。
-可以用来输出带颜色的控制台文本。
+**［有待完善］** 提供简单而独立的日志器的api，并允许进行充分的配置。例如：
+* 包含了一般日志信息的`SimpleLogger`。
+* 可以输出彩色的控制台文本的`ColorfulLogger`。
 
 ## breeze-mapper
 
-提供一系列简单而独立的映射器，用于进行数据的序列化与反序列化操作。
-
-**有待完善的实现。**
+**［有待完全实现］** 提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
+* 用于映射和反映射对象的`ObjectMapper`。
+* 用于映射常见标记语言的`JsonMapper`、`YamlMapper`、`XmlMapper`和`PropertiesMapper`。
 
 ## breeze-reflect
 
-为Kotlin反射与java反射补充缺失的功能和扩展，并且额外补充一些有用的工具方法和扩展方法。
+为Java反射和Kotlin反射补充功能和扩展。例如：
+* 直接得到类型、对象、属性、方法的名字的`nameOf`方法。
+* 直接得到Java类型的`javaTypeOf`方法。
+* 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
 
-## breeze-serialization
+## ~~breeze-serialization~~
 
-为kotlinx-serialization补充可能有用的功能和扩展。
-
-**未完全实现。**
+~~**［有待完全实现］** 为KotlinX Serialization补充功能和扩展。~~
 
 ## breeze-serializer
 
-提供一个api，允许以简洁而统一的方式，实现各种数据格式的序列化和反序列化操作。
-这个api本身不提供实现，由第三方库如`Gson`代理实现，并且支持多种实现方式。
+**［有待完善］** 提供简洁而统一的api，用于进行数据的序列化和反序列化操作，由第三方库委托实现，并允许进行充分的配置。例如：
+* 由`breeze-mapper`委托实现的`BreezeJsonSerializer`、`BreezeXmlSerializer`等。这是默认的实现，也是最简单的一种实现。
+* 由`KotlinX Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
+* 由`Jackson`委托实现的`JacksonJsonSerializer`、`JacksonXmlSerializer`等。这是最全面的一种实现。
+* 由`Gson`委托实现的`GsonSerializer`。
+* 由`FastJson`委托实现的`FastJsonSerializer`。
+* 另外还提供了一些便于进行序列化和反序列化的扩展方法。如`Any?.serialize`和`String.deserialize`。
 
 ## breeze-spring-boot
 
-为spring boot及其可选模块提供缺失和可能有用的组件、自动配置和扩展方法。
+**［有待完善］** 为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
 
-## breeze-text
+## ~~breeze-text~~
 
-提供一些仅在特定情况下可能有用的用于字符串处理的扩展方法。
+~~提供一些具有特定用途的字符串处理方法。~~
 
 ## breeze-time
 
-提供一些与时间相关的扩展方法，便于生成和转换时间。
-支持传统的Date api以及Java8中新的时间api。
+为Java的时间api补充功能和扩展。
+* 支持传统的时间api。包括`Date`、`Calendar`等。
+* 支持Java8的时间api。包括`LocalDate`、`LocalDateTime`等。
+* 为数字类型提供额外的属性，用于生成时间。如`1.seconds`、`2.minutes`和`3.years`。
+* 为时长和时期提供额外的运算符重载方法。如`Duration.unaryMinus`和`Period.times`。
 
 # 依赖 & 可选依赖
 
-* Kodein-di
-* Spekframework
-* Anko
 * SpringBoot
 * SpringCloud
+* Anko
 * LibGDX
+* Kodein-di
+* Spekframework
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [charleskorn/kaml](https://github.com/charleskorn/kaml)

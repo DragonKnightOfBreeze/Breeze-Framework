@@ -57,13 +57,13 @@ inline fun exec(vararg environmentVariables: String, workDirectory: File? = null
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory)
 }
 
-/**执行一段懒加载的命令，并保持线程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
+/**执行一段懒加载的命令，并保持进程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
 @JvmSynthetic
 inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory).also { it.waitFor() }
 }
 
-/**执行一段懒加载的命令，并保持线程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
+/**执行一段懒加载的命令，并保持进程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
 @JvmSynthetic
 inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null,
 	timeout: Long, unit: TimeUnit, lazyCommand: () -> String): Process {
@@ -72,7 +72,7 @@ inline fun execBlocking(vararg environmentVariables: String, workDirectory: File
 
 
 /**循环扫描命令行的下一行输入命令，以执行相应的操作。默认的退出命令是"exit"且不区分大小写。*/
-@NotSure
+@UnstableImplementationApi
 @JvmSynthetic
 inline fun executeCommand(exitCommand: String = "exit", block: (String) -> Unit) {
 	val scanner = Scanner(System.`in`)

@@ -136,19 +136,19 @@ inline fun CharSequence?.isNotNullOrBlank():Boolean {
 }
 
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
-@NotSure
+@UnstableImplementationApi
 fun CharSequence.isAlphabetic():Boolean {
 	return this matches "[a-zA-Z]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
-@NotSure
+@UnstableImplementationApi
 fun CharSequence.isNumeric():Boolean {
 	return this matches "[1-9]+".toRegex()
 }
 
 /**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
-@NotSure
+@UnstableImplementationApi
 fun CharSequence.isAlphanumeric():Boolean {
 	return this matches "[1-9a-zA-Z_]+".toRegex()
 }
@@ -290,7 +290,6 @@ inline fun CharSequence.replaceIndexed(oldValue:String, ignoreCase:Boolean = fal
 
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@NotSure
 @JvmOverloads
 fun String.replaceAll(oldChars:CharArray, newChars:CharArray, ignoreCase:Boolean = false):String {
 	val size = minOf(oldChars.size, newChars.size)
@@ -302,7 +301,6 @@ fun String.replaceAll(oldChars:CharArray, newChars:CharArray, ignoreCase:Boolean
 }
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
-@NotSure
 @JvmOverloads
 fun String.replaceAll(oldValues:Array<String>, newValues:Array<String>, ignoreCase:Boolean = false):String {
 	val size = minOf(oldValues.size, newValues.size)
@@ -315,21 +313,21 @@ fun String.replaceAll(oldValues:Array<String>, newValues:Array<String>, ignoreCa
 
 
 /**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
-@NotSure
+@UnstableImplementationApi
 tailrec fun String.replaceLooped(oldValue:String, newValue:String):String {
 	val result = this.replace(oldValue, newValue)
 	return if(this != result) result.replaceLooped(oldValue, newValue) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@NotSure
+@UnstableImplementationApi
 tailrec fun CharSequence.replaceLooped(regex:Regex, replacement:String):String {
 	val result = this.replace(regex, replacement)
 	return if(this != result) result.replaceLooped(regex, replacement) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@NotSure
+@UnstableImplementationApi
 tailrec fun CharSequence.replaceLooped(regex:Regex, transform:(MatchResult) -> CharSequence):String {
 	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等
@@ -533,7 +531,7 @@ fun String.decodeToBase64ByteArray():ByteArray = Base64.getDecoder().decode(this
 //}
 
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-@NotSure
+@UnstableImplementationApi
 infix fun String.lineConcat(other:String):String {
 	val lines = this.lines()
 	val otherLines = other.lines()
@@ -544,7 +542,7 @@ infix fun String.lineConcat(other:String):String {
 }
 
 /**逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
-@NotSure
+@UnstableImplementationApi
 @JvmOverloads
 fun String.lineBreak(width:Int = 120):String {
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }

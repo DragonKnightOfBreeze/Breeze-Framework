@@ -353,6 +353,7 @@
   * 完善DataClassExtensions。
   * 实现Identifiable。
   * 实现Countable。
+* [X] 更新项目文档。
 * [ ] breeze-core 以一种简洁的方式委托实现Any类三大方法。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
