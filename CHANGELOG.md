@@ -354,7 +354,6 @@
   * 实现Identifiable。
   * 实现Countable。
 * [X] 更新项目文档。
-* [ ] breeze-core 以一种简洁的方式委托实现Any类三大方法。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
@@ -375,6 +374,7 @@
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~
 * [ ] ~~breeze-core 利用反射的类型转化的扩展。~~
 * [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
+* [ ] ~~breeze-core 以一种简洁的方式委托实现Any类三大方法。~~
 
 # 长期
 

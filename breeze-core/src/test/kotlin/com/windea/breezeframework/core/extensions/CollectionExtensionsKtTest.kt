@@ -51,7 +51,7 @@ class CollectionExtensionsKtTest {
 
 		println()
 
-		assertFailsWith<IllegalArgumentException> {
+		assertFails {
 			array.deepSet("/3/1/0", "abc")
 			array.deepGet<Int>("/3/1/0").also { println(it) }
 			println(array.contentDeepToString())
