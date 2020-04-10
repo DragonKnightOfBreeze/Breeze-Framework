@@ -354,10 +354,15 @@
   * 实现Identifiable。
   * 实现Countable。
 * [X] 更新项目文档。
+
+# 1.1.2
+ 
+* [ ] breeze-core 实现`toStringByReference`。
+* [ ] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器。
+* [ ] breeze-core 对数字的多种方式的格式化方法，参数可能不确定，参考NumberFormat，以及添加前缀0的格式化。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
-* [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 * [ ] breeze-core 串行处理字符串的方法，保证可靠性和灵活性。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
@@ -370,18 +375,19 @@
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种“延迟绑定”的实现，基于队列。
 * [ ] 提供一种用于http请求的返回结果的Result的实现。
-* [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
+* [ ] ［可能］提供生成器以从json/yaml文件生成java/kotlin数据类。
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~
 * [ ] ~~breeze-core 利用反射的类型转化的扩展。~~
 * [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
 * [ ] ~~breeze-core 以一种简洁的方式委托实现Any类三大方法。~~
+* [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
-* [X] 发布项目到JCenter或MavenCentral。
+* [X] 发布项目到JCenter。（格式上存在一些问题）
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
 * [ ] 按照功能而非类型更改项目代码的目录结构。
