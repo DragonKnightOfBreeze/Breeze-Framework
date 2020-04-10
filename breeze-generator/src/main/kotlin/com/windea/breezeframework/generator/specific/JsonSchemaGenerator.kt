@@ -5,7 +5,6 @@ package com.windea.breezeframework.generator.specific
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
-import com.windea.breezeframework.serializer.extensions.*
 import java.io.*
 import java.util.concurrent.*
 

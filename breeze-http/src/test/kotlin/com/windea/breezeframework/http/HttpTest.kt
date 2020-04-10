@@ -1,6 +1,5 @@
 package com.windea.breezeframework.http
 
-import com.windea.breezeframework.http.extensions.*
 import java.net.*
 import java.net.http.*
 import kotlin.test.*

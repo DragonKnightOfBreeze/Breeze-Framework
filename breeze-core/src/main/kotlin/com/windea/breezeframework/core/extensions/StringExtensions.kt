@@ -807,6 +807,9 @@ inline fun String.toUrl(content:URL? = null, handler:URLStreamHandler? = null):U
 /**将当前字符串转化为字符集。*/
 inline fun String.toCharset():Charset = Charset.forName(this)
 
+/**将当前对象转化为类型。*/
+inline fun String.toClass():Class<*> = Class.forName(this)
+
 
 /**将当前字符串转化为日期。*/
 @JvmOverloads

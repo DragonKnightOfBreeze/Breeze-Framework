@@ -1,6 +1,6 @@
 @file:JvmName("FunctionalExtensions")
 
-package com.windea.breezeframework.functional
+package com.windea.breezeframework.functional.extensions
 
 import com.windea.breezeframework.core.types.*
 

@@ -1,6 +1,6 @@
 # Summary
 
-[中文文档](README_zh.md)
+[English Document](README.md) | [中文文档](README_zh.md)
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
@@ -38,13 +38,6 @@ NOTE：
   * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
   * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
 
-Note:
-
-* Dsl is used to generate text, and it's the only thing that dsl should do.
-* Dsl do not provide ability to generate no-text files that could be provided by 3rd library/application.
-* Dsl can not deserialize data from generated string.
-* Less limit (either type or invocation) dsl is not a good dsl.
-
 ## breeze-functional
 
 * Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
@@ -65,14 +58,6 @@ Note:
 * Simple and convenient API which is similar to `axios`.
 * Based on string body, so you should provide external json serializer implementation such as `Gson`, `Jackson`.
 
-Usage:
-
-```
-val http = Http()
-val response = http.get("https://httpbin.org/").send(http)
-val response2 = http.get("https://httpbin.org") {query("name", "Windea")}.send(http)
-```
-
 ## breeze-javafx
 
 * Provide some useful extensions for javafx.
@@ -83,27 +68,11 @@ val response2 = http.get("https://httpbin.org") {query("name", "Windea")}.send(h
 * Can be implemented by delegating to Kotlin Collection or Java Stream.
 * Do not store collection information, and can be defined independent.
 
-Usage:
-
-```
-val source = listOf("foo", "Bar", "FooBar", "abc","123", "Windea", "BreezesLanding", "Kotlin")
-val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.toLowerCase() }
-println(source linq linq)
-```
-
 ## breeze-logger
 
 * Provide lightweight, individual but enough powerful loggers for kotlin.
 * Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
 * This implementation is a little simple, please consider for a while before use it.
-
-Usage:
-
-```
-val logger = ColorfulLogger()
-logger.info("Some info.")
-logger.warn("Some warn.")
-```
 
 ## breeze-mapper
 
@@ -140,21 +109,26 @@ logger.warn("Some warn.")
 * Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.)
 * Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.)
 
-# Dependencies & Optional dependencies
+# Reference
 
-* SpringBoot
-* SpringCloud
-* Anko
-* LibGDX
-* Kodein-di
-* Spekframework
+## Dependencies & Optional dependencies
+
+* [Spring Boot](https://github.com/spring-projects/spring-boot)
+* [Spring Cloud](https://github.com/spring-cloud)
+* [Kodein Framework](https://github.com/Kodein-Framework/Kodein-DI)
+* [Spek Framework](https://github.com/spekframework/spek)
+* [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
+* [charleskorn/kaml](https://github.com/charleskorn/kaml)
+* [Jackson](https://github.com/FasterXML/jackson)
+* [Gson](https://github.com/google/gson)
+* [FastJson](https://github.com/alibaba/fastjson)
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
-* [charleskorn/kaml](https://github.com/charleskorn/kaml)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
 
-# References
+## Implementation References
 
+* [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
@@ -169,6 +143,8 @@ logger.warn("Some warn.")
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
 # Usage
+
+This project has been published on JCenter. ~~Somehow it has some style problems.~~
 
 ## Maven
 
@@ -194,4 +170,5 @@ implementation("com.windea.breezeframework:$module:$version")
 
 # Example
 
-See example at [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
+See:
+* [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/ExampleTest.kt)

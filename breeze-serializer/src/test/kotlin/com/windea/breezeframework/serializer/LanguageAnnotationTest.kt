@@ -1,4 +1,4 @@
-package com.windea.breezeframework.serializer.tests
+package com.windea.breezeframework.serializer
 
 import org.intellij.lang.annotations.*
 import kotlin.test.*

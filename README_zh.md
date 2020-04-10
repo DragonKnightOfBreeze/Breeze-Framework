@@ -1,8 +1,10 @@
 # 概述
 
+[English Document](README.md) | [中文文档](README_zh.md)
+
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
+基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展，它能做的比你想象的要更多。
 
 注意：
 
@@ -24,8 +26,8 @@
 ## breeze-dsl
 
 提供简洁而灵活的领域特定语言的api，为常见的标记语言提供支持，便于生成对应的文本，并允许进行充分的配置。例如：
-* Xml、Markdown、Creole等标记语言。
-* Mermaid、Flow、Sequence等绘图语言。
+* `Xml`、`Markdown`、`Creole`等标记语言。
+* `Mermaid`、`Flow`、`Sequence`等绘图语言。
 * 其他一些特殊格式的文本。
 
 ## breeze-functional
@@ -36,27 +38,21 @@
 * 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
 * 用于得到当前函数的偏函数的`partial`和`partialLast`方法。
 
-## breeze-game
+## ~~breeze-game~~
 
-提供一些游戏开发中可能用到的通用工具和功能。
-
-> 尚未完全实现。
+~~**［有待完全实现］** 提供一些游戏开发中可能用到的通用工具和功能。~~
 
 ## breeze-generator
 
-提供一些具有特定用途的生成器。例如：
+**［有待完善］** 提供一些具有特定用途的生成器。例如：
 * 用于生成各种格式的链接的`UrlGenerator`。
 * 用于生成扩展Json Schema的`JsonSchemaGenerator`。
 
-> 有待完善。
-
 ## breeze-http
 
-提供简洁而直观的Http链接的api，封装Java原生的Http api，并允许进行充分的配置。
+**［有待完善］** 提供简洁而直观的Http api，封装Java原生的Http api，并允许进行充分的配置。
 
 注意：可能需要配合第三方序列化库如`Gson`使用。
-
-> 有待完善。
 
 ## breeze-javafx
 
@@ -93,9 +89,10 @@
 
 ## breeze-serializer
 
-**［有待完善］** 提供简洁而统一的api，用于进行数据的序列化和反序列化操作，由第三方库委托实现，并允许进行充分的配置。例如：
+**［有待完善］** 提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：
+
 * 由`breeze-mapper`委托实现的`BreezeJsonSerializer`、`BreezeXmlSerializer`等。这是默认的实现，也是最简单的一种实现。
-* 由`KotlinX Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
+* 由`Kotlinx Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
 * 由`Jackson`委托实现的`JacksonJsonSerializer`、`JacksonXmlSerializer`等。这是最全面的一种实现。
 * 由`Gson`委托实现的`GsonSerializer`。
 * 由`FastJson`委托实现的`FastJsonSerializer`。
@@ -117,21 +114,26 @@
 * 为数字类型提供额外的属性，用于生成时间。如`1.seconds`、`2.minutes`和`3.years`。
 * 为时长和时期提供额外的运算符重载方法。如`Duration.unaryMinus`和`Period.times`。
 
-# 依赖 & 可选依赖
-
-* SpringBoot
-* SpringCloud
-* Anko
-* LibGDX
-* Kodein-di
-* Spekframework
-* [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
-* [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
-* [charleskorn/kaml](https://github.com/charleskorn/kaml)
-* [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
-
 # 参考
 
+## 依赖 & 可选依赖
+
+* [Spring Boot](https://github.com/spring-projects/spring-boot)
+* [Spring Cloud](https://github.com/spring-cloud)
+* [Kodein Framework](https://github.com/Kodein-Framework/Kodein-DI)
+* [Spek Framework](https://github.com/spekframework/spek)
+* [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
+* [charleskorn/kaml](https://github.com/charleskorn/kaml)
+* [Jackson](https://github.com/FasterXML/jackson)
+* [Gson](https://github.com/google/gson)
+* [FastJson](https://github.com/alibaba/fastjson)
+* [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
+* [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
+* [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
+
+## 实现参考
+
+* [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
 * [kohesive/klutter](https://github.com/kohesive/klutter)
@@ -146,6 +148,8 @@
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
 ## 用法
+
+项目已发布到JCenter。~~令人难受的是存在一些格式问题。~~
 
 ## Maven
 
@@ -171,4 +175,5 @@ implementation("com.windea.breezeframework:$module:$version")
 
 # 示例
 
-参见：[ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/tests/ExampleTest.kt).
+参见：
+* [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/ExampleTest.kt)

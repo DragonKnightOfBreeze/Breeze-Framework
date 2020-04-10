@@ -2,7 +2,6 @@ package com.windea.breezeframework.serializer.impl
 
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.serializer.*
-import com.windea.breezeframework.serializer.extensions.*
 import kotlin.reflect.*
 import kotlin.test.*
 

@@ -6,7 +6,6 @@ import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
-import com.windea.breezeframework.serializer.extensions.*
 import java.io.*
 
 /**Sql语句的生成器。*/

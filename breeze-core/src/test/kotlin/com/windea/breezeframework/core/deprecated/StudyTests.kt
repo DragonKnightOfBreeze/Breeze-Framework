@@ -1,4 +1,4 @@
-package com.windea.breezeframework.core.tests
+package com.windea.breezeframework.core.deprecated
 
 import com.windea.breezeframework.core.annotations.*
 import kotlin.reflect.*

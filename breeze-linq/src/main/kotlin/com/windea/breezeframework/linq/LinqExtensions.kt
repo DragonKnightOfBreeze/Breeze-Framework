@@ -1,6 +1,5 @@
-package com.windea.breezeframework.linq.extensions
+package com.windea.breezeframework.linq
 
-import com.windea.breezeframework.linq.*
 import com.windea.breezeframework.linq.impl.*
 
 /**创建Linq语句。可选Linq的实现类型，默认为委托给Kotlin集合框架实现。*/

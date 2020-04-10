@@ -1,6 +1,5 @@
-package com.windea.breezeframework.http.extensions
+package com.windea.breezeframework.http
 
-import com.windea.breezeframework.http.*
 import java.net.http.*
 import java.net.http.HttpResponse.*
 import java.util.concurrent.*
