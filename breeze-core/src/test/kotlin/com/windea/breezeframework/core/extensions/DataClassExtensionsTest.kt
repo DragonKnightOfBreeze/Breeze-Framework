@@ -16,7 +16,7 @@ class DataClassExtensionsTest {
 	@Test
 	fun testToString() {
 		val foo = Foo(123, "abc")
-		assertEquals("Foo(a=123, b=abc)", toStringBy(foo) { arrayOf(::a, ::b) })
+		assertEquals("Foo(a=123, b=abc)", toStringByReference(foo) { arrayOf(::a, ::b) })
 	}
 
 	class Foo(val a: Int, val b: String)

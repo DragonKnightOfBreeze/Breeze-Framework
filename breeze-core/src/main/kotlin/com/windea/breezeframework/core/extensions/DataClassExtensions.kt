@@ -53,7 +53,7 @@ fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Arra
 }
 
 /**
- * 基于指定的属性，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出。默认输出简单类名，并对数组类型递归执行操作。
+ * 基于指定的属性的名字-值元组，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
  *
  * * 如果目标为`null`，则返回`"null"`。
  * * 如果未指定属性，则忽略属性的输出。
@@ -65,6 +65,32 @@ fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Arra
  * * Java记录风格的输出：`Foo[bar=123]`。
  */
 fun <T : Any> toStringBy(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
+	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<Pair<String,*>>):String {
+	return when {
+		target == null -> "null"
+		else -> with(target.selector()) {
+			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
+			when {
+				isEmpty() -> "$className$prefix$postfix"
+				else -> joinToString(delimiter, "$className$prefix", postfix) { (n,v)-> "$n=${v.toStringSmartly(deepOp)}" }
+			}
+		}
+	}
+}
+
+/**
+ * 基于指定的属性的引用，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
+ *
+ * * 如果目标为`null`，则返回`"null"`。
+ * * 如果未指定属性，则忽略属性的输出。
+ * * 如果已指定属性，则输出属性的名字-值的键值对。
+ * * 对于数组类型的属性，参照其内容。
+ *
+ * 参考：
+ * * Kotlin数据类风格的输出：`Foo(bar=123)`。
+ * * Java记录风格的输出：`Foo[bar=123]`。
+ */
+fun <T : Any> toStringByReference(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
 	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<KProperty0<*>>):String {
 	return when {
 		target == null -> "null"
@@ -78,29 +104,21 @@ fun <T : Any> toStringBy(target:T?, delimiter:String = ", ", prefix:String = "("
 	}
 }
 
-internal fun Any?.equalsSmartly(other:Any?, deepOp:Boolean = true):Boolean {
-	return when {
-		this !is Array<*> || other !is Array<*> -> this == other
-		!deepOp -> this.contentEquals(other)
-		else -> this.contentDeepEquals(other)
-	}
+private fun Any?.equalsSmartly(other:Any?, deepOp:Boolean = true) = when {
+	this !is Array<*> || other !is Array<*> -> this == other
+	!deepOp -> this.contentEquals(other)
+	else -> this.contentDeepEquals(other)
 }
 
-
-
-internal fun Any?.hashCodeSmartly(deepOp:Boolean = true):Int {
-	return when {
-		this !is Array<*> -> this.hashCode()
-		!deepOp -> this.contentHashCode()
-		else -> this.contentDeepHashCode()
-	}
+private fun Any?.hashCodeSmartly(deepOp:Boolean = true) = when {
+	this !is Array<*> -> this.hashCode()
+	!deepOp -> this.contentHashCode()
+	else -> this.contentDeepHashCode()
 }
 
-internal fun Any?.toStringSmartly(deepOp:Boolean = true):String {
-	return when {
-		this !is Array<*> -> this.toString()
-		!deepOp -> this.contentToString()
-		else -> this.contentDeepToString()
-	}
+private fun Any?.toStringSmartly(deepOp:Boolean = true) = when {
+	this !is Array<*> -> this.toString()
+	!deepOp -> this.contentToString()
+	else -> this.contentDeepToString()
 }
 

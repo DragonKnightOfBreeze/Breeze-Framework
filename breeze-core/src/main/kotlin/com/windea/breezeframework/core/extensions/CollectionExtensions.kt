@@ -48,25 +48,6 @@ inline fun <reified K : Enum<K>, V> enumMapOf(): EnumMap<K, V> = EnumMap(K::clas
 
 /**构建一个枚举映射。*/
 fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMap(pairs.toMap())
-
-
-/**构建一个空的线程安全的并发列表。*/
-inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
-
-/**构建一个线程安全的并发列表。*/
-fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
-
-/**构建一个空的线程安全的并发集。*/
-inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
-
-/**构建一个线程安全的并发集。*/
-fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
-
-/**构建一个空的线程安全的并发映射。*/
-inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
-
-/**构建一个线程安全的并发映射。*/
-fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 //endregion
 
 //region operator extensions
@@ -782,40 +763,27 @@ private fun List<Pair<Array<String>, Any?>>.toDeepQueryMap(returnPathCase:Refere
 //endregion
 
 //region convert extensions
-/**将当前列表转化为新的并发列表。*/
-fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> =
-	if(this is CopyOnWriteArrayList) this else CopyOnWriteArrayList(this)
-
-/**将当前集转化为新的并发集。*/
-fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> =
-	if(this is CopyOnWriteArraySet) this else CopyOnWriteArraySet(this)
-
-/**将当前映射转化为新的并发映射。*/
-fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> =
-	if(this is ConcurrentMap) this else ConcurrentHashMap(this)
-
-
-/**将当前键值对数组转化为可变映射。*/
+/**将当前键值对数组转化为新的可变映射。*/
 fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
-/**将当前键值对列表转化为可变映射。*/
+/**将当前键值对列表转化为新的可变映射。*/
 fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
-/**将当前键值对序列转化为可变映射。*/
+/**将当前键值对序列转化为新的可变映射。*/
 fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 
-/**将当前数组转化为以键为值的映射。*/
+/**将当前数组转化为新的以键为值的映射。*/
 inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前集合转化为以键为值的映射。*/
+/**将当前集合转化为新的以键为值的映射。*/
 inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前序列转化为以键为值的映射。*/
+/**将当前序列转化为新的以键为值的映射。*/
 inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
