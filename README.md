@@ -43,11 +43,6 @@ NOTE：
 * Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
 * Provide functional extensions for Functions from 0 to 11 parameters.
 
-## breeze-game
-
-* Provide some useful extensions for game design.
-* DO NOT FULLY IMPLEMENTED.
-
 ## breeze-generator
 
 * Provide generators for string and text. (e.g, `UrlGenerator`)
@@ -98,10 +93,6 @@ NOTE：
 ## breeze-spring-boot
 
 * Provide some useful extensions for `SpringBoot` and it's optional modules.
-
-## breeze-text
-
-* Provide some useful extensions for text, including i18n text and humanized text.
 
 ## breeze-time
 

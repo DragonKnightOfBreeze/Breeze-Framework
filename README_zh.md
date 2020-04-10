@@ -38,10 +38,6 @@
 * 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
 * 用于得到当前函数的偏函数的`partial`和`partialLast`方法。
 
-## ~~breeze-game~~
-
-~~**［有待完全实现］** 提供一些游戏开发中可能用到的通用工具和功能。~~
-
 ## breeze-generator
 
 **［有待完善］** 提供一些具有特定用途的生成器。例如：
@@ -83,9 +79,9 @@
 * 直接得到Java类型的`javaTypeOf`方法。
 * 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
 
-## ~~breeze-serialization~~
+## breeze-serialization
 
-~~**［有待完全实现］** 为KotlinX Serialization补充功能和扩展。~~
+**［有待完全实现］** 为KotlinX Serialization补充功能和扩展，并且提供额外的类型序列化器和标记语言序列化器。
 
 ## breeze-serializer
 
@@ -101,10 +97,6 @@
 ## breeze-spring-boot
 
 **［有待完善］** 为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
-
-## ~~breeze-text~~
-
-~~提供一些具有特定用途的字符串处理方法。~~
 
 ## breeze-time
 
