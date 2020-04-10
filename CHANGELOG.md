@@ -358,9 +358,9 @@
 # 1.1.2
  
 * [X] 移除breeze-game模块（应当放到一个独立的框架中）和breeze-text模块（不是非常必要的方法）。
-* [ ] breeze-core 实现`toStringByReference`。
-* [ ] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器。
-* [ ] breeze-core 对数字的多种方式的格式化方法，参数可能不确定，参考NumberFormat，以及添加前缀0的格式化。
+* [X] breeze-core 实现`toStringByReference`。
+* [X] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器。
+* [X] breeze-core 对数字的多种方式的格式化方法，参数可能不确定，参考NumberFormat，以及添加前缀0的格式化。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。

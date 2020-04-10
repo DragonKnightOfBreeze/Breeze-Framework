@@ -66,7 +66,6 @@ interface DslEntry {
 }
 
 /**Dsl常量集。*/
-@InternalUsageApi
 object DslConstants{
 	@InternalUsageApi val ls:String = System.lineSeparator()
 	@InternalUsageApi val ss:String = "$ls$ls"

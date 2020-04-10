@@ -2,9 +2,9 @@ package com.windea.breezeframework.core.domain.text
 
 /**转义类型。*/
 enum class EscapeType(
-	override val escapeStrings: Array<String>,
-	override val escapedStrings: Array<String>
-) : EscapeStrategy {
+	internal val escapeStrings: Array<String>,
+	internal val escapedStrings: Array<String>
+)  {
 	/**Kotlin转义。*/
 	Kotlin(
 		arrayOf("\t", "\b", "\n", "\r", "\'", "\"", "\$"),
@@ -21,6 +21,7 @@ enum class EscapeType(
 		arrayOf(".", "^", "$", "[", "{", "(", "|", "-", "*", "?", "+"), //可能不适用于所有情况
 		arrayOf("\\.", "\\^", "\\$", "\\[", "\\{", "\\(", "\\|", "-", "\\*", "\\?", "\\+")
 	),
+
 	//com.google.common.xml.XmlEscapers
 	/**Xml转义。*/
 	Xml(
@@ -33,6 +34,7 @@ enum class EscapeType(
 		arrayOf("<", ">", "&", "'", "\"", "\t", "\n", "\r"),
 		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#x9", "&#xA", "&#xD")
 	),
+
 	//com.google.common.html.HtmlEscapers
 	/**Html转义。*/
 	Html(

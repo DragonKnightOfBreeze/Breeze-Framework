@@ -575,80 +575,78 @@ fun String.unquote(omitQuotes:Boolean = true):String {
 private val quotes = charArrayOf('\"', '\'', '`')
 
 
-/**根据指定的转义策略，转义当前字符串。默认不转义反斜线。*/
-fun String.escapeBy(strategy:EscapeStrategy, omitBackslashes:Boolean = true):String {
-	val tempString = if(omitBackslashes) this else this.replace("\\", "\\\\")
-	return tempString.replaceAll(strategy.escapeStrings, strategy.escapedStrings)
+/**根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。*/
+fun String.formatBy(type:FormatType, vararg args:Any?, locale:Locale? = null, placeholder:Pair<String, String>? = null):String {
+	return type.formatter(this, args, locale, placeholder)
 }
 
-/**根据指定的转义策略，反转义当前字符串。默认不反转一反斜线*/
-fun String.unescapeBy(strategy:EscapeStrategy, omitBackslashes:Boolean = true):String {
-	val tempString = this.replaceAll(strategy.escapedStrings, strategy.escapeStrings)
+
+/**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/
+fun String.escapeBy(type:EscapeType, omitBackslashes:Boolean = true):String {
+	val tempString = if(omitBackslashes) this else this.replace("\\", "\\\\")
+	return tempString.replaceAll(type.escapeStrings, type.escapedStrings)
+}
+
+/**根据指定的转义类型，反转义当前字符串。默认不反转一反斜线*/
+fun String.unescapeBy(type:EscapeType, omitBackslashes:Boolean = true):String {
+	val tempString = this.replaceAll(type.escapedStrings, type.escapeStrings)
 	return if(omitBackslashes) tempString else tempString.replace("\\\\", "\\")
 }
 
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(strategy:MatchStrategy):Regex {
-	return strategy.regexTransform(this).toRegex()
+fun String.toRegexBy(type:MatchType):Regex {
+	return type.regexTransform(this).toRegex()
 }
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(strategy:MatchStrategy, option:RegexOption):Regex {
-	return strategy.regexTransform(this).toRegex(option)
+fun String.toRegexBy(type:MatchType, option:RegexOption):Regex {
+	return type.regexTransform(this).toRegex(option)
 }
 
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
-fun String.toRegexBy(strategy:MatchStrategy, options:Set<RegexOption>):Regex {
-	return strategy.regexTransform(this).toRegex(options)
-}
-
-
-/**根据指定的格式化策略，格式化当前字符串。*/
-fun String.format(strategy:FormatStrategy, vararg args:Any?, placeholder:String? = null):String {
-	return strategy.formatter(this, args, placeholder)
+fun String.toRegexBy(type:MatchType, options:Set<RegexOption>):Regex {
+	return type.regexTransform(this).toRegex(options)
 }
 
 
 /**得到当前字符串的字母格式。*/
-val String.letterCase:LetterCase
-	get() = enumValues<LetterCase>().first { it.predicate(this) }
+val String.letterCase:LetterCase get() = enumValues<LetterCase>().first { it.predicate(this) }
 
 /**得到当前字符串的引用格式。*/
-val String.referenceCase:ReferenceCase
-	get() = enumValues<ReferenceCase>().first { it.predicate(this) }
+val String.referenceCase:ReferenceCase get() = enumValues<ReferenceCase>().first { it.predicate(this) }
 
-/**根据指定的格式策略，分割当前字符串，返回对应的字符串列表。*/
-fun String.splitBy(case:CaseStrategy):List<String> {
+/**根据指定的显示格式，分割当前字符串，返回对应的字符串列表。*/
+fun String.splitBy(case:DisplayCase):List<String> {
 	return case.splitter(this)
 }
 
-/**根据指定的格式策略，分割当前字符串，返回对应的字符串序列。*/
-fun String.splitToSequenceBy(case:CaseStrategy):Sequence<String> {
+/**根据指定的显示格式，分割当前字符串，返回对应的字符串序列。*/
+fun String.splitToSequenceBy(case:DisplayCase):Sequence<String> {
 	return case.sequenceSplitter(this)
 }
 
-/**根据指定的格式策略，将当前字符串数组中的元素加入到字符串。*/
-fun Array<out CharSequence>.joinToStringBy(case:CaseStrategy):String {
+/**根据指定的显示格式，将当前字符串数组中的元素加入到字符串。*/
+fun Array<out CharSequence>.joinToStringBy(case:DisplayCase):String {
 	return case.arrayJoiner(this)
 }
 
-/**根据指定的格式策略，将当前字符串集合中的元素加入到字符串。*/
-fun Iterable<CharSequence>.joinToStringBy(case:CaseStrategy):String {
+/**根据指定的显示格式，将当前字符串集合中的元素加入到字符串。*/
+fun Iterable<CharSequence>.joinToStringBy(case:DisplayCase):String {
 	return case.joiner(this)
 }
 
-/**根据指定的格式策略，切换当前字符串的格式。*/
-fun String.switchCaseBy(fromCase:CaseStrategy, case:CaseStrategy):String {
-	return this.splitBy(fromCase).joinToStringBy(case)
+/**根据指定的显示格式，切换当前字符串的格式。*/
+fun String.switchCaseBy(fromCase:DisplayCase, toCase:DisplayCase):String {
+	return this.splitBy(fromCase).joinToStringBy(toCase)
 }
 
-/**根据指定的格式策略，切换当前字符串的格式。根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。*/
-fun String.switchCaseBy(case:CaseStrategy):String {
+/**根据指定的显示格式，切换当前字符串的格式。可以根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。*/
+fun String.switchCaseBy(case:DisplayCase):String {
 	return this.splitBy(when(case) {
 		is LetterCase -> this.letterCase
 		is ReferenceCase -> this.referenceCase
-		else -> throw IllegalArgumentException("Cannot find an actual way to get same-type format case from a string.")
+		else -> throw IllegalArgumentException("Cannot find an actual way to get actual display case from a string.")
 	}).joinToStringBy(case)
 }
 //endregion

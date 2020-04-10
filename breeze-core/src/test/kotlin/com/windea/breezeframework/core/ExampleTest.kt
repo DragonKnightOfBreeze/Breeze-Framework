@@ -82,7 +82,7 @@ class ExampleTest {
 		  </element>
 		""".trimRelativeIndent())
 
-		////Switch Case Extensions
+		////Switch DisplayCase Extensions
 
 		//abcAbc
 		println("Abc abc".switchCaseBy(camelCase))
@@ -96,9 +96,9 @@ class ExampleTest {
 		///a/b/1/2/c/3
 		println("a.b[1][2].c[3]".switchCaseBy(PathReference))
 		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".switchCaseBy(JavaReference))
+		println("/a/b/1/2/c/3".switchCaseBy(ObjectReference))
 
-		////Match Path Extensions
+		////MatchType Path Extensions
 
 		//true
 		println("/home/123/detail" matches "/home/*/detail".toRegexBy(MatchType.AntPath))

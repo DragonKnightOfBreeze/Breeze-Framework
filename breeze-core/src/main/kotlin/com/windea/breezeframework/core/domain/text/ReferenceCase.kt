@@ -10,10 +10,11 @@ enum class ReferenceCase(
 	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
 	override val regex: Regex? = null,
 	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
-) : CaseStrategy {
+) : DisplayCase {
 	/**
 	 * 路径引用。
 	 *
+	 * 规则：
 	 * * `$index` - 表示一个指定索引的元素。
 	 * * `$key` - 表示一个指定键的值。
 	 * * `$index-$index` - 表示一个用指定索引范围过滤的子列表。
@@ -37,8 +38,9 @@ enum class ReferenceCase(
 		"""(?:/.+)+""".toRegex()
 	),
 	/**
-	 * Java引用。
+	 * 对象引用。
 	 *
+	 * 规则：
 	 * * `Category` - 表示一个对象/对象的属性/映射的值。
 	 * * `T(Category)` - 表示一个类型。（暂不支持）
 	 * * `[0]` - 表示一个列表的元素。
@@ -47,7 +49,7 @@ enum class ReferenceCase(
 	 * 示例：
 	 * * `"categories[0].name"`
 	 */
-	JavaReference(
+	ObjectReference(
 		{ it.split('[', '.').dropEmpty().map { s -> s.removeSuffix("]") } },
 		{ it.splitToSequence('[', '.').dropEmpty().map { s -> s.removeSuffix("]") } },
 		{ it.joinToString(".").wrapIndex().replace(".[", "[") },
@@ -58,6 +60,7 @@ enum class ReferenceCase(
 	/**
 	 * Json引用。
 	 *
+	 * 规则：
 	 * * `Category` 表示一个对象的属性/映射的值。
 	 * * `[0]` 表示一个列表的元素。
 	 *
@@ -76,9 +79,6 @@ enum class ReferenceCase(
 	Unknown;
 
 	companion object {
-		/**使用方括号包围索引。*/
-		private fun String.wrapIndex(): String {
-			return this.replace("""\d+""".toRegex(), "[$0]")
-		}
+		private fun String.wrapIndex() = this.replace("""\d+""".toRegex(), "[$0]")
 	}
 }

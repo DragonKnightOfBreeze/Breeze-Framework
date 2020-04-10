@@ -13,7 +13,7 @@ enum class LetterCase(
 	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
 	override val regex: Regex? = null,
 	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
-) : CaseStrategy {
+) : DisplayCase {
 	/**全小写的单词。*/
 	LowerCase(
 		joiner = { it.joinToString("").toLowerCase() },
@@ -207,16 +207,16 @@ enum class LetterCase(
 		@JvmSynthetic val `Generic Words`: LetterCase = GenericWords
 
 		/**@see LetterCase.CamelCase*/
-		@JvmSynthetic val `camelCase`: LetterCase = CamelCase
+		@JvmSynthetic val camelCase: LetterCase = CamelCase
 
 		/**@see LetterCase.SnakeCase*/
-		@JvmSynthetic val `snake_case`: LetterCase = SnakeCase
+		@JvmSynthetic val snake_case: LetterCase = SnakeCase
 
 		/**@see LetterCase.ScreamingSnakeCase*/
 		@JvmSynthetic val SCREAMING_SNAKE_CASE: LetterCase = ScreamingSnakeCase
 
 		/**@see LetterCase.UnderscoreWords*/
-		@JvmSynthetic val `underscore_Words`: LetterCase = UnderscoreWords
+		@JvmSynthetic val underscore_Words: LetterCase = UnderscoreWords
 
 		/**@see LetterCase.KebabCase*/
 		@JvmSynthetic val `kebab-case`: LetterCase = KebabCase
@@ -228,25 +228,15 @@ enum class LetterCase(
 		@JvmSynthetic val `hyphen-Words`: LetterCase = HyphenWords
 
 		/**@see LetterCase.CamelCaseAllowUnderscore*/
-		@JvmSynthetic val `camelCase_AllowUnderscore`: LetterCase = CamelCaseAllowUnderscore
+		@JvmSynthetic val camelCase_AllowUnderscore: LetterCase = CamelCaseAllowUnderscore
 
 		/**@see LetterCase.PascalCaseAllowUnderscore*/
-		@JvmSynthetic val `PascalCase_AllowUnderscore`: LetterCase = PascalCaseAllowUnderscore
+		@JvmSynthetic val PascalCase_AllowUnderscore: LetterCase = PascalCaseAllowUnderscore
 
+		private fun CharSequence.firstCharToUpperCase() = this[0].toUpperCase() + this.substring(1)
 
-		/**将第一个字符转为大写。*/
-		private fun CharSequence.firstCharToUpperCase(): String {
-			return this[0].toUpperCase() + this.substring(1)
-		}
+		private fun CharSequence.firstCharToLowerCase() = this[0].toLowerCase() + this.substring(1)
 
-		/**将第一个字符转为小写。*/
-		private fun CharSequence.firstCharToLowerCase(): String {
-			return this[0].toLowerCase() + this.substring(1)
-		}
-
-		/**基于小写字母与大写字母的边界，将当前字符串转化为以空格分割的单词组成的字符串。允许全大写的单词。*/
-		private fun CharSequence.splitWords(): String {
-			return this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
-		}
+		private fun CharSequence.splitWords() = this.replace("""\B([A-Z][a-z])""".toRegex(), " $1")
 	}
 }

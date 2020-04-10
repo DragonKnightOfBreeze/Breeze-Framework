@@ -26,8 +26,8 @@ class StringExtensionsTest {
 
 	@Test
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(JavaReference))
-		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(JavaReference))
+		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(ObjectReference))
+		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(ObjectReference))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(JsonReference))
 		assertEquals("/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(PathReference))
 	}
@@ -88,5 +88,21 @@ class StringExtensionsTest {
 	fun ifNotEmptyOrBlankTest() {
 		println("123".ifNotEmpty { "/" })
 		println("123".ifNotBlank { "/" })
+	}
+
+	@Test
+	fun formatTest(){
+		assertEquals(
+			"hello world!",
+			"hello {}!".formatBy(FormatType.Log,"world")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {0}, hello {1}!".formatBy(FormatType.Indexed ,"world","java")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named ,"arg1" to  "world","arg2" to "java")
+		)
 	}
 }

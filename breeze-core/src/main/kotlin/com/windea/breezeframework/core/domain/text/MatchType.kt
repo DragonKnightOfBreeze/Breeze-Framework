@@ -6,11 +6,12 @@ import com.windea.breezeframework.core.extensions.*
 
 /**匹配类型。*/
 enum class MatchType(
-	override val regexTransform: (String) -> String
-) : MatchStrategy {
+	internal val regexTransform: (String) -> String
+) {
 	/**
-	 * Ant路径匹配类型。用于匹配路径。
+	 * Ant风格的路径匹配类型。用于匹配路径。
 	 *
+	 * 规则：
 	 * * `?` - 匹配任意单个字符。
 	 * * `*` - 匹配除了路径分隔符`/`之外的任意数量的任意字符。
 	 * * `**` - 匹配任意数量的任意字符。
@@ -29,6 +30,7 @@ enum class MatchType(
 	/**
 	 * ignore文件（如.gitignore）的路径匹配类型。用于匹配路径。
 	 *
+	 * 规则：
 	 * * `?` - 匹配任意单个字符。
 	 * * `*` - 匹配除了路径分隔符`/`之外的任意数量的任意字符。
 	 * * `**` - 匹配任意数量的任意字符。
@@ -54,6 +56,7 @@ enum class MatchType(
 	/**
 	 * .editorconfig文件的路径匹配类型。用于匹配关注后缀名的路径。
 	 *
+	 * 规则：
 	 * * `?` - 匹配任意单个字符。
 	 * * `*` - 匹配除了路径分隔符`/`之外的任意数量的任意字符。
 	 * * `**` - 匹配任意数量的任意字符。
@@ -82,6 +85,7 @@ enum class MatchType(
 	/**
 	 * 路径引用匹配类型。用于匹配关注查询的引用。
 	 *
+	 * 规则：
 	 * * `$index` - 表示一个指定索引的元素。
 	 * * `$key` - 表示一个指定键的值。
 	 * * `$index1-$index2` - 表示一个用指定索引范围过滤的子列表。
@@ -107,14 +111,8 @@ enum class MatchType(
 	});
 
 	companion object {
-		/**转义正则表达式字符串。*/
-		private fun String.escapeRegex(): String {
-			return Regex.escape(this)
-		}
+		private fun String.escapeRegex() = Regex.escape(this)
 
-		/**精简正则表达式字符串。*/
-		private fun String.trimRegex(): String {
-			return this.remove("\\Q\\E")
-		}
+		private fun String.trimRegex() = this.remove("\\Q\\E")
 	}
 }
