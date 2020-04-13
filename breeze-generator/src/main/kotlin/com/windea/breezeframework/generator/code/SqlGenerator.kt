@@ -15,8 +15,8 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.read<SqlDataMap>(inputText)
+	fun generateSqlData(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
 
@@ -25,8 +25,8 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.read<SqlDataMap>(inputFile)
+	fun generateSqlData(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
 

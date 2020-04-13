@@ -1,6 +1,12 @@
 package com.windea.breezeframework.serializer.impl
 
+import com.windea.breezeframework.mapper.*
 import com.windea.breezeframework.serializer.*
 
-/**由BreezeFramework实现的序列化器。*/
-interface BreezeSerializer : Serializer
+/**
+ * 由BreezeFramework实现的序列化器。
+ * @see com.windea.breezeframework.mapper.Mapper
+ * */
+interface BreezeSerializer<T: Mapper> : Serializer{
+	val delegate:T
+}

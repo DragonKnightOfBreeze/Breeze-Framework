@@ -7,7 +7,10 @@ import kotlinx.serialization.modules.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由KotlinxSerialization实现的Json的序列化器。*/
+/**
+ * 由KotlinxSerialization实现的Json的序列化器。
+ * @see kotlinx.serialization.json.Json
+ */
 @Suppress("UNCHECKED_CAST")
 @OptIn(UnstableDefault::class, ImplicitReflectionSerializer::class)
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {

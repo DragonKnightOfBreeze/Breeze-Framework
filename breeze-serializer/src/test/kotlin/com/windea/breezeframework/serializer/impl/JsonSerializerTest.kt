@@ -12,16 +12,16 @@ class JsonSerializerTest {
 			{"name":"Windea","age":"5000+"}
 		""".trimIndent()
 
-		val jsonObj = json.deserialize<Person>(DataType.Json)
+		val jsonObj = json.deserialize<Person>(DataFormat.Json)
 		println(jsonObj)
 
-		val jsonMap = json.deserialize<Map<*, *>>(DataType.Json)
+		val jsonMap = json.deserialize<Map<*, *>>(DataFormat.Json)
 		println(jsonMap)
 
-		val jsonString1 = jsonObj.serialize(DataType.Json)
+		val jsonString1 = jsonObj.serialize(DataFormat.Json)
 		println(jsonString1)
 
-		val jsonString2 = jsonMap.serialize(DataType.Json)
+		val jsonString2 = jsonMap.serialize(DataFormat.Json)
 		println(jsonString2)
 	}
 
@@ -29,18 +29,18 @@ class JsonSerializerTest {
 	fun testForFile() {
 		val jsonFile = javaClass.getResource("/test.json").toFile()
 
-		val jsonObj = jsonFile.deserialize<Person>(DataType.Json)
+		val jsonObj = jsonFile.deserialize<Person>(DataFormat.Json)
 		println(jsonObj)
 
-		val jsonMap = jsonFile.deserialize<Map<*, *>>(DataType.Json)
+		val jsonMap = jsonFile.deserialize<Map<*, *>>(DataFormat.Json)
 		println(jsonMap)
 
 		val newFile1 = jsonFile.resolveSibling("test2.json").also { it.createNewFile() }
-		jsonObj.serialize(DataType.Json, newFile1)
+		jsonObj.serialize(DataFormat.Json, newFile1)
 		println(newFile1.readText())
 
 		val newFile2 = jsonFile.resolveSibling("test3.json").also { it.createNewFile() }
-		jsonMap.serialize(DataType.Json, jsonFile)
+		jsonMap.serialize(DataFormat.Json, jsonFile)
 		println(newFile2.readText())
 	}
 

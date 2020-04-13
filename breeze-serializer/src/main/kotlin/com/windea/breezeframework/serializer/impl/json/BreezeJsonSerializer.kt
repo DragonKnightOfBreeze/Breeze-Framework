@@ -5,10 +5,14 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由BreezeJson实现的Json序列化器。*/
-internal object BreezeJsonSerializer : JsonSerializer, BreezeSerializer {
+/**
+ * 由BreezeJson实现的Json序列化器。
+ * @see com.windea.breezeframework.mapper.impl.JsonMapper
+ */
+internal object BreezeJsonSerializer : JsonSerializer, BreezeSerializer<JsonMapper> {
 	internal val configBuilder = JsonMapper.Config.Builder()
 	internal val mapper by lazy { JsonMapper(configBuilder.build()) }
+	override val delegate:JsonMapper get() = mapper
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return mapper.unmap(string, type)

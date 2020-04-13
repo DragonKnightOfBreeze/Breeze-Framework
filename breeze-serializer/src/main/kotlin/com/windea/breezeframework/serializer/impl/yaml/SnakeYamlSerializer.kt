@@ -6,7 +6,10 @@ import org.yaml.snakeyaml.representer.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由SnakeYaml实现的Yaml序列化器。*/
+/**
+ * 由SnakeYaml实现的Yaml序列化器。
+ * @see org.yaml.snakeyaml.Yaml
+ */
 internal object SnakeYamlSerializer : YamlSerializer {
 	internal val loaderOptions = LoaderOptions()
 	internal val dumperOptions = DumperOptions()

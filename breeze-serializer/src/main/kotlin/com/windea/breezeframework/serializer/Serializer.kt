@@ -8,7 +8,7 @@ import java.lang.reflect.*
  *
  * 序列化器用于将数据序列化为指定的数据格式，或者从指定的数据格式反序列化为数据。
  *
- * 序列化器的实现默认由`breeze-mapper`提供，但也可以依赖于第三方库，如`jackson`，`gson`，`kotlinx-serialization`等。
+ * 序列化器的实现默认由`breeze-mapper`提供，但也可以依赖于第三方库，如`jackson`，`kotlinx-serialization`，`gson`等。
  * 如果其实现为`jackson`，当classpath中存在`jackson-module-kotlin`时，可以对数据类进行构造参数绑定。
  */
 interface Serializer {

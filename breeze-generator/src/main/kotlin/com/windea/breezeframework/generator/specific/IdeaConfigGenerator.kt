@@ -15,8 +15,8 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputText)
+	fun generateYamlAnnotation(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputText)
 		return getYamlAnnotationString(inputMap)
 	}
 
@@ -25,8 +25,8 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputFile)
+	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputFile)
 		outputFile.writeText(getYamlAnnotationString(inputMap))
 	}
 

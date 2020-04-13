@@ -5,8 +5,8 @@ import com.windea.breezeframework.serializer.impl.properties.*
 import com.windea.breezeframework.serializer.impl.xml.*
 import com.windea.breezeframework.serializer.impl.yaml.*
 
-/**数据类型。*/
-enum class DataType(
+/**数据格式。*/
+enum class DataFormat(
 	/**名字。*/
 	val value: String,
 	/**兼容的扩展名一览。*/

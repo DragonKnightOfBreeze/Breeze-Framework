@@ -5,10 +5,14 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由BreezeYaml实现的Yaml序列化器。*/
-internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer {
+/**
+ * 由BreezeYaml实现的Yaml序列化器。
+ * @see com.windea.breezeframework.mapper.impl.YamlMapper
+ */
+internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer<YamlMapper> {
 	internal val configBuilder = YamlMapper.Config.Builder()
 	internal val mapper by lazy { YamlMapper(configBuilder.build()) }
+	override val delegate:YamlMapper get() = mapper
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return mapper.unmap(string, type)
