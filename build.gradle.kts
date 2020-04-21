@@ -40,9 +40,21 @@ allprojects {
 		testImplementation(kotlin("test-junit"))
 	}
 
+	//从模块名获取包名并设置为包的前缀
+	val modulePrefix = when{
+		project.parent  != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-",".").replace("-","")
+		else -> project.name.removePrefix("breeze-").replace("-","")
+	}
+	val prefix = when{
+		project == rootProject -> "com.windea.breezeframework"
+		project.name == "breeze-unstable" -> "com.windea.breezeframework"
+		else -> "com.windea.breezeframework.$modulePrefix"
+	}
+
 	//配置kotlin的编译选项
 	tasks {
 		compileKotlin {
+			javaPackagePrefix = prefix
 			incremental = true
 			kotlinOptions {
 				jvmTarget = "11"
@@ -58,6 +70,7 @@ allprojects {
 			}
 		}
 		compileTestKotlin {
+			javaPackagePrefix = prefix
 			incremental = true
 			kotlinOptions {
 				jvmTarget = "11"

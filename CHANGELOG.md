@@ -361,6 +361,10 @@
 * [X] breeze-core 实现`toStringByReference`。
 * [X] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器。
 * [X] breeze-core 对数字的多种方式的格式化方法，参数可能不确定，参考NumberFormat，以及添加前缀0的格式化。
+* [X] 精简目录结构。
+* [ ] ~~去除具体的dsl的顶层接口的文档注释（多余的）。~~ 重新整理dsl的文档注释，仅为注解和构造方法提供。
+* [ ] breeze-dsl-t ext 实现富文本Dsl的规范。
+* [ ] breeze-dsl-bbcode 实现BBCode。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
