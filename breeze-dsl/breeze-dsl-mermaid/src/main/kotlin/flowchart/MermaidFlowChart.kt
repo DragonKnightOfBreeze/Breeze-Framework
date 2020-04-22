@@ -49,7 +49,7 @@ interface MermaidFlowChart {
 	 * @property classRefs CSS类引用一览。
 	 */
 	@MermaidFlowChartDsl
-	interface IDslEntry : Mermaid.IDslEntry, LineSplitable, WithTransition<Node, Link> {
+	interface IDslEntry : Mermaid.IDslEntry, Splitable, WithTransition<Node, Link> {
 		val nodes:MutableSet<Node>
 		val links:MutableList<Link>
 		val subGraphs:MutableList<SubGraph>
@@ -62,7 +62,7 @@ interface MermaidFlowChart {
 			return arrayOf(
 				nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
 				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
-			).doSplitLine()
+			).doSplit()
 		}
 
 		@DslFunction

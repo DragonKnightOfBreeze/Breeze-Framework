@@ -190,7 +190,7 @@ interface Markdown {
 	@MarkdownDsl
 	class TextBlock @PublishedApi internal constructor(
 		val text:String
-	) : TopDslElement, LineWrappable {
+	) : TopDslElement, Wrappable {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {
@@ -204,7 +204,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class Heading(
 		val headingLevel:Int, val text:String
-	) : TopDslElement, WithAttributes, LineWrappable {
+	) : TopDslElement, WithAttributes, Wrappable {
 		@MarkdownExtendedFeature override var attributes:AttributeGroup? = null
 		override var wrapContent:Boolean = true
 	}
@@ -311,7 +311,7 @@ interface Markdown {
 	@MarkdownDsl
 	abstract class ListNode(
 		internal val prefixMarkers:String, val text:String
-	) : IDslElement, LineWrappable {
+	) : IDslElement, Wrappable {
 		val nodes:MutableList<ListNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
@@ -353,7 +353,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class Definition @PublishedApi internal constructor(
 		val title:String
-	) : TopDslElement, LineWrappable {
+	) : TopDslElement, Wrappable {
 		val nodes:MutableList<DefinitionNode> = mutableListOf()
 
 		override var wrapContent:Boolean = true
@@ -374,7 +374,7 @@ interface Markdown {
 	@MarkdownExtendedFeature
 	class DefinitionNode @PublishedApi internal constructor(
 		val text:String
-	) : IDslElement, LineWrappable {
+	) : IDslElement, Wrappable {
 		override var wrapContent:Boolean = true
 
 		override fun toString():String {

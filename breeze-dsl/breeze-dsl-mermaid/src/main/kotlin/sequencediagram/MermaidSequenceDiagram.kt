@@ -37,7 +37,7 @@ interface MermaidSequenceDiagram {
 	 * @property scopes 作用域一览。
 	 */
 	@MermaidSequenceDiagramDsl
-	interface MermaidSequenceDiagramDslEntry : Mermaid.IDslEntry, LineSplitable, WithTransition<Participant, Message> {
+	interface MermaidSequenceDiagramDslEntry : Mermaid.IDslEntry, Splitable, WithTransition<Participant, Message> {
 		val participants:MutableSet<Participant>
 		val messages:MutableList<Message>
 		val notes:MutableList<Note>
@@ -45,7 +45,7 @@ interface MermaidSequenceDiagram {
 
 		override fun contentString():String {
 			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
-				.doSplitLine()
+				.doSplit()
 		}
 
 		@DslFunction

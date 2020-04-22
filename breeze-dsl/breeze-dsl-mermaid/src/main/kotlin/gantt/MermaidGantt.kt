@@ -17,7 +17,7 @@ interface MermaidGantt {
 	 * @property dateFormat （可选项）图标的日期格式化方式。
 	 */
 	@MermaidGanttDsl
-	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, Indentable, LineSplitable {
+	class Document @PublishedApi internal constructor() : Mermaid.Document(), IDslEntry, Indentable, Splitable {
 		var title:Title? = null
 		var dateFormat:DateFormat? = null
 		override val sections:MutableList<Section> = mutableListOf()
@@ -25,7 +25,7 @@ interface MermaidGantt {
 		override var splitContent:Boolean = false
 
 		override fun toString():String {
-			val contentSnippet = arrayOf(title, dateFormat, contentString()).doSplitLine().doIndent(config.indent)
+			val contentSnippet = arrayOf(title, dateFormat, contentString()).doSplit().doIndent(config.indent)
 			return "gantt$ls$contentSnippet"
 		}
 	}
@@ -37,7 +37,7 @@ interface MermaidGantt {
 	 * @property sections 图表的分区一览。
 	 */
 	@MermaidGanttDsl
-	interface IDslEntry : Mermaid.IDslEntry, LineSplitable {
+	interface IDslEntry : Mermaid.IDslEntry, Splitable {
 		val sections:MutableList<Section>
 
 		override fun contentString():String {

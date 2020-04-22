@@ -4,6 +4,18 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.core.types.*
 
+/**包含可换行的内容。这个接口的优先级要高于[Indentable]。*/
+@Dsl
+interface Wrappable {
+	/**是否需要对内容进行换行。*/
+	var wrapContent:Boolean
+
+	@InternalUsageApi
+	fun String.doWrap(extraCondition:Boolean = true,transform:(String)->String):String {
+		return if(wrapContent && extraCondition) transform(this) else this
+	}
+}
+
 /**包含可缩进的内容。*/
 @Dsl
 interface Indentable {
@@ -13,6 +25,18 @@ interface Indentable {
 	@InternalUsageApi
 	fun String.doIndent(indent:String, extraCondition:Boolean = true):String {
 		return if(indentContent && extraCondition) this.prependIndent(indent) else this
+	}
+}
+
+/**包含可以空行分隔的内容。*/
+@Dsl
+interface Splitable {
+	/**是否需要对内容以空行分隔。*/
+	var splitContent:Boolean
+
+	@InternalUsageApi
+	fun Array<*>.doSplit(extraCondition:Boolean = true):String{
+		return if(splitContent && extraCondition) this.typingAll(DslConstants.ss) else this.typingAll(DslConstants.ls)
 	}
 }
 
@@ -26,30 +50,6 @@ interface Generatable {
 	@InternalUsageApi
 	fun String.doGenerate(extraCondition:Boolean = true,transform:(String)->String):String {
 		return if(generateContent && extraCondition) transform(this) else this
-	}
-}
-
-/**包含可换行的内容。这个接口的优先级要高于[Indentable]。*/
-@Dsl
-interface LineWrappable {
-	/**是否需要对内容进行换行。*/
-	var wrapContent:Boolean
-
-	@InternalUsageApi
-	fun String.doWrapLine(extraCondition:Boolean = true,transform:(String)->String):String {
-		return if(wrapContent && extraCondition) transform(this) else this
-	}
-}
-
-/**包含可以空行分隔的内容。*/
-@Dsl
-interface LineSplitable {
-	/**是否需要对内容以空行分隔。*/
-	var splitContent:Boolean
-
-	@InternalUsageApi
-	fun Array<*>.doSplitLine(extraCondition:Boolean = true):String{
-		return if(splitContent && extraCondition) this.typingAll(DslConstants.ss) else this.typingAll(DslConstants.ls)
 	}
 }
 
@@ -145,12 +145,12 @@ infix fun <T : Indentable> T.indent(value:Boolean) = apply { indentContent = val
 /**设置是否换行内容。*/
 @InlineDslFunction
 @Dsl
- infix fun <T : LineWrappable> T.wrap(value:Boolean) = apply { wrapContent = value }
+ infix fun <T : Wrappable> T.wrap(value:Boolean) = apply { wrapContent = value }
 
 /**设置是否分割内容。*/
 @InlineDslFunction
 @Dsl
- infix fun <T : LineSplitable> T.split(value:Boolean) = apply { splitContent = value }
+ infix fun <T : Splitable> T.split(value:Boolean) = apply { splitContent = value }
 
 /**设置是否生成内容。*/
 @InlineDslFunction

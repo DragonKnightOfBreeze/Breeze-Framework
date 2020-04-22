@@ -34,13 +34,13 @@ interface MermaidStateDiagram {
 	 * @property notes 注释一览。
 	 */
 	@MermaidStateDiagramDsl
-	interface MermaidStateDiagramDslEntry : Mermaid.IDslEntry, LineSplitable, WithTransition<State, Transition> {
+	interface MermaidStateDiagramDslEntry : Mermaid.IDslEntry, Splitable, WithTransition<State, Transition> {
 		val states:MutableSet<State>
 		val links:MutableList<Transition>
 		val notes:MutableList<Note>
 
 		override fun contentString():String {
-			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplitLine()
+			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplit()
 		}
 
 		@DslFunction
@@ -153,7 +153,7 @@ interface MermaidStateDiagram {
 	@MermaidStateDiagramDsl
 	class Note @PublishedApi internal constructor(
 		val location:NoteLocation, var text:String
-	) : MermaidStateDiagramDslElement, LineWrappable, Indentable {
+	) : MermaidStateDiagramDslElement, Wrappable, Indentable {
 		override var wrapContent:Boolean = false
 		override var indentContent:Boolean = true
 

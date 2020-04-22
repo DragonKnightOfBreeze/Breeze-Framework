@@ -32,12 +32,12 @@ interface MermaidClassDiagram {
 	 * @property relations 关系一览。
 	 */
 	@MermaidClassDiagramDsl
-	interface IDslEntry : Mermaid.IDslEntry, LineSplitable, WithTransition<Class, Relation> {
+	interface IDslEntry : Mermaid.IDslEntry, Splitable, WithTransition<Class, Relation> {
 		val classes:MutableSet<Class>
 		val relations:MutableList<Relation>
 
 		override fun contentString():String {
-			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplitLine()
+			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplit()
 		}
 
 		@DslFunction

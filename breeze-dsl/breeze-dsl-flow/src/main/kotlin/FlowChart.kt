@@ -26,12 +26,12 @@ interface FlowChart {
 
 	/**流程图领域特定语言的入口。*/
 	@FlowChartDsl
-	interface IDslEntry : DslEntry, LineSplitable, WithTransition<Node, Connection> {
+	interface IDslEntry : DslEntry, Splitable, WithTransition<Node, Connection> {
 		val nodes:MutableSet<Node>
 		val connections:MutableList<Connection>
 
 		override fun contentString():String {
-			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplitLine()
+			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplit()
 		}
 
 		override fun String.links(other:String) = connection(this, other)

@@ -17,20 +17,20 @@ interface SequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return arrayOf(title, contentString()).doSplitLine()
+			return arrayOf(title, contentString()).doSplit()
 		}
 	}
 
 
 	/**序列图领域特定语言的入口。*/
 	@SequenceDiagramDsl
-	interface IDslEntry : DslEntry, LineSplitable, WithTransition<Participant, Message> {
+	interface IDslEntry : DslEntry, Splitable, WithTransition<Participant, Message> {
 		val participants:MutableSet<Participant>
 		val messages:MutableList<Message>
 		val notes:MutableList<Note>
 
 		override fun contentString():String {
-			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).doSplitLine()
+			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).doSplit()
 		}
 
 		override fun String.links(other:String) = message(this, other)

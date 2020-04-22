@@ -79,12 +79,12 @@ interface Xml {
 	 * Xml CDATA文本。
 	 * @property text 内容文本。
 	 */
-	class CData @PublishedApi internal constructor(val text:String) : Node, LineWrappable, Indentable {
+	class CData @PublishedApi internal constructor(val text:String) : Node, Wrappable, Indentable {
 		override var wrapContent = true
 		override var indentContent = true
 
 		override fun toString():String {
-			val textSnippet = text.doIndent(config.indent, wrapContent).doWrapLine { "$ls$ls$ls" }
+			val textSnippet = text.doIndent(config.indent, wrapContent).doWrap { "$ls$ls$ls" }
 			return "![CDATA[$textSnippet]]>"
 		}
 	}
@@ -94,12 +94,12 @@ interface Xml {
 	 * @property text 内容文本。
 	 */
 	@XmlDsl
-	class Comment @PublishedApi internal constructor(val text:String) : Node, LineWrappable, Indentable {
+	class Comment @PublishedApi internal constructor(val text:String) : Node, Wrappable, Indentable {
 		override var wrapContent = false
 		override var indentContent = true
 
 		override fun toString():String {
-			val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(config.indent, wrapContent).doWrapLine { "$ls$it$ls" }
+			val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(config.indent, wrapContent).doWrap { "$ls$it$ls" }
 			return "<!--$textSnippet-->"
 		}
 	}
@@ -114,7 +114,7 @@ interface Xml {
 	class Element @PublishedApi internal constructor(
 		val name:String,
 		val attributes:Map<String, Any?> = mapOf()
-	) : Node, LineWrappable, Indentable, UPlus<Text>, UMinus<Comment>, InvokeArgs<Element>, WithId {
+	) : Node, Wrappable, Indentable, UPlus<Text>, UMinus<Comment>, InvokeArgs<Element>, WithId {
 		val nodes:MutableList<Node> = mutableListOf()
 		override var wrapContent = true
 		override var indentContent = true
@@ -126,7 +126,7 @@ interface Xml {
 		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 
 		override fun toString():String {
-			val nodesSnippet = nodes.typingAll(ls).doIndent(config.indent, wrapContent).doWrapLine { "$ls$it$ls" }
+			val nodesSnippet = nodes.typingAll(ls).doIndent(config.indent, wrapContent).doWrap { "$ls$it$ls" }
 			val attributesSnippet = attributes.typingAll(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(config.quote)}"
 			}
