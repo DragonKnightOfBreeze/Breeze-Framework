@@ -1,3 +1,5 @@
+@file:Suppress("CanBeParameter")
+
 package com.windea.breezeframework.dsl.bbcode
 
 import com.windea.breezeframework.core.domain.*
@@ -5,13 +7,11 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
 
-@BBCodeDsl
 interface BBCode {
 	/**
 	 * BBCode的文档。
 	 * @property text 内容文本。
 	 */
-	@BBCodeDsl
 	class Document @PublishedApi internal constructor() : DslDocument {
 		var text:CharSequence = ""
 
@@ -22,174 +22,143 @@ interface BBCode {
 	 * BBCode的配置。
 	 * @property indent 文本缩进。
 	 */
-	@BBCodeDsl
 	data class Config(
 		var indent:String = "  "
 	)
 
 
-	@BBCodeDsl
-	interface DslElement : com.windea.breezeframework.dsl.DslElement,Inlineable
+	interface DslElement : com.windea.breezeframework.dsl.DslElement, Inlineable {
+		override val text:CharSequence
+	}
 
-	@BBCodeDsl
-	abstract class Element @PublishedApi internal constructor(val tag:String):DslElement{
-		abstract override val text:CharSequence
+	interface InlineDslElement : DslElement {
+		override val text:CharSequence
+	}
 
+	interface CrosslineDslElement : DslElement {
+		override val text:CharSequence
+	}
+
+	interface BlockDslElement : DslElement, Indentable {
+		val contentText:String
+		override val text:CharSequence get() = contentText.ifNotEmpty { ls + it.doIndent(config.indent) + ls }
+	}
+
+	abstract class Element @PublishedApi internal constructor(val tag:String) : DslElement {
 		override fun toString():String = "[$tag]$text[/$tag]"
 	}
 
-	@BBCodeDsl
-	abstract class InlineElement @PublishedApi internal constructor(
+	abstract class OneArgElement @PublishedApi internal constructor(
 		tag:String,
-		override val text:CharSequence
-	) :Element(tag)
-
-	@BBCodeDsl
-	abstract class OneArgInlineElement @PublishedApi internal constructor(
-		tag:String,
-		val value:String?,
-		text:CharSequence
-	) : InlineElement(tag, text) {
+		val value:String?
+	) : Element(tag) {
 		override fun toString():String = "[$tag${value.typing { "=$it" }}]$text[/$tag]"
 	}
 
-	@BBCodeDsl
-	abstract class MultiArgInlineElement @PublishedApi internal constructor(
+	abstract class MultiArgElement @PublishedApi internal constructor(
 		tag:String,
-		val args:Map<String, String?>,
-		text:CharSequence
-	) : InlineElement(tag, text) {
+		val args:Map<String, String?>
+	) : Element(tag) {
 		override fun toString():String = "[$tag${args.typingAll(" ", " ") { (k, v) -> "$k=$v" }}]$text[/$tag]"
 	}
 
-	@BBCodeDsl
-	 class BoldText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("b",text)
+	abstract class RichText @PublishedApi internal constructor(
+		tag:String,
+		override val text:CharSequence
+	) : Element(tag), InlineDslElement
 
-	@BBCodeDsl
-	 class ItalicText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("i",text)
+	class BoldText @PublishedApi internal constructor(override val text:CharSequence) : Element("b"), InlineDslElement
 
-	@BBCodeDsl
-	 class UnderlinedText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("u",text)
+	class ItalicText @PublishedApi internal constructor(override val text:CharSequence) : Element("i"), InlineDslElement
 
-	@BBCodeDsl
-	 class StrokedText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("s",text) //strike
+	class UnderlinedText @PublishedApi internal constructor(override val text:CharSequence) : Element("u"), InlineDslElement
 
-	@BBCodeDsl
-	 class SpoilerText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("spoiler",text)
+	class StrikeText @PublishedApi internal constructor(override val text:CharSequence) : Element("strike"), InlineDslElement
 
-	@BBCodeDsl
-	 class NoParseText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("noparse",text)
+	class SpoilerText @PublishedApi internal constructor(override val text:CharSequence) : Element("spoiler"), InlineDslElement
 
-	@BBCodeDsl
-	 class LeftText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("left",text)
+	class NoParseText @PublishedApi internal constructor(override val text:CharSequence) : Element("noparse"), InlineDslElement
 
-	@BBCodeDsl
-	 class CenterText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("center",text)
+	class LeftText @PublishedApi internal constructor(override val text:CharSequence) : Element("left"), InlineDslElement
 
-	@BBCodeDsl
-	class RightText @PublishedApi internal constructor(override val text:CharSequence):InlineElement("right",text)
+	class CenterText @PublishedApi internal constructor(override val text:CharSequence) : Element("center"), InlineDslElement
 
-	@BBCodeDsl
-	class Code @PublishedApi internal constructor(override val text:CharSequence):InlineElement("code",text)
+	class RightText @PublishedApi internal constructor(override val text:CharSequence) : Element("right"), InlineDslElement
 
-	@BBCodeDsl
-	class YoutubeVideo @PublishedApi internal constructor(override val text:CharSequence):InlineElement("youtube",text)
+	class Code @PublishedApi internal constructor(override val text:CharSequence) : Element("code"), InlineDslElement
 
-	@BBCodeDsl
 	class StyledText @PublishedApi internal constructor(
 		val size:String?,
 		val color:String?,
 		override val text:CharSequence
-	):MultiArgInlineElement("style", mapOf("size" to size,"color" to color), text)
+	) : MultiArgElement("style", mapOf("size" to size, "color" to color)), InlineDslElement
 
-	@BBCodeDsl
-	class Quote @PublishedApi internal constructor(
-		val name:String?,
-		override val text:CharSequence
-	):OneArgInlineElement("quote",name,text)
+	class YoutubeVideo @PublishedApi internal constructor(override val text:CharSequence) : Element("youtube"), InlineDslElement
 
-	@BBCodeDsl
 	class Link @PublishedApi internal constructor(
 		val url:String?,
 		override val text:CharSequence
-	):OneArgInlineElement("url",url,text)
+	) : OneArgElement("url", url), InlineDslElement
 
-	@BBCodeDsl
 	class Image @PublishedApi internal constructor(
 		val width:String?,
 		val height:String?,
 		override val text:CharSequence
-	):MultiArgInlineElement("img",mapOf("width" to width,"height" to height),text)
+	) : MultiArgElement("img", mapOf("width" to width, "height" to height)), InlineDslElement
 
-	@BBCodeDsl
-	abstract class   CrosslineElement @PublishedApi internal constructor(
-		tag:String,
-		override val text:CharSequence
-	):Element(tag){
-		override fun toString():String = "[$tag]$text[/$tag]"
-	}
-
-	@BBCodeDsl
 	abstract class Heading @PublishedApi internal constructor(
 		tag:String,
-		text:CharSequence
-	):CrosslineElement(tag,text)
+		override val text:CharSequence
+	) : Element(tag), CrosslineDslElement
 
-	@BBCodeDsl
-	class Heading1 @PublishedApi internal constructor(text:CharSequence):Heading("h1",text)
+	class Heading1 @PublishedApi internal constructor(text:CharSequence) : Heading("h1", text)
 
-	@BBCodeDsl
-	class Heading2 @PublishedApi internal constructor(text:CharSequence):Heading("h1",text)
+	class Heading2 @PublishedApi internal constructor(text:CharSequence) : Heading("h1", text)
 
-	@BBCodeDsl
-	class Heading3 @PublishedApi internal constructor(text:CharSequence):Heading("h1",text)
+	class Heading3 @PublishedApi internal constructor(text:CharSequence) : Heading("h1", text)
 
-	@BBCodeDsl
-	class Heading4 @PublishedApi internal constructor(text:CharSequence):Heading("h1",text)
+	class Heading4 @PublishedApi internal constructor(text:CharSequence) : Heading("h1", text)
 
-	@BBCodeDsl
-	abstract class BlockElement @PublishedApi internal constructor(tag:String) :Element(tag),Indentable{
-		abstract override val text:CharSequence
-		override var indentContent:Boolean = true
-
-		override fun toString():String = "[$tag]${text.ifNotEmpty { it.toString().doIndent(config.indent) }}[/$tag]"
-	}
-
-	@BBCodeDsl
-	class List  @PublishedApi internal constructor():BlockElement("list"){
+	class List @PublishedApi internal constructor() : Element("list"), BlockDslElement {
 		val nodes:MutableList<ListNode> = mutableListOf()
-		override val text:CharSequence get() = nodes.typingAll(ls)
+		override val contentText:String get() = nodes.typingAll(ls)
+		override var indentContent:Boolean = true
 	}
 
-	abstract class ListNode @PublishedApi internal constructor(tag:String, override val text:CharSequence):Element(tag)
+	abstract class ListNode @PublishedApi internal constructor(tag:String, override val text:CharSequence) : Element(tag)
 
-	@BBCodeDsl
-	class UnorderedListNode  @PublishedApi internal constructor(text:CharSequence ):ListNode("ul",text)
+	class UnorderedListNode @PublishedApi internal constructor(text:CharSequence) : ListNode("ul", text)
 
-	@BBCodeDsl
-	class OrderedListNode  @PublishedApi internal constructor(text:CharSequence):ListNode("ol",text)
+	class OrderedListNode @PublishedApi internal constructor(text:CharSequence) : ListNode("ol", text)
 
-	@BBCodeDsl
-	class Table  @PublishedApi internal constructor():BlockElement("table"){
-		lateinit var header: TableHeader //不能为null
+	class Table @PublishedApi internal constructor() : Element("table"), BlockDslElement {
+		@MustBeInitialized lateinit var header:TableHeader
 		val rows:MutableList<TableRow> = mutableListOf()
-		override val text:CharSequence get() = header.toString() + ls + rows.typingAll(ls)
+		override val contentText:String get() = header.toString() + ls + rows.typingAll(ls)
+		override var indentContent:Boolean = true
 	}
 
-	@BBCodeDsl
-	class TableHeader  @PublishedApi internal constructor():Element("th"){
+	class TableHeader @PublishedApi internal constructor() : Element("th"), BlockDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
-		override val text:CharSequence get() = columns.typingAll(ls)
+		override val contentText:String get() = columns.typingAll(ls)
+		override var indentContent:Boolean = true
 	}
-	@BBCodeDsl
-	class TableRow  @PublishedApi internal constructor():Element("tr"){
+
+	class TableRow @PublishedApi internal constructor() : Element("tr"), BlockDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
-		override val text:CharSequence get() = columns.typingAll(ls)
+		override val contentText:String get() = columns.typingAll(ls)
+		override var indentContent:Boolean = true
 	}
 
-	@BBCodeDsl
-	class TableColumn  @PublishedApi internal constructor(override val text:CharSequence):Element("td")
+	class TableColumn @PublishedApi internal constructor(override val text:CharSequence) : Element("td")
 
+	class Quote @PublishedApi internal constructor(
+		val name:String?
+	) : OneArgElement("quote", name), BlockDslElement {
+		override var text:CharSequence = ""
+		override val contentText:String get() = text.toString()
+		override var indentContent:Boolean = true
+	}
 
 	companion object {
 		val config = Config()
