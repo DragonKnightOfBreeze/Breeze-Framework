@@ -8,7 +8,7 @@ import com.windea.breezeframework.reflect.extensions.*
 object ObjectMapper {
 	//kotlinx.serialization.Mapper.map
 	/**将对象映射为基于可读属性的映射。*/
-	fun <T : Any> mapObject(data: T): Map<String, Any?> {
+	fun <T : Any> map(data: T): Map<String, Any?> {
 		//使用Java反射，映射第一层属性
 		return data::class.java.getters.associateBy(
 			{ it.name[3].toLowerCase() + it.name.substring(4) },
@@ -18,13 +18,13 @@ object ObjectMapper {
 
 	//kotlinx.serialization.Mapper.unmap
 	/**将映射反映射为指定类型的基于可读写属性的对象。*/
-	inline fun <reified T : Any> unmapObject(map: Map<String, Any?>): T {
-		return unmapObject(map, T::class.java)
+	inline fun <reified T : Any> unmap(map: Map<String, Any?>): T {
+		return unmap(map, T::class.java)
 	}
 
 	//kotlinx.serialization.Mapper.unmap
 	/**将映射反映射为指定类型的基于可读写属性的对象。*/
-	fun <T : Any> unmapObject(map: Map<String, Any?>, type: Class<T>): T {
+	fun <T : Any> unmap(map: Map<String, Any?>, type: Class<T>): T {
 		return runCatching {
 			//存在无参构造时，使用Java反射，直接实例化对象
 			val result = type.getConstructor().newInstance()

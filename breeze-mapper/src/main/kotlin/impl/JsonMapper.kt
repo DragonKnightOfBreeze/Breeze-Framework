@@ -131,7 +131,7 @@ class JsonMapper(
 	}
 
 	private fun Any.mapObject():String {
-		return ObjectMapper.mapObject(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
+		return ObjectMapper.map(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 			.doIndent().let { "$objectPrefix$it$objectSuffix" }
 	}
 

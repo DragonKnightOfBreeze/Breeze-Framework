@@ -345,20 +345,45 @@ fun String.truncate(limit:Int, truncated:CharSequence = "..."):String {
 }
 
 
+
+/**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
+fun CharSequence.setPrefix(prefix:CharSequence):CharSequence {
+	if(this.length < prefix.length) return this
+	return "$prefix${this.substring(prefix.length,this.length)}"
+}
+
+/**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
+fun CharSequence.setSuffix(suffix:CharSequence):CharSequence {
+	if(this.length < suffix.length) return this
+	return "${this.substring(this.length - suffix.length)}$suffix"
+}
+
+/**为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。*/
+fun CharSequence.setSurrounding(delimiter:CharSequence):CharSequence {
+	return this.setSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
+fun CharSequence.setSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
+	if(this.length < prefix.length + suffix.length) return this
+	return "$prefix${this.substring(prefix.length,this.length-suffix.length)}$suffix"
+}
+
+
 /**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
-infix fun String.setPrefix(prefix:CharSequence):String {
+ fun String.setPrefix(prefix:CharSequence):String {
 	if(this.length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
 /**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
-infix fun String.setSuffix(suffix:CharSequence):String {
+ fun String.setSuffix(suffix:CharSequence):String {
 	if(this.length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
-infix fun String.setSurrounding(delimiter:CharSequence):String {
+ fun String.setSurrounding(delimiter:CharSequence):String {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
@@ -369,20 +394,44 @@ fun String.setSurrounding(prefix:CharSequence, suffix:CharSequence):String {
 }
 
 
+/**为当前字符序列添加指定的前缀。如果已存在，则返回自身。*/
+fun CharSequence.addPrefix(prefix:CharSequence):CharSequence {
+	if(this.startsWith(prefix)) return this
+	return "$prefix$this"
+}
+
+/**为当前字符序列添加指定的后缀。如果已存在，则返回自身。*/
+fun CharSequence.addSuffix(suffix:CharSequence):CharSequence {
+	if(this.endsWith(suffix)) return this
+	return "$this$suffix"
+}
+
+/**为当前字符序列添加指定的前后缀。如果已存在，则返回自身。*/
+fun CharSequence.addSurrounding(delimiter:CharSequence):CharSequence {
+	return this.addSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符序列添加指定的前缀和后缀。如果已存在，则返回自身。*/
+fun CharSequence.addSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
+	if(this.startsWith(prefix) && this.endsWith(suffix)) return this
+	return "$prefix$this$suffix"
+}
+
+
 /**为当前字符串添加指定的前缀。如果已存在，则返回自身。*/
-infix fun String.addPrefix(prefix:CharSequence):String {
+ fun String.addPrefix(prefix:CharSequence):String {
 	if(this.startsWith(prefix)) return this
 	return "$prefix$this"
 }
 
 /**为当前字符串添加指定的后缀。如果已存在，则返回自身。*/
-infix fun String.addSuffix(suffix:CharSequence):String {
+ fun String.addSuffix(suffix:CharSequence):String {
 	if(this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
 /**为当前字符串添加指定的前后缀。如果已存在，则返回自身。*/
-infix fun String.addSurrounding(delimiter:CharSequence):String {
+ fun String.addSurrounding(delimiter:CharSequence):String {
 	return this.addSurrounding(delimiter, delimiter)
 }
 

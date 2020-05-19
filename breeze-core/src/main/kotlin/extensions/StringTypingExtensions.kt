@@ -22,7 +22,7 @@ fun <T : Any> T?.typing(transform:((T) -> String)? = null):String {
  * * 其他情况 -> 使用默认方法将元素转化为字符串。
  */
 fun <T : Any> Array<out T?>.typingAll(
-	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", contentIndent:String? = null,
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", indent:String? = null,
 	omitEmptyElement:Boolean = true, omitEmpty:Boolean = true,
 	transform:((T) -> CharSequence)? = null
 ):String {
@@ -35,7 +35,7 @@ fun <T : Any> Array<out T?>.typingAll(
 			append(snippet)
 		}
 	}
-	if(contentIndent != null) result = result.prependIndent(contentIndent)
+	if(indent != null) result = result.prependIndent(indent)
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }
@@ -48,7 +48,7 @@ fun <T : Any> Array<out T?>.typingAll(
  * * 其他情况 -> 使用默认方法将元素转化为字符串。
  */
 fun <T : Any> Iterable<T?>.typingAll(
-	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", contentIndent:String? = null,
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", indent:String? = null,
 	omitEmpty:Boolean = true, omitEmptyElement:Boolean = true,
 	transform:((T) -> CharSequence)? = null
 ):String {
@@ -61,7 +61,7 @@ fun <T : Any> Iterable<T?>.typingAll(
 			append(snippet)
 		}
 	}
-	if(contentIndent != null) result = result.prependIndent(contentIndent)
+	if(indent != null) result = result.prependIndent(indent)
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }
@@ -75,7 +75,7 @@ fun <T : Any> Iterable<T?>.typingAll(
  * * 其他情况 -> 使用默认方法将元素转化为字符串。
  */
 fun <K, V> Map<K, V>.typingAll(
-	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", contentIndent:String? = null,
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", indent:String? = null,
 	omitEmpty:Boolean = true, omitEmptyEntry:Boolean = true, omitEmptyValue:Boolean = true,
 	transform:((Map.Entry<K, V>) -> CharSequence)? = null
 ):String {
@@ -91,19 +91,19 @@ fun <K, V> Map<K, V>.typingAll(
 		}
 		if(omitEmpty && length > 0) insert(0, prefix).append(postfix)
 	}
-	if(contentIndent != null) result = result.prependIndent(contentIndent)
+	if(indent != null) result = result.prependIndent(indent)
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }
 
 /**
- * 将当前的一组对象转化成字符串，默认的转化规则如下：
+ * 使用特定的转化规则，将当前映射转化成字符串。
  * * 没有有效值的序列 && 忽略空虚列  -> 返回空字符串
  * * 空值和空字符串 && 忽略空元素 -> 忽略该元素
  * * 存在转化方法 -> 使用转化方法转化元素
  */
 fun <T : Any> Sequence<T?>.typingAll(
-	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", contentIndent:String? = null,
+	separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "", indent:String? = null,
 	omitEmpty:Boolean = true, omitEmptyElement:Boolean = true,
 	transform:((T) -> CharSequence)? = null
 ):String {
@@ -117,7 +117,7 @@ fun <T : Any> Sequence<T?>.typingAll(
 		}
 		if(omitEmpty && length > 0) insert(0, prefix).append(postfix)
 	}
-	if(contentIndent != null) result = result.prependIndent(contentIndent)
+	if(indent != null) result = result.prependIndent(indent)
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }

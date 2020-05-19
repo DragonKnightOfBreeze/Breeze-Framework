@@ -101,7 +101,7 @@ class PropertiesMapper(
 	}
 
 	private fun Any.mapMappedProperty():String {
-		return ObjectMapper.mapObject(this).joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
+		return ObjectMapper.map(this).joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 	}
 
 	//支持的类型（属性的名字）：

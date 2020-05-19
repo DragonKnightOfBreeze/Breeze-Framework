@@ -6,20 +6,20 @@ import kotlin.test.*
 class ObjectMapperTest {
 	@Test
 	fun mapObjectTest() {
-		ObjectMapper.mapObject(Foo("a", 1)).also { println(it) }
-		ObjectMapper.mapObject(Bar("a", 1, Any())).also { println(it) }
+		ObjectMapper.map(Foo("a", 1)).also { println(it) }
+		ObjectMapper.map(Bar("a", 1, Any())).also { println(it) }
 	}
 
 	@Test
 	fun unmapObjectTest() {
-		ObjectMapper.unmapObject<Foo>(mapOf("name" to "a", "age" to 1)).also { println(it) }
-		ObjectMapper.unmapObject<Foo>(mapOf("age" to 1, "name" to "a")).also { println(it) }
-		ObjectMapper.unmapObject<Foo>(mapOf()).also { println(it) }
-		ObjectMapper.unmapObject<Bar>(mapOf("name" to "a", "age" to 1, "weapon" to Any())).also { println(it) }
-		ObjectMapper.unmapObject<Bar>(mapOf("age" to 1, "name" to "a", "weapon" to Any())).also { println(it) }
-		ObjectMapper.unmapObject<Bar>(mapOf("age" to 1, "name" to "a", "weapon" to Any(), "height" to 190)).also { println(it.height) }
+		ObjectMapper.unmap<Foo>(mapOf("name" to "a", "age" to 1)).also { println(it) }
+		ObjectMapper.unmap<Foo>(mapOf("age" to 1, "name" to "a")).also { println(it) }
+		ObjectMapper.unmap<Foo>(mapOf()).also { println(it) }
+		ObjectMapper.unmap<Bar>(mapOf("name" to "a", "age" to 1, "weapon" to Any())).also { println(it) }
+		ObjectMapper.unmap<Bar>(mapOf("age" to 1, "name" to "a", "weapon" to Any())).also { println(it) }
+		ObjectMapper.unmap<Bar>(mapOf("age" to 1, "name" to "a", "weapon" to Any(), "height" to 190)).also { println(it.height) }
 		assertFails {
-			ObjectMapper.unmapObject<Bar>(mapOf()).also { println(it) }
+			ObjectMapper.unmap<Bar>(mapOf()).also { println(it) }
 		}
 	}
 
