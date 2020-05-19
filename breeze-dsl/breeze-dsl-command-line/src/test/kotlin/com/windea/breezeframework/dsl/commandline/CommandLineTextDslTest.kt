@@ -5,64 +5,66 @@ import com.windea.breezeframework.dsl.commandline.CommandLineText.*
 import kotlin.test.*
 
 class CommandLineTextDslTest {
-	@Test //OK
+	@Test
 	fun test1() {
 		println(commandLineText {
-			color(Color.Red, "123")
+			color("123", Color.Red)
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun testColor() {
-		println(commandLineText { color(Color.Black, "hello world!") })
-		println(commandLineText { color(Color.Red, "hello world!") })
-		println(commandLineText { color(Color.Green, "hello world!") })
-		println(commandLineText { color(Color.Yellow, "hello world!") })
-		println(commandLineText { color(Color.Blue, "hello world!") })
-		println(commandLineText { color(Color.Magenta, "hello world!") })
-		println(commandLineText { color(Color.Cyan, "hello world!") })
-		println(commandLineText { color(Color.LightGray, "hello world!") })
+		println(commandLineText { color("hello world!", Color.Black) })
+		println(commandLineText { color("hello world!", Color.Red) })
+		println(commandLineText { color("hello world!", Color.Green) })
+		println(commandLineText { color("hello world!", Color.Yellow) })
+		println(commandLineText { color("hello world!", Color.Blue) })
+		println(commandLineText { color("hello world!", Color.Magenta) })
+		println(commandLineText { color("hello world!", Color.Cyan) })
+		println(commandLineText { color("hello world!", Color.LightGray) })
 	}
 
-	@Test //OK
+	@Test
 	fun test2() {
 		println(commandLineText {
-			bgColor(Color.Red, "123")
+			bgColor("123", Color.Red)
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun test3() {
 		println(commandLineText {
 			"""
 			=================================================================
-			There is a story of ${color(Color.LightBlue, "dragons and dragon knights")}
+			There is a story of ${color("dragons and dragon knights", Color.LightBlue)}
 			who have been traveling all over the known universes
-			and telling ${color(Color.Cyan, "stories and legends")} to ${color(Color.DarkGray, "mortal beings")}
+			and telling ${color("stories and legends", Color.Cyan)} to ${color("mortal beings", Color.DarkGray)}
 			from time immemorial
 			for an immeasurable time,
-			which used to be very well-known ${color(Color.Yellow, "across the galaxy")}
+			which used to be very well-known ${color("across the galaxy", Color.Yellow)}
 			long-long ago.
 			=================================================================
 			""".trimIndent()
 		})
 	}
 
-	@Test //OK
+	@Test
 	fun test4() {
 		println(commandLineText {
 			"""
 			=================================================================
-			There is a story of ${underline(color(Color.LightBlue, "dragons and dragon knights"))}
-			who have been ${style(Style.Underline, Style.Italic) { "traveling all over the known universes" }}
-			and telling ${color(Color.Cyan, "stories and legends")} to ${color(Color.DarkGray, "mortal beings")}
+			There is a story of ${bold(color("dragons and dragon knights", Color.LightBlue))}
+			who have been ${style("traveling all over the known universes", Style.Underline, Style.Italic)}
+			and telling ${color("stories and legends", Color.Cyan)} to ${color("mortal beings", Color.Red)}
 			from time immemorial
 			for an immeasurable time,
-			which used to be very well-known ${color(Color.Yellow, "across the galaxy")}
+			which used to be very well-known ${color("across the galaxy", Color.Yellow)}
 			long-long ago in the river of time.
 
 			Few people know ${italic("who they are")},
-			but once all intelligence knew, that is, ${bold(color(Color.Blue, "Breeze Knights"))}.
+			but once all intelligence knew, that is, ${bold(color("Breeze Knights", Color.Blue))}.
+
+			${underline(color("And also, that is in the daydream fairy tale.", Color.DarkGray))}
 			=================================================================
 			""".trimIndent()
 		})

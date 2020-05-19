@@ -8,11 +8,11 @@ class EnumExtensionsKtTest {
 	@Test
 	fun nameEquals() {
 	}
-	
+
 	@Test
 	fun nameEqualsIc() {
 	}
-	
+
 	@Test
 	fun nameEqualsIlc() {
 	}

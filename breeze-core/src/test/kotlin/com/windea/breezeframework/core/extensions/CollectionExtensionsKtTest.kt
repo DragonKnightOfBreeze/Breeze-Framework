@@ -51,7 +51,7 @@ class CollectionExtensionsKtTest {
 
 		println()
 
-		assertFailsWith<IllegalArgumentException> {
+		assertFails {
 			array.deepSet("/3/1/0", "abc")
 			array.deepGet<Int>("/3/1/0").also { println(it) }
 			println(array.contentDeepToString())
@@ -98,9 +98,7 @@ class CollectionExtensionsKtTest {
 			listOf(111, 222, 333),
 			mapOf("a" to listOf("a"), "b" to listOf("b"))
 		)
-		assertFailsWith<IllegalArgumentException> {
-			println(list.deepQuery<Any?>("/"))
-		}
+		println(list.deepQuery<Any>("/"))
 		println(list.deepQuery<Int>("/[]"))
 		println(list.deepQuery<Any>("/[]"))
 		println(list.deepQuery<List<Int>>("/0..2"))

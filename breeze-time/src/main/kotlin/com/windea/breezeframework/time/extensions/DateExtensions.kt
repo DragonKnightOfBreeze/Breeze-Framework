@@ -9,14 +9,14 @@ import java.util.*
 internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
 //region operator extensions
-/**@see Calendar.add*/
+/** @see java.util.Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, calendarField.amount)
 	return calendar.time
 }
 
-/**@see Calendar.add*/
+/** @see java.util.Calendar.add*/
 operator fun Date.minus(calendarField: CalendarField): Date {
 	calendar.time = this
 	calendar.add(calendarField.field, -calendarField.amount)
@@ -81,3 +81,4 @@ fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, 
 /**将当前日期转化为格式化的字符串。*/
 fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
 //endregion
+

@@ -8,7 +8,7 @@ import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
-/**由Jackson实现的properties的序列化器。*/
+/**由Jackson实现的Properties序列化器。*/
 internal object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer<JavaPropsMapper> {
 	internal val mapper = JavaPropsMapper()
 	override val delegate: JavaPropsMapper get() = mapper
@@ -21,20 +21,20 @@ internal object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSeria
 		return mapper.readValue(string, type)
 	}
 
-	override fun <T : Any> read(file: File, type: Class<T>): T {
-		return mapper.readValue(file, type)
-	}
-
-	override fun <T : Any> read(properties: Properties, type: Class<T>): T {
-		return mapper.readPropertiesAs(properties, type)
-	}
-
 	override fun <T : Any> read(string: String, type: Type): T {
 		return mapper.readValue(string, mapper.typeFactory.constructType(type))
 	}
 
+	override fun <T : Any> read(file: File, type: Class<T>): T {
+		return mapper.readValue(file, type)
+	}
+
 	override fun <T : Any> read(file: File, type: Type): T {
 		return mapper.readValue(file, mapper.typeFactory.constructType(type))
+	}
+
+	override fun <T : Any> read(properties: Properties, type: Class<T>): T {
+		return mapper.readPropertiesAs(properties, type)
 	}
 
 	override fun <T : Any> read(properties: Properties, type: Type): T {

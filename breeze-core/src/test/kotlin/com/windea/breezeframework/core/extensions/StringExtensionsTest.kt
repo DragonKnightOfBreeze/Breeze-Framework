@@ -1,8 +1,13 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.enums.text.*
-import com.windea.breezeframework.core.enums.text.LetterCase.*
-import com.windea.breezeframework.core.enums.text.ReferenceCase.*
+import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.text.LetterCase.*
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.SCREAMING_SNAKE_CASE
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`Capitalized Words`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`kebab-case`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`lower case words`
+import com.windea.breezeframework.core.domain.text.LetterCase.Companion.camelCase
+import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import kotlin.test.*
 
 class StringExtensionsTest {
@@ -15,14 +20,14 @@ class StringExtensionsTest {
 		assertEquals("abc abc", "AbcAbc".switchCaseBy(`lower case words`))
 		assertEquals("Abc Abc", "abcAbc".switchCaseBy(`Capitalized Words`))
 		assertEquals("abcAbc", "Abc Abc".switchCaseBy(camelCase))
-		assertEquals("abcabc", "AbcAbc".switchCaseBy(lowercase))
-		assertEquals("ABCABC", "ABcABc".switchCaseBy(UPPERCASE))
+		assertEquals("abcabc", "AbcAbc".switchCaseBy(LowerCase))
+		assertEquals("ABCABC", "ABcABc".switchCaseBy(UpperCase))
 	}
 
 	@Test
 	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(JavaReference))
-		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(JavaReference))
+		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(ObjectReference))
+		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(ObjectReference))
 		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(JsonReference))
 		assertEquals("/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(PathReference))
 	}
@@ -41,24 +46,9 @@ class StringExtensionsTest {
 	}
 
 	@Test
-	fun messageFormatTest() {
-		assertEquals("123a123b123", "123{0}123{1}123".messageFormat("a", "b"))
-	}
-
-	@Test
-	fun customFormatTest() {
-		assertEquals("1a2b3", "1{}2{}3".customFormat("{}", "a", "b"))
-		assertEquals("1a2b3", "1\${}2\${}3".customFormat("\${}", "a", "b"))
-		assertEquals("1a2b3", "1{0}2{1}3".customFormat("{index}", "a", "b"))
-		assertEquals("1a2b3", "1{aaa}2{bbb}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
-		assertEquals("1b2a3", "1{1}2{0}3".customFormat("{index}", "a", "b"))
-		assertEquals("1b2a3", "1{bbb}2{aaa}3".customFormat("{name}", "aaa" to "a", "bbb" to "b"))
-	}
-
-	@Test
 	fun quoteTest() {
-		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"'))
-		assertEquals("""'1"2'""", """"'1\"2'"""".unquote())
+		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"',false))
+		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(false))
 	}
 
 	@Test
@@ -98,5 +88,21 @@ class StringExtensionsTest {
 	fun ifNotEmptyOrBlankTest() {
 		println("123".ifNotEmpty { "/" })
 		println("123".ifNotBlank { "/" })
+	}
+
+	@Test
+	fun formatTest(){
+		assertEquals(
+			"hello world!",
+			"hello {}!".formatBy(FormatType.Log,"world")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {0}, hello {1}!".formatBy(FormatType.Indexed ,"world","java")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named ,"arg1" to  "world","arg2" to "java")
+		)
 	}
 }

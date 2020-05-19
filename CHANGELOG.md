@@ -323,11 +323,47 @@
 * [X] 更新版本。更新Kotlin版本到1.3.70。
 * [X] breeze-core 移除集合类型的`randomOrNull`方法，其他一些更新。
 * [X] breeze-core 添加`expandTo`和`expand`方法，相当于`fold`的反操作，用于根据指定的操作展开初始值，并收集展开过程中的所有项。
-* [ ] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。 
+* [X] breeze-core 优化集合的深层操作方法，添加集合的`deepGetOrNull`扩展，重命名`castOrNull`为`safeCast`。
+* [X] 添加breeze-mapper模块，实现JsonMapper的map方法。更新一些字符串处理方法的代码逻辑。
+* [X] breeze-mapper 初步实现PropertiesMapper的map方法。
+* [X] breeze-dsl 完善代码。
+* [X] breeze-mapper 基本实现`Mapper.mapObject`和`Mapper.unmapObject`方法。
+* [X] breeze-mapper 更新一些字符串处理方法的代码逻辑，初步实现YamlMapper的map方法。
+* [X] breeze-core 提供更多的类型别名，对于~~原始类型相关类型~~和方法类型。
+* [X] breeze-core 将集合类型的`innerJoin`扩展重命名为`bind`方法，因为更加贴近需求。
+* [X] breeze-core 重构已自定义枚举为参数的字符串处理方法，提高灵活性和规范性。
+* [X] breeze-serializer 让breeze-serializer也委托breeze-mapper实现并作为默认实现，同时完善相关代码。
+* [X] 更改目录结构。
+* [X] breeze-dsl-command-line 优化代码。
+* [X] breeze-dsl-critic-markup & breeze-dsl-command-line 优化代码。
+* [X] breeze-core 添加`HandledCharSequence`，这个接口的输出字符串可能需要经过额外的处理。
+* [X] breeze-core 添加用于特殊逻辑的字符串处理的`typing`和`typingAll`方法。
+* [X] breeze-dsl 优化代码。
+* [X] breeze-core 让集合的`deepQuery`方法当特定的占位符不匹配类型时，回调为普通字符串。
+
+# 1.1.1
+
+* [X] 更新版本。 
+* [X] 为集合类型添加`query`扩展（基于`deepQuery`扩展）。
+* [X] 删除`breeze-dsl-json`和`breeze-dsl-yaml`。
+* [X] breeze-mapper 完善代码。
+  * PropertiesMapper 重构代码格式，完善注释，支持将数组类型的值映射为多行逗号分隔表达式。
+  * JsonMapper 重构代码格式，完善注释。
+* [X] breeze-core 完善代码。
+  * 完善DataClassExtensions。
+  * 实现Identifiable。
+  * 实现Countable。
+* [X] 更新项目文档。
+
+# 1.1.2
+ 
+* [X] 移除breeze-game模块（应当放到一个独立的框架中）和breeze-text模块（不是非常必要的方法）。
+* [X] breeze-core 实现`toStringByReference`。
+* [X] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器。
+* [X] breeze-core 对数字的多种方式的格式化方法，参数可能不确定，参考NumberFormat，以及添加前缀0的格式化。
 * [ ] breeze-unstable 新的集合类型：`Tree`。
 * [ ] breeze-unstable 新的集合类型：`Table`。
 * [ ] breeze-unstable 简化的集合类型：`WeakStack`、`WeakQueue`、`WeakDeque`。
-* [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 * [ ] breeze-core 串行处理字符串的方法，保证可靠性和灵活性。
 * [ ] breeze-dsl 实现`YamlDsl`。（不推荐使用，但是作为规范）
 * [ ] breeze-dsl 优化：对于表示转化的元素，可以通过`"a"(...) fromTo "b"`的语法构建。
@@ -340,17 +376,19 @@
 * [ ] 提供一种“全局变量池”的实现，类似依赖注入，避免`var foo = ...`写法。
 * [ ] 提供一种“延迟绑定”的实现，基于队列。
 * [ ] 提供一种用于http请求的返回结果的Result的实现。
-* [ ] ［可能］ 提供生成器以从json/yaml文件生成java/kotlin数据类。
+* [ ] ［可能］提供生成器以从json/yaml文件生成java/kotlin数据类。
 * [ ] ~~breeze-core Uri构建和编码的扩展。~~
 * [ ] ~~breeze-core 利用反射的类型转化的扩展。~~
 * [ ] ~~breeze-core 提供额外的集合的实现。参考Guava。~~
+* [ ] ~~breeze-core 以一种简洁的方式委托实现Any类三大方法。~~
+* [ ] ~~breeze-unstable 基于`ConcurrentHashMap`的线程安全的单例模式。~~
 
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖。
 * [X] 上传到Github。
 * [X] 同步项目到Bintray。
-* [X] 发布项目到JCenter或MavenCentral。
+* [X] 发布项目到JCenter。（格式上存在一些问题）
 * [ ] 检查`awesome-kotlin`中可参考的、有必要参考的项目。
 * [ ] 完善各个模块的`README.md`文档。
 * [ ] 按照功能而非类型更改项目代码的目录结构。

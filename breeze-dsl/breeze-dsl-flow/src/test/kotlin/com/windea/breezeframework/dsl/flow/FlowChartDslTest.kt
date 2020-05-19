@@ -1,8 +1,8 @@
 package com.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.dsl.flow.FlowChartConnection.Direction.*
-import com.windea.breezeframework.dsl.flow.FlowChartConnection.Path.*
-import com.windea.breezeframework.dsl.flow.FlowChartConnection.Status.*
+import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionDirection.*
+import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionPath.*
+import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionStatus.*
 import kotlin.test.*
 
 class FlowChartDslTest {

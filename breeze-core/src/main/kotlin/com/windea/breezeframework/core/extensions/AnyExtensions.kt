@@ -1,27 +1,7 @@
-@file:JvmName("AnyExtensions")
-
 package com.windea.breezeframework.core.extensions
 
-/**智能地判断两个对象是否相等。特殊对待数组类型，默认递归执行操作。*/
-@JvmOverloads
-fun Any?.smartEquals(other: Any?, deepOperation: Boolean = true) = when {
-	this !is Array<*> || other !is Array<*> -> this == other
-	!deepOperation -> this contentEquals other
-	else -> this contentDeepEquals other
-}
+/**将当前对象转换为指定类型。如果转化失败，则抛出异常。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
+inline fun <reified R> Any?.cast():R = this as R
 
-/**智能地得到当前对象的哈希码。特殊对待数组类型，默认递归执行操作。*/
-@JvmOverloads
-fun Any?.smartHashCode(deepOperation: Boolean = true) = when {
-	this !is Array<*> -> this.hashCode()
-	!deepOperation -> this.contentHashCode()
-	else -> this.contentDeepHashCode()
-}
-
-/**智能地将当前对象转化为字符串。特殊对待数组类型，默认递归执行操作。*/
-@JvmOverloads
-fun Any?.smartToString(deepOperation: Boolean = true) = when {
-	this !is Array<*> -> this.toString()
-	!deepOperation -> this.contentToString()
-	else -> this.contentDeepToString()
-}
+/**将当前对象安全地转换为指定类型。如果转化失败，则返回null。注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。*/
+inline fun <reified R> Any?.safeCast():R? = this as? R

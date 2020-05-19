@@ -43,3 +43,4 @@ inline val TemporalAccessor.precision: TemporalUnit? get() = query(TemporalQueri
 /**判断是否支持指定的是时间域。*/
 infix fun TemporalAccessor.supports(temporalField: TemporalField) = isSupported(temporalField)
 //endregion
+

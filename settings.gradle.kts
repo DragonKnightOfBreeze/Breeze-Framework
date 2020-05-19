@@ -1,3 +1,4 @@
+rootProject.name = "breeze-framework"
 include(
 	"breeze-core",
 	"breeze-dsl",
@@ -5,24 +6,21 @@ include(
 	"breeze-dsl:breeze-dsl-creole",
 	"breeze-dsl:breeze-dsl-critic-markup",
 	"breeze-dsl:breeze-dsl-flow",
-	"breeze-dsl:breeze-dsl-json",
 	"breeze-dsl:breeze-dsl-markdown",
 	"breeze-dsl:breeze-dsl-mermaid",
 	"breeze-dsl:breeze-dsl-sequence",
 	"breeze-dsl:breeze-dsl-xml",
-	"breeze-dsl:breeze-dsl-yaml",
 	"breeze-functional",
-	"breeze-game",
 	"breeze-generator",
 	"breeze-http",
 	"breeze-javafx",
 	"breeze-linq",
 	"breeze-logger",
+	"breeze-mapper",
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-serializer",
 	"breeze-spring-boot",
-	"breeze-text",
 	"breeze-time",
 	"breeze-unstable"
 )

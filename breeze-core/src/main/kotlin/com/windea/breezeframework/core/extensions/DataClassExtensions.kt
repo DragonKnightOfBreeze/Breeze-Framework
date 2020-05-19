@@ -1,5 +1,5 @@
 @file:JvmName("DataClassExtensions")
-@file:Suppress("DuplicatedCode")
+@file:Suppress("DuplicatedCode", "UNCHECKED_CAST")
 
 package com.windea.breezeframework.core.extensions
 
@@ -8,51 +8,117 @@ import kotlin.reflect.*
 //https://github.com/consoleau/kassava
 
 //为了避免污染Any?的代码提示，不要定义为Any?的扩展方法
+//可以使用Kotlin委托为接口委托实现这些方法，但是结合Kotlin反射使用可能出现问题
 
-/**通过选择并比较指定类型中的属性，判断两个对象是否相等。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> equalsBy(target: T?, other: Any?, deepOperation: Boolean = true,
-	selector: T.() -> Array<*>): Boolean {
-	return target === other || target != null && other is T &&
-	       target.selector().zip(other.selector()) { a, b -> a.smartEquals(b, deepOperation) }.all { it }
+/**
+ * 基于指定的属性，判断两个对象是否值相等。默认对数组类型递归执行操作。
+ *
+ * * 如果引用相等，则值相等。
+ * * 如果类型不相等，则值不相等。
+ * * 如果类型相等且未指定属性，则值相等。
+ * * 如果类型相等且已指定属性，则参照其属性。
+ * * 对于数组类型的属性，参照其内容。
+ */
+fun <T : Any> equalsBy(target:T?, other:Any?, deepOp:Boolean = true, selector:T.() -> Array<*>):Boolean {
+	return when {
+		target === other -> true
+		target == null || target.javaClass != other?.javaClass -> false
+		else -> with(target.selector()) {
+			when {
+				isEmpty() -> true
+				else -> zip((other as T).selector()).all { (a, b) -> a.equalsSmartly(b, deepOp) }
+			}
+		}
+	}
 }
 
-/**通过选择并比较指定类型中的某个属性，判断两个对象是否相等。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> equalsByOne(target: T?, other: Any?, deepOperation: Boolean = true,
-	selector: T.() -> Any?): Boolean {
-	return target === other || target != null && other is T &&
-	       target.selector().smartEquals(other.selector(), deepOperation)
+/**
+ * 基于指定的属性，得到指定对象的哈希码。默认对数组类型递归执行操作。
+ *
+ * * 如果目标为`null`，则返回`0`.
+ * * 如果未指定属性，则参照其类型。
+ * * 如果已指定属性，则参照其属性。
+ * * 对于数组类型的属性，参照其内容。
+ * */
+fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Array<*>):Int {
+	return when {
+		target == null -> 0
+		else -> with(target.selector()) {
+			when {
+				isEmpty() -> target.javaClass.hashCode()
+				else -> map { it.hashCodeSmartly(deepOp) }.reduce { a, b -> a * 31 + b }
+			}
+		}
+	}
 }
 
-/**通过选择指定类型中的属性，得到指定对象的哈希码。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> hashCodeBy(target: T?, deepOperation: Boolean = true, selector: T.() -> Array<*>): Int {
-	if(target == null) return 0
-	return target.selector().fold(1) { r, k -> 31 * r + k.smartHashCode(deepOperation) }
+/**
+ * 基于指定的属性的名字-值元组，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
+ *
+ * * 如果目标为`null`，则返回`"null"`。
+ * * 如果未指定属性，则忽略属性的输出。
+ * * 如果已指定属性，则输出属性的名字-值的键值对。
+ * * 对于数组类型的属性，参照其内容。
+ *
+ * 参考：
+ * * Kotlin数据类风格的输出：`Foo(bar=123)`。
+ * * Java记录风格的输出：`Foo[bar=123]`。
+ */
+fun <T : Any> toStringBy(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
+	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<Pair<String,*>>):String {
+	return when {
+		target == null -> "null"
+		else -> with(target.selector()) {
+			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
+			when {
+				isEmpty() -> "$className$prefix$postfix"
+				else -> joinToString(delimiter, "$className$prefix", postfix) { (n,v)-> "$n=${v.toStringSmartly(deepOp)}" }
+			}
+		}
+	}
 }
 
-/**通过选择指定类型中的某个属性，得到指定对象的哈希码。特殊对待数组类型。默认递归执行操作。*/
-inline fun <reified T> hashCodeByOne(target: T?, deepOperation: Boolean = true, selector: T.() -> Any?): Int {
-	if(target == null) return 0
-	return target.selector().smartHashCode(deepOperation)
+/**
+ * 基于指定的属性的引用，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
+ *
+ * * 如果目标为`null`，则返回`"null"`。
+ * * 如果未指定属性，则忽略属性的输出。
+ * * 如果已指定属性，则输出属性的名字-值的键值对。
+ * * 对于数组类型的属性，参照其内容。
+ *
+ * 参考：
+ * * Kotlin数据类风格的输出：`Foo(bar=123)`。
+ * * Java记录风格的输出：`Foo[bar=123]`。
+ */
+fun <T : Any> toStringByReference(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
+	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<KProperty0<*>>):String {
+	return when {
+		target == null -> "null"
+		else -> with(target.selector()) {
+			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
+			when {
+				isEmpty() -> "$className$prefix$postfix"
+				else -> joinToString(delimiter, "$className$prefix", postfix) { "${it.name}=${it.get().toStringSmartly(deepOp)}" }
+			}
+		}
+	}
 }
 
-/**通过选择指定类型中的属性，将指定对象转化为字符串。特殊对待数组类型。默认不忽略空值。默认使用简单类名。默认递归执行操作。*/
-inline fun <reified T> toStringBy(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
-	deepOperation: Boolean = true, selector: T.() -> Array<Pair<String, *>>): String {
-	if(target == null) return "null"
-	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
-	return target.selector().toMap()
-		.let { if(omitNulls) it.filterValuesNotNull() else it }
-		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
+private fun Any?.equalsSmartly(other:Any?, deepOp:Boolean = true) = when {
+	this !is Array<*> || other !is Array<*> -> this == other
+	!deepOp -> this.contentEquals(other)
+	else -> this.contentDeepEquals(other)
 }
 
-/**通过选择指定类型中的属性引用，将指定对象转化为字符串。特殊对待数组类型。默认不忽略空值。默认使用简单类名。默认递归执行操作。*/
-inline fun <reified T> toStringByRef(target: T?, delimiter: String = ", ", prefix: String = "(",
-	postfix: String = ")", omitNulls: Boolean = false, fullClassName: Boolean = false,
-	deepOperation: Boolean = true, selector: T.() -> Array<KProperty0<*>>): String {
-	if(target == null) return "null"
-	val className = if(!fullClassName) T::class.java.simpleName else T::class.java.name
-	return target.selector().associateBy({ it.name }, { it.get() })
-		.let { if(omitNulls) it.filterValuesNotNull() else it }
-		.joinToString(delimiter, className + prefix, postfix) { (k, v) -> "$k=${v.smartToString(deepOperation)}" }
+private fun Any?.hashCodeSmartly(deepOp:Boolean = true) = when {
+	this !is Array<*> -> this.hashCode()
+	!deepOp -> this.contentHashCode()
+	else -> this.contentDeepHashCode()
 }
+
+private fun Any?.toStringSmartly(deepOp:Boolean = true) = when {
+	this !is Array<*> -> this.toString()
+	!deepOp -> this.contentToString()
+	else -> this.contentDeepToString()
+}
+

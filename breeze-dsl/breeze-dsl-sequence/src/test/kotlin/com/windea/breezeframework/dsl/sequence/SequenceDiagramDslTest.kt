@@ -1,6 +1,6 @@
 package com.windea.breezeframework.dsl.sequence
 
-import com.windea.breezeframework.dsl.sequence.SequenceDiagramMessage.ArrowShape.*
+import com.windea.breezeframework.dsl.sequence.SequenceDiagram.ArrowShape.*
 import kotlin.test.*
 
 class SequenceDiagramDslTest {

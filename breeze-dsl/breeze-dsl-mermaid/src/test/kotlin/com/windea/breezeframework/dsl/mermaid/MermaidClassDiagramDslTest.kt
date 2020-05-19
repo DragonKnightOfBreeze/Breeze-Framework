@@ -1,10 +1,11 @@
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.dsl.mermaid.MermaidClassDiagramAnnotation.Type.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagram.AnnotationType.*
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {
-	@Test //OK
+	@Test
 	fun test1() {
 		println(mermaidClassDiagram {
 			`class`("Person") {

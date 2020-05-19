@@ -4,7 +4,7 @@ import com.alibaba.fastjson.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由FastJson实现的json的序列化器。*/
+/**由FastJson实现的Json序列化器。*/
 internal object FastJsonSerializer : JsonSerializer {
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return JSON.parseObject(string, type)

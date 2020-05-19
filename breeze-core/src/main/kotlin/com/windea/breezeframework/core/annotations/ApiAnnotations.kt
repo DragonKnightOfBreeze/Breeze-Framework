@@ -2,34 +2,30 @@ package com.windea.breezeframework.core.annotations
 
 import kotlin.annotation.AnnotationRetention.*
 
-/**需要显式使用的api。*/
+/**Api that should be used only inside this framework.*/
 @MustBeDocumented
+@RequiresOptIn("This api should be used only inside Breeze-Framework itself.", RequiresOptIn.Level.ERROR)
 @Retention(BINARY)
-annotation class ExplicitUsageApi(
-	/**备注信息。*/
-	val message: String = ""
-)
+annotation class InternalUsageApi
 
-/**可能引起无限循环的api。*/
+/**Api that should be used explicitly.*/
 @MustBeDocumented
 @Retention(BINARY)
-annotation class InfiniteLoopApi(
-	/**备注信息。*/
-	val message: String = ""
-)
+annotation class ExplicitUsageApi
 
-/**可能执行低性能操作的api。*/
+/**Apis that should be used optionally.*/
 @MustBeDocumented
 @Retention(BINARY)
-annotation class LowPerformanceApi(
-	/**备注信息。*/
-	val message: String = ""
-)
+annotation class OptionalUsageApi
 
-/**难以或根本不可能实现的api。*/
+/**Apis that is implemented unstably. It means, this api may be refactored or removed in the future.*/
 @MustBeDocumented
+@RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
 @Retention(BINARY)
-annotation class TrickImplementationApi(
-	/**备注信息。*/
-	val message: String = ""
-)
+annotation class UnstableImplementationApi
+
+/**Api that is implemented tricky. It means, this api cannot be fully implemented.*/
+@MustBeDocumented
+@RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
+@Retention(BINARY)
+annotation class TrickImplementationApi

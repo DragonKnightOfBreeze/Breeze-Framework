@@ -29,7 +29,8 @@ enum class DataType(
 	/**Xml。*/
 	Xml(
 		"xml",
-		arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan", "pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul"),
+		arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan", "pom", "rng", "tld", "wadl", "wsdd", "wsdl",
+			"xjb", "xsd", "xsl", "xslt", "xul"),
 		XmlSerializer.instance
 	),
 	/**Yaml。*/

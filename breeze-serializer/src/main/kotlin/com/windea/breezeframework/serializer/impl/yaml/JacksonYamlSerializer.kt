@@ -7,7 +7,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Jackson实现的yaml的序列化器。*/
+/**由Jackson实现的Yaml序列化器。*/
 internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMapper> {
 	internal val mapper = YAMLMapper()
 	override val delegate: YAMLMapper get() = mapper
@@ -20,13 +20,13 @@ internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMa
 		return mapper.readValue(string, type)
 	}
 
+	override fun <T : Any> read(string: String, type: Type): T {
+		return mapper.readValue(string, mapper.typeFactory.constructType(type))
+	}
+
 	override fun <T : Any> read(file: File, type: Class<T>): T {
 		mapper.readValue<Int>("")
 		return mapper.readValue(file, type)
-	}
-
-	override fun <T : Any> read(string: String, type: Type): T {
-		return mapper.readValue(string, mapper.typeFactory.constructType(type))
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {
@@ -34,11 +34,11 @@ internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMa
 	}
 
 	override fun readAll(string: String): List<Any?> {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 
 	override fun readAll(file: File): List<Any?> {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
+		throw UnsupportedOperationException("Could not find suitable methods to delegate in YamlMapper.")
 	}
 
 	override fun <T : Any> write(data: T): String {

@@ -1,16 +1,18 @@
 package com.windea.breezeframework.serializer.impl.json
 
-import com.fasterxml.jackson.databind.json.*
 import com.google.gson.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.Serializer
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import com.fasterxml.jackson.databind.json.JsonMapper as JacksonJsonMapper
 
 /**
  * Json的序列化器。
  *
- * 注意：其实现依赖于第三方库，如``kotlinx-serialization`，`jackson`，`gson`，`fastjson`。
+ * 其实现默认由`breeze-mapper`提供，但也可以依赖于第三方库，如``kotlinx-serialization`，`jackson`，`gson`，`fastjson`。
  */
 interface JsonSerializer : Serializer {
 	companion object {
@@ -25,22 +27,31 @@ interface JsonSerializer : Serializer {
 			presentInClassPath(jacksonJsonClassName) -> JacksonJsonSerializer
 			presentInClassPath(gsonClassName) -> GsonSerializer
 			presentInClassPath(fastjsonClassName) -> FastJsonSerializer
-			else -> throw IllegalStateException("No supported json serializer implementation found in classpath.")
+			else -> BreezeJsonSerializer
+			//else -> throw IllegalStateException("No supported json serializer implementation found in classpath.")
 		}
 
+		/**配置BreezeJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
+		@OptionalUsageApi
+		fun configureBreezeJson(block: (JsonMapper.Config.Builder) -> Unit) {
+			block(BreezeJsonSerializer.configBuilder)
+		}
 
 		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@UseExperimental(UnstableDefault::class)
+		@OptionalUsageApi
+		@OptIn(UnstableDefault::class)
 		fun configureKotlinJson(block: JsonBuilder.() -> Unit) {
 			block(KotlinJsonSerializer.jsonBuilder)
 		}
 
 		/**配置JacksonJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		fun configureJacksonJson(block: (JsonMapper) -> Unit) {
+		@OptionalUsageApi
+		fun configureJacksonJson(block: (JacksonJsonMapper) -> Unit) {
 			block(JacksonJsonSerializer.mapper)
 		}
 
 		/**配置Gson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
+		@OptionalUsageApi
 		fun configureGson(block: (GsonBuilder) -> Unit) {
 			block(GsonSerializer.gsonBuilder)
 		}

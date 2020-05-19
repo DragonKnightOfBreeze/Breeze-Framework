@@ -7,13 +7,12 @@ import kotlinx.serialization.modules.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由KotlinxSerialization实现的json的序列化器。*/
+/**由KotlinxSerialization实现的Json的序列化器。*/
 @Suppress("UNCHECKED_CAST")
-@UseExperimental(UnstableDefault::class, ImplicitReflectionSerializer::class)
+@OptIn(UnstableDefault::class, ImplicitReflectionSerializer::class)
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	internal val jsonBuilder = JsonBuilder()
 	internal val json by lazy { Json(jsonBuilder.buildConfiguration()) }
-	internal val jsonWithPrettyPrint by lazy { Json(jsonBuilder.buildConfiguration()) }
 	override val delegate: Json get() = json
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {

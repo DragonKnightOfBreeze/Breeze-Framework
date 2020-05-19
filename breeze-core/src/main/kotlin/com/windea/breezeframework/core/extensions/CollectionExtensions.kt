@@ -1,12 +1,11 @@
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
 
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.enums.text.*
+import com.windea.breezeframework.core.domain.text.*
 import java.util.*
-import java.util.concurrent.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
@@ -18,14 +17,16 @@ import kotlin.contracts.*
 
 //region portal extensions
 /**构建一个集并事先过滤空的元素。*/
-fun <T : Any> setOfNotNull(element: T?) = if(element != null) listOf(element) else emptyList()
+fun <T : Any> setOfNotNull(element: T?) =
+	if(element != null) listOf(element) else emptyList()
 
 /**构建一个集并事先过滤空的元素。*/
 fun <T : Any> setOfNotNull(vararg elements: T?): Set<T> =
 	LinkedHashSet<T>().apply { for(element in elements) if(element != null) add(element) }
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) = if(pair.second != null) mapOf(pair) else emptyMap()
+fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>) =
+	if(pair.second != null) mapOf(pair) else emptyMap()
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>) =
@@ -46,52 +47,29 @@ inline fun <reified K : Enum<K>, V> enumMapOf(): EnumMap<K, V> = EnumMap(K::clas
 
 /**构建一个枚举映射。*/
 fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMap(pairs.toMap())
-
-
-/**构建一个空的线程安全的并发列表。*/
-inline fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
-
-/**构建一个线程安全的并发列表。*/
-fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
-
-/**构建一个空的线程安全的并发集。*/
-inline fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
-
-/**构建一个线程安全的并发集。*/
-fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
-
-/**构建一个空的线程安全的并发映射。*/
-inline fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
-
-/**构建一个线程安全的并发映射。*/
-fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
 //endregion
 
 //region operator extensions
 /**
  * 重复当前列表中的元素到指定次数。
- *
  * @see com.windea.breezeframework.core.extensions.repeat
  */
 operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
 
 /**
  * 切分当前集合中的元素到指定个数。
- *
  * @see kotlin.collections.chunked
  **/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
 
 /**
  * 得到索引指定范围内的子列表。
- *
  * @see kotlin.collections.slice
  */
 operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 
 /**
  * 得到索引指定范围内的子列表。
- *
  * @see kotlin.collections.List.subList
  */
 operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
@@ -261,24 +239,60 @@ fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 }
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
-fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
+fun <T> List<T>.getOrDefault(index:Int, defaultValue:T):T {
 	return this.getOrElse(index) { defaultValue }
 }
 
 
 /**将指定的键值对放入当前映射中。*/
-fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) = this.put(pair.first, pair.second)
+fun <K, V> MutableMap<K, V>.put(pair:Pair<K, V>) = this.put(pair.first, pair.second)
+
+
+/**
+ * 根据指定路径查询当前数组，返回匹配的路径-值映射。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
+ */
+fun <T> Array<*>.query(path:String):Map<String, T> = this.query0(path)
+
+/**
+ * 根据指定路径查询当前集合，返回匹配的路径-值映射。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
+ */
+fun <T> Iterable<*>.query(path:String):Map<String, T> = this.query0(path)
+
+/**
+ * 根据指定路径查询当前映射，返回匹配的路径-值映射。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
+ */
+fun <T> Map<*, *>.query(path:String):Map<String, T> = this.query0(path)
+
+private fun <T> Any?.query0(path:String):Map<String, T> {
+	return try {
+		when {
+			path.isPathOfMapLike() -> this.toQueryMap()
+			path.isPathOfListLike() -> this.toQueryMap()
+			path.isPathOfRegex() -> this.collectionSlice(path.substring(3).toRegex()).toQueryMap()
+			path.isPathOfIndices() -> this.collectionSlice(path.toIntRange()).toQueryMap()
+			else -> this.collectionGetOrNull(path).toSingletonQueryMap(path)
+		}
+	} catch(e:Exception) {
+		this.collectionGetOrNull(path).toSingletonQueryMap(path)
+	} as Map<String, T>
+}
 
 
 /**交换当前数组中指定的两个索引对应的元素。*/
-fun <T> Array<T>.swap(index1: Int, index2: Int) {
+fun <T> Array<T>.swap(index1:Int, index2:Int) {
 	val temp = this[index1]
 	this[index1] = this[index2]
 	this[index2] = temp
 }
 
 /**交换当前列表中指定的两个索引对应的元素。*/
-fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
+fun <T> MutableList<T>.swap(index1:Int, index2:Int) {
 	//不委托给java.util.Collections.swap，因为数组的对应方法是私有的
 	val temp = this[index1]
 	this[index1] = this[index2]
@@ -358,12 +372,12 @@ fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSe
 }
 
 
-/**映射当前映射中的值，并过滤转换后为null的值。*/
+/**映射当前映射中的值，并过滤转化后为null的值。*/
 inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?): Map<K, R> {
 	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
-/**映射当前映射中的值，并过滤转换后为null的值，然后加入指定的映射。*/
+/**映射当前映射中的值，并过滤转化后为null的值，然后加入指定的映射。*/
 inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
 	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
 	return destination
@@ -378,38 +392,38 @@ fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
 }
 
 
-/**根据指定的条件，内连接当前数组和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前数组和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Array<out T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前数组和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Array<out T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前数组和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R : Any> Array<out T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前集合和另一个数组。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Iterable<T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前集合和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Iterable<T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前集合和另一个集合。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+/**根据指定的条件，绑定当前集合和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Iterable<T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
-/**根据指定的条件，内连接当前序列和另一个序列。即，绑定满足该条件的各自元素，忽略不满足的情况。*/
-inline fun <T, R : Any> Sequence<T>.innerJoin(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
+/**根据指定的条件，绑定当前序列和另一个序列中的元素，以当前数组长度为准，过滤不满足的情况。*/
+inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
 
 
-/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止。*/
+/**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止。*/
 inline fun <T> expand(initial: T, operation: (T) -> Iterable<T>): List<T> {
 	return expandTo(ArrayList(), initial, operation)
 }
 
-/**根据指定的操作，以初始值为起点，递归展开遍历到的每一个元素，直到展开后的结果为空为止，然后加入指定的集合。*/
+/**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，然后加入指定的集合。*/
 inline fun <T, C : MutableCollection<in T>> expandTo(destination: C, initial: T, operation: (T) -> Iterable<T>): C {
 	var nextResult = operation(initial)
 	while(nextResult.any()) {
@@ -432,7 +446,6 @@ inline fun <T, C : MutableCollection<in T>> expandTo(destination: C, initial: T,
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -444,7 +457,6 @@ fun <T> Array<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.P
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -456,7 +468,6 @@ fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.Pa
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -464,11 +475,55 @@ fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.
 	this.deepGet0(path, pathCase)
 
 private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
-	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
+	val pathList = path.splitBy(pathCase)
+	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
-	for(subPath in subPaths) {
-		currentValue = currentValue.collectionGet(subPath)
+	for(p in pathList) {
+		currentValue = currentValue.collectionGet(p)
+	}
+	return currentValue as T
+}
+
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> List<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+/**
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? =
+	this.deepGetOrNull0(path, pathCase)
+
+private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
+	val splitPaths = path.splitBy(pathCase)
+	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	var currentValue = this
+	for(p in splitPaths) {
+		currentValue = currentValue.collectionGetOrNull(p)
 	}
 	return currentValue as T
 }
@@ -480,7 +535,6 @@ private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -493,8 +547,7 @@ fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = Refer
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
- * @see ReferenceCase.JavaReference
+ * @see ReferenceCase.PathReference
  */
 @JvmOverloads
 fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) =
@@ -506,7 +559,6 @@ fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase =
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -514,13 +566,13 @@ fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase
 	this.deepSet0(path, value, pathCase)
 
 private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
-	val subPaths = path.splitBy(pathCase)
-	require(subPaths.isNotEmpty()) { "Target path '$path' cannot be empty." }
+	val splitPaths = path.splitBy(pathCase)
+	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
 	var currentValue = this
-	for(subPath in subPaths.dropLast(1)) {
-		currentValue = currentValue.collectionGet(subPath)
+	for(p in splitPaths.dropLast(1)) {
+		currentValue = currentValue.collectionGet(p)
 	}
-	currentValue.collectionSet(subPaths.last(), value)
+	currentValue.collectionSet(splitPaths.last(), value)
 }
 
 
@@ -528,9 +580,7 @@ private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
  * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
- * @see ReferenceCase.JavaReference
  */
 @JvmOverloads
 fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
@@ -541,7 +591,6 @@ fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase
  * 根据指定路径递归查询当前集合，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -553,7 +602,6 @@ fun <T> Iterable<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceC
  * 根据指定路径递归查询当前映射，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- *
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
@@ -562,61 +610,24 @@ fun <T> Map<*, *>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCas
 	this.deepQuery0(path, pathCase, returnPathCase)
 
 private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
-	val subPaths = path.splitBy(pathCase)
+	val splitPaths = path.splitBy(pathCase)
 	var pathValuePairs = listOf(arrayOf<String>() to this)
-	for(subPath in subPaths) {
+	for(p in splitPaths) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
-			when(value) {
-				is Array<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					else -> value.getOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
+			try {
+				when {
+					p.isPathOfMapLike() -> value.toDeepQueryPairList(key)
+					p.isPathOfListLike() -> value.toDeepQueryPairList(key)
+					p.isPathOfRegex() -> value.collectionSlice(p.substring(3).toRegex()).toDeepQueryPairList(key)
+					p.isPathOfIndices() -> value.collectionSlice(p.toIntRange()).toDeepQueryPairList(key)
+					else -> value.collectionGetOrNull(p).toSingletonDeepQueryPairList(key, p)
 				}
-				is Iterable<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						if(value is List<*>) {
-							value.slice(indices).withIndex().map { (i, e) -> (key + i.toString()) to e }
-						} else {
-							value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }
-						}
-					}
-					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
-				}
-				is Map<*, *> -> when {
-					subPath == "{}" || subPath == "-" || subPath.surroundsWith("{", "}") -> {
-						value.map { (k, v) -> (key + k.toString()) to v }
-					}
-					subPath.startsWith("re:") -> {
-						val regex = subPath.substring(3).toRegex()
-						value.filterKeys { it.toString() matches regex }.map { (k, v) -> (key + k.toString()) to v }
-					}
-					else -> value[subPath].toPairList(key + subPath)
-				}
-				is Sequence<*> -> when {
-					subPath == "[]" || subPath == "-" || subPath.surroundsWith("[", "]") -> {
-						value.withIndex().map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					}
-					subPath.contains("..") || subPath.contains("-") -> {
-						val indices = subPath.toIntRange()
-						value.withIndex().filter { (i, _) -> i in indices }.map { (i, e) -> (key + i.toString()) to e }.asIterable()
-					}
-					else -> value.elementAtOrNull(subPath.toIntOrThrow()).toPairList(key + subPath)
-				}
-				//当尝试查询非集合类型的数据时，要求抛出异常
-				else -> notAValidCollection()
+			} catch(e:Exception) {
+				value.collectionGetOrNull(p).toSingletonDeepQueryPairList(key, p)
 			}
 		}
 	}
-	return pathValuePairs.toPairValueMap(returnPathCase) as Map<String, T>
+	return pathValuePairs.toDeepQueryMap(returnPathCase) as Map<String, T>
 }
 
 
@@ -625,7 +636,6 @@ private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPat
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -634,7 +644,6 @@ fun Array<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -643,7 +652,6 @@ fun Iterable<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(dep
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
@@ -652,12 +660,11 @@ fun Map<*, *>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
-@NotSure
 @JvmOverloads
 fun Sequence<*>.deepFlatten(depth: Int = -1): List<Any?> = this.deepFlatten0(depth)
 
 private fun Any?.deepFlatten0(depth: Int): List<Any?> {
-	require(depth == -1 || depth > 0) { "Target depth '$depth' cannot be non-positive except -1." }
+	require(depth == -1 || depth > 0) { "Depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth
 	while(currentDepth != 0) {
@@ -683,118 +690,112 @@ private fun Any?.deepFlatten0(depth: Int): List<Any?> {
 }
 
 
-private fun Any?.collectionGet(indexOrKey: String): Any? {
-	return when(this) {
-		is Array<*> -> this[indexOrKey.toIntOrThrow()]
-		is Iterable<*> -> this.elementAt(indexOrKey.toIntOrThrow())
-		is Map<*, *> -> this[indexOrKey]
-		is Sequence<*> -> this.elementAt(indexOrKey.toIntOrThrow())
-		else -> notAValidCollection()
-	}
+private fun Any?.collectionGet(indexOrKey: String) = when(this) {
+	is Array<*> -> this[indexOrKey.toInt()]
+	is Iterable<*> -> this.elementAt(indexOrKey.toInt())
+	is Map<*, *> -> this[indexOrKey]
+	is Sequence<*> -> this.elementAt(indexOrKey.toInt())
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun Any?.collectionSet(indexOrKey: String, value: Any?) {
-	//除了数组以外，无法进行类型检查
-	when(this) {
-		is Array<*> -> try {
-			(this as Array<Any?>)[indexOrKey.toIntOrThrow()] = value
-		} catch(e: ArrayStoreException) {
-			typeMismatched(value)
-		}
-		is MutableList<*> -> (this as MutableList<Any?>)[indexOrKey.toIntOrThrow()] = value
-		is MutableMap<*, *> -> (this as MutableMap<String, Any?>)[indexOrKey] = value
-		else -> notAValidMutableCollection()
-	}
+private fun Any?.collectionGetOrNull(indexOrKey: String) = when(this) {
+	is Array<*> -> this.getOrNull(indexOrKey.toInt())
+	is Iterable<*> -> this.elementAtOrNull(indexOrKey.toInt())
+	is Map<*, *> -> this[indexOrKey]
+	is Sequence<*> -> this.elementAtOrNull(indexOrKey.toInt())
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun String.toIntOrThrow(): Int {
-	return this.toIntOrNull() ?: notAnIndex(this)
+private fun Any?.collectionSet(indexOrKey: String, value: Any?) = when(this) {
+	is Array<*> -> (this as Array<Any?>)[indexOrKey.toInt()] = value //这里可能会发生ArrayStoreException
+	is MutableList<*> -> (this as MutableList<Any?>)[indexOrKey.toInt()] = value
+	is MutableMap<*, *> -> (this as MutableMap<String, Any?>)[indexOrKey] = value
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, MutableList or MutableMap).")
 }
 
-private fun Any?.toPairList(path: Array<String>): List<Pair<Array<String>, Any?>> {
-	return if(this == null) listOf() else listOf(path to this)
+private fun Any?.collectionSlice(indices:IntRange) = when(this) {
+	is Array<*> -> this.sliceArray(indices)
+	is List<*> -> this.slice(indices)
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, List).")
 }
 
-private fun notAnIndex(path: String): Nothing {
-	throw IllegalArgumentException("Path '$path' is not a valid index.")
+private fun Any?.collectionSlice(regex:Regex) = when(this) {
+	is Array<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	is Iterable<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	is Map<*, *> -> this.filterKeys { it.toString() matches regex }
+	is Sequence<*> -> this.filterIndexed { i, _ -> i.toString() matches regex }
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun notAValidCollection(): Nothing {
-	throw IllegalArgumentException("Receiver is  not a valid collection (Array, Iterable, Map or Sequence).")
+private fun String.isPathOfMapLike() = this == "-" || this == "{}" || this.surroundsWith("{", "}")
+
+private fun String.isPathOfListLike() = this == "-" || this == "[]" || this.surroundsWith("[", "]")
+
+private fun String.isPathOfRegex() = this.startsWith("re:")
+
+private fun String.isPathOfIndices() = this.contains("..") || this.contains("-") || this.contains("~")
+
+private fun Any?.toQueryMap() = when(this) {
+	is Array<*> -> this.toIndexKeyMap()
+	is Iterable<*> -> this.toIndexKeyMap()
+	is Map<*, *> -> this.toStringKeyMap()
+	is Sequence<*> -> this.toIndexKeyMap()
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun notAValidMutableCollection(): Nothing {
-	throw IllegalArgumentException("Receiver is not a valid collection (Array, MutableList or MutableMap).")
+private fun Any?.toSingletonQueryMap(path:String) =
+	if(this == null) listOf() else listOf(path to this)
+
+private fun Any?.toDeepQueryPairList(oldPaths:Array<String>) = when(this) {
+	is Array<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }
+	is Iterable<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }
+	is Map<*, *> -> this.map { (k, v) -> oldPaths + k.toString() to v }
+	is Sequence<*> -> this.withIndex().map { (i, e) -> oldPaths + i.toString() to e }.toList()
+	else -> throw IllegalArgumentException("Invalid type of receiver (Allow: Array, Iterable, Map or Sequence).")
 }
 
-private fun notAStringKeyMap(): Nothing {
-	throw IllegalArgumentException("'Receiver is a map but type of it's key is not String.")
-}
+private fun Any?.toSingletonDeepQueryPairList(oldPaths:Array<String>, newPath:String) =
+	if(this == null) listOf() else listOf(oldPaths + newPath to this)
 
-private fun typeMismatched(value: Any?): Nothing {
-	throw IllegalArgumentException("Value '$value' is type mismatched (Incompatible generic type).")
-}
-
-private fun List<Pair<Array<String>, Any?>>.toPairValueMap(returnPathCase: ReferenceCase): Map<String, Any?> {
-	return this.map { (p, v) -> p.joinToStringBy(returnPathCase) to v }.toMap()
-}
+private fun List<Pair<Array<String>, Any?>>.toDeepQueryMap(returnPathCase:ReferenceCase) =
+	this.toMap().mapKeys { (k, _) -> k.joinToStringBy(returnPathCase) }
 //endregion
 
 //region convert extensions
-/**将当前列表转化为新的并发列表。*/
-fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> =
-	if(this is CopyOnWriteArrayList) this else CopyOnWriteArrayList(this)
-
-/**将当前集转化为新的并发集。*/
-fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> =
-	if(this is CopyOnWriteArraySet) this else CopyOnWriteArraySet(this)
-
-/**将当前映射转化为新的并发映射。*/
-fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> =
-	if(this is ConcurrentMap) this else ConcurrentHashMap(this)
-
-
-/**将当前键值对数组转化为可变映射。*/
+/**将当前键值对数组转化为新的可变映射。*/
 fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
-/**将当前键值对列表转化为可变映射。*/
+/**将当前键值对列表转化为新的可变映射。*/
 fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
-/**将当前键值对序列转化为可变映射。*/
+/**将当前键值对序列转化为新的可变映射。*/
 fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
 
 
-/**将当前数组转化为以键为值的映射。*/
+/**将当前数组转化为新的以键为值的映射。*/
 inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前集合转化为以键为值的映射。*/
+/**将当前集合转化为新的以键为值的映射。*/
 inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
-/**将当前序列转化为以键为值的映射。*/
+/**将当前序列转化为新的以键为值的映射。*/
 inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**将当前映射转化为新的以字符串为键的映射。*/
-@NotOptimized
 inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
-}
-
-/**将当前映射转化为新的以字符串为值的映射。*/
-@NotOptimized
-inline fun <V> Map<String, V>.toStringValueMap(): Map<String, String> {
-	return this.mapValues { (_, v) -> v.toString() }
 }
 //endregion
 
 //region unsafe extensions
 /**尝试检查当前集合的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Iterable<*>.isIterableOf(limit: Int = 10): Boolean {
 	return when(limit) {
@@ -805,7 +806,7 @@ inline fun <reified T : Any> Iterable<*>.isIterableOf(limit: Int = 10): Boolean 
 }
 
 /**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个键值对，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(limit: Int = 10): Boolean {
 	return when(limit) {
@@ -816,7 +817,7 @@ inline fun <reified K : Any, reified V : Any> Map<*, *>.isMapOf(limit: Int = 10)
 }
 
 /**尝试检查当前映射的泛型，但不保证正确性。默认遍历10个元素，判断是否全部兼容指定的类型。当限定个数为-1时遍历所有元素。*/
-@TrickImplementationApi("Cannot check actual generic type of a collection in Java.")
+@TrickImplementationApi
 @WeakDeprecated("Cannot check actual generic type of a collection in Java.")
 inline fun <reified T : Any> Sequence<*>.isSequenceOf(limit: Int = 10): Boolean {
 	return when(limit) {

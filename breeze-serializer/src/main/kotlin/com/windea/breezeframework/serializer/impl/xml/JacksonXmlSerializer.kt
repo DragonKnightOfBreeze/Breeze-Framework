@@ -7,7 +7,7 @@ import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由Jackson实现的xml的序列化器。*/
+/**由Jackson实现的Xml序列化器。*/
 internal object JacksonXmlSerializer : XmlSerializer, JacksonSerializer<XmlMapper> {
 	internal val mapper = XmlMapper()
 	override val delegate: XmlMapper get() = mapper
@@ -20,12 +20,12 @@ internal object JacksonXmlSerializer : XmlSerializer, JacksonSerializer<XmlMappe
 		return mapper.readValue(string, type)
 	}
 
-	override fun <T : Any> read(file: File, type: Class<T>): T {
-		return mapper.readValue(file, type)
-	}
-
 	override fun <T : Any> read(string: String, type: Type): T {
 		return mapper.readValue(string, mapper.typeFactory.constructType(type))
+	}
+
+	override fun <T : Any> read(file: File, type: Class<T>): T {
+		return mapper.readValue(file, type)
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {

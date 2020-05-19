@@ -6,7 +6,7 @@ import org.yaml.snakeyaml.representer.*
 import java.io.*
 import java.lang.reflect.*
 
-/**由SnakeYaml实现的yaml的序列化器。*/
+/**由SnakeYaml实现的Yaml序列化器。*/
 internal object SnakeYamlSerializer : YamlSerializer {
 	internal val loaderOptions = LoaderOptions()
 	internal val dumperOptions = DumperOptions()
@@ -20,16 +20,16 @@ internal object SnakeYamlSerializer : YamlSerializer {
 		return yaml.loadAs(string, type)
 	}
 
+	override fun <T : Any> read(string: String, type: Type): T {
+		return yaml.load(string)
+	}
+
 	override fun <T : Any> read(file: File, type: Class<T>): T {
 		return yaml.loadAs(file.reader(), type)
 	}
 
-	override fun <T : Any> read(string: String, type: Type): T {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
-	}
-
 	override fun <T : Any> read(file: File, type: Type): T {
-		throw UnsupportedOperationException("Could not find suitable methods to delegate.")
+		throw yaml.load(file.reader())
 	}
 
 	override fun readAll(string: String): List<Any?> {

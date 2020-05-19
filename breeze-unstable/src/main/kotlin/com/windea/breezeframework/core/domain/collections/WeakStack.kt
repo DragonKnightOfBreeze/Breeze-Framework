@@ -4,7 +4,6 @@ package com.windea.breezeframework.core.domain.collections
  * 简单的栈。
  *
  * 这个集合是线程不安全的。
- *
  * @see java.util.Stack
  * @see java.util.Deque
  */

@@ -1,30 +1,30 @@
 import org.gradle.jvm.tasks.Jar
 
-buildscript {
-	//配置插件仓库
-	repositories {
-		maven("https://maven.aliyun.com/nexus/content/groups/public")
-		mavenCentral()
-		jcenter()
-	}
-}
-
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.jetbrains.kotlin.jvm") version "1.3.70"
-	id("org.jetbrains.dokka") version "0.9.18"
-	id("com.jfrog.bintray") version "1.8.4"
+	id("org.jetbrains.dokka") version "0.10.1"
+	id("com.jfrog.bintray") version "1.8.5"
 }
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.1.0"
+	version = "1.1.2"
 
 	//应用插件
 	apply {
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
+	}
+
+	buildscript {
+		//配置插件仓库
+		repositories {
+			maven("https://maven.aliyun.com/nexus/content/groups/public")
+			mavenCentral()
+			jcenter()
+		}
 	}
 
 	//配置依赖仓库
@@ -47,11 +47,13 @@ allprojects {
 			kotlinOptions {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
-					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xuse-experimental=kotlin.Experimental",
-					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+					"-Xopt-in=kotlin.RequiresOptIn",
+					"-Xopt-in=kotlin.ExperimentalStdlibApi",
+					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
 				)
 			}
 		}
@@ -60,12 +62,13 @@ allprojects {
 			kotlinOptions {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
-					"-Xjsr305=strict",
 					"-Xinline-classes",
-					"-Xjvm-default=enable",
-					"-Xuse-experimental=kotlin.Experimental",
-					"-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-					"-Xuse-experimental=kotlin.contracts.ExperimentalContracts"
+					"-Xopt-in=kotlin.RequiresOptIn",
+					"-Xopt-in=kotlin.ExperimentalStdlibApi",
+					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
 				)
 			}
 		}
@@ -100,18 +103,13 @@ subprojects {
 				artifact(sourcesJar)
 				artifact(javadocJar)
 				pom {
-					name.set("Breeze-Framework")
-					description.set("""
-						Integrated code framework based on Kotlin,
-						provides many useful extensions for standard library and some frameworks.
-						What it can do is more than what you think it can do.
-					""".trimIndent())
-					packaging = "jar"
-					url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
+					name.set(project.name.formatModuleName())
+					description.set("Integrated code framework based on Kotlin.")
+					url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
 					licenses {
 						license {
 							name.set("MIT License")
-							url.set("https://github.com/DragonKnightOfBreeze/breeze-framework/blob/master/LICENSE")
+							url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework/blob/master/LICENSE")
 						}
 					}
 					developers {
@@ -122,9 +120,9 @@ subprojects {
 						}
 					}
 					scm {
-						url.set("https://github.com/DragonKnightOfBreeze/breeze-framework")
-						connection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
-						developerConnection.set("scm:git://git@github.com/DragonKnightOfBreeze/breeze-framework.git")
+						url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
+						connection.set("scm:git@github.com:DragonKnightOfBreeze/Breeze-Framework.git")
+						developerConnection.set("scm:git@github.com:DragonKnightOfBreeze/Breeze-Framework.git")
 					}
 				}
 			}
@@ -132,7 +130,7 @@ subprojects {
 		//配置上传到的仓库
 		repositories {
 			maven {
-				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/Breeze-Framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")
 					password = System.getenv("GITHUB_TOKEN")
@@ -142,6 +140,7 @@ subprojects {
 	}
 
 	//bintray远程仓库，可间接上传到jcenter
+	//建议将publish和override设为true，否则会报各种让人服气的错误
 	bintray {
 		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
 		user = System.getenv("BINTRAY_USER")
@@ -149,11 +148,19 @@ subprojects {
 		setPublications("maven")
 		pkg.repo = rootProject.name
 		pkg.name = project.name
-		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework"
-		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/breeze-framework.git"
+		pkg.desc = "Integrated code framework based on Kotlin."
+		pkg.githubRepo = "DragonKnightOfBreeze/Breeze-Framework"
+		pkg.githubReleaseNotesFile = "CHANGELOG.md"
+		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework"
+		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework.git"
 		pkg.setLicenses("MIT")
 		pkg.version.name = version.toString()
 		pkg.version.vcsTag = version.toString()
 		publish = true
+		override = true
 	}
+}
+
+fun String.formatModuleName():String {
+	return this.split("-").map { it.capitalize() }.joinToString(" ")
 }
