@@ -1,7 +1,13 @@
 package com.windea.breezeframework.core.types
 
-/**单精度浮点数范围。*/
+/**Represents a range of byte numbers.*/
+typealias ByteRange =ClosedRange<Byte>
+
+/**Represents a range of short numbers.*/
+typealias ShortRange = ClosedRange<Short>
+
+/**Represents a range of float numbers.*/
 typealias FloatRange = ClosedFloatingPointRange<Float>
 
-/**双精度浮点数范围。*/
+/**Represents a range of double numbers.*/
 typealias DoubleRange = ClosedFloatingPointRange<Double>

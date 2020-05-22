@@ -823,9 +823,9 @@ private val rangeDelimiters = arrayOf("..", "-", "~")
 
 private fun String.toRangePair() = when {
 	rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
-		.let { it[0].trim() to it[1].trim() with 0 with 0 }
+		.let { it[0].trim() to it[1].trim() fromTo 0 fromTo 0 }
 	this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
-		.let { it[0].trim() to it[1].trim() with this.getLeftRangeOffset() with this.getRightRangeOffset() }
+		.let { it[0].trim() to it[1].trim() fromTo this.getLeftRangeOffset() fromTo this.getRightRangeOffset() }
 	else -> this.notARange()
 }
 

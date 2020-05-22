@@ -7,10 +7,44 @@ import java.util.*
 import kotlin.random.*
 import kotlin.random.Random
 
+fun Random.nextByte():Byte {
+	return Random.nextInt(Byte.MIN_VALUE.toInt(),Byte.MAX_VALUE.toInt()).toByte()
+}
+
+fun Random.nextByte(until:Byte):Byte {
+	return Random.nextInt(until.toInt()).toByte()
+}
+
+fun Random.nextByte(from:Byte,until:Byte):Byte {
+	return Random.nextInt(from.toInt(),until.toInt()).toByte()
+}
+
+fun Random.nextByte(range:ClosedRange<Byte>):Byte {
+	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toByte()
+}
+
+
+fun Random.nextShort():Short {
+	return Random.nextInt(Short.MIN_VALUE.toInt(),Short.MAX_VALUE.toInt()).toShort()
+}
+
+fun Random.nextShort(until:Short):Short {
+	return Random.nextInt(until.toInt()).toShort()
+}
+
+fun Random.nextShort(from:Short,until:Short):Short {
+	return Random.nextInt(from.toInt(),until.toInt()).toShort()
+}
+
+fun Random.nextShort(range:ClosedRange<Short>):Short {
+	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toShort()
+}
+
+
 /**得到指定范围内的随机单精度浮点数。包含上下限。可指定基于位数的-10到0的精确度，默认为-2。用0表示个位，用较大数表示较高位。*/
 @JvmOverloads
 fun Random.nextFloat(range: ClosedFloatingPointRange<Float>, precision: Int = -2): Float {
-	require(precision in -10..0) { "Precision for next float operation must between -10 and 0, but was $precision." }
+	require(precision in -10..0) { "Precision for next float operation should between -10 and 0, but was $precision." }
 
 	val ratio = 10.positivePow(precision)
 	return this.nextInt((range.start * ratio).toInt()..(range.endInclusive * ratio).toInt()) / ratio.toFloat()
@@ -19,32 +53,57 @@ fun Random.nextFloat(range: ClosedFloatingPointRange<Float>, precision: Int = -2
 /**得到指定范围内的随机双精度浮点数。包含上下限。可指定基于位数的0到10的精确度，默认为-2。用0表示个位，用较大数表示较高位。*/
 @JvmOverloads
 fun Random.nextDouble(range: ClosedFloatingPointRange<Double>, precision: Int = -2): Double {
-	require(precision in -10..0) { "Precision for next double operation must between -10 and 0, but was $precision." }
+	require(precision in -10..0) { "Precision for next double operation should between -10 and 0, but was $precision." }
 
 	val ratio = 10.positivePow(precision)
 	return this.nextLong((range.start * ratio).toLong()..(range.endInclusive * ratio).toLong()) / ratio.toDouble()
 }
 
 
-/**得到指定相反数对应范围内的随机整数。默认上下限为-1和1。*/
-@JvmOverloads
-inline fun Random.nextOpsInt(limit: Int = 1): Int = this.nextInt(-limit..limit)
+fun Random.nextChar():Char {
+	return Random.nextInt(Char.MIN_VALUE.toInt(),Char.MAX_VALUE.toInt()).toChar()
+}
 
-/**得到指定相反数对应范围内的随机长整数。默认上下限为-1和1。*/
-@JvmOverloads
-inline fun Random.nextOpsLong(limit: Long = 1): Long = this.nextLong(-limit..limit)
+fun Random.nextChar(until:Char):Char {
+	return Random.nextInt(until.toInt()).toChar()
+}
 
-/**得到指定相反数对应范围内的随机单精度浮点数。默认上下限为-1和1。*/
-@JvmOverloads
-inline fun Random.nextOpsFloat(limit: Float = 1f): Float = this.nextFloat(-limit..limit)
+fun Random.nextChar(from:Char,until:Char):Char {
+	return Random.nextInt(from.toInt(),until.toInt()).toChar()
+}
 
-/**得到指定相反数对应范围内的随机双精度浮点数。默认上下限为-1和1。*/
-@JvmOverloads
-inline fun Random.nextOpsDouble(limit: Double = 1.0): Double = this.nextDouble(-limit..limit)
+fun Random.nextChar(range:ClosedRange<Char>):Char {
+	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toChar()
+}
 
 
 /**得到随机的UUID字符串。*/
 fun Random.nextUUID(): String = UUID.randomUUID().toString()
+
+
+///**得到指定相反数对应范围内的随机字节数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsByte(limit: Byte = 1): Int = this.nextByte(-limit..limit)
+//
+///**得到指定相反数对应范围内的随机字节数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsShort(limit: Short = 1): Int = this.nextShort(-limit..limit)
+//
+///**得到指定相反数对应范围内的随机整数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsInt(limit: Int = 1): Int = this.nextInt(-limit..limit)
+//
+///**得到指定相反数对应范围内的随机长整数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsLong(limit: Long = 1): Long = this.nextLong(-limit..limit)
+//
+///**得到指定相反数对应范围内的随机单精度浮点数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsFloat(limit: Float = 1f): Float = this.nextFloat(-limit..limit)
+//
+///**得到指定相反数对应范围内的随机双精度浮点数。默认上下限为-1和1。*/
+//@JvmOverloads
+//inline fun Random.nextOpsDouble(limit: Double = 1.0): Double = this.nextDouble(-limit..limit)
 
 
 /**检查一个几率发生的事件是否发生。*/

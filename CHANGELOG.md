@@ -364,6 +364,7 @@
 * [X] 精简目录结构。
 * [X] breeze-dsl-bbcode 实现BBCode。
 * [X] breeze-core 重构`typing`、`typingAll`方法。
+* [X] breeze-core 补充随机数方法。
 * [ ] breeze-core 新的类型：`Element`。
 * [ ] breeze-dsl 重新整理dsl的文档注释，仅为注解和构造方法提供。
 * [ ] breeze-unstable 新的集合类型：`Tree`。

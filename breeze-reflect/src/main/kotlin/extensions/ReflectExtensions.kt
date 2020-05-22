@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.reflect.extensions
 
+import com.windea.breezeframework.core.extensions.*
 import kotlin.random.*
 import kotlin.reflect.full.*
 
@@ -24,16 +25,14 @@ inline fun <reified T : Any> defaultValue():T = when(val type = T::class) {
 /**尝试得到当前类型的随机值。*/
 @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 inline fun <reified T : Any> randomValue():T = when(val type = T::class) {
-	Byte::class -> TODO()
-	Short::class -> TODO()
+	Byte::class -> Random.nextByte()
+	Short::class -> Random.nextShort()
 	Int::class -> Random.nextLong()
 	Long::class -> Random.nextLong()
 	Float::class -> Random.nextFloat()
 	Double::class -> Random.nextDouble()
 	Boolean::class -> Random.nextBoolean()
-	Char::class -> TODO()
-	String::class -> TODO()
+	Char::class -> Random.nextChar()
+	String::class -> Random.nextUUID()
 	else -> type.createInstance()
 } as T
-
-

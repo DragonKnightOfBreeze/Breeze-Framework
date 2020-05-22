@@ -13,12 +13,12 @@ annotation class InternalUsageApi
 @Retention(BINARY)
 annotation class ExplicitUsageApi
 
-/**Apis that should be used optionally.*/
+/**Api that should be used optionally.*/
 @MustBeDocumented
 @Retention(BINARY)
 annotation class OptionalUsageApi
 
-/**Apis that is implemented unstably. It means, this api may be refactored or removed in the future.*/
+/**Api that is implemented unstably. It means, this api may be refactored or removed in the future.*/
 @MustBeDocumented
 @RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
 @Retention(BINARY)

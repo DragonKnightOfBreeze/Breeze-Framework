@@ -14,13 +14,13 @@ import com.windea.breezeframework.core.types.*
 
 //region dsl build extensions
 /**从二元素元组构造三元素元组。*/
-infix fun <A, B, C> Tuple2<A, B>.with(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
+infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
 
 /**从三元素元组构造四元素元组。*/
-infix fun <A, B, C, D> Tuple3<A, B, C>.with(that: D): Tuple4<A, B, C, D> = Tuple4(first, second, third, that)
+infix fun <A, B, C, D> Tuple3<A, B, C>.fromTo(that: D): Tuple4<A, B, C, D> = Tuple4(first, second, third, that)
 
 /**从四元素元组构造五元素元组。*/
-infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.with(that: E): Tuple5<A, B, C, D, E> = Tuple5(first, second, third, fourth, that)
+infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.fromTo(that: E): Tuple5<A, B, C, D, E> = Tuple5(first, second, third, fourth, that)
 //endregion
 
 //region common extensions

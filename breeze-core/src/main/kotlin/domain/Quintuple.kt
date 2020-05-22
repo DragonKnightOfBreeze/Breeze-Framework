@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.domain
 
 import java.io.*
 
-/**五元素元组。*/
+/**Represents a tuple of five values.*/
 data class Quintuple<out A, out B, out C, out D, out E>(
 	val first: A,
 	val second: B,
