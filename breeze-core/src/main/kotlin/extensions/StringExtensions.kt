@@ -498,25 +498,25 @@ fun String.remove(regex:Regex):String {
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入空字符串。
  */
-fun String.substringMatch(vararg delimiters:String?):List<String> =
-	substringMatch0(*delimiters) { _, _ -> "" }
+fun String.splitMatch(vararg delimiters:String?):List<String> =
+	splitMatch0(*delimiters) { _, _ -> "" }
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
  */
-fun String.substringMatchOrElse(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> =
-	substringMatch0(*delimiters, defaultValue = defaultValue)
+fun String.splitMatchOrElse(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> =
+	splitMatch0(*delimiters, defaultValue = defaultValue)
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含分隔符时，加入基于剩余字符串得到的默认值数组中的对应索引的值。
  */
-fun String.substringMatchOrElse(vararg delimiters:String?, defaultValue:(String) -> Array<String>):List<String> =
-	substringMatch0(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
+fun String.splitMatchOrElse(vararg delimiters:String?, defaultValue:(String) -> Array<String>):List<String> =
+	splitMatch0(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
 
 @NotOptimized
-private fun String.substringMatch0(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> {
+private fun String.splitMatch0(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 
 	var rawString = this
@@ -544,6 +544,9 @@ private fun String.substringMatch0(vararg delimiters:String?, defaultValue:(Int,
 	}
 	return result
 }
+
+
+//TODO
 
 
 /**将当前字符串解码为base64格式的字节数组。*/

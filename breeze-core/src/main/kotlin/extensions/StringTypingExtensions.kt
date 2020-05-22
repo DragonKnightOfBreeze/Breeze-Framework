@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
-//这些特殊的字符串处理方法相比joinToString等更加灵活，更加适用于特殊情况
-//随着需求的增加重构这些方法，使之更加灵活
+//这些特殊的字符串处理方法相比let & joinToString更加灵活，更加适用于一般情况
+//允许更多自定义项
 
 /**
  * 使用特定的转化规则，将当前对象转化成字符串。
@@ -121,3 +121,8 @@ fun <T : Any> Sequence<T?>.typingAll(
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }
+
+
+fun String.typingToList(separator:CharSequence= ", ",prefix:CharSequence = "",postfix:CharSequence=""):List<String> = TODO()
+
+fun String.typingToSequence(separator:CharSequence = ", ",prefix:CharSequence = "",postfix:CharSequence=""):Sequence<String> = TODO()
