@@ -17,4 +17,4 @@ annotation class ImpliesSmartCast
 /**有待以自动生成的方式编写的代码。*/
 @Retention(SOURCE)
 @InternalUsageApi
-annotation class ToBeGeneratedCode
+annotation class ToBeGenerated

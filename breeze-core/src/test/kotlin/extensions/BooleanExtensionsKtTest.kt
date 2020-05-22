@@ -16,16 +16,4 @@ class BooleanExtensionsKtTest {
 	@Test
 	fun toDouble() {
 	}
-
-	@Test
-	fun toOpsInt() {
-	}
-
-	@Test
-	fun toOpsFloat() {
-	}
-
-	@Test
-	fun toOpsDouble() {
-	}
 }

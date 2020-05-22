@@ -72,9 +72,9 @@ infix fun Short.downUntil(until: Short): IntProgression {
 //endregion
 
 //region common extensions
-//inline fun <T:Comparable<T>,R:Comparable<R>> ClosedRange<T>.map(transform:(T)->R):ClosedRange<R> {
-//	return transform(start)..transform(endInclusive)
-//}
+inline fun <T:Comparable<T>,R:Comparable<R>> ClosedRange<T>.map(transform:(T)->R):ClosedRange<R> {
+	return transform(start)..transform(endInclusive)
+}
 
 
 /**限定在0和1之间。*/
@@ -82,19 +82,6 @@ inline fun Float.coerceIn(): Float = this.coerceIn(0f, 1f)
 
 /**限定在0和1之间。*/
 inline fun Double.coerceIn(): Double = this.coerceIn(0.0, 1.0)
-
-
-///**限制在指定的相反数之间。*/
-//inline fun Int.coerceInOps(value: Int): Int = this.coerceIn(-value, value)
-//
-///**限制在指定的相反数之间。*/
-//inline fun Long.coerceInOps(value: Long): Long = this.coerceIn(-value, value)
-//
-///**限制在指定的相反数之间。默认为-1和1。*/
-//inline fun Float.coerceInOps(value: Float = 1f): Float = this.coerceIn(-value, value)
-//
-///**限制在指定的相反数之间。默认为-1和1。*/
-//inline fun Double.coerceInOps(value: Double = 1.0): Double = this.coerceIn(-value, value)
 //endregion
 
 //region convert extensions

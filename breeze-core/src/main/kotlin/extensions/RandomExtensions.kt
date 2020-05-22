@@ -81,31 +81,6 @@ fun Random.nextChar(range:ClosedRange<Char>):Char {
 fun Random.nextUUID(): String = UUID.randomUUID().toString()
 
 
-///**得到指定相反数对应范围内的随机字节数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsByte(limit: Byte = 1): Int = this.nextByte(-limit..limit)
-//
-///**得到指定相反数对应范围内的随机字节数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsShort(limit: Short = 1): Int = this.nextShort(-limit..limit)
-//
-///**得到指定相反数对应范围内的随机整数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsInt(limit: Int = 1): Int = this.nextInt(-limit..limit)
-//
-///**得到指定相反数对应范围内的随机长整数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsLong(limit: Long = 1): Long = this.nextLong(-limit..limit)
-//
-///**得到指定相反数对应范围内的随机单精度浮点数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsFloat(limit: Float = 1f): Float = this.nextFloat(-limit..limit)
-//
-///**得到指定相反数对应范围内的随机双精度浮点数。默认上下限为-1和1。*/
-//@JvmOverloads
-//inline fun Random.nextOpsDouble(limit: Double = 1.0): Double = this.nextDouble(-limit..limit)
-
-
 /**检查一个几率发生的事件是否发生。*/
 fun Random.checkChance(chance: Float): Boolean {
 	require(chance in 0f..1f) { "Chance must between 0 and 1, but was $chance." }
