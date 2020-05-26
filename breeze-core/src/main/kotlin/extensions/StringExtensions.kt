@@ -204,17 +204,6 @@ fun String.transformIn(regex:Regex, transform:(String) -> String):String {
 }
 
 
-///**并行处理当前字符串。注意应在作为参数的代码块中使用[replaceFirst]方法替换字符串，而非[replace]方法。*/
-//@NotSure
-//tailrec fun String.sequential(vararg blocks: (String) -> String): String {
-//	var result = this
-//	for(block in blocks) {
-//		result = block(this)
-//	}
-//	return if(this != result) this.sequential(*blocks) else this
-//}
-
-
 /**根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
 @JvmOverloads
 fun String.replaceIn(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
@@ -345,11 +334,10 @@ fun String.truncate(limit:Int, truncated:CharSequence = "..."):String {
 }
 
 
-
 /**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
 fun CharSequence.setPrefix(prefix:CharSequence):CharSequence {
 	if(this.length < prefix.length) return this
-	return "$prefix${this.substring(prefix.length,this.length)}"
+	return "$prefix${this.substring(prefix.length, this.length)}"
 }
 
 /**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
@@ -366,24 +354,24 @@ fun CharSequence.setSurrounding(delimiter:CharSequence):CharSequence {
 /**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
 fun CharSequence.setSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
 	if(this.length < prefix.length + suffix.length) return this
-	return "$prefix${this.substring(prefix.length,this.length-suffix.length)}$suffix"
+	return "$prefix${this.substring(prefix.length, this.length - suffix.length)}$suffix"
 }
 
 
 /**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
- fun String.setPrefix(prefix:CharSequence):String {
+fun String.setPrefix(prefix:CharSequence):String {
 	if(this.length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
 /**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
- fun String.setSuffix(suffix:CharSequence):String {
+fun String.setSuffix(suffix:CharSequence):String {
 	if(this.length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
- fun String.setSurrounding(delimiter:CharSequence):String {
+fun String.setSurrounding(delimiter:CharSequence):String {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
@@ -419,19 +407,19 @@ fun CharSequence.addSurrounding(prefix:CharSequence, suffix:CharSequence):CharSe
 
 
 /**为当前字符串添加指定的前缀。如果已存在，则返回自身。*/
- fun String.addPrefix(prefix:CharSequence):String {
+fun String.addPrefix(prefix:CharSequence):String {
 	if(this.startsWith(prefix)) return this
 	return "$prefix$this"
 }
 
 /**为当前字符串添加指定的后缀。如果已存在，则返回自身。*/
- fun String.addSuffix(suffix:CharSequence):String {
+fun String.addSuffix(suffix:CharSequence):String {
 	if(this.endsWith(suffix)) return this
 	return "$this$suffix"
 }
 
 /**为当前字符串添加指定的前后缀。如果已存在，则返回自身。*/
- fun String.addSurrounding(delimiter:CharSequence):String {
+fun String.addSurrounding(delimiter:CharSequence):String {
 	return this.addSurrounding(delimiter, delimiter)
 }
 
@@ -496,27 +484,10 @@ fun String.remove(regex:Regex):String {
 
 /**
  * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
- * 不包含分隔符时，加入空字符串。
+ * 不包含分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
  */
-fun String.splitMatch(vararg delimiters:String?):List<String> =
-	splitMatch0(*delimiters) { _, _ -> "" }
-
-/**
- * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
- * 不包含分隔符时，加入基于索引和剩余字符串得到的默认值。
- */
-fun String.splitMatchOrElse(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> =
-	splitMatch0(*delimiters, defaultValue = defaultValue)
-
-/**
- * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
- * 不包含分隔符时，加入基于剩余字符串得到的默认值数组中的对应索引的值。
- */
-fun String.splitMatchOrElse(vararg delimiters:String?, defaultValue:(String) -> Array<String>):List<String> =
-	splitMatch0(*delimiters) { index, str -> defaultValue(str).getOrEmpty(index) }
-
 @NotOptimized
-private fun String.splitMatch0(vararg delimiters:String?, defaultValue:(Int, String) -> String):List<String> {
+fun String.splitMatch(vararg delimiters:String?, defaultValue:((Int, String) -> String)? = null):List<String> {
 	require(delimiters.count { it == null } <= 1) { "There should be at most one null value as separator in delimiters." }
 
 	var rawString = this
@@ -527,26 +498,44 @@ private fun String.splitMatch0(vararg delimiters:String?, defaultValue:(Int, Str
 
 	for((index, delimiter) in fixedDelimiters.withIndex()) {
 		if(index < indexOfNull) {
-			result += rawString.substringBefore(delimiter, defaultValue(index, rawString))
+			result += rawString.substringBefore(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			if(index == size - 1) {
-				result += rawString.substringAfter(delimiter, defaultValue(index, rawString))
+				result += rawString.substringAfter(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			} else {
-				rawString = rawString.substringAfter(delimiter, defaultValue(index, rawString))
+				rawString = rawString.substringAfter(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			}
 		} else {
-			result += rawString.substringBeforeLast(delimiter, defaultValue(index, rawString))
+			result += rawString.substringBeforeLast(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			if(index == size - 1) {
-				result += rawString.substringAfterLast(delimiter, defaultValue(index, rawString))
+				result += rawString.substringAfterLast(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			} else {
-				rawString = rawString.substringAfterLast(delimiter, defaultValue(index, rawString))
+				rawString = rawString.substringAfterLast(delimiter, defaultValue?.invoke(index, rawString).orEmpty())
 			}
 		}
 	}
 	return result
 }
 
-
-//TODO
+/**
+ * 根据指定分隔符、前缀、后缀以及可选的转换方法，按顺序分割当前字符串。
+ * 可以另外指定限定数量和省略字符串。
+ */
+@NotOptimized
+fun String.splitToStrings(separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "",
+	limit:Int = -1, truncated:CharSequence = "...", transform:((String) -> String)? = null):List<String> {
+	//前缀索引+前缀长度，或者为0
+	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
+	//后缀索引，或者为length
+	val suffixIndex = lastIndexOf(postfix.toString()).let { if(it == -1) length else it }
+	//内容，需要继续分割和转换
+	val content = substring(prefixIndex, suffixIndex)
+	val strings = when(limit) {
+		-1 -> content.split(separator.toString())
+		0 -> listOf()
+		else -> content.split(separator.toString(), limit = limit+1).dropLast(1) + truncated.toString()
+	}
+	return if(transform == null) strings else strings.map(transform)
+}
 
 
 /**将当前字符串解码为base64格式的字节数组。*/

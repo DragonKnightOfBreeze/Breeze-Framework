@@ -123,6 +123,6 @@ fun <T : Any> Sequence<T?>.typingAll(
 }
 
 
-fun String.typingToList(separator:CharSequence= ", ",prefix:CharSequence = "",postfix:CharSequence=""):List<String> = TODO()
-
-fun String.typingToSequence(separator:CharSequence = ", ",prefix:CharSequence = "",postfix:CharSequence=""):Sequence<String> = TODO()
+//fun String.typingToList(separator:CharSequence= ", ",prefix:CharSequence = "",postfix:CharSequence=""):List<String> = TODO()
+//
+//fun String.typingToSequence(separator:CharSequence = ", ",prefix:CharSequence = "",postfix:CharSequence=""):Sequence<String> = TODO()
