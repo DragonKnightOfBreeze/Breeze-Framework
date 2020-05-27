@@ -79,7 +79,3 @@ data class Vector3(
 		val origin = Vector3(0f, 0f, 0f)
 	}
 }
-
-
-/**将三维向量转化为三元素元组。*/
-inline fun Vector3.toTriple(): Triple<Float, Float, Float> = Triple(this.x, this.y, this.z)

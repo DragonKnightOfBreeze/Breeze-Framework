@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.domain.math
 
+import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 
 /**二维向量。*/
@@ -88,9 +89,3 @@ data class Vector2(
 	}
 }
 
-
-/**将二维向量转化为三位向量。*/
-inline fun Vector2.toVector3(): Vector3 = Vector3(this.x, this.y, 0f)
-
-/**将二维向量转化为二元素元组。*/
-inline fun Vector2.toPair(): Pair<Float, Float> = Pair(this.x, this.y)
