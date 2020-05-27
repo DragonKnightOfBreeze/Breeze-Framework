@@ -135,6 +135,7 @@ inline fun CharSequence?.isNotNullOrBlank():Boolean {
 	return this != null && this.isNotBlank()
 }
 
+
 /**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
 @UnstableImplementationApi
 fun CharSequence.isAlphabetic():Boolean {
@@ -194,7 +195,9 @@ fun CharSequence.repeatOrdinal(n:Int):String {
 fun String.transformIn(prefix:String, suffix:String, transform:(String) -> String):String {
 	//前后缀会在转义后加入正则表达式，可以分别是\\Q和\\E
 	//前后缀可能会发生冲突
-	return this.replace("(?<=${Regex.escape(prefix)}).*?(?=${Regex.escape(suffix)})".toRegex()) { transform(it[0]) }
+	val prefixIndex = this.indexOf(prefix) + prefix.length
+	val suffixIndex = this.lastIndexOf(suffix)
+	return this.take(prefixIndex) + transform(this.substring(prefixIndex,suffixIndex)) + this.takeLast(this.length - suffixIndex)
 }
 
 /**限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
@@ -543,34 +546,6 @@ fun String.decodeToBase64ByteArray():ByteArray = Base64.getDecoder().decode(this
 //endregion
 
 //region line extensions
-///**逐行缩进当前字符串。默认适用4个空格进行缩进。*/
-//fun String.lineIndent(indent:String = "    "):String {
-//	return this.lineSequence().map {
-//			when {
-//				it.isBlank() -> when {
-//					it.length < indent.length -> indent
-//					else -> it
-//				}
-//				else -> indent + it
-//			}
-//	}.joinToString("\n")
-//}
-//
-///**除了首行和尾行以外，逐行缩进当前字符串。默认适用4个空格进行缩进。*/
-//fun String.lineContentIndent(indent:String = "    "):String {
-//	val lines = this.lines()
-//	return lines.mapIndexed { i, s ->
-//		when{
-//			i == 0 || i == lines.lastIndex -> s
-//			s.isBlank() -> when{
-//				s.length < indent.length -> indent
-//				else -> s
-//			}
-//			else -> indent + s
-//		}
-//	}.joinToString("\n")
-//}
-
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
 @UnstableImplementationApi
 infix fun String.lineConcat(other:String):String {
@@ -714,8 +689,9 @@ fun String.trimWrap():String {
 }
 
 /**
- * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。默认为0。
- **/
+ * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
+ * 相对缩进长度默认为0。
+ */
 @JvmOverloads
 fun String.trimRelativeIndent(relativeIndentSize:Int = 0):String {
 	require(relativeIndentSize in -2..8) { "Relative indent size should between -2 and 8, but was $relativeIndentSize." }

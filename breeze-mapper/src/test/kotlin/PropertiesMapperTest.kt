@@ -1,5 +1,6 @@
-package com.windea.breezeframework.mapper.impl
+package com.windea.breezeframework.mapper
 
+import com.windea.breezeframework.mapper.impl.*
 import org.junit.*
 
 class PropertiesMapperTest {

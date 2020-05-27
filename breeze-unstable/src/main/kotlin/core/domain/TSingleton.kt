@@ -6,6 +6,7 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 
 /**泛型单例接口。*/
+@UnstableImplementationApi
 @Suppress("UNCHECKED_CAST")
 interface TSingleton<T : Any> {
 	val instance: T

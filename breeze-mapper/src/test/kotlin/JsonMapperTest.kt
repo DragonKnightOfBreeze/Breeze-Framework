@@ -1,5 +1,6 @@
-package com.windea.breezeframework.mapper.impl
+package com.windea.breezeframework.mapper
 
+import com.windea.breezeframework.mapper.impl.*
 import org.junit.*
 
 class JsonMapperTest {
@@ -10,12 +11,16 @@ class JsonMapperTest {
 			println(it)
 		}
 		println()
-		JsonMapper(JsonMapper.Config(prettyFormat = true)).map(data).also {
+		JsonMapper(JsonMapper.Config.PrettyFormat).map(data).also {
 			println(it)
 		}
 	}
 
 	@Test
 	fun unmap() {
+		val string = """{"a": 1, "b": "2", "c": [3, 4, [5, 6], [7]]}"""
+		JsonMapper().unmap(string,Any::class.java).also {
+			println(it)
+		}
 	}
 }

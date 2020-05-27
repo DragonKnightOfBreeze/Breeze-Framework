@@ -1,5 +1,7 @@
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
+
 /**
  * 可计数的类。
  *
@@ -7,6 +9,7 @@ package com.windea.breezeframework.core.domain
  * @property count 数量。
  * @property totalCount 最大数量。
  */
+@UnstableImplementationApi
 interface Countable<T> where T : Number, T:Comparable<T> {
 	var count:T
 	var totalCount:T

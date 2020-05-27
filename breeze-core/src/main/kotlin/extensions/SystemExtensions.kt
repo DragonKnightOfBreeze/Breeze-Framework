@@ -43,7 +43,7 @@ internal fun getEngine(language: String): ScriptEngine {
 	val fixedLanguage = language.toLowerCase()
 	return scriptEngines.getOrPut(fixedLanguage) {
 		engineManager.getEngineByName(fixedLanguage) ?: engineManager.getEngineByExtension(fixedLanguage)
-		?: throw UnsupportedOperationException("No script engine library found for target script language.")
+		?: throw UnsupportedOperationException("No script engine library found for value script language.")
 	}
 }
 

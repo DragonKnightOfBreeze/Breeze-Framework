@@ -1,6 +1,5 @@
-package com.windea.breezeframework.mapper.impl
+package com.windea.breezeframework.mapper
 
-import com.windea.breezeframework.mapper.*
 import kotlin.test.*
 
 class ObjectMapperTest {

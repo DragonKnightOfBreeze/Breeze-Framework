@@ -1,8 +1,10 @@
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
 import java.io.*
 
 /**拥有唯一标识符的泛型实体类。此类的子类应当是开放的。*/
+@UnstableImplementationApi
 @Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 abstract class TEntity<ID> : Serializable {
 	open var id: ID? = null

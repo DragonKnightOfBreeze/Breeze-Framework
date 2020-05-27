@@ -1,8 +1,11 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.windea.breezeframework.mapper.impl
 
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
+import java.lang.IllegalArgumentException
 import java.lang.reflect.*
 import java.time.temporal.*
 import java.util.*
@@ -67,88 +70,110 @@ class JsonMapper(
 	private val objectSuffix = if(config.prettyFormat) "$lineSeparator}" else "}"
 
 	private val String.shouldQuoted get() = this.isEmpty() || this.first().isWhitespace() || this.last().isWhitespace()
-	private fun String.doIndent() = if(config.prettyFormat) this.prependIndent(indent) else this
 	private fun String.doQuote() = if(!config.unquoted || this.shouldQuoted) this.quote(quote) else this
+	private fun String.doIndent() = if(config.prettyFormat) this.prependIndent(indent) else this
 
 
 	override fun <T> map(data:T):String {
-		return data.mapJson()
+		return data.map0()
 	}
 
 	//支持的类型：
-	//* null
-	//* Boolean, Number
-	//* CharSequence, Char, Temporal, Date（映射为为字符串）
-	//* Array, Sequence, Iterable, Sequence, !ClosedRange（映射为Json数组）
-	//* Map（映射为Json对象）
-	//* else（尝试映射为Map，然后映射为Json对象）
+	//* null - json null
+	//* Boolean - json boolean
+	//* Number - json number
+	//* CharSequence, Char, Temporal, Date - json string
+	//* Array, Sequence, Iterable, Sequence, !ClosedRange - json array
+	//* Map - json object
+	//* else - json object
 
-	private fun Any?.mapJson():String {
+	private fun Any?.map0():String {
 		return when {
 			this == null -> mapNull()
-			this is Boolean -> this.mapBoolean()
-			this is Number -> this.mapNumber()
-			this is CharSequence || this is Char || this is Temporal || this is Date -> this.mapString()
-			this is Array<*> -> this.mapArray()
-			this is Iterable<*> && this !is ClosedRange<*> -> this.mapArray()
-			this is Sequence<*> -> this.mapArray()
-			this is Map<*, *> -> this.mapObject()
-			else -> this.mapObject()
+			this is Boolean -> mapBoolean()
+			this is Number -> mapNumber()
+			this is CharSequence || this is Char || this is Temporal || this is Date -> mapString()
+			this is Array<*> -> mapArray()
+			this is Iterable<*> && this !is ClosedRange<*> -> mapArray()
+			this is Sequence<*> -> mapArray()
+			this is Map<*, *> -> mapObject()
+			else -> mapObject()
 		}
 	}
 
-	private fun mapNull():String {
-		return "null"
-	}
+	private fun mapNull() = "null"
 
-	private fun Boolean.mapBoolean():String {
-		return this.toString()
-	}
+	private fun Boolean.mapBoolean() = this.toString()
 
-	private fun Number.mapNumber():String {
-		return this.toString()
-	}
+	private fun Number.mapNumber() = this.toString()
 
-	private fun Any.mapString():String {
-		return this.toString().doQuote()
-	}
+	private fun Any.mapString() = this.toString().doQuote()
 
-	private fun Array<*>.mapArray():String {
-		return this.joinToString(valueSeparator) { it.mapJson() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
-	}
+	private fun Array<*>.mapArray() = this.joinToString(valueSeparator) { it.map0() }.doIndent()
+		.let { "$arrayPrefix$it$arraySuffix" }
 
-	private fun Iterable<*>.mapArray():String {
-		return this.joinToString(valueSeparator) { it.mapJson() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
-	}
+	private fun Iterable<*>.mapArray() = this.joinToString(valueSeparator) { it.map0() }.doIndent()
+		.let { "$arrayPrefix$it$arraySuffix" }
 
-	private fun Sequence<*>.mapArray():String {
-		return this.joinToString(valueSeparator) { it.mapJson() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
-	}
+	private fun Sequence<*>.mapArray() = this.joinToString(valueSeparator) { it.map0() }.doIndent()
+		.let { "$arrayPrefix$it$arraySuffix" }
 
-	private fun Map<*, *>.mapObject():String {
-		return this.joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
-			.doIndent().let { "$objectPrefix$it$objectSuffix" }
-	}
+	private fun Map<*, *>.mapObject() = this.joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }.doIndent()
+		.let { "$objectPrefix$it$objectSuffix" }
 
-	private fun Any.mapObject():String {
-		return ObjectMapper.map(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
-			.doIndent().let { "$objectPrefix$it$objectSuffix" }
-	}
+	private fun Any.mapObject() =
+		ObjectMapper.map(this).mapObject()
 
-	private fun Any?.mapKey():String {
-		return this.toString().doQuote()
-	}
+	private fun Any?.mapKey() = this.toString().doQuote()
 
-	private fun Any?.mapValue():String {
-		return this.mapJson()
-	}
+	private fun Any?.mapValue() = this.map0()
 
 
 	override fun <T> unmap(string:String, type:Class<T>):T {
-		TODO("not implemented")
+		return string.unmap0() as T
 	}
 
 	override fun <T> unmap(string:String, type:Type):T {
-		TODO("not implemented")
+	return 	string.unmap0() as T
 	}
+
+	//支持的类型：
+	//* null - json null
+	//* Boolean - json boolean
+	//* Number - json number
+	//* CharSequence, Char, Temporal, Date - json string
+	//* Array, Sequence, Iterable, Sequence, !ClosedRange - json array
+	//* Map - json object
+	//* else - json object
+
+	private fun String.unmap0():Any? {
+		val string = this.trim()
+		return when{
+			string.startsWith("{") && string.contains("}") -> unmapJsonObject()
+			string.startsWith("[") && string.contains("]") -> unmapJsonObject()
+			string.startsWith("\"") || string.startsWith("\'") -> unmapJsonString()
+			string.matches("[1-9.]+".toRegex()) -> unmapJsonNumber()
+			string == "true" || string == "false" -> unmapJsonBoolean()
+			string == "null" -> unmapJsonNull()
+			else -> throw IllegalArgumentException()
+		}
+	}
+
+	private fun unmapJsonNull() = null
+
+	private fun String.unmapJsonBoolean() = this.toBoolean()
+
+	private fun String.unmapJsonNumber() = if(this.contains(".")) this.toDouble() else this.toInt()
+
+	private fun String.unmapJsonString() = this.unquote()
+
+	private fun String.unmapJsonObject() = this.splitToStrings(",","{","}")
+		.map { it.unmapJsonKey() to  it.unmapJsonValue()}
+
+	private fun String.unmapJsonArray() = this.splitToStrings(",","[","]")
+		.map { it.trim() }
+
+	private fun String.unmapJsonKey() = this.substringBefore(":").trim().unquote()
+
+	private fun String.unmapJsonValue() = this.substringAfter(":").trim().unmap0()
 }

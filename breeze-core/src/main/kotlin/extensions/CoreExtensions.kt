@@ -99,9 +99,20 @@ internal fun printTodo(throwable: Throwable, colorCode: Int) {
 
 
 /**
- * 如果条件满足，则执行一段代码并返回处理后的结果，否则返回自身。
- *
- * 这个作用域方法用于执行一段当前值需要根据条件转化的代码，将条件判断加入方法的链式调用。
+ * Calls the specified function [block] with the given [arg1] and [arg2] as its two arguments and returns its result.
+ */
+@JvmSynthetic
+inline fun <T1,T2,R> with(arg1:T1,arg2:T2,block:(T1,T2) -> R):R{
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+	}
+	return block(arg1,arg2)
+}
+
+/**
+ * If the [condition] returns `true`,
+ * calls the specified function [block] with `this` value as its argument and returns its result.
+ * If not, returns `this` value.
  */
 @JvmSynthetic
 inline fun <T : R, R> T.where(condition:Boolean, block:(T) -> R):R {
