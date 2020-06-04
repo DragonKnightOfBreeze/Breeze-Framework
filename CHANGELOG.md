@@ -368,6 +368,7 @@
 * [X] breeze-core 移除相反数相关方法。
 * [X] 添加`String.splitToStrings`扩展。
 * [X] 添加`with(arg1,arg2,block)`扩展。
+* [X] 添加`with(arg1,arg2,arg3,block)`扩展。
 
 # 长期
 

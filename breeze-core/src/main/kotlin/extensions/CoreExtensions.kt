@@ -99,7 +99,7 @@ internal fun printTodo(throwable: Throwable, colorCode: Int) {
 
 
 /**
- * Calls the specified function [block] with the given [arg1] and [arg2] as its two arguments and returns its result.
+ * Calls the specified function [block] with the given [arg1] and [arg2] as its arguments and returns its result.
  */
 @JvmSynthetic
 inline fun <T1,T2,R> with(arg1:T1,arg2:T2,block:(T1,T2) -> R):R{
@@ -110,8 +110,20 @@ inline fun <T1,T2,R> with(arg1:T1,arg2:T2,block:(T1,T2) -> R):R{
 }
 
 /**
+ * Calls the specified function [block] with the given [arg1], [arg2] and [arg3] as its arguments and returns its result.
+ */
+@JvmSynthetic
+inline fun <T1,T2,T3,R> with(arg1:T1,arg2:T2,arg3:T3,block:(T1,T2,T3) -> R):R{
+	contract {
+		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+	}
+	return block(arg1,arg2,arg3)
+}
+
+/**
  * If the [condition] returns `true`,
  * calls the specified function [block] with `this` value as its argument and returns its result.
+ *
  * If not, returns `this` value.
  */
 @JvmSynthetic

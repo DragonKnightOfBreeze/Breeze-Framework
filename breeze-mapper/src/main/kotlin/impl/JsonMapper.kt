@@ -2,10 +2,22 @@
 
 package com.windea.breezeframework.mapper.impl
 
+/*
+
+实现思路：
+map
+* joinToString + when条件分支 + 递归转换（可行）
+* 解释器模式
+
+unmap
+* splitToStrings + when条件分支 + 递归转换（不支持多层结构）
+* 解释器模式（比较复杂）
+
+*/
+
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
-import java.lang.IllegalArgumentException
 import java.lang.reflect.*
 import java.time.temporal.*
 import java.util.*
@@ -69,8 +81,8 @@ class JsonMapper(
 	private val objectPrefix = if(config.prettyFormat) "{$lineSeparator" else "{"
 	private val objectSuffix = if(config.prettyFormat) "$lineSeparator}" else "}"
 
-	private val String.shouldQuoted get() = this.isEmpty() || this.first().isWhitespace() || this.last().isWhitespace()
-	private fun String.doQuote() = if(!config.unquoted || this.shouldQuoted) this.quote(quote) else this
+	private fun String.shouldQuoted() = this.isEmpty() || this.first().isWhitespace() || this.last().isWhitespace()
+	private fun String.doQuote() = if(!config.unquoted || this.shouldQuoted()) this.quote(quote) else this
 	private fun String.doIndent() = if(config.prettyFormat) this.prependIndent(indent) else this
 
 
