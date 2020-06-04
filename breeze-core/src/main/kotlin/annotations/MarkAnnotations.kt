@@ -9,8 +9,8 @@ import kotlin.annotation.AnnotationTarget.*
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotImplemented(
 	val message: String = ""
 )
@@ -21,8 +21,8 @@ annotation class NotImplemented(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotIncluded(
 	val message: String = ""
 )
@@ -33,8 +33,8 @@ annotation class NotIncluded(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotTested(
 	val message: String = ""
 )
@@ -45,8 +45,8 @@ annotation class NotTested(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotOptimized(
 	val message: String = ""
 )
@@ -57,8 +57,8 @@ annotation class NotOptimized(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotRecommended(
 	val message: String = ""
 )
@@ -69,8 +69,8 @@ annotation class NotRecommended(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotSuitable(
 	val message: String = ""
 )
@@ -81,8 +81,8 @@ annotation class NotSuitable(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotUsable(
 	val message:String = ""
 )
@@ -93,8 +93,8 @@ annotation class NotUsable(
  */
 @MustBeDocumented
 @Repeatable
-@Retention(SOURCE)
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
+@Retention(SOURCE)
 annotation class NotSure(
 	val message:String = ""
 )

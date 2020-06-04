@@ -23,7 +23,7 @@ interface MermaidPieChart {
 
 		override fun toString():String {
 			val titleSnippet = title.typing { "$it$ls" }
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "pie$ls$titleSnippet$contentSnippet"
 		}
 	}
@@ -37,7 +37,7 @@ interface MermaidPieChart {
 	interface MermaidPieChartDslEntry : Mermaid.IDslEntry {
 		val sections:MutableSet<Section>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return sections.typingAll(ls)
 		}
 	}

@@ -32,7 +32,7 @@ interface MermaidFlowChart {
 
 		override fun toString():String {
 			val directionSnippet = direction.text
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "graph $directionSnippet$ls$contentSnippet"
 		}
 	}
@@ -58,7 +58,7 @@ interface MermaidFlowChart {
 		val classDefs:MutableList<ClassDef>
 		val classRefs:MutableList<ClassRef>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(
 				nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
 				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
@@ -144,7 +144,7 @@ interface MermaidFlowChart {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "subgraph $name$ls$contentSnippet${ls}end}"
 		}
 	}

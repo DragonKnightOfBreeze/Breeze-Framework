@@ -10,7 +10,7 @@ interface DslDocument {
 /**领域特定语言的入口。*/
 interface DslEntry {
 	@InternalUsageApi
-	fun contentString():String = ""
+	fun toContentString():String = ""
 }
 
 /**领域特定语言的元素。*/

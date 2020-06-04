@@ -22,7 +22,7 @@ interface MermaidStateDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "stateDiagram$ls$contentSnippet"
 		}
 	}
@@ -39,7 +39,7 @@ interface MermaidStateDiagram {
 		val links:MutableList<Transition>
 		val notes:MutableList<Note>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplit()
 		}
 
@@ -93,7 +93,7 @@ interface MermaidStateDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "state $name{$ls$contentSnippet$ls}"
 		}
 	}
@@ -122,7 +122,7 @@ interface MermaidStateDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return contentString()
+			return toContentString()
 		}
 	}
 

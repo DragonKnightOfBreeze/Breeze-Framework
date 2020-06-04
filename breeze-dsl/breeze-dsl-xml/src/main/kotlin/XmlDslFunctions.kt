@@ -7,7 +7,7 @@ import com.windea.breezeframework.dsl.xml.Xml.Companion.config
 /**(No document.)*/
 @TopDslFunction
 @XmlDsl
-inline fun xml(block:Document.() -> Unit) = Document().apply(block)
+inline fun xml(block:Document.() -> Unit):Document = Document().apply(block)
 
 /**(No document.)*/
 @TopDslFunction
@@ -18,53 +18,53 @@ inline fun xmlConfig(block:Config.() -> Unit) = config.block()
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-fun Document.statement(vararg attributes:Pair<String, Any?>) =
+fun Document.statement(vararg attributes:Pair<String, Any?>):Statement =
 	Statement(attributes.toMap()).also { declarations += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-fun Document.comment(text:String) =
+fun Document.comment(text:String):Comment =
 	Comment(text).also { comments += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-inline fun Document.element(name:String, block:Element.() -> Unit = {}) =
+inline fun Document.element(name:String, block:Element.() -> Unit = {}):Element =
 	Element(name).apply(block).also { rootElement = it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-inline fun Document.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}) =
+inline fun Document.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}):Element =
 	Element(name, attributes.toMap()).apply(block).also { rootElement = it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-fun Element.text(text:String) =
+fun Element.text(text:String):Text =
 	Text(text).also { nodes += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-fun Element.cdata(text:String) =
+fun Element.cdata(text:String):CData =
 	CData(text).also { nodes += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-fun Element.comment(text:String) =
+fun Element.comment(text:String):Comment =
 	Comment(text).also { nodes += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-inline fun Element.element(name:String, block:Element.() -> Unit = {}) =
+inline fun Element.element(name:String, block:Element.() -> Unit = {}):Element =
 	Element(name).apply(block).also { nodes += it }
 
 /**(No document.)*/
 @DslFunction
 @XmlDsl
-inline fun Element.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}) =
+inline fun Element.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}):Element =
 	Element(name, attributes.toMap()).apply(block).also { nodes += it }

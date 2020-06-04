@@ -112,21 +112,18 @@ interface WithTransition<in N : WithId, T : WithNode> {
 }
 
 
-/**(No document.)*/
 @Dsl
 interface UPlus<out T> {
 	/**(No document.)*/
 	operator fun String.unaryPlus():T
 }
 
-/**(No document.)*/
 @Dsl
 interface UMinus<out T> {
 	/**(No document.)*/
 	operator fun String.unaryMinus():T
 }
 
-/**(No document.)*/
 @Dsl
 interface Invoke<out T> {
 	operator fun String.invoke(block:Block<T> = {}):T

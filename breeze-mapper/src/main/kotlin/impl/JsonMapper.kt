@@ -175,7 +175,7 @@ class JsonMapper(
 
 	private fun String.unmapJsonBoolean() = this.toBoolean()
 
-	private fun String.unmapJsonNumber() = if(this.contains(".")) this.toDouble() else this.toInt()
+	private fun String.unmapJsonNumber():Number = if(this.contains(".")) this.toDouble() else this.toInt()
 
 	private fun String.unmapJsonString() = this.unquote()
 

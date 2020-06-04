@@ -25,7 +25,7 @@ interface MermaidGantt {
 		override var splitContent:Boolean = false
 
 		override fun toString():String {
-			val contentSnippet = arrayOf(title, dateFormat, contentString()).doSplit().doIndent(config.indent)
+			val contentSnippet = arrayOf(title, dateFormat, toContentString()).doSplit().doIndent(config.indent)
 			return "gantt$ls$contentSnippet"
 		}
 	}
@@ -40,7 +40,7 @@ interface MermaidGantt {
 	interface IDslEntry : Mermaid.IDslEntry, Splitable {
 		val sections:MutableList<Section>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return sections.typingAll(ls)
 		}
 	}

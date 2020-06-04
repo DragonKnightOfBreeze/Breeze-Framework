@@ -15,7 +15,7 @@ interface Creole {
 	class Document @PublishedApi internal constructor() : IDslEntry, InlineDslEntry {
 		override val content:MutableList<TopDslElement> = mutableListOf()
 
-		override fun toString() = contentString()
+		override fun toString() = toContentString()
 	}
 
 
@@ -24,7 +24,7 @@ interface Creole {
 	interface IDslEntry : DslEntry, UPlus<TextBlock> {
 		val content:MutableList<TopDslElement>
 
-		override fun contentString() = content.joinToString("$ls$ls")
+		override fun toContentString() = content.joinToString("$ls$ls")
 
 		override fun String.unaryPlus() = textBlock { this }
 	}

@@ -20,7 +20,7 @@ interface MermaidClassDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(Mermaid.config.indent)
+			val contentSnippet = toContentString().doIndent(Mermaid.config.indent)
 			return "classDiagram$ls $contentSnippet"
 		}
 	}
@@ -36,7 +36,7 @@ interface MermaidClassDiagram {
 		val classes:MutableSet<Class>
 		val relations:MutableList<Relation>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplit()
 		}
 

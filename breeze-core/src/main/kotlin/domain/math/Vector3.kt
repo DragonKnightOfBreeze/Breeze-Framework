@@ -2,6 +2,7 @@
 
 package com.windea.breezeframework.core.domain.math
 
+import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 
 /**二维向量。*/
@@ -17,17 +18,17 @@ data class Vector3(
 	override val isUnitVector = length == 1f
 
 
-	operator fun compareTo(other: Vector3) = length.compareTo(other.length)
+	operator fun compareTo(other: Vector3):Int = length.compareTo(other.length)
 
-	operator fun plus(other: Vector2) = this.plus(other.toVector3())
+	operator fun plus(other: Vector2):Vector3 = this.plus(other.toVector3())
 
-	operator fun plus(other: Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
+	operator fun plus(other: Vector3):Vector3 = Vector3(x + other.x, y + other.y, z + other.z)
 
-	operator fun minus(other: Vector2) = this.minus(other.toVector3())
+	operator fun minus(other: Vector2):Vector3 = this.minus(other.toVector3())
 
-	operator fun minus(other: Vector3) = Vector3(x - other.x, y - other.y, z - other.z)
+	operator fun minus(other: Vector3):Vector3 = Vector3(x - other.x, y - other.y, z - other.z)
 
-	operator fun times(other: Int) = Vector3(x * other, y * other, z * other)
+	operator fun times(other: Int):Vector3 = Vector3(x * other, y * other, z * other)
 
 	operator fun times(other: Long) = Vector3(x * other, y * other, z * other)
 

@@ -1,0 +1,97 @@
+@startuml
+
+''breeze-dsl
+
+package com.windea.breezeframework.dsl{
+  interface DslEntry{
+    fun toString():String
+  }
+  interface DslElement{
+    fun toString():String
+  }
+}
+
+package com.windea.breezeframework.dsl.DslFeatures{
+  interface Wrappable{
+    var wrapContent:Boolean
+  }
+  interface Indentable{
+    var indentContent:Boolean
+  }
+  interface Splitable{
+	  var splitContent:Boolean
+	}
+  interface Generatable{
+	  var generateContent:Boolean
+  }
+
+  interface WithId{
+    val id:String
+  }
+  interface WithNode{
+  	val sourceNodeId:String
+	  val targetNodeId:String
+  }
+  interface WithTransaction<in N:WIthId,T:WithNode>{
+    infix fun String.links(other:String):T
+  }
+
+  class DslExtensions <<(E,pink)>>{
+    infix fun <T:Wrappable> T.indent(value:Boolean):T
+    infix fun <T:Wrappable> T.wrap(value:Boolean):T
+    infix fun <T:Splitable> T.split(value:Boolean):T
+    infix fun <T:Generatable> T.generate(value:Boolean):T
+  }
+}
+
+''breeze-dsl-xml
+
+package com.windea.breezeframework.dsl.xml{
+
+  interface IDslElement extends DslElement
+
+  class Document extends DslDocument{
+    val declarations:MutableList<Statement>
+    val comments:MutableList<Comment>
+    var rootElement:Element?
+
+    operator fun String.invoke(vararg args:Arg, block:Block<Element>):Element
+  }
+
+  class Statement implements IDslElement{
+    val attributes:Map<String, Any?>
+  }
+  interface Node extends IDslElement
+  class Element implements Node,Wrappable,Indentable{
+    val name:String
+    val attributes:Map<String, Any?>
+    val nodes:MutableList<Node>
+
+    operator fun String.unaryPlus():Text
+    operator fun String.invoke(vararg args:Arg, block:Block<Element>)
+  }
+  class Text implements Node{
+    val text:String
+  }
+  class CData implements Node,Wrappable,Indentable{
+    val text:String
+  }
+
+  class Config{
+    var indent:String
+    var doubleQuoted:Boolean
+    var autoCloseTag:Boolean
+    val quote get():Char
+  }
+
+  class XmlExtensions <<(E,pink)>>{
+    fun xml(block:Document.() -> Unit):Document
+    fun Document.configure(block:Config.() -> Unit):Document
+    fun Document.statement(vararg attributes:Pair<String, Any?>):Statement
+    fun Document.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}):Element
+    fun Element.element(name:String, vararg attributes:Pair<String, Any?>, block:Element.() -> Unit = {}):Element
+    fun Element.text(text:String):Text
+    fun Element.cdata(text:String):CData
+  }
+}
+@enduml

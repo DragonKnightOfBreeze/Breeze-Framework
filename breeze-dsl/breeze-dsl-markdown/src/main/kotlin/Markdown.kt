@@ -25,7 +25,7 @@ interface Markdown {
 			return arrayOf(
 				frontMatter,
 				toc,
-				contentString(),
+				toContentString(),
 				references.typingAll(ls)
 			).typingAll("$ls$ls")
 		}
@@ -37,7 +37,7 @@ interface Markdown {
 	interface IDslEntry : DslEntry, UPlus<TextBlock> {
 		val content:MutableList<TopDslElement>
 
-		override fun contentString():String = content.typingAll("$ls$ls")
+		override fun toContentString():String = content.typingAll("$ls$ls")
 
 		override fun String.unaryPlus() = TextBlock(this).also { content += it }
 	}
@@ -485,7 +485,7 @@ interface Markdown {
 		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString():String {
-			return contentString().prependIndent("$prefixMarker ")
+			return toContentString().prependIndent("$prefixMarker ")
 		}
 	}
 
@@ -572,7 +572,7 @@ interface Markdown {
 			require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
 			val titleSnippet = title.quote(config.quote)
-			val contentSnippet = contentString().prependIndent(config.indent)
+			val contentSnippet = toContentString().prependIndent(config.indent)
 			return "${type.text} ${qualifier.text} $titleSnippet$ls$contentSnippet"
 		}
 	}
@@ -638,7 +638,7 @@ interface Markdown {
 		override val content:MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString():String {
-			val contentSnippet = contentString()
+			val contentSnippet = toContentString()
 			return ">>> $name$ls$contentSnippet$ls<<<"
 		}
 	}

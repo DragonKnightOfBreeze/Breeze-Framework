@@ -19,7 +19,7 @@ interface FlowChart {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return contentString()
+			return toContentString()
 		}
 	}
 
@@ -30,7 +30,7 @@ interface FlowChart {
 		val nodes:MutableSet<Node>
 		val connections:MutableList<Connection>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplit()
 		}
 

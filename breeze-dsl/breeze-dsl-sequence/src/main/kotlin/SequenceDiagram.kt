@@ -17,7 +17,7 @@ interface SequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			return arrayOf(title, contentString()).doSplit()
+			return arrayOf(title, toContentString()).doSplit()
 		}
 	}
 
@@ -29,7 +29,7 @@ interface SequenceDiagram {
 		val messages:MutableList<Message>
 		val notes:MutableList<Note>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).doSplit()
 		}
 

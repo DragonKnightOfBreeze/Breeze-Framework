@@ -25,9 +25,9 @@ interface Xml {
 		val comments:MutableList<Comment> = mutableListOf()
 		var rootElement:Element? = null
 
-		override fun String.unaryMinus() = comment(this)
-		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
+		override fun String.unaryMinus():Comment = comment(this)
+		override fun String.invoke(block:Block<Element>):Element = element(this, block = block)
+		override fun String.invoke(vararg args:Arg, block:Block<Element>):Element = element(this, *args, block = block)
 
 		override fun toString():String {
 			require(rootElement != null) { "Root element of Xml document cannot be null." }

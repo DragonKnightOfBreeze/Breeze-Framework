@@ -117,7 +117,7 @@ subprojects {
 				artifact(javadocJar)
 				pom {
 					name.set(project.name.formatModuleName())
-					description.set("Integrated code framework based on Kotlin.")
+					description.set("Integrated code framework written by Kotlin.")
 					url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
 					licenses {
 						license {
@@ -161,7 +161,7 @@ subprojects {
 		setPublications("maven")
 		pkg.repo = rootProject.name
 		pkg.name = project.name
-		pkg.desc = "Integrated code framework based on Kotlin."
+		pkg.desc = "Integrated code framework written by Kotlin."
 		pkg.githubRepo = "DragonKnightOfBreeze/Breeze-Framework"
 		pkg.githubReleaseNotesFile = "CHANGELOG.md"
 		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework"

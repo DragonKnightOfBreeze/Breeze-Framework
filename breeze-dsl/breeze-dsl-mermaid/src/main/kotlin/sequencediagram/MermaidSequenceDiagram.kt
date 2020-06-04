@@ -23,7 +23,7 @@ interface MermaidSequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "sequenceDiagram$ls$contentSnippet"
 		}
 	}
@@ -43,7 +43,7 @@ interface MermaidSequenceDiagram {
 		val notes:MutableList<Note>
 		val scopes:MutableList<Scope>
 
-		override fun contentString():String {
+		override fun toContentString():String {
 			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
 				.doSplit()
 		}
@@ -151,7 +151,7 @@ interface MermaidSequenceDiagram {
 		override var splitContent:Boolean = true
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			return "$type $text$ls$contentSnippet${ls}end"
 		}
 	}
@@ -179,7 +179,7 @@ interface MermaidSequenceDiagram {
 		val elseScopes:MutableList<Else> = mutableListOf()
 
 		override fun toString():String {
-			val contentSnippet = contentString().doIndent(config.indent)
+			val contentSnippet = toContentString().doIndent(config.indent)
 			val elseScopesSnippet = elseScopes.typingAll(ls, ls)
 			return "$contentSnippet$elseScopesSnippet"
 		}

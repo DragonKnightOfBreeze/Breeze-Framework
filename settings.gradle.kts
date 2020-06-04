@@ -1,4 +1,3 @@
-rootProject.name = "breeze-framework"
 include(
 	"breeze-core",
 	"breeze-dsl",

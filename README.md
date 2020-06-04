@@ -4,7 +4,7 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-Integrated code framework based on Kotlin,
+Integrated code framework written by Kotlin,
 provides many useful extensions for standard library and some frameworks.
 What it can do is more than what you think it can do.
 
