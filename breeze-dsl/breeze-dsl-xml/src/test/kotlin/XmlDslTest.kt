@@ -15,16 +15,16 @@ class XmlDslTest {
 				second line
 			""".trimIndent()) wrap true
 			"element"{
-				+"text"
+				+"inlineText"
 				+"""
-					text
-					text
+					inlineText
+					inlineText
 				""".trimIndent()
 				element("elem") {
-					text("element text")
+					text("element inlineText")
 				}
 				"element"("a" to "b", "c" to "d") {
-					+"text"
+					+"inlineText"
 				}
 				comment("""
 					comment
@@ -45,7 +45,7 @@ class XmlDslTest {
 				comment("comment") indent true wrap true
 				comment("comment") wrap true
 				"element"{
-					+"text"
+					+"inlineText"
 				} wrap false
 			}
 		}

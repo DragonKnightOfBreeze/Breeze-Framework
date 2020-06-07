@@ -369,6 +369,15 @@
 * [X] 添加`String.splitToStrings`扩展。
 * [X] 添加`with(arg1,arg2,block)`扩展。
 * [X] 添加`with(arg1,arg2,arg3,block)`扩展。
+* [ ] 重构breeze-dsl的代码和目录结构。
+  * [X] breeze-dsl
+  * [X] breeze-dsl-critic-markup
+
+## 1.2.x
+
+### 1.2.0
+
+* [X] 补充breeze-dsl的类图
 
 # 长期
 

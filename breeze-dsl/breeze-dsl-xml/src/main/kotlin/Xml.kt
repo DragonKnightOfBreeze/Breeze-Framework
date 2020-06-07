@@ -20,14 +20,14 @@ interface Xml {
 	 * @property rootElement 根元素。
 	 */
 	@XmlDsl
-	class Document @PublishedApi internal constructor() : DslDocument, UMinus<Comment>, InvokeArgs<Element> {
+	class Document @PublishedApi internal constructor() : Dsl {
 		val declarations:MutableList<Statement> = mutableListOf()
 		val comments:MutableList<Comment> = mutableListOf()
 		var rootElement:Element? = null
 
-		override fun String.unaryMinus():Comment = comment(this)
-		override fun String.invoke(block:Block<Element>):Element = element(this, block = block)
-		override fun String.invoke(vararg args:Arg, block:Block<Element>):Element = element(this, *args, block = block)
+		operator fun String.unaryMinus():Comment = comment(this)
+		operator fun String.invoke(block:Block<Element>):Element = element(this, block = block)
+		operator fun String.invoke(vararg args:Arg, block:Block<Element>):Element = element(this, *args, block = block)
 
 		override fun toString():String {
 			require(rootElement != null) { "Root element of Xml document cannot be null." }
@@ -114,16 +114,16 @@ interface Xml {
 	class Element @PublishedApi internal constructor(
 		val name:String,
 		val attributes:Map<String, Any?> = mapOf()
-	) : Node, Wrappable, Indentable, UPlus<Text>, UMinus<Comment>, InvokeArgs<Element>, WithId {
+	) : Node, Wrappable, Indentable, WithId {
 		val nodes:MutableList<Node> = mutableListOf()
 		override var wrapContent = true
 		override var indentContent = true
 		override val id get() = name
 
-		override fun String.unaryPlus() = text(this)
-		override fun String.unaryMinus() = comment(this)
-		override fun String.invoke(block:Block<Element>) = element(this, block = block)
-		override fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
+		operator fun String.unaryPlus() = text(this)
+		operator fun String.unaryMinus() = comment(this)
+		operator fun String.invoke(block:Block<Element>) = element(this, block = block)
+		operator fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 
 		override fun toString():String {
 			val nodesSnippet = nodes.typingAll(ls).doIndent(config.indent, wrapContent).doWrap { "$ls$it$ls" }

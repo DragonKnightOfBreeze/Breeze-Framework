@@ -3,11 +3,9 @@
 package com.windea.breezeframework.dsl.criticmarkup
 
 /**
- * CriticMarkup文本的领域特定语言。
- * 参见：[Critic Markup](http://criticmarkup.com/users-guide.php)
+ * Annotation that defines the
+ * [Critic Markup Dsl](http://criticmarkup.com).
  */
 @DslMarker
 @MustBeDocumented
-annotation class CriticMarkupDsl
-
-
+annotation class CriticMarkupDslMarker

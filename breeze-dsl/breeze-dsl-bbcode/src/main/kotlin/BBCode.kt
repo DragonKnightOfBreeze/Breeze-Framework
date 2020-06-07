@@ -12,7 +12,7 @@ interface BBCode {
 	 * BBCode的文档。
 	 * @property text 内容文本。
 	 */
-	class Document @PublishedApi internal constructor() : DslDocument {
+	class Document @PublishedApi internal constructor() : Dsl {
 		var text:CharSequence = ""
 
 		override fun toString():String = text.toString()
@@ -28,87 +28,87 @@ interface BBCode {
 
 
 	interface DslElement : com.windea.breezeframework.dsl.DslElement, Inlineable {
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	}
 
 	interface InlineDslElement : DslElement {
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	}
 
 	interface CrosslineDslElement : DslElement {
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	}
 
 	interface BlockDslElement : DslElement, Indentable {
 		val contentText:String
-		override val text:CharSequence get() = contentText.ifNotEmpty { ls + it.doIndent(config.indent) + ls }
+		override val inlineText:CharSequence get() = contentText.ifNotEmpty { ls + it.doIndent(config.indent) + ls }
 	}
 
 	abstract class Element @PublishedApi internal constructor(val tag:String) : DslElement {
-		override fun toString():String = "[$tag]$text[/$tag]"
+		override fun toString():String = "[$tag]$inlineText[/$tag]"
 	}
 
 	abstract class OneArgElement @PublishedApi internal constructor(
 		tag:String,
 		val value:String?
 	) : Element(tag) {
-		override fun toString():String = "[$tag${value.typing { "=$it" }}]$text[/$tag]"
+		override fun toString():String = "[$tag${value.typing { "=$it" }}]$inlineText[/$tag]"
 	}
 
 	abstract class MultiArgElement @PublishedApi internal constructor(
 		tag:String,
 		val args:Map<String, String?>
 	) : Element(tag) {
-		override fun toString():String = "[$tag${args.typingAll(" ", " ") { (k, v) -> "$k=$v" }}]$text[/$tag]"
+		override fun toString():String = "[$tag${args.typingAll(" ", " ") { (k, v) -> "$k=$v" }}]$inlineText[/$tag]"
 	}
 
 	abstract class RichText @PublishedApi internal constructor(
 		tag:String,
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	) : Element(tag), InlineDslElement
 
-	class BoldText @PublishedApi internal constructor(override val text:CharSequence) : Element("b"), InlineDslElement
+	class BoldText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("b"), InlineDslElement
 
-	class ItalicText @PublishedApi internal constructor(override val text:CharSequence) : Element("i"), InlineDslElement
+	class ItalicText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("i"), InlineDslElement
 
-	class UnderlinedText @PublishedApi internal constructor(override val text:CharSequence) : Element("u"), InlineDslElement
+	class UnderlinedText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("u"), InlineDslElement
 
-	class StrikeText @PublishedApi internal constructor(override val text:CharSequence) : Element("strike"), InlineDslElement
+	class StrikeText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("strike"), InlineDslElement
 
-	class SpoilerText @PublishedApi internal constructor(override val text:CharSequence) : Element("spoiler"), InlineDslElement
+	class SpoilerText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("spoiler"), InlineDslElement
 
-	class NoParseText @PublishedApi internal constructor(override val text:CharSequence) : Element("noparse"), InlineDslElement
+	class NoParseText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("noparse"), InlineDslElement
 
-	class LeftText @PublishedApi internal constructor(override val text:CharSequence) : Element("left"), InlineDslElement
+	class LeftText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("left"), InlineDslElement
 
-	class CenterText @PublishedApi internal constructor(override val text:CharSequence) : Element("center"), InlineDslElement
+	class CenterText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("center"), InlineDslElement
 
-	class RightText @PublishedApi internal constructor(override val text:CharSequence) : Element("right"), InlineDslElement
+	class RightText @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("right"), InlineDslElement
 
-	class Code @PublishedApi internal constructor(override val text:CharSequence) : Element("code"), InlineDslElement
+	class Code @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("code"), InlineDslElement
 
 	class StyledText @PublishedApi internal constructor(
 		val size:String?,
 		val color:String?,
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	) : MultiArgElement("style", mapOf("size" to size, "color" to color)), InlineDslElement
 
-	class YoutubeVideo @PublishedApi internal constructor(override val text:CharSequence) : Element("youtube"), InlineDslElement
+	class YoutubeVideo @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("youtube"), InlineDslElement
 
 	class Link @PublishedApi internal constructor(
 		val url:String?,
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	) : OneArgElement("url", url), InlineDslElement
 
 	class Image @PublishedApi internal constructor(
 		val width:String?,
 		val height:String?,
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	) : MultiArgElement("img", mapOf("width" to width, "height" to height)), InlineDslElement
 
 	abstract class Heading @PublishedApi internal constructor(
 		tag:String,
-		override val text:CharSequence
+		override val inlineText:CharSequence
 	) : Element(tag), CrosslineDslElement
 
 	class Heading1 @PublishedApi internal constructor(text:CharSequence) : Heading("h1", text)
@@ -125,7 +125,7 @@ interface BBCode {
 		override var indentContent:Boolean = true
 	}
 
-	abstract class ListNode @PublishedApi internal constructor(tag:String, override val text:CharSequence) : Element(tag)
+	abstract class ListNode @PublishedApi internal constructor(tag:String, override val inlineText:CharSequence) : Element(tag)
 
 	class UnorderedListNode @PublishedApi internal constructor(text:CharSequence) : ListNode("ul", text)
 
@@ -150,13 +150,13 @@ interface BBCode {
 		override var indentContent:Boolean = true
 	}
 
-	class TableColumn @PublishedApi internal constructor(override val text:CharSequence) : Element("td")
+	class TableColumn @PublishedApi internal constructor(override val inlineText:CharSequence) : Element("td")
 
 	class Quote @PublishedApi internal constructor(
 		val name:String?
 	) : OneArgElement("quote", name), BlockDslElement {
-		override var text:CharSequence = ""
-		override val contentText:String get() = text.toString()
+		override var inlineText:CharSequence = ""
+		override val contentText:String get() = inlineText.toString()
 		override var indentContent:Boolean = true
 	}
 

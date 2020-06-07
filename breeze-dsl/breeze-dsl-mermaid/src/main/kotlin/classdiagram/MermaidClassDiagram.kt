@@ -39,48 +39,38 @@ interface MermaidClassDiagram {
 		override fun toContentString():String {
 			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplit()
 		}
-
-		@DslFunction
 		@MermaidClassDiagramDsl
 		override fun String.links(other:String) = relation(this, other, RelationType.Link)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.inheritedBy(other:String) = relation(this, other, RelationType.Inheritance)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.composedBy(other:String) = relation(this, other, RelationType.Composition)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.aggregatedBy(other:String) = relation(this, other, RelationType.Aggregation)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.associatedBy(other:String) = relation(this, other, RelationType.Association)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.inherits(other:String) = relation(this, other, RelationType.ReversedInheritance)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.composes(other:String) = relation(this, other, RelationType.ReversedComposition)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.aggregates(other:String) = relation(this, other, RelationType.ReversedAggregation)
 
 		/**(No document.)*/
-		@DslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.associates(other:String) = relation(this, other, RelationType.ReversedAssociation)
 	}
@@ -119,12 +109,10 @@ interface MermaidClassDiagram {
 		}
 
 		/**(No document.)*/
-		@InlineDslFunction
 		@MermaidClassDiagramDsl
 		operator fun String.invoke(vararg params:String) = "$this(${params.joinToString()})"
 
 		/**(No document.)*/
-		@InlineDslFunction
 		@MermaidClassDiagramDsl
 		infix fun String.type(type:String) = "$this: $type"
 	}

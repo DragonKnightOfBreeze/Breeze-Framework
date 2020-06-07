@@ -6,7 +6,6 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
-import com.windea.breezeframework.dsl.criticmarkup.*
 import org.intellij.lang.annotations.*
 
 /**Markdown。*/
@@ -14,7 +13,7 @@ import org.intellij.lang.annotations.*
 interface Markdown {
 	/**Markdown文档。*/
 	@MarkdownDsl
-	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
+	class Document @PublishedApi internal constructor() : Dsl, IDslEntry {
 		@MarkdownExtendedFeature var frontMatter:FrontMatter? = null
 		@MarkdownExtendedFeature var toc:Toc? = null
 		val references:MutableSet<Reference> = mutableSetOf()
@@ -34,17 +33,17 @@ interface Markdown {
 
 	/**Markdown领域特定语言的入口。*/
 	@MarkdownDsl
-	interface IDslEntry : DslEntry, UPlus<TextBlock> {
+	interface IDslEntry : DslEntry {
 		val content:MutableList<TopDslElement>
 
 		override fun toContentString():String = content.typingAll("$ls$ls")
 
-		override fun String.unaryPlus() = TextBlock(this).also { content += it }
+		operator fun String.unaryPlus() = TextBlock(this).also { content += it }
 	}
 
 	/**Markdown领域特定语言的内联入口。*/
 	@MarkdownDsl
-	interface InlineDslEntry : DslEntry, CriticMarkup.InlineDslEntry
+	interface InlineDslEntry : DslEntry, CriticMarkupDslDefinitions.InlineDslEntry
 
 	/**Markdown领域特定语言的元素。*/
 	@MarkdownDsl
@@ -70,62 +69,62 @@ interface Markdown {
 
 	/**Markdown加粗文本。*/
 	@MarkdownDsl
-	inline class BoldText(override val text:CharSequence) : RichText {
-		override fun toString() = "**$text**"
+	inline class BoldText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "**$inlineText**"
 	}
 
 	/**Markdown斜体文本。*/
 	@MarkdownDsl
-	inline class ItalicText(override val text:CharSequence) : RichText {
-		override fun toString() = "*$text*"
+	inline class ItalicText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "*$inlineText*"
 	}
 
 	/**Markdown删除线文本。*/
 	@MarkdownDsl
-	inline class StrokedText(override val text:CharSequence) : RichText {
-		override fun toString() = "~~$text~~"
+	inline class StrokedText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "~~$inlineText~~"
 	}
 
 	/**Markdown下划线文本。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	inline class UnderlinedText(override val text:CharSequence) : RichText {
-		override fun toString() = "++$text++"
+	inline class UnderlinedText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "++$inlineText++"
 	}
 
 	/**Markdown强调文本。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	inline class HighlightText(override val text:CharSequence) : RichText {
-		override fun toString() = "==$text=="
+	inline class HighlightText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "==$inlineText=="
 	}
 
 	/**Markdown上标文本。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	inline class SuperscriptText(override val text:CharSequence) : RichText {
-		override fun toString() = "^$text^"
+	inline class SuperscriptText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "^$inlineText^"
 	}
 
 	/**Markdown下标文本。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
-	inline class SubscriptText(override val text:CharSequence) : RichText {
-		override fun toString() = "~$text~"
+	inline class SubscriptText(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "~$inlineText~"
 	}
 
 	/**Markdown图标。*/
 	@MarkdownDsl
-	inline class Icon(override val text:String) : RichText {
-		val name:String get() = text
-		override fun toString() = ":$text:"
+	inline class Icon(override val inlineText:String) : RichText {
+		val name:String get() = inlineText
+		override fun toString() = ":$inlineText:"
 	}
 
 	/**Markdown尾注。*/
 	@MarkdownDsl
-	inline class FootNote(override val text:String) : RichText {
-		val reference:String get() = text
-		override fun toString() = ":$text:"
+	inline class FootNote(override val inlineText:String) : RichText {
+		val reference:String get() = inlineText
+		override fun toString() = ":$inlineText:"
 	}
 
 	/**Markdown链接。*/
@@ -133,7 +132,7 @@ interface Markdown {
 	abstract class Link(
 		val name:String? = null, val url:String? = null
 	) : InlineDslElement, Inlineable {
-		override fun toString():String = text.toString()
+		override fun toString():String = inlineText.toString()
 	}
 
 	/**Markdown自动链接。*/
@@ -142,7 +141,7 @@ interface Markdown {
 	class AutoLink @PublishedApi internal constructor(
 		url:String
 	) : Link(null, url) {
-		override val text:CharSequence get() = "<$url>"
+		override val inlineText:CharSequence get() = "<$url>"
 	}
 
 	/**Markdown内联链接。*/
@@ -150,7 +149,7 @@ interface Markdown {
 	open class InlineLink @PublishedApi internal constructor(
 		name:String, url:String, val title:String? = null
 	) : Link(name, url) {
-		override val text:CharSequence get() = "[$name]($url${title?.let { " ${it.quote(config.quote)}" }.orEmpty()})"
+		override val inlineText:CharSequence get() = "[$name]($url${title?.let { " ${it.quote(config.quote)}" }.orEmpty()})"
 	}
 
 	/**Markdown内联图片链接。*/
@@ -158,7 +157,7 @@ interface Markdown {
 	class InlineImageLink @PublishedApi internal constructor(
 		name:String = "", url:String, title:String? = null
 	) : InlineLink(name, url, title) {
-		override val text:CharSequence get() = "!${super.toString()}"
+		override val inlineText:CharSequence get() = "!${super.toString()}"
 	}
 
 	/** Markdown的维基链接。采用Github风格，标题在前，地址在后。*/
@@ -167,7 +166,7 @@ interface Markdown {
 	class WikiLink @PublishedApi internal constructor(
 		name:String, url:String
 	) : Link(name, url) {
-		override val text:CharSequence get() = "[[$name|$url]]"
+		override val inlineText:CharSequence get() = "[[$name|$url]]"
 	}
 
 	/**Markdown引用连接。*/
@@ -175,7 +174,7 @@ interface Markdown {
 	open class ReferenceLink @PublishedApi internal constructor(
 		val reference:String, name:String? = null
 	) : Link(name, null) {
-		override val text:CharSequence get() = "${name?.let { "[$name]" }.orEmpty()}[$reference]"
+		override val inlineText:CharSequence get() = "${name?.let { "[$name]" }.orEmpty()}[$reference]"
 	}
 
 	/**Markdown引用图片连接。*/
@@ -183,7 +182,7 @@ interface Markdown {
 	class ReferenceImageLink @PublishedApi internal constructor(
 		reference:String, name:String? = null
 	) : ReferenceLink(reference, name) {
-		override val text:CharSequence get() = "!${super.toString()}"
+		override val inlineText:CharSequence get() = "!${super.toString()}"
 	}
 
 	/**Markdown文本块。*/
@@ -411,7 +410,7 @@ interface Markdown {
 
 	/**Markdown表格的头部。*/
 	@MarkdownDsl
-	class TableHeader @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : IDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -434,16 +433,14 @@ interface Markdown {
 			}.joinToString(" | ", "| ", " |")
 		}
 
-		override fun String.unaryPlus() = column(this)
-
-		@DslFunction
+		operator fun String.unaryPlus() = column(this)
 		@MarkdownDsl
 		infix fun TableColumn.align(alignment:TableAlignment) = apply { this.alignment = alignment }
 	}
 
 	/**Markdown表格的行。*/
 	@MarkdownDsl
-	open class TableRow @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : IDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -457,7 +454,7 @@ interface Markdown {
 			}.joinToString(" | ", "| ", " |")
 		}
 
-		override fun String.unaryPlus() = column(this)
+		operator fun String.unaryPlus() = column(this)
 	}
 
 	/**Markdown表格的列。*/
@@ -513,8 +510,8 @@ interface Markdown {
 	class InlineCode @PublishedApi internal constructor(
 		override val code:String
 	) : InlineDslElement, Code {
-		override val text:String get() = code
-		override fun toString() = "`$text`"
+		override val inlineText:String get() = code
+		override fun toString() = "`$inlineText`"
 	}
 
 	/**Markdown代码块。*/
@@ -546,8 +543,8 @@ interface Markdown {
 	class InlineMath @PublishedApi internal constructor(
 		override val code:String
 	) : InlineDslElement, Math {
-		override val text get() = code
-		override fun toString() = "$$text$"
+		override val inlineText get() = code
+		override fun toString() = "$$inlineText$"
 	}
 
 	/**Markdown多行数学表达式。*/
@@ -702,8 +699,8 @@ interface Markdown {
 	class AttributeGroup @PublishedApi internal constructor(
 		attributes:Set<Attribute>
 	) : InlineDslElement, Inlineable, Set<Attribute> by attributes {
-		override val text:String get() = joinToString(" ", " {", "}")
-		override fun toString() = text
+		override val inlineText:String get() = joinToString(" ", " {", "}")
+		override fun toString() = inlineText
 	}
 
 	/**Markdown特性。*/
@@ -715,24 +712,24 @@ interface Markdown {
 	@MarkdownDsl
 	@MarkdownExtendedFeature
 	inline class IdAttribute(val name:String) : Attribute {
-		override val text:String get() = "#$name"
-		override fun toString() = text
+		override val inlineText:String get() = "#$name"
+		override fun toString() = inlineText
 	}
 
 	/**Markdown css class特性。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
 	inline class ClassAttribute(val name:String) : Attribute {
-		override val text:String get() = ".$name"
-		override fun toString() = text
+		override val inlineText:String get() = ".$name"
+		override fun toString() = inlineText
 	}
 
 	/**Markdown属性特性。*/
 	@MarkdownDsl
 	@MarkdownExtendedFeature
 	inline class PropertyAttribute(val pair:Pair<String, String>) : Attribute {
-		override val text:String get() = "${pair.first}=${pair.second.quote(config.quote)}"
-		override fun toString() = text
+		override val inlineText:String get() = "${pair.first}=${pair.second.quote(config.quote)}"
+		override fun toString() = inlineText
 	}
 
 	/**Markdown表格的对齐方式。*/

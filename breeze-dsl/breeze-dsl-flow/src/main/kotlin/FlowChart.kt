@@ -13,7 +13,7 @@ import java.util.*
 interface FlowChart {
 	/**流程图的文档。*/
 	@FlowChartDsl
-	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
+	class Document @PublishedApi internal constructor() : Dsl, IDslEntry {
 		override val nodes:MutableSet<Node> = mutableSetOf()
 		override val connections:MutableList<Connection> = mutableListOf()
 		override var splitContent:Boolean = true

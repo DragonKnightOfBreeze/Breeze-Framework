@@ -1,6 +1,6 @@
 package com.windea.breezeframework.dsl.mermaid.sequencediagram
 
-//can have a title by `title: text`, but it is not introduced in official api
+//can have a title by `title: inlineText`, but it is not introduced in official api
 
 /**
  * Mermaid序列图的领域特定语言。

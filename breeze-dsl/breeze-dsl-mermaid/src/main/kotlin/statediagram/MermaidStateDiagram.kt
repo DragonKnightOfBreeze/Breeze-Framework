@@ -42,8 +42,6 @@ interface MermaidStateDiagram {
 		override fun toContentString():String {
 			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplit()
 		}
-
-		@DslFunction
 		@MermaidStateDiagramDsl
 		override fun String.links(other:String) = transition(this, other)
 	}

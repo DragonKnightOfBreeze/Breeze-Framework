@@ -21,12 +21,12 @@ interface Creole {
 
 	/**Creole领域特定语言的入口。*/
 	@CreoleDsl
-	interface IDslEntry : DslEntry, UPlus<TextBlock> {
+	interface IDslEntry : DslEntry{
 		val content:MutableList<TopDslElement>
 
 		override fun toContentString() = content.joinToString("$ls$ls")
 
-		override fun String.unaryPlus() = textBlock { this }
+		operator fun String.unaryPlus() = textBlock { this }
 	}
 
 	/**Creole领域特定语言的内联入口。*/
@@ -51,50 +51,50 @@ interface Creole {
 
 	/**CreoleUnicode文本。*/
 	@CreoleDsl
-	inline class UnicodeText @PublishedApi internal constructor(override val text:String) : RichText {
-		override fun toString() = "<U+$text>"
+	inline class UnicodeText @PublishedApi internal constructor(override val inlineText:String) : RichText {
+		override fun toString() = "<U+$inlineText>"
 	}
 
 	/**Creole加粗文本。*/
 	@CreoleDsl
-	inline class BoldText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "**$text**"
+	inline class BoldText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "**$inlineText**"
 	}
 
 	/**Creole斜体文本。*/
 	@CreoleDsl
-	inline class ItalicText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "//$text//"
+	inline class ItalicText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "//$inlineText//"
 	}
 
 	/**Creole代码文本。*/
 	@CreoleDsl
-	inline class MonospacedText @PublishedApi internal constructor(override val text:String) : RichText {
-		override fun toString() = "--$text--"
+	inline class MonospacedText @PublishedApi internal constructor(override val inlineText:String) : RichText {
+		override fun toString() = "--$inlineText--"
 	}
 
 	/**Creole删除线文本。*/
 	@CreoleDsl
-	inline class StrokedText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "--$text--"
+	inline class StrokedText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "--$inlineText--"
 	}
 
 	/**Creole下划线文本。*/
 	@CreoleDsl
-	inline class UnderlineText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "__${text}__"
+	inline class UnderlineText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "__${inlineText}__"
 	}
 
 	/**Creole波浪线文本。*/
 	@CreoleDsl
-	inline class WavedText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "~~$text~~"
+	inline class WavedText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "~~$inlineText~~"
 	}
 
 	/**Creole转义文本。*/
 	@CreoleDsl
-	inline class EscapedText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
-		override fun toString() = "~$text"
+	inline class EscapedText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
+		override fun toString() = "~$inlineText"
 	}
 
 	/**
@@ -102,9 +102,9 @@ interface Creole {
 	 * 参见：[OpenIconic](https://useiconic.com/open/)
 	 */
 	@CreoleDsl
-	inline class Icon @PublishedApi internal constructor(override val text:String) : RichText {
-		val name:String get() = text
-		override fun toString() = "<&$text>"
+	inline class Icon @PublishedApi internal constructor(override val inlineText:String) : RichText {
+		val name:String get() = inlineText
+		override fun toString() = "<&$inlineText>"
 	}
 
 	/**Creole文本块。*/
@@ -240,7 +240,7 @@ interface Creole {
 
 	/**Creole表格头部。*/
 	@CreoleDsl
-	class TableHeader @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
+	class TableHeader @PublishedApi internal constructor() : IDslElement{
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -254,16 +254,14 @@ interface Creole {
 			}.joinToString("|", "|", "|")
 		}
 
-		override fun String.unaryPlus() = column(this)
-
-		@DslFunction
+		operator fun String.unaryPlus() = column(this)
 		@CreoleDsl
 		infix fun TableColumn.align(alignment:TableAlignment) = apply { this.alignment = alignment }
 	}
 
 	/**Creole表格行。*/
 	@CreoleDsl
-	open class TableRow @PublishedApi internal constructor() : IDslElement, UPlus<TableColumn> {
+	open class TableRow @PublishedApi internal constructor() : IDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
 		var columnSize:Int? = null
 
@@ -277,7 +275,7 @@ interface Creole {
 			}.joinToString(" | ", "| ", " |")
 		}
 
-		override fun String.unaryPlus() = column(this)
+		operator fun String.unaryPlus() = column(this)
 	}
 
 	/**Creole表格列。*/

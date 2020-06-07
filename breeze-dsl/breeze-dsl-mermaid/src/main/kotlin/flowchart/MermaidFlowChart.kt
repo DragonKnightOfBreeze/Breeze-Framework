@@ -64,8 +64,6 @@ interface MermaidFlowChart {
 				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
 			).doSplit()
 		}
-
-		@DslFunction
 		@MermaidFlowChartDsl
 		override fun String.links(other:String) = link(this, other)
 	}

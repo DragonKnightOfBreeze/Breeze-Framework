@@ -6,7 +6,7 @@ import kotlin.system.*
 class CriticMarkupDslTest {
 	@Test
 	fun test1() {
-		criticMarkup {
+		criticMarkupDsl {
 			"""
 				Hello, ${append("world")}!
 				Nice to ${highlight("meet")} you!
@@ -18,7 +18,7 @@ class CriticMarkupDslTest {
 	fun test2() {
 		measureTimeMillis {
 			repeat(100000) {
-				criticMarkup {
+				criticMarkupDsl {
 					"""
 				Hello, ${append("world")}!
 				Nice to ${highlight("meet")} you!

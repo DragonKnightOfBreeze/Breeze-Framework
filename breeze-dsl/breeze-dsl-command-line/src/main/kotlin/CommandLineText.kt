@@ -14,7 +14,7 @@ interface CommandLineText {
 	 * 命令行文本的文档。
 	 */
 	@CommandLineTextDsl
-	class Document @PublishedApi internal constructor() : DslDocument, InlineDslEntry {
+	class Document @PublishedApi internal constructor() : Dsl, InlineDslEntry {
 		var text:CharSequence = ""
 
 		override fun toString():String {
@@ -39,15 +39,15 @@ interface CommandLineText {
 	 * 命令行富文本。
 	 */
 	@CommandLineTextDsl
-	interface RichText : InlineDslElement, Inlineable
+	interface RichText : InlineDslElement
 
 	/**
 	 * 命令行加粗文本。
 	 */
 	@CommandLineTextDsl
-	inline class BoldText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class BoldText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Bold.code)
+			return richText(inlineText, Style.Bold.code)
 		}
 	}
 
@@ -55,9 +55,9 @@ interface CommandLineText {
 	 * 命令行浅色文本。
 	 */
 	@CommandLineTextDsl
-	inline class LightText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class LightText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Light.code)
+			return richText(inlineText, Style.Light.code)
 		}
 	}
 
@@ -65,9 +65,9 @@ interface CommandLineText {
 	 * 命令行斜体文本。
 	 */
 	@CommandLineTextDsl
-	inline class ItalicText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class ItalicText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Italic.code)
+			return richText(inlineText, Style.Italic.code)
 		}
 	}
 
@@ -75,25 +75,25 @@ interface CommandLineText {
 	 * 命令行下划线文本。
 	 */
 	@CommandLineTextDsl
-	inline class UnderlineText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class UnderlineText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Underline.code)
+			return richText(inlineText, Style.Underline.code)
 		}
 	}
 
 	/**命令行闪烁文本。*/
 	@CommandLineTextDsl
-	inline class BlinkText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class BlinkText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Blink.code)
+			return richText(inlineText, Style.Blink.code)
 		}
 	}
 
 	/**命令行反显文本。*/
 	@CommandLineTextDsl
-	inline class InvertText @PublishedApi internal constructor(override val text:CharSequence) : RichText {
+	inline class InvertText @PublishedApi internal constructor(override val inlineText:CharSequence) : RichText {
 		override fun toString():String {
-			return richText(text, Style.Invert.code)
+			return richText(inlineText, Style.Invert.code)
 		}
 	}
 
@@ -103,11 +103,11 @@ interface CommandLineText {
 	 */
 	@CommandLineTextDsl
 	class ColoredText @PublishedApi internal constructor(
-		override val text:CharSequence,
+		override val inlineText:CharSequence,
 		val color:Color
 	) : RichText {
 		override fun toString():String {
-			return richText(text, color.code)
+			return richText(inlineText, color.code)
 		}
 	}
 
@@ -117,11 +117,11 @@ interface CommandLineText {
 	 */
 	@CommandLineTextDsl
 	class BgColoredText @PublishedApi internal constructor(
-		override val text:CharSequence,
+		override val inlineText:CharSequence,
 		val color:Color
 	) : RichText {
 		override fun toString():String {
-			return richText(text, color.code + 10)
+			return richText(inlineText, color.code + 10)
 		}
 	}
 
@@ -131,11 +131,11 @@ interface CommandLineText {
 	 */
 	@CommandLineTextDsl
 	class StyledText @PublishedApi internal constructor(
-		override val text:CharSequence,
+		override val inlineText:CharSequence,
 		vararg val styles:Style
 	) : RichText {
 		override fun toString():String {
-			return richText(text, styles.joinToString(";") { it.code.toString() })
+			return richText(inlineText, styles.joinToString(";") { it.code.toString() })
 		}
 	}
 

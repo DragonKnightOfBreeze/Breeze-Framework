@@ -47,8 +47,6 @@ interface MermaidSequenceDiagram {
 			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
 				.doSplit()
 		}
-
-		@DslFunction
 		@MermaidSequenceDiagramDsl
 		override fun String.links(other:String) = message(this, other)
 	}

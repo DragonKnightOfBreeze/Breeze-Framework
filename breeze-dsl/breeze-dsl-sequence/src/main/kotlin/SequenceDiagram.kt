@@ -9,7 +9,7 @@ import com.windea.breezeframework.dsl.DslConstants.ls
 interface SequenceDiagram {
 	/**序列图的文档。*/
 	@SequenceDiagramDsl
-	class Document @PublishedApi internal constructor() : DslDocument, IDslEntry {
+	class Document @PublishedApi internal constructor() : Dsl, IDslEntry {
 		var title:Title? = null
 		override val participants:MutableSet<Participant> = mutableSetOf()
 		override val messages:MutableList<Message> = mutableListOf()
