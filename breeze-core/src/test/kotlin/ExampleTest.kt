@@ -48,11 +48,6 @@ class ExampleTest {
 
 		////Generic String extensions
 
-		//true
-		println("Hello world" endsWith "world")
-		//true
-		println("Hello world" endsWithIgnoreCase "World")
-
 		//1{0}2{1}3{2}
 		println("1{}2{}3{}".replaceIndexed("{}") { "{$it}" })
 

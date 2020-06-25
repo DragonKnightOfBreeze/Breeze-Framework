@@ -1,12 +1,12 @@
 package com.windea.breezeframework.dsl.sequence
 
-import com.windea.breezeframework.dsl.sequence.SequenceDiagram.ArrowShape.*
+import com.windea.breezeframework.dsl.sequence.SequenceDiagramDslDefinitions.ArrowShape.*
 import kotlin.test.*
 
 class SequenceDiagramDslTest {
 	@Test
 	fun test1() {
-		println(sequenceDiagram {
+		println(sequenceDiagramDsl {
 			title("Here is title")
 			message("A", Arrow, "B") text "Normal line"
 			message("B", DashedArrow, "C") text "Dashed line"

@@ -6,7 +6,7 @@ import kotlin.test.*
 class MermaidStateDiagramDslTest {
 	@Test
 	fun test1() {
-		println(mermaidStateDiagram {
+		println(mermaidStateDiagramDsl {
 			state("Attack") text "Attack with long sword."
 			state("Defence") text "Defence with middle shield."
 

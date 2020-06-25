@@ -8,7 +8,7 @@ import kotlin.test.*
 class XmlDslTest {
 	@Test
 	fun test() {
-		val xml = xml {
+		val xml = xmlDsl {
 			comment("comment")
 			comment("""
 				comment

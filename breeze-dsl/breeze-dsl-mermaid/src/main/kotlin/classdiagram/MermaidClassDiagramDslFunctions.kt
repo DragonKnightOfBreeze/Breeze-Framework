@@ -2,80 +2,58 @@
 
 package com.windea.breezeframework.dsl.mermaid.classdiagram
 
-import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagram.*
-import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagram.Annotation
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDslDefinitions.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDslDefinitions.Annotation
+
+@MermaidClassDiagramDslMarker
+inline fun mermaidClassDiagramDsl(block: MermaidClassDiagramDsl.() -> Unit) = MermaidClassDiagramDsl().apply(block)
 
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-inline fun mermaidClassDiagram(block:Document.() -> Unit) = Document().apply(block)
+@MermaidClassDiagramDslMarker
+inline fun IDslEntry.`class`(name: String, block: Class.() -> Unit = {}) = Class(name).apply(block).also { classes += it }
 
-
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-inline fun IDslEntry.`class`(name:String, block:Class.() -> Unit = {}) =
-	Class(name).apply(block).also { classes += it }
-
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun IDslEntry.relation(fromClassId:String, toClassId:String, type:RelationType) =
-	Relation(fromClassId, toClassId, type).also { relations += it }
-
-/*** (No document.)*/
-@MermaidClassDiagramDsl
+@MermaidClassDiagramDslMarker
 fun IDslEntry.relation(
-	fromClassId:String,
-	fromCardinality:String?,
-	type:RelationType,
-	toCardinality:String?,
-	toClassId:String
+	fromClassId: String,
+	toClassId: String,
+	type: RelationType
+) = Relation(fromClassId, toClassId, type).also { relations += it }
+
+@MermaidClassDiagramDslMarker
+fun IDslEntry.relation(
+	fromClassId: String,
+	fromCardinality: String?,
+	type: RelationType,
+	toCardinality: String?,
+	toClassId: String
 ) = Relation(fromClassId, toClassId, type)
-	.apply { this.fromCardinality = fromCardinality }
-	.apply { this.toCardinality = toCardinality }
-	.also { relations += it }
+	.apply { this.fromCardinality = fromCardinality; this.toCardinality = toCardinality }.also { relations += it }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.annotation(name:String) =
-	Annotation(name).also { annotation = it }
+@MermaidClassDiagramDslMarker
+fun Class.annotation(name: String) = Annotation(name).also { annotation = it }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.annotation(type:AnnotationType) =
-	Annotation(type.text).also { annotation = it }
+@MermaidClassDiagramDslMarker
+fun Class.annotation(type: AnnotationType) = Annotation(type.text).also { annotation = it }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.statement(expression:String) =
-	Statement(expression).also { statements += it }
+@MermaidClassDiagramDslMarker
+fun Class.statement(expression: String) = Statement(expression).also { statements += it }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.`public`(statement:Statement) =
-	statement.apply { visibility = Visibility.Public }
+@MermaidClassDiagramDslMarker
+fun Class.`public`(statement: Statement) = statement.apply { visibility = Visibility.Public }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.`private`(statement:Statement) =
-	statement.apply { visibility = Visibility.Private }
+@MermaidClassDiagramDslMarker
+fun Class.`private`(statement: Statement) = statement.apply { visibility = Visibility.Private }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.`protected`(statement:Statement) =
-	statement.apply { visibility = Visibility.Protected }
+@MermaidClassDiagramDslMarker
+fun Class.`protected`(statement: Statement) = statement.apply { visibility = Visibility.Protected }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-fun Class.`package`(statement:Statement) =
-	statement.apply { visibility = Visibility.Package }
+@MermaidClassDiagramDslMarker
+fun Class.`package`(statement: Statement) = statement.apply { visibility = Visibility.Package }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-infix fun Relation.text(text:String) = apply { this.text = text }
+@MermaidClassDiagramDslMarker
+infix fun Relation.text(text: String) = apply { this.text = text }
 
-/*** (No document.)*/
-@MermaidClassDiagramDsl
-infix fun Relation.cardinality(cardinalityPair:Pair<String, String>) =
-	apply { fromCardinality = cardinalityPair.first }.apply { toCardinality = cardinalityPair.second }
+@MermaidClassDiagramDslMarker
+infix fun Relation.cardinality(cardinalityPair: Pair<String, String>) =
+	apply { fromCardinality = cardinalityPair.first; toCardinality = cardinalityPair.second }
 

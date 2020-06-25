@@ -2,33 +2,30 @@
 
 package com.windea.breezeframework.dsl.criticmarkup
 
-/**Build a [Critic Markup Dsl](http://criticmarkup.com).*/
+import com.windea.breezeframework.dsl.criticmarkup.CriticMarkupDslDefinitions.*
+
+/**Build a [CriticMarkupDsl].*/
 @CriticMarkupDslMarker
-inline fun criticMarkupDsl(block:CriticMarkupDsl.() -> CharSequence):CriticMarkupDsl =
-	CriticMarkupDsl().apply { text = block()}
+inline fun criticMarkupDsl(block: CriticMarkupDsl.() -> CharSequence): CriticMarkupDsl =
+	CriticMarkupDsl().apply { text = block() }
 
 
-/**Create a Critic Markup addition.*/
+/**Create a [CriticMarkupDslDefinitions.Addition].*/
 @CriticMarkupDslMarker
-fun CriticMarkupDslEntry.append(text:CharSequence):Addition =
-	Addition(text)
+fun InlineDslEntry.append(text: CharSequence): Addition = Addition(text)
 
-/**Create a Critic Markup deletion.*/
+/**Create a [CriticMarkupDslDefinitions.Deletion].*/
 @CriticMarkupDslMarker
-fun CriticMarkupDslEntry.delete(text:CharSequence):Deletion =
-	Deletion(text)
+fun InlineDslEntry.delete(text: CharSequence): Deletion = Deletion(text)
 
-/**Create a Critic Markup substitution.*/
+/**Create a [CriticMarkupDslDefinitions.Substitution].*/
 @CriticMarkupDslMarker
-fun CriticMarkupDslEntry.substitute(text:CharSequence, newText:CharSequence):Substitution =
-	Substitution(text, newText)
+fun InlineDslEntry.substitute(text: CharSequence, newText: CharSequence): Substitution = Substitution(text, newText)
 
-/**Create a Critic Markup comment.*/
+/**Create a [CriticMarkupDslDefinitions.Comment].*/
 @CriticMarkupDslMarker
-fun CriticMarkupDslEntry.comment(text:CharSequence):Comment =
-	Comment(text)
+fun InlineDslEntry.comment(text: CharSequence): Comment = Comment(text)
 
-/**Create a Critic Markup highlight.*/
+/**Create a [CriticMarkupDslDefinitions.Highlight].*/
 @CriticMarkupDslMarker
-fun CriticMarkupDslEntry.highlight(text:CharSequence):Highlight =
-	Highlight(text)
+fun InlineDslEntry.highlight(text: CharSequence): Highlight = Highlight(text)

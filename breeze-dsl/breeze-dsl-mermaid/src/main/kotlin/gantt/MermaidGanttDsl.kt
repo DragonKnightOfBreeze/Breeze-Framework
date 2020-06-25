@@ -1,13 +1,22 @@
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
-
-
 package com.windea.breezeframework.dsl.mermaid.gantt
 
-/**
- * Mermaid甘特图的领域特定语言。
- * 参见：[Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt)
- */
-@DslMarker
-@MustBeDocumented
-annotation class MermaidGanttDsl
+import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.gantt.MermaidGanttDslDefinitions.*
 
+/**
+ * [Mermaid Gantt Diagram](https://mermaidjs.github.io/#/gantt) dsl.
+ */
+@MermaidGanttDslMarker
+class MermaidGanttDsl @PublishedApi internal constructor() : MermaidDsl(), IDslEntry, Indentable, Splitable {
+	var title: Title? = null
+	var dateFormat: DateFormat? = null
+	override val sections: MutableList<Section> = mutableListOf()
+	override var indentContent: Boolean = true
+	override var splitContent: Boolean = false
+
+	override fun toString(): String {
+		val contentSnippet = arrayOf(title, dateFormat, toContentString()).doSplit().doIndent(MermaidDslConfig.indent)
+		return "gantt${DslConstants.ls}$contentSnippet"
+	}
+}

@@ -6,7 +6,7 @@ import org.junit.*
 class MermaidPieChartDslTest {
 	@Test
 	fun test1() {
-		println(mermaidPieChart {
+		println(mermaidPieChartDsl {
 			section("Study", 20)
 			section("Play", 30)
 			section("Sleep", 50)
@@ -15,7 +15,7 @@ class MermaidPieChartDslTest {
 
 	@Test
 	fun test2() {
-		println(mermaidPieChart {
+		println(mermaidPieChartDsl {
 			title("My Plan")
 			section("Study", 20)
 			section("Play", 30)

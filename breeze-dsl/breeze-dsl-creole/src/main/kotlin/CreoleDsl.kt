@@ -1,9 +1,11 @@
 package com.windea.breezeframework.dsl.creole
 
 /**
- * Creole的领域特定语言。
- * 参见：[Creole](http://plantuml.com/zh/creole)
+ * [Creole](http://plantuml.com/zh/creoleDsl) dsl.
  */
-@DslMarker
-@MustBeDocumented
-annotation class CreoleDsl
+@CreoleDslMarker
+class CreoleDsl @PublishedApi internal constructor() : CreoleDslDefinitions.IDslEntry, CreoleDslDefinitions.InlineDslEntry {
+	override val content: MutableList<CreoleDslDefinitions.TopDslElement> = mutableListOf()
+
+	override fun toString() = toContentString()
+}

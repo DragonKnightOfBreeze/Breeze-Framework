@@ -1,10 +1,12 @@
 package com.windea.breezeframework.dsl.bbcode
 
+import com.windea.breezeframework.dsl.*
+
 /**
- * BBCode（Bulletin Board Code）的领域特定语言。
- *
- * 参见：[BBCode](https://www.bbcode.org/)
+ * [BBCode](https://www.bbcode.org/) dsl.
  */
-@DslMarker
-@MustBeDocumented
-annotation class BBCodeDsl
+class BBCodeDsl @PublishedApi internal constructor() : Dsl {
+	var text: CharSequence = ""
+
+	override fun toString(): String = text.toString()
+}

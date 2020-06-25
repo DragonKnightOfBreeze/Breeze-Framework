@@ -1,8 +1,8 @@
 package com.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionDirection.*
-import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionPath.*
-import com.windea.breezeframework.dsl.flow.FlowChart.ConnectionStatus.*
+import com.windea.breezeframework.dsl.flow.FlowChartDslDefinitions.ConnectionDirection.*
+import com.windea.breezeframework.dsl.flow.FlowChartDslDefinitions.ConnectionPath.*
+import com.windea.breezeframework.dsl.flow.FlowChartDslDefinitions.ConnectionStatus.*
 import kotlin.test.*
 
 class FlowChartDslTest {
@@ -23,7 +23,7 @@ class FlowChartDslTest {
 
 	@Test
 	fun test1() {
-		println(flowChart {
+		println(flowChartDsl {
 			start("st") text "Start" newUrlLink "http://www.google.com"
 			end("e") urlLink "http://www.google.com"
 			operation("op1") text "My Operation"

@@ -2,12 +2,12 @@ package com.windea.breezeframework.dsl
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.types.*
+
 
 /**
  * Dsl.
  *
- * This is the top node of a dsl definition structure, which can represent an actual dsl.
+ * Dsl defines a actual domain specific language, and is the top node of a dsl definition structure.
  */
 @DslApiMarker
 interface Dsl {
@@ -17,7 +17,7 @@ interface Dsl {
 /**
  * Dsl entry.
  *
- * This is a special node of a dsl definition structure, which can include various dsl elements.
+ * Dsi entry is a special node of a dsl definition structure, which can include various dsl elements.
  */
 @DslApiMarker
 interface DslEntry {
@@ -28,20 +28,25 @@ interface DslEntry {
 /**
  * Dsl element.
  *
- * This is a general node of a dsl definition structure.
+ * Dsl element is a general node of a dsl definition structure.
  */
 @DslApiMarker
 interface DslElement {
-	override fun toString():String
+	override fun toString(): String
 }
+
+/**
+ * Dsl Configuration.
+ */
+interface DslConfig
 
 /**
  * Dsl constant set.
  */
 @InternalUsageApi
-object DslConstants{
-	val ls:String = System.lineSeparator()
-	val ss:String = "$ls$ls"
+object DslConstants {
+	val ls: String = System.lineSeparator()
+	val ss: String = "$ls$ls"
 
 	fun String.normalWrap() = this.replace("\n", "\\n").replace("\r", "\\r")
 }

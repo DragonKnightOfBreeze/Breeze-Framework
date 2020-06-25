@@ -4,66 +4,63 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.dsl.*
 
 /**
- * [Critic Markup Dsl](http://criticmarkup.com).
+ * Dsl definitions of [CriticMarkupDsl].
  */
-@CriticMarkupDslMarker
-class CriticMarkupDsl @PublishedApi internal constructor() : Dsl, CriticMarkupDslEntry {
-	var text: CharSequence = ""
-	override val inlineText: CharSequence get() = text
+interface CriticMarkupDslDefinitions {
+	/**
+	 * Inline dsl element of [CriticMarkupDsl].
+	 */
+	@CriticMarkupDslMarker
+	interface InlineDslElement : DslElement, Inlineable
 
-	override fun toString(): String = inlineText.toString()
-}
+	/**
+	 * Inline dsl entry of [CriticMarkupDsl].
+	 */
+	@CriticMarkupDslMarker
+	interface InlineDslEntry : DslEntry, Inlineable
 
-/**
- * [Critic Markup Dsl](http://criticmarkup.com) Element.
- */
-@CriticMarkupDslMarker
-interface CriticMarkupDslElement : DslElement, Inlineable
+	/**
+	 * Mark of [CriticMarkupDsl].
+	 */
+	interface Mark : InlineDslElement {
+		val text: CharSequence
+		override val inlineText get() = text
+	}
 
-/**
- * [Critic Markup Dsl](http://criticmarkup.com) Entry.
- */
-@CriticMarkupDslMarker
-interface CriticMarkupDslEntry : DslEntry, Inlineable
+	/**
+	 * Addition of [CriticMarkupDsl].
+	 */
+	class Addition @PublishedApi internal constructor(override val text: CharSequence) : Mark {
+		override fun toString() = "{++$text++}"
+	}
 
-/**
- * Critic Markup Mark.
- */
-sealed class Mark : CriticMarkupDslElement {
-	override fun toString(): String = inlineText.toString()
-}
+	/**
+	 * Deletion of [CriticMarkupDsl].
+	 */
+	class Deletion @PublishedApi internal constructor(override val text: CharSequence) : Mark {
+		override fun toString() = "{--$text--}"
+	}
 
-/**
- * Critic Markup Addition.
- */
-class Addition @PublishedApi internal constructor(val text: CharSequence) : Mark() {
-	override val inlineText: CharSequence get() = "{++$text++}"
-}
+	/**
+	 * Substitution of [CriticMarkupDsl].
+	 */
+	class Substitution @PublishedApi internal constructor(
+		override val text: CharSequence, val newText: CharSequence
+	) : Mark {
+		override fun toString() = "{~~$text~>$newText~~}"
+	}
 
-/**
- * Critic Markup Deletion.
- */
-class Deletion @PublishedApi internal constructor(val text: CharSequence) : Mark() {
-	override val inlineText: CharSequence get() = "{--$text--}"
-}
+	/**
+	 * Comment of [CriticMarkupDsl].
+	 */
+	class Comment @PublishedApi internal constructor(override val text: CharSequence) : Mark {
+		override fun toString() = "{>>$text<<}"
+	}
 
-/**
- * Critic Markup Substitution.
- */
-class Substitution @PublishedApi internal constructor(val text: CharSequence, val newText: CharSequence) : Mark() {
-	override val inlineText: CharSequence get() = "{~~$text~>$newText~~}"
-}
-
-/**
- * Critic Markup Comment.
- */
-class Comment @PublishedApi internal constructor(val text: CharSequence) : Mark() {
-	override val inlineText: CharSequence get() = "{>>$text<<}"
-}
-
-/**
- * Critic Markup Highlight.
- */
-class Highlight @PublishedApi internal constructor(val text: CharSequence) : Mark() {
-	override val inlineText: CharSequence get() = "{==$text==}"
+	/**
+	 * Highlight of [CriticMarkupDsl].
+	 */
+	class Highlight @PublishedApi internal constructor(override val text: CharSequence) : Mark {
+		override fun toString() = "{==$text==}"
+	}
 }

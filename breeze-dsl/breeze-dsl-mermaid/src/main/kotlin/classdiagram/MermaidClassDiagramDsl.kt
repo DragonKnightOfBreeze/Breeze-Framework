@@ -1,12 +1,21 @@
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
-
 package com.windea.breezeframework.dsl.mermaid.classdiagram
 
-/**
- * Mermaid类图的领域特定语言。
- * 参见：[Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram)
- */
-@DslMarker
-@MustBeDocumented
-annotation class MermaidClassDiagramDsl
+import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.mermaid.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDslDefinitions.*
 
+/**
+ * [Mermaid Class Diagram](https://mermaidjs.github.io/#/classDiagram) dsl.
+ */
+@MermaidClassDiagramDslMarker
+class MermaidClassDiagramDsl @PublishedApi internal constructor() : MermaidDsl(), IDslEntry, Indentable {
+	override val classes: MutableSet<MermaidClassDiagramDslDefinitions.Class> = mutableSetOf()
+	override val relations: MutableList<MermaidClassDiagramDslDefinitions.Relation> = mutableListOf()
+	override var indentContent: Boolean = true
+	override var splitContent: Boolean = true
+
+	override fun toString(): String {
+		val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
+		return "classDiagram${DslConstants.ls} $contentSnippet"
+	}
+}

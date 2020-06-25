@@ -1,10 +1,27 @@
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
-
 package com.windea.breezeframework.dsl.markdown
 
-//TODO
+import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.dsl.*
 
-/**Markdown领域特定语言。*/
-@DslMarker
-@MustBeDocumented
-annotation class MarkdownDsl
+/**
+ * Markdown dsl.
+ */
+@MarkdownDslMarker
+class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinitions.IDslEntry {
+	@MarkdownDslExtendedFeature
+	var frontMatter: MarkdownDslDefinitions.FrontMatter? = null
+	@MarkdownDslExtendedFeature
+	var toc: MarkdownDslDefinitions.Toc? = null
+	val references: MutableSet<MarkdownDslDefinitions.Reference> = mutableSetOf()
+	override val content: MutableList<MarkdownDslDefinitions.TopDslElement> = mutableListOf()
+
+	@MarkdownDslExtendedFeature
+	override fun toString(): String {
+		return arrayOf(
+			frontMatter,
+			toc,
+			toContentString(),
+			references.typingAll(DslConstants.ls)
+		).typingAll("${DslConstants.ls}${DslConstants.ls}")
+	}
+}

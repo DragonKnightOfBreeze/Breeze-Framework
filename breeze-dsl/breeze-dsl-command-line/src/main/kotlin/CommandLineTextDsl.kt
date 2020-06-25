@@ -1,12 +1,14 @@
 package com.windea.breezeframework.dsl.commandline
 
-//https://github.com/ziggy42/kolor
-//https://msd.misuland.com/pd/3643782633961293732
-//https://blog.csdn.net/qq_37187976/article/details/79265667
-//https://blog.csdn.net/felix_f/article/details/12433171
-//not for all echo commands
+import com.windea.breezeframework.dsl.*
 
-/**命令行文本的领域特定语言。*/
-@DslMarker
-@MustBeDocumented
-annotation class CommandLineTextDsl
+/**
+ * Command line text dsl.
+ */
+@CommandLineTextDslMarker
+class CommandLineTextDsl @PublishedApi internal constructor() : Dsl, CommandLineTextDslDefinitions.InlineDslEntry {
+	var text: CharSequence = ""
+	override val inlineText get() = text
+
+	override fun toString(): String = text.toString()
+}
