@@ -29,6 +29,7 @@ enum class EscapeType(
 		arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	),
 
+	//com.google.common.xml.XmlEscapers
 	/**Xml特性转义。*/
 	XmlAttribute(
 		arrayOf("<", ">", "&", "'", "\"", "\t", "\n", "\r"),

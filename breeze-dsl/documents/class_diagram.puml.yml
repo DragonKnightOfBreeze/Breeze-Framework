@@ -116,13 +116,13 @@ namespace c.w.b.d.criticmarkup:
   # @CriticMarkupMarker
   - fun InlineDslEntry.delete(text:CharSequence):Deletion
   # @CriticMarkupMarker
-  - fun InlineDslEntry.substitute(text:CharSequence, replacedText:CharSequence):Substitution
+  - fun InlineDslEntry.substitute(text:CharSequence, newText:CharSequence):Substitution
   # @CriticMarkupMarker
   - fun InlineDslEntry.comment(text:CharSequence):Comment
   # @CriticMarkupMarker
   - fun InlineDslEntry.highlight(text:CharSequence):HighlightText
 
-# TODO ...
+# TODO 以下
 
 namespace c.w.b.d.commandline:
   interface InlineDslEntry extends c.w.b.d.DslEntry,c.w.b.d.Inlineable: {}

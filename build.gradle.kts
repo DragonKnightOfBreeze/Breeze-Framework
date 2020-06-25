@@ -3,7 +3,7 @@ import org.gradle.jvm.tasks.Jar
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.3.70"
+	id("org.jetbrains.kotlin.jvm") version "1.3.72"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("com.jfrog.bintray") version "1.8.5"
 }

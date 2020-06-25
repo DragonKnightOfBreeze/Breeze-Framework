@@ -338,17 +338,48 @@ fun <T> MutableList<T>.moveAllAt(fromIndices:IntRange, toIndex:Int) {
 }
 
 
-/**根据指定的转化操作，将当前映射中的键与值加入到指定的容器。默认的转化操作是`$k=$v`。*/
+/**
+ * Appends the string from all the entries separated using [separator] and using the given [prefix] and [postfix] if supplied.
+ *
+ * If the map could be huge, you can specify a non-negative value of [limit], in which case only the first [limit]
+ * elements will be appended, followed by the [truncated] string (which defaults to "...").
+ *
+ * The default entry format is `$key=$value`.
+ */
 fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer:A, separator:CharSequence = ", ", prefix:CharSequence = "",
 	postfix:CharSequence = "", limit:Int = -1, truncated:CharSequence = "...",
 	transform:((Map.Entry<K, V>) -> CharSequence)? = null):A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
 
-/**根据指定的转化操作，将当前映射中的键与值加入到字符串。默认的转化操作是`$k=$v`。*/
+/**
+ * Creates a string from all the entries separated using [separator] and using the given [prefix] and [postfix] if supplied.
+ *
+ * If the map could be huge, you can specify a non-negative value of [limit], in which case only the first [limit]
+ * elements will be appended, followed by the [truncated] string (which defaults to "...").
+ *
+ * The default entry format is `$key=$value`.
+ */
 fun <K, V> Map<K, V>.joinToString(separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "",
 	limit:Int = -1, truncated:CharSequence = "...", transform:((Map.Entry<K, V>) -> CharSequence)? = null):String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
+}
+
+
+/**
+ * Returns a array containing the results of applying the given [transform] function
+ * to each element in the original array.
+ */
+inline fun <T, reified R> Array<out T>.mapArray(transform: (T) -> R): Array<R> {
+	return Array(size) { transform(this[it]) }
+}
+
+/**
+ * Returns a array containing the results of applying the given [transform] function
+ * to each element in the original list.
+ */
+inline fun <T, reified R> List<T>.mapArray(transform: (T) -> R): Array<R> {
+	return Array(size) { transform(this[it]) }
 }
 
 

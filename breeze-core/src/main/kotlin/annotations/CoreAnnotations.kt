@@ -44,7 +44,7 @@ annotation class WeakDeprecated(
 
 /**
  * Specifies that this function should not be called directly without inlining.
- * Placeholder for [kotlin.internal.InlineOnly].
+ * This annotation is a placeholder of [kotlin.internal.InlineOnly].
  */
 @Target(FUNCTION, PROPERTY, PROPERTY_GETTER, PROPERTY_SETTER)
 @Retention(BINARY)

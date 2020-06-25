@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
@@ -19,3 +21,10 @@ inline fun <reified T> Any?.cast():T = this as T
  */
 inline fun <reified T> Any?.safeCast():T? = this as? T
 //return if(isInstance(value)) value as T else null
+
+
+inline fun <reified T> Any?.convert():T = TODO()
+
+inline fun <reified T> Any?.safeConvert():T = TODO()
+
+internal object Converters

@@ -78,7 +78,7 @@ namespace c.w.b.d.criticmarkup {
     fun criticMarkup(block:Document.() -> CharSequence):Document
     fun InlineDslEntry.append(text:CharSequence):Addition
     fun InlineDslEntry.delete(text:CharSequence):Deletion
-    fun InlineDslEntry.substitute(text:CharSequence, replacedText:CharSequence):Substitution
+    fun InlineDslEntry.substitute(text:CharSequence, newText:CharSequence):Substitution
     fun InlineDslEntry.comment(text:CharSequence):Comment
     fun InlineDslEntry.highlight(text:CharSequence):HighlightText
   }

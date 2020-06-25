@@ -49,8 +49,7 @@ fun Any?.toPumlText():String {
     return when {
         this == null -> ""
         this is Map<*, *> -> this.entries.joinToString("\n") { (k, v) ->
-            val value = v.toPumlText()
-            if(value.isEmpty()) "$k" else "$k {\n${value.prependIndent("  ")}\n}"
+            if(v == "") "$k" else "$k {\n${v.toPumlText() .prependIndent("  ")}\n}"
         }
         this is List<*> -> this.joinToString("\n") { e ->
             e.toPumlText()
