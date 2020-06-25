@@ -453,43 +453,6 @@ fun String.setSurrounding(prefix:CharSequence, suffix:CharSequence):String {
 }
 //endregion
 
-//region Align extensions
-/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-@JvmOverloads
-fun String.alignStart(padChar:Char = ' '):String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
-}
-
-/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-@JvmOverloads
-fun String.alignEnd(padChar:Char = ' '):String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
-}
-
-/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
-@JvmOverloads
-fun String.alignCenter(padChar:Char = ' '):String {
-	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
-	return lines.joinToString("\n") {
-		val trimmedString = it.trim()
-		val deltaLength = maxLength - trimmedString.length
-		when {
-			deltaLength > 0 && deltaLength % 2 == 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString$s" }
-			deltaLength > 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString $s" }
-			else -> trimmedString
-		}
-	}
-}
-//endregion
-
 //region Remove extensions
 /**去除指定字符。*/
 fun String.remove(oldChar:Char, ignoreCase:Boolean = false):String {
@@ -749,13 +712,67 @@ fun String.substringMatch(vararg delimiters:String?, defaultValue:((Int, String)
 }
 //endregion
 
+//region Align extensions
+/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
+fun String.alignStart(padChar:Char = ' '):String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
+}
+
+/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
+fun String.alignEnd(padChar:Char = ' '):String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
+}
+
+/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+@JvmOverloads
+fun String.alignCenter(padChar:Char = ' '):String {
+	val lines = this.lines()
+	if(lines.size <= 1) return this
+	val maxLength = lines.map { it.length }.max()!!
+	return lines.joinToString("\n") {
+		val trimmedString = it.trim()
+		val deltaLength = maxLength - trimmedString.length
+		when {
+			deltaLength > 0 && deltaLength % 2 == 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString$s" }
+			deltaLength > 0 -> (padChar * (deltaLength / 2)).let { s -> "$s$trimmedString $s" }
+			else -> trimmedString
+		}
+	}
+}
+//endregion
+
 //region Truncate extensions
 /**
- * 根据指定的限定长度和截断符截断当前字符串。
+ * 根据指定的限定长度和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
  * 截断符默认为`"..."`。
  */
-fun String.truncate(limit:Int, truncated:CharSequence = "..."):String {
-	return if(this.length <= limit) this else this.take(limit) + truncated
+fun String.truncateStart(limit:Int,truncated:CharSequence = "..."):String{
+	return if(this.length<=limit) this else "$truncated${this.takeLast(limit)}"
+}
+
+/**
+ * 根据指定的限定长度和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
+ * 截断符默认为`"..."`。
+ */
+fun String.truncateEnd(limit:Int, truncated:CharSequence = "..."):String {
+	return if(this.length <= limit) this else "${this.take(limit)}$truncated"
+}
+
+/**
+ * 根据指定的限定长度、偏移和截断符，截断当前字符串的中间部分。如果未到限定长度，则返回自身。
+ * 截断符默认为`"..."`。
+ */
+fun String.truncateEnd(limit:Int, offset:Int,truncated:CharSequence = "..."):String {
+	require(limit > offset) {"Limit must be greater than offset."}
+	return if(this.length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
 }
 //endregion
 
