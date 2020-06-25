@@ -69,7 +69,7 @@ fun <T : Any> Iterable<T?>.typingAll(
 /**
  * 使用特定的转化规则，将当前映射转化成字符串。
  * * 忽略空键值对（默认为`true`） && 存在空键值对 -> 忽略该键值对.
- * * 忽略空值（默认为`true`） && 存在空值 -> 忽略该值.
+ * * 忽略空值（默认为`true`） && 存在空值 -> 忽略该键值对.
  * * 忽略空映射（默认为`true`） && 不存在有效的键值对或值 -> 返回空字符串。
  * * 存在转化方法 -> 使用该方法将元素转化为字符串。
  * * 其他情况 -> 使用默认方法将元素转化为字符串。
@@ -124,5 +124,5 @@ fun <T : Any> Sequence<T?>.typingAll(
 
 
 //fun String.typingToList(separator:CharSequence= ", ",prefix:CharSequence = "",postfix:CharSequence=""):List<String> = TODO()
-//
+
 //fun String.typingToSequence(separator:CharSequence = ", ",prefix:CharSequence = "",postfix:CharSequence=""):Sequence<String> = TODO()

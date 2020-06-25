@@ -2,16 +2,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-/**得到指定字符串对于当前正则表达式的匹配分组。*/
-fun Regex.matchGroups(string: String): MatchGroupCollection? = this.matchEntire(string)?.groups
-
-/**得到指定字符串对于当前正则表达式的匹配字符串分组。*/
-fun Regex.matchGroupValues(string: String): List<String>? = this.matchEntire(string)?.groupValues
-
-
-/**得到当前匹配结果的指定索引的匹配字符串。*/
-operator fun MatchResult.get(index: Int): String = this.groupValues[index]
-
 
 //参考：[2-13] -> [2-9]|[10-13] -> [2-9]|1[0-3]
 //参考：[23-45] -> [23-29]|[30-39]|[40-45] -> 2[3-9]|3[0-9]|4[0-5]

@@ -376,13 +376,10 @@
 
 * [X] 更新版本。更新Kotlin版本到1.3.72。
 * [X] 整理和重构代码。
-
-# 参考
-
-* [ ] com.alibaba.fastjson.util.TypeUtils
-* [ ] org.springframework.util.StringUtils
-* [ ] org.apache.commons.lang3.ObjectUtils
-* [ ] org.apache.commons.lang3.StringUtils
+* [X] 添加一些扩展。
+* [X] 添加`String.replaceIn`相关扩展
+* [ ] 重构和添加`String.truncate`相关扩展
+* [ ] 重构和添加`String.replaceMatch`、`String.substringMatch`扩展
 
 # 长期
 
@@ -390,6 +387,5 @@
 * [X] 上传到Github
 * [X] 同步项目到Bintray
 * [X] 发布项目到JCenter。（格式上存在一些问题）
-* [ ] 检查可参考的项目
-* [ ] 完善各个模块的`README.md`文档
+* [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构

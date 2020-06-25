@@ -12,12 +12,13 @@ import java.nio.file.*
 import java.text.*
 import java.time.*
 import java.time.format.*
+import java.time.format.DateTimeFormatter.*
 import java.util.*
 import kotlin.contracts.*
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
-//region Operator extensions
+//region Operator override extensions
 /**
  * 移除当前字符串中的指定子字符串。
  * @see com.windea.breezeframework.core.extensions.remove
@@ -59,26 +60,10 @@ operator fun String.get(startIndex:Int, endIndex:Int):String {
 }
 //endregion
 
-//region Misc extensions
-/**判断两个字符串是否相等，忽略大小写。。*/
-infix fun String?.equalsIgnoreCase(other:String?):Boolean {
-	return this.equals(other, true)
-}
-
-
-/**判断当前字符串中的所有字符是否被另一字符串包含。*/
-infix fun CharSequence.allIn(other:CharSequence):Boolean {
-	return this in other
-}
-
-/**判断当前字符串中的任意字符是否被另一字符串包含。*/
-infix fun CharSequence.anyIn(other:CharSequence):Boolean {
-	return this.any { it in other }
-}
-
-
+//region Optional handle extensions
 /**如果当前字符串不为空，则返回本身，否则返回null。*/
 @JvmSynthetic
+@InlineOnly
 inline fun <C : CharSequence> C.orNull():C? {
 	return if(this.isEmpty()) null else this
 }
@@ -112,6 +97,51 @@ inline fun <C : CharSequence> C.takeIfNotBlank():C? {
 }
 
 
+/**
+ * Returns `true` if this nullable char sequence is neither `null` nor empty.
+ */
+@UselessCallOnNotNullType
+@JvmSynthetic
+@InlineOnly
+inline fun CharSequence?.isNotNullOrEmpty():Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrEmpty != null)
+	}
+	return this != null && this.length != 0
+}
+
+/**
+ * Returns `true` if this nullable char sequence is neither `null` nor empty.
+ */
+@UselessCallOnNotNullType
+@JvmSynthetic
+@InlineOnly
+inline fun CharSequence?.isNotNullOrBlank():Boolean {
+	contract {
+		returns(true) implies (this@isNotNullOrBlank != null)
+	}
+	return this != null && !this.isBlank()
+}
+//endregion
+
+//region Misc extensions
+/**判断两个字符串是否相等，忽略大小写。。*/
+infix fun String?.equalsIgnoreCase(other:String?):Boolean {
+	return this.equals(other, true)
+}
+
+
+/**判断当前字符串中的所有字符是否被另一字符串包含。*/
+infix fun CharSequence.allIn(other:CharSequence):Boolean {
+	return this in other
+}
+
+/**判断当前字符串中的任意字符是否被另一字符串包含。*/
+infix fun CharSequence.anyIn(other:CharSequence):Boolean {
+	return this.any { it in other }
+}
+
+
 /**分别依次重复当前字符串中的字符到指定次数。*/
 fun CharSequence.repeatOrdinal(n:Int):String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
@@ -135,7 +165,7 @@ fun String.transformIn(prefix:String, suffix:String, transform:(String) -> Strin
 @NotOptimized
 @UnstableImplementationApi
 fun String.transformIn(regex:Regex, transform:(String) -> String):String {
-	return this.replace(regex) { transform(it[0]) }
+	return this.replace(regex) { transform(it.value) }
 }
 
 
@@ -157,12 +187,273 @@ fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean 
 }
 
 
-/**根据指定的限定长度和截断符截断当前字符串。截断符默认为英文省略号。*/
-fun String.truncate(limit:Int, truncated:CharSequence = "..."):String {
-	return if(this.length <= limit) this else this.take(limit) + truncated
+/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+@UnstableImplementationApi
+infix fun String.lineConcat(other:String):String {
+	val lines = this.lines()
+	val otherLines = other.lines()
+	return when {
+		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
+		else -> lines zip otherLines.fillEnd(lines.size, "")
+	}.joinToString("\n") { (a, b) -> "$a$b" }
+}
+
+/**逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
+@UnstableImplementationApi
+@JvmOverloads
+fun String.lineBreak(width:Int = 120):String {
+	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
+}
+//endregion
+
+//region Regex extensions
+/**
+ * Returns the first match of the [regex] in this char sequence, beginning at the specified [startIndex].
+ *
+ * @param startIndex An index to start search with, by default 0. Must be not less than zero and not greater than `this.length()`
+ * @return An instance of [MatchResult] if match was found or `null` otherwise.
+ */
+fun CharSequence.find(regex:Regex,startIndex:Int) = regex.find(this,startIndex)
+
+/**
+ * Returns a sequence of all occurrences of the [regex] within this string, beginning at the specified [startIndex].
+ */
+fun CharSequence.findAll(regex: Regex,startIndex: Int) = regex.findAll(this,startIndex)
+
+/**
+ * Attempts to match this char sequence entirely against the [regex].
+ *
+ * @return An instance of [MatchResult] if the entire input matches or `null` otherwise.
+ */
+fun CharSequence.matchEntire(regex: Regex) = regex.matchEntire(this)
+//endregion
+
+//region Is predicate extensions
+/**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
+private val isAlphabeticRegex = "[a-zA-Z_]+".toRegex()
+
+@UnstableImplementationApi
+fun CharSequence.isAlphabetic():Boolean = this matches isAlphabeticRegex
+
+private val isNumericRegex = "[1-9]+".toRegex()
+
+/**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
+@UnstableImplementationApi
+fun CharSequence.isNumeric():Boolean = this matches isNumericRegex
+
+private val isAlphanumericRegex = "[1-9a-zA-Z_]+".toRegex()
+
+/**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
+@UnstableImplementationApi
+fun CharSequence.isAlphanumeric():Boolean = this matches "[1-9a-zA-Z_]+".toRegex()
+//endregion
+
+//region Prefix and suffix extensions
+///**判断当前字符串是否以指定前缀开头。*/
+//inline infix fun CharSequence.startsWith(prefix:CharSequence):Boolean {
+//	return this.startsWith(prefix, false)
+//}
+//
+///**判断当前字符串是否以指定前缀开头。忽略大小写。*/
+//inline infix fun CharSequence.startsWithIgnoreCase(prefix:CharSequence):Boolean {
+//	return this.startsWith(prefix, true)
+//}
+//
+///**判断当前字符串是否以任意指定前缀开头。*/
+//inline infix fun CharSequence.startsWith(prefixes:Array<out CharSequence>):Boolean {
+//	return prefixes.any { this.startsWith(it, false) }
+//}
+//
+///**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
+//inline infix fun CharSequence.startsWithIgnoreCase(prefixes:Array<out CharSequence>):Boolean {
+//	return prefixes.any { this.startsWith(it, true) }
+//}
+//
+///**判断当前字符串是否以指定后缀结尾。*/
+//inline infix fun CharSequence.endsWith(suffixes:CharSequence):Boolean {
+//	return this.endsWith(suffixes, false)
+//}
+//
+///**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
+//inline infix fun CharSequence.endsWithIgnoreCase(suffix:CharSequence):Boolean {
+//	return this.endsWith(suffix, true)
+//}
+//
+///**判断当前字符串是否以任意指定后缀结尾。*/
+//inline infix fun CharSequence.endsWith(suffixes:Array<out CharSequence>):Boolean {
+//	return suffixes.any { this.endsWith(it, false) }
+//}
+//
+///**判断当前字符串是否以任意指定后缀结尾。忽略大小写。*/
+//inline infix fun CharSequence.endsWithIgnoreCase(suffixes:Array<out CharSequence>):Boolean {
+//	return suffixes.any { this.endsWith(it, true) }
+//}
+
+
+/**
+ * Returns `true` if this char sequence surrounds with the specified characters.
+ */
+fun CharSequence.surroundsWith(prefix:Char, suffix:Char, ignoreCase:Boolean = false):Boolean {
+	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
+}
+
+/**
+ * Returns `true` if this char sequence surrounds with the specified character.
+ */
+fun CharSequence.surroundsWith(delimiter:Char, ignoreCase:Boolean = false):Boolean {
+	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
+}
+
+/**
+ * Returns `true` if this char sequence surrounds with the specified prefix and suffix.
+ */
+fun CharSequence.surroundsWith(prefix:CharSequence, suffix:CharSequence, ignoreCase:Boolean = false):Boolean {
+	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
+}
+
+/**
+ * Returns `true` if this char sequence surrounds with the specified delimiter.
+ */
+fun CharSequence.surroundsWith(delimiter:CharSequence, ignoreCase:Boolean = false):Boolean {
+	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
 }
 
 
+/**
+ * If this char sequence don't starts with the given [prefix],
+ * returns a new char sequence with the prefix added.
+ * Otherwise, returns a new char sequence with the same characters.
+ */
+fun CharSequence.addPrefix(prefix:CharSequence):CharSequence {
+	if(this.startsWith(prefix)) return subSequence(0, length)
+	return "$prefix$this"
+}
+
+/**
+ * If this char sequence don't starts with the given [prefix],
+ * returns a new char sequence with the prefix added.
+ * Otherwise, returns this string.
+ */
+fun String.addPrefix(prefix:CharSequence):String {
+	if(this.startsWith(prefix)) return this
+	return "$prefix$this"
+}
+
+/**
+ * If this char sequence don't ends with the given [suffix],
+ * returns a new char sequence with the suffix added.
+ * Otherwise, returns a new char sequence with the same characters.
+ */
+fun CharSequence.addSuffix(suffix:CharSequence):CharSequence {
+	if(this.endsWith(suffix)) return subSequence(0, length)
+	return "$this$suffix"
+}
+
+/**
+ * If this char sequence don't ends with the given [suffix],
+ * returns a new char sequence with the suffix added.
+ * Otherwise, returns this string.
+ */
+fun String.addSuffix(suffix:CharSequence):String {
+	if(this.endsWith(suffix)) return this
+	return "$this$suffix"
+}
+
+/**
+ * If this char sequence don't surrounds with the given [delimiter],
+ * returns a new char sequence with the delimiter added.
+ * Otherwise, returns a new char sequence with the same characters.
+ */
+fun CharSequence.addSurrounding(delimiter:CharSequence):CharSequence {
+	return this.addSurrounding(delimiter, delimiter)
+}
+
+/**
+ * If this char sequence don't surrounds with the given [delimiter],
+ * returns a new char sequence with the delimiter added.
+ * Otherwise, returns this string.
+ */
+fun String.addSurrounding(delimiter:CharSequence):String {
+	return this.addSurrounding(delimiter, delimiter)
+}
+
+/**
+ * If this char sequence don't surrounds with the given [prefix] and [suffix],
+ * returns a new char sequence with the prefix and suffix added.
+ * Otherwise, returns this string.
+ */
+fun CharSequence.addSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
+	if(this.startsWith(prefix) && this.endsWith(suffix)) return subSequence(0, length)
+	return "$prefix$this$suffix"
+}
+
+/**
+ * If this char sequence don't surrounds with the given [prefix] and [suffix],
+ * returns a new char sequence with the prefix and suffix added.
+ * Otherwise, returns a new char sequence with the same characters.
+ */
+fun String.addSurrounding(prefix:CharSequence, suffix:CharSequence):String {
+	if(this.startsWith(prefix) && this.endsWith(suffix)) return this
+	return "$prefix$this$suffix"
+}
+
+
+/**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun CharSequence.setPrefix(prefix:CharSequence):CharSequence {
+	if(this.length < prefix.length) return this
+	return "$prefix${this.substring(prefix.length, this.length)}"
+}
+
+/**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun String.setPrefix(prefix:CharSequence):String {
+	if(this.length < prefix.length) return this
+	return "$prefix${this.drop(prefix.length)}"
+}
+
+/**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun CharSequence.setSuffix(suffix:CharSequence):CharSequence {
+	if(this.length < suffix.length) return this
+	return "${this.substring(this.length - suffix.length)}$suffix"
+}
+
+/**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun String.setSuffix(suffix:CharSequence):String {
+	if(this.length < suffix.length) return this
+	return "${this.dropLast(suffix.length)}$suffix"
+}
+
+/**为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun CharSequence.setSurrounding(delimiter:CharSequence):CharSequence {
+	return this.setSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun String.setSurrounding(delimiter:CharSequence):String {
+	return this.setSurrounding(delimiter, delimiter)
+}
+
+/**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun CharSequence.setSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
+	if(this.length < prefix.length + suffix.length) return this
+	return "$prefix${this.substring(prefix.length, this.length - suffix.length)}$suffix"
+}
+
+/**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
+@UnstableImplementationApi
+fun String.setSurrounding(prefix:CharSequence, suffix:CharSequence):String {
+	if(this.length < prefix.length + suffix.length) return this
+	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
+}
+//endregion
+
+//region Align extensions
 /**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
 @JvmOverloads
 fun String.alignStart(padChar:Char = ' '):String {
@@ -197,8 +488,9 @@ fun String.alignCenter(padChar:Char = ' '):String {
 		}
 	}
 }
+//endregion
 
-
+//region Remove extensions
 /**去除指定字符。*/
 fun String.remove(oldChar:Char, ignoreCase:Boolean = false):String {
 	return this.replace(oldChar.toString(), "", ignoreCase)
@@ -213,337 +505,9 @@ fun String.remove(oldValue:String, ignoreCase:Boolean = false):String {
 fun String.remove(regex:Regex):String {
 	return this.replace(regex, "")
 }
-
-
-/**
- * 根据指定分隔符、前缀、后缀以及可选的转换方法，按顺序分割当前字符串。
- * 可以另外指定限定数量和省略字符串。
- */
-@NotOptimized
-fun String.splitToStrings(separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "",
-	limit:Int = -1, truncated:CharSequence = "...", transform:((String) -> String)? = null):List<String> {
-	//前缀索引+前缀长度，或者为0
-	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
-	//后缀索引，或者为length
-	val suffixIndex = lastIndexOf(postfix.toString()).let { if(it == -1) length else it }
-	//内容，需要继续分割和转换
-	val content = substring(prefixIndex, suffixIndex)
-	val strings = when(limit) {
-		-1 -> content.split(separator.toString())
-		0 -> listOf()
-		else -> content.split(separator.toString(), limit = limit+1).dropLast(1) + truncated.toString()
-	}
-	return if(transform == null) strings else strings.map(transform)
-}
-
-
-/**将当前字符串解码为base64格式的字节数组。*/
-fun String.decodeToBase64ByteArray():ByteArray {
-	return Base64.getDecoder().decode(this)
-}
-
-
-/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-@UnstableImplementationApi
-infix fun String.lineConcat(other:String):String {
-	val lines = this.lines()
-	val otherLines = other.lines()
-	return when {
-		lines.size <= otherLines.size -> lines.fillEnd(otherLines.size, "") zip otherLines
-		else -> lines zip otherLines.fillEnd(lines.size, "")
-	}.joinToString("\n") { (a, b) -> "$a$b" }
-}
-
-/**逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
-@UnstableImplementationApi
-@JvmOverloads
-fun String.lineBreak(width:Int = 120):String {
-	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
-}
-//endregion
-
-//region Is predicate extensions
-
-///**
-// * Returns `true` if this nullable char sequence is either `null` or empty.
-// *
-// * @sample samples.text.Strings.stringIsNullOrEmpty
-// */
-//@kotlin.internal.InlineOnly
-//public inline fun CharSequence?.isNullOrEmpty(): Boolean {
-//    contract {
-//        returns(false) implies (this@isNullOrEmpty != null)
-//    }
-//
-//    return this == null || this.length == 0
-//}
-
-/**
- * Returns `true` if this nullable char sequence is neither `null` nor empty.
- */
-@UselessCallOnNotNullType
-@JvmSynthetic
-@InlineOnly
-inline fun CharSequence?.isNotNullOrEmpty():Boolean {
-	contract {
-		returns(true) implies (this@isNotNullOrEmpty != null)
-	}
-	return this != null && this.length != 0
-}
-
-/**
- * Returns `true` if this nullable char sequence is neither `null` nor empty.
- */
-@UselessCallOnNotNullType
-@JvmSynthetic
-@InlineOnly
-inline fun CharSequence?.isNotNullOrBlank():Boolean {
-	contract {
-		returns(true) implies (this@isNotNullOrBlank != null)
-	}
-	return this != null && !this.isBlank()
-}
-
-
-/**判断当前字符串是否仅包含字母，且不为空/空白字符串。*/
-@UnstableImplementationApi
-fun CharSequence.isAlphabetic():Boolean {
-	return this matches "[a-zA-Z]+".toRegex()
-}
-
-/**判断当前字符串是否仅包含数字，且不为空/空白字符串。*/
-@UnstableImplementationApi
-fun CharSequence.isNumeric():Boolean {
-	return this matches "[1-9]+".toRegex()
-}
-
-/**判断当前字符串是否仅包含字母、数字和下划线，且不为空/空白字符串。*/
-@UnstableImplementationApi
-fun CharSequence.isAlphanumeric():Boolean {
-	return this matches "[1-9a-zA-Z_]+".toRegex()
-}
-//endregion
-
-//region Prefix and suffix extensions
-/**判断当前字符串是否以指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefix:CharSequence):Boolean {
-	return this.startsWith(prefix, false)
-}
-
-/**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIgnoreCase(prefix:CharSequence):Boolean {
-	return this.startsWith(prefix, true)
-}
-
-/**判断当前字符串是否以任意指定前缀开头。*/
-inline infix fun CharSequence.startsWith(prefixes:Array<out CharSequence>):Boolean {
-	return prefixes.any { this.startsWith(it, false) }
-}
-
-/**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-inline infix fun CharSequence.startsWithIgnoreCase(prefixes:Array<out CharSequence>):Boolean {
-	return prefixes.any { this.startsWith(it, true) }
-}
-
-/**判断当前字符串是否以指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixes:CharSequence):Boolean {
-	return this.endsWith(suffixes, false)
-}
-
-/**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIgnoreCase(suffix:CharSequence):Boolean {
-	return this.endsWith(suffix, true)
-}
-
-/**判断当前字符串是否以任意指定后缀结尾。*/
-inline infix fun CharSequence.endsWith(suffixes:Array<out CharSequence>):Boolean {
-	return suffixes.any { this.endsWith(it, false) }
-}
-
-/**判断当前字符串是否以任意指定后缀结尾。忽略大小写。*/
-inline infix fun CharSequence.endsWithIgnoreCase(suffixes:Array<out CharSequence>):Boolean {
-	return suffixes.any { this.endsWith(it, true) }
-}
-
-
-/**判断当前字符串是否以指定前缀开始且以指定后缀结尾。默认不忽略大小写。*/
-fun CharSequence.surroundsWith(prefix:Char, suffix:Char, ignoreCase:Boolean = false):Boolean {
-	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
-}
-
-/**判断当前字符串是否以指定前后缀开头和结尾。默认不忽略大小写。*/
-fun CharSequence.surroundsWith(delimiter:Char, ignoreCase:Boolean = false):Boolean {
-	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
-}
-
-/**判断当前字符串是否以指定前缀开始且以指定后缀结尾。默认不忽略大小写。*/
-fun CharSequence.surroundsWith(prefix:CharSequence, suffix:CharSequence, ignoreCase:Boolean = false):Boolean {
-	return this.startsWith(prefix, ignoreCase) && this.endsWith(suffix, ignoreCase)
-}
-
-/**判断当前字符串是否以指定前后缀开头和结尾。默认不忽略大小写。*/
-fun CharSequence.surroundsWith(delimiter:CharSequence, ignoreCase:Boolean = false):Boolean {
-	return this.startsWith(delimiter, ignoreCase) && this.endsWith(delimiter, ignoreCase)
-}
-
-
-
-/**为当前字符序列添加指定的前缀。如果已存在，则返回自身。*/
-fun CharSequence.addPrefix(prefix:CharSequence):CharSequence {
-	if(this.startsWith(prefix)) return this
-	return "$prefix$this"
-}
-
-/**为当前字符序列添加指定的后缀。如果已存在，则返回自身。*/
-fun CharSequence.addSuffix(suffix:CharSequence):CharSequence {
-	if(this.endsWith(suffix)) return this
-	return "$this$suffix"
-}
-
-/**为当前字符序列添加指定的前后缀。如果已存在，则返回自身。*/
-fun CharSequence.addSurrounding(delimiter:CharSequence):CharSequence {
-	return this.addSurrounding(delimiter, delimiter)
-}
-
-/**为当前字符序列添加指定的前缀和后缀。如果已存在，则返回自身。*/
-fun CharSequence.addSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
-	if(this.startsWith(prefix) && this.endsWith(suffix)) return this
-	return "$prefix$this$suffix"
-}
-
-
-/**为当前字符串添加指定的前缀。如果已存在，则返回自身。*/
-fun String.addPrefix(prefix:CharSequence):String {
-	if(this.startsWith(prefix)) return this
-	return "$prefix$this"
-}
-
-/**为当前字符串添加指定的后缀。如果已存在，则返回自身。*/
-fun String.addSuffix(suffix:CharSequence):String {
-	if(this.endsWith(suffix)) return this
-	return "$this$suffix"
-}
-
-/**为当前字符串添加指定的前后缀。如果已存在，则返回自身。*/
-fun String.addSurrounding(delimiter:CharSequence):String {
-	return this.addSurrounding(delimiter, delimiter)
-}
-
-/**为当前字符串添加指定的前缀和后缀。如果已存在，则返回自身。*/
-fun String.addSurrounding(prefix:CharSequence, suffix:CharSequence):String {
-	if(this.startsWith(prefix) && this.endsWith(suffix)) return this
-	return "$prefix$this$suffix"
-}
-
-
-/**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun CharSequence.setPrefix(prefix:CharSequence):CharSequence {
-	if(this.length < prefix.length) return this
-	return "$prefix${this.substring(prefix.length, this.length)}"
-}
-
-/**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun CharSequence.setSuffix(suffix:CharSequence):CharSequence {
-	if(this.length < suffix.length) return this
-	return "${this.substring(this.length - suffix.length)}$suffix"
-}
-
-/**为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun CharSequence.setSurrounding(delimiter:CharSequence):CharSequence {
-	return this.setSurrounding(delimiter, delimiter)
-}
-
-/**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun CharSequence.setSurrounding(prefix:CharSequence, suffix:CharSequence):CharSequence {
-	if(this.length < prefix.length + suffix.length) return this
-	return "$prefix${this.substring(prefix.length, this.length - suffix.length)}$suffix"
-}
-
-
-/**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun String.setPrefix(prefix:CharSequence):String {
-	if(this.length < prefix.length) return this
-	return "$prefix${this.drop(prefix.length)}"
-}
-
-/**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun String.setSuffix(suffix:CharSequence):String {
-	if(this.length < suffix.length) return this
-	return "${this.dropLast(suffix.length)}$suffix"
-}
-
-/**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun String.setSurrounding(delimiter:CharSequence):String {
-	return this.setSurrounding(delimiter, delimiter)
-}
-
-/**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
-fun String.setSurrounding(prefix:CharSequence, suffix:CharSequence):String {
-	if(this.length < prefix.length + suffix.length) return this
-	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
-}
 //endregion
 
 //region Replace extensions
-/**根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-fun String.replaceIn(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + 1, lastIndex, replacement)
-}
-
-/**根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-fun String.replaceIn(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + prefix.length, lastIndex, replacement)
-}
-
-/**根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-fun String.replaceInLast(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
-	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
-	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + 1, lastIndex, replacement)
-}
-
-/**根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-fun String.replaceInLast(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
-	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
-	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + prefix.length, lastIndex, replacement)
-}
-
-/**根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-@UnstableImplementationApi
-fun String.replaceInEntire(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + 1, lastIndex, replacement)
-}
-
-/**根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。*/
-@JvmOverloads
-@UnstableImplementationApi
-fun String.replaceInEntire(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
-	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
-	return replaceRange(index + prefix.length, lastIndex, replacement)
-}
-
-
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
 inline fun CharSequence.replaceIndexed(oldChar:Char, ignoreCase:Boolean = false, newChar:(Int) -> Char):String {
@@ -571,6 +535,7 @@ inline fun CharSequence.replaceIndexed(oldValue:String, ignoreCase:Boolean = fal
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmOverloads
+@UnstableImplementationApi
 fun String.replaceAll(oldChars:CharArray, newChars:CharArray, ignoreCase:Boolean = false):String {
 	val size = minOf(oldChars.size, newChars.size)
 	var result = this
@@ -582,6 +547,7 @@ fun String.replaceAll(oldChars:CharArray, newChars:CharArray, ignoreCase:Boolean
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmOverloads
+@UnstableImplementationApi
 fun String.replaceAll(oldValues:Array<String>, newValues:Array<String>, ignoreCase:Boolean = false):String {
 	val size = minOf(oldValues.size, newValues.size)
 	var result = this
@@ -617,34 +583,140 @@ tailrec fun CharSequence.replaceLooped(regex:Regex, transform:(MatchResult) -> C
 		newString
 	}
 }
-//endregion
 
-//region Susbstring extensions
-///**
-// * Returns a substring before the first occurrence of [delimiter].
-// * If the string does not contain the delimiter, returns [missingDelimiterValue] which defaults to the original string.
-// */
-//public fun String.substringBefore(delimiter: Char, missingDelimiterValue: String = this): String {
-//    val index = indexOf(delimiter)
-//    return if (index == -1) missingDelimiterValue else substring(0, index)
-//}
-//
-///**
-// * Returns a substring before the first occurrence of [delimiter].
-// * If the string does not contain the delimiter, returns [missingDelimiterValue] which defaults to the original string.
-// */
-//public fun String.substringBefore(delimiter: String, missingDelimiterValue: String = this): String {
-//    val index = indexOf(delimiter)
-//    return if (index == -1) missingDelimiterValue else substring(0, index)
-//}
 
-fun String.substringIn(prefix:Char,suffix:Char,missingDelimiterValue: String):String{
-	TODO()
+/**
+ * 根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceIn(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + 1, lastIndex, replacement)
 }
 
 /**
- * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
- * 不包含分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
+ * 根据指定的前后缀，替换首个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceIn(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
+}
+
+/**
+ * 根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceInLast(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	return  replaceRange(index + 1, lastIndex, replacement)
+}
+
+/**
+ * 根据指定的前后缀，替换最后一个符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceInLast(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
+}
+
+/**
+ * 根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceInEntire(prefix:Char, suffix:Char, replacement:String, missingDelimiterValue:String = this):String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + 1, lastIndex, replacement)
+}
+
+/**
+ * 根据指定的前后缀，替换最大范围的符合条件的子字符串，如果找不到前缀或后缀，则替换为默认值。
+ * 默认值默认为当前字符串自身。
+ */
+@JvmOverloads
+fun String.replaceInEntire(prefix:String, suffix:String, replacement:String, missingDelimiterValue:String = this):String {
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
+	return replaceRange(index + prefix.length, lastIndex, replacement)
+}
+//endregion
+
+//region Substring extensions
+/**
+ * 根据指定的前后缀，得到首个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringIn(prefix:Char,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+1,suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到首个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringIn(prefix:String,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+prefix.length,suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最后一个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringInLast(prefix:Char,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+1,suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最后一个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringInLast(prefix:String,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+prefix.length,suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最大范围的符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringInEntire(prefix:Char,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+1,suffixIndex)
+}
+
+/**
+ * 根据指定的前后缀，得到最大范围的符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
+ * 默认值默认为当前字符串自身。
+ */
+fun String.substringInEntire(prefix:String,suffix:Char,missingDelimiterValue: String):String{
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	return substring(prefixIndex+prefix.length,suffixIndex)
+}
+
+
+/**
+ * 根据以null隔离的从前往后和从后往前的分隔符，匹配并按顺序得到当前字符串的子字符串。
+ * 不包含对应的分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
  */
 @NotOptimized
 fun String.substringMatch(vararg delimiters:String?, defaultValue:((Int, String) -> String)? = null):List<String> {
@@ -674,6 +746,39 @@ fun String.substringMatch(vararg delimiters:String?, defaultValue:((Int, String)
 		}
 	}
 	return result
+}
+//endregion
+
+//region Truncate extensions
+/**
+ * 根据指定的限定长度和截断符截断当前字符串。
+ * 截断符默认为`"..."`。
+ */
+fun String.truncate(limit:Int, truncated:CharSequence = "..."):String {
+	return if(this.length <= limit) this else this.take(limit) + truncated
+}
+//endregion
+
+//region Split extensions
+/**
+ * 根据指定分隔符、前缀、后缀以及可选的转换方法，按顺序分割当前字符串。
+ * 可以另外指定限定数量和省略字符串。
+ */
+@NotOptimized
+fun String.splitToStrings(separator:CharSequence = ", ", prefix:CharSequence = "", postfix:CharSequence = "",
+	limit:Int = -1, truncated:CharSequence = "...", transform:((String) -> String)? = null):List<String> {
+	//前缀索引+前缀长度，或者为0
+	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
+	//后缀索引，或者为length
+	val suffixIndex = lastIndexOf(postfix.toString()).let { if(it == -1) length else it }
+	//内容，需要继续分割和转换
+	val content = substring(prefixIndex, suffixIndex)
+	val strings = when(limit) {
+		-1 -> content.split(separator.toString())
+		0 -> listOf()
+		else -> content.split(separator.toString(), limit = limit+1).dropLast(1) + truncated.toString()
+	}
+	return if(transform == null) strings else strings.map(transform)
 }
 //endregion
 
@@ -725,7 +830,7 @@ fun String.unescapeBy(type:EscapeType, omitBackslashes:Boolean = true):String {
 }
 //endregion
 
-//region Regex based handle extensions
+//region Match type, letter case and reference case extensions
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
 fun String.toRegexBy(type:MatchType):Regex {
 	return type.regexTransform(this).toRegex()
@@ -783,29 +888,29 @@ fun String.switchCaseBy(case:DisplayCase):String {
 }
 //endregion
 
-//region Raw string extensions
-///**
-// * 将当前字符串转为内联文本。
-// * @see com.windea.breezeframework.core.extensions.trimWrap
-// */
-//inline val String.inline:String get() = this.trimWrap()
+//region Raw string convert extensions
+/**
+ * 将当前字符串转为内联文本。
+ * @see com.windea.breezeframework.core.extensions.trimWrap
+ */
+inline fun String.inline(): String = this.trimWrap()
 
-///**
-// * 将当前字符串转为多行文本。
-// * @see kotlin.text.trimIndent
-// */
-//inline val String.multiline:String get() = this.trimIndent()
+/**
+ * 将当前字符串转为多行文本。
+ * @see kotlin.text.trimIndent
+ */
+inline fun String.multiline(): String = this.trimIndent()
+
+private val trimWrapRegex = """\s*\R\s*""".toRegex()
 
 /**
  * 去除当前字符串中的所有换行符以及换行符周围的空白。
  */
-fun String.trimWrap():String {
-	return this.remove("""\s*(\r|\n|\r\n)\s*""".toRegex())
-}
+fun String.trimWrap():String = this.remove(trimWrapRegex)
 
 /**
  * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
- * 相对缩进长度默认为0。
+ * 相对缩进长度默认为0。使用负数表示`"\t"`。
  */
 @JvmOverloads
 fun String.trimRelativeIndent(relativeIndentSize:Int = 0):String {
@@ -821,18 +926,14 @@ fun String.trimRelativeIndent(relativeIndentSize:Int = 0):String {
 
 //region Convert extensions
 /**将当前字符串转化为字符。如果转化失败，则抛出异常。这个方法由[String.single]委托实现。*/
-inline fun String.toChar():Char {
-	return this.single()
-}
+inline fun String.toChar():Char =  this.single()
 
 /**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.single]委托实现。*/
-inline fun String.toCharOrNull():Char? {
-	return this.singleOrNull()
-}
+inline fun String.toCharOrNull():Char? = this.singleOrNull()
 
+//性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
 inline fun <reified T : Number> String.toNumber(radix:Int = 10):T {
-	//性能：大约为1/5
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt(radix) as T
 		"java.lang.Long" -> this.toLong(radix) as T
@@ -846,9 +947,9 @@ inline fun <reified T : Number> String.toNumber(radix:Int = 10):T {
 	}
 }
 
+//性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。*/
 inline fun <reified T : Number> String.toNumberOrNull(radix:Int = 10):T? {
-	//性能：大约为1/5
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toIntOrNull(radix) as T?
 		"java.lang.Long" -> this.toLongOrNull(radix) as T?
@@ -864,46 +965,44 @@ inline fun <reified T : Number> String.toNumberOrNull(radix:Int = 10):T? {
 
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
-inline fun <reified T : Enum<T>> String.toEnumValue(ignoreCase:Boolean = false):T {
-	return enumValues<T>().first { it.toString().equals(this, ignoreCase) }
-}
+inline fun <reified T : Enum<T>> String.toEnumValue():T = enumValues<T>().first { it.toString() == this }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
-inline fun <reified T : Enum<T>> String.toEnumValueOrNull(ignoreCase:Boolean = false):T? {
-	return enumValues<T>().firstOrNull { it.toString().equals(this, ignoreCase) }
-}
+inline fun <reified T : Enum<T>> String.toEnumValueOrNull():T? = enumValues<T>().firstOrNull { it.toString() == this }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
-@JvmOverloads
-fun <T> String.toEnumValue(type:Class<T>, ignoreCase:Boolean = false):T {
-	requireNotNull(type.isEnum) { "$type is not an enum class." }
-
-	return type.enumConstants.first { it.toString().equals(this, ignoreCase) }
+fun <T> String.toEnumValue(type:Class<T>):T {
+	require(type.isEnum) { "'$type' is not an enum class." }
+	return type.enumConstants.first { it.toString() == this }
 }
 
 /**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
-@JvmOverloads
-fun <T> String.toEnumValueOrNull(type:Class<T>, ignoreCase:Boolean = false):T? {
-	requireNotNull(type.isEnum) { "$type is not an enum class." }
-
-	return type.enumConstants.firstOrNull { it.toString().equals(this, ignoreCase) }
+fun <T> String.toEnumValueOrNull(type:Class<T>):T? {
+	require(type.isEnum) { "'$type' is not an enum class." }
+	return type.enumConstants.firstOrNull { it.toString() == this }
 }
 
 
-/**将当前字符串转化为字符范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
-fun String.toCharRange():CharRange {
-	return this.toRangePair().let { (a, b, l, r) -> a.toChar() + l..b.toChar() + r }
-}
+/**
+ * 将当前字符串转化为字符范围。如果转化失败，则抛出异常。
+ *
+ * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
+ */
+fun String.toCharRange():CharRange = this.toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
 
-/**将当前字符串转化为整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
-fun String.toIntRange():IntRange {
-	return this.toRangePair().let { (a, b, l, r) -> a.toInt() + l..b.toInt() + r }
-}
+/**
+ * 将当前字符串转化为整数范围。如果转化失败，则抛出异常。
+ *
+ * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
+ */
+fun String.toIntRange():IntRange = this.toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
 
-/**将当前字符串转化为长整数范围。如果转化失败，则抛出异常。支持的格式包括`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`等。*/
-fun String.toLongRange():LongRange {
-	return this.toRangePair().let { (a, b, l, r) -> a.toLong() + l..b.toLong() + r }
-}
+/**
+ * 将当前字符串转化为长整数范围。如果转化失败，则抛出异常。
+ *
+ * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
+ */
+fun String.toLongRange():LongRange = this.toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
 
 private val rangeDelimiters = arrayOf("..", "-", "~")
 
@@ -957,16 +1056,19 @@ inline fun String.toDate(format:String = "yyyy-MM-dd HH:mm:ss"):Date = SimpleDat
 
 /**将当前字符串转化为本地日期。*/
 @JvmOverloads
-inline fun CharSequence.toLocalDate(formatter:DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE):LocalDate =
-	LocalDate.parse(this, formatter)
+inline fun CharSequence.toLocalDate(formatter:DateTimeFormatter = ISO_LOCAL_DATE):LocalDate = LocalDate.parse(this, formatter)
 
 /**将当前字符串转化为本地日期时间。*/
 @JvmOverloads
-inline fun CharSequence.toLocalDateTime(formatter:DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME):LocalDateTime =
-	LocalDateTime.parse(this, formatter)
+inline fun CharSequence.toLocalDateTime(formatter:DateTimeFormatter = ISO_LOCAL_DATE_TIME):LocalDateTime = LocalDateTime.parse(this, formatter)
 
 /**将当前字符串转化为本地时间。*/
 @JvmOverloads
-inline fun CharSequence.toLocalTime(formatter:DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME):LocalDateTime =
-	LocalDateTime.parse(this, formatter)
+inline fun CharSequence.toLocalTime(formatter:DateTimeFormatter = ISO_LOCAL_TIME):LocalDateTime = LocalDateTime.parse(this, formatter)
+
+
+/**将当前字符串解码为base64格式的字节数组。*/
+fun String.decodeToBase64ByteArray():ByteArray {
+	return Base64.getDecoder().decode(this)
+}
 //endregion

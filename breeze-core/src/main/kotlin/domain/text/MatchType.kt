@@ -49,7 +49,7 @@ enum class MatchType(
 		pattern.escapeRegex()
 			.replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
 			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
-			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
+			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r.value}\\Q" } }
 			.trimRegex()
 	}),
 
@@ -77,8 +77,8 @@ enum class MatchType(
 		pattern.escapeRegex()
 			.replace("?", "\\E.\\Q").replace("**", "\\E.*\\Q")
 			.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*\\Q") }
-			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r[0]}\\Q" } }
-			.replace("\\{(.*?)}".toRegex()) { r -> r[1].split(",").joinToString("|", "\\E(", ")\\Q") { it.trim() } }
+			.transformIn("\\Q", "\\E") { it.replace("\\[.*?]".toRegex()) { r -> "\\E${r.value}\\Q" } }
+			.replace("\\{(.*?)}".toRegex()) { r -> r.groupValues[1].split(",").joinToString("|", "\\E(", ")\\Q") { it.trim() } }
 			.trimRegex()
 	}),
 
@@ -105,8 +105,8 @@ enum class MatchType(
 		pattern.escapeRegex()
 			.replace("/(?:\\[]|-|\\[[^/]*?])".toRegex()) { "/\\E\\d+\\Q" }
 			.replace("/(?:\\{}|\\{[^/]*?})".toRegex()) { "/\\E[^/]*\\Q" }
-			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { "/\\E${Regex.fromRange(it[1].toInt(), it[2].toInt())}\\Q" }
-			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r[1]}\\Q" } }
+			.replace("/(\\d+)(?:\\.\\.|-)(\\d+)".toRegex()) { "/\\E${Regex.fromRange(it.groupValues[1].toInt(), it.groupValues[2].toInt())}\\Q" }
+			.transformIn("\\Q", "\\E") { it.replace("/re:([^/]*)".toRegex()) { r -> "/\\E${r.groupValues[1]}\\Q" } }
 			.trimRegex()
 	});
 

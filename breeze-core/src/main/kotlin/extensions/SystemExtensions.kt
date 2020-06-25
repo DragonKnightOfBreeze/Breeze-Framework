@@ -71,12 +71,12 @@ inline fun execBlocking(vararg environmentVariables: String, workDirectory: File
 }
 
 
-/**循环扫描命令行的下一行输入命令，以执行相应的操作。默认的退出命令是"exit"且不区分大小写。*/
+/**循环扫描命令行的下一个输入命令，以执行相应的操作。默认的退出命令是"exit"且不区分大小写。*/
 @UnstableImplementationApi
 @JvmSynthetic
 inline fun executeCommand(exitCommand: String = "exit", block: (String) -> Unit) {
 	val scanner = Scanner(System.`in`)
-	val command = scanner.nextLine()
+	val command = scanner.next()
 	while(true) {
 		if(command equalsIgnoreCase exitCommand) exitProcess(0)
 		block(command)

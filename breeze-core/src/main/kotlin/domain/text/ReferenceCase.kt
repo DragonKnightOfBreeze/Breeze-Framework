@@ -68,17 +68,18 @@ enum class ReferenceCase(
 	 * * `"$.Category.[0].Name"`
 	 */
 	JsonReference(
-		{ it.removePrefix("$.").split('.').dropEmpty().map { s -> s.removeSurrounding("[", "]") } },
-		{ it.removePrefix("$.").splitToSequence('.').dropEmpty().map { s -> s.removeSurrounding("[", "]") } },
-		{ it.joinToString(".", "$.").wrapIndex() },
-		{ it.joinToString(".", "$.").wrapIndex() },
-		"""\$\..*""".toRegex() //不进行严格验证
+		{ it.removePrefix("$").split('.').dropEmpty().map { s -> s.removeSurrounding("[", "]") } },
+		{ it.removePrefix("$").splitToSequence('.').dropEmpty().map { s -> s.removeSurrounding("[", "]") } },
+		{ it.joinToString(".", "$").wrapIndex() },
+		{ it.joinToString(".", "$").wrapIndex() },
+		"""\$.*""".toRegex() //不进行严格验证
 	),
 
 	/**未知的引用格式。*/
 	Unknown;
 
 	companion object {
-		private fun String.wrapIndex() = this.replace("""\d+""".toRegex(), "[$0]")
+		private val wrapIndexRegex = """\d+""".toRegex()
+		private fun String.wrapIndex() = this.replace(wrapIndexRegex, "[$0]")
 	}
 }
