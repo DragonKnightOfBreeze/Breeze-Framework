@@ -380,6 +380,7 @@
 * [X] 添加`String.replaceIn`相关扩展
 * [X] 重构和添加`String.truncate`相关扩展
 * [X] 重构`breeze-dsl`的代码。
+* [X] 添加`String.isXxx`等扩展。
 * [ ] 重构和添加`String.replaceMatch`、`String.substringMatch`扩展
 
 # 长期

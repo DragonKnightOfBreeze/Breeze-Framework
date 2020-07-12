@@ -47,7 +47,7 @@ class StringExtensionsTest {
 
 	@Test
 	fun quoteTest() {
-		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"',false))
+		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"', false))
 		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(false))
 	}
 
@@ -91,18 +91,43 @@ class StringExtensionsTest {
 	}
 
 	@Test
-	fun formatTest(){
+	fun formatTest() {
 		assertEquals(
 			"hello world!",
-			"hello {}!".formatBy(FormatType.Log,"world")
+			"hello {}!".formatBy(FormatType.Log, "world")
 		)
 		assertEquals(
 			"hello world, hello java!",
-			"hello {0}, hello {1}!".formatBy(FormatType.Indexed ,"world","java")
+			"hello {0}, hello {1}!".formatBy(FormatType.Indexed, "world", "java")
 		)
 		assertEquals(
 			"hello world, hello java!",
-			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named ,"arg1" to  "world","arg2" to "java")
+			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named, "arg1" to "world", "arg2" to "java")
 		)
 	}
+
+	//[https, localhost, 8080, www.bilibili.com, foo/bar, name=Windea]
+	@Test
+	fun substringMatchTest() {
+		val url = "https://localhost:8080/www.bilibili.com/foo/bar?name=Windea"
+		val result = url.substringMatch("://", ":", "/", "/", null, "?") { i, s ->
+			arrayOf("", "", "", s, s, "")[i]
+		}
+		println(result)
+	}
+
+	//@Test
+	//fun substringMatchTest2() {
+	//	comparePerformance(1000000, {
+	//		val url = "https://localhost:8080/www.bilibili.com/foo/bar?name=Windea"
+	//		url.substringMatch("://", ":", "/", "/", null, "?") { i, s ->
+	//			arrayOf("", "", "", s, s, "")[i]
+	//		}
+	//	}, {
+	//		val url = "https://localhost:8080/www.bilibili.com/foo/bar?name=Windea"
+	//		url.substringMatch1("://", ":", "/", "/", null, "?") { i, s ->
+	//			arrayOf("", "", "", s, s, "")[i]
+	//		}
+	//	}).also { println(it) }
+	//}
 }
