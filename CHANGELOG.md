@@ -397,6 +397,7 @@
   * [ ] `<Collection>.getOrElseBr`
   * [ ] `<Collection>.getOrDefaultBr`
   * [ ] `<Collection>.setBr`
+  * [ ] `<Collection>.queryBr`
 
 # 长期
 
