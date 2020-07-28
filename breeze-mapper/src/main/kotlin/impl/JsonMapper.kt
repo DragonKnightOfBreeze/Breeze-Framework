@@ -10,7 +10,7 @@ map
 * 解释器模式
 
 unmap
-* splitToStrings + when条件分支 + 递归转换（不支持多层结构）
+* split + when条件分支 + 递归转换（不支持多层结构）
 * 解释器模式（比较复杂）
 
 */
@@ -175,14 +175,14 @@ class JsonMapper(
 
 	private fun String.unmapJsonBoolean() = this.toBoolean()
 
-	private fun String.unmapJsonNumber():Number = if(this.contains(".")) this.toDouble() else this.toInt()
+	private fun String.unmapJsonNumber(): Number = if(this.contains(".")) this.toDouble() else this.toInt()
 
 	private fun String.unmapJsonString() = this.unquote()
 
-	private fun String.unmapJsonObject() = this.splitToStrings(",","{","}")
-		.map { it.unmapJsonKey() to  it.unmapJsonValue()}
+	private fun String.unmapJsonObject() = this.split(",", "{", "}")
+		.map { it.unmapJsonKey() to it.unmapJsonValue() }
 
-	private fun String.unmapJsonArray() = this.splitToStrings(",","[","]")
+	private fun String.unmapJsonArray() = this.split(",", "[", "]")
 		.map { it.trim() }
 
 	private fun String.unmapJsonKey() = this.substringBefore(":").trim().unquote()

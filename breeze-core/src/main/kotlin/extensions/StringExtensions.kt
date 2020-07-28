@@ -738,39 +738,6 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
 	val lastIndex = (substring(index).lastIndexOf(suffix) + index).ifMissing { return missingDelimiterValue }
 	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
-
-
-///**
-// * 根据以null划分的从前往后和从后往前的分隔符，匹配并按顺序替换当前字符串的子字符串。
-// * 不包含对应的分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
-// */
-//@JvmOverloads
-//fun String.replaceMatch(vararg delimiters: String?, replacement: ((Int, String) -> String)? = null): String {
-//	var beforeSeparator = true
-//	val lastIndex = delimiters.lastIndex -1
-//	var result = this
-//	for((index, delimiter) in delimiters.withIndex()) {
-//		when {
-//			delimiter == null -> {
-//				require(beforeSeparator) { "There should be at most one null value as separator in delimiters." }
-//				beforeSeparator = false
-//			}
-//			beforeSeparator -> {
-//				//val string1 = string.replaceBefore(delimiter, defaultValue?.invoke(index, string).orEmpty())
-//				//val string2 = string.substringAfter(delimiter, defaultValue?.invoke(index, string).orEmpty())
-//				//result += string1
-//				//if(index == lastIndex) result += string2 else string = string2
-//			}
-//			else -> {
-//				//val string1 = string.substringBeforeLast(delimiter, defaultValue?.invoke(index, string).orEmpty())
-//				//val string2 = string.substringAfterLast(delimiter, defaultValue?.invoke(index, string).orEmpty())
-//				//result += string1
-//				//if(index == lastIndex) result += string2 else string = string2
-//			}
-//		}
-//	}
-//	return result
-//}
 //endregion
 
 //region Align extensions
