@@ -4,7 +4,7 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-Integrated code framework based on Kotlin,
+Integrated code framework written by Kotlin,
 provides many useful extensions for standard library and some frameworks.
 What it can do is more than what you think it can do.
 
@@ -19,17 +19,18 @@ NOTE：
 ## breeze-core
 
 * Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
-  * Including some extra operator extensions for String, Collections. (e.g, `String.times`, `Collection.div`.)
-  * Including some extended infix extensions for String, Collections. (e.g, `String.startsWith`, `Iterable.allIn`.)
-  * Including some powerful handle extensions for String. (e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.)
-  * Including some deep operation extensions for Collection. (e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.)
-  * Including some convert extensions for Number, String etc. (e.g, `String.toFile`, `String.toEnumValue`.)
+  * Including some extra operator extensions for String, Collections. e.g, `String.times`, `Collection.div`.
+  * Including some extended infix extensions for String, Collections. e.g, `String.startsWith`, `Iterable.allIn`.
+  * Including some powerful handle extensions for String. e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
+  * Including some deep operation extensions for Collection. e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.
+  * Including some deep operation extensions for Tuple. e.g, `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
+  * Including some convert extensions for Number, String etc. e.g, `String.toFile`, `String.toEnumValue`.
 * Provide global extensions missing in stdlib.
-  * Including some todo extensions. (e.g, `FIXME`, `DELAY`.)
-  * Including some scope extensions. (e.g, `once`, `tryOrPrint`, `tryOrIgnore`.)
-  * Including some useful extension associated to type. (e.g, `javaTypeOf<T>()`, `cast<T>()`)
+  * Including some todo extensions. e.g, `FIXME`, `DELAY`.
+  * Including some scope extensions. e.g, `once`, `tryOrPrint`, `tryOrIgnore`.
+  * Including some useful extension associated to type. e.g, `javaTypeOf<T>()`, `cast<T>()`
 * Provide basic annotations, consts, enums and interfaces maybe useful.
-* Provide generator extensions for `equals`, `hashcode` and `toString`. (e,g, `equalsBy`, `equalsByOne`)
+* Provide generator extensions for `equals`, `hashcode` and `toString`. e,g, `equalsBy`, `equalsByOne`
 
 ## breeze-dsl
 
@@ -40,7 +41,7 @@ NOTE：
 
 ## breeze-functional
 
-* Provide functional extensions for Functions. (e.g, `curried`, `partial`, `compose`.)
+* Provide functional extensions for Functions. e.g, `curried`, `partial`, `compose`.
 * Provide functional extensions for Functions from 0 to 11 parameters.
 
 ## breeze-generator
@@ -71,23 +72,23 @@ NOTE：
 
 ## breeze-mapper
 
-* Provide some useful extensions for data mapping. (e.g, `mapObject`, `unmapObject`)
+* Provide some useful extensions for data mapping. e.g, `mapObject`, `unmapObject`.
 * Provide lightweight, individual but enough powerful mappers for data serialization.
 * Provide basic implementations such as `JsonMapper`, `YamlMapper`.
 * DO NOT FULLY IMPLEMENTED.
 
 ## breeze-reflect
 
-* Provide some useful extensions for kotlin reflect & java reflect. (e.g, `checkClassForName`, `nameOf`.)
+* Provide some useful extensions for kotlin reflect & java reflect. e.g, `checkClassForName`, `nameOf`.
 
 ## breeze-serialization
 
-* Provide serializers for common kotlin type. (e.g, `RangeSerializer`)
+* Provide serializers for common kotlin type. e.g, `RangeSerializer`.
 * DO NOT FULLY IMPLEMENTED.
 
 ## breeze-serializer
 
-* Provide some useful extensions for data serialization. (e.g, `serialize`, `deserialize`)
+* Provide some useful extensions for data serialization. e.g, `serialize`, `deserialize`.
 * Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
 
 ## breeze-spring-boot
@@ -97,8 +98,8 @@ NOTE：
 ## breeze-time
 
 * Provide some useful extensions for time, including `Date`, `Temporal`, etc.
-* Including necessary dsl-like extensions. (e.g, `20.minutes`, `20.minutes.ago`.)
-* Including necessary convenient check extensions. (e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.)
+* Including necessary dsl-like extensions. e.g, `20.minutes`, `20.minutes.ago`.
+* Including necessary convenient check extensions. e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.
 
 # Reference
 
@@ -162,4 +163,6 @@ implementation("com.windea.breezeframework:$module:$version")
 # Example
 
 See:
-* [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/ExampleTest.kt)
+
+* [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)
+

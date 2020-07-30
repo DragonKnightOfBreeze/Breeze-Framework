@@ -17,15 +17,18 @@
 ## breeze-core
 
 为Kotlin标准库补充功能和扩展，并且提供许多日常项目开发中经常用到的工具和扩展。例如：
-* 额外的运算符重载方法。如`String.minus`、`String.times`、`String.div`。
+
+* 额外的运算符重载方法。如`String.minus`、`String.times`和`String.div`。
 * 额外的类型转换方法。如`String.toFile`、`String.toLocalDateTime`和`String.toIntRange`。
-* 额外的字符串处理方法。如`String.quote`、`String.escapeBy`和`String.switchCaseBy`。
+* 额外的字符串处理方法。如`String.quote`、`String.escapeBy`、`String.switchCaseBy`。
 * 额外的集合操作方法。如`List.bind`、`List.deepGet`、`List.deepSet`和`List.deepQuery`。
+* 额外的元组操作方法。如`Tuple.map`、`Tuple.toList`和`Tuple.toRange`。
 * 用于委托实现`equals`、`hashCode`和`toString`的工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`和`toStringByReference`。
 
 ## breeze-dsl
 
 提供简洁而灵活的领域特定语言的api，为常见的标记语言提供支持，便于生成对应的文本，并允许进行充分的配置。例如：
+
 * `Xml`、`Markdown`、`Creole`等标记语言。
 * `Mermaid`、`Flow`、`Sequence`等绘图语言。
 * 其他一些特殊格式的文本。
@@ -33,6 +36,7 @@
 ## breeze-functional
 
 提供一些函数式编程中可能用到的扩展方法。支持0到11个参数的函数。例如：
+
 * 用于柯里化/反柯里化当前函数的`curried`和`uncurried`方法。
 * 用于反转当前函数的参数的`reversed`方法。
 * 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
@@ -41,6 +45,7 @@
 ## breeze-generator
 
 **［有待完善］** 提供一些具有特定用途的生成器。例如：
+
 * 用于生成各种格式的链接的`UrlGenerator`。
 * 用于生成扩展Json Schema的`JsonSchemaGenerator`。
 
@@ -63,18 +68,21 @@
 ## breeze-logger
 
 **［有待完善］** 提供简单而独立的日志器的api，并允许进行充分的配置。例如：
+
 * 包含了一般日志信息的`SimpleLogger`。
 * 可以输出彩色的控制台文本的`ColorfulLogger`。
 
 ## breeze-mapper
 
 **［有待完全实现］** 提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
+
 * 用于映射和反映射对象的`ObjectMapper`。
 * 用于映射常见标记语言的`JsonMapper`、`YamlMapper`、`XmlMapper`和`PropertiesMapper`。
 
 ## breeze-reflect
 
 为Java反射和Kotlin反射补充功能和扩展。例如：
+
 * 直接得到类型、对象、属性、方法的名字的`nameOf`方法。
 * 直接得到Java类型的`javaTypeOf`方法。
 * 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
@@ -101,6 +109,7 @@
 ## breeze-time
 
 为Java的时间api补充功能和扩展。
+
 * 支持传统的时间api。包括`Date`、`Calendar`等。
 * 支持Java8的时间api。包括`LocalDate`、`LocalDateTime`等。
 * 为数字类型提供额外的属性，用于生成时间。如`1.seconds`、`2.minutes`和`3.years`。
@@ -168,4 +177,6 @@ implementation("com.windea.breezeframework:$module:$version")
 # 示例
 
 参见：
-* [ExampleTest.kt](breeze-core/src/test/kotlin/com/windea/breezeframework/core/ExampleTest.kt)
+
+* [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)
+

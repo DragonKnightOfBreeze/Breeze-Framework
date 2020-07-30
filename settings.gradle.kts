@@ -1,7 +1,7 @@
-rootProject.name = "breeze-framework"
 include(
 	"breeze-core",
 	"breeze-dsl",
+	"breeze-dsl:breeze-dsl-bbcode",
 	"breeze-dsl:breeze-dsl-command-line",
 	"breeze-dsl:breeze-dsl-creole",
 	"breeze-dsl:breeze-dsl-critic-markup",

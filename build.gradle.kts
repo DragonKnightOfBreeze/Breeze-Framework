@@ -3,14 +3,14 @@ import org.gradle.jvm.tasks.Jar
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.3.70"
+	id("org.jetbrains.kotlin.jvm") version "1.3.72"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("com.jfrog.bintray") version "1.8.5"
 }
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.1.2"
+	version = "1.2.0"
 
 	//应用插件
 	apply {
@@ -40,9 +40,21 @@ allprojects {
 		testImplementation(kotlin("test-junit"))
 	}
 
+	//从模块名获取包名并设置为包的前缀
+	val modulePrefix = when{
+		project.parent  != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-",".").replace("-","")
+		else -> project.name.removePrefix("breeze-").replace("-","")
+	}
+	val prefix = when{
+		project == rootProject -> "com.windea.breezeframework"
+		project.name == "breeze-unstable" -> "com.windea.breezeframework"
+		else -> "com.windea.breezeframework.$modulePrefix"
+	}
+
 	//配置kotlin的编译选项
 	tasks {
 		compileKotlin {
+			javaPackagePrefix = prefix
 			incremental = true
 			kotlinOptions {
 				jvmTarget = "11"
@@ -58,6 +70,7 @@ allprojects {
 			}
 		}
 		compileTestKotlin {
+			javaPackagePrefix = prefix
 			incremental = true
 			kotlinOptions {
 				jvmTarget = "11"
@@ -104,7 +117,7 @@ subprojects {
 				artifact(javadocJar)
 				pom {
 					name.set(project.name.formatModuleName())
-					description.set("Integrated code framework based on Kotlin.")
+					description.set("Integrated code framework written by Kotlin.")
 					url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
 					licenses {
 						license {
@@ -148,7 +161,7 @@ subprojects {
 		setPublications("maven")
 		pkg.repo = rootProject.name
 		pkg.name = project.name
-		pkg.desc = "Integrated code framework based on Kotlin."
+		pkg.desc = "Integrated code framework written by Kotlin."
 		pkg.githubRepo = "DragonKnightOfBreeze/Breeze-Framework"
 		pkg.githubReleaseNotesFile = "CHANGELOG.md"
 		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework"
