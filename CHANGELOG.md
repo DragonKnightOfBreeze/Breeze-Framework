@@ -385,6 +385,7 @@
 * [X] 移除`tryOrIgnore`和`tryOrPrint`扩展并添加`Result.andPrintStackTrace`、`Result.andPrint`和`Result.andPrintln`扩展
 * [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
 * [X] 准备添加COPYRIGHT
+* [X] 添加COPYRIGHT
 * [ ] 添加`BreezeExtensions`
   * [ ] `Any?.equalsBr`
   * [ ] `Any?.hashCodeBr`

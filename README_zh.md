@@ -93,7 +93,7 @@
 
 ## breeze-serializer
 
-**［有待完善］** 提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：
+提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：
 
 * 由`breeze-mapper`委托实现的`BreezeJsonSerializer`、`BreezeXmlSerializer`等。这是默认的实现，也是最简单的一种实现。
 * 由`Kotlinx Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
