@@ -384,12 +384,15 @@
 * [X] 重构和添加 ~~`String.replaceMatch`~~ 、`String.substringMatch`扩展
 * [X] 移除`tryOrIgnore`和`tryOrPrint`扩展并添加`Result.andPrintStackTrace`、`Result.andPrint`和`Result.andPrintln`扩展
 * [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
+* [X] 准备添加COPYRIGHT
 * [ ] 添加`BreezeExtensions`
   * [ ] `Any?.equalsBr`
   * [ ] `Any?.hashCodeBr`
   * [ ] `Any?.toStringBr`
   * [ ] `Any?.isEmptyBr`
   * [ ] `Any?.isNotEmptyBr`
+  * [ ] `Any?.ifEmptyBr`
+  * [ ] `Any?.ifNotEmptyBr`
   * [ ] `<Collection>.joinToStringBr`
   * [ ] `<Collection>.getBr`
   * [ ] `<Collection>.getOrNullBr`
