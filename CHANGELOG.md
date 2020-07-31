@@ -387,6 +387,9 @@
 * [X] 准备添加COPYRIGHT
 * [X] 添加COPYRIGHT
 * [X] 更新Kotlin版本到1.4.0-rc。
+
+# 长期
+
 * [ ] 添加`BreezeExtensions`
   * [ ] `Any?.equalsBr`
   * [ ] `Any?.hashCodeBr`
@@ -405,9 +408,6 @@
   * [ ] `<Collection>.queryOrNullBr`
   * [ ] `<Collection>.queryOrSetBr`
   * [ ] `<Collection>.queryOrElseBr`
-
-# 长期
-
 * [X] 移除对非框架类的第三方库的依赖
 * [X] 上传到Github
 * [X] 同步项目到Bintray
