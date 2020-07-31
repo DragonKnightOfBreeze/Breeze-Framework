@@ -386,6 +386,7 @@
 * [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
 * [X] 准备添加COPYRIGHT
 * [X] 添加COPYRIGHT
+* [X] 更新Kotlin版本到1.4.0-rc。
 * [ ] 添加`BreezeExtensions`
   * [ ] `Any?.equalsBr`
   * [ ] `Any?.hashCodeBr`
@@ -399,9 +400,11 @@
   * [ ] `<Collection>.getOrNullBr`
   * [ ] `<Collection>.getOrSetBr`
   * [ ] `<Collection>.getOrElseBr`
-  * [ ] `<Collection>.getOrDefaultBr`
   * [ ] `<Collection>.setBr`
   * [ ] `<Collection>.queryBr`
+  * [ ] `<Collection>.queryOrNullBr`
+  * [ ] `<Collection>.queryOrSetBr`
+  * [ ] `<Collection>.queryOrElseBr`
 
 # 长期
 
