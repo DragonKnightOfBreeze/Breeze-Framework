@@ -105,7 +105,7 @@ val URL.queryParams:Map<String, List<String>>? get() = this.query?.split("&")?.g
 
 
 /**将当前统一资源定位符转化为文件。*/
-inline fun URL.toFile(): File = File(this.toURI())
+inline fun URL.toFile(): File = File(this.toURI().normalize()) //需要规范化
 
 /**将当前统一资源定位符转化为路径。*/
 inline fun URL.toPath(): Path = this.toFile().toPath()

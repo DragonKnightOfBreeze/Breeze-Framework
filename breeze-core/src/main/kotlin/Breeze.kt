@@ -88,16 +88,7 @@ package com.windea.breezeframework.core
 
 import com.windea.breezeframework.core.extensions.*
 
-/**
- * Breeze is blowing ...
- */
 object Breeze {
-	init {
-		println("""
-			Breeze is blowing ...
-		""".trimIndent())
-	}
-
 	 fun Any?.equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
 		 return when {
 			 this !is Array<*> || other !is Array<*> -> this == other

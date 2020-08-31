@@ -92,17 +92,17 @@ import kotlin.annotation.AnnotationRetention.*
 @MustBeDocumented
 @RequiresOptIn("This api should be used only inside Breeze-Framework itself.", RequiresOptIn.Level.ERROR)
 @Retention(BINARY)
-annotation class InternalUsageApi
+annotation class InternalApi
 
 /**Api that should be used explicitly.*/
 @MustBeDocumented
 @Retention(BINARY)
-annotation class ExplicitUsageApi
+annotation class ExplicitApi
 
 /**Api that should be used optionally.*/
 @MustBeDocumented
 @Retention(BINARY)
-annotation class OptionalUsageApi
+annotation class OptionalApi
 
 /**Api that is implemented unstably. It means, this api may be refactored or removed in the future.*/
 @MustBeDocumented
@@ -112,6 +112,6 @@ annotation class UnstableImplementationApi
 
 /**Api that is implemented tricky. It means, this api cannot be fully implemented.*/
 @MustBeDocumented
-@RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
+@RequiresOptIn("This api is tricky and should be used carefully.", RequiresOptIn.Level.WARNING)
 @Retention(BINARY)
 annotation class TrickImplementationApi

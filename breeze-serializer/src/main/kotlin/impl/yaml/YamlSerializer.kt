@@ -125,19 +125,19 @@ interface YamlSerializer : JsonSerializer {
 		}
 
 		/**配置BreezeYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureBreezeYaml(block: (YamlMapper.Config.Builder) -> Unit) {
 			block(BreezeYamlSerializer.configBuilder)
 		}
 
 		/**配置JacksonYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureJacksonYaml(block: (JacksonYamlMapper) -> Unit) {
 			block(JacksonYamlSerializer.mapper)
 		}
 
 		/**配置SnakeYaml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureSnakeYaml(block: (LoaderOptions, DumperOptions) -> Unit) {
 			block(SnakeYamlSerializer.loaderOptions, SnakeYamlSerializer.dumperOptions)
 		}

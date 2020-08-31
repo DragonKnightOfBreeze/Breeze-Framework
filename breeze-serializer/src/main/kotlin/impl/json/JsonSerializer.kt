@@ -118,26 +118,26 @@ interface JsonSerializer : Serializer {
 		}
 
 		/**配置BreezeJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureBreezeJson(block: (JsonMapper.Config.Builder) -> Unit) {
 			block(BreezeJsonSerializer.configBuilder)
 		}
 
 		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		@OptIn(UnstableDefault::class)
 		fun configureKotlinJson(block: (JsonBuilder) -> Unit) {
 			block(KotlinJsonSerializer.jsonBuilder)
 		}
 
 		/**配置JacksonJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureJacksonJson(block: (JacksonJsonMapper) -> Unit) {
 			block(JacksonJsonSerializer.mapper)
 		}
 
 		/**配置Gson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureGson(block: (GsonBuilder) -> Unit) {
 			block(GsonSerializer.gsonBuilder)
 		}

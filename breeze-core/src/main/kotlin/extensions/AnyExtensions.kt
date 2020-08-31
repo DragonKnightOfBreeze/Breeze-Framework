@@ -91,6 +91,32 @@ package com.windea.breezeframework.core.extensions
 import java.util.*
 
 /**
+ * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
+ *
+ * 注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
+ */
+inline fun <reified T> Any?.cast(): T = this as T
+
+/**
+ * 将当前对象转换为指定类型。如果转换失败，则返回null。
+ *
+ * 注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
+ */
+inline fun <reified T> Any?.safeCast():T? = this as? T
+
+
+/**
+ * 将当前对象转化为指定类型。如果转换失败，则抛出异常。
+ */
+inline fun <reified T> Any?.convert():T = TODO()
+
+/**
+ * 将当前对象转化为指定类型。如果转换失败，则返回null。
+ */
+inline fun <reified T> Any?.safeConvert():T = TODO()
+
+
+/**
  * 将当前对象转换为单例集合。
  *
  * 支持的类型参数：[Collection] [MutableCollection] [Set] [MutableSet] [List] [MutableList]。
@@ -123,23 +149,3 @@ inline fun <T, reified R> T.toSingletonOrEmpty(): R {
 		else -> throw UnsupportedOperationException("Unsupported singleton collection type '${type.simpleName}'")
 	} as R
 }
-
-
-/**
- * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
- *
- * 注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
- */
-inline fun <reified T> Any?.cast(): T = this as T
-
-/**
- * 将当前对象安全地转换为指定类型。如果转换失败，则返回null。
- *
- * 注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
- */
-inline fun <reified T> Any?.safeCast():T? = this as? T
-
-
-inline fun <reified T> Any?.convert():T = TODO()
-
-inline fun <reified T> Any?.safeConvert():T = TODO()

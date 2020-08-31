@@ -120,13 +120,13 @@ interface PropertiesSerializer : Serializer {
 		}
 
 		/**配置BreezeProperties的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureBreezeProperties(block: (PropertiesMapper.Config.Builder) -> Unit) {
 			block(BreezePropertiesSerializer.configBuilder)
 		}
 
 		/**配置JacksonProperties的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureJacksonProperties(block: (JacksonPropertiesMapper) -> Unit) {
 			block(JacksonPropertiesSerializer.mapper)
 		}

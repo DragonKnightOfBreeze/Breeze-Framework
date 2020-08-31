@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.utils.*
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.4.0-rc"
+	id("org.jetbrains.kotlin.jvm") version "1.4.0"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("com.jfrog.bintray") version "1.8.5"
 }
@@ -44,9 +44,8 @@ allprojects {
 	}
 
 	kotlin{
-		//this.explicitApi()
+		explicitApi()
 	}
-
 
 	//从模块名获取包名并设置为包的前缀
 	val modulePrefix = when{

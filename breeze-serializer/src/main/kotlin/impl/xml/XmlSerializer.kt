@@ -109,13 +109,13 @@ interface XmlSerializer : Serializer {
 		}
 
 		/**配置BreezeXml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureBreezeXml(block: (XmlMapper.Config.Builder) -> Unit) {
 			block(BreezeXmlSerializer.configBuilder)
 		}
 
 		/**配置JacksonXml的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalUsageApi
+		@OptionalApi
 		fun configureJacksonXml(block: (JacksonXmlMapper) -> Unit) {
 			block(JacksonXmlSerializer.mapper)
 		}

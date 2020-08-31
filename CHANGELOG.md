@@ -387,6 +387,8 @@
 * [X] 准备添加COPYRIGHT
 * [X] 添加COPYRIGHT
 * [X] 更新Kotlin版本到1.4.0-rc。
+* [X] 更新Kotlin版本到1.4.0.
+* [ ] 适用explicitApi。
 
 # 长期
 

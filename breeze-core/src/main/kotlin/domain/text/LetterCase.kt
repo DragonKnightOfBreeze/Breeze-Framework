@@ -248,7 +248,7 @@ enum class LetterCase(
 	),
 
 	/**以单词边界或者数个下划线分割，首个单词全小写，后续单词首字母大写的格式。*/
-	@ExplicitUsageApi
+	@ExplicitApi
 	CamelCaseAllowUnderscore(
 		{ it.splitWords().split(' ', '_').filterNotEmpty<String>() },
 		{ it.splitWords().splitToSequence(' ', '_').filterNotEmpty<String>() },
@@ -258,7 +258,7 @@ enum class LetterCase(
 	),
 
 	/**以单词边界或者数个下划线分割，所有单词首字母大写的格式。*/
-	@ExplicitUsageApi
+	@ExplicitApi
 	PascalCaseAllowUnderscore(
 		{ it.splitWords().split(' ', '_').filterNotEmpty<String>() },
 		{ it.splitWords().splitToSequence(' ', '_').filterNotEmpty<String>() },

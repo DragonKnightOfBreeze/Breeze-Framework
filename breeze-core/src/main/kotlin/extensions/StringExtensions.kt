@@ -86,6 +86,7 @@
 
 @file:JvmName("StringExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
+//org.apache.commons.lang3.StringUtils
 
 package com.windea.breezeframework.core.extensions
 

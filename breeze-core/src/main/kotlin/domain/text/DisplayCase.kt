@@ -95,26 +95,26 @@ import com.windea.breezeframework.core.annotations.*
  */
 interface DisplayCase {
 	/**分割方法。*/
-	@InternalUsageApi
+	@InternalApi
 	val splitter: (CharSequence) -> List<String>
 
 	/**序列的分割方法。*/
-	@InternalUsageApi
+	@InternalApi
 	val sequenceSplitter: (CharSequence) -> Sequence<String>
 
 	/**加入方法。*/
-	@InternalUsageApi
+	@InternalApi
 	val joiner: (Iterable<CharSequence>) -> String
 
 	/**数组的加入方法。*/
-	@InternalUsageApi
+	@InternalApi
 	val arrayJoiner: (Array<out CharSequence>) -> String
 
 	/**用于验证合法性的正则表达式。*/
-	@InternalUsageApi
+	@InternalApi
 	val regex: Regex?
 
 	/**用于验证合法性的预测。*/
-	@InternalUsageApi
+	@InternalApi
 	val predicate: (String) -> Boolean
 }

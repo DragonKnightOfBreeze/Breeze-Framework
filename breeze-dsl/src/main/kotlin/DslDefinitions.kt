@@ -107,7 +107,7 @@ interface Dsl {
  */
 @DslApiMarker
 interface DslEntry {
-	@InternalUsageApi
+	@InternalApi
 	fun toContentString():String = ""
 }
 
@@ -129,7 +129,7 @@ interface DslConfig
 /**
  * Dsl constant set.
  */
-@InternalUsageApi
+@InternalApi
 object DslConstants {
 	val ls: String = System.lineSeparator()
 	val ss: String = "$ls$ls"
@@ -144,7 +144,7 @@ interface Wrappable {
 	/**是否需要对内容进行换行。*/
 	var wrapContent:Boolean
 
-	@InternalUsageApi
+	@InternalApi
 	fun String.doWrap(extraCondition:Boolean = true,transform:(String)->String):String {
 		return if(wrapContent && extraCondition) transform(this) else this
 	}
@@ -156,7 +156,7 @@ interface Indentable {
 	/**是否需要对内容进行缩进。*/
 	var indentContent:Boolean
 
-	@InternalUsageApi
+	@InternalApi
 	fun String.doIndent(indent:String, extraCondition:Boolean = true):String {
 		return if(indentContent && extraCondition) this.prependIndent(indent) else this
 	}
@@ -168,7 +168,7 @@ interface Splitable {
 	/**是否需要对内容以空行分隔。*/
 	var splitContent:Boolean
 
-	@InternalUsageApi
+	@InternalApi
 	fun Array<*>.doSplit(extraCondition:Boolean = true):String{
 		return if(splitContent && extraCondition) this.typingAll(DslConstants.ss) else this.typingAll(DslConstants.ls)
 	}
@@ -181,7 +181,7 @@ interface Generatable {
 	var generateContent:Boolean
 
 	/**生成文本。*/
-	@InternalUsageApi
+	@InternalApi
 	fun String.doGenerate(extraCondition:Boolean = true,transform:(String)->String):String {
 		return if(generateContent && extraCondition) transform(this) else this
 	}
