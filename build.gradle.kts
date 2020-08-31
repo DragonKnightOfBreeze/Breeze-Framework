@@ -9,6 +9,10 @@ plugins {
 	id("com.jfrog.bintray") version "1.8.5"
 }
 
+kotlin{
+	explicitApi()
+}
+
 allprojects {
 	group = "com.windea.breezeframework"
 	version = "1.2.0"
@@ -70,9 +74,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
 				)
 			}
 		}
@@ -86,9 +90,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
 				)
 			}
 		}

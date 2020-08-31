@@ -20,6 +20,6 @@ class NewFeatureTest {
 		//val sequence3 = listOf(1, 2, 3).scanReduce { a, b -> a + b } //[1, 3, 6]
 		println(sequence1)
 		println(sequence2)
-		println(sequence3)
+		//println(sequence3)
 	}
 }
