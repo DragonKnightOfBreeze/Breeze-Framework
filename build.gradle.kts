@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.2.0"
+	version = "1.2.1"
 
 	//应用插件
 	apply {

@@ -390,6 +390,10 @@
 * [X] 更新Kotlin版本到1.4.0.
 * [X] 移除`breeze-serialization`。
 
+### 1.2.1
+
+* [X] 更新版本
+
 # 长期
 
 * [ ] 添加`BreezeExtensions`
