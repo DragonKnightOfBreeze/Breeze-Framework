@@ -88,6 +88,7 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.domain.*
 import java.util.*
 
 /**
@@ -95,7 +96,7 @@ import java.util.*
  *
  * 注意这个方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
  */
-inline fun <reified T> Any?.cast(): T = this as T
+inline fun <reified T> Any?.cast(): T = this as? T ?: throw IllegalStateException()
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
@@ -108,12 +109,12 @@ inline fun <reified T> Any?.safeCast():T? = this as? T
 /**
  * 将当前对象转化为指定类型。如果转换失败，则抛出异常。
  */
-inline fun <reified T> Any?.convert():T = TODO()
+inline fun <reified T> Any?.convert():T = ConversionService.convert(this)
 
 /**
  * 将当前对象转化为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T> Any?.safeConvert():T = TODO()
+inline fun <reified T> Any?.safeConvert():T =  ConversionService.convert(this)?:throw IllegalStateException()
 
 
 /**

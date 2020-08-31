@@ -87,10 +87,6 @@
 * 直接得到Java类型的`javaTypeOf`方法。
 * 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
 
-## breeze-serialization
-
-**［有待完全实现］** 为KotlinX Serialization补充功能和扩展，并且提供额外的类型序列化器和标记语言序列化器。
-
 ## breeze-serializer
 
 提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：

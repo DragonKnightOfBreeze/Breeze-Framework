@@ -516,13 +516,13 @@ inline fun <T, R> Sequence<T>.bind(other:Sequence<R>, crossinline predicate:(T, 
 
 
 /**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止。*/
-@UnstableImplementationApi
+@UnstableApi
 inline fun <T> expand(initial:T, operation:(T) -> Iterable<T>):List<T> {
 	return expandTo(ArrayList(), initial, operation)
 }
 
 /**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，然后加入指定的集合。*/
-@UnstableImplementationApi
+@UnstableApi
 inline fun <T, C : MutableCollection<in T>> expandTo(destination:C, initial:T, operation:(T) -> Iterable<T>):C {
 	var nextResult = operation(initial)
 	while(nextResult.any()) {

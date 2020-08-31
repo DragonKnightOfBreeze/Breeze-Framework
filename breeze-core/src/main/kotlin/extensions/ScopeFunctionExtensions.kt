@@ -137,7 +137,7 @@ inline fun <T : R, R> T.where(condition: Boolean, block: (T) -> R): R {
 // */
 //@InlineOnly
 //@JvmSynthetic
-//@UnstableImplementationApi
+//@UnstableApi
 //inline fun tryOrPrint(block: () -> Unit) {
 //	contract {
 //		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -156,7 +156,7 @@ inline fun <T : R, R> T.where(condition: Boolean, block: (T) -> R): R {
 // */
 //@InlineOnly
 //@JvmSynthetic
-//@UnstableImplementationApi
+//@UnstableApi
 //inline fun tryOrIgnore(block: () -> Unit) {
 //	contract {
 //		callsInPlace(block, InvocationKind.EXACTLY_ONCE)

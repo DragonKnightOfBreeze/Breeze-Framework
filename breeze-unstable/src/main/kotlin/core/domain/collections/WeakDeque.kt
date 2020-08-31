@@ -94,7 +94,7 @@ import com.windea.breezeframework.core.annotations.*
  * 这个集合是线程不安全的。
  * @see java.util.Deque
  */
-@UnstableImplementationApi
+@UnstableApi
 interface WeakDeque<E> : WeakQueue<E>, WeakStack<E> {
 	fun addFirst(element: E): Boolean
 

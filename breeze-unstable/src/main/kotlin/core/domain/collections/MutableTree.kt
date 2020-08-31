@@ -95,7 +95,7 @@ import com.windea.breezeframework.core.annotations.*
  *
  * 这个集合是线程不安全的。
  */
-@UnstableImplementationApi
+@UnstableApi
 interface MutableTree<E> : Tree<E> {
 	fun addValue(value: E): Boolean
 	fun addNode(node:Tree<E>): Boolean

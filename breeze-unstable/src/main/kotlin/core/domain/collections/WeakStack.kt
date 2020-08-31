@@ -95,7 +95,7 @@ import com.windea.breezeframework.core.annotations.*
  * @see java.util.Stack
  * @see java.util.Deque
  */
-@UnstableImplementationApi
+@UnstableApi
 interface WeakStack<E> : Collection<E> {
 	fun push(element: E): Boolean
 

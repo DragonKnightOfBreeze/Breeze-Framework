@@ -172,13 +172,13 @@ fun Number?.equalsNearly(other: Number?, precision: Float): Boolean {
 
 //region Format extensions
 /**根据指定的格式化类型，格式化当前数字。可以指定可选的语言环境。*/
-@UnstableImplementationApi
+@UnstableApi
 fun Number.formatBy(type:NumberFormatType,locale:Locale? = null):String{
 	return getNumberFormatInstance(type,locale?:Locale.getDefault(Locale.Category.FORMAT)).format(this)
 }
 
 /**根据指定的格式化类型，格式化当前数字。可以指定可选的语言环境。可以进行额外的配置。*/
-@UnstableImplementationApi
+@UnstableApi
 fun Number.formatBy(type:NumberFormatType,locale:Locale? = null, configBlock:NumberFormat.()->Unit):String {
 	return getNumberFormatInstance(type,locale?:Locale.getDefault(Locale.Category.FORMAT)).apply(configBlock).format(this)
 }

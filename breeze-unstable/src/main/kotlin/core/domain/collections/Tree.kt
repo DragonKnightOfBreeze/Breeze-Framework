@@ -95,7 +95,7 @@ import com.windea.breezeframework.core.annotations.*
  *
  * 这个集合是线程不安全的。
  */
-@UnstableImplementationApi
+@UnstableApi
 interface Tree<out E> : Iterable<E> {
 	val value: E
 	val values: Collection<E>

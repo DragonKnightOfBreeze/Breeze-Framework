@@ -84,7 +84,7 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
-package com.windea.breezeframework.core.constants
+package com.windea.breezeframework.core.domain
 
 /**Sets of common-used system properties.*/
 object SystemProperties {

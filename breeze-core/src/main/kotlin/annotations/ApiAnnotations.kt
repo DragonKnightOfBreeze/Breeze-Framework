@@ -108,10 +108,10 @@ annotation class OptionalApi
 @MustBeDocumented
 @RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
 @Retention(BINARY)
-annotation class UnstableImplementationApi
+annotation class UnstableApi
 
 /**Api that is implemented tricky. It means, this api cannot be fully implemented.*/
 @MustBeDocumented
 @RequiresOptIn("This api is tricky and should be used carefully.", RequiresOptIn.Level.WARNING)
 @Retention(BINARY)
-annotation class TrickImplementationApi
+annotation class TrickApi

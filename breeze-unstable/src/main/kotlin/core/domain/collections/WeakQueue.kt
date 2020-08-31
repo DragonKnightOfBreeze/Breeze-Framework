@@ -94,7 +94,7 @@ import com.windea.breezeframework.core.annotations.*
  * 这个集合是线程不安全的。
  * @see java.util.Queue
  */
-@UnstableImplementationApi
+@UnstableApi
 interface WeakQueue<E> : Collection<E> {
 	fun add(element: E): Boolean
 

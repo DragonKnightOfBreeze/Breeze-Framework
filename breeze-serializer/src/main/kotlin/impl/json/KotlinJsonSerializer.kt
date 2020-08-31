@@ -92,39 +92,38 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
 import java.io.*
 import java.lang.reflect.*
+import kotlin.reflect.full.*
 
 /**
  * 由KotlinxSerialization实现的Json的序列化器。
  * @see kotlinx.serialization.json.Json
  */
 @Suppress("UNCHECKED_CAST")
-@OptIn(UnstableDefault::class, ImplicitReflectionSerializer::class)
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
-	internal val jsonBuilder = JsonBuilder()
-	internal val json by lazy { Json(jsonBuilder.buildConfiguration()) }
+	internal val json by lazy { Json }
 	override val delegate: Json get() = json
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
-		return json.parse(json.context.getContextualOrDefault(type.kotlin), string)
+		return json.decodeFromString(json.serializersModule.getContextualOrDefault(type.kotlin.createType()), string)
 	}
 
 	override fun <T : Any> read(string: String, type: Type): T {
-		return json.parse(serializerByTypeToken(type), string) as T
+		return json.decodeFromString(serializer(type), string) as T
 	}
 
 	override fun <T : Any> read(file: File, type: Class<T>): T {
-		return json.parse(json.context.getContextualOrDefault(type.kotlin), file.readText())
+		return json.decodeFromString(json.serializersModule.getContextualOrDefault(type.kotlin.createType()), file.readText())
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {
-		return json.parse(serializerByTypeToken(type), file.readText()) as T
+		return json.decodeFromString(serializer(type), file.readText()) as T
 	}
 
 	override fun <T : Any> write(data: T): String {
-		return json.stringify(json.context.getContextualOrDefault(data), data)
+		return json.encodeToString(json.serializersModule.getContextualOrDefault(data::class.createType()), data)
 	}
 
 	override fun <T : Any> write(data: T, file: File) {
-		return json.stringify(json.context.getContextualOrDefault(data), data).let { file.writeText(it) }
+		return json.encodeToString(json.serializersModule.getContextualOrDefault(data::class.createType()), data).let { file.writeText(it) }
 	}
 }

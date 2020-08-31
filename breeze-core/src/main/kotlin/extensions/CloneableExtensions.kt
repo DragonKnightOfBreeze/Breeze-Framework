@@ -110,7 +110,7 @@ private fun <T : Cloneable> T.cloneMethod() = try {
  *
  * 应当为可克隆对象提供一个公开的克隆方法的重载。
  */
-@UnstableImplementationApi
+@UnstableApi
 fun <T : Cloneable> T.shallowClone(): T {
 	return this.cloneMethod().invoke(this) as T
 }
@@ -122,7 +122,7 @@ fun <T : Cloneable> T.shallowClone(): T {
  *
  * 应当为可克隆对象提供一个公开的克隆方法的重载。
  */
-@UnstableImplementationApi
+@UnstableApi
 fun <T : Cloneable> T.deepClone(): T {
 	return this.shallowClone().apply {
 		this::class.java.declaredFields.filterNot { prop ->

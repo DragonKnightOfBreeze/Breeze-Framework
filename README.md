@@ -81,11 +81,6 @@ NOTE：
 
 * Provide some useful extensions for kotlin reflect & java reflect. e.g, `checkClassForName`, `nameOf`.
 
-## breeze-serialization
-
-* Provide serializers for common kotlin type. e.g, `RangeSerializer`.
-* DO NOT FULLY IMPLEMENTED.
-
 ## breeze-serializer
 
 * Provide some useful extensions for data serialization. e.g, `serialize`, `deserialize`.

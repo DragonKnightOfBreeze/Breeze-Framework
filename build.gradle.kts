@@ -9,10 +9,6 @@ plugins {
 	id("com.jfrog.bintray") version "1.8.5"
 }
 
-kotlin{
-	explicitApi()
-}
-
 allprojects {
 	group = "com.windea.breezeframework"
 	version = "1.2.0"

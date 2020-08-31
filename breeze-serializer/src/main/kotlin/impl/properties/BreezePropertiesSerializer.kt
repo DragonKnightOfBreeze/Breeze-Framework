@@ -88,7 +88,6 @@ package com.windea.breezeframework.serializer.impl.properties
 
 import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.impl.*
-import kotlinx.io.StringWriter
 import java.io.*
 import java.lang.reflect.*
 import java.util.*

@@ -239,25 +239,23 @@ fun CharSequence.repeatOrdinal(n: Int): String {
 
 /**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
 @NotOptimized
-@UnstableImplementationApi
+@UnstableApi
 fun String.transformIn(prefix: String, suffix: String, transform: (String) -> String): String {
 	//前后缀会在转义后加入正则表达式，可以分别是\\Q和\\E
 	//前后缀可能会发生冲突
-	val prefixIndex = this.indexOf(prefix) + prefix.length
-	val suffixIndex = this.lastIndexOf(suffix)
-	return this.take(prefixIndex) + transform(this.substring(prefixIndex, suffixIndex)) + this.takeLast(this.length - suffixIndex)
+	return this.replace("(?<=${Regex.escape(prefix)}).*?(?=${Regex.escape(suffix)})".toRegex()) { transform(it.groupValues[0]) }
 }
 
 /**限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
 @NotOptimized
-@UnstableImplementationApi
+@UnstableApi
 fun String.transformIn(regex: Regex, transform: (String) -> String): String {
 	return this.replace(regex) { transform(it.value) }
 }
 
 
 /**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
-@UnstableImplementationApi
+@UnstableApi
 infix fun String.lineConcat(other: String): String {
 	val lines = this.lines()
 	val otherLines = other.lines()
@@ -268,7 +266,7 @@ infix fun String.lineConcat(other: String): String {
 }
 
 /**逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
-@UnstableImplementationApi
+@UnstableApi
 @JvmOverloads
 fun String.lineBreak(width: Int = 120): String {
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
@@ -476,54 +474,54 @@ fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 
 
 /**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun CharSequence.setPrefix(prefix: CharSequence): CharSequence {
 	if(this.length < prefix.length) return this
 	return "$prefix${this.substring(prefix.length, this.length)}"
 }
 
 /**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun String.setPrefix(prefix: CharSequence): String {
 	if(this.length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
 /**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun CharSequence.setSuffix(suffix: CharSequence): CharSequence {
 	if(this.length < suffix.length) return this
 	return "${this.substring(this.length - suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun String.setSuffix(suffix: CharSequence): String {
 	if(this.length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
 /**为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun CharSequence.setSurrounding(delimiter: CharSequence): CharSequence {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
 /**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun String.setSurrounding(delimiter: CharSequence): String {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
 /**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun CharSequence.setSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
 	if(this.length < prefix.length + suffix.length) return this
 	return "$prefix${this.substring(prefix.length, this.length - suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
-@UnstableImplementationApi
+@UnstableApi
 fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	if(this.length < prefix.length + suffix.length) return this
 	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
@@ -710,7 +708,7 @@ inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = f
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmOverloads
-@UnstableImplementationApi
+@UnstableApi
 fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
 	val size = minOf(oldChars.size, newChars.size)
 	var result = this
@@ -722,7 +720,7 @@ fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Bool
 
 /**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
 @JvmOverloads
-@UnstableImplementationApi
+@UnstableApi
 fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
 	val size = minOf(oldValues.size, newValues.size)
 	var result = this
@@ -734,21 +732,21 @@ fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignore
 
 
 /**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableImplementationApi
+@UnstableApi
 tailrec fun String.replaceLooped(oldValue: String, newValue: String): String {
 	val result = this.replace(oldValue, newValue)
 	return if(this != result) result.replaceLooped(oldValue, newValue) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableImplementationApi
+@UnstableApi
 tailrec fun CharSequence.replaceLooped(regex: Regex, replacement: String): String {
 	val result = this.replace(regex, replacement)
 	return if(this != result) result.replaceLooped(regex, replacement) else result
 }
 
 /**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableImplementationApi
+@UnstableApi
 tailrec fun CharSequence.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
 	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等
@@ -833,7 +831,7 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
 fun String.alignStart(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
+	val maxLength = lines.map { it.length }.maxOrNull()!!
 	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
 }
 
@@ -842,7 +840,7 @@ fun String.alignStart(padChar: Char = ' '): String {
 fun String.alignEnd(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
+	val maxLength = lines.map { it.length }.maxOrNull()!!
 	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
 }
 
@@ -942,10 +940,12 @@ private val quotes = charArrayOf('\"', '\'', '`')
 
 //region Format extensions
 /**根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。*/
-@UnstableImplementationApi
-fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = null): String {
+@UnstableApi
+fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
 	return type.formatter(this, args, locale, placeholder)
 }
+
+private val defaultPlaceholder = "{" to "}"
 //endregion
 
 //region Escape extensions

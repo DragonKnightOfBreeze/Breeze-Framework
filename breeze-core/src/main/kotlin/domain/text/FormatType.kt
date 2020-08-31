@@ -177,11 +177,12 @@ enum class FormatType(
 	 */
 	Named({ string, args, _, placeholder ->
 		try {
-			val argPairs = (args as Array<out Pair<String, Any?>>).toMap()
+			val argPairs = mutableMapOf<String, Any?>()
+			args.forEach { (it as Pair<String, Any?>).let { (k,v)-> argPairs[k]= v } }
 			val (prefix, suffix) = placeholder?.map { Regex.escape(it) } ?: defaultPlaceHolder
-			val regex = """$prefix([a-zA-Z_$]+)$suffix""".toRegex()
+			val regex = """$prefix([\w$]+)$suffix""".toRegex()
 			string.replace(regex) { argPairs[it.groupValues[1]].toString() }
-		} catch(e:Exception) {
+		} catch(e: Exception) {
 			throw IllegalArgumentException("Mismatched arguments, or invalid argument type (not a name-value pair).", e)
 		}
 	});

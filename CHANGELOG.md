@@ -388,7 +388,7 @@
 * [X] 添加COPYRIGHT
 * [X] 更新Kotlin版本到1.4.0-rc。
 * [X] 更新Kotlin版本到1.4.0.
-* [ ] 适用explicitApi。
+* [X] 移除`breeze-serialization`。
 
 # 长期
 

@@ -95,7 +95,7 @@ import com.windea.breezeframework.core.annotations.*
  * @property count 数量。
  * @property totalCount 最大数量。
  */
-@UnstableImplementationApi
+@UnstableApi
 interface Countable<T> where T : Number, T:Comparable<T> {
 	var count:T
 	var totalCount:T

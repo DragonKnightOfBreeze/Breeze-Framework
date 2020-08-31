@@ -84,6 +84,8 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
-package com.windea.breezeframework.serialization.yaml
+package com.windea.breezeframework.core.domain
 
-//DELAY 使用第三方库
+object ConversionService {
+	inline fun <reified T,reified R> convert(value:T):R = TODO()
+}
