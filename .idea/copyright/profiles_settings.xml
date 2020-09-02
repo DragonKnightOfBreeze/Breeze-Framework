@@ -1,0 +1,20 @@
+<component name="CopyrightManager">
+  <settings default="Breeze">
+    <module2copyright>
+      <element module="With CopyRight Files" copyright="Breeze" />
+    </module2copyright>
+    <LanguageOptions name="HTML">
+      <option name="fileTypeOverride" value="1" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+    <LanguageOptions name="Properties">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenBefore" value="120" />
+      <option name="lenAfter" value="120" />
+    </LanguageOptions>
+  </settings>
+</component>

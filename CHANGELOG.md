@@ -384,23 +384,36 @@
 * [X] 重构和添加 ~~`String.replaceMatch`~~ 、`String.substringMatch`扩展
 * [X] 移除`tryOrIgnore`和`tryOrPrint`扩展并添加`Result.andPrintStackTrace`、`Result.andPrint`和`Result.andPrintln`扩展
 * [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
+* [X] 准备添加COPYRIGHT
+* [X] 添加COPYRIGHT
+* [X] 更新Kotlin版本到1.4.0-rc。
+* [X] 更新Kotlin版本到1.4.0.
+* [X] 移除`breeze-serialization`。
+
+### 1.2.1
+
+* [X] 更新版本
+
+# 长期
+
 * [ ] 添加`BreezeExtensions`
   * [ ] `Any?.equalsBr`
   * [ ] `Any?.hashCodeBr`
   * [ ] `Any?.toStringBr`
   * [ ] `Any?.isEmptyBr`
   * [ ] `Any?.isNotEmptyBr`
+  * [ ] `Any?.ifEmptyBr`
+  * [ ] `Any?.ifNotEmptyBr`
   * [ ] `<Collection>.joinToStringBr`
   * [ ] `<Collection>.getBr`
   * [ ] `<Collection>.getOrNullBr`
   * [ ] `<Collection>.getOrSetBr`
   * [ ] `<Collection>.getOrElseBr`
-  * [ ] `<Collection>.getOrDefaultBr`
   * [ ] `<Collection>.setBr`
   * [ ] `<Collection>.queryBr`
-
-# 长期
-
+  * [ ] `<Collection>.queryOrNullBr`
+  * [ ] `<Collection>.queryOrSetBr`
+  * [ ] `<Collection>.queryOrElseBr`
 * [X] 移除对非框架类的第三方库的依赖
 * [X] 上传到Github
 * [X] 同步项目到Bintray

@@ -1,12 +1,12 @@
 plugins {
-	kotlin("plugin.spring") version "1.3.70"
-	kotlin("plugin.jpa") version "1.3.70"
+	kotlin("plugin.spring") version "1.4.0"
+	kotlin("plugin.jpa") version "1.4.0"
 }
 
 dependencies {
 	api(project(":breeze-core"))
 
-	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE"))
+	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.3.3.RELEASE"))
 	implementation("org.springframework.boot:spring-boot-starter")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="With CopyRight Files" pattern="file[*.main]:*.kt||*.java" />
+</component>

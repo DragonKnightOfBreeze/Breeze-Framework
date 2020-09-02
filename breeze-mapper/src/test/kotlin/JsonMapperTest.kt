@@ -18,9 +18,9 @@ class JsonMapperTest {
 
 	@Test
 	fun unmap() {
-		val string = """{"a": 1, "b": "2", "c": [3, 4, [5, 6], [7]]}"""
-		JsonMapper().unmap(string,Any::class.java).also {
-			println(it)
-		}
+		//val string = """{"a": 1, "b": "2", "c": [3, 4, [5, 6], [7]]}"""
+		//JsonMapper().unmap(string,Any::class.java).also {
+		//	println(it)
+		//}
 	}
 }

@@ -1,16 +1,17 @@
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.utils.*
 
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "1.3.72"
+	id("org.jetbrains.kotlin.jvm") version "1.4.0"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("com.jfrog.bintray") version "1.8.5"
 }
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.2.0"
+	version = "1.2.1"
 
 	//应用插件
 	apply {
@@ -21,6 +22,7 @@ allprojects {
 	buildscript {
 		//配置插件仓库
 		repositories {
+			maven("https://dl.bintray.com/kotlin/kotlin-eap")
 			maven("https://maven.aliyun.com/nexus/content/groups/public")
 			mavenCentral()
 			jcenter()
@@ -29,6 +31,7 @@ allprojects {
 
 	//配置依赖仓库
 	repositories {
+		maven("https://dl.bintray.com/kotlin/kotlin-eap")
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
 		jcenter()
@@ -38,6 +41,10 @@ allprojects {
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
+	}
+
+	kotlin{
+		explicitApi()
 	}
 
 	//从模块名获取包名并设置为包的前缀
@@ -63,9 +70,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
 				)
 			}
 		}
@@ -79,9 +86,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalUsageApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableImplementationApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickImplementationApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
 				)
 			}
 		}

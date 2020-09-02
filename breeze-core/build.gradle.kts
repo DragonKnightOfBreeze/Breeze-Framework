@@ -1,6 +1,6 @@
 plugins {
-	kotlin("plugin.noarg") version "1.3.70"
-	kotlin("plugin.allopen") version "1.3.70"
+	kotlin("plugin.noarg") version "1.4.0-rc"
+	kotlin("plugin.allopen") version "1.4.0-rc"
 }
 
 noArg {
