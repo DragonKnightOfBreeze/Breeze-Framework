@@ -84,9 +84,14 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
+@file:Suppress("IntroduceWhenSubject", "UNCHECKED_CAST", "DuplicatedCode")
+
 package com.windea.breezeframework.core.domain
 
-class Breeze<T> constructor(
+import com.windea.breezeframework.core.extensions.*
+import java.lang.UnsupportedOperationException
+
+class Breeze<T:Any> constructor(
 	val value:T
 ) {
 	 fun equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
@@ -113,20 +118,28 @@ class Breeze<T> constructor(
 		}
 	}
 
-	fun isEmptyBr():Boolean{
+	fun isEmptyBr():Boolean {
 		return when{
-			value == null -> true
+			//value == null -> true
 			value is Array<*> -> value.isEmpty()
 			value is Collection<*> -> value.isEmpty()
 			value is Iterable<*> -> value.none()
 			value is Map<*,*> -> value.isEmpty()
 			value is Sequence<*> -> value.none()
-			else -> false
+			else -> throwUnsupportedException()
 		}
 	}
 
 	fun isNotEmptyBr():Boolean{
-		return !isEmptyBr()
+		return when{
+			//value == null -> true
+			value is Array<*> -> value.isNotEmpty()
+			value is Collection<*> -> value.isNotEmpty()
+			value is Iterable<*> -> value.any()
+			value is Map<*,*> -> value.isNotEmpty()
+			value is Sequence<*> -> value.any()
+			else -> throwUnsupportedException()
+		}
 	}
 
 	//inline fun <R> ifEmptyBr(transform:(T)->R):R where T:R {
@@ -137,31 +150,66 @@ class Breeze<T> constructor(
 	//	return if(this.isNotEmptyBr()) transform(this) else this
 	//}
 
-	fun  getBr(path:String):T{
+	fun <R> getBr(path:String):R{
+		return when{
+			//value == null -> null
+			value is Array<*> -> value[path.toInt()]
+			value is List<*> -> value[path.toInt()]
+			value is Map<*,*> -> value[path]
+			else -> {
+				val javaClass = value::class.java
+				javaClass.getDeclaredField(path).apply { trySetAccessible() }.get(value)
+			}
+		} as R
+	}
+
+	fun <R> getOrNullBr(path:String):R?{
+		return when{
+			//value == null -> null
+			value is Array<*> -> value.getOrNull(path.toInt())
+			value is List<*> -> value.getOrNull(path.toInt())
+			value is Map<*,*> -> value[path]
+			else -> {
+				val javaClass = value::class.java
+				runCatching { javaClass.getDeclaredField(path).apply { trySetAccessible() }.get(value) }.getOrNull()
+			}
+		} as R
+	}
+
+	fun <R> getOrElseBr(path:String,defaultValue:()->R):R{
+		return when{
+			//value == null -> null
+			value is Array<*> -> value.getOrNull(path.toInt())?:defaultValue()
+			value is List<*> -> value.getOrNull(path.toInt())?:defaultValue()
+			value is Map<*,*> -> value.cast<Map<String,*>>().getOrElse(path,defaultValue)
+			else -> {
+				val javaClass = value::class.java
+				runCatching { javaClass.getDeclaredField(path).apply { trySetAccessible() }.get(value) }.getOrElse{defaultValue()}
+			}
+		} as R
+	}
+
+	fun <R> setBr(path:String,value:R) {
 		TODO()
 	}
 
-	fun getOrNullBr(path:String):T{
+	fun <R> getOrSetBr(path:String,defaultValue:()->R):R{
 		TODO()
 	}
 
-	fun  getOrElseBr(path:String,defaultValue:()->T){
+	fun <R> addBr(path:String,vararg values:R){
 		TODO()
 	}
 
-	fun getOrSetBr(path:String,defaultValue:()->T){
+	fun <R> removeBr(value:R):R{
 		TODO()
 	}
 
-	fun setBr(path:String,value:T) {
+	fun <R> removeAtBr(path:String):R{
 		TODO()
 	}
 
-	fun addBr(path:String,vararg values:T){
-		TODO()
-	}
-
-	fun removeBr(path:String){
-		TODO()
+	private fun throwUnsupportedException():Nothing{
+		throw UnsupportedOperationException("Unsupported value type '${value::class.java.name}'.")
 	}
 }

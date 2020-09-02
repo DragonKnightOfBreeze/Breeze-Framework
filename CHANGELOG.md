@@ -398,6 +398,7 @@
 * [X] 添加`Auditable`
 * [X] 移除过时的`Array.onEach`
 * [X] 移除过时的`setOfNotNull`
+* [X] 更新`Breeze`
 
 # 长期
 
