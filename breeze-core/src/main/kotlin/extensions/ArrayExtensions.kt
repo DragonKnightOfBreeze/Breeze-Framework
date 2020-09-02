@@ -313,43 +313,6 @@ operator fun CharArray.get(startIndex: Int, endIndex: Int): CharArray = this.sli
 //endregion
 
 //region common extensions
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun <T> Array<out T>.onEach(action: (T) -> Unit): Array<out T> = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun ByteArray.onEach(action: (Byte) -> Unit): ByteArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun ShortArray.onEach(action: (Short) -> Unit): ShortArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun IntArray.onEach(action: (Int) -> Unit): IntArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun LongArray.onEach(action: (Long) -> Unit): LongArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun FloatArray.onEach(action: (Float) -> Unit): FloatArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun DoubleArray.onEach(action: (Double) -> Unit): DoubleArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun BooleanArray.onEach(action: (Boolean) -> Unit): BooleanArray = apply { for(element in this) action(element) }
-
-/**遍历当前数组中的每个元素，执行指定的操作，然后返回当前数组自身。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-inline fun CharArray.onEach(action: (Char) -> Unit): CharArray = apply { for(element in this) action(element) }
-
-
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
 fun <T> Array<out T>.stream(start: Int = 0, end: Int = this.size): Stream<T> = Arrays.stream(this, start, end)!!

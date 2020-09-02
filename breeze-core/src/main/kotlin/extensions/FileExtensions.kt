@@ -85,6 +85,7 @@
  **********************************************************************************************************************/
 
 @file:JvmName("FileExtensions")
+@file:Suppress("DeprecatedCallableAddReplaceWith")
 
 package com.windea.breezeframework.core.extensions
 

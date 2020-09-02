@@ -396,7 +396,7 @@
 * [X] 更新项目文档
 * [X] 添加`KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
 * [X] 添加`Auditable`
-
+* [X] 移除过时的`Array.onEach`
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖
