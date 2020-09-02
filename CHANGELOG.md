@@ -393,7 +393,8 @@
 ### 1.2.1
 
 * [X] 更新版本
-* [ ] 更新项目文档
+* [X] 更新项目文档
+* [X] `KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
 
 # 长期
 
