@@ -91,7 +91,7 @@ package com.windea.breezeframework.core.domain
 import java.io.*
 
 /**
- * 可识别的。
+ * 可识别的对象。
  *
  * 此接口的实例拥有一个唯一标识符，其`equals`和`hashCode`方法基于此唯一标识符实现。
  *

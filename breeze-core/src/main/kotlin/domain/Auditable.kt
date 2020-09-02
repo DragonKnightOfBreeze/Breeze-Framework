@@ -86,15 +86,15 @@
 
 package com.windea.breezeframework.core.domain
 
-import java.io.*
+import java.io.Serializable
+import java.time.temporal.*
 
 /**
- * 可枚举的对象。
- *
- * 此接口拥有两个属性，[code]用于数据库存储，[text]用于序列化。
+ * 可审计的对象。
  */
-interface Enumerable<T:Serializable> :Serializable{
-	val code:T
-	val text:String
+interface Auditable<T: Temporal,U: Serializable>:Serializable{
+	val createdTime:T
+	var lastUpdatedTime:T
+	val createdBy:U
+	var lastUpdatedBy:U
 }
-

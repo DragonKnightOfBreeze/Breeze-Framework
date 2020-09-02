@@ -84,84 +84,84 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
-package com.windea.breezeframework.core
+package com.windea.breezeframework.core.domain
 
-import com.windea.breezeframework.core.extensions.*
-
-object Breeze {
-	 fun Any?.equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
+class Breeze<T> constructor(
+	val value:T
+) {
+	 fun equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
 		 return when {
-			 this !is Array<*> || other !is Array<*> -> this == other
-			 deepOp -> this.contentDeepEquals(other)
-			 else -> this.contentEquals(other)
+			 value !is Array<*> || other !is Array<*> -> value == other
+			 deepOp -> value.contentDeepEquals(other)
+			 else -> value.contentEquals(other)
 		 }
 	 }
 
-	 fun Any?.hashCodeBr(deepOp:Boolean = true): Int {
+	 fun hashCodeBr(deepOp:Boolean = true): Int {
 		 return when {
-			 this !is Array<*> -> this.hashCode()
-			 deepOp -> this.contentDeepHashCode()
-			 else -> this.contentHashCode()
+			 value !is Array<*> -> value.hashCode()
+			 deepOp -> value.contentDeepHashCode()
+			 else -> value.contentHashCode()
 		 }
 	 }
 
-	fun Any?.toStringBr(deepOp:Boolean = true): String {
+	fun toStringBr(deepOp:Boolean = true): String {
 		return when {
-			this !is Array<*> -> this.toString()
-			deepOp -> this.contentDeepToString()
-			else -> this.contentToString()
+			value !is Array<*> -> value.toString()
+			deepOp -> value.contentDeepToString()
+			else -> value.contentToString()
 		}
 	}
 
-	fun Any?.isEmptyBr():Boolean{
+	fun isEmptyBr():Boolean{
 		return when{
-			this == null -> true
-			this is Array<*> -> this.isEmpty()
-			this is Collection<*> -> this.isEmpty()
-			this is Iterable<*> -> this.none()
-			this is Map<*,*> -> this.isEmpty()
-			this is Sequence<*> -> this.none()
+			value == null -> true
+			value is Array<*> -> value.isEmpty()
+			value is Collection<*> -> value.isEmpty()
+			value is Iterable<*> -> value.none()
+			value is Map<*,*> -> value.isEmpty()
+			value is Sequence<*> -> value.none()
 			else -> false
 		}
 	}
 
-	fun Any?.isNotEmptyBr():Boolean{
-		return !this.isEmptyBr()
+	fun isNotEmptyBr():Boolean{
+		return !isEmptyBr()
 	}
 
-	inline fun <T,R> T.ifEmptyBr(transform:(T)->R):R where T:R {
-		return if(this.isEmptyBr()) transform(this) else this
-	}
+	//inline fun <R> ifEmptyBr(transform:(T)->R):R where T:R {
+	//	return if(isEmptyBr()) transform(this) else value
+	//}
+	//
+	//inline fun <T,R> T.ifNotEmptyBr(transform:(T)->R):R where T:R {
+	//	return if(this.isNotEmptyBr()) transform(this) else this
+	//}
 
-	inline fun <T,R> T.ifNotEmptyBr(transform:(T)->R):R where T:R {
-		return if(this.isNotEmptyBr()) transform(this) else this
-	}
-
-	fun <T> Any?.getBr(path:String):T{
+	fun  getBr(path:String):T{
 		TODO()
 	}
 
-	fun <T> Any?.getOrNullBr(path:String):T{
+	fun getOrNullBr(path:String):T{
 		TODO()
 	}
 
-	fun <T> Any?.getOrElseBr(path:String,defaultValue:()->T){
+	fun  getOrElseBr(path:String,defaultValue:()->T){
 		TODO()
 	}
 
-	fun <T> Any?.getOrSetBr(path:String,defaultValue:()->T){
+	fun getOrSetBr(path:String,defaultValue:()->T){
 		TODO()
 	}
 
-	fun <T> Any?.setBr(path:String,value:T) {
+	fun setBr(path:String,value:T) {
 		TODO()
 	}
 
-	fun <T> Any?.addBr(path:String,vararg values:T){
+	fun addBr(path:String,vararg values:T){
 		TODO()
 	}
 
-	fun <T> Any?.removeBr(path:String){
+	fun removeBr(path:String){
 		TODO()
 	}
 }

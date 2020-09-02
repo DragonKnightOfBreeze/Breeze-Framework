@@ -394,28 +394,11 @@
 
 * [X] 更新版本
 * [X] 更新项目文档
-* [X] `KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
+* [X] 添加`KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
+* [X] 添加`Auditable`
 
 # 长期
 
-* [ ] 添加`BreezeExtensions`
-  * [ ] `Any?.equalsBr`
-  * [ ] `Any?.hashCodeBr`
-  * [ ] `Any?.toStringBr`
-  * [ ] `Any?.isEmptyBr`
-  * [ ] `Any?.isNotEmptyBr`
-  * [ ] `Any?.ifEmptyBr`
-  * [ ] `Any?.ifNotEmptyBr`
-  * [ ] `<Collection>.joinToStringBr`
-  * [ ] `<Collection>.getBr`
-  * [ ] `<Collection>.getOrNullBr`
-  * [ ] `<Collection>.getOrSetBr`
-  * [ ] `<Collection>.getOrElseBr`
-  * [ ] `<Collection>.setBr`
-  * [ ] `<Collection>.queryBr`
-  * [ ] `<Collection>.queryOrNullBr`
-  * [ ] `<Collection>.queryOrSetBr`
-  * [ ] `<Collection>.queryOrElseBr`
 * [X] 移除对非框架类的第三方库的依赖
 * [X] 上传到Github
 * [X] 同步项目到Bintray
