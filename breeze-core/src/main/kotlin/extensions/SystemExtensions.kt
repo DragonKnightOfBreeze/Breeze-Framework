@@ -158,7 +158,7 @@ inline fun execBlocking(vararg environmentVariables: String, workDirectory: File
 
 
 /**循环扫描命令行的下一个输入命令，以执行相应的操作。默认的退出命令是"exit"且不区分大小写。*/
-@Deprecated("", level = DeprecationLevel.HIDDEN)
+@Deprecated("Placeholder extension.", level = DeprecationLevel.HIDDEN)
 @JvmSynthetic
 inline fun executeCommand(exitCommand: String = "exit", block: (String) -> Unit) {
 	val scanner = Scanner(System.`in`)

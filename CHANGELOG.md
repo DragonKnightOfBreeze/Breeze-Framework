@@ -397,7 +397,7 @@
 * [X] 添加`KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
 * [X] 添加`Auditable`
 * [X] 移除过时的`Array.onEach`
-* [X] 移除过时的`setOfNotNull` 
+* [X] 移除过时的`setOfNotNull`
 
 # 长期
 

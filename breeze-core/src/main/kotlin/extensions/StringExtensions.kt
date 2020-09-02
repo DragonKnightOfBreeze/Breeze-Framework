@@ -86,7 +86,6 @@
 
 @file:JvmName("StringExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
-//org.apache.commons.lang3.StringUtils
 
 package com.windea.breezeframework.core.extensions
 
@@ -102,6 +101,8 @@ import java.time.format.*
 import java.time.format.DateTimeFormatter.*
 import java.util.*
 import kotlin.contracts.*
+
+//org.apache.commons.lang3.StringUtils
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
