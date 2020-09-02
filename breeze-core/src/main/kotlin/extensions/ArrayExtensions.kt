@@ -315,19 +315,19 @@ operator fun CharArray.get(startIndex: Int, endIndex: Int): CharArray = this.sli
 //region common extensions
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
-fun <T> Array<out T>.stream(start: Int = 0, end: Int = this.size): Stream<T> = Arrays.stream(this, start, end)!!
+fun <T> Array<out T>.stream(start: Int = 0, end: Int = size): Stream<T> = Arrays.stream(this, start, end)!!
 
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
-fun IntArray.stream(start: Int = 0, end: Int = this.size): IntStream = Arrays.stream(this, start, end)
+fun IntArray.stream(start: Int = 0, end: Int = size): IntStream = Arrays.stream(this, start, end)
 
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
-fun LongArray.stream(start: Int = 0, end: Int = this.size): LongStream = Arrays.stream(this, start, end)
+fun LongArray.stream(start: Int = 0, end: Int = size): LongStream = Arrays.stream(this, start, end)
 
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
-fun DoubleArray.stream(start: Int = 0, end: Int = this.size): DoubleStream = Arrays.stream(this, start, end)
+fun DoubleArray.stream(start: Int = 0, end: Int = size): DoubleStream = Arrays.stream(this, start, end)
 
 
 /**将当前字节数组编码为base64格式的字节数组。*/

@@ -93,17 +93,6 @@ import java.util.concurrent.*
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
 
-//deprecated in kotlin 1.4.0-rc
-/**构建一个集并事先过滤空的元素。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-fun <T : Any> setOfNotNull(element:T?) =
-	if(element != null) listOf(element) else emptyList()
-
-/**构建一个集并事先过滤空的元素。*/
-@Deprecated("Deprecated in Kotlin 1.4.0-rc.",level=DeprecationLevel.WARNING)
-fun <T : Any> setOfNotNull(vararg elements:T?):Set<T> =
-	LinkedHashSet<T>().apply { for(element in elements) if(element != null) add(element) }
-
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(pair:Pair<K, V?>) =
 	if(pair.second != null) mapOf(pair) else emptyMap()
