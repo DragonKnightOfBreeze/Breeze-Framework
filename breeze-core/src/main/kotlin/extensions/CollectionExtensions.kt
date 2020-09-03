@@ -129,6 +129,8 @@ operator fun <T> List<T>.get(startIndex:Int, endIndex:Int):List<T> = this.subLis
 //endregion
 
 //region common extensions
+//虽然不知道为什么，但是的确可以这样做 ヾ(*´▽‘*)ﾉ
+
 /**得到当前数组的最为适配的元素类型。*/
 inline val Array<*>.elementType:Type get() = this::class.java.componentType
 
@@ -142,7 +144,7 @@ inline val <reified K> Map<K, *>.keyType:Type get() = javaTypeOf<K>()
 inline val <reified V> Map<*, V>.valueType:Type get() = javaTypeOf<V>()
 
 /**得到当前序列的最为适配的键类型*/
-inline val <reified T> Sequence<T>.elementTYpe:Type get() = javaTypeOf<T>()
+inline val <reified T> Sequence<T>.elementType:Type get() = javaTypeOf<T>()
 
 
 /**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
