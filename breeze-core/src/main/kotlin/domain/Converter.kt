@@ -89,5 +89,5 @@ package com.windea.breezeframework.core.domain
 interface Converter<in T: Any,out R: Any>{
 	fun convert(value:T):R
 
-	fun safeConvert(value:T):R?
+	fun convertOrNull(value:T):R?
 }

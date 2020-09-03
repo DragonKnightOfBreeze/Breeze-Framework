@@ -95,14 +95,14 @@ import com.windea.breezeframework.core.domain.ConverterService
 /**
  * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
  */
-inline fun <reified T:Any> Any.cast(): T {
+inline fun <reified T> Any?.cast(): T {
 	return this as T
 }
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T:Any> Any.safeCast():T? {
+inline fun <reified T> Any?.caseOrNull():T? {
 	return this as? T
 }
 
@@ -111,13 +111,13 @@ inline fun <reified T:Any> Any.safeCast():T? {
 /**
  * 将当前对象转化为指定类型。如果转换失败，则抛出异常。转化后的对象是基于一般逻辑得到的新对象。
  */
-inline fun <reified T:Any> Any.convert(): T {
+inline fun <reified T> Any?.convert(): T {
 	return ConverterService.convert(this)
 }
 
 /**
  * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般逻辑得到的新对象。
  */
-inline fun <reified T:Any> Any.safeConvert():T? {
-	return ConverterService.safeConvert(this)
+inline fun <reified T> Any?.convertOrNull():T? {
+	return ConverterService.convertOrNull(this)
 }

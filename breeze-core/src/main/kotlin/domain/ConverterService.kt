@@ -84,7 +84,7 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "UNCHECKED_CAST")
 
 package com.windea.breezeframework.core.domain
 
@@ -103,42 +103,56 @@ object ConverterService {
 		converters.getOrPut(targetType) { mutableListOf() } += sourceType to converter
 	}
 
-	inline fun <reified T : Any> convert(value: Any): T {
+	inline fun <reified T : Any> convert(value: Any?): T {
 		return convert(value, T::class.java)
 	}
 
-	fun <T : Any> convert(value: Any, targetType: Class<T>): T {
-		val matchedConverters = converters[targetType]
-		if(matchedConverters != null) {
-			for((sourceType, converter) in matchedConverters) {
-				if(sourceType.isAssignableFrom(value.javaClass)) {
-					return (converter as Converter<Any, Any>).convert(value) as T
+	fun <T> convert(value: Any?, targetType: Class<T>): T {
+		try {
+			if(value == null) return null as T
+			val matchedConverters = converters[targetType]
+			if(matchedConverters != null) {
+				for((sourceType, converter) in matchedConverters) {
+					if(sourceType.isAssignableFrom(value.javaClass)) {
+						return (converter as Converter<Any, Any>).convert(value) as T
+					}
 				}
 			}
+			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
+		} catch(e: Exception) {
+			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
 		}
-		throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
 	}
 
-	inline fun <reified T : Any> safeConvert(value: Any): T? {
+	inline fun <reified T : Any> convertOrNull(value: Any?): T? {
 		return convert(value, T::class.java)
 	}
 
-	fun <T : Any> safeConvert(value: Any, targetType: Class<T>): T? {
-		val matchedConverters = converters[targetType]
-		if(matchedConverters != null) {
-			for((sourceType, converter) in matchedConverters) {
-				if(sourceType.isAssignableFrom(value.javaClass)) {
-					return (converter as Converter<Any, Any>).safeConvert(value) as T
+	fun <T : Any> convertOrNull(value: Any?, targetType: Class<T>): T? {
+		try {
+			if(value == null) return null
+			val matchedConverters = converters[targetType]
+			if(matchedConverters != null) {
+				for((sourceType, converter) in matchedConverters) {
+					if(sourceType.isAssignableFrom(value.javaClass)) {
+						return (converter as Converter<Any, Any>).convertOrNull(value) as T
+					}
 				}
 			}
+			return null
+		} catch(e: Exception) {
+			return null
 		}
-		return null
 	}
 
 	private fun registerDefaultConverters() {
-		register(object :Converter<String,Int>{
+		register(object : Converter<String, Int> {
 			override fun convert(value: String) = value.toInt()
-			override fun safeConvert(value: String) = value.toIntOrNull()
+			override fun convertOrNull(value: String) = value.toIntOrNull()
+		})
+		register(object : Converter<String, Long> {
+			override fun convert(value: String) = value.toLong()
+			override fun convertOrNull(value: String) = value.toLongOrNull()
 		})
 	}
 }

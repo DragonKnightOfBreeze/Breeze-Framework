@@ -197,6 +197,7 @@ private fun getNumberFormatInstance(type:NumberFormatType,locale:Locale):NumberF
 
 //region Convert extensions
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
+@Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> Number.toNumber(): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T
@@ -212,6 +213,7 @@ inline fun <reified T : Number> Number.toNumber(): T {
 }
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
+@Deprecated("Use this.convert<T>()",ReplaceWith("this.safeConvert<T>()"))
 inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T?

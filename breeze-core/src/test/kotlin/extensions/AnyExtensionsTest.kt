@@ -92,7 +92,7 @@ class AnyExtensionsTest{
 	@Test
 	fun testConvert(){
 		"123".convert<Int>().andPrintln()
-		"123".safeConvert<Int>().andPrintln()
+		"123".convertOrNull<Int>().andPrintln()
 	}
 
 	@Test
