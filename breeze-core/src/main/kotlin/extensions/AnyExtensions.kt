@@ -102,7 +102,7 @@ inline fun <reified T> Any?.cast(): T {
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T> Any?.caseOrNull():T? {
+inline fun <reified T> Any?.castOrNull():T? {
 	return this as? T
 }
 
