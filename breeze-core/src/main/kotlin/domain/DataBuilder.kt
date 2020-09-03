@@ -96,8 +96,8 @@ package com.windea.breezeframework.core.domain
  * 主构造方法以该数据实体为默认参数，次构造方法以该数据构建器的构建代码块为参数。
  */
 interface DataBuilder<T : DataEntity> {
-	/**构建对应的数据实体。*/
+	/**
+	 * 构建对应的数据实体。
+	 */
 	fun build():T
-
-
 }

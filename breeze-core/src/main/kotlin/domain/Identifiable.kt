@@ -96,6 +96,8 @@ import java.io.*
  * 此接口的实例拥有一个唯一标识符，其`equals`和`hashCode`方法基于此唯一标识符实现。
  *
  * 此接口可以通过[Identifiable.delegate]委托实现。
+ *
+ * @property id 主键。
  */
 interface Identifiable<T : Serializable>:Serializable {
 	val id: T

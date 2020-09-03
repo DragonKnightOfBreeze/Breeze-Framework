@@ -399,6 +399,7 @@
 * [X] 移除过时的`Array.onEach`
 * [X] 移除过时的`setOfNotNull`
 * [X] 更新`Breeze`
+* [X] 实现`Any.convert`和`Any.safeConvert`
 
 # 长期
 

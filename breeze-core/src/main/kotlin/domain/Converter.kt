@@ -86,6 +86,8 @@
 
 package com.windea.breezeframework.core.domain
 
-object ConversionService {
-	inline fun <reified T,reified R> convert(value:T):R = TODO()
+interface Converter<in T: Any,out R: Any>{
+	fun convert(value:T):R
+
+	fun safeConvert(value:T):R?
 }

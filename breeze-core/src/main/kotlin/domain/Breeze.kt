@@ -126,7 +126,7 @@ class Breeze<T:Any> constructor(
 			value is Iterable<*> -> value.none()
 			value is Map<*,*> -> value.isEmpty()
 			value is Sequence<*> -> value.none()
-			else -> throwUnsupportedException()
+			else -> unsupported()
 		}
 	}
 
@@ -138,17 +138,17 @@ class Breeze<T:Any> constructor(
 			value is Iterable<*> -> value.any()
 			value is Map<*,*> -> value.isNotEmpty()
 			value is Sequence<*> -> value.any()
-			else -> throwUnsupportedException()
+			else -> unsupported()
 		}
 	}
 
-	//inline fun <R> ifEmptyBr(transform:(T)->R):R where T:R {
-	//	return if(isEmptyBr()) transform(this) else value
-	//}
-	//
-	//inline fun <T,R> T.ifNotEmptyBr(transform:(T)->R):R where T:R {
-	//	return if(this.isNotEmptyBr()) transform(this) else this
-	//}
+	inline fun ifEmptyBr(transform:(T)->T):T {
+		return if(isEmptyBr()) transform(value) else value
+	}
+
+	inline fun ifNotEmptyBr(transform:(T)->T):T {
+		return if(isNotEmptyBr()) transform(value) else value
+	}
 
 	fun <R> getBr(path:String):R{
 		return when{
@@ -209,7 +209,7 @@ class Breeze<T:Any> constructor(
 		TODO()
 	}
 
-	private fun throwUnsupportedException():Nothing{
+	private fun unsupported():Nothing{
 		throw UnsupportedOperationException("Unsupported value type '${value::class.java.name}'.")
 	}
 }

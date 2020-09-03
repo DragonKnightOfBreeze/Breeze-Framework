@@ -92,7 +92,10 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.domain.text.*
 import java.lang.reflect.*
+import java.util.*
 import java.util.concurrent.*
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 import kotlin.contracts.*
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
@@ -868,6 +871,41 @@ fun <T> Set<T>.asConcurrent():CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
 
 /**将当前映射转化为新的并发映射。*/
 fun <K, V> Map<K, V>.asConcurrent():ConcurrentMap<K, V> = ConcurrentHashMap(this)
+
+
+/**
+ * 将当前对象转换为单例集合。
+ *
+ * 支持的类型参数：[Collection] [MutableCollection] [Set] [MutableSet] [List] [MutableList]。
+ */
+inline fun <T, reified R> T.toSingleton(): R {
+	return when(val type = R::class) {
+		Collection::class -> Collections.singleton(this)
+		MutableCollection::class -> Collections.singleton(this)
+		Set::class -> Collections.singleton(this)
+		MutableSet::class -> Collections.singleton(this)
+		List::class -> Collections.singletonList(this)
+		MutableList::class -> Collections.singletonList(this)
+		else -> throw UnsupportedOperationException("Unsupported singleton collection type '${type.simpleName}'")
+	} as R
+}
+
+/**
+ * 如果当前对象不为null，则将当前对象转换为单例集合，否则转化为空集合。
+ *
+ * 支持的类型参数：[Collection] [MutableCollection] [Set] [MutableSet] [List] [MutableList]。
+ */
+inline fun <T, reified R> T.toSingletonOrEmpty(): R {
+	return when(val type = R::class) {
+		Collection::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
+		MutableCollection::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
+		Set::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
+		MutableSet::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
+		List::class -> if(this == null) Collections.emptyList() else Collections.singletonList(this)
+		MutableList::class -> if(this == null) Collections.emptyList() else Collections.singletonList(this)
+		else -> throw UnsupportedOperationException("Unsupported singleton collection type '${type.simpleName}'")
+	} as R
+}
 
 
 /**将当前键值对数组转化为新的可变映射。*/

@@ -84,22 +84,61 @@
  * Breeze is blowing ...
  **********************************************************************************************************************/
 
+@file:Suppress("UNCHECKED_CAST")
+
 package com.windea.breezeframework.core.domain
 
-import java.io.Serializable
-import java.time.temporal.*
+object ConverterService {
+	private val converters: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
 
-/**
- * 可审计的对象。
- *
- * @property createdTime 创建时间。
- * @property lastUpdatedTime 最后更新时间。
- * @property createdBy 创建者。
- * @property lastUpdatedBy 最后更新者。
- */
-interface Auditable<T: Temporal,U: Serializable>:Serializable{
-	val createdTime:T
-	var lastUpdatedTime:T
-	val createdBy:U
-	var lastUpdatedBy:U
+	init {
+		registerDefaultConverters()
+	}
+
+	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>) {
+		register(converter, T::class.java, R::class.java)
+	}
+
+	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>) {
+		converters.getOrPut(targetType) { mutableListOf() } += sourceType to converter
+	}
+
+	inline fun <reified T : Any> convert(value: Any): T {
+		return convert(value, T::class.java)
+	}
+
+	fun <T : Any> convert(value: Any, targetType: Class<T>): T {
+		val matchedConverters = converters[targetType]
+		if(matchedConverters != null) {
+			for((sourceType, converter) in matchedConverters) {
+				if(sourceType.isAssignableFrom(value.javaClass)) {
+					return (converter as Converter<Any, Any>).convert(value) as T
+				}
+			}
+		}
+		throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
+	}
+
+	inline fun <reified T : Any> safeConvert(value: Any): T? {
+		return convert(value, T::class.java)
+	}
+
+	fun <T : Any> safeConvert(value: Any, targetType: Class<T>): T? {
+		val matchedConverters = converters[targetType]
+		if(matchedConverters != null) {
+			for((sourceType, converter) in matchedConverters) {
+				if(sourceType.isAssignableFrom(value.javaClass)) {
+					return (converter as Converter<Any, Any>).safeConvert(value) as T
+				}
+			}
+		}
+		return null
+	}
+
+	private fun registerDefaultConverters() {
+		register(object :Converter<String,Int>{
+			override fun convert(value: String) = value.toInt()
+			override fun safeConvert(value: String) = value.toIntOrNull()
+		})
+	}
 }

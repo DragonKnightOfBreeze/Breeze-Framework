@@ -2,6 +2,10 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.system.*
 
+internal fun Any?.andPrintln(){
+	println(this)
+}
+
 /**
  * 比较两段代码块的性能。若返回`true`则表示第一段代码块性能更好
  */
