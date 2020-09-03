@@ -88,6 +88,14 @@
 
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.extensions.*
+import java.io.*
+import java.net.*
+import java.nio.charset.*
+import java.nio.file.*
+
+//TODO 支持转化成泛型类型
+
 object ConverterService {
 	private val converters: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
 
@@ -95,12 +103,14 @@ object ConverterService {
 		registerDefaultConverters()
 	}
 
-	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>) {
-		register(converter, T::class.java, R::class.java)
+	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>,override:Boolean = false) {
+		register(converter, T::class.java, R::class.java,override)
 	}
 
-	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>) {
-		converters.getOrPut(targetType) { mutableListOf() } += sourceType to converter
+	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>,override:Boolean = false) {
+		val converterPairs = converters.getOrPut(targetType) { mutableListOf() }
+		val converterPair = sourceType to converter
+		if(override) converterPairs.add(0,converterPair) else converterPairs.add(converterPair)
 	}
 
 	inline fun <reified T : Any> convert(value: Any?): T {
@@ -146,6 +156,11 @@ object ConverterService {
 	}
 
 	private fun registerDefaultConverters() {
+		register(object : Converter<Any, String> {
+			override fun convert(value: Any) = value.toString()
+			override fun convertOrNull(value: Any) = value.toString()
+		})
+
 		register(object : Converter<String, Int> {
 			override fun convert(value: String) = value.toInt()
 			override fun convertOrNull(value: String) = value.toIntOrNull()
@@ -153,6 +168,57 @@ object ConverterService {
 		register(object : Converter<String, Long> {
 			override fun convert(value: String) = value.toLong()
 			override fun convertOrNull(value: String) = value.toLongOrNull()
+		})
+		register(object : Converter<String, Float> {
+			override fun convert(value: String) = value.toFloat()
+			override fun convertOrNull(value: String) = value.toFloatOrNull()
+		})
+		register(object : Converter<String, Double> {
+			override fun convert(value: String) = value.toDouble()
+			override fun convertOrNull(value: String) = value.toDoubleOrNull()
+		})
+		register(object : Converter<String, Byte> {
+			override fun convert(value: String) = value.toByte()
+			override fun convertOrNull(value: String) = value.toByteOrNull()
+		})
+		register(object : Converter<String, Char> {
+			override fun convert(value: String) = value.toChar()
+			override fun convertOrNull(value: String) = value.toCharOrNull()
+		})
+		register(object : Converter<String, Boolean> {
+			override fun convert(value: String) = value.toBoolean()
+			override fun convertOrNull(value: String) = value.toBooleanOrNull()
+		})
+	}
+
+	private fun registerExtendedConverters(){
+		register(object : Converter<String, Regex> {
+			override fun convert(value: String) = value.toRegex()
+			override fun convertOrNull(value: String) = value.toRegex()
+		})
+		register(object : Converter<String, File> {
+			override fun convert(value: String) = value.toFile()
+			override fun convertOrNull(value: String) = value.toFile()
+		})
+		register(object : Converter<String, Path> {
+			override fun convert(value: String) = value.toPath()
+			override fun convertOrNull(value: String) = value.toPath()
+		})
+		register(object : Converter<String, URL> {
+			override fun convert(value: String) = value.toUrl()
+			override fun convertOrNull(value: String) = value.toUrl()
+		})
+		register(object : Converter<String, URI> {
+			override fun convert(value: String) = value.toUri()
+			override fun convertOrNull(value: String) = value.toUri()
+		})
+		register(object : Converter<String, Charset> {
+			override fun convert(value: String) = value.toCharset()
+			override fun convertOrNull(value: String) = value.toCharsetOrNull()
+		})
+		register(object : Converter<String, Class<*>> {
+			override fun convert(value: String) = value.toClass()
+			override fun convertOrNull(value: String) = value.toClassOrNull()
 		})
 	}
 }

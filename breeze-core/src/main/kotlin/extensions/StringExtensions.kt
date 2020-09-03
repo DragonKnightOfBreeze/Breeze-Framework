@@ -734,28 +734,26 @@ fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignore
 
 /**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
 @UnstableApi
-tailrec fun String.replaceLooped(oldValue: String, newValue: String): String {
+tailrec fun String.replaceRepeatedly(oldValue: String, newValue: String): String {
 	val result = this.replace(oldValue, newValue)
-	return if(this != result) result.replaceLooped(oldValue, newValue) else result
-}
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableApi
-tailrec fun CharSequence.replaceLooped(regex: Regex, replacement: String): String {
-	val result = this.replace(regex, replacement)
-	return if(this != result) result.replaceLooped(regex, replacement) else result
-}
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableApi
-tailrec fun CharSequence.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
-	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等
-	return if(length != newString.length || this != newString) {
-		newString.replaceLooped(regex, transform)
-	} else {
-		newString
-	}
+	return if(length != result.length || this != result) result.replaceRepeatedly(oldValue, newValue) else result
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@UnstableApi
+tailrec fun CharSequence.replaceRepeatedly(regex: Regex, replacement: String): String {
+	val result = this.replace(regex, replacement)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(length != result.length || this != result) result.replaceRepeatedly(regex, replacement) else result
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@UnstableApi
+tailrec fun CharSequence.replaceRepeatedly(regex: Regex, transform: (MatchResult) -> CharSequence): String {
+	val result = this.replace(regex, transform)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(length != result.length || this != result) result.replaceRepeatedly(regex, transform) else result
 }
 
 
@@ -1064,6 +1062,13 @@ inline fun String.toChar(): Char = this.single()
 /**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.singleOrNull]委托实现。*/
 inline fun String.toCharOrNull(): Char? = this.singleOrNull()
 
+/**将当前字符串转化为布尔值。如果转化失败，则返回null。*/
+inline fun String.toBooleanOrNull():Boolean? = when {
+	this.equalsIgnoreCase("true") -> true
+	this.equalsIgnoreCase("false") -> false
+	else -> null
+}
+
 //性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
 @Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
@@ -1175,14 +1180,22 @@ inline fun String.toUri(): URI = URI.create(this)
 @JvmOverloads
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
+
 /**将当前字符串转化为类路径资源。*/
 inline fun <reified T : Any> String.toClassPathResource(): URL = T::class.java.getResource(this)
 
-/**将当前字符串转化为字符集。*/
+
+/**将当前字符串转化为字符集。如果转化失败，则抛出异常。*/
 inline fun String.toCharset(): Charset = Charset.forName(this)
 
-/**将当前对象转化为类型。*/
+/**将当前字符串转化为字符集。如果转化失败，则返回null。*/
+inline fun String.toCharsetOrNull(): Charset? =runCatching{ Charset.forName(this)}.getOrNull()
+
+/**将当前对象转化为类型。如果转化失败，则抛出异常。*/
 inline fun String.toClass(): Class<*> = Class.forName(this)
+
+/**将当前对象转化为类型。如果转化失败，则返回null。*/
+inline fun String.toClassOrNull(): Class<*>? =runCatching{ Class.forName(this)}.getOrNull()
 
 
 /**将当前字符串转化为日期。*/

@@ -42,7 +42,7 @@ class StringExtensionsTest {
 	fun replaceExtensionTest() {
 		val string = "abc123abc123"
 		println(string.replace("""([a-z])\d""".toRegex(), "$1"))
-		println(string.replaceLooped("""([a-z])\d""".toRegex(), "$1"))
+		println(string.replaceRepeatedly("""([a-z])\d""".toRegex(), "$1"))
 	}
 
 	@Test
