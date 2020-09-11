@@ -400,7 +400,9 @@
 * [X] 移除过时的`setOfNotNull`
 * [X] 更新`Breeze`
 * [X] 实现`Any.convert`和`Any.safeConvert`
+* [X] 注册基本的`Converter`
 * [X] 统一命名规则为`xxx`和`xxxOrNull`
+* [ ] `<Collection>.deepGetOrElse`和`<Collection>.deepGetOrPut`
 
 # 长期
 

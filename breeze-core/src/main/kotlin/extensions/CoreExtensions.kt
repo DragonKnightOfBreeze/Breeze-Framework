@@ -85,7 +85,7 @@
  **********************************************************************************************************************/
 
 @file:JvmName("CoreExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UseWithIndex")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UseWithIndex", "UNUSED_PARAMETER")
 
 package com.windea.breezeframework.core.extensions
 
@@ -97,6 +97,9 @@ import kotlin.reflect.*
 
 /**得到指定类型的带有泛型参数信息的Java类型对象。*/
 inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
+
+/**得到当前对象的带有泛型参数信息的Java类型对象。*/
+inline fun <reified T> javaTypeOf(target:T) = object : TypeReference<T>() {}.type
 
 /**类型引用。*/
 @PublishedApi

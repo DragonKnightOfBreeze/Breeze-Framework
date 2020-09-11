@@ -2,6 +2,9 @@ package com.windea.breezeframework.core.extensions
 
 import kotlin.system.*
 
+/**
+ * 答应当前对象
+ */
 internal fun Any?.andPrintln(){
 	println(this)
 }

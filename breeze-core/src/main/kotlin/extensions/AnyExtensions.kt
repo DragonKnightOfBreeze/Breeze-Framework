@@ -90,6 +90,13 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.domain.ConverterService
 
+//真的可以这么做
+
+/**
+ * 得到当前对象的带有泛型参数信息的Java类型对象。
+ */
+inline val <reified T> T.javaType get() = object : TypeReference<T>() {}.type
+
 //注意cast方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
 
 /**

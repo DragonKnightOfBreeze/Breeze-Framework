@@ -101,6 +101,7 @@ object ConverterService {
 
 	init {
 		registerDefaultConverters()
+		registerExtendedConverters()
 	}
 
 	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>,override:Boolean = false) {
@@ -181,6 +182,10 @@ object ConverterService {
 			override fun convert(value: String) = value.toByte()
 			override fun convertOrNull(value: String) = value.toByteOrNull()
 		})
+		register(object : Converter<String, Short> {
+			override fun convert(value: String) = value.toShort()
+			override fun convertOrNull(value: String) = value.toShortOrNull()
+		})
 		register(object : Converter<String, Char> {
 			override fun convert(value: String) = value.toChar()
 			override fun convertOrNull(value: String) = value.toCharOrNull()
@@ -189,28 +194,160 @@ object ConverterService {
 			override fun convert(value: String) = value.toBoolean()
 			override fun convertOrNull(value: String) = value.toBooleanOrNull()
 		})
+
+		register(object:Converter<Int,Long>{
+			override fun convert(value: Int) = value.toLong()
+		})
+		register(object:Converter<Int,Float>{
+			override fun convert(value: Int) = value.toFloat()
+		})
+		register(object:Converter<Int,Double>{
+			override fun convert(value: Int) = value.toDouble()
+		})
+		register(object:Converter<Int,Byte>{
+			override fun convert(value: Int) = value.toByte()
+		})
+		register(object:Converter<Int,Short>{
+			override fun convert(value: Int) = value.toShort()
+		})
+		register(object:Converter<Int,Char>{
+			override fun convert(value: Int) = value.toChar()
+		})
+
+		register(object:Converter<Long,Int>{
+			override fun convert(value: Long) = value.toInt()
+		})
+		register(object:Converter<Long,Float>{
+			override fun convert(value: Long) = value.toFloat()
+		})
+		register(object:Converter<Long,Double>{
+			override fun convert(value: Long) = value.toDouble()
+		})
+		register(object:Converter<Long,Byte>{
+			override fun convert(value: Long) = value.toByte()
+		})
+		register(object:Converter<Long,Short>{
+			override fun convert(value: Long) = value.toShort()
+		})
+		register(object:Converter<Long,Char>{
+			override fun convert(value: Long) = value.toChar()
+		})
+
+		register(object:Converter<Float,Int>{
+			override fun convert(value: Float) = value.toInt()
+		})
+		register(object:Converter<Float,Long>{
+			override fun convert(value: Float) = value.toLong()
+		})
+		register(object:Converter<Float,Double>{
+			override fun convert(value: Float) = value.toDouble()
+		})
+		register(object:Converter<Float,Byte>{
+			@Suppress("DEPRECATION")
+			override fun convert(value: Float) = value.toByte()
+		})
+		register(object:Converter<Float,Short>{
+			@Suppress("DEPRECATION")
+			override fun convert(value: Float) = value.toShort()
+		})
+		register(object:Converter<Float,Char>{
+			override fun convert(value: Float) = value.toChar()
+		})
+
+		register(object:Converter<Double,Int>{
+			override fun convert(value: Double) = value.toInt()
+		})
+		register(object:Converter<Double,Long>{
+			override fun convert(value: Double) = value.toLong()
+		})
+		register(object:Converter<Double,Float>{
+			override fun convert(value: Double) = value.toFloat()
+		})
+		register(object:Converter<Double,Byte>{
+			@Suppress("DEPRECATION")
+			override fun convert(value: Double) = value.toByte()
+		})
+		register(object:Converter<Double,Short>{
+			@Suppress("DEPRECATION")
+			override fun convert(value: Double) = value.toShort()
+		})
+		register(object:Converter<Double,Char>{
+			override fun convert(value: Double) = value.toChar()
+		})
+
+		register(object:Converter<Byte,Int>{
+			override fun convert(value: Byte) = value.toInt()
+		})
+		register(object:Converter<Byte,Long>{
+			override fun convert(value: Byte) = value.toLong()
+		})
+		register(object:Converter<Byte,Float>{
+			override fun convert(value: Byte) = value.toFloat()
+		})
+		register(object:Converter<Byte,Double>{
+			override fun convert(value: Byte) = value.toDouble()
+		})
+		register(object:Converter<Byte,Short>{
+			override fun convert(value: Byte) = value.toShort()
+		})
+		register(object:Converter<Byte,Char>{
+			override fun convert(value: Byte) = value.toChar()
+		})
+
+		register(object:Converter<Short,Int>{
+			override fun convert(value: Short) = value.toInt()
+		})
+		register(object:Converter<Short,Long>{
+			override fun convert(value: Short) = value.toLong()
+		})
+		register(object:Converter<Short,Float>{
+			override fun convert(value: Short) = value.toFloat()
+		})
+		register(object:Converter<Short,Double>{
+			override fun convert(value: Short) = value.toDouble()
+		})
+		register(object:Converter<Short,Byte>{
+			override fun convert(value: Short) = value.toByte()
+		})
+		register(object:Converter<Short,Char>{
+			override fun convert(value: Short) = value.toChar()
+		})
+
+		register(object:Converter<Char,Int>{
+			override fun convert(value: Char) = value.toInt()
+		})
+		register(object:Converter<Char,Long>{
+			override fun convert(value: Char) = value.toLong()
+		})
+		register(object:Converter<Char,Float>{
+			override fun convert(value: Char) = value.toFloat()
+		})
+		register(object:Converter<Char,Double>{
+			override fun convert(value: Char) = value.toDouble()
+		})
+		register(object:Converter<Char,Byte>{
+			override fun convert(value: Char) = value.toByte()
+		})
+		register(object:Converter<Char,Short>{
+			override fun convert(value: Char) = value.toShort()
+		})
 	}
 
 	private fun registerExtendedConverters(){
 		register(object : Converter<String, Regex> {
 			override fun convert(value: String) = value.toRegex()
-			override fun convertOrNull(value: String) = value.toRegex()
 		})
 		register(object : Converter<String, File> {
 			override fun convert(value: String) = value.toFile()
-			override fun convertOrNull(value: String) = value.toFile()
 		})
 		register(object : Converter<String, Path> {
 			override fun convert(value: String) = value.toPath()
-			override fun convertOrNull(value: String) = value.toPath()
 		})
 		register(object : Converter<String, URL> {
 			override fun convert(value: String) = value.toUrl()
-			override fun convertOrNull(value: String) = value.toUrl()
 		})
 		register(object : Converter<String, URI> {
 			override fun convert(value: String) = value.toUri()
-			override fun convertOrNull(value: String) = value.toUri()
 		})
 		register(object : Converter<String, Charset> {
 			override fun convert(value: String) = value.toCharset()
