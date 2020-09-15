@@ -402,6 +402,7 @@
 * [X] 实现`Any.convert`和`Any.safeConvert`
 * [X] 注册基本的`Converter`
 * [X] 统一命名规则为`xxx`和`xxxOrNull`
+* [X] 更新COPYRIGHT
 * [ ] `<Collection>.deepGetOrElse`和`<Collection>.deepGetOrPut`
 
 # 长期
