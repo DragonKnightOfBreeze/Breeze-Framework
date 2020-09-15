@@ -465,37 +465,43 @@ inline fun <T, C : MutableCollection<in T>> expandTo(destination:C, initial:T, o
 
 //region deep operation extensions
 /**
- * 根据指定路径得到当前数组中的元素。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前数组中的元素。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Array<*>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T =
-	this.deepGet0(path, pathCase)
+fun <T> Array<*>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T {
+	return this.deepGet0(path, pathCase)
+}
 
 /**
- * 根据指定路径得到当前列表中的元素。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前列表中的元素。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> List<*>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T =
-	this.deepGet0(path, pathCase)
+fun <T> List<*>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T {
+	return this.deepGet0(path, pathCase)
+}
 
 /**
- * 根据指定路径得到当前映射中的元素。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前映射中的元素。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Map<*, *>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T =
-	this.deepGet0(path, pathCase)
+fun <T> Map<*, *>.deepGet(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T {
+	return this.deepGet0(path, pathCase)
+}
 
 private fun <T> Any?.deepGet0(path:String, pathCase:ReferenceCase):T {
 	val pathList = path.splitBy(pathCase)
@@ -509,37 +515,43 @@ private fun <T> Any?.deepGet0(path:String, pathCase:ReferenceCase):T {
 
 
 /**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Array<*>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? =
-	this.deepGetOrNull0(path, pathCase)
+fun <T> Array<*>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
 
 /**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> List<*>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? =
-	this.deepGetOrNull0(path, pathCase)
+fun <T> List<*>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
 
 /**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。可指定路径的格式，默认为路径引用。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
  * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Map<*, *>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? =
-	this.deepGetOrNull0(path, pathCase)
+fun <T> Map<*, *>.deepGetOrNull(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference):T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
 
 private fun <T> Any?.deepGetOrNull0(path:String, pathCase:ReferenceCase):T? {
 	val splitPaths = path.splitBy(pathCase)
@@ -553,31 +565,48 @@ private fun <T> Any?.deepGetOrNull0(path:String, pathCase:ReferenceCase):T? {
 
 
 /**
- * 根据指定路径设置当前数组中的元素。指定路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
- * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
- * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Array<*>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) =
-	this.deepSet0(path, value, pathCase)
+fun <T> Array<*>.deepGetOrElse(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,defaultValue:()->T):T {
+	return this.deepGetOrNull0(path, pathCase)?:defaultValue()
+}
 
 /**
- * 根据指定路径设置当前列表中的元素。指定路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
- * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
- * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> MutableList<*>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) =
-	this.deepSet0(path, value, pathCase)
+fun <T> List<*>.deepGetOrElse(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,defaultValue:()->T):T {
+	return this.deepGetOrNull0(path, pathCase)?:defaultValue()
+}
 
 /**
- * 根据指定路径设置当前映射中的元素。指定路径的格式默认为路径引用。
+ * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGetOrElse(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,defaultValue:()->T):T {
+	return this.deepGetOrNull0(path, pathCase)?:defaultValue()
+}
+
+
+/**
+ * 根据指定路径设置当前数组中的元素。
+ * 指定路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
  * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意指定路径不能为空，否则会抛出异常。
@@ -585,8 +614,37 @@ fun <T> MutableList<*>.deepSet(path:String, value:T, pathCase:ReferenceCase = Re
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> MutableMap<*, *>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) =
+fun <T> Array<*>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) {
 	this.deepSet0(path, value, pathCase)
+}
+
+/**
+ * 根据指定路径设置当前列表中的元素。
+ * 指定路径的格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
+ * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> MutableList<*>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) {
+	this.deepSet0(path, value, pathCase)
+}
+
+/**
+ * 根据指定路径设置当前映射中的元素。
+ * 指定路径的格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
+ * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> MutableMap<*, *>.deepSet(path:String, value:T, pathCase:ReferenceCase = ReferenceCase.PathReference) {
+	this.deepSet0(path, value, pathCase)
+}
 
 private fun <T> Any?.deepSet0(path:String, value:T, pathCase:ReferenceCase) {
 	val splitPaths = path.splitBy(pathCase)
@@ -600,37 +658,43 @@ private fun <T> Any?.deepSet0(path:String, value:T, pathCase:ReferenceCase) {
 
 
 /**
- * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
+ * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。
+ * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
 fun <T> Array<*>.deepQuery(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> =
-	this.deepQuery0(path, pathCase, returnPathCase)
+	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> {
+	return this.deepQuery0(path, pathCase, returnPathCase)
+}
 
 /**
- * 根据指定路径递归查询当前集合，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
+ * 根据指定路径递归查询当前集合，返回匹配的路径-值映射。
+ * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
 fun <T> Iterable<*>.deepQuery(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> =
-	this.deepQuery0(path, pathCase, returnPathCase)
+	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> {
+	return this.deepQuery0(path, pathCase, returnPathCase)
+}
 
 /**
- * 根据指定路径递归查询当前映射，返回匹配的路径-值映射。指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
+ * 根据指定路径递归查询当前映射，返回匹配的路径-值映射。
+ * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
 fun <T> Map<*, *>.deepQuery(path:String, pathCase:ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> =
-	this.deepQuery0(path, pathCase, returnPathCase)
+	returnPathCase:ReferenceCase = ReferenceCase.PathReference):Map<String, T> {
+	return this.deepQuery0(path, pathCase, returnPathCase)
+}
 
 private fun <T> Any?.deepQuery0(path:String, pathCase:ReferenceCase, returnPathCase:ReferenceCase):Map<String, T> {
 	val splitPaths = path.splitBy(pathCase)
@@ -655,38 +719,50 @@ private fun <T> Any?.deepQuery0(path:String, pathCase:ReferenceCase, returnPathC
 
 
 /**
- * 根据深度递归平滑化当前数组，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前数组，返回匹配的值列表。
+ * 默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
 @JvmOverloads
-fun Array<*>.deepFlatten(depth:Int = -1):List<Any?> = this.deepFlatten0(depth)
+fun <T> Array<*>.deepFlatten(depth:Int = -1):List<T> {
+	return this.deepFlatten0(depth)
+}
 
 /**
- * 根据深度递归平滑化当前集合，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前集合，返回匹配的值列表。
+ * 默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
 @JvmOverloads
-fun Iterable<*>.deepFlatten(depth:Int = -1):List<Any?> = this.deepFlatten0(depth)
+fun <T> Iterable<*>.deepFlatten(depth:Int = -1):List<T> {
+	return this.deepFlatten0(depth)
+}
 
 /**
- * 根据深度递归平滑化当前映射，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前映射，返回匹配的值列表。
+ * 默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
 @JvmOverloads
-fun Map<*, *>.deepFlatten(depth:Int = -1):List<Any?> = this.deepFlatten0(depth)
+fun <T> Map<*, *>.deepFlatten(depth:Int = -1):List<T> {
+	return this.deepFlatten0(depth)
+}
 
 /**
- * 根据深度递归平滑化当前序列，返回匹配的值列表。默认递归映射直到找不到集合类型的元素为止。
+ * 根据深度递归平滑化当前序列，返回匹配的值列表。
+ * 默认递归映射直到找不到集合类型的元素为止。
  * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
  * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
  */
 @JvmOverloads
-fun Sequence<*>.deepFlatten(depth:Int = -1):List<Any?> = this.deepFlatten0(depth)
+fun <T> Sequence<*>.deepFlatten(depth:Int = -1):List<T> {
+	return this.deepFlatten0(depth)
+}
 
-private fun Any?.deepFlatten0(depth:Int):List<Any?> {
+private fun <T> Any?.deepFlatten0(depth:Int):List<T> {
 	require(depth == -1 || depth > 0) { "Depth '$depth' cannot be non-positive except -1." }
 	var values = listOf(this)
 	var currentDepth = depth
@@ -706,10 +782,10 @@ private fun Any?.deepFlatten0(depth:Int):List<Any?> {
 				}
 			}
 		}
-		if(hasNoneCollectionElement) return values
+		if(hasNoneCollectionElement) return values as List<T>
 		currentDepth--
 	}
-	return values
+	return values as List<T>
 }
 
 
