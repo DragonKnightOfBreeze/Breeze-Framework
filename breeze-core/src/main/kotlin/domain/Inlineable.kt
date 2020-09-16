@@ -15,6 +15,7 @@ package com.windea.breezeframework.core.domain
  */
 interface Inlineable : CharSequence {
 	val inlineText:CharSequence
+
 	override val length get() = inlineText.length
 
 	override fun get(index:Int) = inlineText[index]

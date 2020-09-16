@@ -10,10 +10,11 @@ package com.windea.breezeframework.core.domain
 import com.windea.breezeframework.core.extensions.*
 import java.lang.UnsupportedOperationException
 
-class Breeze<T:Any> @PublishedApi internal constructor(
-	val value:T
+@Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS")
+inline class Breeze<T:Any> @PublishedApi internal constructor(
+	@PublishedApi internal val value:T
 ) {
-	 fun equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
+	fun equalsBr(other:Any?, deepOp:Boolean = true): Boolean {
 		 return when {
 			 value !is Array<*> || other !is Array<*> -> value == other
 			 deepOp -> value.contentDeepEquals(other)

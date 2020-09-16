@@ -3,8 +3,6 @@
  * Breeze is blowing...
  ******************************************************************************/
 
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
-
 package com.windea.breezeframework.dsl.xml
 
 import com.windea.breezeframework.core.domain.text.*
@@ -52,7 +50,7 @@ interface XmlDslDefinitions {
 	 * Text of [XmlDsl].
 	 */
 	@XmlDslMarker
-	inline class Text @PublishedApi internal constructor(val text: String) : Node {
+	class Text @PublishedApi internal constructor(val text: String) : Node {
 		override fun toString(): String {
 			return text.escapeBy(EscapeType.Xml)
 		}
@@ -61,6 +59,7 @@ interface XmlDslDefinitions {
 	/**
 	 * CData text of [XmlDsl].
 	 */
+	@XmlDslMarker
 	class CData @PublishedApi internal constructor(val text:String) : Node, Wrappable, Indentable {
 		override var wrapContent = true
 		override var indentContent = true

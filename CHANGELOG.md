@@ -404,6 +404,7 @@
 * [X] 统一命名规则为`xxx`和`xxxOrNull`
 * [X] 更新COPYRIGHT
 * [X] 实现`<Collection>.deepGetOrElse`
+* [X] 修复`<Collection>.deepFlatten`中的bug
 
 # 长期
 

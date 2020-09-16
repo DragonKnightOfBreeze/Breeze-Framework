@@ -4,7 +4,7 @@ import org.junit.*
 
 //Ignore Tests
 
-class EnumExtensionsKtTest {
+class EnumExtensionsTest {
 	@Test
 	fun nameEquals() {
 	}

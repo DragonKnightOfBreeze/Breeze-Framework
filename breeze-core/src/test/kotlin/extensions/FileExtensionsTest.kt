@@ -4,7 +4,7 @@ import org.junit.*
 
 //Ignore Tests
 
-class FileExtensionsKtTest {
+class FileExtensionsTest {
 
 	@Test
 	fun getShotName() {

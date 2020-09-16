@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.http
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.domain.data.*
 import java.net.http.*
 import java.time.*
 
@@ -20,8 +20,8 @@ data class HttpRequestConfig(
 	val version: HttpClient.Version? = null,
 	val expectContinue: Boolean? = null,
 	val encoding: String = "UTF-8"
-) :DataEntity{
-	class Builder:DataBuilder<HttpRequestConfig>{
+) : DataEntity {
+	class Builder: DataBuilder<HttpRequestConfig> {
 		val headers: MutableMap<String, List<String>> = mutableMapOf()
 		val query: MutableMap<String, List<String>> = mutableMapOf()
 		var timeout: Duration? = null

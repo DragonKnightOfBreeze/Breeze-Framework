@@ -2,7 +2,7 @@ package com.windea.breezeframework.core.extensions
 
 import org.junit.*
 
-class SystemExtensionsKtTest {
+class SystemExtensionsTest {
 	@Test
 	fun evalTest() {
 		eval<Int>("javascript") { "1+2" }.also { println(it) }

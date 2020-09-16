@@ -3,6 +3,8 @@
  * Breeze is blowing...
  ******************************************************************************/
 
+@file:JvmName("TextExtensions")
+
 package com.windea.breezeframework.core.extensions
 
 //这些特殊的字符串处理方法相比let & joinToString更加灵活，更加适用于一般情况

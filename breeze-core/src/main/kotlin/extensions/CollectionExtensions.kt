@@ -207,20 +207,23 @@ inline fun <K, V> Map<K, V>.orNull():Map<K, V>? = if(this.isEmpty()) null else t
 /**如果当前数组不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
-inline fun <C, R> C.ifNotEmpty(transform:(C) -> R):R where C : Array<*>, C : R =
-	if(this.isEmpty()) this else transform(this)
+inline fun <C, R> C.ifNotEmpty(transform:(C) -> R):R where C : Array<*>, C : R {
+	return if(this.isEmpty()) this else transform(this)
+}
 
 /**如果当前集合不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
-inline fun <C, R> C.ifNotEmpty(transform:(C) -> R):R where C : Collection<*>, C : R =
-	if(this.isEmpty()) this else transform(this)
+inline fun <C, R> C.ifNotEmpty(transform:(C) -> R):R where C : Collection<*>, C : R {
+	return if(this.isEmpty()) this else transform(this)
+}
 
 /**如果当前映射不为空，则返回转化后的值，否则返回本身。*/
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
-inline fun <M, R> M.ifNotEmpty(transform:(M) -> R):R where M : Map<*, *>, M : R =
-	if(this.isEmpty()) this else transform(this)
+inline fun <M, R> M.ifNotEmpty(transform:(M) -> R):R where M : Map<*, *>, M : R {
+	return if(this.isEmpty()) this else transform(this)
+}
 
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
@@ -437,6 +440,8 @@ inline fun <T, R> Iterable<T>.bind(other:Iterable<R>, predicate:(T, R) -> Boolea
 inline fun <T, R> Sequence<T>.bind(other:Sequence<R>, crossinline predicate:(T, R) -> Boolean):Sequence<Pair<T, R>> {
 	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
 }
+
+
 
 
 /**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止。*/
@@ -770,19 +775,27 @@ private fun <T> Any?.deepFlatten0(depth:Int):List<T> {
 		//用来判断这次循环中是否找到集合类型的数据，以判断是否需要进行下一次循环
 		var hasNoneCollectionElement = true
 		values = values.flatMap { value ->
-			hasNoneCollectionElement = false
 			when(value) {
-				is Array<*> -> value.asIterable()
-				is Iterable<*> -> value
-				is Map<*, *> -> value.values
-				is Sequence<*> -> value.asIterable()
-				else -> {
-					hasNoneCollectionElement = true
-					listOf(value)
+				is Array<*> -> {
+					hasNoneCollectionElement = false
+					value.asIterable()
 				}
+				is Iterable<*> -> {
+					hasNoneCollectionElement = false
+					value
+				}
+				is Map<*, *> -> {
+					hasNoneCollectionElement = false
+					value.values
+				}
+				is Sequence<*> -> {
+					hasNoneCollectionElement = false
+					value.asIterable()
+				}
+				else -> listOf(value)
 			}
 		}
-		if(hasNoneCollectionElement) return values as List<T>
+		if(hasNoneCollectionElement) break
 		currentDepth--
 	}
 	return values as List<T>

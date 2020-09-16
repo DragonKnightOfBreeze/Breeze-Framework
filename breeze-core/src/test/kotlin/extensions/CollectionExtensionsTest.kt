@@ -1,9 +1,8 @@
 package com.windea.breezeframework.core.extensions
 
-import kotlin.reflect.*
 import kotlin.test.*
 
-class CollectionExtensionsKtTest {
+class CollectionExtensionsTest {
 	@Test
 	fun dropBlankTest() {
 		assertEquals(1, listOf("123").dropBlank().size)
@@ -127,11 +126,16 @@ class CollectionExtensionsKtTest {
 
 	@Test
 	fun expandTest() {
-		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6)), 7)
+		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6,listOf(7))), 8)
 		val flatList = list.flatMap { if(it is List<*>) it else listOf(it) }
-		val extendList = expand<Any?>(list) { if(it is List<*>) it else listOf() }
+		val expendList = expand<Any?>(list) { if(it is List<*>) it else listOf() }
 		println(list)
 		println(flatList)
-		println(extendList)
+		println(expendList)
+		println(list.deepFlatten<Any>())
+		println(list.deepFlatten<Any>(1))
+		println(list.deepFlatten<Any>(2))
+		println(list.deepFlatten<Any>(3))
+		println(list.deepFlatten<Any>(4))
 	}
 }

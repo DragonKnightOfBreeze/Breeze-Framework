@@ -3,6 +3,7 @@
  * Breeze is blowing...
  ******************************************************************************/
 
+@file:JvmName("ConcurrentExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions

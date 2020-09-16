@@ -3,6 +3,7 @@
  * Breeze is blowing...
  ******************************************************************************/
 
+@file:JvmName("AnyExtensions")
 @file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extensions

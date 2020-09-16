@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.extensions.*
 /**
  * Dsl.
  *
- * Dsl defines a actual domain specific language, and is the top node of a dsl definition structure.
+ * Dsl defines an actual domain specific language, and is the top node of a dsl definition structure.
  */
 @DslApiMarker
 interface Dsl {

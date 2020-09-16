@@ -3,7 +3,7 @@
  * Breeze is blowing...
  ******************************************************************************/
 
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.domain.data
 
 import java.io.*
 import kotlin.reflect.*
