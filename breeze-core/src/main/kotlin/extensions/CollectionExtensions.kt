@@ -443,19 +443,26 @@ inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T
 
 
 /**根据指定的级别选择器，按级别从低到高向下折叠集合中的元素，返回包含完整的级别从低到高的元素组的列表。级别从1开始。*/
-inline fun <T, L : Comparable<L>> List<T>.collapse(levelSelector:(T)->L):List<List<T>>{
+fun <T:Any, L : Comparable<L>> List<T>.collapse(levelSelector:(T)->L):List<List<T>>{
+	val elementAndLevels = this.map{ it to levelSelector(it) }
 	val result = mutableListOf<List<T>>()
-	val parents = mutableListOf<Pair<T,L>>()
-	this.map{ it to levelSelector(it) }.forEachIndexed { i,(e,l)->
-		val isLeaf = i == this.lastIndex || levelSelector(this[i + 1]) <= l
-		if(isLeaf){
-			result += parents.map{(pe,_)->pe} + e
-			if(i != this.lastIndex) {
-				val nl = levelSelector(this[i + 1])
-				parents.removeIf { (_, pl) -> pl >= nl }
-			}
+	val parents = mutableListOf<T>()
+	val parentLevels = mutableListOf<L>()
+	elementAndLevels.forEachIndexed { index,(element,level)->
+		if(index == this.lastIndex ) {
+			result += parents +element
 		}else{
-			parents += e to l
+			val (_,nextLevel ) = elementAndLevels[index + 1]
+			if(nextLevel <= level){
+				result += parents +element
+				repeat(parentLevels.count{ it >= nextLevel }){
+					parents.removeLast()
+					parentLevels.removeLast()
+				}
+			}else{
+				parents += element
+				parentLevels += level
+			}
 		}
 	}
 	return result
@@ -463,10 +470,10 @@ inline fun <T, L : Comparable<L>> List<T>.collapse(levelSelector:(T)->L):List<Li
 
 /**根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，返回收集到的元素的列表。*/
 @UnstableApi
-inline fun <T> expand(initial: T, operation: (T) -> Iterable<T>): List<T> {
-	var nextResult = operation(initial)
+inline fun <T> T.expand(operation: (T) -> Iterable<T>): List<T> {
+	var nextResult = operation(this)
 	//如果经过一次操作后没有发生变化，则直接返回
-	if(nextResult.singleOrNull() == initial) return nextResult.toList()
+	if(nextResult.singleOrNull() == this) return nextResult.toList()
 	//否则递归进行操作，直到结果中不再有数据
 	val result = mutableListOf<T>()
 	while(nextResult.any()) {
