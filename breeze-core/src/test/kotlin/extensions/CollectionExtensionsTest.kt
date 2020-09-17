@@ -125,6 +125,13 @@ class CollectionExtensionsTest {
 	}
 
 	@Test
+	fun collapseTest(){
+		val list = listOf("# 1","## 1.1","### 1.1.1","## 1.2","### 1.2.1","### 1.2.2","# 2")
+		val list2 = list.collapse { it.count { it == '#' } }
+		println(list2)
+	}
+
+	@Test //TESETED
 	fun expandTest() {
 		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6,listOf(7))), 8)
 		val flatList = list.flatMap { if(it is List<*>) it else listOf(it) }

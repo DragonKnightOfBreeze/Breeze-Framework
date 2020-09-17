@@ -405,6 +405,7 @@
 * [X] 更新COPYRIGHT
 * [X] 实现`<Collection>.deepGetOrElse`
 * [X] 修复`<Collection>.deepFlatten`中的bug
+* [X] 重构和添加`List.collapse`和`Any.expand`
 
 # 长期
 
