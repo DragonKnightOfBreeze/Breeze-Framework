@@ -4,7 +4,7 @@ import org.junit.*
 import java.math.*
 import kotlin.system.*
 
-class NumberExtensionsKtTest {
+class NumberExtensionsTest {
 	//@Test
 	//fun factorial() {
 	//	println(1.factorial())

@@ -1,104 +1,119 @@
-# Summary
+# 概述
 
-[English Document](README.md) | [中文文档](README_zh.md)
+[中文文档](README.md) | [English Document](README_en.md) 
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-Integrated code framework written by Kotlin,
-provides many useful extensions for standard library and some frameworks.
-What it can do is more than what you think it can do.
+基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
 
-NOTE：
+注意：
 
-* This framework is not fully implemented. But you can instantly use some of it's useful features.
-* This framework is designed to be used by Kotlin-JVM. But you can obviously use it in Java.
-* This framework is updating, and will provide more modules and functions in future.
+* 这个框架仍然有待完善，但是你现在就可以使用它的一些有用的功能。
+* 这个框架是为Kotlin-JVM设计的，但是你自然可以在Java中使用它的一部分功能。
+* 这个框架仍在更新中，未来将会提供更多的模块和功能。
 
-# Modules
+# 模块
 
 ## breeze-core
 
-* Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
-  * Including some extra operator extensions for String, Collections. e.g, `String.times`, `Collection.div`.
-  * Including some extended infix extensions for String, Collections. e.g, `String.startsWith`, `Iterable.allIn`.
-  * Including some powerful handle extensions for String. e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
-  * Including some deep operation extensions for Collection. e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.
-  * Including some deep operation extensions for Tuple. e.g, `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
-  * Including some convert extensions for Number, String etc. e.g, `String.toFile`, `String.toEnumValue`.
-* Provide global extensions missing in stdlib.
-  * Including some todo extensions. e.g, `FIXME`, `DELAY`.
-  * Including some scope extensions. e.g, `once`, `tryOrPrint`, `tryOrIgnore`.
-  * Including some useful extension associated to type. e.g, `javaTypeOf<T>()`, `cast<T>()`
-* Provide basic annotations, consts, enums and interfaces maybe useful.
-* Provide generator extensions for `equals`, `hashcode` and `toString`. e,g, `equalsBy`, `equalsByOne`
+为Kotlin标准库补充功能和扩展，并且提供许多日常项目开发中经常用到的工具和扩展。例如：
+
+* 额外的运算符重载方法。如`String.minus`、`String.times`和`String.div`。
+* 额外的类型转换方法。如`String.toFile`、`String.toLocalDateTime`和`String.toIntRange`。
+* 额外的字符串处理方法。如`String.quote`、`String.escapeBy`、`String.switchCaseBy`。
+* 额外的集合操作方法。如`List.bind`、`List.deepGet`、`List.deepSet`和`List.deepQuery`。
+* 额外的元组操作方法。如`Tuple.map`、`Tuple.toList`和`Tuple.toRange`。
+* 用于委托实现`equals`、`hashCode`和`toString`的工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`和`toStringByReference`。
 
 ## breeze-dsl
 
-* Powerful and clear builders for various domain specific languages.
-  * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
-  * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
-  * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
+提供简洁而灵活的领域特定语言的api，为常见的标记语言提供支持，便于生成对应的文本，并允许进行充分的配置。例如：
+
+* `Xml`、`Markdown`、`Creole`等标记语言。
+* `Mermaid`、`Flow`、`Sequence`等绘图语言。
+* 其他一些特殊格式的文本。
 
 ## breeze-functional
 
-* Provide functional extensions for Functions. e.g, `curried`, `partial`, `compose`.
-* Provide functional extensions for Functions from 0 to 11 parameters.
+提供一些函数式编程中可能用到的扩展方法。支持0到11个参数的函数。例如：
+
+* 用于柯里化/反柯里化当前函数的`curried`和`uncurried`方法。
+* 用于反转当前函数的参数的`reversed`方法。
+* 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
+* 用于得到当前函数的偏函数的`partial`和`partialLast`方法。
 
 ## breeze-generator
 
-* Provide generators for string and text. (e.g, `UrlGenerator`)
+**［有待完善］** 提供一些具有特定用途的生成器。例如：
+
+* 用于生成各种格式的链接的`UrlGenerator`。
+* 用于生成扩展Json Schema的`JsonSchemaGenerator`。
 
 ## breeze-http
 
-* Provide convenient http extensions delegated to `java.net.http.HttpClient`.
-* Simple and convenient API which is similar to `axios`.
-* Based on string body, so you should provide external json serializer implementation such as `Gson`, `Jackson`.
+**［有待完善］** 提供简洁而直观的Http api，封装Java原生的Http api，并允许进行充分的配置。
+
+注意：可能需要配合第三方序列化库如`Gson`使用。
 
 ## breeze-javafx
 
-* Provide some useful extensions for javafx.
+**［有待完善］** 为JavaFX补充功能和扩展。
 
 ## breeze-linq
 
-* Provide simulate language integrated search implementation.
-* Can be implemented by delegating to Kotlin Collection or Java Stream.
-* Do not store collection information, and can be defined independent.
+**［有待完善］** 提供简洁而直观的语言集成查询的api，允许以类似sql的方式，实现集合的查询操作。
+
+注意：这个api本身不包含集合数据。
 
 ## breeze-logger
 
-* Provide lightweight, individual but enough powerful loggers for kotlin.
-* Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
-* This implementation is a little simple, please consider for a while before use it.
+**［有待完善］** 提供简单而独立的日志器的api，并允许进行充分的配置。例如：
+
+* 包含了一般日志信息的`SimpleLogger`。
+* 可以输出彩色的控制台文本的`ColorfulLogger`。
 
 ## breeze-mapper
 
-* Provide some useful extensions for data mapping. e.g, `mapObject`, `unmapObject`.
-* Provide lightweight, individual but enough powerful mappers for data serialization.
-* Provide basic implementations such as `JsonMapper`, `YamlMapper`.
-* DO NOT FULLY IMPLEMENTED.
+**［有待完全实现］** 提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
+
+* 用于映射和反映射对象的`ObjectMapper`。
+* 用于映射常见标记语言的`JsonMapper`、`YamlMapper`、`XmlMapper`和`PropertiesMapper`。
 
 ## breeze-reflect
 
-* Provide some useful extensions for kotlin reflect & java reflect. e.g, `checkClassForName`, `nameOf`.
+为Java反射和Kotlin反射补充功能和扩展。例如：
+
+* 直接得到类型、对象、属性、方法的名字的`nameOf`方法。
+* 直接得到Java类型的`javaTypeOf`方法。
+* 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
 
 ## breeze-serializer
 
-* Provide some useful extensions for data serialization. e.g, `serialize`, `deserialize`.
-* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
+提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：
+
+* 由`breeze-mapper`委托实现的`BreezeJsonSerializer`、`BreezeXmlSerializer`等。这是默认的实现，也是最简单的一种实现。
+* 由`Kotlinx Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
+* 由`Jackson`委托实现的`JacksonJsonSerializer`、`JacksonXmlSerializer`等。这是最全面的一种实现。
+* 由`Gson`委托实现的`GsonSerializer`。
+* 由`FastJson`委托实现的`FastJsonSerializer`。
+* 另外还提供了一些便于进行序列化和反序列化的扩展方法。如`Any?.serialize`和`String.deserialize`。
 
 ## breeze-spring-boot
 
-* Provide some useful extensions for `SpringBoot` and it's optional modules.
+**［有待完善］** 为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
 
 ## breeze-time
 
-* Provide some useful extensions for time, including `Date`, `Temporal`, etc.
-* Including necessary dsl-like extensions. e.g, `20.minutes`, `20.minutes.ago`.
-* Including necessary convenient check extensions. e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.
+为Java的时间api补充功能和扩展。
 
-# Reference
+* 支持传统的时间api。包括`Date`、`Calendar`等。
+* 支持Java8的时间api。包括`LocalDate`、`LocalDateTime`等。
+* 为数字类型提供额外的属性，用于生成时间。如`1.seconds`、`2.minutes`和`3.years`。
+* 为时长和时期提供额外的运算符重载方法。如`Duration.unaryMinus`和`Period.times`。
 
-## Dependencies & Optional dependencies
+# 参考
+
+## 依赖 & 可选依赖
 
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
 * [Spring Cloud](https://github.com/spring-cloud)
@@ -113,7 +128,7 @@ NOTE：
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
 
-## Implementation References
+## 实现参考
 
 * [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
@@ -129,9 +144,9 @@ NOTE：
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 
-# Usage
+## 用法
 
-This project has been published on JCenter. ~~Somehow it has some style problems.~~
+项目已发布到JCenter。
 
 ## Maven
 
@@ -155,9 +170,9 @@ implementation "com.windea.breezeframework:$module:$version"
 implementation("com.windea.breezeframework:$module:$version")
 ```
 
-# Example
+# 示例
 
-See:
+参见：
 
 * [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)
 

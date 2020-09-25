@@ -1,92 +1,10 @@
-/***********************************************************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- *
- *                                     ...]]]]]]..
- *                             ...,]OOOOOOOOOOOOOOO].
- *                            ./]/[[[[\OOOOOOOOOO@@@@O].
- *                                        .OOOOOO@@@@@@@@].
- *                                         =OOOOO@@@@@@@@@@@`.
- *                                          =@@OO@@@@@@@@@@@@@\.
- *                                          .\@@@@@@@@@@@@@@@@@@\.
- *                                   .. .    .O@@@@@@@@@@@@@@@@@@@@`.
- *                                    .``=\.  ,@@@@@@@^=@^O@@@@@@@@@@\.              .`  ..,]]]]]].
- *                      ... .....       .=OO` .O@@@@@^=^..O@@@@@@@@@@@.           .,@@]@@@@@@@@@@@.
- *               ........*[]],\OOOOO\]..  .\O^ O@@@@^O@`..@@@@@@@@@@@@@].      ....OO@@@@@@@@@@@@^
- *          ...*.......**[oOOOOOOOOO@@@@@`. =@`=@@@`=@@`.=@@@@@@@@@@@@@@\......./^.,@@@@@@@@@@@@^
- *                .........[\OOO@@@@@@@@@@@`]O@OO@`.=@@.`=@@@@@@@@@@@@@@@@^...,@`.=@@@@@@@@@@@@`
- *                            ......[[\OO@@@O\O@@`...@@@.@@@@@@@@O@@@@@@@@\..//..O@@@@@@O]`.\/.
- *                    ..,]/OOOO@@@@@@@@@@@^,`,`O@....@@\=@@OO@@@@@@@@@@@@@@]@^./@@@@@@@/`..OO@`
- *                 ..*...,]OO@@@@@@@@@@@O`.,,/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/O@@@@@@@@@@@@@@@@@.
- *               ....*[*=o/\OO@@@@@@@@@O@@@@@@@@@@@`.=[\O@@@@@@@@@@@@@@@@@@@@@@@@@@@@O[=@@@@@@@O.
- *             ...*....*]/OOO@@@@@[.,/@@@@@@@@@@@@^...........[OOO@@@@@@@@@@@@@@@/.    .O@@@@@@@^
- *           ........**`,OO/oO/. ,/@@@@@@@@@@@@O`***..........**......*....*.=O[.        .=@@@@/\^
- *           *..   ,`.,`**,.. .,@@@@@@@@@@@@@@@^.**.**.....*`...*...../`.........         .\/[..=^.
- *           .    ..*\*. .. ./O@@@@@@@@@@@@@@@O^/....*....=@@@[[^*...=@OO..*... ..        =@@...@@^
- * \.            .*,.     .,O@@@@@@@@@@@@@@@O@O/^*...*.....\]*....**./=.o`*^.... ..      ,@@@@\=@@@`
- *  .`.          ..      ,OOO@@@@@@@OOO/[[[[..*........................**==.* ..         /@@@@@@@@@@.
- *    .,.               ,/`..            ... .........*................*.**.. ..       ./@@@@@@@@@@@.
- *       ,`            ./.               ..  .........*...=*`......../O...... ..     .O@@@@@@@@@@@@^
- *         ,..    ..   =.                ..   ...`...**...,**,**..][=@@`*=@@@@]]]\.]@@@@@@@@@@@@@@@^
- *    ..     .*.  ..   =.                ...,/@@@@@@@O^`..=*****.,\\*./ooO@@@@@@@@@@@@@@@@@@@@@/[...
- *   ..        .\.......`.                 .,O@@@@@@@@\O`.*****...*^`*O\OO@@@@@@@@@@@@@@@@@@@@/.
- *  ...    ..... .\.....\^..                 ./@@@@@@@O@@**......`...`=@O@@@@@@@@@@@@@@@@@@@`
- *   ...  ..       ....  ....          ....*./@@@@@@@@@@@O\.....*.....*@@@@@@@@@@@@@@@@@@@/.
- *   .... ..        ...`  ................*.=@@@@@@@@@@@@@@@\...`.....**@@@@@@@@@@@@@@@@@@@@`
- *    .......         ..,`.        ....*....[[O@@@@@@@@@@@@@@@\@@@\*.....\@@@@@@@@@@@@@@@@@@@@\.
- *     .......          ..,................./@/=@@@@@@@@@@@@@@@@@@@@@]...*\@@@@@@@@@@@@@@@@@@@@@\.
- *       ........           .*.   .........=@^*\/=@@@@@@@@@@@@@@@@@@@@@@\./@@@@@@@@@@@@@@@@@@@@@@@\.
- *      .. ........           .\.....**]/]/\]o\]]@@@@@@@@@@@@@@@@@@OOOO@@@@@@^/@@@@@@@@@@@@@@@@@@@@@`                 ..
- *       ...............    ......,/@@@@O@@Oo@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=@@@O*[@@@@@@@@@@@@@@@@@@@@.               =O`
- *            .......*..........  .[@@O@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O@\..\@@@@@@@@@@@@@@@@@@@@.              /\]
- *   =`                    ,]`    ,/@@@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@O@@@@o@@OO\.,@@@@@@@@@@@@@@@@@@@@\.          ./O@O.
- *   =.       .O`        ,@@@@\.,@@@@@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@o@@OO@O.=@@@@@@@@@@@@@@@@@@@@\.        ,O@@^=.
- * . .\.   =OO@.O.     ,@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O/O@OOOOO`\@@@@@@@@@@@@@@@@@@@@O.     ./@@/=.=.
- * `  .,`. .@,\.O ....OOO@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O=..[\OOOOO`O@@@^ .,\@@@@@O@@@@@/\\]`./@@`. =^^
- * \`    ,\\/@@@`  ./@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/.=^...\oOOOO\@@@^          ./@@[`=@OO@@/.   .O.
- *  .\].     ./@@]]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O`.......***OOOO@@@^        .,@@`  =/@@@/.    .OO.
- *      .[[[[`..\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O`..........**=OO@O@@`        /@@\]]/@@@@^O..  .OOO^
- *              .,O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\*..........*,/@@@O@^]].    ./@@@@@OO@@@@o@@`  =OOO^
- *               .,O@@@@@@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@Oo*......,O@@@OO^.\@@@].,@@@@@@@O@@@\/O=`  .=OO`.
- * .......`.   .\@@@@@@@@@@@@@@@@@@@@@@@@@/` =@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO\]/@@@OOOO@@@@@@@@@\@@@@@@@@@@@`.    ,OO`.
- *   ,O`. ,O\].. ,@@@@@@@@@@@@@@@@@@@@@/.    ./@@@@@@@@@@@@@\@@OO@***O@@`[\@@O@@@@@@@O/`*@@@@`/@@@@@@@@@@^=O.  ..=O.
- *     .\OOO@O@@@O]`\@@@@@@@@@@@@@@@O\O\]..  .@@@@@@@@@@@@@@\OOo`OO@@@`..,O@@@@//\..[*....O@@@@@@@@@@@@@^./@.   ...
- *           ..[[O@@@@@@\]`. .....,@@@\/@@@@O/@@@@@@@@@.,@@\O@@\=O@@[.../@@@@[.=^.\.......==@@@@@@@@@^.  ,@O.
- *    .,]OO]`..     ..[O@@@@@@@O].. ./@@@@@@@@@@@@@@@@@^O@@@@OOOOoO`*,O@@@O`...=\..,\...,/./@@@@@@@@/.  .@`
- *  .O@@@/\O`...  ..,`.    .,\@@@@@@@@@@OOO@@@@@@@@@@@@\@O@@@@@OoOO@@@@@O......@@`..O..../@@@@@@@@O^.  ,O.
- *  .     .....,@@@O`            .[@@@@@@OOO@@@@@@@@@@@@\@@@@@@@@@@@@/[*......=@@@`...]@@@@O@@@@@/.  .=/.
- *          ..=@@@\.               .O@@OoooO@@@@@@@@@@@@@@@@OO\@OO**..........=@@@@@@@@@@`./@@@@\.  ./^
- *            .*O@@@\.              ....OOO@@@@@@@@@@@@@@@@@OO@@O@\]]]]]]]/@@@@@@@@@/[..../^,@@O\^ =@`
- *            ... .[\O^.          ./@@@@@@@@@@@@@@@@@@@@@@@@@@@@/,\@@@@@@@@@@@@@@]....../O`......,@O.
- *            ....                      ...\@@@@@@@@@@@@@@@@@@@`......[[`.@@@@@@@@/\OO[`......../@^
- *             ...                           .[\O^,@@@@@@@O@@@@..........=@@@@@@@@@`.........=@@@@].
- *             ...                            ...,O@OO@@@OOOO@@..........=@@@@@@@@@@^......,@@@@@@@^
- *             ..*.                           .,/OOO@@@@@OOOO@@`.........@@@@@@@@@@@@@@@@@@@@@@@@@@@\`..
- *             .....                          .OOOO@@@@OO@@@@@@@\......,@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@O\]..
- *              ......                      ./OOOOOOO@@OOO@@@@@@@@@@@@@@@@@@@^.    ./@@@@@@@@@@@@@@@@@@@@@@@@@@O]`..
- *               ......                  .]OOOOOO[./@OOOOO@@@@@@@@@@@@@@@@@/.  .,/@@/`O@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@\]
- *               .........               .......*.,OOOOOO@@@@@@@@@@@@@@@@@@^.]@@@/.   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- *                ...........                 .../OOOOO//@@@@@@@@@@@@@@@@O@@@/`.       =@O@@@@@@@@@@@@@...[\@@@@@@@@@@@O
- *                 .........................*`.]OOOO/`.=@@@@@@@@@@@@@@@@@/\O.          .O/@@@@@@@@@@@O^         .[\O@@@@
- *                   .....................*.,[[[......=@@@`.\@@@@@@@@@@@@^.^            ,^,@@@@@@@@@@.                ..
- *                    .................*.............=@@@`./@@@@@@@@@@@@^ ..             .. \@@@@@@@@^`.         ...*[`.
- *                     ............................*,@@@^/@@@@@@@@@@@@@@.                    =@@@@@@@@..\...*[..
- *                      ...........................=@@@O@@@@@@@@@@@@@@@^                     .@@@@@@@@^. .\.
- *                        ..........................\/@@@@@@@\@@@@@@@@O.                ....*[,@@@@@@@^    .*.
- *                          ........................O@@@@@@/..@@@@@@@@^         ...**[.       .@@@@@@@@.     .,`.
- *                            ..................../@@@@@@@@\..@@@@@@@@^ ...*,[..               =@@@@@@@.        ,`.
- *                              ................/@@@@@@@`@@@^ =@@@@@@@^                        .\@@@@@@^          ,*.
- *                                  ..........,O@@@@@@` ..[O[`=@@@@@@@^                         ,@@@@@@^            .\.
- *                                          ,OO@@@@@/`.       .@@@@@@@O.                         @@@@@@\.             .\
- *                                      ..,/O@@@@@/.          .O@@@@@@@.                         .@@@@@^
- *                             ....*[`. ./OOOO@@/.             =@@@@@@O.                          =@@@@@.
- *                     ....*[..       .,OOOOOOO`               .@@@@@@@.                          =@@@@@^
- *
- * Breeze is blowing ...
- **********************************************************************************************************************/
+ * Breeze is blowing...
+ ******************************************************************************/
 
 @file:JvmName("StringExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
-//org.apache.commons.lang3.StringUtils
 
 package com.windea.breezeframework.core.extensions
 
@@ -102,6 +20,8 @@ import java.time.format.*
 import java.time.format.DateTimeFormatter.*
 import java.util.*
 import kotlin.contracts.*
+
+//org.apache.commons.lang3.StringUtils
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
@@ -476,28 +396,28 @@ fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 /**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun CharSequence.setPrefix(prefix: CharSequence): CharSequence {
-	if(this.length < prefix.length) return this
-	return "$prefix${this.substring(prefix.length, this.length)}"
+	if(length < prefix.length) return this
+	return "$prefix${this.substring(prefix.length, length)}"
 }
 
 /**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun String.setPrefix(prefix: CharSequence): String {
-	if(this.length < prefix.length) return this
+	if(length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
 /**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun CharSequence.setSuffix(suffix: CharSequence): CharSequence {
-	if(this.length < suffix.length) return this
-	return "${this.substring(this.length - suffix.length)}$suffix"
+	if(length < suffix.length) return this
+	return "${this.substring(length - suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun String.setSuffix(suffix: CharSequence): String {
-	if(this.length < suffix.length) return this
+	if(length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
@@ -516,14 +436,14 @@ fun String.setSurrounding(delimiter: CharSequence): String {
 /**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun CharSequence.setSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
-	if(this.length < prefix.length + suffix.length) return this
-	return "$prefix${this.substring(prefix.length, this.length - suffix.length)}$suffix"
+	if(length < prefix.length + suffix.length) return this
+	return "$prefix${this.substring(prefix.length, length - suffix.length)}$suffix"
 }
 
 /**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
 @UnstableApi
 fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
-	if(this.length < prefix.length + suffix.length) return this
+	if(length < prefix.length + suffix.length) return this
 	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
 }
 //endregion
@@ -575,7 +495,7 @@ fun CharSequence.indicesOf(string: String, startIndex: Int = 0, ignoreCase: Bool
 	return indices
 }
 
-private inline fun Int.ifMissing(block: () -> Int): Int = this.let { if(it == -1) block() else it }
+private inline fun Int.ifMissing(block: () -> Int): Int = let { if(it == -1) block() else it }
 //endregion
 
 //region Substring extensions
@@ -733,28 +653,26 @@ fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignore
 
 /**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
 @UnstableApi
-tailrec fun String.replaceLooped(oldValue: String, newValue: String): String {
+tailrec fun String.replaceRepeatedly(oldValue: String, newValue: String): String {
 	val result = this.replace(oldValue, newValue)
-	return if(this != result) result.replaceLooped(oldValue, newValue) else result
-}
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableApi
-tailrec fun CharSequence.replaceLooped(regex: Regex, replacement: String): String {
-	val result = this.replace(regex, replacement)
-	return if(this != result) result.replaceLooped(regex, replacement) else result
-}
-
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
-@UnstableApi
-tailrec fun CharSequence.replaceLooped(regex: Regex, transform: (MatchResult) -> CharSequence): String {
-	val newString = this.replace(regex, transform)
 	//如果字符串长度不相等，则字符串一定不相等
-	return if(this.length != newString.length || this != newString) {
-		newString.replaceLooped(regex, transform)
-	} else {
-		newString
-	}
+	return if(length != result.length || this != result) result.replaceRepeatedly(oldValue, newValue) else result
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@UnstableApi
+tailrec fun CharSequence.replaceRepeatedly(regex: Regex, replacement: String): String {
+	val result = this.replace(regex, replacement)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(length != result.length || this != result) result.replaceRepeatedly(regex, replacement) else result
+}
+
+/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+@UnstableApi
+tailrec fun CharSequence.replaceRepeatedly(regex: Regex, transform: (MatchResult) -> CharSequence): String {
+	val result = this.replace(regex, transform)
+	//如果字符串长度不相等，则字符串一定不相等
+	return if(length != result.length || this != result) result.replaceRepeatedly(regex, transform) else result
 }
 
 
@@ -849,7 +767,7 @@ fun String.alignEnd(padChar: Char = ' '): String {
 fun String.alignCenter(padChar: Char = ' '): String {
 	val lines = this.lines()
 	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.max()!!
+	val maxLength = lines.map { it.length }.maxOrNull()!!
 	return lines.joinToString("\n") {
 		val trimmedString = it.trim()
 		val deltaLength = maxLength - trimmedString.length
@@ -868,7 +786,7 @@ fun String.alignCenter(padChar: Char = ' '): String {
  * 截断符默认为`"..."`。
  */
 fun String.truncateStart(limit: Int, truncated: CharSequence = "..."): String {
-	return if(this.length <= limit) this else "$truncated${this.takeLast(limit)}"
+	return if(length <= limit) this else "$truncated${this.takeLast(limit)}"
 }
 
 /**
@@ -876,7 +794,7 @@ fun String.truncateStart(limit: Int, truncated: CharSequence = "..."): String {
  * 截断符默认为`"..."`。
  */
 fun String.truncateEnd(limit: Int, truncated: CharSequence = "..."): String {
-	return if(this.length <= limit) this else "${this.take(limit)}$truncated"
+	return if(length <= limit) this else "${this.take(limit)}$truncated"
 }
 
 /**
@@ -885,7 +803,7 @@ fun String.truncateEnd(limit: Int, truncated: CharSequence = "..."): String {
  */
 fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "..."): String {
 	require(limit > offset) { "Limit must be greater than offset." }
-	return if(this.length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
+	return if(length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
 }
 //endregion
 
@@ -962,7 +880,7 @@ fun String.unescapeBy(type: EscapeType, omitBackslashes: Boolean = true): String
 }
 //endregion
 
-//region Match type, letter case and reference case extensions
+//region Match, split and join extensions
 /**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
 fun String.toRegexBy(type: MatchType): Regex {
 	return type.regexTransform(this).toRegex()
@@ -1007,31 +925,31 @@ fun Iterable<CharSequence>.joinToStringBy(case: DisplayCase): String {
 
 /**根据指定的显示格式，切换当前字符串的格式。*/
 fun String.switchCaseBy(fromCase: DisplayCase, toCase: DisplayCase): String {
-	return this.splitBy(fromCase).joinToStringBy(toCase)
+	return splitBy(fromCase).joinToStringBy(toCase)
 }
 
 /**根据指定的显示格式，切换当前字符串的格式。可以根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。*/
 fun String.switchCaseBy(case: DisplayCase): String {
-	return this.splitBy(when(case) {
-		is LetterCase -> this.letterCase
-		is ReferenceCase -> this.referenceCase
+	return splitBy(when(case) {
+		is LetterCase -> letterCase
+		is ReferenceCase -> referenceCase
 		else -> throw IllegalArgumentException("Cannot find an actual way to get actual display case from a string.")
 	}).joinToStringBy(case)
 }
 //endregion
 
-//region Raw string convert extensions
+//region Convert extensions for raw string
 /**
  * 将当前字符串转为内联文本。
  * @see com.windea.breezeframework.core.extensions.trimWrap
  */
-inline fun String.inline(): String = this.trimWrap()
+inline fun String.inline(): String = trimWrap()
 
 /**
  * 将当前字符串转为多行文本。
  * @see kotlin.text.trimIndent
  */
-inline fun String.multiline(): String = this.trimIndent()
+inline fun String.multiline(): String = trimIndent()
 
 private val trimWrapRegex = """\s*\R\s*""".toRegex()
 
@@ -1051,7 +969,7 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 	val lines = this.lines()
 	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
 	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
-	return if(trimmedIndent.isEmpty()) this.trimIndent()
+	return if(trimmedIndent.isEmpty()) trimIndent()
 	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
 }
 //endregion
@@ -1060,11 +978,19 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 /**将当前字符串转化为字符。如果转化失败，则抛出异常。这个方法由[String.single]委托实现。*/
 inline fun String.toChar(): Char = this.single()
 
-/**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.single]委托实现。*/
+/**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.singleOrNull]委托实现。*/
 inline fun String.toCharOrNull(): Char? = this.singleOrNull()
+
+/**将当前字符串转化为布尔值。如果转化失败，则返回null。*/
+inline fun String.toBooleanOrNull():Boolean? = when {
+	this.equalsIgnoreCase("true") -> true
+	this.equalsIgnoreCase("false") -> false
+	else -> null
+}
 
 //性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
+@Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt(radix) as T
@@ -1081,12 +1007,13 @@ inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 
 //性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。*/
+@Deprecated("Use this.convertOrNull<T>()",ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toIntOrNull(radix) as T?
 		"java.lang.Long" -> this.toLongOrNull(radix) as T?
-		"java.lang.Float" -> this.toFloatOrNull() as T?
-		"java.lang.Double" -> this.toDoubleOrNull() as T?
+		"java.lang.Float" -> toFloatOrNull() as T?
+		"java.lang.Double" -> toDoubleOrNull() as T?
 		"java.lang.Byte" -> this.toByteOrNull(radix) as T?
 		"java.lang.Short" -> this.toShortOrNull(radix) as T?
 		"java.math.BigInteger" -> this.toBigIntegerOrNull(radix) as T?
@@ -1120,38 +1047,38 @@ fun <T> String.toEnumValueOrNull(type: Class<T>): T? {
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toCharRange(): CharRange = this.toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
+fun String.toCharRange(): CharRange = toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
 
 /**
  * 将当前字符串转化为整数范围。如果转化失败，则抛出异常。
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toIntRange(): IntRange = this.toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
+fun String.toIntRange(): IntRange = toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
 
 /**
  * 将当前字符串转化为长整数范围。如果转化失败，则抛出异常。
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toLongRange(): LongRange = this.toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
+fun String.toLongRange(): LongRange = toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
 
 private val rangeDelimiters = arrayOf("..", "-", "~")
 
 private fun String.toRangePair() = when {
 	rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
 		.let { it[0].trim() to it[1].trim() fromTo 0 fromTo 0 }
-	this.contains(",") -> this.substring(1, this.length - 1).split(",", limit = 2)
-		.let { it[0].trim() to it[1].trim() fromTo this.getLeftRangeOffset() fromTo this.getRightRangeOffset() }
-	else -> this.notARange()
+	this.contains(",") -> this.substring(1, length - 1).split(",", limit = 2)
+		.let { it[0].trim() to it[1].trim() fromTo getLeftRangeOffset() fromTo getRightRangeOffset() }
+	else -> notARange()
 }
 
 private fun String.getLeftRangeOffset(): Int {
-	return if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else this.notARange()
+	return if(this.startsWith("[")) 0 else if(this.startsWith("(")) 1 else notARange()
 }
 
 private fun String.getRightRangeOffset(): Int {
-	return if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else this.notARange()
+	return if(this.endsWith("]")) 0 else if(this.endsWith(")")) -1 else notARange()
 }
 
 private fun String.notARange(): Nothing {
@@ -1172,14 +1099,22 @@ inline fun String.toUri(): URI = URI.create(this)
 @JvmOverloads
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
+
 /**将当前字符串转化为类路径资源。*/
 inline fun <reified T : Any> String.toClassPathResource(): URL = T::class.java.getResource(this)
 
-/**将当前字符串转化为字符集。*/
+
+/**将当前字符串转化为字符集。如果转化失败，则抛出异常。*/
 inline fun String.toCharset(): Charset = Charset.forName(this)
 
-/**将当前对象转化为类型。*/
+/**将当前字符串转化为字符集。如果转化失败，则返回null。*/
+inline fun String.toCharsetOrNull(): Charset? =runCatching{ Charset.forName(this)}.getOrNull()
+
+/**将当前对象转化为类型。如果转化失败，则抛出异常。*/
 inline fun String.toClass(): Class<*> = Class.forName(this)
+
+/**将当前对象转化为类型。如果转化失败，则返回null。*/
+inline fun String.toClassOrNull(): Class<*>? =runCatching{ Class.forName(this)}.getOrNull()
 
 
 /**将当前字符串转化为日期。*/

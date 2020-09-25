@@ -1,6 +1,7 @@
 package com.windea.breezeframework.core.domain
 
-import com.windea.breezeframework.core.domain.Identifiable.Companion.delegate
+import com.windea.breezeframework.core.domain.data.*
+import com.windea.breezeframework.core.domain.data.Identifiable.Companion.delegate
 import org.junit.*
 
 class IdentifiableTest {
@@ -13,6 +14,6 @@ class IdentifiableTest {
 	}
 }
 
-class Foo(override val id: Long,val name:String):Identifiable<Long> by delegate(id)
+class Foo(override val id: Long,val name:String): Identifiable<Long> by delegate(id)
 
-class Bar(override val id: Long,val name:String):Identifiable<Long> by delegate(id)
+class Bar(override val id: Long,val name:String): Identifiable<Long> by delegate(id)

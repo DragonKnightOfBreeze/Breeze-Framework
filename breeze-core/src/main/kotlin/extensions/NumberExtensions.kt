@@ -1,88 +1,7 @@
-/***********************************************************************************************************************
+/*******************************************************************************
  * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- *
- *                                     ...]]]]]]..
- *                             ...,]OOOOOOOOOOOOOOO].
- *                            ./]/[[[[\OOOOOOOOOO@@@@O].
- *                                        .OOOOOO@@@@@@@@].
- *                                         =OOOOO@@@@@@@@@@@`.
- *                                          =@@OO@@@@@@@@@@@@@\.
- *                                          .\@@@@@@@@@@@@@@@@@@\.
- *                                   .. .    .O@@@@@@@@@@@@@@@@@@@@`.
- *                                    .``=\.  ,@@@@@@@^=@^O@@@@@@@@@@\.              .`  ..,]]]]]].
- *                      ... .....       .=OO` .O@@@@@^=^..O@@@@@@@@@@@.           .,@@]@@@@@@@@@@@.
- *               ........*[]],\OOOOO\]..  .\O^ O@@@@^O@`..@@@@@@@@@@@@@].      ....OO@@@@@@@@@@@@^
- *          ...*.......**[oOOOOOOOOO@@@@@`. =@`=@@@`=@@`.=@@@@@@@@@@@@@@\......./^.,@@@@@@@@@@@@^
- *                .........[\OOO@@@@@@@@@@@`]O@OO@`.=@@.`=@@@@@@@@@@@@@@@@^...,@`.=@@@@@@@@@@@@`
- *                            ......[[\OO@@@O\O@@`...@@@.@@@@@@@@O@@@@@@@@\..//..O@@@@@@O]`.\/.
- *                    ..,]/OOOO@@@@@@@@@@@^,`,`O@....@@\=@@OO@@@@@@@@@@@@@@]@^./@@@@@@@/`..OO@`
- *                 ..*...,]OO@@@@@@@@@@@O`.,,/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/O@@@@@@@@@@@@@@@@@.
- *               ....*[*=o/\OO@@@@@@@@@O@@@@@@@@@@@`.=[\O@@@@@@@@@@@@@@@@@@@@@@@@@@@@O[=@@@@@@@O.
- *             ...*....*]/OOO@@@@@[.,/@@@@@@@@@@@@^...........[OOO@@@@@@@@@@@@@@@/.    .O@@@@@@@^
- *           ........**`,OO/oO/. ,/@@@@@@@@@@@@O`***..........**......*....*.=O[.        .=@@@@/\^
- *           *..   ,`.,`**,.. .,@@@@@@@@@@@@@@@^.**.**.....*`...*...../`.........         .\/[..=^.
- *           .    ..*\*. .. ./O@@@@@@@@@@@@@@@O^/....*....=@@@[[^*...=@OO..*... ..        =@@...@@^
- * \.            .*,.     .,O@@@@@@@@@@@@@@@O@O/^*...*.....\]*....**./=.o`*^.... ..      ,@@@@\=@@@`
- *  .`.          ..      ,OOO@@@@@@@OOO/[[[[..*........................**==.* ..         /@@@@@@@@@@.
- *    .,.               ,/`..            ... .........*................*.**.. ..       ./@@@@@@@@@@@.
- *       ,`            ./.               ..  .........*...=*`......../O...... ..     .O@@@@@@@@@@@@^
- *         ,..    ..   =.                ..   ...`...**...,**,**..][=@@`*=@@@@]]]\.]@@@@@@@@@@@@@@@^
- *    ..     .*.  ..   =.                ...,/@@@@@@@O^`..=*****.,\\*./ooO@@@@@@@@@@@@@@@@@@@@@/[...
- *   ..        .\.......`.                 .,O@@@@@@@@\O`.*****...*^`*O\OO@@@@@@@@@@@@@@@@@@@@/.
- *  ...    ..... .\.....\^..                 ./@@@@@@@O@@**......`...`=@O@@@@@@@@@@@@@@@@@@@`
- *   ...  ..       ....  ....          ....*./@@@@@@@@@@@O\.....*.....*@@@@@@@@@@@@@@@@@@@/.
- *   .... ..        ...`  ................*.=@@@@@@@@@@@@@@@\...`.....**@@@@@@@@@@@@@@@@@@@@`
- *    .......         ..,`.        ....*....[[O@@@@@@@@@@@@@@@\@@@\*.....\@@@@@@@@@@@@@@@@@@@@\.
- *     .......          ..,................./@/=@@@@@@@@@@@@@@@@@@@@@]...*\@@@@@@@@@@@@@@@@@@@@@\.
- *       ........           .*.   .........=@^*\/=@@@@@@@@@@@@@@@@@@@@@@\./@@@@@@@@@@@@@@@@@@@@@@@\.
- *      .. ........           .\.....**]/]/\]o\]]@@@@@@@@@@@@@@@@@@OOOO@@@@@@^/@@@@@@@@@@@@@@@@@@@@@`                 ..
- *       ...............    ......,/@@@@O@@Oo@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=@@@O*[@@@@@@@@@@@@@@@@@@@@.               =O`
- *            .......*..........  .[@@O@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O@\..\@@@@@@@@@@@@@@@@@@@@.              /\]
- *   =`                    ,]`    ,/@@@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@O@@@@o@@OO\.,@@@@@@@@@@@@@@@@@@@@\.          ./O@O.
- *   =.       .O`        ,@@@@\.,@@@@@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@o@@OO@O.=@@@@@@@@@@@@@@@@@@@@\.        ,O@@^=.
- * . .\.   =OO@.O.     ,@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O/O@OOOOO`\@@@@@@@@@@@@@@@@@@@@O.     ./@@/=.=.
- * `  .,`. .@,\.O ....OOO@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O=..[\OOOOO`O@@@^ .,\@@@@@O@@@@@/\\]`./@@`. =^^
- * \`    ,\\/@@@`  ./@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@/.=^...\oOOOO\@@@^          ./@@[`=@OO@@/.   .O.
- *  .\].     ./@@]]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O`.......***OOOO@@@^        .,@@`  =/@@@/.    .OO.
- *      .[[[[`..\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O`..........**=OO@O@@`        /@@\]]/@@@@^O..  .OOO^
- *              .,O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\*..........*,/@@@O@^]].    ./@@@@@OO@@@@o@@`  =OOO^
- *               .,O@@@@@@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@Oo*......,O@@@OO^.\@@@].,@@@@@@@O@@@\/O=`  .=OO`.
- * .......`.   .\@@@@@@@@@@@@@@@@@@@@@@@@@/` =@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO\]/@@@OOOO@@@@@@@@@\@@@@@@@@@@@`.    ,OO`.
- *   ,O`. ,O\].. ,@@@@@@@@@@@@@@@@@@@@@/.    ./@@@@@@@@@@@@@\@@OO@***O@@`[\@@O@@@@@@@O/`*@@@@`/@@@@@@@@@@^=O.  ..=O.
- *     .\OOO@O@@@O]`\@@@@@@@@@@@@@@@O\O\]..  .@@@@@@@@@@@@@@\OOo`OO@@@`..,O@@@@//\..[*....O@@@@@@@@@@@@@^./@.   ...
- *           ..[[O@@@@@@\]`. .....,@@@\/@@@@O/@@@@@@@@@.,@@\O@@\=O@@[.../@@@@[.=^.\.......==@@@@@@@@@^.  ,@O.
- *    .,]OO]`..     ..[O@@@@@@@O].. ./@@@@@@@@@@@@@@@@@^O@@@@OOOOoO`*,O@@@O`...=\..,\...,/./@@@@@@@@/.  .@`
- *  .O@@@/\O`...  ..,`.    .,\@@@@@@@@@@OOO@@@@@@@@@@@@\@O@@@@@OoOO@@@@@O......@@`..O..../@@@@@@@@O^.  ,O.
- *  .     .....,@@@O`            .[@@@@@@OOO@@@@@@@@@@@@\@@@@@@@@@@@@/[*......=@@@`...]@@@@O@@@@@/.  .=/.
- *          ..=@@@\.               .O@@OoooO@@@@@@@@@@@@@@@@OO\@OO**..........=@@@@@@@@@@`./@@@@\.  ./^
- *            .*O@@@\.              ....OOO@@@@@@@@@@@@@@@@@OO@@O@\]]]]]]]/@@@@@@@@@/[..../^,@@O\^ =@`
- *            ... .[\O^.          ./@@@@@@@@@@@@@@@@@@@@@@@@@@@@/,\@@@@@@@@@@@@@@]....../O`......,@O.
- *            ....                      ...\@@@@@@@@@@@@@@@@@@@`......[[`.@@@@@@@@/\OO[`......../@^
- *             ...                           .[\O^,@@@@@@@O@@@@..........=@@@@@@@@@`.........=@@@@].
- *             ...                            ...,O@OO@@@OOOO@@..........=@@@@@@@@@@^......,@@@@@@@^
- *             ..*.                           .,/OOO@@@@@OOOO@@`.........@@@@@@@@@@@@@@@@@@@@@@@@@@@\`..
- *             .....                          .OOOO@@@@OO@@@@@@@\......,@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@O\]..
- *              ......                      ./OOOOOOO@@OOO@@@@@@@@@@@@@@@@@@@^.    ./@@@@@@@@@@@@@@@@@@@@@@@@@@O]`..
- *               ......                  .]OOOOOO[./@OOOOO@@@@@@@@@@@@@@@@@/.  .,/@@/`O@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@\]
- *               .........               .......*.,OOOOOO@@@@@@@@@@@@@@@@@@^.]@@@/.   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- *                ...........                 .../OOOOO//@@@@@@@@@@@@@@@@O@@@/`.       =@O@@@@@@@@@@@@@...[\@@@@@@@@@@@O
- *                 .........................*`.]OOOO/`.=@@@@@@@@@@@@@@@@@/\O.          .O/@@@@@@@@@@@O^         .[\O@@@@
- *                   .....................*.,[[[......=@@@`.\@@@@@@@@@@@@^.^            ,^,@@@@@@@@@@.                ..
- *                    .................*.............=@@@`./@@@@@@@@@@@@^ ..             .. \@@@@@@@@^`.         ...*[`.
- *                     ............................*,@@@^/@@@@@@@@@@@@@@.                    =@@@@@@@@..\...*[..
- *                      ...........................=@@@O@@@@@@@@@@@@@@@^                     .@@@@@@@@^. .\.
- *                        ..........................\/@@@@@@@\@@@@@@@@O.                ....*[,@@@@@@@^    .*.
- *                          ........................O@@@@@@/..@@@@@@@@^         ...**[.       .@@@@@@@@.     .,`.
- *                            ..................../@@@@@@@@\..@@@@@@@@^ ...*,[..               =@@@@@@@.        ,`.
- *                              ................/@@@@@@@`@@@^ =@@@@@@@^                        .\@@@@@@^          ,*.
- *                                  ..........,O@@@@@@` ..[O[`=@@@@@@@^                         ,@@@@@@^            .\.
- *                                          ,OO@@@@@/`.       .@@@@@@@O.                         @@@@@@\.             .\
- *                                      ..,/O@@@@@/.          .O@@@@@@@.                         .@@@@@^
- *                             ....*[`. ./OOOO@@/.             =@@@@@@O.                          =@@@@@.
- *                     ....*[..       .,OOOOOOO`               .@@@@@@@.                          =@@@@@^
- *
- * Breeze is blowing ...
- **********************************************************************************************************************/
+ * Breeze is blowing...
+ ******************************************************************************/
 
 @file:JvmName("NumberExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
@@ -100,51 +19,124 @@ import kotlin.math.*
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Byte?.orZero(): Byte = this ?: 0
+inline fun Byte?.orZero(): Byte {
+	return this ?: 0
+}
 
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Short?.orZero(): Short = this ?: 0
+inline fun Short?.orZero(): Short {
+	return this ?: 0
+}
 
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Int?.orZero(): Int = this ?: 0
+inline fun Int?.orZero(): Int {
+	return this ?: 0
+}
 
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Long?.orZero(): Long = this ?: 0
+inline fun Long?.orZero(): Long {
+	return this ?: 0
+}
 
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Float?.orZero(): Float = this ?: 0f
+inline fun Float?.orZero(): Float {
+	return this ?: 0f
+}
 
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
 @InlineOnly
-inline fun Double?.orZero(): Double = this ?: 0.0
+inline fun Double?.orZero(): Double {
+	return this ?: 0.0
+}
+
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Byte.orNull(): Byte? {
+	return if(this == 0.toByte()) null else this
+}
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Short.orNull(): Short? {
+	return if(this == 0.toShort()) null else this
+}
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Int.orNull(): Int? {
+	return if(this == 0) null else this
+}
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Long.orNull(): Long? {
+	return if(this == 0L) null else this
+}
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Float.orNull(): Float? {
+	return if(this == 0F) null else this
+}
+
+/**如果为0，则返回null，否则返回自身。*/
+@JvmSynthetic
+@InlineOnly
+inline fun Double.orNull(): Double? {
+	return if(this == 0.0) null else this
+}
 //endregion
 
 //region Misc extensions
+/**进行一次计算并将结果转化为字节型。*/
+inline fun Byte.exact(block: (Byte) -> Number): Byte {
+	return block(this).toByte()
+}
+
+/**进行一次计算并将结果转化为短整型。*/
+inline fun Short.exact(block: (Short) -> Number): Short {
+	return block(this).toShort()
+}
+
 /**进行一次计算并将结果转化为整型。*/
-inline fun Int.exact(block: (Int) -> Number): Int = block(this).toInt()
+inline fun Int.exact(block: (Int) -> Number): Int {
+	return block(this).toInt()
+}
 
 /**进行一次计算并将结果转化为长整型。*/
-inline fun Long.exact(block: (Long) -> Number): Long = block(this).toLong()
+inline fun Long.exact(block: (Long) -> Number): Long {
+	return block(this).toLong()
+}
 
 /**进行一次计算并将结果转化为单精度浮点型。*/
-inline fun Float.exact(block: (Float) -> Number): Float = block(this).toFloat()
+inline fun Float.exact(block: (Float) -> Number): Float {
+	return block(this).toFloat()
+}
 
 /**进行一次计算并将结果转化为双精度浮点型。*/
-inline fun Double.exact(block: (Double) -> Number): Double = block(this).toDouble()
+inline fun Double.exact(block: (Double) -> Number): Double {
+	return block(this).toDouble()
+}
 
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
@@ -197,6 +189,7 @@ private fun getNumberFormatInstance(type:NumberFormatType,locale:Locale):NumberF
 
 //region Convert extensions
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
+@Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> Number.toNumber(): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T
@@ -212,6 +205,7 @@ inline fun <reified T : Number> Number.toNumber(): T {
 }
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
+@Deprecated("Use this.convertOrNull<T>()",ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T?
@@ -228,10 +222,14 @@ inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为默认值。*/
-inline fun <reified T : Enum<T>> Int.toEnumValue(): T = enumValues<T>().getOrDefault(this, enumValues<T>().first())
+inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
+	return enumValues<T>().getOrDefault(this, enumValues<T>().first())
+}
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
-inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? = enumValues<T>().getOrNull(this)
+inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
+	return enumValues<T>().getOrNull(this)
+}
 
 
 /**将当前整数转化为从低位到高位的每位数字组成的数组。*/

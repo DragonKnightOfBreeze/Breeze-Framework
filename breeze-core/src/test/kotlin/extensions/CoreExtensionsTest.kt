@@ -5,7 +5,7 @@ import kotlin.contracts.*
 
 //Ignore Tests
 
-class CoreExtensionsKtTest {
+class CoreExtensionsTest {
 	@Test
 	fun with() {
 	}

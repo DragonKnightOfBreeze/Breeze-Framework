@@ -4,7 +4,7 @@ import org.junit.*
 
 //Ignore Tests
 
-class BooleanExtensionsKtTest {
+class BooleanExtensionsTest {
 	@Test
 	fun toInt() {
 	}

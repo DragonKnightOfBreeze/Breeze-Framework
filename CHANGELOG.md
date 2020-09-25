@@ -393,27 +393,22 @@
 ### 1.2.1
 
 * [X] 更新版本
+* [X] 更新项目文档
+* [X] 添加`KAnnotatedElement.findExtraAnnotation`、`KAnnotatedElement.hasExtraAnnotation`
+* [X] 添加`Auditable`
+* [X] 移除过时的`Array.onEach`
+* [X] 移除过时的`setOfNotNull`
+* [X] 更新`Breeze`
+* [X] 实现`Any.convert`和`Any.safeConvert`
+* [X] 注册基本的`Converter`
+* [X] 统一命名规则为`xxx`和`xxxOrNull`
+* [X] 更新COPYRIGHT
+* [X] 实现`<Collection>.deepGetOrElse`
+* [X] 修复`<Collection>.deepFlatten`中的bug
+* [X] 重构和添加`List.collapse`和`Any.expand`
 
 # 长期
 
-* [ ] 添加`BreezeExtensions`
-  * [ ] `Any?.equalsBr`
-  * [ ] `Any?.hashCodeBr`
-  * [ ] `Any?.toStringBr`
-  * [ ] `Any?.isEmptyBr`
-  * [ ] `Any?.isNotEmptyBr`
-  * [ ] `Any?.ifEmptyBr`
-  * [ ] `Any?.ifNotEmptyBr`
-  * [ ] `<Collection>.joinToStringBr`
-  * [ ] `<Collection>.getBr`
-  * [ ] `<Collection>.getOrNullBr`
-  * [ ] `<Collection>.getOrSetBr`
-  * [ ] `<Collection>.getOrElseBr`
-  * [ ] `<Collection>.setBr`
-  * [ ] `<Collection>.queryBr`
-  * [ ] `<Collection>.queryOrNullBr`
-  * [ ] `<Collection>.queryOrSetBr`
-  * [ ] `<Collection>.queryOrElseBr`
 * [X] 移除对非框架类的第三方库的依赖
 * [X] 上传到Github
 * [X] 同步项目到Bintray

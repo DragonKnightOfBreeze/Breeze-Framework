@@ -1,16 +1,8 @@
 package com.windea.breezeframework.core.extensions
 
-import kotlin.reflect.*
 import kotlin.test.*
 
-class CollectionExtensionsKtTest {
-	@Test
-	fun repeatExtensionTest() {
-		println(listOf(1, 2, 3).repeat(3))
-		println(listOf(1, 2, 3).repeatOrdinal(3))
-		//println(listOf(1, 2, 3).repeatChunked(3))
-	}
-
+class CollectionExtensionsTest {
 	@Test
 	fun dropBlankTest() {
 		assertEquals(1, listOf("123").dropBlank().size)
@@ -21,7 +13,7 @@ class CollectionExtensionsKtTest {
 	}
 
 	@Test
-	fun fillToSize() {
+	fun fillToSizeTest() {
 		val list = listOf("1", "2", "3")
 		println(list.toMutableList().also { it.fill("1") })
 		println(list)
@@ -34,7 +26,7 @@ class CollectionExtensionsKtTest {
 	}
 
 	@Test
-	fun deepGetAndSet() {
+	fun deepGetAndSetTest() {
 		val array = arrayOf(0, 1, 2, arrayOf(0, arrayOf(0, 1), 2))
 		val list = listOf(0, arrayOf(0, 1), 2, listOf(0, 1, 2), 4, mapOf("a" to 0))
 		val intMutableList = mutableListOf(0, 1, 2)
@@ -92,7 +84,7 @@ class CollectionExtensionsKtTest {
 	}
 
 	@Test
-	fun deepQuery() {
+	fun deepQueryTest() {
 		val list = listOf(
 			listOf(1, 2, 3),
 			listOf(11, 22, 33),
@@ -110,18 +102,18 @@ class CollectionExtensionsKtTest {
 	}
 
 	@Test
-	fun deepFlatten() {
+	fun deepFlattenTest() {
 		val list = listOf(
 			listOf(1, 2, 3),
 			listOf(11, 22, 33),
 			listOf(111, 222, 333, listOf(444)),
 			mapOf("a" to listOf("a"), "b" to listOf("b"))
 		)
-		list.deepFlatten().also { println(it) }
-		list.deepFlatten(1).also { println(it) }
-		list.deepFlatten(2).also { println(it) }
-		list.deepFlatten(3).also { println(it) }
-		list.deepFlatten(4).also { println(it) }
+		list.deepFlatten<Any?>().also { println(it) }
+		list.deepFlatten<Any?>(1).also { println(it) }
+		list.deepFlatten<Any?>(2).also { println(it) }
+		list.deepFlatten<Any?>(3).also { println(it) }
+		list.deepFlatten<Any?>(4).also { println(it) }
 	}
 
 	@Test
@@ -133,27 +125,24 @@ class CollectionExtensionsKtTest {
 	}
 
 	@Test
-	fun typeCheckTest() {
-		//assertTrue(arrayOf("a").isArrayOf<String>())
-		//assertTrue(listOf("a").isIterableOf<String>())
-		//assertTrue(mapOf("a" to "a").isMapOf<String, String>())
-		//assertTrue(sequenceOf("a").isSequenceOf<String>())
-
-		//测试出错，但是在主程序中没有问题
-		Int::class.cast(1)
-		//println(arrayOf(1, 2, 3).elementType)
-		//println(listOf(1, 2, 3).elementType)
-		//println(mapOf(1 to "", 2 to "", 3 to "").keyType)
-		//println(mapOf(1 to "", 2 to "", 3 to "").valueType)
+	fun collapseTest(){
+		val list = listOf("# 1","## 1.1","### 1.1.1","## 1.2","### 1.2.1","### 1.2.2","# 2")
+		val list2 = list.collapse { it.count { e -> e == '#' } }
+		println(list2)
 	}
 
-	@Test
-	fun expandTest2() {
-		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6)), 7)
+	@Test //DONE
+	fun expandTest() {
+		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6,listOf(7))), 8)
 		val flatList = list.flatMap { if(it is List<*>) it else listOf(it) }
-		val extendList = expand<Any?>(list) { if(it is List<*>) it else listOf() }
+		val expendList = list.expand<Any?>() { if(it is List<*>) it else listOf() }
 		println(list)
 		println(flatList)
-		println(extendList)
+		println(expendList)
+		println(list.deepFlatten<Any>())
+		println(list.deepFlatten<Any>(1))
+		println(list.deepFlatten<Any>(2))
+		println(list.deepFlatten<Any>(3))
+		println(list.deepFlatten<Any>(4))
 	}
 }
