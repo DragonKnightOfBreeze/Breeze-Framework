@@ -34,21 +34,6 @@ inline fun <T1,T2,T3,R> with(arg1:T1,arg2:T2,arg3:T3,block:(T1,T2,T3) -> R):R{
 	return block(arg1,arg2,arg3)
 }
 
-/**
- * If the [condition] returns `true`,
- * calls the specified function [block] with `this` value as its argument and returns its result.
- *
- * If not, returns `this` value.
- */
-@InlineOnly
-@JvmSynthetic
-inline fun <T : R, R> T.where(condition: Boolean, block: (T) -> R): R {
-	contract {
-		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-	}
-	return if(condition) block(this) else this
-}
-
 ///**
 // * 尝试执行一段代码，并在发生异常时打印错误信息。
 // *
