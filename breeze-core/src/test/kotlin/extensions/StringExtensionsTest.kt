@@ -110,7 +110,7 @@ class StringExtensionsTest {
 	@Test
 	fun substringMatchTest() {
 		val url = "https://localhost:8080/www.bilibili.com/foo/bar?name=Windea"
-		val result = url.substringMatch("://", ":", "/", "/", null, "?") { i, s ->
+		val result = url.splitMatched("://", ":", "/", "/", null, "?") { i, s ->
 			arrayOf("", "", "", s, s, "")[i]
 		}
 		println(result)
