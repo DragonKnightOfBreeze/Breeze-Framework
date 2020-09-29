@@ -127,6 +127,8 @@ NOTE：
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
+* [Json Pointer](https://tools.ietf.org/html/rfc6901)
+* [Json Path](https://github.com/json-path/JsonPath)
 
 # Usage
 

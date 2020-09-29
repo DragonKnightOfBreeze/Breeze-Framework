@@ -244,47 +244,6 @@ fun CharSequence.isAlphanumeric(): Boolean {
 //endregion
 
 //region Prefix and suffix extensions
-///**判断当前字符串是否以指定前缀开头。*/
-//inline infix fun CharSequence.startsWith(prefix:CharSequence):Boolean {
-//	return this.startsWith(prefix, false)
-//}
-//
-///**判断当前字符串是否以指定前缀开头。忽略大小写。*/
-//inline infix fun CharSequence.startsWithIgnoreCase(prefix:CharSequence):Boolean {
-//	return this.startsWith(prefix, true)
-//}
-//
-///**判断当前字符串是否以任意指定前缀开头。*/
-//inline infix fun CharSequence.startsWith(prefixes:Array<out CharSequence>):Boolean {
-//	return prefixes.any { this.startsWith(it, false) }
-//}
-//
-///**判断当前字符串是否以任意指定前缀开头。忽略大小写。*/
-//inline infix fun CharSequence.startsWithIgnoreCase(prefixes:Array<out CharSequence>):Boolean {
-//	return prefixes.any { this.startsWith(it, true) }
-//}
-//
-///**判断当前字符串是否以指定后缀结尾。*/
-//inline infix fun CharSequence.endsWith(suffixes:CharSequence):Boolean {
-//	return this.endsWith(suffixes, false)
-//}
-//
-///**判断当前字符串是否以指定后缀结尾。忽略大小写。*/
-//inline infix fun CharSequence.endsWithIgnoreCase(suffix:CharSequence):Boolean {
-//	return this.endsWith(suffix, true)
-//}
-//
-///**判断当前字符串是否以任意指定后缀结尾。*/
-//inline infix fun CharSequence.endsWith(suffixes:Array<out CharSequence>):Boolean {
-//	return suffixes.any { this.endsWith(it, false) }
-//}
-//
-///**判断当前字符串是否以任意指定后缀结尾。忽略大小写。*/
-//inline infix fun CharSequence.endsWithIgnoreCase(suffixes:Array<out CharSequence>):Boolean {
-//	return suffixes.any { this.endsWith(it, true) }
-//}
-
-
 /**
  * Returns `true` if this char sequence surrounds with the specified characters.
  */
@@ -717,7 +676,7 @@ fun String.substringInEntire(prefix: String, suffix: Char, missingDelimiterValue
 fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String) -> String)? = null): List<String> {
 	var string = this
 	var beforeSeparator = true
-	val lastIndex = delimiters.lastIndex - 1
+	val lastIndex = delimiters.lastIndex
 	val result = mutableListOf<String>()
 	for((index, delimiter) in delimiters.withIndex()) {
 		when {
@@ -744,13 +703,13 @@ fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String)
 
 /**
  * 根据指定的分隔符、前缀、后缀，按顺序分割当前字符串。
- * 可以另外指定限定数量和省略字符串。
+ * 可以另外指定是否忽略大小写、限定数量和省略字符串。
  * 取最先的前缀以及最后的后缀。
  */
 @NotOptimized
 @JvmOverloads
 fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "..."): List<String> {
+	,ignoreCase: Boolean = false,limit: Int = -1, truncated: CharSequence = "..."): List<String> {
 	//前缀索引+前缀长度，或者为0
 	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
 	//后缀索引，或者为length
@@ -758,9 +717,9 @@ fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence =
 	//内容，需要继续分割和转换
 	val content = substring(prefixIndex, suffixIndex)
 	val strings = when(limit) {
-		-1 -> content.split(separator.toString())
+		-1 -> content.split(separator.toString(),ignoreCase=ignoreCase)
 		0 -> listOf()
-		else -> content.split(separator.toString(), limit = limit + 1).dropLast(1) + truncated.toString()
+		else -> content.split(separator.toString(),ignoreCase=ignoreCase, limit = limit + 1).dropLast(1) + truncated.toString()
 	}
 	return strings
 }
