@@ -52,14 +52,6 @@ inline fun <reified T> Any?.convertOrNull():T? {
 }
 
 
-/**
- * 如果满足条件，则根据指定的转化方法，转化当前对象，否则不做处理
- */
-inline fun <T> T.where(condition: Boolean, transform: (T) -> T): T {
-	return if(condition) transform(this) else this
-}
-
-
 inline fun <T:Any> T.toBreeze(): Breeze<T> {
 	return Breeze(this)
 }
