@@ -7,6 +7,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.domain.text.*
 import java.io.*
 import java.net.*
@@ -1057,8 +1058,8 @@ inline fun String.toUri(): URI = URI.create(this)
 inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
 
 
-/**将当前字符串转化为类路径资源。*/
-inline fun <reified T : Any> String.toClassPathResource(): URL = T::class.java.getResource(this)
+///**将当前字符串转化为类路径资源。*/
+//inline fun <reified T : Any> String.toClassPathResource(): URL = T::class.java.getResource(this)
 
 
 /**将当前字符串转化为字符集。如果转化失败，则抛出异常。*/
@@ -1089,6 +1090,21 @@ inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL
 /**将当前字符串转化为本地时间。*/
 @JvmOverloads
 inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime = LocalDateTime.parse(this, formatter)
+
+
+/**
+ * 将当前字符串转化为颜色。如果转化失败，则抛出异常。
+ *
+ * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
+ */
+inline fun String.toColor():Color = ColorService.parse(this)
+
+/**
+ * 将当前字符串转换为颜色。如果转化失败，则返回null。
+ *
+ * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
+ */
+inline fun String.toColorOrNull():Color? = ColorService.parseOrNull(this)
 
 
 /**将当前字符串解码为base64格式的字节数组。*/

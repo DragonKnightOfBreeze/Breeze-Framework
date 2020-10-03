@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.core.domain;
 
+//148种
 //language=css prefix=*{color: suffix=;}
 
 public class ColorNames {
@@ -127,6 +128,7 @@ public class ColorNames {
 	public static final String plum= "plum";
 	public static final String powderblue= "powderblue";
 	public static final String purple= "purple";
+	public static final String rebeccapurple = "rebeccapurple";
 	public static final String red= "red";
 	public static final String rosybrown= "rosybrown";
 	public static final String royalblue= "royalblue";

@@ -14,53 +14,43 @@ import java.nio.file.*
 //TODO 支持转化成泛型类型
 
 object ConverterService {
-	private val converters: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
+	private val converterMap: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
 
 	init {
 		registerDefaultConverters()
 		registerExtendedConverters()
 	}
 
-	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>,override:Boolean = false) {
-		register(converter, T::class.java, R::class.java,override)
+	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>) {
+		register(converter, T::class.java, R::class.java)
 	}
 
-	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>,
-		override:Boolean = false) {
-		val converterPairs = converters.getOrPut(targetType) { mutableListOf() }
+	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>) {
+		val converterPairs = converterMap.getOrPut(targetType) { mutableListOf() }
 		val converterPair = sourceType to converter
-		if(override) converterPairs.add(0,converterPair) else converterPairs.add(converterPair)
+		 converterPairs.add(converterPair)
 	}
 
 	inline fun <reified T : Any> convert(value: Any?): T {
 		return convert(value, T::class.java)
 	}
 
-	fun <T> convert(value: Any?, targetType: Class<T>): T {
-		try {
-			if(value == null) return null as T
-			val matchedConverters = converters[targetType]
-			if(matchedConverters != null) {
-				for((sourceType, converter) in matchedConverters) {
-					if(sourceType.isAssignableFrom(value.javaClass)) {
-						return (converter as Converter<Any, Any>).convert(value) as T
-					}
-				}
-			}
-			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
-		} catch(e: Exception) {
-			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
-		}
+	fun <T:Any> convert(value: Any?, targetType: Class<T>): T {
+		return doConvert(value,targetType) ?:throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
 	}
 
 	inline fun <reified T : Any> convertOrNull(value: Any?): T? {
-		return convert(value, T::class.java)
+		return convertOrNull(value, T::class.java)
 	}
 
 	fun <T : Any> convertOrNull(value: Any?, targetType: Class<T>): T? {
+		return doConvert(value, targetType)
+	}
+
+	private fun <T : Any> doConvert(value: Any?, targetType: Class<T>): T? {
 		try {
 			if(value == null) return null
-			val matchedConverters = converters[targetType]
+			val matchedConverters = converterMap[targetType]
 			if(matchedConverters != null) {
 				for((sourceType, converter) in matchedConverters) {
 					if(sourceType.isAssignableFrom(value.javaClass)) {

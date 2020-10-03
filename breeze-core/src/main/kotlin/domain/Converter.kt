@@ -8,3 +8,4 @@ interface Converter<in T: Any,out R: Any>{
 
 	fun convertOrNull(value:T):R? = convert(value)
 }
+

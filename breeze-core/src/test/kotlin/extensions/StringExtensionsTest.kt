@@ -127,4 +127,23 @@ class StringExtensionsTest {
 			}
 		assertEquals(expectedResult,result)
 	}
+
+	@Test
+	fun toColorTest(){
+		assertNotNull("red".toColor())
+		assertNotNull("Red".toColor())
+		assertNotNull("darkred".toColor())
+		assertNotNull("dark red".toColor())
+		assertNotNull("darkRed".toColor())
+		assertNotNull("dark_red".toColor())
+		assertNotNull("#ff0000".toColor())
+		assertNotNull("#f00".toColor())
+		assertNotNull("#f00".toColor())
+		assertNotNull("rgb(255 0 0)".toColor())
+		assertNotNull("rgb(255,0,0)".toColor())
+		assertNotNull("rgb(255, 0, 0)".toColor())
+		assertNotNull("rgba(255 0 0 255)".toColor())
+		assertNotNull("rgba(255,0,0,255)".toColor())
+		assertNotNull("rgba(255, 0, 0, 255)".toColor())
+	}
 }
