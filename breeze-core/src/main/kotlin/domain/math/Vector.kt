@@ -1,12 +1,13 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 package com.windea.breezeframework.core.domain.math
 
 import java.io.*
 
+/**
+ * 向量
+ */
 interface Vector<T : Vector<T>> : Serializable {
 	/**模长的平方*/
 	val lengthSquared: Float

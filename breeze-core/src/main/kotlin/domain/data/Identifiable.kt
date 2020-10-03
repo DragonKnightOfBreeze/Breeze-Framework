@@ -1,12 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
-
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:Suppress("UNCHECKED_CAST")
 
@@ -32,15 +25,10 @@ interface Identifiable<T : Serializable>:Serializable {
 
 	override fun toString(): String
 
-	/**
-	 * 可识别的类的委托。
-	 */
 	class Delegate<T : Serializable> @PublishedApi internal constructor(
 		override val id: T
 	) : Identifiable<T> {
-		override fun equals(other: Any?): Boolean {
-			return javaClass == other?.javaClass && id == (other as Identifiable<T>).id
-		}
+		override fun equals(other: Any?) = javaClass == other?.javaClass && id == (other as Identifiable<T>).id
 
 		override fun hashCode(): Int = id.hashCode()
 
@@ -48,12 +36,6 @@ interface Identifiable<T : Serializable>:Serializable {
 	}
 
 	companion object {
-		/**
-		 * 可识别的类的委托方法。用法如下：
-		 * ```
-		 * class Foo(override val id: Int): Identifiable<Foo, Int> by delegate(id)
-		 * ```
-		 */
 		fun <T:Serializable> delegate(id: T): Delegate<T> = Delegate(id)
 	}
 }

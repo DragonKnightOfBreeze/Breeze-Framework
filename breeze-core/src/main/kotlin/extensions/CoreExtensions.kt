@@ -1,7 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:JvmName("CoreExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UseWithIndex", "UNUSED_PARAMETER")

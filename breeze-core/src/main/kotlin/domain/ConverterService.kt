@@ -1,9 +1,7 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST", "UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "UNCHECKED_CAST", "ObjectLiteralToLambda")
 
 package com.windea.breezeframework.core.domain
 
@@ -16,52 +14,43 @@ import java.nio.file.*
 //TODO 支持转化成泛型类型
 
 object ConverterService {
-	private val converters: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
+	private val converterMap: MutableMap<Class<*>, MutableList<Pair<Class<*>, Converter<*, *>>>> = mutableMapOf()
 
 	init {
 		registerDefaultConverters()
 		registerExtendedConverters()
 	}
 
-	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>,override:Boolean = false) {
-		register(converter, T::class.java, R::class.java,override)
+	inline fun <reified T : Any, reified R : Any> register(converter: Converter<T, R>) {
+		register(converter, T::class.java, R::class.java)
 	}
 
-	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>,override:Boolean = false) {
-		val converterPairs = converters.getOrPut(targetType) { mutableListOf() }
+	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>) {
+		val converterPairs = converterMap.getOrPut(targetType) { mutableListOf() }
 		val converterPair = sourceType to converter
-		if(override) converterPairs.add(0,converterPair) else converterPairs.add(converterPair)
+		 converterPairs.add(converterPair)
 	}
 
 	inline fun <reified T : Any> convert(value: Any?): T {
 		return convert(value, T::class.java)
 	}
 
-	fun <T> convert(value: Any?, targetType: Class<T>): T {
-		try {
-			if(value == null) return null as T
-			val matchedConverters = converters[targetType]
-			if(matchedConverters != null) {
-				for((sourceType, converter) in matchedConverters) {
-					if(sourceType.isAssignableFrom(value.javaClass)) {
-						return (converter as Converter<Any, Any>).convert(value) as T
-					}
-				}
-			}
-			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
-		} catch(e: Exception) {
-			throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
-		}
+	fun <T:Any> convert(value: Any?, targetType: Class<T>): T {
+		return doConvert(value,targetType) ?:throw IllegalStateException("Cannot convert '${value}' to type '${targetType.name}'.")
 	}
 
 	inline fun <reified T : Any> convertOrNull(value: Any?): T? {
-		return convert(value, T::class.java)
+		return convertOrNull(value, T::class.java)
 	}
 
 	fun <T : Any> convertOrNull(value: Any?, targetType: Class<T>): T? {
+		return doConvert(value, targetType)
+	}
+
+	private fun <T : Any> doConvert(value: Any?, targetType: Class<T>): T? {
 		try {
 			if(value == null) return null
-			val matchedConverters = converters[targetType]
+			val matchedConverters = converterMap[targetType]
 			if(matchedConverters != null) {
 				for((sourceType, converter) in matchedConverters) {
 					if(sourceType.isAssignableFrom(value.javaClass)) {
@@ -275,6 +264,46 @@ object ConverterService {
 		register(object : Converter<String, Class<*>> {
 			override fun convert(value: String) = value.toClass()
 			override fun convertOrNull(value: String) = value.toClassOrNull()
+		})
+
+		register(object:Converter<File,Path>{
+			override fun convert(value: File) = value.toPath()
+		})
+		register(object:Converter<File,URI>{
+			override fun convert(value: File) = value.toUri()
+		})
+		register(object:Converter<File,URL>{
+			override fun convert(value: File) = value.toUrl()
+		})
+
+		register(object:Converter<Path,File>{
+			override fun convert(value: Path) = value.toFile()
+		})
+		register(object:Converter<Path,URI>{
+			override fun convert(value: Path) = value.toUri()
+		})
+		register(object:Converter<Path,URL>{
+			override fun convert(value: Path) = value.toUrl()
+		})
+
+		register(object:Converter<URI,File>{
+			override fun convert(value: URI) = value.toFile()
+		})
+		register(object:Converter<URI,Path>{
+			override fun convert(value: URI): Path = value.toPath()
+		})
+		register(object:Converter<URI,URL>{
+			override fun convert(value: URI) = value.toUrl()
+		})
+
+		register(object:Converter<URL,File>{
+			override fun convert(value: URL) = value.toFile()
+		})
+		register(object:Converter<URL,Path>{
+			override fun convert(value: URL) = value.toPath()
+		})
+		register(object:Converter<URL,URI>{
+			override fun convert(value: URL) = value.toUri()
 		})
 	}
 }

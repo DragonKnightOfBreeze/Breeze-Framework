@@ -1,7 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:JvmName("ScopeFunctionExtensions")
 
@@ -48,43 +46,6 @@ inline fun <T : R, R> T.where(condition: Boolean, block: (T) -> R): R {
 	}
 	return if(condition) block(this) else this
 }
-
-///**
-// * 尝试执行一段代码，并在发生异常时打印错误信息。
-// *
-// * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时打印错误信息，并且没有返回值。
-// */
-//@InlineOnly
-//@JvmSynthetic
-//@UnstableApi
-//inline fun tryOrPrint(block: () -> Unit) {
-//	contract {
-//		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//	}
-//	try {
-//		block()
-//	} catch(e: Exception) {
-//		e.printStackTrace()
-//	}
-//}
-//
-///**
-// * 尝试执行一段代码，并忽略异常。
-// *
-// * 这个作用域方法用于执行一段可能会抛出异常的代码，当捕获到异常时不做任何处理，并且没有返回值。
-// */
-//@InlineOnly
-//@JvmSynthetic
-//@UnstableApi
-//inline fun tryOrIgnore(block: () -> Unit) {
-//	contract {
-//		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//	}
-//	try {
-//		block()
-//	} catch(e: Exception) {
-//	}
-//}
 
 /**
  * Calls the specified function [block] only once,

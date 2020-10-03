@@ -1,13 +1,13 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 package com.windea.breezeframework.core.domain
 
 import java.io.*
 
-/**Represents a tuple of five values.*/
+/**
+ * Represents a tuple of five values.
+ */
 data class Quintuple<out A, out B, out C, out D, out E>(
 	val first: A,
 	val second: B,

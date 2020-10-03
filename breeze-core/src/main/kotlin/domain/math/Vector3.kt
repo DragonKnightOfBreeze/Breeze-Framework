@@ -1,7 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:Suppress("NOTHING_TO_INLINE")
 
@@ -10,7 +8,9 @@ package com.windea.breezeframework.core.domain.math
 import com.windea.breezeframework.core.extensions.*
 import kotlin.math.*
 
-/**二维向量。*/
+/**
+ * 三维向量
+ */
 data class Vector3(
 	val x: Float,
 	val y: Float,

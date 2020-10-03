@@ -1,7 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:JvmName("NumberExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
@@ -232,26 +230,26 @@ inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 }
 
 
-/**将当前整数转化为从低位到高位的每位数字组成的数组。*/
-fun Int.toDigitNumberArray(): IntArray {
+/**将当前整数转化为从最低位到最高位的每位数字组成的数组。*/
+fun Int.toDigitNumberArray(radix:Int=10): IntArray {
 	val size = this.toString().length
 	var temp = this
 	val result = IntArray(size)
 	for(i in 0 until size) {
-		result[i] = temp % 10
-		temp /= 10
+		result[i] = temp % radix
+		temp /= radix
 	}
 	return result
 }
 
-/**将当前长整数转化为从低位到高位的每位数字组成的数组。*/
-fun Long.toDigitNumberArray(): LongArray {
+/**将当前长整数转化为从最低位到最高位的每位数字组成的数组。*/
+fun Long.toDigitNumberArray(radix:Int=10): LongArray {
 	val size = this.toString().length
 	var temp = this
 	val result = LongArray(size)
 	for(i in 0 until size) {
-		result[i] = temp % 10
-		temp /= 10
+		result[i] = temp % radix
+		temp /= radix
 	}
 	return result
 }

@@ -1,11 +1,13 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 package com.windea.breezeframework.core.domain.collections
 
-/**可变的映射入口。*/
+/**
+ * 可变的映射入口。
+ *
+ * Mutable map entry.
+ */
 data class MutableMapEntry<K, V>(
 	override val key: K,
 	override var value: V
