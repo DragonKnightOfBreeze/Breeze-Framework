@@ -59,12 +59,6 @@ allprojects {
 	}
 
 	tasks {
-		compileJava{
-			javaPackagePrefix = prefix
-		}
-		compileTestJava{
-			javaPackagePrefix = prefix
-		}
 		compileKotlin {
 			javaPackagePrefix = prefix
 			incremental = true

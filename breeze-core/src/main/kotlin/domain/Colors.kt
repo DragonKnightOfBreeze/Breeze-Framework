@@ -3,7 +3,7 @@
  * Breeze is blowing...
  ******************************************************************************/
 
-package com.windea.breezeframework.core.domain.text
+package com.windea.breezeframework.core.domain
 
 //language=scss prefix=$color:
 

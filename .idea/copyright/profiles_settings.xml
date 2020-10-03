@@ -11,8 +11,7 @@
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>
     <LanguageOptions name="__TEMPLATE__">
-      <option name="separateBefore" value="true" />
-      <option name="separateAfter" value="true" />
+      <option name="block" value="false" />
     </LanguageOptions>
   </settings>
 </component>

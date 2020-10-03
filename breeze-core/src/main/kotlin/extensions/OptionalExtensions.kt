@@ -1,7 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
 @file:JvmName("OptionalExtensions")
 @file:Suppress("NOTHING_TO_INLINE")

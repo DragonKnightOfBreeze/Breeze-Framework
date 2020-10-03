@@ -1,9 +1,7 @@
-/*******************************************************************************
- * Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
- * Breeze is blowing...
- ******************************************************************************/
+// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST", "UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "UNCHECKED_CAST", "ObjectLiteralToLambda")
 
 package com.windea.breezeframework.core.domain
 
@@ -27,7 +25,8 @@ object ConverterService {
 		register(converter, T::class.java, R::class.java,override)
 	}
 
-	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>,override:Boolean = false) {
+	fun <T : Any, R : Any> register(converter: Converter<T, R>, sourceType: Class<T>, targetType: Class<R>,
+		override:Boolean = false) {
 		val converterPairs = converters.getOrPut(targetType) { mutableListOf() }
 		val converterPair = sourceType to converter
 		if(override) converterPairs.add(0,converterPair) else converterPairs.add(converterPair)
@@ -275,6 +274,46 @@ object ConverterService {
 		register(object : Converter<String, Class<*>> {
 			override fun convert(value: String) = value.toClass()
 			override fun convertOrNull(value: String) = value.toClassOrNull()
+		})
+
+		register(object:Converter<File,Path>{
+			override fun convert(value: File) = value.toPath()
+		})
+		register(object:Converter<File,URI>{
+			override fun convert(value: File) = value.toUri()
+		})
+		register(object:Converter<File,URL>{
+			override fun convert(value: File) = value.toUrl()
+		})
+
+		register(object:Converter<Path,File>{
+			override fun convert(value: Path) = value.toFile()
+		})
+		register(object:Converter<Path,URI>{
+			override fun convert(value: Path) = value.toUri()
+		})
+		register(object:Converter<Path,URL>{
+			override fun convert(value: Path) = value.toUrl()
+		})
+
+		register(object:Converter<URI,File>{
+			override fun convert(value: URI) = value.toFile()
+		})
+		register(object:Converter<URI,Path>{
+			override fun convert(value: URI): Path = value.toPath()
+		})
+		register(object:Converter<URI,URL>{
+			override fun convert(value: URI) = value.toUrl()
+		})
+
+		register(object:Converter<URL,File>{
+			override fun convert(value: URL) = value.toFile()
+		})
+		register(object:Converter<URL,Path>{
+			override fun convert(value: URL) = value.toPath()
+		})
+		register(object:Converter<URL,URI>{
+			override fun convert(value: URL) = value.toUri()
 		})
 	}
 }
