@@ -407,6 +407,7 @@
 * [X] 修复`<Collection>.deepFlatten`中的bug
 * [X] 重构和添加`List.collapse`和`Any.expand`
 * [X] 重命名`String.splitMatched`和`String.splitToStrings`
+* [X] 使用java编写常量类。
 
 # 长期
 
