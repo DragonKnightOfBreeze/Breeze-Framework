@@ -7,6 +7,9 @@ package com.windea.breezeframework.core.domain.math
 
 import java.io.*
 
+/**
+ * 向量
+ */
 interface Vector<T : Vector<T>> : Serializable {
 	/**模长的平方*/
 	val lengthSquared: Float

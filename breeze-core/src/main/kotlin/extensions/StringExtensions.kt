@@ -709,7 +709,7 @@ fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String)
 @NotOptimized
 @JvmOverloads
 fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	,ignoreCase: Boolean = false,limit: Int = -1, truncated: CharSequence = "..."): List<String> {
+	ignoreCase: Boolean = false,limit: Int = -1, truncated: CharSequence = "..."): List<String> {
 	//前缀索引+前缀长度，或者为0
 	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
 	//后缀索引，或者为length

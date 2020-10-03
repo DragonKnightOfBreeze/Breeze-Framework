@@ -7,7 +7,9 @@ package com.windea.breezeframework.core.domain
 
 import java.io.*
 
-/**Represents a tuple of four values.*/
+/**
+ * Represents a tuple of four values.
+ */
 data class Quadruple<out A, out B, out C, out D>(
 	val first: A,
 	val second: B,

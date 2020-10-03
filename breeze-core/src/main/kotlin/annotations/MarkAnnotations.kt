@@ -9,8 +9,9 @@ import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
 /**
+ * 未实现的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Items that is not implemented (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -21,8 +22,9 @@ annotation class NotImplemented(
 )
 
 /**
+ * 未包含的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Items that is not included (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -33,8 +35,9 @@ annotation class NotIncluded(
 )
 
 /**
+ * 未测试的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Item that is not tested (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -45,8 +48,9 @@ annotation class NotTested(
 )
 
 /**
+ * 未优化的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Item that is not optimized (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -57,8 +61,9 @@ annotation class NotOptimized(
 )
 
 /**
+ * 不推荐的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Item that is not recommended (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -69,8 +74,9 @@ annotation class NotRecommended(
 )
 
 /**
- * Item that is not included (yet, always or at most times).
- * @property message additional note information.
+ * 不适用的项（至今为止，总是如此或者在多数情况下）。
+ *
+ * Item that is not suitable (yet, always or at most times).
  */
 @MustBeDocumented
 @Repeatable
@@ -81,8 +87,9 @@ annotation class NotSuitable(
 )
 
 /**
+ * 不可用的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Item that is not usable (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable
@@ -93,8 +100,9 @@ annotation class NotUsable(
 )
 
 /**
+ * 不确定的项（至今为止，总是如此或者在多数情况下）。
+ *
  * Item that is not sure (yet, always or at most times).
- * @property message additional note information.
  */
 @MustBeDocumented
 @Repeatable

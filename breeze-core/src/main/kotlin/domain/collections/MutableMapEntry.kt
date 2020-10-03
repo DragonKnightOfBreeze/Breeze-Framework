@@ -5,7 +5,11 @@
 
 package com.windea.breezeframework.core.domain.collections
 
-/**可变的映射入口。*/
+/**
+ * 可变的映射入口。
+ *
+ * Mutable map entry.
+ */
 data class MutableMapEntry<K, V>(
 	override val key: K,
 	override var value: V
