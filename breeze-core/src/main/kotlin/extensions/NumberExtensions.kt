@@ -230,24 +230,24 @@ inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 }
 
 
-/**将当前整数转化为从最高位到最低位的每位数字组成的数组。*/
+/**将当前整数转化为从最低位到最高位的每位数字组成的数组。*/
 fun Int.toDigitNumberArray(radix:Int=10): IntArray {
 	val size = this.toString().length
 	var temp = this
 	val result = IntArray(size)
-	for(i in (size -1) downTo 0) {
+	for(i in 0 until size) {
 		result[i] = temp % radix
 		temp /= radix
 	}
 	return result
 }
 
-/**将当前长整数转化为从最高位到最低位的每位数字组成的数组。*/
+/**将当前长整数转化为从最低位到最高位的每位数字组成的数组。*/
 fun Long.toDigitNumberArray(radix:Int=10): LongArray {
 	val size = this.toString().length
 	var temp = this
 	val result = LongArray(size)
-	for(i in (size -1) downTo 0) {
+	for(i in 0 until size) {
 		result[i] = temp % radix
 		temp /= radix
 	}

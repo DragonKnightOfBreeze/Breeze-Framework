@@ -4,13 +4,14 @@
 package com.windea.breezeframework.core.domain
 
 import com.windea.breezeframework.core.extensions.*
+import java.text.*
 
 class Color {
 	constructor(hexValue: Int) {
-		val numbers = hexValue.toDigitNumberArray()
-		this.r = numbers.getOrElse(0){0}
+		val numbers = hexValue.toDigitNumberArray(256)
+		this.r = numbers.getOrElse(2){0}
 		this.g = numbers.getOrElse(1){0}
-		this.b =  numbers.getOrElse(2){0}
+		this.b =  numbers.getOrElse(0){0}
 		this.a = 255
 	}
 
@@ -33,9 +34,13 @@ class Color {
 	val b: Int
 	val a: Int
 
-	val expression get() = "#${r.toString(16)}${g.toString(16)}${b.toString(16)}${if(a != 255) a.toString(16) else ""}"
+	val expression get() = "#${r.toHexString()}${g.toHexString()}${b.toHexString()}${if(a != 255) a.toHexString() else ""}"
 	val rgbExpression get() = "rgb($r, $g, $b)"
 	val rgbaExpression get() = "rgba($r, $g, $b, $a)"
+
+	private fun Int.toHexString(): String {
+		return this.toString(16).padStart(2,'0')
+	}
 
 	override fun equals(other: Any?): Boolean {
 		return other is Color && this.r == other.r && this.g == other.g && this.b == other.b && this.a == other.a
@@ -46,6 +51,6 @@ class Color {
 	}
 
 	override fun toString(): String {
-		return "Color $expression"
+		return "Color($expression)"
 	}
 }

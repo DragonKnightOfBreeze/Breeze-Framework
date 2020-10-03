@@ -130,6 +130,23 @@ class StringExtensionsTest {
 
 	@Test
 	fun toColorTest(){
+		println("red".toColor())
+		println("red".toColor())
+		println("Red".toColor())
+		println("darkred".toColor())
+		println("dark red".toColor())
+		println("darkRed".toColor())
+		println("dark_red".toColor())
+		println("#ff0000".toColor())
+		println("#f00".toColor())
+		println("#f00".toColor())
+		println("rgb(255 0 0)".toColor())
+		println("rgb(255,0,0)".toColor())
+		println("rgb(255, 0, 0)".toColor())
+		println("rgba(255 0 0 255)".toColor())
+		println("rgba(255,0,0,255)".toColor())
+		println("rgba(255, 0, 0, 255)".toColor())
+
 		assertNotNull("red".toColor())
 		assertNotNull("Red".toColor())
 		assertNotNull("darkred".toColor())
