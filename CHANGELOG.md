@@ -409,6 +409,7 @@
 * [X] 重命名`String.splitMatched`和`String.splitToStrings`
 * [X] 使用java编写常量类。
 * [X] `Color`、`ColorService`、`String.toColor`、`String.toColorOrNull`以及注册默认的css颜色
+* [X] 让`Color`可以解构
 
 # 长期
 

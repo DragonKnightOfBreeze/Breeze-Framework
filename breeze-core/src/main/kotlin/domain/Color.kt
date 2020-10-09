@@ -6,6 +6,13 @@ package com.windea.breezeframework.core.domain
 import com.windea.breezeframework.core.extensions.*
 import java.text.*
 
+/**
+ * 颜色。
+ *
+ * 表示rgb颜色。
+ *
+ * 可以解构：`val (r,g,b,a) = color`
+ */
 class Color {
 	constructor(hexValue: Int) {
 		val numbers = hexValue.toDigitNumberArray(256)
@@ -41,6 +48,14 @@ class Color {
 	private fun Int.toHexString(): String {
 		return this.toString(16).padStart(2,'0')
 	}
+
+	operator fun component1()  = r
+
+	operator fun component2() = g
+
+	operator fun component3() = b
+
+	operator fun component4() = a
 
 	override fun equals(other: Any?): Boolean {
 		return other is Color && this.r == other.r && this.g == other.g && this.b == other.b && this.a == other.a
