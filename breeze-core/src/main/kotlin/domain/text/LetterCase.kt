@@ -164,26 +164,6 @@ enum class LetterCase(
 		"""-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
 	),
 
-	/**以单词边界或者数个下划线分割，首个单词全小写，后续单词首字母大写的格式。*/
-	@ExplicitApi
-	CamelCaseAllowUnderscore(
-		{ it.splitWords().split(' ', '_').filterNotEmpty<String>() },
-		{ it.splitWords().splitToSequence(' ', '_').filterNotEmpty<String>() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
-		"""_*\$?[a-z]+(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex()
-	),
-
-	/**以单词边界或者数个下划线分割，所有单词首字母大写的格式。*/
-	@ExplicitApi
-	PascalCaseAllowUnderscore(
-		{ it.splitWords().split(' ', '_').filterNotEmpty<String>() },
-		{ it.splitWords().splitToSequence(' ', '_').filterNotEmpty<String>() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() }.firstCharToLowerCase() },
-		"""_*\$?(?:[A-Z][a-z]+|[A-Z]+)(?:_*(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+))+""".toRegex()
-	),
-
 	/**未知的字母格式。*/
 	Unknown;
 
@@ -229,12 +209,6 @@ enum class LetterCase(
 
 		/**@see LetterCase.HyphenWords*/
 		@JvmSynthetic val `hyphen-Words`: LetterCase = HyphenWords
-
-		/**@see LetterCase.CamelCaseAllowUnderscore*/
-		@JvmSynthetic val camelCase_AllowUnderscore: LetterCase = CamelCaseAllowUnderscore
-
-		/**@see LetterCase.PascalCaseAllowUnderscore*/
-		@JvmSynthetic val PascalCase_AllowUnderscore: LetterCase = PascalCaseAllowUnderscore
 
 
 		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
