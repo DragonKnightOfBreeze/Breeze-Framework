@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "HasPlatformType")
 
 package com.windea.breezeframework.core.domain
 
@@ -12,7 +12,7 @@ import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
 
-//TODO 支持转化泛型类型
+//TODO 支持泛型类型
 
 /**
  * 转化器。
@@ -213,268 +213,268 @@ interface Converter<T, R> {
 	}
 
 	private object StringToIntConverter : Converter<String, Int> {
-		override val typePair = String::class.java to Int::class.java
+		override val typePair = String::class.java to Int::class.javaObjectType
 		override fun convert(value: String) = value.toInt()
 		override fun convertOrNull(value: String) = value.toIntOrNull()
 	}
 
 	private object StringToLongConverter : Converter<String, Long> {
-		override val typePair = String::class.java to Long::class.java
+		override val typePair = String::class.java to Long::class.javaObjectType
 		override fun convert(value: String) = value.toLong()
 		override fun convertOrNull(value: String) = value.toLongOrNull()
 	}
 
 	private object StringToFloatConverter : Converter<String, Float> {
-		override val typePair = String::class.java to Float::class.java
+		override val typePair = String::class.java to Float::class.javaObjectType
 		override fun convert(value: String) = value.toFloat()
 		override fun convertOrNull(value: String) = value.toFloatOrNull()
 	}
 
 	private object StringToDoubleConverter : Converter<String, Double> {
-		override val typePair = String::class.java to Double::class.java
+		override val typePair = String::class.java to Double::class.javaObjectType
 		override fun convert(value: String) = value.toDouble()
 		override fun convertOrNull(value: String) = value.toDoubleOrNull()
 	}
 
 	private object StringToByteConverter : Converter<String, Byte> {
-		override val typePair = String::class.java to Byte::class.java
+		override val typePair = String::class.java to Byte::class.javaObjectType
 		override fun convert(value: String) = value.toByte()
 		override fun convertOrNull(value: String) = value.toByteOrNull()
 	}
 
 	private object StringToShortConverter : Converter<String, Short> {
-		override val typePair = String::class.java to Short::class.java
+		override val typePair = String::class.java to Short::class.javaObjectType
 		override fun convert(value: String) = value.toShort()
 		override fun convertOrNull(value: String) = value.toShortOrNull()
 	}
 
 	private object StringToCharConverter : Converter<String, Char> {
-		override val typePair = String::class.java to Char::class.java
+		override val typePair = String::class.java to Char::class.javaObjectType
 		override fun convert(value: String) = value.toChar()
 		override fun convertOrNull(value: String) = value.toCharOrNull()
 	}
 
 	private object StringToBooleanConverter : Converter<String, Boolean> {
-		override val typePair = String::class.java to Boolean::class.java
+	override val typePair = String::class.java to Boolean::class.javaObjectType
 		override fun convert(value: String) = value.toBoolean()
 		override fun convertOrNull(value: String) = value.toBooleanOrNull()
 	}
 
 	private object IntToLongConverter : Converter<Int, Long> {
-		override val typePair = Int::class.java to Long::class.java
+		override val typePair = Int::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Int) = value.toLong()
 	}
 
 	private object IntToFloatConverter : Converter<Int, Float> {
-		override val typePair = Int::class.java to Float::class.java
+		override val typePair = Int::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Int) = value.toFloat()
 	}
 
 	private object IntToDoubleConverter : Converter<Int, Double> {
-		override val typePair = Int::class.java to Double::class.java
+		override val typePair = Int::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Int) = value.toDouble()
 	}
 
 	private object IntToByteConverter : Converter<Int, Byte> {
-		override val typePair = Int::class.java to Byte::class.java
+		override val typePair = Int::class.javaObjectType to Byte::class.javaObjectType
 		override fun convert(value: Int) = value.toByte()
 	}
 
 	private object IntToShortConverter : Converter<Int, Short> {
-		override val typePair = Int::class.java to Short::class.java
+		override val typePair = Int::class.javaObjectType to Short::class.javaObjectType
 		override fun convert(value: Int) = value.toShort()
 	}
 
 	private object IntToCharConverter : Converter<Int, Char> {
-		override val typePair = Int::class.java to Char::class.java
+		override val typePair = Int::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Int) = value.toChar()
 	}
 
 	private object LongToIntConverter : Converter<Long, Int> {
-		override val typePair = Long::class.java to Int::class.java
+		override val typePair = Long::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Long) = value.toInt()
 	}
 
 	private object LongToFloatConverter : Converter<Long, Float> {
-		override val typePair = Long::class.java to Float::class.java
+		override val typePair = Long::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Long) = value.toFloat()
 	}
 
 	private object LongToDoubleConverter : Converter<Long, Double> {
-		override val typePair = Long::class.java to Double::class.java
+		override val typePair = Long::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Long) = value.toDouble()
 	}
 
 	private object LongToByteConverter : Converter<Long, Byte> {
-		override val typePair = Long::class.java to Byte::class.java
+		override val typePair = Long::class.javaObjectType to Byte::class.javaObjectType
 		override fun convert(value: Long) = value.toByte()
 	}
 
 	private object LongToShortConverter : Converter<Long, Short> {
-		override val typePair = Long::class.java to Short::class.java
+		override val typePair = Long::class.javaObjectType to Short::class.javaObjectType
 		override fun convert(value: Long) = value.toShort()
 	}
 
 	private object LongToCharConverter : Converter<Long, Char> {
-		override val typePair = Long::class.java to Char::class.java
+		override val typePair = Long::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Long) = value.toChar()
 	}
 
 	private object FloatToIntConverter : Converter<Float, Int> {
-		override val typePair = Float::class.java to Int::class.java
+		override val typePair = Float::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Float) = value.toInt()
 	}
 
 	private object FloatToLongConverter : Converter<Float, Long> {
-		override val typePair = Float::class.java to Long::class.java
+		override val typePair = Float::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Float) = value.toLong()
 	}
 
 	private object FloatToDoubleConverter : Converter<Float, Double> {
-		override val typePair = Float::class.java to Double::class.java
+		override val typePair = Float::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Float) = value.toDouble()
 	}
 
 	private object FloatToByteConverter : Converter<Float, Byte> {
-		override val typePair = Float::class.java to Byte::class.java
+		override val typePair = Float::class.javaObjectType to Byte::class.javaObjectType
 
 		@Suppress("DEPRECATION")
 		override fun convert(value: Float) = value.toByte()
 	}
 
 	private object FloatToShortConverter : Converter<Float, Short> {
-		override val typePair = Float::class.java to Short::class.java
+		override val typePair = Float::class.javaObjectType to Short::class.javaObjectType
 
 		@Suppress("DEPRECATION")
 		override fun convert(value: Float) = value.toShort()
 	}
 
 	private object FloatToCharConverter : Converter<Float, Char> {
-		override val typePair = Float::class.java to Char::class.java
+		override val typePair = Float::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Float) = value.toChar()
 	}
 
 	private object DoubleToIntConverter : Converter<Double, Int> {
-		override val typePair = Double::class.java to Int::class.java
+		override val typePair = Double::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Double) = value.toInt()
 	}
 
 	private object DoubleToLongConverter : Converter<Double, Long> {
-		override val typePair = Double::class.java to Long::class.java
+		override val typePair = Double::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Double) = value.toLong()
 	}
 
 	private object DoubleToFloatConverter : Converter<Double, Float> {
-		override val typePair = Double::class.java to Float::class.java
+		override val typePair = Double::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Double) = value.toFloat()
 	}
 
 	private object DoubleToByteConverter : Converter<Double, Byte> {
-		override val typePair = Double::class.java to Byte::class.java
+		override val typePair = Double::class.javaObjectType to Byte::class.javaObjectType
 
 		@Suppress("DEPRECATION")
 		override fun convert(value: Double) = value.toByte()
 	}
 
 	private object DoubleToShortConverter : Converter<Double, Short> {
-		override val typePair = Double::class.java to Short::class.java
+		override val typePair = Double::class.javaObjectType to Short::class.javaObjectType
 
 		@Suppress("DEPRECATION")
 		override fun convert(value: Double) = value.toShort()
 	}
 
 	private object DoubleToCharConverter : Converter<Double, Char> {
-		override val typePair = Double::class.java to Char::class.java
+		override val typePair = Double::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Double) = value.toChar()
 	}
 
 	private object ByteToIntConverter : Converter<Byte, Int> {
-		override val typePair = Byte::class.java to Int::class.java
+		override val typePair = Byte::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Byte) = value.toInt()
 	}
 
 	private object ByteToLongConverter : Converter<Byte, Long> {
-		override val typePair = Byte::class.java to Long::class.java
+		override val typePair = Byte::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Byte) = value.toLong()
 	}
 
 	private object ByteToFloatConverter : Converter<Byte, Float> {
-		override val typePair = Byte::class.java to Float::class.java
+		override val typePair = Byte::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Byte) = value.toFloat()
 	}
 
 	private object ByteToDoubleConverter : Converter<Byte, Double> {
-		override val typePair = Byte::class.java to Double::class.java
+		override val typePair = Byte::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Byte) = value.toDouble()
 	}
 
 	private object ByteToShortConverter : Converter<Byte, Short> {
-		override val typePair = Byte::class.java to Short::class.java
+		override val typePair = Byte::class.javaObjectType to Short::class.javaObjectType
 		override fun convert(value: Byte) = value.toShort()
 	}
 
 	private object ByteToCharConverter : Converter<Byte, Char> {
-		override val typePair = Byte::class.java to Char::class.java
+		override val typePair = Byte::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Byte) = value.toChar()
 	}
 
 	private object ShortToIntConverter : Converter<Short, Int> {
-		override val typePair = Short::class.java to Int::class.java
+		override val typePair = Short::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Short) = value.toInt()
 	}
 
 	private object ShortToLongConverter : Converter<Short, Long> {
-		override val typePair = Short::class.java to Long::class.java
+		override val typePair = Short::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Short) = value.toLong()
 	}
 
 	private object ShortToFloatConverter : Converter<Short, Float> {
-		override val typePair = Short::class.java to Float::class.java
+		override val typePair = Short::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Short) = value.toFloat()
 	}
 
 	private object ShortToDoubleConverter : Converter<Short, Double> {
-		override val typePair = Short::class.java to Double::class.java
+		override val typePair = Short::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Short) = value.toDouble()
 	}
 
 	private object ShortToByteConverter : Converter<Short, Byte> {
-		override val typePair = Short::class.java to Byte::class.java
+		override val typePair = Short::class.javaObjectType to Byte::class.javaObjectType
 		override fun convert(value: Short) = value.toByte()
 	}
 
 	private object ShortToCharConverter : Converter<Short, Char> {
-		override val typePair = Short::class.java to Char::class.java
+		override val typePair = Short::class.javaObjectType to Char::class.javaObjectType
 		override fun convert(value: Short) = value.toChar()
 	}
 
 	private object CharToIntConverter : Converter<Char, Int> {
-		override val typePair = Char::class.java to Int::class.java
+		override val typePair = Char::class.javaObjectType to Int::class.javaObjectType
 		override fun convert(value: Char) = value.toInt()
 	}
 
 	private object CharToLongConverter : Converter<Char, Long> {
-		override val typePair = Char::class.java to Long::class.java
+		override val typePair = Char::class.javaObjectType to Long::class.javaObjectType
 		override fun convert(value: Char) = value.toLong()
 	}
 
 	private object CharToFloatConverter : Converter<Char, Float> {
-		override val typePair = Char::class.java to Float::class.java
+		override val typePair = Char::class.javaObjectType to Float::class.javaObjectType
 		override fun convert(value: Char) = value.toFloat()
 	}
 
 	private object CharToDoubleConverter : Converter<Char, Double> {
-		override val typePair = Char::class.java to Double::class.java
+		override val typePair = Char::class.javaObjectType to Double::class.javaObjectType
 		override fun convert(value: Char) = value.toDouble()
 	}
 
 	private object CharToByteConverter : Converter<Char, Byte> {
-		override val typePair = Char::class.java to Byte::class.java
+		override val typePair = Char::class.javaObjectType to Byte::class.javaObjectType
 		override fun convert(value: Char) = value.toByte()
 	}
 
 	private object CharToShortConverter : Converter<Char, Short> {
-		override val typePair = Char::class.java to Short::class.java
+		override val typePair = Char::class.javaObjectType to Short::class.javaObjectType
 		override fun convert(value: Char) = value.toShort()
 	}
 	//endregion

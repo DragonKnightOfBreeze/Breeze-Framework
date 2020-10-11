@@ -7,6 +7,8 @@ class AnyExtensionsTest{
 	fun testConvert(){
 		"123".convert<Int>().andPrintln()
 		"123".convertOrNull<Int>().andPrintln()
+		123.convertOrNull<String>().andPrintln()
+		123.convertOrNull<String>().andPrintln()
 	}
 
 	@Test

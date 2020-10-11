@@ -1023,7 +1023,9 @@ inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 }
 
 //性能：大约为1/5
-/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。*/
+/**
+ * 将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。
+ */
 @Deprecated("Use this.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 	return when(T::class.java.name) {
