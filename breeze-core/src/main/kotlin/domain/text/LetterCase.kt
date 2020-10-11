@@ -236,6 +236,7 @@ enum class LetterCase(
 		/**@see LetterCase.PascalCaseAllowUnderscore*/
 		@JvmSynthetic val PascalCase_AllowUnderscore: LetterCase = PascalCaseAllowUnderscore
 
+
 		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
 
 		private fun CharSequence.firstCharToUpperCase() = this[0].toUpperCase() + this.substring(1)

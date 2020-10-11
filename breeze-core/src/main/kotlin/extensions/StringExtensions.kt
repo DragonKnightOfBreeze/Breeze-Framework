@@ -9,6 +9,7 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.types.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -536,8 +537,8 @@ tailrec fun CharSequence.replaceRepeatedly(regex: Regex, transform: (MatchResult
  */
 @JvmOverloads
 fun String.replaceIn(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue  }
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + 1, lastIndex, replacement)
 }
 
@@ -547,8 +548,8 @@ fun String.replaceIn(prefix: Char, suffix: Char, replacement: String, missingDel
  */
 @JvmOverloads
 fun String.replaceIn(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue  }
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).indexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
 
@@ -558,8 +559,8 @@ fun String.replaceIn(prefix: String, suffix: String, replacement: String, missin
  */
 @JvmOverloads
 fun String.replaceInLast(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
-	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
-	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + 1, lastIndex, replacement)
 }
 
@@ -569,8 +570,8 @@ fun String.replaceInLast(prefix: Char, suffix: Char, replacement: String, missin
  */
 @JvmOverloads
 fun String.replaceInLast(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
-	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
-	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
+	val lastIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
+	val index = substring(0, lastIndex).lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
 
@@ -580,8 +581,8 @@ fun String.replaceInLast(prefix: String, suffix: String, replacement: String, mi
  */
 @JvmOverloads
 fun String.replaceInEntire(prefix: Char, suffix: Char, replacement: String, missingDelimiterValue: String = this): String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue  }
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + 1, lastIndex, replacement)
 }
 
@@ -591,8 +592,8 @@ fun String.replaceInEntire(prefix: Char, suffix: Char, replacement: String, miss
  */
 @JvmOverloads
 fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, missingDelimiterValue: String = this): String {
-	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue  }
+	val index = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
 //endregion
@@ -604,8 +605,8 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
  */
 @JvmOverloads
 fun String.substringIn(prefix: Char, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + 1, suffixIndex)
 }
 
@@ -615,8 +616,8 @@ fun String.substringIn(prefix: Char, suffix: Char, missingDelimiterValue: String
  */
 @JvmOverloads
 fun String.substringIn(prefix: String, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = indexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + prefix.length, suffixIndex)
 }
 
@@ -626,8 +627,8 @@ fun String.substringIn(prefix: String, suffix: Char, missingDelimiterValue: Stri
  */
 @JvmOverloads
 fun String.substringInLast(prefix: Char, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + 1, suffixIndex)
 }
 
@@ -637,8 +638,8 @@ fun String.substringInLast(prefix: Char, suffix: Char, missingDelimiterValue: St
  */
 @JvmOverloads
 fun String.substringInLast(prefix: String, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = lastIndexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + prefix.length, suffixIndex)
 }
 
@@ -648,8 +649,8 @@ fun String.substringInLast(prefix: String, suffix: Char, missingDelimiterValue: 
  */
 @JvmOverloads
 fun String.substringInEntire(prefix: Char, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + 1, suffixIndex)
 }
 
@@ -659,8 +660,8 @@ fun String.substringInEntire(prefix: Char, suffix: Char, missingDelimiterValue: 
  */
 @JvmOverloads
 fun String.substringInEntire(prefix: String, suffix: Char, missingDelimiterValue: String = this): String {
-	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue  }
-	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue  }
+	val prefixIndex = indexOf(prefix).also { if(it == -1) return missingDelimiterValue }
+	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + prefix.length, suffixIndex)
 }
 //endregion
@@ -701,31 +702,34 @@ fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String)
 }
 
 /**
- * 根据指定的分隔符、前缀、后缀，按顺序分割当前字符串。
+ * 根据指定的分隔符、前缀、后缀，分割当前字符串。
  * 可以另外指定是否忽略大小写、限定数量和省略字符串。
  * 取最先的前缀以及最后的后缀。
  */
 @NotOptimized
 @JvmOverloads
-fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	ignoreCase: Boolean = false,limit: Int = -1, truncated: CharSequence = "..."): List<String> {
+fun String.splitToStrings(
+	separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
+	ignoreCase: Boolean = false, limit: Int = -1, truncated: CharSequence = "...",
+): List<String> {
 	//前缀索引+前缀长度，或者为0
 	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
 	//后缀索引，或者为length
 	val suffixIndex = lastIndexOf(postfix.toString()).let { if(it == -1) length else it }
 	//内容，需要继续分割和转换
 	val content = substring(prefixIndex, suffixIndex)
-	val strings = when(limit) {
-		-1 -> content.split(separator.toString(),ignoreCase=ignoreCase)
+	return when(limit) {
+		-1 -> content.split(separator.toString(), ignoreCase = ignoreCase)
 		0 -> listOf()
-		else -> content.split(separator.toString(),ignoreCase=ignoreCase, limit = limit + 1).dropLast(1) + truncated.toString()
+		else -> content.split(separator.toString(), ignoreCase = ignoreCase, limit = limit + 1).dropLast(1) + truncated.toString()
 	}
-	return strings
 }
 //endregion
 
 //region Align extensions
-/**逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+/**
+ * 逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
+ */
 @JvmOverloads
 fun String.alignStart(padChar: Char = ' '): String {
 	val lines = this.lines()
@@ -734,7 +738,9 @@ fun String.alignStart(padChar: Char = ' '): String {
 	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
 }
 
-/**逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+/**
+ * 逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
+ */
 @JvmOverloads
 fun String.alignEnd(padChar: Char = ' '): String {
 	val lines = this.lines()
@@ -743,7 +749,9 @@ fun String.alignEnd(padChar: Char = ' '): String {
 	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
 }
 
-/**逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。*/
+/**
+ * 逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
+ */
 @JvmOverloads
 fun String.alignCenter(padChar: Char = ' '): String {
 	val lines = this.lines()
@@ -789,7 +797,11 @@ fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "...")
 //endregion
 
 //region Quote extensions
-/**尝试使用指定的引号包围当前字符串。默认忽略其中的引号，不对其进行转义。*/
+/**
+ * 尝试使用指定的引号包围当前字符串。
+ * 适用于单引号、双引号、反引号。
+ * 默认忽略其中的引号，不对其进行转义。
+ */
 fun String.quote(quote: Char, omitQuotes: Boolean = true): String {
 	return when {
 		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
@@ -799,7 +811,11 @@ fun String.quote(quote: Char, omitQuotes: Boolean = true): String {
 	}
 }
 
-/**尝试去除当前字符串两侧的引号。如果没有，则返回自身。默认忽略其中的引号，不对其进行反转义。*/
+/**
+ * 尝试去除当前字符串两侧的引号。如果没有，则返回自身。
+ * 适用于单引号、双引号、反引号。
+ * 默认忽略其中的引号，不对其进行反转义。
+ */
 fun String.unquote(omitQuotes: Boolean = true): String {
 	val quote = this.firstOrNull()
 	return when {
@@ -811,11 +827,13 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 	}
 }
 
-private val quotes = charArrayOf('\"', '\'', '`')
+private val quotes = charArrayOf('\'', '\"', '`')
 //endregion
 
 //region Format extensions
-/**根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。*/
+/**
+ * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
+ */
 @UnstableApi
 fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
 	return type.formatter(this, args, locale, placeholder)
@@ -825,68 +843,95 @@ private val defaultPlaceholder = "{" to "}"
 //endregion
 
 //region Escape extensions
-/**根据指定的转义类型，转义当前字符串。默认不转义反斜线。*/
+/**
+ * 根据指定的转义类型，转义当前字符串。默认不转义反斜线。
+ */
 fun String.escapeBy(type: EscapeType, omitBackslashes: Boolean = true): String {
 	val tempString = if(omitBackslashes) this else this.replace("\\", "\\\\")
 	return tempString.replaceAll(type.escapeStrings, type.escapedStrings)
 }
 
-/**根据指定的转义类型，反转义当前字符串。默认不反转一反斜线*/
+/**
+ * 根据指定的转义类型，反转义当前字符串。默认不反转一反斜线
+ */
 fun String.unescapeBy(type: EscapeType, omitBackslashes: Boolean = true): String {
 	val tempString = this.replaceAll(type.escapedStrings, type.escapeStrings)
 	return if(omitBackslashes) tempString else tempString.replace("\\\\", "\\")
 }
 //endregion
 
-//region Match, split and join extensions
-/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
+//region Match extensions
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
 fun String.toRegexBy(type: MatchType): Regex {
 	return type.regexTransform(this).toRegex()
 }
 
-/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
 fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
 	return type.regexTransform(this).toRegex(option)
 }
 
-/**根据指定的匹配类型，将当前字符串转化为对应的正则表达式。*/
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
 fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
 	return type.regexTransform(this).toRegex(options)
 }
+//endregion
 
-
-/**得到当前字符串的字母格式。*/
+//region Letter Case extensions
+/**
+ * 得到当前字符串的字母格式。
+ */
 val String.letterCase: LetterCase get() = enumValues<LetterCase>().first { it.predicate(this) }
 
-/**得到当前字符串的引用格式。*/
+/**
+ * 得到当前字符串的引用格式。
+ */
 val String.referenceCase: ReferenceCase get() = enumValues<ReferenceCase>().first { it.predicate(this) }
 
-/**根据指定的显示格式，分割当前字符串，返回对应的字符串列表。*/
+/**
+ * 根据指定的显示格式，分割当前字符串，返回对应的字符串列表。
+ */
 fun String.splitBy(case: DisplayCase): List<String> {
 	return case.splitter(this)
 }
 
-/**根据指定的显示格式，分割当前字符串，返回对应的字符串序列。*/
+/**
+ * 根据指定的显示格式，分割当前字符串，返回对应的字符串序列。
+ */
 fun String.splitToSequenceBy(case: DisplayCase): Sequence<String> {
 	return case.sequenceSplitter(this)
 }
 
-/**根据指定的显示格式，将当前字符串数组中的元素加入到字符串。*/
+/**
+ * 根据指定的显示格式，将当前字符串数组中的元素加入到字符串。
+ */
 fun Array<out CharSequence>.joinToStringBy(case: DisplayCase): String {
 	return case.arrayJoiner(this)
 }
 
-/**根据指定的显示格式，将当前字符串集合中的元素加入到字符串。*/
+/**
+ * 根据指定的显示格式，将当前字符串集合中的元素加入到字符串。
+ */
 fun Iterable<CharSequence>.joinToStringBy(case: DisplayCase): String {
 	return case.joiner(this)
 }
 
-/**根据指定的显示格式，切换当前字符串的格式。*/
+/**
+ * 根据指定的显示格式，切换当前字符串的格式。
+ */
 fun String.switchCaseBy(fromCase: DisplayCase, toCase: DisplayCase): String {
 	return splitBy(fromCase).joinToStringBy(toCase)
 }
 
-/**根据指定的显示格式，切换当前字符串的格式。可以根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。*/
+/**
+ * 根据指定的显示格式，切换当前字符串的格式。可以根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。
+ */
 fun String.switchCaseBy(case: DisplayCase): String {
 	return splitBy(when(case) {
 		is LetterCase -> letterCase
@@ -909,12 +954,14 @@ inline fun String.inline(): String = trimWrap()
  */
 inline fun String.multiline(): String = trimIndent()
 
-private val trimWrapRegex = """\s*\R\s*""".toRegex()
-
 /**
  * 去除当前字符串中的所有换行符以及换行符周围的空白。
  */
-fun String.trimWrap(): String = this.remove(trimWrapRegex)
+fun String.trimWrap(): String {
+	return this.remove(trimWrapRegex)
+}
+
+private val trimWrapRegex = """\s*\R\s*""".toRegex()
 
 /**
  * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
@@ -933,22 +980,34 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 //endregion
 
 //region Convert extensions
-/**将当前字符串转化为字符。如果转化失败，则抛出异常。这个方法由[String.single]委托实现。*/
-inline fun String.toChar(): Char = this.single()
+/**
+ * 将当前字符串转化为字符。如果转化失败，则抛出异常。
+ */
+inline fun String.toChar(): Char {
+	return this.single()
+}
 
-/**将当前字符串转化为字符。如果转化失败，则返回null。这个方法由[String.singleOrNull]委托实现。*/
-inline fun String.toCharOrNull(): Char? = this.singleOrNull()
+/**
+ * 将当前字符串转化为字符。如果转化失败，则返回null。
+ */
+inline fun String.toCharOrNull(): Char? {
+	return this.singleOrNull()
+}
 
-/**将当前字符串转化为布尔值。如果转化失败，则返回null。*/
-inline fun String.toBooleanOrNull():Boolean? = when {
+/**
+ * 将当前字符串转化为布尔值。如果转化失败，则返回null。
+ */
+inline fun String.toBooleanOrNull(): Boolean? = when {
 	this.equalsIgnoreCase("true") -> true
 	this.equalsIgnoreCase("false") -> false
 	else -> null
 }
 
 //性能：大约为1/5
-/**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。*/
-@Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
+/**
+ * 将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。
+ */
+@Deprecated("Use this.convert<T>()", ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt(radix) as T
@@ -965,7 +1024,7 @@ inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 
 //性能：大约为1/5
 /**将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。*/
-@Deprecated("Use this.convertOrNull<T>()",ReplaceWith("this.convertOrNull<T>()"))
+@Deprecated("Use this.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toIntOrNull(radix) as T?
@@ -981,19 +1040,31 @@ inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 }
 
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
-inline fun <reified T : Enum<T>> String.toEnumValue(): T = enumValues<T>().first { it.toString() == this }
+/**
+ * 将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。
+ */
+inline fun <reified T : Enum<T>> String.toEnumValue(): T {
+	return enumValues<T>().first { it.toString() == this }
+}
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
-inline fun <reified T : Enum<T>> String.toEnumValueOrNull(): T? = enumValues<T>().firstOrNull { it.toString() == this }
+/**
+ * 将当前字符串转化为对应的枚举值。如果转化失败，则返回null。
+ */
+inline fun <reified T : Enum<T>> String.toEnumValueOrNull(): T? {
+	return enumValues<T>().firstOrNull { it.toString() == this }
+}
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。*/
+/**
+ * 将当前字符串转化为对应的枚举值。如果转化失败，则抛出异常。
+ */
 fun <T> String.toEnumValue(type: Class<T>): T {
 	require(type.isEnum) { "'$type' is not an enum class." }
 	return type.enumConstants.first { it.toString() == this }
 }
 
-/**将当前字符串转化为对应的枚举值。如果转化失败，则返回null。*/
+/**
+ * 将当前字符串转化为对应的枚举值。如果转化失败，则返回null。
+ */
 fun <T> String.toEnumValueOrNull(type: Class<T>): T? {
 	require(type.isEnum) { "'$type' is not an enum class." }
 	return type.enumConstants.firstOrNull { it.toString() == this }
@@ -1005,30 +1076,38 @@ fun <T> String.toEnumValueOrNull(type: Class<T>): T? {
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toCharRange(): CharRange = toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
+fun String.toCharRange(): CharRange {
+	return toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
+}
 
 /**
  * 将当前字符串转化为整数范围。如果转化失败，则抛出异常。
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toIntRange(): IntRange = toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
+fun String.toIntRange(): IntRange {
+	return toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
+}
 
 /**
  * 将当前字符串转化为长整数范围。如果转化失败，则抛出异常。
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
-fun String.toLongRange(): LongRange = toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
+fun String.toLongRange(): LongRange {
+	return toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
+}
 
 private val rangeDelimiters = arrayOf("..", "-", "~")
 
-private fun String.toRangePair() = when {
-	rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
-		.let { it[0].trim() to it[1].trim() fromTo 0 fromTo 0 }
-	this.contains(",") -> this.substring(1, length - 1).split(",", limit = 2)
-		.let { it[0].trim() to it[1].trim() fromTo getLeftRangeOffset() fromTo getRightRangeOffset() }
-	else -> notARange()
+private fun String.toRangePair(): Tuple4<String, String, Int, Int> {
+	return when {
+		rangeDelimiters.any { this.contains(it) } -> this.split(*rangeDelimiters, limit = 2)
+			.let { it[0].trim() to it[1].trim() fromTo 0 fromTo 0 }
+		this.contains(",") -> this.substring(1, length - 1).split(",", limit = 2)
+			.let { it[0].trim() to it[1].trim() fromTo getLeftRangeOffset() fromTo getRightRangeOffset() }
+		else -> notARange()
+	}
 }
 
 private fun String.getLeftRangeOffset(): Int {
@@ -1044,52 +1123,120 @@ private fun String.notARange(): Nothing {
 }
 
 
-/**将当前字符串转化为文件。*/
-inline fun String.toFile(): File = File(this)
+/**
+ * 将当前字符串转化为文件。
+ */
+fun String.toFile(): File {
+	return File(this)
+}
 
-/**将当前字符串转化为路径。*/
-inline fun String.toPath(): Path = Path.of(this)
+/**
+ * 将当前字符串转化为路径。
+ */
+fun String.toPath(): Path {
+	return Path.of(this)
+}
 
-/**将当前字符串转化为统一资源标识符。可能需要事先对查询参数进行适当的编码。*/
-inline fun String.toUri(): URI = URI.create(this)
+/**
+ * 将当前字符串转化为统一资源标识符。可能需要事先对查询参数进行适当的编码。
+ */
+fun String.toUri(): URI {
+	return URI.create(this)
+}
 
-/**将当前字符串转化为统一资源定位符。*/
+/**
+ * 将当前字符串转化为统一资源定位符。
+ */
 @JvmOverloads
-inline fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL = URL(content, this, handler)
+fun String.toUrl(content: URL? = null, handler: URLStreamHandler? = null): URL {
+	return URL(content, this, handler)
+}
 
 
-///**将当前字符串转化为类路径资源。*/
-//inline fun <reified T : Any> String.toClassPathResource(): URL = T::class.java.getResource(this)
+/**
+ * 将当前字符串转化为字符集。如果转化失败，则抛出异常。
+ */
+fun String.toCharset(): Charset {
+	return Charset.forName(this)
+}
+
+/**
+ * 将当前字符串转化为字符集。如果转化失败，则返回null。
+ */
+fun String.toCharsetOrNull(): Charset? {
+	return runCatching { Charset.forName(this) }.getOrNull()
+}
 
 
-/**将当前字符串转化为字符集。如果转化失败，则抛出异常。*/
-inline fun String.toCharset(): Charset = Charset.forName(this)
+/**
+ * 将当前字符串转化为时区。如果转化失败， 则抛出异常。
+ */
+fun String.toTimeZone(): TimeZone {
+	val timeZone = TimeZone.getTimeZone(this)
+	if(!(timeZone.id == "GMT" && !this.startsWith("GMT"))) {
+		throw IllegalArgumentException("Invalid time zone specification '$this'")
+	}
+	return timeZone
+}
 
-/**将当前字符串转化为字符集。如果转化失败，则返回null。*/
-inline fun String.toCharsetOrNull(): Charset? =runCatching{ Charset.forName(this)}.getOrNull()
+/**
+ * 将当前字符串转化为时区。如果转化失败，则返回null。
+ */
+fun String.toTimeZoneOrNull(): TimeZone? {
+	val timeZone = TimeZone.getTimeZone(this)
+	if(!(timeZone.id == "GMT" && !this.startsWith("GMT"))) {
+		return null
+	}
+	return timeZone
+}
 
-/**将当前对象转化为类型。如果转化失败，则抛出异常。*/
-inline fun String.toClass(): Class<*> = Class.forName(this)
 
-/**将当前对象转化为类型。如果转化失败，则返回null。*/
-inline fun String.toClassOrNull(): Class<*>? =runCatching{ Class.forName(this)}.getOrNull()
+/**
+ * 将当前字符串转化为类型。如果转化失败，则抛出异常。
+ */
+fun String.toClass(): Class<*> {
+	return Class.forName(this)
+}
+
+/**
+ * 将当前字符串转化为类型。如果转化失败，则返回null。
+ */
+fun String.toClassOrNull(): Class<*>? {
+	return runCatching { Class.forName(this) }.getOrNull()
+}
 
 
-/**将当前字符串转化为日期。*/
+/**
+ * 将当前字符串转化为日期。
+ */
 @JvmOverloads
-inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date = SimpleDateFormat(format).parse(this)
+inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date {
+	return SimpleDateFormat(format).parse(this)
+}
 
-/**将当前字符串转化为本地日期。*/
+/**
+ * 将当前字符串转化为本地日期。
+ */
 @JvmOverloads
-inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(this, formatter)
+inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate {
+	return LocalDate.parse(this, formatter)
+}
 
-/**将当前字符串转化为本地日期时间。*/
+/**
+ * 将当前字符串转化为本地日期时间。
+ */
 @JvmOverloads
-inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(this, formatter)
+inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime {
+	return LocalDateTime.parse(this, formatter)
+}
 
-/**将当前字符串转化为本地时间。*/
+/**
+ * 将当前字符串转化为本地时间。
+ */
 @JvmOverloads
-inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime = LocalDateTime.parse(this, formatter)
+inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
+	return LocalDateTime.parse(this, formatter)
+}
 
 
 /**
@@ -1097,17 +1244,23 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIM
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColor():Color = ColorService.parse(this)
+inline fun String.toColor(): Color {
+	return Color.parse(this)
+}
 
 /**
  * 将当前字符串转换为颜色。如果转化失败，则返回null。
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColorOrNull():Color? = ColorService.parseOrNull(this)
+inline fun String.toColorOrNull(): Color? {
+	return Color.parseOrNull(this)
+}
 
 
-/**将当前字符串解码为base64格式的字节数组。*/
+/**
+ * 将当前字符串解码为base64格式的字节数组。
+ */
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
