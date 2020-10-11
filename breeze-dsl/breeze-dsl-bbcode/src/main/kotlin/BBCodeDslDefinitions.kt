@@ -41,14 +41,14 @@ interface BBCodeDslDefinitions {
 		tag: String,
 		val value: String?
 	) : Element(tag) {
-		override fun toString(): String = "[$tag${value.typing { "=$it" }}]$inlineText[/$tag]"
+		override fun toString(): String = "[$tag${value.toText { "=$it" }}]$inlineText[/$tag]"
 	}
 
 	abstract class MultiArgElement @PublishedApi internal constructor(
 		tag:String,
 		val args: Map<String, String?>
 	) : Element(tag) {
-		override fun toString(): String = "[$tag${args.typingAll(" ", " ") { (k, v) -> "$k=$v" }}]$inlineText[/$tag]"
+		override fun toString(): String = "[$tag${args.joinToText(" ", " ") { (k, v) -> "$k=$v" }}]$inlineText[/$tag]"
 	}
 
 	abstract class RichText @PublishedApi internal constructor(
@@ -110,7 +110,7 @@ interface BBCodeDslDefinitions {
 
 	class List @PublishedApi internal constructor() : Element("list"), BlockDslElement {
 		val nodes:MutableList<ListNode> = mutableListOf()
-		override val contentText:String get() = nodes.typingAll(ls)
+		override val contentText:String get() = nodes.joinToText(ls)
 		override var indentContent:Boolean = true
 	}
 
@@ -123,19 +123,19 @@ interface BBCodeDslDefinitions {
 	class Table @PublishedApi internal constructor() : Element("table"), BlockDslElement {
 		lateinit var header: TableHeader
 		val rows: MutableList<TableRow> = mutableListOf()
-		override val contentText: String get() = header.toString() + ls + rows.typingAll(ls)
+		override val contentText: String get() = header.toString() + ls + rows.joinToText(ls)
 		override var indentContent: Boolean = true
 	}
 
 	class TableHeader @PublishedApi internal constructor() : Element("th"), BlockDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
-		override val contentText:String get() = columns.typingAll(ls)
+		override val contentText:String get() = columns.joinToText(ls)
 		override var indentContent:Boolean = true
 	}
 
 	class TableRow @PublishedApi internal constructor() : Element("tr"), BlockDslElement {
 		val columns:MutableList<TableColumn> = mutableListOf()
-		override val contentText:String get() = columns.typingAll(ls)
+		override val contentText:String get() = columns.joinToText(ls)
 		override var indentContent:Boolean = true
 	}
 

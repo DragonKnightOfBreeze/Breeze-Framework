@@ -36,8 +36,8 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun toContentString(): String {
 			return arrayOf(
-				nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
-				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
+				nodes.joinToText(ls), links.joinToText(ls), subGraphs.joinToText(ls), nodeStyles.joinToText(ls),
+				linkStyles.joinToText(ls), classDefs.joinToText(ls), classRefs.joinToText(ls)
 			).doSplit()
 		}
 
@@ -95,7 +95,7 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun toString(): String {
 			val arrowShapeSnippet = arrowShape.text
-			val textSnippet = text?.htmlWrap()?.quote(MermaidDslConfig.quote).typing { "|$it|" }
+			val textSnippet = text?.htmlWrap()?.quote(MermaidDslConfig.quote).toText { "|$it|" }
 			return "$fromNodeId $arrowShapeSnippet$textSnippet $toNodeId"
 		}
 	}

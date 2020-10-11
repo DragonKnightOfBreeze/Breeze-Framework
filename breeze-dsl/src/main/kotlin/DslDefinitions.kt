@@ -87,7 +87,7 @@ interface Splitable {
 
 	@InternalApi
 	fun Array<*>.doSplit(extraCondition:Boolean = true):String{
-		return if(splitContent && extraCondition) this.typingAll(DslConstants.ss) else this.typingAll(DslConstants.ls)
+		return if(splitContent && extraCondition) this.joinToText(DslConstants.ss) else this.joinToText(DslConstants.ls)
 	}
 }
 

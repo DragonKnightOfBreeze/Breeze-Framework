@@ -29,7 +29,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 		val scopes: MutableList<Scope>
 
 		override fun toContentString(): String {
-			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
+			return arrayOf(participants.joinToText(ls), messages.joinToText(ls), notes.joinToText(ls), scopes.joinToText(ls))
 				.doSplit()
 		}
 
@@ -60,7 +60,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString(): String {
-			val aliasSnippet = alias.typing { "$it as " }
+			val aliasSnippet = alias.toText { "$it as " }
 			return "participant $aliasSnippet$name"
 		}
 	}
@@ -112,7 +112,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 	) {
 		override fun toString(): String {
 			val positionSnippet = position.text
-			val participantId2Snippet = participantId2.typing { ", $it" }
+			val participantId2Snippet = participantId2.toText { ", $it" }
 			return "$positionSnippet $participantId1$participantId2Snippet"
 		}
 	}
@@ -164,7 +164,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 
 		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
-			val elseScopesSnippet = elseScopes.typingAll(ls, ls)
+			val elseScopesSnippet = elseScopes.joinToText(ls, ls)
 			return "$contentSnippet$elseScopesSnippet"
 		}
 	}

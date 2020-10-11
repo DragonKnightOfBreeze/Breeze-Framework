@@ -18,7 +18,7 @@ class MermaidPieChartDsl @PublishedApi internal constructor() : MermaidDsl(), IC
 	override var indentContent: Boolean = true
 
 	override fun toString(): String {
-		val titleSnippet = title.typing { "$it${DslConstants.ls}" }
+		val titleSnippet = title.toText { "$it${DslConstants.ls}" }
 		val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
 		return "pie${DslConstants.ls}$titleSnippet$contentSnippet"
 	}

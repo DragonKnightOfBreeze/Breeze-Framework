@@ -24,7 +24,7 @@ class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinit
 			frontMatter,
 			toc,
 			toContentString(),
-			references.typingAll(DslConstants.ls)
-		).typingAll("${DslConstants.ls}${DslConstants.ls}")
+			references.joinToText(DslConstants.ls)
+		).joinToText("${DslConstants.ls}${DslConstants.ls}")
 	}
 }

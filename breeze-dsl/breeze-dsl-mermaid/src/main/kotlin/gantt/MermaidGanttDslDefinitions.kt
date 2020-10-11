@@ -23,7 +23,7 @@ interface MermaidGanttDslDefinitions {
 		val sections: MutableList<Section>
 
 		override fun toContentString(): String {
-			return sections.typingAll(ls)
+			return sections.joinToText(ls)
 		}
 	}
 
@@ -73,7 +73,7 @@ interface MermaidGanttDslDefinitions {
 		override val id: String get() = name
 
 		override fun toString(): String {
-			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.typingAll(ls).doIndent(MermaidDslConfig.indent)}" }
+			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.joinToText(ls).doIndent(MermaidDslConfig.indent)}" }
 			return "section $name$tasksSnippet"
 		}
 	}
@@ -99,7 +99,7 @@ interface MermaidGanttDslDefinitions {
 		override fun toString(): String {
 			val critSnippet = if(isCrit) "crit" else ""
 			val statusSnippet = status.text
-			return "$name: ${arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).typingAll()}"
+			return "$name: ${arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).joinToText()}"
 		}
 	}
 

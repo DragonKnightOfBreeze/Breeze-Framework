@@ -23,9 +23,9 @@ class XmlDsl @PublishedApi internal constructor() : Dsl {
 	override fun toString(): String {
 		require(rootElement != null) { "Root element of Xml document cannot be null." }
 		return arrayOf(
-			declarations.typingAll(DslConstants.ls),
-			comments.typingAll(DslConstants.ls),
+			declarations.joinToText(DslConstants.ls),
+			comments.joinToText(DslConstants.ls),
 			rootElement
-		).typingAll(DslConstants.ls)
+		).joinToText(DslConstants.ls)
 	}
 }

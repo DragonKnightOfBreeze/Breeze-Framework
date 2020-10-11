@@ -22,7 +22,7 @@ interface FlowChartDslDefinitions {
 		val connections: MutableList<Connection>
 
 		override fun toContentString(): String {
-			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplit()
+			return arrayOf(nodes.joinToText(ls), connections.joinToText(ls)).doSplit()
 		}
 
 		override fun String.links(other: String) = connection(this, other)
@@ -67,8 +67,8 @@ interface FlowChartDslDefinitions {
 
 		override fun toString():String {
 			val typeSnippet = type.text
-			val flowStateSnippet = flowState.typing { "|$it" }
-			val urlLinkSnippet = urlLink.typing { ":>$it" }
+			val flowStateSnippet = flowState.toText { "|$it" }
+			val urlLinkSnippet = urlLink.toText { ":>$it" }
 			val blankSnippet = if(openNewTab) "[blank]" else ""
 			return "$name=>$typeSnippet: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 		}
@@ -88,7 +88,7 @@ interface FlowChartDslDefinitions {
 		override val targetNodeId get() = toNodeId
 
 		override fun toString():String {
-			val specificationsSnippet = arrayOf(status?.text, path?.text, direction?.text).typingAll(", ", "(", ")")
+			val specificationsSnippet = arrayOf(status?.text, path?.text, direction?.text).joinToText(", ", "(", ")")
 			return "$fromNodeId$specificationsSnippet->$toNodeId"
 		}
 

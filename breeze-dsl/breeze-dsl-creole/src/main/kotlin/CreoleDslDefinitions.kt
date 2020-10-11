@@ -190,7 +190,7 @@ interface CreoleDslDefinitions {
 	) : IDslElement {
 		val nodes: MutableList<ListNode> = mutableListOf()
 
-		override fun toString() = "$prefixMarkers $text${nodes.typingAll(ls, ls)}"
+		override fun toString() = "$prefixMarkers $text${nodes.joinToText(ls, ls)}"
 	}
 
 	/**Creole有序列表节点。*/
@@ -208,7 +208,7 @@ interface CreoleDslDefinitions {
 	) : TopDslElement {
 		val nodes: MutableList<TreeNode> = mutableListOf()
 
-		override fun toString() = "$title${nodes.typingAll(ls, ls)}"
+		override fun toString() = "$title${nodes.joinToText(ls, ls)}"
 	}
 
 	/**Creole树节点。*/
@@ -218,7 +218,7 @@ interface CreoleDslDefinitions {
 	) : IDslElement {
 		val nodes: MutableList<TreeNode> = mutableListOf()
 
-		override fun toString() = "|_ $text${nodes.typingAll(ls, ls).prependIndent(indent)}"
+		override fun toString() = "|_ $text${nodes.joinToText(ls, ls).prependIndent(indent)}"
 	}
 
 	//DELAY pretty format

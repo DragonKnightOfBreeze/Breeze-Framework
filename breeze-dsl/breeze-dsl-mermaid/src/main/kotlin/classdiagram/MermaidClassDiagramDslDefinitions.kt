@@ -26,7 +26,7 @@ interface MermaidClassDiagramDslDefinitions {
 		val relations: MutableList<Relation>
 
 		override fun toContentString(): String {
-			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplit()
+			return arrayOf(classes.joinToText(ls), relations.joinToText(ls)).doSplit()
 		}
 
 		@MermaidClassDiagramDslMarker
@@ -93,7 +93,7 @@ interface MermaidClassDiagramDslDefinitions {
 		override fun toString():String {
 			val contentSnippet = when {
 				annotation == null && statements.isEmpty() -> ""
-				else -> "{$ls${arrayOf(annotation, statements.typingAll(ls)).typingAll(ls).doIndent(indent)}$ls}"
+				else -> "{$ls${arrayOf(annotation, statements.joinToText(ls)).joinToText(ls).doIndent(indent)}$ls}"
 			}
 			return "class $name$contentSnippet"
 		}
@@ -158,10 +158,10 @@ interface MermaidClassDiagramDslDefinitions {
 		override val targetNodeId get() = toClassId
 
 		override fun toString(): String {
-			val fromCardinalitySnippet = fromCardinality.typing { it.quote('"') }
+			val fromCardinalitySnippet = fromCardinality.toText { it.quote('"') }
 			val typeSnippet = type.text
-			val toCardinalitySnippet = toCardinality.typing { it.quote('"') }
-			val textSnippet = text?.htmlWrap().typing { ": $it" }
+			val toCardinalitySnippet = toCardinality.toText { it.quote('"') }
+			val textSnippet = text?.htmlWrap().toText { ": $it" }
 			return "$fromClassId $fromCardinalitySnippet$typeSnippet$toCardinalitySnippet $toClassId$textSnippet"
 		}
 	}

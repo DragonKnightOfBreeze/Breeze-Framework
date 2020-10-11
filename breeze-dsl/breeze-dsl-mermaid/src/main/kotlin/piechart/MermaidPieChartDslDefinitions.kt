@@ -22,7 +22,7 @@ interface MermaidPieChartDslDefinitions {
 		val sections: MutableSet<Section>
 
 		override fun toContentString(): String {
-			return sections.typingAll(ls)
+			return sections.joinToText(ls)
 		}
 	}
 

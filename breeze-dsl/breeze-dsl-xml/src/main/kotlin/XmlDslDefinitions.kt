@@ -31,7 +31,7 @@ interface XmlDslDefinitions {
 		val attributes: Map<String, Any?> = mapOf()
 	) : IDslElement {
 		override fun toString(): String {
-			val attributesSnippet = attributes.typingAll(" ", " ") { (k, v) ->
+			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(quote)}"
 			}
 			return "<?xmlDsl$attributesSnippet?>"
@@ -101,8 +101,8 @@ interface XmlDslDefinitions {
 		operator fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
 
 		override fun toString():String {
-			val nodesSnippet = nodes.typingAll(ls).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
-			val attributesSnippet = attributes.typingAll(" ", " ") { (k, v) ->
+			val nodesSnippet = nodes.joinToText(ls).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
+			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(quote)}"
 			}
 			val prefixSnippet = "<$name$attributesSnippet>"

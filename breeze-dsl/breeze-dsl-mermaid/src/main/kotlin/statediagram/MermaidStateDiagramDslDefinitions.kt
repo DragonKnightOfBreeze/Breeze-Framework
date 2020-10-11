@@ -28,7 +28,7 @@ interface MermaidStateDiagramDslDefinitions {
 		val notes: MutableList<Note>
 
 		override fun toContentString(): String {
-			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplit()
+			return arrayOf(states.joinToText(ls), links.joinToText(ls), notes.joinToText(ls)).doSplit()
 		}
 
 		@MermaidStateDiagramDslMarker
@@ -64,8 +64,8 @@ interface MermaidStateDiagramDslDefinitions {
 		var type: StateType? = null
 
 		override fun toString(): String {
-			val textSnippet = text.typing { ": $it" }
-			val typeSnippet = type?.text.typing { " <<$it>>" }
+			val textSnippet = text.toText { ": $it" }
+			val typeSnippet = type?.text.toText { " <<$it>>" }
 			return "$name$textSnippet$typeSnippet"
 		}
 	}
@@ -95,7 +95,7 @@ interface MermaidStateDiagramDslDefinitions {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val sectionsSnippet = sections.typingAll("$ls---$ls").doIndent(indent)
+			val sectionsSnippet = sections.joinToText("$ls---$ls").doIndent(indent)
 			return "state $name{$ls$sectionsSnippet$ls}"
 		}
 	}
@@ -127,7 +127,7 @@ interface MermaidStateDiagramDslDefinitions {
 		override val targetNodeId get() = toStateId
 
 		override fun toString(): String {
-			val textSnippet = text.typing { ": $it" }
+			val textSnippet = text.toText { ": $it" }
 			return "$fromStateId --> $toStateId$textSnippet"
 		}
 	}

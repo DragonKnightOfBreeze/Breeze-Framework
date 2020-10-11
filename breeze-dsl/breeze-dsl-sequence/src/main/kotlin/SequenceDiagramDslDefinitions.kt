@@ -25,7 +25,7 @@ interface SequenceDiagramDslDefinitions {
 		val notes: MutableList<Note>
 
 		override fun toContentString(): String {
-			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls)).doSplit()
+			return arrayOf(participants.joinToText(ls), messages.joinToText(ls), notes.joinToText(ls)).doSplit()
 		}
 
 		override fun String.links(other: String) = message(this, other)
@@ -63,7 +63,7 @@ interface SequenceDiagramDslDefinitions {
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString():String {
-			val aliasSnippet = alias.typing { "as $it" }
+			val aliasSnippet = alias.toText { "as $it" }
 			return "participant $name$aliasSnippet"
 		}
 	}

@@ -410,6 +410,7 @@
 * [X] 使用java编写常量类。
 * [X] `Color`、`ColorService`、`String.toColor`、`String.toColorOrNull`以及注册默认的css颜色
 * [X] 让`Color`可以解构
+* [X] 将`typing`和`typingAll`重命名为`toText`和`joinToText`
 
 # 长期
 

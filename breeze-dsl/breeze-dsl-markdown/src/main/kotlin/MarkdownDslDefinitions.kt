@@ -35,7 +35,7 @@ interface MarkdownDslDefinitions {
 	interface IDslEntry : DslEntry {
 		val content: MutableList<TopDslElement>
 
-		override fun toContentString(): String = content.typingAll("$ls$ls")
+		override fun toContentString(): String = content.joinToText("$ls$ls")
 
 		operator fun String.unaryPlus() = TextBlock(this).also { content += it }
 	}
@@ -221,7 +221,7 @@ interface MarkdownDslDefinitions {
 		@MarkdownDslExtendedFeature
 		override fun toString(): String {
 			val textSnippet = when {
-				text.length > wrapLength -> text.let { if(wrapContent) it.chunked(wrapLength).typingAll(ls) else it }
+				text.length > wrapLength -> text.let { if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it }
 				else -> text
 			}
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
@@ -252,7 +252,7 @@ interface MarkdownDslDefinitions {
 			val indent = " " * (headingLevel + 1)
 			val prefixMarkers = "#" * headingLevel
 			val textSnippet = if(text.length > wrapLength)
-				text.let { if(wrapContent) it.chunked(wrapLength).typingAll(ls) else it }
+				text.let { if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it }
 					.prependIndent(indent).setPrefix(prefixMarkers)
 			else text
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
@@ -308,7 +308,7 @@ interface MarkdownDslDefinitions {
 	class List @PublishedApi internal constructor(
 		val nodes: MutableList<ListNode> = mutableListOf()
 	) : TopDslElement {
-		override fun toString() = nodes.typingAll(ls)
+		override fun toString() = nodes.joinToText(ls)
 	}
 
 	/**Markdown列表节点。*/
@@ -324,11 +324,11 @@ interface MarkdownDslDefinitions {
 			val indent = " " * (prefixMarkers.length + 1)
 			val textSnippet = when {
 				text.length > wrapLength -> text.let {
-					if(wrapContent) it.chunked(wrapLength).typingAll(ls) else it
+					if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it
 				}.prependIndent(indent).setPrefix(prefixMarkers)
 				else -> text
 			}
-			val nodesSnippet = nodes.typingAll(ls, ls).ifNotEmpty { it.prependIndent(indent) }
+			val nodesSnippet = nodes.joinToText(ls, ls).ifNotEmpty { it.prependIndent(indent) }
 			return "$textSnippet$nodesSnippet"
 		}
 	}
@@ -366,9 +366,9 @@ interface MarkdownDslDefinitions {
 			require(nodes.isNotEmpty()) { "Definition node size must be positive." }
 
 			val titleSnippet = if(title.length > wrapLength)
-				title.let { if(wrapContent) it.chunked(wrapLength).typingAll(ls) else it }
+				title.let { if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it }
 			else title
-			val nodesSnippet = nodes.typingAll(ls)
+			val nodesSnippet = nodes.joinToText(ls)
 			return "$titleSnippet$ls$nodesSnippet"
 		}
 	}
@@ -383,7 +383,7 @@ interface MarkdownDslDefinitions {
 
 		override fun toString(): String {
 			return if(text.length > wrapLength)
-				text.let { if(wrapContent) it.chunked(wrapLength).typingAll(ls) else it }
+				text.let { if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it }
 					.prependIndent(indent).setPrefix(":")
 			else text
 		}
@@ -408,7 +408,7 @@ interface MarkdownDslDefinitions {
 
 			val headerRowSnippet = header.toString()
 			val delimitersSnippet = header.toDelimitersString()
-			val rowsSnippet = rows.typingAll(ls)
+			val rowsSnippet = rows.joinToText(ls)
 			return "$headerRowSnippet$ls$delimitersSnippet$ls$rowsSnippet"
 		}
 	}

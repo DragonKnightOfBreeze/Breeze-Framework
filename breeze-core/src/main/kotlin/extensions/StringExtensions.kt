@@ -457,7 +457,7 @@ fun CharSequence.indicesOf(string: String, startIndex: Int = 0, ignoreCase: Bool
 //region Replace extensions
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
-inline fun CharSequence.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
+inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldChar, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
@@ -469,7 +469,7 @@ inline fun CharSequence.replaceIndexed(oldChar: Char, ignoreCase: Boolean = fals
 
 /**将当前字符串中的指定值替换成根据索引得到的字符串。*/
 @JvmOverloads
-inline fun CharSequence.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
+inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
 	return buildString {
 		val splitStrings = this@replaceIndexed.splitToSequence(oldValue, ignoreCase = ignoreCase)
 		for((i, s) in splitStrings.withIndex()) {
