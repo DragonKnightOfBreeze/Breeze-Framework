@@ -2,9 +2,6 @@ package com.windea.breezeframework.core
 
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.domain.text.LetterCase.*
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`kebab-case`
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.camelCase
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.snake_case
 import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
@@ -80,18 +77,13 @@ class ExampleTest {
 		////Switch DisplayCase Extensions
 
 		//abcAbc
-		println("Abc abc".switchCaseBy(camelCase))
+		println("Abc abc".switchCaseBy(CamelCase))
 		//AbcAbc
 		println("ABC_ABC".switchCaseBy(PascalCase))
 		//abc-abc
-		println("ABC_ABC".switchCaseBy(`kebab-case`))
+		println("ABC_ABC".switchCaseBy(KebabCase))
 		//abc_abc
-		println("ABC_ABC".switchCaseBy(snake_case))
-
-		///a/b/1/2/c/3
-		println("a.b[1][2].c[3]".switchCaseBy(PathReference))
-		//a.b[1][2].c[3]
-		println("/a/b/1/2/c/3".switchCaseBy(ObjectReference))
+		println("ABC_ABC".switchCaseBy(SnakeCase))
 
 		////MatchType Path Extensions
 

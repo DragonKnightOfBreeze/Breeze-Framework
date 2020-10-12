@@ -797,6 +797,8 @@ fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "...")
 //endregion
 
 //region Quote extensions
+private val quotes = charArrayOf('\'', '\"', '`')
+
 /**
  * 尝试使用指定的引号包围当前字符串。
  * 适用于单引号、双引号、反引号。
@@ -826,11 +828,11 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
 	}
 }
-
-private val quotes = charArrayOf('\'', '\"', '`')
 //endregion
 
 //region Format extensions
+private val defaultPlaceholder = "{" to "}"
+
 /**
  * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
  */
@@ -838,8 +840,6 @@ private val quotes = charArrayOf('\'', '\"', '`')
 fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
 	return type.formatter(this, args, locale, placeholder)
 }
-
-private val defaultPlaceholder = "{" to "}"
 //endregion
 
 //region Escape extensions
@@ -887,57 +887,66 @@ fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
 /**
  * 得到当前字符串的字母格式。
  */
-val String.letterCase: LetterCase get() = enumValues<LetterCase>().first { it.predicate(this) }
+val String.letterCase: LetterCase? get() = LetterCase.infer(this)
 
 /**
- * 得到当前字符串的引用格式。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
  */
-val String.referenceCase: ReferenceCase get() = enumValues<ReferenceCase>().first { it.predicate(this) }
-
-/**
- * 根据指定的显示格式，分割当前字符串，返回对应的字符串列表。
- */
-fun String.splitBy(case: DisplayCase): List<String> {
-	return case.splitter(this)
+fun String.splitBy(letterCase: LetterCase): List<String> {
+	return letterCase.split(this)
 }
 
 /**
- * 根据指定的显示格式，分割当前字符串，返回对应的字符串序列。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
  */
-fun String.splitToSequenceBy(case: DisplayCase): Sequence<String> {
-	return case.sequenceSplitter(this)
+fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+	return letterCase.splitToSequence(this)
 }
 
 /**
- * 根据指定的显示格式，将当前字符串数组中的元素加入到字符串。
+ * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
  */
-fun Array<out CharSequence>.joinToStringBy(case: DisplayCase): String {
-	return case.arrayJoiner(this)
+fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
 }
 
 /**
- * 根据指定的显示格式，将当前字符串集合中的元素加入到字符串。
+ * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
  */
-fun Iterable<CharSequence>.joinToStringBy(case: DisplayCase): String {
-	return case.joiner(this)
+fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
 }
 
 /**
- * 根据指定的显示格式，切换当前字符串的格式。
+ * 根据指定的字母格式，切换当前字符串的格式。
  */
-fun String.switchCaseBy(fromCase: DisplayCase, toCase: DisplayCase): String {
-	return splitBy(fromCase).joinToStringBy(toCase)
+fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 
 /**
- * 根据指定的显示格式，切换当前字符串的格式。可以根据目标格式类型自动推导出当前格式，但某些格式需要显式指定。
+ * 根据指定的字母格式，切换当前字符串的格式。可以自动推导出当前字符串的字母格式，
  */
-fun String.switchCaseBy(case: DisplayCase): String {
-	return splitBy(when(case) {
-		is LetterCase -> letterCase
-		is ReferenceCase -> referenceCase
-		else -> throw IllegalArgumentException("Cannot find an actual way to get actual display case from a string.")
-	}).joinToStringBy(case)
+fun String.switchCaseBy(targetLetterCase: LetterCase): String {
+	val sourceLetterCase = this.letterCase ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
+	return switchCaseBy(sourceLetterCase, targetLetterCase)
+}
+//endregion
+
+//region ReferenceCase extensions
+
+//TODO
+
+fun String.splitBy(referenceCase: ReferenceCase): List<String> {
+	return referenceCase.splitter(this)
+}
+
+fun Iterable<CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
+	return referenceCase.joiner(this)
+}
+
+fun Array<out CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
+	return referenceCase.arrayJoiner(this)
 }
 //endregion
 
@@ -954,14 +963,14 @@ inline fun String.inline(): String = trimWrap()
  */
 inline fun String.multiline(): String = trimIndent()
 
+private val trimWrapRegex = """\s*\R\s*""".toRegex()
+
 /**
  * 去除当前字符串中的所有换行符以及换行符周围的空白。
  */
 fun String.trimWrap(): String {
 	return this.remove(trimWrapRegex)
 }
-
-private val trimWrapRegex = """\s*\R\s*""".toRegex()
 
 /**
  * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。

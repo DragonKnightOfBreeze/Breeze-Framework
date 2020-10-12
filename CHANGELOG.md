@@ -411,6 +411,10 @@
 * [X] `Color`、`ColorService`、`String.toColor`、`String.toColorOrNull`以及注册默认的css颜色
 * [X] 让`Color`可以解构
 * [X] 将`typing`和`typingAll`重命名为`toText`和`joinToText`
+* [X] 重构`LetterCase`
+* [ ] 重构`ReferenceCase`
+* [ ] 重构`MatchType`并重命名为`PathType`
+* [ ] 重构`EscapeType`
 
 # 长期
 

@@ -5,218 +5,292 @@
 
 package com.windea.breezeframework.core.domain.text
 
-import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 
-/**字母的格式。*/
-enum class LetterCase(
-	override val splitter: (CharSequence) -> List<String> = { listOf(it.toString()) },
-	override val sequenceSplitter: (CharSequence) -> Sequence<String> = { sequenceOf(it.toString()) },
-	override val joiner: (Iterable<CharSequence>) -> String = { it.joinToString("") },
-	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
-	override val regex: Regex? = null,
-	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
-) : DisplayCase {
-	/**全小写的单词。*/
-	LowerCase(
-		joiner = { it.joinToString("").toLowerCase() },
-		arrayJoiner = { it.joinToString("").toLowerCase() },
-		regex = """[a-z]+""".toRegex()
-	),
+/**
+ * 单词格式。
+ */
+interface LetterCase {
+	val regex: Regex
 
-	/**全大写的单词。*/
-	UpperCase(
-		joiner = { it.joinToString("").toUpperCase() },
-		arrayJoiner = { it.joinToString("").toUpperCase() },
-		regex = """[A-Z]+""".toRegex()
-	),
+	fun split(value: String): List<String>
 
-	/**首字母大写的单词。*/
-	Capitalized(
-		joiner = { it.joinToString("").firstCharToUpperCase() },
-		arrayJoiner = { it.joinToString("").firstCharToUpperCase() },
-		regex = """[A-Z][a-z]+""".toRegex()
-	),
+	fun splitToSequence(value: String): Sequence<String>
 
-	/**全小写的单词组。*/
-	LowerCaseWords(
-		{ it.split(' ').filterNotEmpty<String>() },
-		{ it.splitToSequence(' ').filterNotEmpty<String>() },
-		{ it.joinToString(" ").toLowerCase() },
-		{ it.joinToString(" ").toLowerCase() },
-		"""[a-z']+(?:\s+[a-z']+)+""".toRegex()
-	),
+	fun joinToString(value: Array<String>): String
 
-	/**全大写的单词组。*/
-	UpperCaseWords(
-		{ it.split(' ').filterNotEmpty<String>() },
-		{ it.splitToSequence(' ').filterNotEmpty<String>() },
-		{ it.joinToString(" ").toUpperCase() },
-		{ it.joinToString(" ").toUpperCase() },
-		"""[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
-	),
-
-	/**首个单词的首字母大写的单词组。*/
-	FirstWordCapitalized(
-		{ it.split(' ').filterNotEmpty<String>() },
-		{ it.splitToSequence(' ').filterNotEmpty<String>() },
-		{ it.joinToString(" ").firstCharToUpperCase() },
-		{ it.joinToString(" ").firstCharToUpperCase() },
-		"""[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
-	),
-
-	/**首字母大写的单词组。*/
-	CapitalizedWords(
-		{ it.split(' ').filterNotEmpty<String>() },
-		{ it.splitToSequence(' ').filterNotEmpty<String>() },
-		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } },
-		{ it.joinToString(" ") { s -> s.firstCharToUpperCase() } },
-		"""[A-Z][a-z]*(?:\s+[a-z]+)+""".toRegex()
-	),
-
-	/**单词组。*/
-	GenericWords(
-		{ it.split(' ').filterNotEmpty<String>() },
-		{ it.splitToSequence(' ').filterNotEmpty<String>() },
-		{ it.joinToString(" ") },
-		{ it.joinToString(" ") },
-		"""\S+(?:\s+\S+)+""".toRegex()
-	),
-
-	/**以单个点分割的格式。*/
-	DotCase(
-		{ it.split('.') },
-		{ it.splitToSequence('.') },
-		{ it.joinToString(".") },
-		{ it.joinToString(".") },
-		"""[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex()
-	),
-
-	/**以单词边界分割，首个单词全小写，后续单词首字母大写的格式。*/
-	CamelCase(
-		{ it.splitWords().split(' ') },
-		{ it.splitWords().splitToSequence(' ') },
-		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() },
-		{ it.joinToString("") { S -> S.firstCharToUpperCase() }.firstCharToLowerCase() },
-		"""\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
-	),
-
-	/**以单词边界分割，所有单词首字母大写的格式。*/
-	PascalCase(
-		{ it.splitWords().split(' ') },
-		{ it.splitWords().splitToSequence(' ') },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() } },
-		{ it.joinToString("") { s -> s.firstCharToUpperCase() } },
-		"""\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
-	),
-
-	/**以单个下划线分割，所有单词全小写的格式。*/
-	SnakeCase(
-		{ it.split('_') },
-		{ it.splitToSequence('_') },
-		{ it.joinToString("_") { s -> s.toString().toLowerCase() } },
-		{ it.joinToString("_") { s -> s.toString().toLowerCase() } },
-		"""\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
-	),
-
-	/**以单个下划线分割，所有单词全大写的格式。*/
-	ScreamingSnakeCase(
-		{ it.split('_') },
-		{ it.splitToSequence('_') },
-		{ it.joinToString("_") { s -> s.toString().toUpperCase() } },
-		{ it.joinToString("_") { s -> s.toString().toUpperCase() } },
-		"""\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
-	),
-
-	/**以数个下划线分割的格式。*/
-	UnderscoreWords(
-		{ it.split('_').filterNotEmpty<String>() },
-		{ it.splitToSequence('_').filterNotEmpty<String>() },
-		{ it.joinToString("_") },
-		{ it.joinToString("_") },
-		"""_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
-	),
-
-	/**以单个连接线分割，所有单词全小写的格式。*/
-	KebabCase(
-		{ it.split('-') },
-		{ it.splitToSequence('-') },
-		{ it.joinToString("-") { s -> s.toString().toLowerCase() } },
-		{ it.joinToString("-") { s -> s.toString().toLowerCase() } },
-		"""[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
-	),
-
-	/**以单个连接线分割，所有单词全大写的格式。*/
-	KebabUppercase(
-		{ it.split('-') },
-		{ it.splitToSequence('-') },
-		{ it.joinToString("-") { s -> s.toString().toUpperCase() } },
-		{ it.joinToString("-") { s -> s.toString().toUpperCase() } },
-		"""[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
-	),
-
-	/**以数个连接线分割的格式。*/
-	HyphenWords(
-		{ it.split('-').filterNotEmpty<String>() },
-		{ it.splitToSequence('-').filterNotEmpty<String>() },
-		{ it.joinToString("-") },
-		{ it.joinToString("-") },
-		"""-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
-	),
-
-	/**未知的字母格式。*/
-	Unknown;
+	fun joinToString(value: Iterable<String>): String
 
 	companion object {
-		/**@see LetterCase.LowerCase*/
-		@JvmSynthetic val lowercase: LetterCase = LowerCase
+		private val letterCases = mutableListOf<LetterCase>()
 
-		/**@see LetterCase.UpperCase*/
-		@JvmSynthetic val UPPERCASE: LetterCase = UpperCase
+		init{
+			registerDefaultLetterCases()
+		}
 
-		/**@see LetterCase.LowerCaseWords*/
-		@JvmSynthetic val `lower case words`: LetterCase = LowerCaseWords
+		/**
+		 * 注册单词格式。
+		 */
+		@JvmStatic fun register(letterCase: LetterCase) {
+			letterCases += letterCase
+		}
 
-		/**@see LetterCase.UpperCaseWords*/
-		@JvmSynthetic val `UPPER CASE WORDS`: LetterCase = UpperCaseWords
+		/**
+		 * 推断单词格式。
+		 */
+		@JvmStatic fun infer(value: String): LetterCase? {
+			for(letterCase in letterCases) {
+				if(letterCase.regex.matches(value)) return letterCase
+			}
+			return null
+		}
 
-		/**@see LetterCase.FirstWordCapitalized*/
-		@JvmSynthetic val `First word capitalized`: LetterCase = FirstWordCapitalized
+		private fun CharSequence.firstCharToUpperCase(): String {
+			return when {
+				isEmpty() -> this.toString()
+				else -> this[0].toUpperCase() + this.substring(1)
+			}
+		}
 
-		/**@see LetterCase.CapitalizedWords*/
-		@JvmSynthetic val `Capitalized Words`: LetterCase = CapitalizedWords
-
-		/**@see LetterCase.GenericWords*/
-		@JvmSynthetic val `Generic Words`: LetterCase = GenericWords
-
-		/**@see LetterCase.CamelCase*/
-		@JvmSynthetic val camelCase: LetterCase = CamelCase
-
-		/**@see LetterCase.SnakeCase*/
-		@JvmSynthetic val snake_case: LetterCase = SnakeCase
-
-		/**@see LetterCase.ScreamingSnakeCase*/
-		@JvmSynthetic val SCREAMING_SNAKE_CASE: LetterCase = ScreamingSnakeCase
-
-		/**@see LetterCase.UnderscoreWords*/
-		@JvmSynthetic val underscore_Words: LetterCase = UnderscoreWords
-
-		/**@see LetterCase.KebabCase*/
-		@JvmSynthetic val `kebab-case`: LetterCase = KebabCase
-
-		/**@see LetterCase.KebabUppercase*/
-		@JvmSynthetic val `KEBAB-UPPERCASE`: LetterCase = KebabUppercase
-
-		/**@see LetterCase.HyphenWords*/
-		@JvmSynthetic val `hyphen-Words`: LetterCase = HyphenWords
-
+		private fun CharSequence.firstCharToLowerCase(): String {
+			return when {
+				isEmpty() -> this.toString()
+				else -> this[0].toLowerCase() + this.substring(1)
+			}
+		}
 
 		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
 
-		private fun CharSequence.firstCharToUpperCase() = this[0].toUpperCase() + this.substring(1)
+		private fun CharSequence.splitWords(): String {
+			return this.replace(splitWordsRegex, " $1")
+		}
 
-		private fun CharSequence.firstCharToLowerCase() = this[0].toLowerCase() + this.substring(1)
+		private fun registerDefaultLetterCases(){
+			register(LowerCase)
+			register(UpperCase)
+			register(Capitalized)
+			register(LowerCaseWords)
+			register(UpperCaseWords)
+			register(FirstWordCapitalized)
+			register(CapitalizedWords)
+			register(Words)
 
-		private fun CharSequence.splitWords() = this.replace(splitWordsRegex, " $1")
+			register(CamelCase)
+			register(PascalCase)
+			register(SnakeCase)
+			register(ScreamingSnakeCase)
+			register(UnderscoreWords)
+			register(KebabCase)
+			register(KebabUpperCase)
+			register(HyphenWords)
+
+			register(DotCase)
+		}
 	}
+
+	//region Default letter cases
+	/**
+	 * 全小写。
+	 * 示例：`lowercase`
+	 */
+	object LowerCase : LetterCase {
+		override val regex = """[a-z]+""".toRegex()
+		override fun split(value: String) = listOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun joinToString(value: Array<String>) = value.joinToString("").toLowerCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString("").toLowerCase()
+	}
+
+	/**
+	 * 全大写。
+	 * 示例：`UPPERCASE`
+	 */
+	object UpperCase : LetterCase {
+		override val regex = """[A-Z]+""".toRegex()
+		override fun split(value: String) = listOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun joinToString(value: Array<String>) = value.joinToString("").toUpperCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString("").toUpperCase()
+	}
+
+	/**
+	 * 首字母大写。
+	 * 示例：`Capitalized`
+	 */
+	object Capitalized : LetterCase {
+		override val regex = """[A-Z][a-z]+""".toRegex()
+		override fun split(value: String) = listOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun joinToString(value: Array<String>) = value.joinToString("").firstCharToUpperCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString("").firstCharToUpperCase()
+	}
+
+	/**
+	 * 全小写的单词组。
+	 * 示例：`lowercase words`
+	 */
+	object LowerCaseWords : LetterCase {
+		override val regex = """[a-z']+(?:\s+[a-z']+)+""".toRegex()
+		override fun split(value: String) = value.split(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun joinToString(value: Array<String>) = value.joinToString(" ").toLowerCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").toLowerCase()
+	}
+
+	/**
+	 * 全大写的单词组。
+	 * 示例：`UPPERCASE WORDS`
+	 */
+	object UpperCaseWords : LetterCase {
+		override val regex = """[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
+		override fun split(value: String) = value.split(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun joinToString(value: Array<String>) = value.joinToString(" ").toUpperCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").toUpperCase()
+	}
+
+	/**
+	 * 首个单词的首字母大写的单词组。
+	 * 示例：`Uppercase words`
+	 */
+	object FirstWordCapitalized : LetterCase {
+		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		override fun split(value: String) = value.split(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun joinToString(value: Array<String>) = value.joinToString(" ").firstCharToUpperCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").firstCharToUpperCase()
+	}
+
+	/**
+	 * 首字母大写的单词组。
+	 * 示例：`Uppercase Words`
+	 */
+	object CapitalizedWords : LetterCase {
+		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		override fun split(value: String) = value.split(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun joinToString(value: Array<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
+	}
+
+	/**
+	 * 单词组。
+	 * 示例：`Words words Words`
+	 */
+	object Words : LetterCase {
+		override val regex = """[a-zA-Z']+(?:\s+[a-zA-Z']+)+""".toRegex()
+		override fun split(value: String) = value.split(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun joinToString(value: Array<String>) = value.joinToString(" ")
+		override fun joinToString(value: Iterable<String>) = value.joinToString(" ")
+	}
+
+	/**
+	 * 以单词边界分隔，首个单词全部小写，后续单词首字母大写。
+	 * 示例：`camelCase`
+	 */
+	object CamelCase : LetterCase {
+		override val regex = """\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		override fun split(value: String) = value.splitWords().split(' ')
+		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
+		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
+		override fun joinToString(value: Iterable<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
+	}
+
+	/**
+	 * 以单词边界分隔，所有单词首字母大写。
+	 * 示例：`PascalCase`
+	 */
+	object PascalCase : LetterCase {
+		override val regex = """\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		override fun split(value: String) = value.splitWords().split(' ')
+		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
+		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString("") { it.firstCharToUpperCase() }
+	}
+
+	/**
+	 * 以单个下划线分隔，所有单词全部小写。
+	 * 示例：`snake_case`
+	 */
+	object SnakeCase : LetterCase {
+		override val regex = """\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toLowerCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString("_") { it.toLowerCase() }
+	}
+
+	/**
+	 * 以单个下划线分隔，所有单词全部大写。
+	 * 示例：`SCREAMING_SNAKE_CASE`
+	 */
+	object ScreamingSnakeCase : LetterCase {
+		override val regex = """\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toUpperCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString("_") { it.toUpperCase() }
+	}
+
+	/**
+	 * 以单个下划线分割的单词组。
+	 * 示例：`Underscore_words`
+	 */
+	object UnderscoreWords : LetterCase {
+		override val regex = """_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun joinToString(value: Array<String>) = value.joinToString("_")
+		override fun joinToString(value: Iterable<String>) = value.joinToString("_")
+	}
+
+	/**
+	 * 以单个连接线分隔，所有单词全部小写。
+	 * 示例：`kebab-case`
+	 */
+	object KebabCase : LetterCase {
+		override val regex = """[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toLowerCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString("-") { it.toLowerCase() }
+	}
+
+	/**
+	 * 以单个连接线分隔，所有单词全部大写。
+	 * 示例：`KEBAB-UPPER-CASE`
+	 */
+	object KebabUpperCase : LetterCase {
+		override val regex = """[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toUpperCase() }
+		override fun joinToString(value: Iterable<String>) = value.joinToString("-") { it.toUpperCase() }
+	}
+
+	/**
+	 * 以单个连接线分隔。
+	 * 示例：`Hyphen-words`
+	 */
+	object HyphenWords: LetterCase {
+		override val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
+		override fun split(value: String) = value.split('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun joinToString(value: Array<String>) = value.joinToString("-")
+		override fun joinToString(value: Iterable<String>) = value.joinToString("-")
+	}
+
+	/**
+	 * 以单个点分隔。
+	 * 示例：`doc.case`
+	 */
+	object DotCase : LetterCase {
+		override val regex = """[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex()
+		override fun split(value: String) = value.split('.')
+		override fun splitToSequence(value: String) = value.splitToSequence('.')
+		override fun joinToString(value: Array<String>) = value.joinToString(".")
+		override fun joinToString(value: Iterable<String>) = value.joinToString(".")
+	}
+	//endregion
 }

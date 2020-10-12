@@ -2,34 +2,21 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.domain.text.LetterCase.*
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.SCREAMING_SNAKE_CASE
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`Capitalized Words`
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`kebab-case`
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.`lower case words`
-import com.windea.breezeframework.core.domain.text.LetterCase.Companion.camelCase
 import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import kotlin.test.*
 
 class StringExtensionsTest {
 	@Test
 	fun letterCaseTest() {
-		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(camelCase))
+		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(CamelCase))
 		assertEquals("AbcAbcAbc", "abcAbcAbc".switchCaseBy(PascalCase))
-		assertEquals("abc-abc-abc", "ABC_ABC_ABC".switchCaseBy(`kebab-case`))
-		assertEquals("ABC_ABC_ABC", "abc-abc-abc".switchCaseBy(SCREAMING_SNAKE_CASE))
-		assertEquals("abc abc", "AbcAbc".switchCaseBy(`lower case words`))
-		assertEquals("Abc Abc", "abcAbc".switchCaseBy(`Capitalized Words`))
-		assertEquals("abcAbc", "Abc Abc".switchCaseBy(camelCase))
+		assertEquals("abc-abc-abc", "ABC_ABC_ABC".switchCaseBy(KebabCase))
+		assertEquals("ABC_ABC_ABC", "abc-abc-abc".switchCaseBy(ScreamingSnakeCase))
+		assertEquals("abc abc", "AbcAbc".switchCaseBy(LowerCaseWords))
+		assertEquals("Abc Abc", "abcAbc".switchCaseBy(CapitalizedWords))
+		assertEquals("abcAbc", "Abc Abc".switchCaseBy(CamelCase))
 		assertEquals("abcabc", "AbcAbc".switchCaseBy(LowerCase))
 		assertEquals("ABCABC", "ABcABc".switchCaseBy(UpperCase))
-	}
-
-	@Test
-	fun referenceCaseTest() {
-		assertEquals("Abc.Abc", "Abc.Abc".switchCaseBy(ObjectReference))
-		assertEquals("abc.abc[1].abc", "/abc/abc/1/abc".switchCaseBy(ObjectReference))
-		assertEquals("$.abc.abc.[1].abc", "/abc/abc/1/abc".switchCaseBy(JsonReference))
-		assertEquals("/abc/abc/1/abc", "/abc/abc/1/abc".switchCaseBy(PathReference))
 	}
 
 	@Test

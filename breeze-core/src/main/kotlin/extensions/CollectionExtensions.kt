@@ -716,7 +716,7 @@ fun <T> Map<*, *>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCas
 }
 
 private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
-	val splitPaths = path.splitBy(pathCase)
+	val splitPaths =  path.splitBy(pathCase)
 	var pathValuePairs = listOf(arrayOf<String>() to this)
 	for(p in splitPaths) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
