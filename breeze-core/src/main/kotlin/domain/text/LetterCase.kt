@@ -13,12 +13,24 @@ import com.windea.breezeframework.core.extensions.*
 interface LetterCase {
 	val regex: Regex
 
+	/**
+	 * 基于单词格式，分割字符串。
+	 */
 	fun split(value: String): List<String>
 
+	///**
+	// * 基于单词格式，分割字符串。
+	// */
 	//fun splitToSequence(value: String): Sequence<String>
 
+	/**
+	 * 基于单词格式，拼接字符串。
+	 */
 	fun joinToString(value: Array<String>): String
 
+	/**
+	 * 基于单词格式，拼接字符串。
+	 */
 	fun joinToString(value: Iterable<String>): String
 
 	companion object {

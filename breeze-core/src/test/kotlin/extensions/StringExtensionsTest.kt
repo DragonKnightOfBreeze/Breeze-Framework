@@ -1,8 +1,8 @@
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.domain.text.LetterCase.*
-import com.windea.breezeframework.core.domain.text.ReferenceCase.*
 import kotlin.test.*
 
 class StringExtensionsTest {

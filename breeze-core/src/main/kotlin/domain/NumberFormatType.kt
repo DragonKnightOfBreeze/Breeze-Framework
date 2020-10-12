@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.domain.text
+package com.windea.breezeframework.core.domain
 
 /**数字的格式化类型。*/
 enum class NumberFormatType {

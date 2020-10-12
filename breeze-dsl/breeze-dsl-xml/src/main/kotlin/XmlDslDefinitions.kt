@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.core.domain.text.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.core.types.*
 import com.windea.breezeframework.dsl.*

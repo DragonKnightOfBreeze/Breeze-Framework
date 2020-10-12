@@ -796,6 +796,18 @@ fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "...")
 }
 //endregion
 
+//region Format extensions
+private val defaultPlaceholder = "{" to "}"
+
+/**
+ * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
+ */
+@UnstableApi
+fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
+	return type.formatter(this, args, locale, placeholder)
+}
+//endregion
+
 //region Quote extensions
 private val quotes = charArrayOf('\'', '\"', '`')
 
@@ -827,18 +839,6 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 		omitQuotes -> this.removeSurrounding(quote.toString())
 		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
 	}
-}
-//endregion
-
-//region Format extensions
-private val defaultPlaceholder = "{" to "}"
-
-/**
- * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
- */
-@UnstableApi
-fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
-	return type.formatter(this, args, locale, placeholder)
 }
 //endregion
 
