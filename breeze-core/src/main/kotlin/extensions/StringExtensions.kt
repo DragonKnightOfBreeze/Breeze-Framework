@@ -896,12 +896,12 @@ fun String.splitBy(letterCase: LetterCase): List<String> {
 	return letterCase.split(this)
 }
 
-/**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
- */
-fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
-	return letterCase.splitToSequence(this)
-}
+///**
+// * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
+// */
+//fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+//	return letterCase.splitToSequence(this)
+//}
 
 /**
  * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
