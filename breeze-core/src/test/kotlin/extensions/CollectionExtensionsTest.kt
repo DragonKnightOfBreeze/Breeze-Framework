@@ -26,6 +26,15 @@ class CollectionExtensionsTest {
 	}
 
 	@Test
+	fun deepQueryTest() {
+		assertEquals(2,listOf(1,2,3).queryBy<Int>("/2"))
+		assertEquals(2,mapOf("a" to 1, "b" to 2, "c" to 3).queryBy<Int>("/b"))
+
+		assertEquals(listOf(2),listOf(1,2,3).deepQueryBy("/2"))
+		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).deepQueryBy("/b"))
+	}
+
+	@Test
 	fun deepGetAndSetTest() {
 		val array = arrayOf(0, 1, 2, arrayOf(0, arrayOf(0, 1), 2))
 		val list = listOf(0, arrayOf(0, 1), 2, listOf(0, 1, 2), 4, mapOf("a" to 0))
@@ -81,12 +90,6 @@ class CollectionExtensionsTest {
 		//
 		//println(intMutableList[0])
 		//println(intMutableList)
-	}
-
-	@Test
-	fun deepQueryTest() {
-		assertEquals(listOf(2),listOf(1,2,3).deepQueryBy("/2"))
-		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).deepQueryBy("/b"))
 	}
 
 	@Test
