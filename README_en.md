@@ -9,27 +9,25 @@ provides many useful extensions for standard library and some frameworks.
 
 NOTE：
 
-* This framework is not fully implemented. But you can instantly use some of it's useful features.
-* This framework is designed to be used by Kotlin-JVM. But you can obviously use it in Java.
+* This framework is not fully implemented, but you can instantly use some of it's useful features.
+* This framework is designed to be used by Kotlin Jvm, but you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
 # Modules
 
 ## breeze-core
 
-* Provide generic extensions for String, Collections, Number, Boolean, Tuple, etc.
-  * Including some extra operator extensions for String, Collections. e.g, `String.times`, `Collection.div`.
-  * Including some extended infix extensions for String, Collections. e.g, `String.startsWith`, `Iterable.allIn`.
-  * Including some powerful handle extensions for String. e.g, `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
-  * Including some deep operation extensions for Collection. e.g, `List.deepGet`, `MutableList.deepSet`, `Iterable.deepQuery`.
-  * Including some deep operation extensions for Tuple. e.g, `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
-  * Including some convert extensions for Number, String etc. e.g, `String.toFile`, `String.toEnumValue`.
-* Provide global extensions missing in stdlib.
-  * Including some todo extensions. e.g, `FIXME`, `DELAY`.
-  * Including some scope extensions. e.g, `once`, `tryOrPrint`, `tryOrIgnore`.
-  * Including some useful extension associated to type. e.g, `javaTypeOf<T>()`, `cast<T>()`
-* Provide basic annotations, consts, enums and interfaces maybe useful.
-* Provide generator extensions for `equals`, `hashcode` and `toString`. e,g, `equalsBy`, `equalsByOne`
+Provide utilities and extensions for Kotlin standard library and daily project developing. For example: 
+
+* Extra operator override functions. Such as `String.minus`, `String.times`, `String.div`.
+* Extra type convert functions. Such as `String.toFile`, `String.toLocalDateTime`, `String.toIntRange`.
+* Extra string handle functions. Such as `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
+* Extra text handle functions. Such as `String.toText`, `Array<String>.joinToText`.
+* Extra collection handle functions. Such as `List.bind`, `List.deepGet`, `List.deepSet`, `List.deepQuery`.
+* Extra tuple handle functions. Such as `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
+* Extra data class utility functions. Such as `equalsBy`, `hashCodeBy`, `toStringBy`, `toStringByReference`.
+* Functions that cast types and return same object: `Any?.cast` and `Any?.castOrNull`.
+* Functions that convert types and return new object: `Any?.convert` and `Any?.convertOrNull`.
 
 ## breeze-dsl
 
@@ -161,4 +159,3 @@ implementation("com.windea.breezeframework:$module:$version")
 See:
 
 * [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)
-

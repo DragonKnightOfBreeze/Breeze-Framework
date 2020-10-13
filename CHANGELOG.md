@@ -412,9 +412,9 @@
 * [X] 让`Color`可以解构
 * [X] 将`typing`和`typingAll`重命名为`toText`和`joinToText`
 * [X] 重构`LetterCase`
+* [X] 重构`EscapeType`并重命名为`Escaper`
 * [ ] 重构`ReferenceCase`
 * [ ] 重构`MatchType`并重命名为`PathType`
-* [ ] 重构`EscapeType`
 
 # 长期
 

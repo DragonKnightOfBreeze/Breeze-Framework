@@ -1,8 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.domain.*
-import com.windea.breezeframework.core.domain.text.*
-import com.windea.breezeframework.core.domain.text.LetterCase.*
+import com.windea.breezeframework.core.domain.LetterCase.*
 import kotlin.test.*
 
 class StringExtensionsTest {
@@ -33,16 +32,48 @@ class StringExtensionsTest {
 	}
 
 	@Test
+	fun transformInTest() {
+		"\\Q abc abc \\E..\\Q abc abc abc \\E abc abc \\Q abc abc 123 \\E".transformIn("\\Q", "\\E") {
+			it.trim().split(" ").joinToString(", ", "{", "}") { s -> s.dropLast(1) }
+		}.also { println(it) }
+	}
+
+	@Test
+	fun ifNotEmptyOrBlankTest() {
+		println("123".ifNotEmpty { "/" })
+		println("123".ifNotBlank { "/" })
+	}
+
+	@Test
+	fun formatTest() {
+		assertEquals(
+			"hello world!",
+			"hello {}!".formatBy(FormatType.Log, "world")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {0}, hello {1}!".formatBy(FormatType.Indexed, "world", "java")
+		)
+		assertEquals(
+			"hello world, hello java!",
+			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named, "arg1" to "world", "arg2" to "java")
+		)
+	}
+
+	@Test
 	fun quoteTest() {
 		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"', false))
 		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(false))
 	}
 
 	@Test
-	fun transformInTest() {
-		"\\Q abc abc \\E..\\Q abc abc abc \\E abc abc \\Q abc abc 123 \\E".transformIn("\\Q", "\\E") {
-			it.trim().split(" ").joinToString(", ", "{", "}") { s -> s.dropLast(1) }
-		}.also { println(it) }
+	fun escapeByTest(){
+		assertEquals("hello\\tworld\\n","hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
+	}
+
+	@Test
+	fun unescapeByTest(){
+		assertEquals("hello\tworld\n","hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
 	}
 
 	@Test
@@ -69,28 +100,6 @@ class StringExtensionsTest {
 		assertTrue("/abc/123" matches "/abc/[b]".toRegexBy(MatchType.PathReference))
 		assertTrue("/abc/123/def" matches "/abc/[b]/re:[def]*".toRegexBy(MatchType.PathReference))
 		assertTrue("/abc/123/def" matches "/abc/123/def".toRegexBy(MatchType.PathReference))
-	}
-
-	@Test
-	fun ifNotEmptyOrBlankTest() {
-		println("123".ifNotEmpty { "/" })
-		println("123".ifNotBlank { "/" })
-	}
-
-	@Test
-	fun formatTest() {
-		assertEquals(
-			"hello world!",
-			"hello {}!".formatBy(FormatType.Log, "world")
-		)
-		assertEquals(
-			"hello world, hello java!",
-			"hello {0}, hello {1}!".formatBy(FormatType.Indexed, "world", "java")
-		)
-		assertEquals(
-			"hello world, hello java!",
-			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named, "arg1" to "world", "arg2" to "java")
-		)
 	}
 
 	@Test

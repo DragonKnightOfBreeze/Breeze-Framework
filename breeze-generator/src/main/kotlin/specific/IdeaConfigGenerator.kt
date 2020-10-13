@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
@@ -38,7 +38,7 @@ object IdeaConfigGenerator : Generator {
 		return """
 		<templateSet group="YamlAnnotation">
 		${definitions.joinToString("\n\n") { (templateName, template) ->
-			val description = (template.getOrDefault("description", "") as String).escapeBy(EscapeType.Java)
+			val description = (template.getOrDefault("description", "") as String).escapeBy(Escaper.JavaEscaper)
 			val params = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
 			val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
 
@@ -47,7 +47,7 @@ object IdeaConfigGenerator : Generator {
 		                description="$description"
 		                toReformat="true" toShortenFQNames="true" useStaticImport="true">${
 			params.joinToString("\n") { (paramName, param) ->
-				val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(EscapeType.Java)
+				val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(Escaper.JavaEscaper)
 
 				"""    <variable name="$paramName" expression="" defaultValue="&quot;$defaultValue&quot;" alwaysStopAt="true"/>"""
 			}.ifNotEmpty { "\n$it" }}

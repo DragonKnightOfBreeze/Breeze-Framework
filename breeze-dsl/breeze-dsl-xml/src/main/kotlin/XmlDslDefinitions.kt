@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.dsl.xml
 
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.core.types.*
 import com.windea.breezeframework.dsl.*
@@ -31,7 +32,7 @@ interface XmlDslDefinitions {
 	) : IDslElement {
 		override fun toString(): String {
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
-				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(quote)}"
+				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(quote)}"
 			}
 			return "<?xmlDsl$attributesSnippet?>"
 		}
@@ -49,7 +50,7 @@ interface XmlDslDefinitions {
 	@XmlDslMarker
 	class Text @PublishedApi internal constructor(val text: String) : Node {
 		override fun toString(): String {
-			return text.escapeBy(EscapeType.Xml)
+			return text.escapeBy(Escaper.XmlContentEscaper)
 		}
 	}
 
@@ -76,7 +77,7 @@ interface XmlDslDefinitions {
 		override var indentContent = true
 
 		override fun toString(): String {
-			val textSnippet = text.escapeBy(EscapeType.Xml).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
+			val textSnippet = text.escapeBy(Escaper.XmlEscaper).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
 			return "<!--$textSnippet-->"
 		}
 	}
@@ -102,7 +103,7 @@ interface XmlDslDefinitions {
 		override fun toString():String {
 			val nodesSnippet = nodes.joinToText(ls).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
-				"$k=${v.toString().escapeBy(EscapeType.XmlAttribute).quote(quote)}"
+				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(quote)}"
 			}
 			val prefixSnippet = "<$name$attributesSnippet>"
 			val suffixSnippet = if(autoCloseTag && nodes.isEmpty()) "/>" else "</$name>"

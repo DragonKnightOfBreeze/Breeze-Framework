@@ -3,14 +3,19 @@
 
 @file:Suppress("ObjectPropertyName")
 
-package com.windea.breezeframework.core.domain.text
+package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 
 /**
  * 单词格式。
  */
 interface LetterCase {
+	/**
+	 * 用于进行推断的正则表达式。
+	 */
+	@NotOptimized
 	val regex: Regex
 
 	/**
@@ -18,10 +23,10 @@ interface LetterCase {
 	 */
 	fun split(value: String): List<String>
 
-	///**
-	// * 基于单词格式，分割字符串。
-	// */
-	//fun splitToSequence(value: String): Sequence<String>
+	/**
+	 * 基于单词格式，分割字符串。
+	 */
+	fun splitToSequence(value: String): Sequence<String>
 
 	/**
 	 * 基于单词格式，拼接字符串。
@@ -32,6 +37,11 @@ interface LetterCase {
 	 * 基于单词格式，拼接字符串。
 	 */
 	fun joinToString(value: Iterable<String>): String
+
+	/**
+	 * 基于单词格式，拼接字符串。
+	 */
+	fun joinToString(value: Sequence<String>): String
 
 	companion object {
 		private val letterCases = mutableListOf<LetterCase>()
@@ -108,9 +118,10 @@ interface LetterCase {
 	object LowerCase : LetterCase {
 		override val regex = """[a-z]+""".toRegex()
 		override fun split(value: String) = listOf(value)
-		//override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").toLowerCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString("").toLowerCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString("").toLowerCase()
 	}
 
 	/**
@@ -120,9 +131,10 @@ interface LetterCase {
 	object UpperCase : LetterCase {
 		override val regex = """[A-Z]+""".toRegex()
 		override fun split(value: String) = listOf(value)
-		//override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").toUpperCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString("").toUpperCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString("").toUpperCase()
 	}
 
 	/**
@@ -132,9 +144,10 @@ interface LetterCase {
 	object Capitalized : LetterCase {
 		override val regex = """[A-Z][a-z]+""".toRegex()
 		override fun split(value: String) = listOf(value)
-		//override fun splitToSequence(value: String) = sequenceOf(value)
+		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").firstCharToUpperCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString("").firstCharToUpperCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString("").firstCharToUpperCase()
 	}
 
 	/**
@@ -144,9 +157,10 @@ interface LetterCase {
 	object LowerCaseWords : LetterCase {
 		override val regex = """[a-z']+(?:\s+[a-z']+)+""".toRegex()
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
-		//override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").toLowerCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").toLowerCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString(" ").toLowerCase()
 	}
 
 	/**
@@ -156,9 +170,10 @@ interface LetterCase {
 	object UpperCaseWords : LetterCase {
 		override val regex = """[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
-		//override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").toUpperCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").toUpperCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString(" ").toUpperCase()
 	}
 
 	/**
@@ -168,9 +183,10 @@ interface LetterCase {
 	object FirstWordCapitalized : LetterCase {
 		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
-		//override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").firstCharToUpperCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString(" ").firstCharToUpperCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString(" ").firstCharToUpperCase()
 	}
 
 	/**
@@ -180,9 +196,10 @@ interface LetterCase {
 	object CapitalizedWords : LetterCase {
 		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
-		//override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
 	}
 
 	/**
@@ -192,9 +209,10 @@ interface LetterCase {
 	object Words : LetterCase {
 		override val regex = """[a-zA-Z']+(?:\s+[a-zA-Z']+)+""".toRegex()
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
-		//override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
+		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ")
 		override fun joinToString(value: Iterable<String>) = value.joinToString(" ")
+		override fun joinToString(value: Sequence<String>) = value.joinToString(" ")
 	}
 
 	/**
@@ -204,9 +222,10 @@ interface LetterCase {
 	object CamelCase : LetterCase {
 		override val regex = """\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 		override fun split(value: String) = value.splitWords().split(' ')
-		//override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
+		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
 		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
 		override fun joinToString(value: Iterable<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
+		override fun joinToString(value: Sequence<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
 	}
 
 	/**
@@ -216,9 +235,10 @@ interface LetterCase {
 	object PascalCase : LetterCase {
 		override val regex = """\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 		override fun split(value: String) = value.splitWords().split(' ')
-		//override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
+		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
 		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString("") { it.firstCharToUpperCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString("") { it.firstCharToUpperCase() }
 	}
 
 	/**
@@ -228,9 +248,10 @@ interface LetterCase {
 	object SnakeCase : LetterCase {
 		override val regex = """\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('_')
-		//override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toLowerCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString("_") { it.toLowerCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString("_") { it.toLowerCase() }
 	}
 
 	/**
@@ -240,9 +261,10 @@ interface LetterCase {
 	object ScreamingSnakeCase : LetterCase {
 		override val regex = """\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('_')
-		//override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toUpperCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString("_") { it.toUpperCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString("_") { it.toUpperCase() }
 	}
 
 	/**
@@ -252,9 +274,10 @@ interface LetterCase {
 	object UnderscoreWords : LetterCase {
 		override val regex = """_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('_')
-		//override fun splitToSequence(value: String) = value.splitToSequence('_')
+		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_")
 		override fun joinToString(value: Iterable<String>) = value.joinToString("_")
+		override fun joinToString(value: Sequence<String>) = value.joinToString("_")
 	}
 
 	/**
@@ -264,9 +287,10 @@ interface LetterCase {
 	object KebabCase : LetterCase {
 		override val regex = """[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('-')
-		//override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toLowerCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-") { it.toLowerCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString("-") { it.toLowerCase() }
 	}
 
 	/**
@@ -276,9 +300,10 @@ interface LetterCase {
 	object KebabUpperCase : LetterCase {
 		override val regex = """[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('-')
-		//override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toUpperCase() }
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-") { it.toUpperCase() }
+		override fun joinToString(value: Sequence<String>) = value.joinToString("-") { it.toUpperCase() }
 	}
 
 	/**
@@ -288,9 +313,10 @@ interface LetterCase {
 	object HyphenWords: LetterCase {
 		override val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('-')
-		//override fun splitToSequence(value: String) = value.splitToSequence('-')
+		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-")
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-")
+		override fun joinToString(value: Sequence<String>) = value.joinToString("-")
 	}
 
 	/**
@@ -300,9 +326,10 @@ interface LetterCase {
 	object DotCase : LetterCase {
 		override val regex = """[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex()
 		override fun split(value: String) = value.split('.')
-		//override fun splitToSequence(value: String) = value.splitToSequence('.')
+		override fun splitToSequence(value: String) = value.splitToSequence('.')
 		override fun joinToString(value: Array<String>) = value.joinToString(".")
 		override fun joinToString(value: Iterable<String>) = value.joinToString(".")
+		override fun joinToString(value: Sequence<String>) = value.joinToString(".")
 	}
 	//endregion
 }

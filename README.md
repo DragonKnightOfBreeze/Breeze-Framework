@@ -4,26 +4,30 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-基于Kotlin的整合代码框架，为标准库和其他框架提供各种有用的扩展。
+基于Kotlin的整合代码框架。
+为标准库和部分框架提供各种有用的扩展。
 
 注意：
 
 * 这个框架仍然有待完善，但是你现在就可以使用它的一些有用的功能。
-* 这个框架是为Kotlin-JVM设计的，但是你自然可以在Java中使用它的一部分功能。
-* 这个框架仍在更新中，未来将会提供更多的模块和功能。
+* 这个框架是为Kotlin Jvm设计的，但是你自然可以在Java中使用它的一部分功能。
+* 这个框架仍在更新中，未来会提供更多的模块和功能。
 
 # 模块
 
 ## breeze-core
 
-为Kotlin标准库补充功能和扩展，并且提供许多日常项目开发中经常用到的工具和扩展。例如：
+为Kotlin标准库和日常项目开发提供工具和扩展。例如：
 
-* 额外的运算符重载方法。如`String.minus`、`String.times`和`String.div`。
-* 额外的类型转换方法。如`String.toFile`、`String.toLocalDateTime`和`String.toIntRange`。
+* 额外的运算符重载方法。如`String.minus`、`String.times`、`String.div`。
+* 额外的类型转化方法。如`String.toFile`、`String.toLocalDateTime`、`String.toIntRange`。
 * 额外的字符串处理方法。如`String.quote`、`String.escapeBy`、`String.switchCaseBy`。
-* 额外的集合操作方法。如`List.bind`、`List.deepGet`、`List.deepSet`和`List.deepQuery`。
-* 额外的元组操作方法。如`Tuple.map`、`Tuple.toList`和`Tuple.toRange`。
-* 用于委托实现`equals`、`hashCode`和`toString`的工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`和`toStringByReference`。
+* 额外的文本处理方法。如`String.toText`、`Array<String>.joinToText`。
+* 额外的集合处理方法。如`List.bind`、`List.deepGet`、`List.deepSet`、`List.deepQuery`。
+* 额外的元组处理方法。如`Tuple.map`、`Tuple.toList`、`Tuple.toRange`。
+* 额外的数据类工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`、`toStringByReference`。
+* 用于转换类型并返回同一对象的方法：`Any?.cast`和`Any?.castOrNull`。
+* 用于转化类型并返回新的对象的方法：`Any?.convert`和`Any?.convertOrNull`。
 
 ## breeze-dsl
 
@@ -44,37 +48,37 @@
 
 ## breeze-generator
 
-**［有待完善］** 提供一些具有特定用途的生成器。例如：
+［有待完善］提供一些具有特定用途的生成器。例如：
 
 * 用于生成各种格式的链接的`UrlGenerator`。
 * 用于生成扩展Json Schema的`JsonSchemaGenerator`。
 
 ## breeze-http
 
-**［有待完善］** 提供简洁而直观的Http api，封装Java原生的Http api，并允许进行充分的配置。
+［有待完善］提供简洁而直观的Http api，封装Java原生的Http api，并允许进行充分的配置。
 
 注意：可能需要配合第三方序列化库如`Gson`使用。
 
 ## breeze-javafx
 
-**［有待完善］** 为JavaFX补充功能和扩展。
+［有待完善］为JavaFX补充功能和扩展。
 
 ## breeze-linq
 
-**［有待完善］** 提供简洁而直观的语言集成查询的api，允许以类似sql的方式，实现集合的查询操作。
+［有待完善］提供简洁而直观的语言集成查询的api，允许以类似sql的方式，实现集合的查询操作。
 
 注意：这个api本身不包含集合数据。
 
 ## breeze-logger
 
-**［有待完善］** 提供简单而独立的日志器的api，并允许进行充分的配置。例如：
+［有待完善］提供简单而独立的日志器的api，并允许进行充分的配置。例如：
 
 * 包含了一般日志信息的`SimpleLogger`。
 * 可以输出彩色的控制台文本的`ColorfulLogger`。
 
 ## breeze-mapper
 
-**［有待完全实现］** 提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
+［有待完全实现］提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
 
 * 用于映射和反映射对象的`ObjectMapper`。
 * 用于映射常见标记语言的`JsonMapper`、`YamlMapper`、`XmlMapper`和`PropertiesMapper`。
@@ -100,7 +104,7 @@
 
 ## breeze-spring-boot
 
-**［有待完善］** 为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
+［有待完善］为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
 
 ## breeze-time
 
@@ -177,4 +181,3 @@ implementation("com.windea.breezeframework:$module:$version")
 参见：
 
 * [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)
-

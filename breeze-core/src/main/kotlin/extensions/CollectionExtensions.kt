@@ -7,7 +7,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.*
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.*

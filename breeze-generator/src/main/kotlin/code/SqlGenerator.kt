@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.generator.code
 
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
@@ -47,7 +47,7 @@ object SqlGenerator : Generator {
 			insert into $tableName ($columnNamesSnippet) values
 			${table.joinToString(",\n", "", ";\n") { data ->
 				val columnsSnippet = data.values.joinToString {
-					it.toString().quote('\'').escapeBy(EscapeType.Java)
+					it.toString().quote('\'').escapeBy(Escaper.JavaEscaper)
 				}
 
 				"""  ($columnsSnippet)"""

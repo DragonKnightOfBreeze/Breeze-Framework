@@ -1,8 +1,7 @@
 package com.windea.breezeframework.core
 
-import com.windea.breezeframework.core.domain.text.*
-import com.windea.breezeframework.core.domain.text.LetterCase.*
-import com.windea.breezeframework.core.domain.text.ReferenceCase.*
+import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.domain.LetterCase.*
 import com.windea.breezeframework.core.extensions.*
 import kotlin.test.*
 
