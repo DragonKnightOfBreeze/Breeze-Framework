@@ -85,20 +85,8 @@ class CollectionExtensionsTest {
 
 	@Test
 	fun deepQueryTest() {
-		val list = listOf(
-			listOf(1, 2, 3),
-			listOf(11, 22, 33),
-			listOf(111, 222, 333),
-			mapOf("a" to listOf("a"), "b" to listOf("b"))
-		)
-		println(list.deepQuery<Any>("/"))
-		println(list.deepQuery<Int>("/[]"))
-		println(list.deepQuery<Any>("/[]"))
-		println(list.deepQuery<List<Int>>("/0..2"))
-		println(list.deepQuery<Int>("/0..2/1"))
-		println(list.deepQuery<Int>("/0..2/1..2"))
-		println(list.deepQuery<List<String>>("/3/{}"))
-		println(list.deepQuery<String>("/3/re:\\w/0"))
+		assertEquals(listOf(2),listOf(1,2,3).deepQueryBy("/2"))
+		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).deepQueryBy("/b"))
 	}
 
 	@Test

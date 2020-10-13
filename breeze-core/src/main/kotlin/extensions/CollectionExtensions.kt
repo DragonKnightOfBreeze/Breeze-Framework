@@ -589,267 +589,6 @@ fun <T> T.expand(operation: (T) -> Iterable<T>): List<T> {
 	}
 	return result
 }
-//endregion
-
-//region Smart operation extensions
-/**
- * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。
- * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Array<*>.deepQuery(
-	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
-): Map<String, T> {
-	return this.deepQuery0(path, pathCase, returnPathCase)
-}
-
-/**
- * 根据指定路径递归查询当前集合，返回匹配的路径-值映射。
- * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Iterable<*>.deepQuery(
-	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
-): Map<String, T> {
-	return this.deepQuery0(path, pathCase, returnPathCase)
-}
-
-/**
- * 根据指定路径递归查询当前映射，返回匹配的路径-值映射。
- * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Map<*, *>.deepQuery(
-	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
-): Map<String, T> {
-	return this.deepQuery0(path, pathCase, returnPathCase)
-}
-
-private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
-	val splitPaths = path.splitBy(pathCase)
-	var pathValuePairs = listOf(arrayOf<String>() to this)
-	for(p in splitPaths) {
-		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
-			try {
-				when {
-					p.isPathOfMapLike() -> value.toDeepQueryPairList(key)
-					p.isPathOfListLike() -> value.toDeepQueryPairList(key)
-					p.isPathOfRegex() -> value.collectionSlice(p.substring(3).toRegex()).toDeepQueryPairList(key)
-					p.isPathOfIndices() -> value.collectionSlice(p.toIntRange()).toDeepQueryPairList(key)
-					else -> value.collectionGetOrNull(p).toSingletonDeepQueryPairList(key, p)
-				}
-			} catch(e: Exception) {
-				value.collectionGetOrNull(p).toSingletonDeepQueryPairList(key, p)
-			}
-		}
-	}
-	return pathValuePairs.toDeepQueryMap(returnPathCase) as Map<String, T>
-}
-
-
-/**
- * 根据指定路径得到当前数组中的元素。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Array<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
-	return this.deepGet0(path, pathCase)
-}
-
-/**
- * 根据指定路径得到当前列表中的元素。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
-	return this.deepGet0(path, pathCase)
-}
-
-/**
- * 根据指定路径得到当前映射中的元素。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
-	return this.deepGet0(path, pathCase)
-}
-
-private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
-	val pathList = path.splitBy(pathCase)
-	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
-	var currentValue = this
-	for(p in pathList) {
-		currentValue = currentValue.collectionGet(p)
-	}
-	return currentValue as T
-}
-
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Array<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
-	return this.deepGetOrNull0(path, pathCase)
-}
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> List<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
-	return this.deepGetOrNull0(path, pathCase)
-}
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回null。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Map<*, *>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
-	return this.deepGetOrNull0(path, pathCase)
-}
-
-private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
-	val splitPaths = path.splitBy(pathCase)
-	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
-	var currentValue = this
-	for(p in splitPaths) {
-		currentValue = currentValue.collectionGetOrNull(p)
-	}
-	return currentValue as T
-}
-
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Array<*>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
-	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
-}
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> List<*>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
-	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
-}
-
-/**
- * 根据指定路径得到当前映射中的元素，如果发生异常，则返回默认值。
- * 可指定路径的格式，默认为路径引用。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Map<*, *>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
-	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
-}
-
-
-/**
- * 根据指定路径设置当前数组中的元素。
- * 指定路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
- * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
-	this.deepSet0(path, value, pathCase)
-}
-
-/**
- * 根据指定路径设置当前列表中的元素。
- * 指定路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
- * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
-	this.deepSet0(path, value, pathCase)
-}
-
-/**
- * 根据指定路径设置当前映射中的元素。
- * 指定路径的格式默认为路径引用。
- * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
- * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意指定路径不能为空，否则会抛出异常。
- * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
- * @see ReferenceCase.PathReference
- */
-@JvmOverloads
-fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
-	this.deepSet0(path, value, pathCase)
-}
-
-private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
-	val splitPaths = path.splitBy(pathCase)
-	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
-	var currentValue = this
-	for(p in splitPaths.dropLast(1)) {
-		currentValue = currentValue.collectionGet(p)
-	}
-	currentValue.collectionSet(splitPaths.last(), value)
-}
 
 
 /**
@@ -928,6 +667,314 @@ private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
 		currentDepth--
 	}
 	return values as List<T>
+}
+//endregion
+
+//region Smart operation extensions
+/**
+ * 根据指定路径和指定路径类型查询当前数组，返回查询结果。如果查询失败，则抛出异常。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> Array<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):T{
+	return pathType.query(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，返回查询结果。如果查询失败，则抛出异常。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> List<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):T{
+	return pathType.query(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前映射，返回查询结果。如果查询失败，则抛出异常。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):T{
+	return pathType.query(path,this)
+}
+
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，返回查询结果。如果查询失败，则返回null。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> Array<*>.queryOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
+	return pathType.queryOrNull(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，返回查询结果。如果查询失败，则返回null。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> List<*>.queryOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
+	return pathType.queryOrNull(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前映射，返回查询结果。如果查询失败，则返回null。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * 注意：如果需要递归查询，请使用[deepQueryBy]。
+ *
+ * @see PathType
+ */
+fun <T> Map<*,*>.queryOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
+	return pathType.queryOrNull(path,this)
+}
+
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前数组，返回查询结果列表。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * @see PathType
+ */
+fun <T> Array<*>.deepQueryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
+	return pathType.deepQuery(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前列表，返回查询结果列表。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * @see PathType
+ */
+fun <T> List<*>.deepQueryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
+	return pathType.deepQuery(path,this)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
+ *
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * @see PathType
+ */
+fun <T> Map<*,*>.deepQueryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
+	return pathType.deepQuery(path,this)
+}
+
+
+/**
+ * 根据指定路径和指定路径类型得到当前数组中的元素。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
+	return this.deepGet0(path, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前列表中的元素。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> List<*>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
+	return this.deepGet0(path, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGet(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T {
+	return this.deepGet0(path, pathCase)
+}
+
+private fun <T> Any?.deepGet0(path: String, pathCase: ReferenceCase): T {
+	val pathList = path.splitBy(pathCase)
+	require(pathList.isNotEmpty()) { "Path '$path' cannot be empty." }
+	var currentValue = this
+	for(p in pathList) {
+		currentValue = currentValue.collectionGet(p)
+	}
+	return currentValue as T
+}
+
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> List<*>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回null。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGetOrNull(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference): T? {
+	return this.deepGetOrNull0(path, pathCase)
+}
+
+private fun <T> Any?.deepGetOrNull0(path: String, pathCase: ReferenceCase): T? {
+	val splitPaths = path.splitBy(pathCase)
+	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	var currentValue = this
+	for(p in splitPaths) {
+		currentValue = currentValue.collectionGetOrNull(p)
+	}
+	return currentValue as T
+}
+
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
+	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> List<*>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
+	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
+}
+
+/**
+ * 根据指定路径和指定路径类型得到当前映射中的元素，如果发生异常，则返回默认值。
+ * 可指定路径的格式，默认为路径引用。
+ * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意返回值的类型应当与指定的泛型类型一致，否则会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Map<*, *>.deepGetOrElse(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference, defaultValue: () -> T): T {
+	return this.deepGetOrNull0(path, pathCase) ?: defaultValue()
+}
+
+
+/**
+ * 根据指定路径和指定路径类型设置当前数组中的元素。
+ * 指定路径的格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
+ * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> Array<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
+	this.deepSet0(path, value, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型设置当前列表中的元素。
+ * 指定路径的格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
+ * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> MutableList<*>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
+	this.deepSet0(path, value, pathCase)
+}
+
+/**
+ * 根据指定路径和指定路径类型设置当前映射中的元素。
+ * 指定路径的格式默认为路径引用。
+ * 支持的集合类型包括：[Array]、[MutableList]和[MutableMap]。
+ * 向下定位元素时支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
+ * 注意指定路径不能为空，否则会抛出异常。
+ * 注意指定的值的类型应当与对应集合的泛型类型一致，否则可能会发生异常。
+ * @see ReferenceCase.PathReference
+ */
+@JvmOverloads
+fun <T> MutableMap<*, *>.deepSet(path: String, value: T, pathCase: ReferenceCase = ReferenceCase.PathReference) {
+	this.deepSet0(path, value, pathCase)
+}
+
+private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
+	val splitPaths = path.splitBy(pathCase)
+	require(splitPaths.isNotEmpty()) { "Path '$path' cannot be empty." }
+	var currentValue = this
+	for(p in splitPaths.dropLast(1)) {
+		currentValue = currentValue.collectionGet(p)
+	}
+	currentValue.collectionSet(splitPaths.last(), value)
 }
 
 

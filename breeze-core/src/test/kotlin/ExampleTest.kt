@@ -21,8 +21,6 @@ class ExampleTest {
 		println(listOf(1, 2, 3, listOf(41, 42)).deepGet<Int>("/3/1"))
 		//[1, 2, 3, [41, 233]]
 		println(mutableListOf(1, 2, 3, mutableListOf(41, 42)).also { it.deepSet("/3/1", 233) })
-		//{/0/0=1, /1/0=2, /2/0=41}
-		println(listOf(arrayOf(1), listOf(2), listOf(41, 42), mapOf("a" to 5)).deepQuery<Any>("/[list]/0"))
 		//{/0/0=1, /1/0=2, /2/0=41, /2/1=42, /3/a=5}
 		println(listOf(arrayOf(1), listOf(2), listOf(41, 42), mapOf("a" to 5)).deepFlatten<Any>())
 

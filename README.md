@@ -23,7 +23,7 @@
 * 额外的类型转化方法。如`String.toFile`、`String.toLocalDateTime`、`String.toIntRange`。
 * 额外的字符串处理方法。如`String.quote`、`String.escapeBy`、`String.switchCaseBy`。
 * 额外的文本处理方法。如`String.toText`、`Array<String>.joinToText`。
-* 额外的集合处理方法。如`List.bind`、`List.deepGet`、`List.deepSet`、`List.deepQuery`。
+* 额外的集合处理方法。如`List.bind`、`List.queryBy`。
 * 额外的元组处理方法。如`Tuple.map`、`Tuple.toList`、`Tuple.toRange`。
 * 额外的数据类工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`、`toStringByReference`。
 * 用于转换类型并返回同一对象的方法：`Any?.cast`和`Any?.castOrNull`。

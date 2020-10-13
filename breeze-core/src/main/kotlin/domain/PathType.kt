@@ -53,16 +53,23 @@ interface PathType {
 	fun join(paths:Sequence<String>):String
 
 	/**
-	 * 根据指定路径查询目标查询对象，返回查询结果。
+	 * 根据指定路径查询目标查询对象，返回查询结果。如果查询失败，则抛出异常。
 	 *
-	 * 注意：如果需要递归查询，请使用[deepQuery]。
+	 * 注意：如果需要递归查询，请使用[deepQueryBy]。
 	 */
-	fun <R> query(path: String, target: Any): R?
+	fun <T> query(path: String, target: Any): T
+
+	/**
+	 * 根据指定路径查询目标查询对象，返回查询结果。如果查询失败，则返回null。
+	 *
+	 * 注意：如果需要递归查询，请使用[deepQueryBy]。
+	 */
+	fun <T> queryOrNull(path: String, target: Any): T?
 
 	/**
 	 * 根据指定路径递归查询目标查询对象，返回查询结果列表。
 	 */
-	fun <R> deepQuery(path:String,target:Any):List<R>
+	fun <T> deepQuery(path:String,target:Any):List<T>
 
 	companion object{
 		//不需要进行注册
@@ -97,17 +104,23 @@ interface PathType {
 			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
 		}
 
-		override fun <R> query(path: String, target: Any): R? {
-			return Querier.StringQuerier.queryOrNull(path,target)
+		override fun <T> query(path: String, target: Any): T {
+			val fqPath = if(prefix!= null) path.removePrefix(prefix) else path
+			return Querier.StringQuerier.query(fqPath,target)
 		}
 
-		override fun <R> deepQuery(path: String, target: Any):List<R> {
+		override fun <T> queryOrNull(path: String, target: Any): T? {
+			val fqPath = if(prefix!= null) path.removePrefix(prefix) else path
+			return Querier.StringQuerier.queryOrNull(fqPath,target)
+		}
+
+		override fun <T> deepQuery(path: String, target: Any):List<T> {
 			val paths = split(path)
 			var result = listOf( target)
 			for(p in paths){
 				result = result.flatMap { value ->
 					try {
-						val r = query<Any?>(p,value)
+						val r = queryOrNull<Any?>(p,value)
 						when{
 							r == null -> listOf()
 							r is List<*> -> r.filterNotNull()
@@ -118,7 +131,7 @@ interface PathType {
 					}
 				}
 			}
-			return result as List<R>
+			return result as List<T>
 		}
 	}
 

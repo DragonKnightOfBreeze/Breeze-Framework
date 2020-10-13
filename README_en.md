@@ -23,7 +23,7 @@ Provide utilities and extensions for Kotlin standard library and daily project d
 * Extra type convert functions. Such as `String.toFile`, `String.toLocalDateTime`, `String.toIntRange`.
 * Extra string handle functions. Such as `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
 * Extra text handle functions. Such as `String.toText`, `Array<String>.joinToText`.
-* Extra collection handle functions. Such as `List.bind`, `List.deepGet`, `List.deepSet`, `List.deepQuery`.
+* Extra collection handle functions. Such as `List.bind`, `List.queryBy`.
 * Extra tuple handle functions. Such as `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
 * Extra data class utility functions. Such as `equalsBy`, `hashCodeBy`, `toStringBy`, `toStringByReference`.
 * Functions that cast types and return same object: `Any?.cast` and `Any?.castOrNull`.

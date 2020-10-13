@@ -25,7 +25,7 @@ object JsonSchemaGenerator : Generator {
 		},
 		"\$gen" to { (_, value) ->
 			//提取$dataMap中的路径`$value`对应的值列表
-			val newValue = dataMap.deepQuery<Any?>(value as String)
+			val newValue = dataMap.deepQueryBy<Any?>(value as String)
 			when {
 				newValue.isNotEmpty() -> mapOf("enum" to newValue)
 				else -> mapOf()

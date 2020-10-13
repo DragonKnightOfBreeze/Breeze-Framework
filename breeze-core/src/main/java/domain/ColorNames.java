@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.core.domain;
 
-//148种
 //language=css prefix=*{color: suffix=;}
 
 public class ColorNames {
