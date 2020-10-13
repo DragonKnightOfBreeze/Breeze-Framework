@@ -3,13 +3,19 @@
 
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
+
+//参考：
+//java.awt.Color
+//javafx.scene.paint.Color
 
 /**
  * 颜色。
  *
  * 颜色可以解构：`val (r,g,b,a) = color`
  */
+@ComponentMarker
 class Color {
 	constructor(hexValue: Int) {
 		val numbers = hexValue.toDigitNumberArray(256)
@@ -67,7 +73,7 @@ class Color {
 	}
 
 	companion object {
-		private val colorMap = mutableMapOf<String, Color>()
+		private val colorRegistry = mutableMapOf<String, Color>()
 
 		init {
 			registerCssColors()
@@ -77,7 +83,7 @@ class Color {
 		 * 注册颜色。
 		 */
 		@JvmStatic fun register(name: String, color: Color) {
-			colorMap[name] = color
+			colorRegistry[name] = color
 		}
 
 		/**
@@ -111,7 +117,7 @@ class Color {
 						val (r, g, b) = numbers
 						Color(r, g, b)
 					}
-					else -> colorMap[optimizeName(expression)] ?: throwException(expression)
+					else -> colorRegistry[optimizeName(expression)] ?: throwException(expression)
 				}
 			} catch(e: Exception) {
 				throwException(expression, e)
@@ -148,7 +154,7 @@ class Color {
 					val (r, g, b) = numbers
 					Color(r, g, b)
 				}
-				else -> colorMap[optimizeName(expression)]
+				else -> colorRegistry[optimizeName(expression)]
 			}
 		}
 

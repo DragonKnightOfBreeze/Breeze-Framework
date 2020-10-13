@@ -13,6 +13,7 @@ import com.windea.breezeframework.core.extensions.*
  *
  * 单词格式用于以某种大小写和分割方式，表示包含一个或多个单词的名字。
  */
+@ComponentMarker
 interface LetterCase {
 	/**
 	 * 用于进行推断的正则表达式。
@@ -46,24 +47,18 @@ interface LetterCase {
 	fun joinToString(value: Sequence<String>): String
 
 	companion object {
-		private val letterCases = mutableListOf<LetterCase>()
-
-		init {
-			registerDefaultLetterCases()
-		}
-
 		/**
 		 * 注册单词格式。
 		 */
 		@JvmStatic fun register(letterCase: LetterCase) {
-			letterCases += letterCase
+			letterCaseRegistry += letterCase
 		}
 
 		/**
 		 * 推断单词格式。
 		 */
 		@JvmStatic fun infer(value: String): LetterCase? {
-			for(letterCase in letterCases) {
+			for(letterCase in letterCaseRegistry) {
 				if(letterCase.regex.matches(value)) return letterCase
 			}
 			return null
@@ -89,6 +84,14 @@ interface LetterCase {
 			return this.replace(splitWordsRegex, " $1")
 		}
 
+
+		private val letterCaseRegistry = mutableListOf<LetterCase>()
+
+		init {
+			registerDefaultLetterCases()
+			registerPathLikeLetterCases()
+		}
+
 		private fun registerDefaultLetterCases() {
 			register(LowerCase)
 			register(UpperCase)
@@ -107,7 +110,9 @@ interface LetterCase {
 			register(KebabCase)
 			register(KebabUpperCase)
 			register(HyphenWords)
+		}
 
+		private fun registerPathLikeLetterCases(){
 			register(ReferencePath)
 			register(LinuxPath)
 			register(WindowsPath)
@@ -117,6 +122,7 @@ interface LetterCase {
 	//region Default letter cases
 	/**
 	 * 全小写。
+	 *
 	 * 示例：`lowercase`
 	 */
 	object LowerCase : LetterCase {
@@ -131,6 +137,7 @@ interface LetterCase {
 
 	/**
 	 * 全大写。
+	 *
 	 * 示例：`UPPERCASE`
 	 */
 	object UpperCase : LetterCase {
@@ -144,6 +151,7 @@ interface LetterCase {
 
 	/**
 	 * 首字母大写。
+	 *
 	 * 示例：`Capitalized`
 	 */
 	object Capitalized : LetterCase {
@@ -157,6 +165,7 @@ interface LetterCase {
 
 	/**
 	 * 全小写的单词组。
+	 *
 	 * 示例：`lowercase words`
 	 */
 	object LowerCaseWords : LetterCase {
@@ -170,6 +179,7 @@ interface LetterCase {
 
 	/**
 	 * 全大写的单词组。
+	 *
 	 * 示例：`UPPERCASE WORDS`
 	 */
 	object UpperCaseWords : LetterCase {
@@ -183,6 +193,7 @@ interface LetterCase {
 
 	/**
 	 * 首个单词的首字母大写的单词组。
+	 *
 	 * 示例：`Uppercase words`
 	 */
 	object FirstWordCapitalized : LetterCase {
@@ -196,6 +207,7 @@ interface LetterCase {
 
 	/**
 	 * 首字母大写的单词组。
+	 *
 	 * 示例：`Uppercase Words`
 	 */
 	object CapitalizedWords : LetterCase {
@@ -209,6 +221,7 @@ interface LetterCase {
 
 	/**
 	 * 单词组。
+	 *
 	 * 示例：`Words words Words`
 	 */
 	object Words : LetterCase {
@@ -222,6 +235,7 @@ interface LetterCase {
 
 	/**
 	 * 以单词边界分隔，首个单词全部小写，后续单词首字母大写。
+	 *
 	 * 示例：`camelCase`
 	 */
 	object CamelCase : LetterCase {
@@ -235,6 +249,7 @@ interface LetterCase {
 
 	/**
 	 * 以单词边界分隔，所有单词首字母大写。
+	 *
 	 * 示例：`PascalCase`
 	 */
 	object PascalCase : LetterCase {
@@ -248,6 +263,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个下划线分隔，所有单词全部小写。
+	 *
 	 * 示例：`snake_case`
 	 */
 	object SnakeCase : LetterCase {
@@ -261,6 +277,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个下划线分隔，所有单词全部大写。
+	 *
 	 * 示例：`SCREAMING_SNAKE_CASE`
 	 */
 	object ScreamingSnakeCase : LetterCase {
@@ -274,6 +291,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个下划线分割的单词组。
+	 *
 	 * 示例：`Underscore_words`
 	 */
 	object UnderscoreWords : LetterCase {
@@ -287,6 +305,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个连接线分隔，所有单词全部小写。
+	 *
 	 * 示例：`kebab-case`
 	 */
 	object KebabCase : LetterCase {
@@ -300,6 +319,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个连接线分隔，所有单词全部大写。
+	 *
 	 * 示例：`KEBAB-UPPER-CASE`
 	 */
 	object KebabUpperCase : LetterCase {
@@ -313,6 +333,7 @@ interface LetterCase {
 
 	/**
 	 * 以单个连接线分隔。
+	 *
 	 * 示例：`Hyphen-words`
 	 */
 	object HyphenWords : LetterCase {
@@ -323,9 +344,12 @@ interface LetterCase {
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-")
 		override fun joinToString(value: Sequence<String>) = value.joinToString("-")
 	}
+	//endregion
 
+	//region Path-like Letter Cases
 	/**
 	 * 以单个点分隔的路径。
+	 *
 	 * 示例：`doc.path`
 	 */
 	object ReferencePath : LetterCase {
@@ -339,6 +363,7 @@ interface LetterCase {
 
 	/**
 	 * 以斜线分隔的路径。兼容开始和结尾的斜线。
+	 *
 	 * 示例：`linux/path`
 	 */
 	object LinuxPath:LetterCase{
@@ -352,6 +377,7 @@ interface LetterCase {
 
 	/**
 	 * 以反斜线分隔的路径。兼容开始和结尾的反斜线。
+	 *
 	 * 示例：`windows\path`
 	 */
 	object WindowsPath:LetterCase{

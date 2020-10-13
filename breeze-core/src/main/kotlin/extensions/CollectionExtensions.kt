@@ -114,45 +114,43 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 /**
  * 判断当前序列是否为空。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
-inline fun <T> Sequence<T>.isEmpty() = !this.iterator().hasNext()
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+inline fun <T> Sequence<T>.isEmpty(): Boolean {
+	return !this.iterator().hasNext()
+}
 
 /**
  * 判断当前序列是否不为空。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
-inline fun <T> Sequence<T>.isNotEmpty() = this.iterator().hasNext()
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
+	return this.iterator().hasNext()
+}
 
 
 /**
  * 如果当前数组不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
-inline fun <T> Array<out T>.orNull(): Array<out T>? = if(this.isEmpty()) null else this
+inline fun <T> Array<out T>.orNull(): Array<out T>? {
+	return if(this.isEmpty()) null else this
+}
 
 /**
  * 如果当前集合不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
-inline fun <T> Collection<T>.orNull(): Collection<T>? = if(this.isEmpty()) null else this
-
-/**
- * 如果当前列表不为空，则返回本身，否则返回null。
- */
-@JvmSynthetic
-inline fun <T> List<T>.orNull(): List<T>? = if(this.isEmpty()) null else this
-
-/**
- * 如果当前集不为空，则返回本身，否则返回null。
- */
-@JvmSynthetic
-inline fun <T> Set<T>.orNull(): Set<T>? = if(this.isEmpty()) null else this
+inline fun <T> Collection<T>.orNull(): Collection<T>? {
+	return if(this.isEmpty()) null else this
+}
 
 /**
  * 如果当前映射不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
-inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? = if(this.isEmpty()) null else this
+inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? {
+	return if(this.isEmpty()) null else this
+}
 
 
 /**
@@ -184,11 +182,11 @@ inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : 
 //endregion
 
 //region Operation extensions
+//注意：某些具体的实现类的equals方法与这个方法是等效的
 /**
  * 判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。
  */
 infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
-	//NOTE 某些具体的实现类的equals方法与这个方法应是等效的
 	return this == other || this.size == other.size && (this zip other).all { (a, b) -> a == b }
 }
 
@@ -260,107 +258,68 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in 
 /**
  * 判断当前数组是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前序列是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前序列是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前数组是否以指定元素结束。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素结束。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素结束。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素结束。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
-
-
-/**
- * 根据指定路径查询当前数组，返回匹配的路径-值映射。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * 注意这个方法不进行递归查找，如需使用多级路径进行递归查找，请使用[deepQuery]。
- */
-fun <T> Array<*>.query(path: String): Map<String, T> = this.query0(path)
-
-/**
- * 根据指定路径查询当前集合，返回匹配的路径-值映射。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * 注意这个方法不进行递归查找，如需使用多级路径进行递归查找，请使用[deepQuery]。
- */
-fun <T> Iterable<*>.query(path: String): Map<String, T> = this.query0(path)
-
-/**
- * 根据指定路径查询当前映射，返回匹配的路径-值映射。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 注意返回映射的值的类型应当与指定的泛型类型一致，否则会发生异常。
- * 注意这个方法不进行递归查找，如需使用多级路径进行递归查找，请使用[deepQuery]。
- */
-fun <T> Map<*, *>.query(path: String): Map<String, T> = this.query0(path)
-
-private fun <T> Any?.query0(path: String): Map<String, T> {
-	return try {
-		when {
-			path.isPathOfMapLike() -> this.toQueryMap()
-			path.isPathOfListLike() -> this.toQueryMap()
-			path.isPathOfRegex() -> this.collectionSlice(path.substring(3).toRegex()).toQueryMap()
-			path.isPathOfIndices() -> this.collectionSlice(path.toIntRange()).toQueryMap()
-			else -> this.collectionGetOrNull(path).toSingletonQueryMap(path)
-		}
-	} catch(e: Exception) {
-		this.collectionGetOrNull(path).toSingletonQueryMap(path)
-	} as Map<String, T>
-}
 
 
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -368,7 +327,7 @@ fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -1097,17 +1056,23 @@ inline fun <T, reified R> T.toSingletonOrEmpty(): R {
 /**
  * 将当前键值对数组转化为新的可变映射。
  */
-fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
+fun <K, V> Array<out Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
+	return this.toMap(LinkedHashMap())
+}
 
 /**
  * 将当前键值对列表转化为新的可变映射。
  */
-fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
+fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
+	return this.toMap(LinkedHashMap())
+}
 
 /**
  * 将当前键值对序列转化为新的可变映射。
  */
-fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> = this.toMap(LinkedHashMap())
+fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
+	return this.toMap(LinkedHashMap())
+}
 
 
 /**
@@ -1143,17 +1108,23 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 /**
  * 得到指定索引的字符串，如果索引越界，则返回空字符串。
  */
-inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrNull(index) ?: ""
+inline fun Array<out String>.getOrEmpty(index: Int): String {
+	return this.getOrNull(index) ?: ""
+}
 
 /**
  * 得到指定索引的字符串，如果索引越界，则返回空字符串。
  */
-inline fun List<String>.getOrEmpty(index: Int): String = this.getOrNull(index) ?: ""
+inline fun List<String>.getOrEmpty(index: Int): String {
+	return this.getOrNull(index) ?: ""
+}
 
 /**
  * 得到指定键的字符串，如果值为null，则返回空字符串。
  */
-inline fun <K> Map<K, String>.getOrEmpty(key: K): String = this[key] ?: ""
+inline fun <K> Map<K, String>.getOrEmpty(key: K): String {
+	return this[key] ?: ""
+}
 
 
 /**
@@ -1211,12 +1182,16 @@ inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWh
 /**
  * 过滤当前数组中为空字符串的元素。
  */
-inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> = this.filterNotEmptyTo(ArrayList())
+inline fun <T : CharSequence> Array<out T>.filterNotEmpty(): List<T> {
+	return this.filterNotEmptyTo(ArrayList())
+}
 
 /**
  * 过滤当前集合中为空字符串的元素。
  */
-inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> = this.filterNotEmptyTo(ArrayList())
+inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> {
+	return this.filterNotEmptyTo(ArrayList())
+}
 
 /**
  * 过滤当前映射中值为空字符串的键值对。
@@ -1230,7 +1205,9 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotEmpty(): Map<K, V>
 /**
  * 过滤当前序列中为空字符串的元素。
  */
-inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> = this.filter { it.isNotEmpty() }
+inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> {
+	return this.filter { it.isNotEmpty() }
+}
 
 
 /**
@@ -1253,12 +1230,16 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNot
 /**
  * 过滤当前数组中为空白字符串的元素。
  */
-inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> = this.filterNotBlankTo(ArrayList())
+inline fun <T : CharSequence> Array<out T>.filterNotBlank(): List<T> {
+	return this.filterNotBlankTo(ArrayList())
+}
 
 /**
  * 过滤当前集合中为空白字符串的元素。
  */
-inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> = this.filterNotBlankTo(ArrayList())
+inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> {
+	return this.filterNotBlankTo(ArrayList())
+}
 
 /**
  * 过滤当前映射中值为空白字符串的键值对。
@@ -1272,7 +1253,9 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotBlank(): Map<K, V>
 /**
  * 过滤当前序列中为空白字符串的元素。
  */
-inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> = this.filter { it.isNotBlank() }
+inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> {
+	return this.filter { it.isNotBlank() }
+}
 
 
 /**
@@ -1296,13 +1279,17 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNot
  * 过滤当前数组中为null或空字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Array<out T?>.filterNotNullOrEmpty(): List<T> = this.filterNotNullOrEmptyTo(ArrayList())
+inline fun <T : CharSequence> Array<out T?>.filterNotNullOrEmpty(): List<T> {
+	return this.filterNotNullOrEmptyTo(ArrayList())
+}
 
 /**
  * 过滤当前集合中为null或空字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrEmpty(): List<T> = this.filterNotNullOrEmptyTo(ArrayList())
+inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrEmpty(): List<T> {
+	return this.filterNotNullOrEmptyTo(ArrayList())
+}
 
 /**
  * 过滤当前映射中值为null或空字符串的键值对。
@@ -1318,7 +1305,9 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrEmpty(): Map
  * 过滤当前序列中为null或空字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrEmpty(): Sequence<T> = this.filter { it.isNotNullOrEmpty() } as Sequence<T>
+inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrEmpty(): Sequence<T> {
+	return this.filter { it.isNotNullOrEmpty() } as Sequence<T>
+}
 
 
 /**
@@ -1344,13 +1333,17 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNo
  * 过滤当前数组中为null或空白字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Array<out T?>.filterNotNullOrBlank(): List<T> = this.filterNotNullOrBlankTo(ArrayList())
+inline fun <T : CharSequence> Array<out T?>.filterNotNullOrBlank(): List<T> {
+	return this.filterNotNullOrBlankTo(ArrayList())
+}
 
 /**
  * 过滤当前集合中为null或空白字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrBlank(): List<T> = this.filterNotNullOrBlankTo(ArrayList())
+inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrBlank(): List<T> {
+	return this.filterNotNullOrBlankTo(ArrayList())
+}
 
 /**
  * 过滤当前映射中值为null或空白字符串的键值对。
@@ -1366,7 +1359,9 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrBlank(): Map
  * 过滤当前序列中为null或空白字符串的元素。
  */
 @UselessCallOnNotNullType
-inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrBlank(): Sequence<T> = this.filter { it.isNotNullOrBlank() } as Sequence<T>
+inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrBlank(): Sequence<T> {
+	return this.filter { it.isNotNullOrBlank() } as Sequence<T>
+}
 
 
 /**

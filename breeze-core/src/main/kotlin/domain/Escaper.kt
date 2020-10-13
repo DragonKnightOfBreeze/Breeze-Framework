@@ -3,6 +3,9 @@
 
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
+
+//参考：
 //com.google.common.escape.Escaper
 
 /**
@@ -11,13 +14,14 @@ package com.windea.breezeframework.core.domain
  * 转义器用于基于指定的（语言）规则，转义和反转义字符串。
  * 注意：不考虑转义特殊的Unicode字符。
  */
+@ComponentMarker
 interface Escaper {
 	fun escape(value: String): String
 
 	fun unescape(value: String): String
 
 	companion object {
-		//不进行注册操作：没有需要注册中心的相关方法
+		//不需要进行注册
 		//不验证escapeChars和escapedStrings长度是否一致：交由底层负责
 
 		private fun escapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
@@ -138,7 +142,7 @@ interface Escaper {
 	/**
 	 * 换行转义器。
 	 *
-	 * 将换行符`\n`转义。
+	 * 转义换行符`\n`。
 	 */
 	object LineBreakEscaper : Escaper {
 		override fun escape(value: String) = value.replace("\n", "\\n")
@@ -148,7 +152,7 @@ interface Escaper {
 	/**
 	 * Html换行转义器。
 	 *
-	 * 将换行符`\n`转义为`<br>`。
+	 * 转义换行符`\n`为`<br>`。
 	 */
 	object HtmlLineBreakEscaper : Escaper {
 		var escapedTag = "<br>"

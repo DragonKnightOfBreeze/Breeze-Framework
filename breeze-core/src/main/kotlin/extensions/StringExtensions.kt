@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter.*
 import java.util.*
 import kotlin.contracts.*
 
+//参考：
 //org.apache.commons.lang3.StringUtils
 //org.springframework.util.StringUtils
 
@@ -30,41 +31,31 @@ import kotlin.contracts.*
  * 移除当前字符串中的指定子字符串。
  * @see com.windea.breezeframework.core.extensions.remove
  */
-operator fun String.minus(other: Any?): String {
-	return if(other == null) this else this.remove(other.toString())
-}
+operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
 
 /**
  * 重复当前字符串到指定次数。
  * @see kotlin.text.repeat
  */
-operator fun String.times(n: Int): String {
-	return this.repeat(n)
-}
+operator fun String.times(n: Int): String = this.repeat(n)
 
 /**
  * 切分当前字符串到指定个数。
  * @see kotlin.text.chunked
  */
-operator fun String.div(n: Int): List<String> {
-	return this.chunked(n)
-}
+operator fun String.div(n: Int): List<String> = this.chunked(n)
 
 /**
  * 得到索引指定范围内的子字符串。
  * @see kotlin.text.slice
  */
-operator fun String.get(indices: IntRange): String {
-	return this.slice(indices)
-}
+operator fun String.get(indices: IntRange): String = this.slice(indices)
 
 /**
  * 得到指定索引范围内的子字符串。
  * @see kotlin.text.substring
  */
-operator fun String.get(startIndex: Int, endIndex: Int): String {
-	return this.substring(startIndex, endIndex)
-}
+operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
 //endregion
 
 //region Optional operation extensions
@@ -145,24 +136,19 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
-infix fun String?.equalsIgnoreCase(other: String?): Boolean {
-	return this.equals(other, true)
-}
+infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
 /**
  * 判断当前字符串中的所有字符是否被另一字符串包含。
  */
-infix fun CharSequence.allIn(other: CharSequence): Boolean {
-	return this in other
-}
+infix fun CharSequence.allIn(other: CharSequence): Boolean = this in other
 
 /**
  * 判断当前字符串中的任意字符是否被另一字符串包含。
  */
-infix fun CharSequence.anyIn(other: CharSequence): Boolean {
-	return this.any { it in other }
-}
+infix fun CharSequence.anyIn(other: CharSequence): Boolean = this.any { it in other }
+
 
 /**
  * 分别依次重复当前字符串中的字符到指定次数。
@@ -845,43 +831,178 @@ fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "...")
 	require(limit > offset) { "Limit must be greater than offset." }
 	return if(length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
 }
-//endregion
 
-//region Convert extensions for raw string
-/**
- * 将当前字符串转为内联文本。
- * @see com.windea.breezeframework.core.extensions.trimWrap
- */
-inline fun String.inline(): String = trimWrap()
+
+private val quotes = charArrayOf('\'', '\"', '`')
 
 /**
- * 将当前字符串转为多行文本。
- * @see kotlin.text.trimIndent
+ * 尝试使用指定的引号包围当前字符串。
+ * 适用于单引号、双引号、反引号。
+ * 默认忽略其中的引号，不对其进行转义。
  */
-inline fun String.multiline(): String = trimIndent()
-
-private val trimWrapRegex = """\s*\R\s*""".toRegex()
-
-/**
- * 去除当前字符串中的所有换行符以及换行符周围的空白。
- */
-fun String.trimWrap(): String {
-	return this.remove(trimWrapRegex)
+fun String.quote(quote: Char, omitQuotes: Boolean = true): String {
+	return when {
+		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
+		this.surroundsWith(quote) -> this
+		omitQuotes -> this.addSurrounding(quote.toString())
+		else -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
+	}
 }
 
 /**
- * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
- * 相对缩进长度默认为0。使用负数表示`"\t"`。
+ * 尝试去除当前字符串两侧的引号。如果没有，则返回自身。
+ * 适用于单引号、双引号、反引号。
+ * 默认忽略其中的引号，不对其进行反转义。
  */
-@JvmOverloads
-fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
-	require(relativeIndentSize in -2..8) { "Relative indent size should between -2 and 8, but was $relativeIndentSize." }
+fun String.unquote(omitQuotes: Boolean = true): String {
+	val quote = this.firstOrNull()
+	return when {
+		quote == null -> this
+		quote !in quotes -> this
+		!this.surroundsWith(quote) -> this
+		omitQuotes -> this.removeSurrounding(quote.toString())
+		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
+	}
+}
+//endregion
 
-	val lines = this.lines()
-	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
-	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
-	return if(trimmedIndent.isEmpty()) trimIndent()
-	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
+//region Smart operation extensions
+private val defaultPlaceholder = "{" to "}"
+
+/**
+ * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
+ *
+ * @see FormatType
+ */
+@UnstableApi
+fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
+	return type.formatter(this, args, locale, placeholder)
+}
+
+
+/**
+ * 根据指定的转义器，转义当前字符串。
+ *
+ * @see Escaper
+ */
+fun String.escapeBy(escaper: Escaper): String {
+	return escaper.escape(this)
+}
+
+/**
+ * 根据指定的转义器，反转义当前字符串。
+ *
+ * @see Escaper
+ */
+fun String.unescapeBy(escaper: Escaper): String {
+	return escaper.unescape(this)
+}
+
+
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
+fun String.toRegexBy(type: MatchType): Regex {
+	return type.regexTransform(this).toRegex()
+}
+
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
+fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
+	return type.regexTransform(this).toRegex(option)
+}
+
+/**
+ * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ */
+fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
+	return type.regexTransform(this).toRegex(options)
+}
+
+
+/**
+ * 得到当前字符串的字母格式。
+ */
+val String.letterCase: LetterCase? get() = LetterCase.infer(this)
+
+/**
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
+ *
+ * @see LetterCase
+ */
+fun String.splitBy(letterCase: LetterCase): List<String> {
+	return letterCase.split(this)
+}
+
+/**
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
+ *
+ * @see LetterCase
+ */
+fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+	return letterCase.splitToSequence(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Sequence<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，切换当前字符串的格式。
+ *
+ * @see LetterCase
+ */
+fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+}
+
+/**
+ * 根据指定的字母格式，切换当前字符串的格式。可以自动推导出当前字符串的字母格式，
+ *
+ * @see LetterCase
+ */
+fun String.switchCaseBy(targetLetterCase: LetterCase): String {
+	val sourceLetterCase = this.letterCase ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
+	return switchCaseBy(sourceLetterCase, targetLetterCase)
+}
+
+
+//TODO
+
+fun String.splitBy(referenceCase: ReferenceCase): List<String> {
+	return referenceCase.splitter(this)
+}
+
+fun Iterable<CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
+	return referenceCase.joiner(this)
+}
+
+fun Array<out CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
+	return referenceCase.arrayJoiner(this)
 }
 //endregion
 
@@ -1171,5 +1292,188 @@ inline fun String.toColorOrNull(): Color? {
  */
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
+}
+//endregion
+
+//region Raw string convert extensions
+/**
+ * 将当前字符串转为内联文本。
+ * @see com.windea.breezeframework.core.extensions.trimWrap
+ */
+inline fun String.inline(): String = trimWrap()
+
+/**
+ * 将当前字符串转为多行文本。
+ * @see kotlin.text.trimIndent
+ */
+inline fun String.multiline(): String = trimIndent()
+
+private val trimWrapRegex = """\s*\R\s*""".toRegex()
+
+/**
+ * 去除当前字符串中的所有换行符以及换行符周围的空白。
+ */
+fun String.trimWrap(): String {
+	return this.remove(trimWrapRegex)
+}
+
+/**
+ * 去除当前字符串的首尾空白行，然后基于之前的尾随空白行的缩进，尝试去除每一行的缩进。
+ * 相对缩进长度默认为0。使用负数表示`"\t"`。
+ */
+@JvmOverloads
+fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
+	require(relativeIndentSize in -2..8) { "Relative indent size should between -2 and 8, but was $relativeIndentSize." }
+
+	val lines = this.lines()
+	val additionalIndent = if(relativeIndentSize > 0) " " * relativeIndentSize else "\t" * relativeIndentSize
+	val trimmedIndent = lines.last().ifNotBlank { "" } + additionalIndent
+	return if(trimmedIndent.isEmpty()) trimIndent()
+	else lines.dropBlank().dropLastBlank().joinToString("\n") { it.removePrefix(trimmedIndent) }
+}
+//endregion
+
+//region Text convert extensions
+/**
+ * 将当前对象转化成文本。
+ * * 如果当前对象是空值，则返回空字符串。
+ * * 如果存在转化方法，则使用该方法将当前对象转化为字符串。
+ */
+fun <T : Any> T?.toText(transform: ((T) -> String)? = null): String {
+	return if(this == null) "" else if(transform != null) transform(this) else toString()
+}
+
+/**
+ * 将当前布尔值转换成文本。
+ * * 如果当前对象是空值，则返回空字符串。
+ */
+fun Boolean?.toText(trueValue: String, falseValue: String): String {
+	return if(this == null) "" else if(this) trueValue else falseValue
+}
+
+
+/**
+ * 将当前数组拼接并转化成文本。
+ * 默认忽略空数组，忽略空元素，没有缩进。
+ * * 允许指定前缀、后缀、分隔符和缩进。
+ * * 如果忽略空数组，且元素全部为空值，则返回空字符串。
+ * * 如果忽略空元素，且元素为空值，则忽略该元素。
+ * * 如果存在转化方法，则使用该方法将元素转化为字符串。
+ */
+fun <T : Any> Array<out T?>.joinToText(
+	separator: CharSequence = ", ",
+	prefix: CharSequence = "",
+	postfix: CharSequence = "",
+	indent: CharSequence = "",
+	omitEmpty: Boolean = true,
+	omitEmptyElement: Boolean = true,
+	transform: ((T) -> CharSequence)? = null,
+): String {
+	var result = buildString {
+		var count = 0
+		for(element in this@joinToText) {
+			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()
+			if(omitEmptyElement && snippet.isNullOrEmpty()) continue
+			if(count++ > 0) append(separator)
+			append(snippet)
+		}
+	}
+	if(indent.isNotEmpty()) result = result.prependIndent(indent.toString())
+	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
+	return result
+}
+
+/**
+ * 将当前集合拼接并转化成文本。
+ * 默认忽略空集合，忽略空元素，没有缩进。
+ * * 允许指定前缀、后缀、分隔符和缩进。
+ * * 如果忽略空集合，且元素全部为空值，则返回空字符串。
+ * * 如果忽略空元素，且元素为空值，则忽略该元素。
+ * * 如果存在转化方法，则使用该方法将元素转化为字符串。
+ */
+fun <T : Any> Iterable<T?>.joinToText(
+	separator: CharSequence = ", ",
+	prefix: CharSequence = "",
+	postfix: CharSequence = "",
+	indent: CharSequence = "",
+	omitEmpty: Boolean = true,
+	omitEmptyElement: Boolean = true,
+	transform: ((T) -> CharSequence)? = null,
+): String {
+	var result = buildString {
+		var count = 0
+		for(element in this@joinToText) {
+			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()
+			if(omitEmptyElement && snippet.isNullOrEmpty()) continue
+			if(count++ > 0) append(separator)
+			append(snippet)
+		}
+	}
+	if(indent.isNotEmpty()) result = result.prependIndent(indent.toString())
+	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
+	return result
+}
+
+/**
+ * 将当前映射拼接并转化成文本。
+ * 默认忽略空映射，忽略空值，没有缩进。
+ * * 允许指定前缀、后缀、分隔符和缩进。
+ * * 如果忽略空映射，且键值对的值全部为空值，则返回空字符串。
+ * * 如果忽略空值，且键值对的值为空值，则忽略该键值对。
+ * * 如果存在转化方法，则使用该方法将键值对转化为字符串。
+ */
+fun <K, V> Map<K, V>.joinToText(
+	separator: CharSequence = ", ",
+	prefix: CharSequence = "",
+	postfix: CharSequence = "",
+	indent: CharSequence = "",
+	omitEmpty: Boolean = true,
+	omitEmptyValue: Boolean = true,
+	transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+): String {
+	var result = buildString {
+		var count = 0
+		for(entry in this@joinToText) {
+			val valueSnippet = entry.value?.toString()
+			if(omitEmptyValue && valueSnippet.isNullOrEmpty()) continue
+			val snippet = if(transform == null) entry.toString() else transform(entry)
+			if(count++ > 0) append(separator)
+			append(snippet)
+		}
+	}
+	if(indent.isNotEmpty()) result = result.prependIndent(indent.toString())
+	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
+	return result
+}
+
+/**
+ * 将当前序列拼接并转化成文本。
+ * 默认忽略空序列，忽略空元素，没有缩进。
+ * * 允许指定前缀、后缀、分隔符和缩进。
+ * * 如果忽略空序列，且元素全部为空值，则返回空字符串。
+ * * 如果忽略空元素，且元素为空值，则忽略该元素。
+ * * 如果存在转化方法，则使用该方法将元素转化为字符串。
+ */
+fun <T : Any> Sequence<T?>.joinToText(
+	separator: CharSequence = ", ",
+	prefix: CharSequence = "",
+	postfix: CharSequence = "",
+	indent: CharSequence = "",
+	omitEmpty: Boolean = true,
+	omitEmptyElement: Boolean = true,
+	transform: ((T) -> CharSequence)? = null,
+): String {
+	var result = buildString {
+		var count = 0
+		for(element in this@joinToText) {
+			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()
+			if(omitEmptyElement && snippet.isNullOrEmpty()) continue
+			if(count++ > 0) append(separator)
+			append(snippet)
+		}
+	}
+	if(indent.isNotEmpty()) result = result.prependIndent(indent.toString())
+	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
+	return result
 }
 //endregion

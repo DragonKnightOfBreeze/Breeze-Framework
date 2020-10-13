@@ -7,6 +7,12 @@ import java.io.*
 
 /**
  * Represents a tuple of five values.
+ *
+ * @see Pair
+ * @see Triple
+ * @see Quadruple
+ * @see Quintuple
+ *
  */
 data class Quintuple<out A, out B, out C, out D, out E>(
 	val first: A,

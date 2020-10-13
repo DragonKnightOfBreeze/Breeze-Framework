@@ -25,17 +25,16 @@ annotation class AllOpen
 annotation class NoArg
 
 /**
- * When applied to method X specifies that X defines a Todo method.
+ * Specifies that this function should not be called directly without inlining.
+ * This annotation is a placeholder of [kotlin.internal.InlineOnly].
  */
-@MustBeDocumented
-@Target(FUNCTION)
+@Target(FUNCTION, PROPERTY, PROPERTY_GETTER, PROPERTY_SETTER)
 @Retention(BINARY)
-@DslMarker
-annotation class TodoMarker
+annotation class InlineOnly
 
 /**
  * Marks the annotated declaration as deprecated in common situations.
- * While comparing to [Deprecated], this annotation do not get an IDE waring.
+ * While comparing to [Deprecated], this annotation do not get an IDE warning.
  */
 @MustBeDocumented
 @Target(CLASS, FUNCTION, PROPERTY, ANNOTATION_CLASS, CONSTRUCTOR, PROPERTY_SETTER, PROPERTY_GETTER, TYPEALIAS)
@@ -46,9 +45,22 @@ annotation class WeakDeprecated(
 
 
 /**
- * Specifies that this function should not be called directly without inlining.
- * This annotation is a placeholder of [kotlin.internal.InlineOnly].
+ * 当应用到方法X时，表示X定义了一个TODO方法。
+ *
+ * When applied to method X specifies that X defines a Todo method.
  */
-@Target(FUNCTION, PROPERTY, PROPERTY_GETTER, PROPERTY_SETTER)
+@MustBeDocumented
+@Target(FUNCTION)
 @Retention(BINARY)
-annotation class InlineOnly
+annotation class TodoMarker
+
+/**
+ * 当应用到接口或类X时，表示X定义了一个组件。
+ * 组件是可以扩展的枚举，一般情况下，需要注册以被正确启用。
+ *
+ * When applied to interface or class X specifies that X defines a component.
+ * Component is an extensible enumeration, normally, it should be registered to be enabled correctly.
+ */
+@MustBeDocumented
+@Target(CLASS)
+annotation class ComponentMarker

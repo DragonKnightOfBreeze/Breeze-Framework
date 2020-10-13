@@ -5,12 +5,16 @@
 
 package com.windea.breezeframework.core.domain
 
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
+
+//参考：
+//org.springframework.cglib.core.Converter
 
 //TODO 支持泛型类型
 
@@ -19,6 +23,7 @@ import java.util.*
  *
  * 转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
  */
+@ComponentMarker
 interface Converter<T, R> {
 	/**
 	 * 源类型和目标类型的类型对。
@@ -26,31 +31,23 @@ interface Converter<T, R> {
 	val typePair: Pair<Class<T>, Class<R>>
 
 	/**
-	 * 转化指定的对象。如果转化失败，这抛出异常。
+	 * 转化指定的对象。如果转化失败，则抛出异常。
 	 */
 	fun convert(value: T): R
 
 	/**
-	 * 转化指定的对象。如果转化失败，这返回null。
+	 * 转化指定的对象。如果转化失败，则返回null。
 	 */
 	fun convertOrNull(value: T): R? {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
 	companion object {
-		private val converters = mutableListOf<Converter<*, *>>()
-
-		init {
-			registerDefaultConverters()
-			registerExtendedStringConverters()
-			registerIoConverters()
-		}
-
 		/**
 		 * 注册转化器。
 		 */
 		@JvmStatic fun <T, R> register(converter: Converter<T, R>) {
-			converters += converter
+			converterRegistry += converter
 		}
 
 		/**
@@ -69,7 +66,7 @@ interface Converter<T, R> {
 					value == null -> null as T
 					targetType.isAssignableFrom(value.javaClass) -> value as T
 					else -> {
-						for(converter in converters) {
+						for(converter in converterRegistry) {
 							val (sType, tType) = converter.typePair
 							if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
 								return (converter as Converter<Any?, Any?>).convert(value) as T
@@ -98,7 +95,7 @@ interface Converter<T, R> {
 				value == null -> null
 				targetType.isAssignableFrom(value.javaClass) -> value as T
 				else -> {
-					for(converter in converters) {
+					for(converter in converterRegistry) {
 						val (sType, tType) = converter.typePair
 						if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
 							return (converter as Converter<Any?, Any?>).convertOrNull(value) as T?
@@ -111,6 +108,15 @@ interface Converter<T, R> {
 
 		private fun <T> throwException(value: Any?, targetType: Class<T>, cause: Throwable? = null): Nothing {
 			throw IllegalArgumentException("Cannot convert '${value}' to type '${targetType.name}'.", cause)
+		}
+
+
+		private val converterRegistry = mutableListOf<Converter<*, *>>()
+
+		init {
+			registerDefaultConverters()
+			registerExtendedStringConverters()
+			registerIoConverters()
 		}
 
 		private fun registerDefaultConverters() {
@@ -204,6 +210,8 @@ interface Converter<T, R> {
 			register(UrlToUriConverter)
 		}
 	}
+
+	//不公开默认注册的转换器：数量过多
 
 	//region Default Converters
 	private object AnyToStringConverter : Converter<Any, String> {

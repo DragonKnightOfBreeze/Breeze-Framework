@@ -7,6 +7,11 @@ import java.io.*
 
 /**
  * Represents a tuple of four values.
+ *
+ * @see Pair
+ * @see Triple
+ * @see Quadruple
+ * @see Quintuple
  */
 data class Quadruple<out A, out B, out C, out D>(
 	val first: A,
