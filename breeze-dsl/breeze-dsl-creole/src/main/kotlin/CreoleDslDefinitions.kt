@@ -114,7 +114,7 @@ interface CreoleDslDefinitions {
 	/**Creole文本块。*/
 	@CreoleDslMarker
 	class TextBlock @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : TopDslElement {
 		override fun toString() = text
 	}
@@ -130,7 +130,7 @@ interface CreoleDslDefinitions {
 	/**Creole一级标题。*/
 	@CreoleDslMarker
 	class Heading1 @PublishedApi internal constructor(
-		override val text: String
+		override val text: String,
 	) : Heading {
 		override fun toString() = heading(text, 1)
 	}
@@ -138,7 +138,7 @@ interface CreoleDslDefinitions {
 	/**Creole二级标题。*/
 	@CreoleDslMarker
 	class Heading2 @PublishedApi internal constructor(
-		override val text: String
+		override val text: String,
 	) : Heading {
 		override fun toString() = heading(text, 2)
 	}
@@ -146,7 +146,7 @@ interface CreoleDslDefinitions {
 	/**Creole三级标题。*/
 	@CreoleDslMarker
 	class Heading3 @PublishedApi internal constructor(
-		override val text: String
+		override val text: String,
 	) : Heading {
 		override fun toString() = heading(text, 3)
 	}
@@ -154,7 +154,7 @@ interface CreoleDslDefinitions {
 	/**Creole四级标题。*/
 	@CreoleDslMarker
 	class Heading4 @PublishedApi internal constructor(
-		override val text: String
+		override val text: String,
 	) : Heading {
 		override fun toString() = heading(text, 4)
 	}
@@ -162,7 +162,7 @@ interface CreoleDslDefinitions {
 	/**Creole水平分割线。*/
 	@CreoleDslMarker
 	class HorizontalLine @PublishedApi internal constructor(
-		val type: HorizontalLineType = HorizontalLineType.Normal
+		val type: HorizontalLineType = HorizontalLineType.Normal,
 	) : TopDslElement {
 		override fun toString() = type.marker.repeat(markerCount)
 	}
@@ -170,7 +170,7 @@ interface CreoleDslDefinitions {
 	/**Creole水平标题。*/
 	@CreoleDslMarker
 	class HorizontalTitle @PublishedApi internal constructor(
-		val text: String, val type: HorizontalLineType = HorizontalLineType.Normal
+		val text: String, val type: HorizontalLineType = HorizontalLineType.Normal,
 	) : TopDslElement {
 		override fun toString() = type.marker.repeat(markerCount).let { "$it$text$it" }
 	}
@@ -186,7 +186,7 @@ interface CreoleDslDefinitions {
 	/**Creole列表节点。*/
 	@CreoleDslMarker
 	abstract class ListNode(
-		internal val prefixMarkers: String, val text: String
+		internal val prefixMarkers: String, val text: String,
 	) : IDslElement {
 		val nodes: MutableList<ListNode> = mutableListOf()
 
@@ -204,7 +204,7 @@ interface CreoleDslDefinitions {
 	/**Creole树。*/
 	@CreoleDslMarker
 	class Tree @PublishedApi internal constructor(
-		val title: String
+		val title: String,
 	) : TopDslElement {
 		val nodes: MutableList<TreeNode> = mutableListOf()
 
@@ -214,7 +214,7 @@ interface CreoleDslDefinitions {
 	/**Creole树节点。*/
 	@CreoleDslMarker
 	class TreeNode @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : IDslElement {
 		val nodes: MutableList<TreeNode> = mutableListOf()
 
@@ -286,7 +286,7 @@ interface CreoleDslDefinitions {
 	/**Creole表格列。*/
 	@CreoleDslMarker
 	open class TableColumn @PublishedApi internal constructor(
-		val text: String = emptyColumnText
+		val text: String = emptyColumnText,
 	) : IDslElement {
 		var color: String? = null
 		var alignment: TableAlignment = TableAlignment.None //only for columns in table header
@@ -296,7 +296,7 @@ interface CreoleDslDefinitions {
 			return "$colorSnippet$text"
 		}
 
-		fun toStringInHeader():String {
+		fun toStringInHeader(): String {
 			val colorSnippet = color?.let { "<$color> " }.orEmpty()
 			val (l, r) = alignment.textPair
 			return "$l $colorSnippet$text $r"
@@ -306,7 +306,7 @@ interface CreoleDslDefinitions {
 	/**Creole水平线的类型。*/
 	@CreoleDslMarker
 	enum class HorizontalLineType(
-		internal val marker: Char
+		internal val marker: Char,
 	) {
 		Normal('-'), Double('='), Strong('_'), Dotted('.')
 	}
@@ -314,7 +314,7 @@ interface CreoleDslDefinitions {
 	/**Creole表格的对齐方式。*/
 	@CreoleDslMarker
 	enum class TableAlignment(
-		internal val textPair: Pair<String, String>
+		internal val textPair: Pair<String, String>,
 	) {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}

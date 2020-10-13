@@ -10,10 +10,13 @@ import com.windea.breezeframework.core.annotations.*
 enum class Dimension {
 	@Name("点")
 	Point,
+
 	@Name("长度")
 	Length,
+
 	@Name("宽度")
 	Width,
+
 	@Name("高度")
 	Height
 }

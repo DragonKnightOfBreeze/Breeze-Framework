@@ -16,7 +16,7 @@ import java.util.*
  * Yaml映射器。
  */
 class YamlMapper(
-	val config: Config = Config.Default
+	val config: Config = Config.Default,
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
@@ -35,13 +35,13 @@ class YamlMapper(
 	data class Config(
 		val indent: String = "  ",
 		val indicatorIndent: String = "",
-		val lineSeparator:String = "\n",
+		val lineSeparator: String = "\n",
 		val doubleQuoted: Boolean = true,
 		val unquoted: Boolean = true,
 		val blockStyle: Boolean = true,
 		val literalStyle: Boolean = true,
 		val trimSpaces: Boolean = false,
-		val prettyFormat: Boolean = false
+		val prettyFormat: Boolean = false,
 	) : DataEntity {
 		init {
 			require(lineSeparator in validLineSeparators) { "Line Separator should be '\\n', '\\r' or '\\r\\n'." }
@@ -57,7 +57,7 @@ class YamlMapper(
 		class Builder : DataBuilder<Config> {
 			var indent: String = "  "
 			var indicatorIndent: String = ""
-			var lineSeparator:String = "\n"
+			var lineSeparator: String = "\n"
 			var doubleQuoted: Boolean = true
 			var unquoted: Boolean = true
 			var blockStyle: Boolean = true
@@ -75,7 +75,7 @@ class YamlMapper(
 	private val indicatorIndent = config.indicatorIndent
 	private val quote = if(config.doubleQuoted) '\"' else '\''
 	private val lineSeparator = config.lineSeparator
-	private val separator =  ": " //冒号左边必须存在一个空格
+	private val separator = ": " //冒号左边必须存在一个空格
 	private val valueSeparator = if(config.prettyFormat) ",$lineSeparator" else if(config.trimSpaces) "," else ", "
 	private val arrayPrefix = if(config.prettyFormat) "[$lineSeparator" else "["
 	private val arraySuffix = if(config.prettyFormat) "$lineSeparator]" else "]"
@@ -121,33 +121,33 @@ class YamlMapper(
 		return this.toString().doQuote()
 	}
 
-	private fun Array<*>.mapArray():String {
+	private fun Array<*>.mapArray(): String {
 		return this.joinToString(valueSeparator) { it.mapYaml() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
 	}
 
-	private fun Iterable<*>.mapArray():String {
+	private fun Iterable<*>.mapArray(): String {
 		return this.joinToString(valueSeparator) { it.mapYaml() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
 	}
 
-	private fun Sequence<*>.mapArray():String {
+	private fun Sequence<*>.mapArray(): String {
 		return this.joinToString(valueSeparator) { it.mapYaml() }.doIndent().let { "$arrayPrefix$it$arraySuffix" }
 	}
 
-	private fun Map<*, *>.mapObject():String {
+	private fun Map<*, *>.mapObject(): String {
 		return this.joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 			.doIndent().let { "$objectPrefix$it$objectSuffix" }
 	}
 
-	private fun Any.mapObject():String {
+	private fun Any.mapObject(): String {
 		return ObjectMapper.map(this).joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 			.doIndent().let { "$objectPrefix$it$objectSuffix" }
 	}
 
-	private fun Any?.mapKey():String {
+	private fun Any?.mapKey(): String {
 		return this.toString().doQuote()
 	}
 
-	private fun Any?.mapValue():String {
+	private fun Any?.mapValue(): String {
 		return this.mapYaml()
 	}
 

@@ -13,7 +13,7 @@ import java.lang.reflect.*
  * Xml映射器。
  */
 class XmlMapper(
-	val config: Config = Config.Default
+	val config: Config = Config.Default,
 ) : Mapper {
 	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
@@ -27,12 +27,12 @@ class XmlMapper(
 	 * @property prettyFormat 是否使用良好的格式进行输出。默认为`false`。
 	 */
 	data class Config(
-		val indent:String = "  ",
-		val lineSeparator:String = "\n",
-		val doubleQuoted:Boolean = true,
-		val trimSpaces:Boolean = true,
-		val autoCloseTag:Boolean = false,
-		val prettyFormat:Boolean = false
+		val indent: String = "  ",
+		val lineSeparator: String = "\n",
+		val doubleQuoted: Boolean = true,
+		val trimSpaces: Boolean = true,
+		val autoCloseTag: Boolean = false,
+		val prettyFormat: Boolean = false,
 	) : DataEntity {
 		init {
 			require(lineSeparator in validLineSeparators) { "Line Separator should be '\\n', '\\r' or '\\r\\n'." }
@@ -46,14 +46,14 @@ class XmlMapper(
 		}
 
 		class Builder : DataBuilder<Config> {
-			var indent:String = "  "
-			var lineSeparator:String = "\n"
-			var doubleQuoted:Boolean = true
-			var trimSpaces:Boolean = false
-			var autoCloseTag:Boolean = false
-			var prettyFormat:Boolean = false
+			var indent: String = "  "
+			var lineSeparator: String = "\n"
+			var doubleQuoted: Boolean = true
+			var trimSpaces: Boolean = false
+			var autoCloseTag: Boolean = false
+			var prettyFormat: Boolean = false
 
-			override fun build() = Config(indent, lineSeparator, doubleQuoted,  trimSpaces, autoCloseTag, prettyFormat)
+			override fun build() = Config(indent, lineSeparator, doubleQuoted, trimSpaces, autoCloseTag, prettyFormat)
 		}
 	}
 

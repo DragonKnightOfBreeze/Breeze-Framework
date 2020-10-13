@@ -8,5 +8,5 @@ data class CalendarField(
 	/**字段。*/
 	val field: Int,
 	/**数量。*/
-	val amount: Int
+	val amount: Int,
 )

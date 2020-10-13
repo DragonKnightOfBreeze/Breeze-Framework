@@ -22,7 +22,7 @@ import kotlin.reflect.*
  * * 如果类型相等且已指定属性，则参照其属性。
  * * 对于数组类型的属性，参照其内容。
  */
-fun <T : Any> equalsBy(target:T?, other:Any?, deepOp:Boolean = true, selector:T.() -> Array<*>):Boolean {
+fun <T : Any> equalsBy(target: T?, other: Any?, deepOp: Boolean = true, selector: T.() -> Array<*>): Boolean {
 	return when {
 		target === other -> true
 		target == null || target.javaClass != other?.javaClass -> false
@@ -43,7 +43,7 @@ fun <T : Any> equalsBy(target:T?, other:Any?, deepOp:Boolean = true, selector:T.
  * * 如果已指定属性，则参照其属性。
  * * 对于数组类型的属性，参照其内容。
  * */
-fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Array<*>):Int {
+fun <T : Any> hashCodeBy(target: T?, deepOp: Boolean = true, selector: T.() -> Array<*>): Int {
 	return when {
 		target == null -> 0
 		else -> with(target.selector()) {
@@ -67,15 +67,17 @@ fun <T : Any> hashCodeBy(target:T?, deepOp:Boolean = true, selector:T.() -> Arra
  * * Kotlin数据类风格的输出：`Foo(bar=123)`。
  * * Java记录风格的输出：`Foo[bar=123]`。
  */
-fun <T : Any> toStringBy(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
-	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<Pair<String,*>>):String {
+fun <T : Any> toStringBy(
+	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
+	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<Pair<String, *>>,
+): String {
 	return when {
 		target == null -> "null"
 		else -> with(target.selector()) {
 			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
 			when {
 				isEmpty() -> "$className$prefix$postfix"
-				else -> joinToString(delimiter, "$className$prefix", postfix) { (n,v)-> "$n=${v.toStringSmartly(deepOp)}" }
+				else -> joinToString(delimiter, "$className$prefix", postfix) { (n, v) -> "$n=${v.toStringSmartly(deepOp)}" }
 			}
 		}
 	}
@@ -93,8 +95,10 @@ fun <T : Any> toStringBy(target:T?, delimiter:String = ", ", prefix:String = "("
  * * Kotlin数据类风格的输出：`Foo(bar=123)`。
  * * Java记录风格的输出：`Foo[bar=123]`。
  */
-fun <T : Any> toStringByReference(target:T?, delimiter:String = ", ", prefix:String = "(", postfix:String = ")",
-	simplifyClassName:Boolean = true, deepOp:Boolean = true, selector:T.() -> Array<KProperty0<*>>):String {
+fun <T : Any> toStringByReference(
+	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
+	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<KProperty0<*>>,
+): String {
 	return when {
 		target == null -> "null"
 		else -> with(target.selector()) {
@@ -107,19 +111,19 @@ fun <T : Any> toStringByReference(target:T?, delimiter:String = ", ", prefix:Str
 	}
 }
 
-private fun Any?.equalsSmartly(other:Any?, deepOp:Boolean = true) = when {
+private fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true) = when {
 	this !is Array<*> || other !is Array<*> -> this == other
 	!deepOp -> this.contentEquals(other)
 	else -> this.contentDeepEquals(other)
 }
 
-private fun Any?.hashCodeSmartly(deepOp:Boolean = true) = when {
+private fun Any?.hashCodeSmartly(deepOp: Boolean = true) = when {
 	this !is Array<*> -> this.hashCode()
 	!deepOp -> this.contentHashCode()
 	else -> this.contentDeepHashCode()
 }
 
-private fun Any?.toStringSmartly(deepOp:Boolean = true) = when {
+private fun Any?.toStringSmartly(deepOp: Boolean = true) = when {
 	this !is Array<*> -> this.toString()
 	!deepOp -> this.contentToString()
 	else -> this.contentDeepToString()

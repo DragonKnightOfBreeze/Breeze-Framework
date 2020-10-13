@@ -11,7 +11,7 @@ import java.util.*
 
 /**格式化类型。*/
 enum class FormatType(
-	internal val formatter:(String, Array<out Any?>, Locale?, Pair<String, String>?) -> String
+	internal val formatter: (String, Array<out Any?>, Locale?, Pair<String, String>?) -> String,
 ) {
 	/**
 	 * 基于默认的格式化方式格式化当前字符串。
@@ -54,7 +54,7 @@ enum class FormatType(
 	Log({ string, args, _, _ ->
 		try {
 			string.replaceIndexed("{}") { args[it].toString() }
-		} catch(e:Exception) {
+		} catch(e: Exception) {
 			throw IllegalArgumentException("Mismatched arguments.")
 		}
 	}),
@@ -75,7 +75,7 @@ enum class FormatType(
 			val (prefix, suffix) = placeholder?.map { Regex.escape(it) } ?: defaultPlaceHolder
 			val regex = """$prefix(\d+)$suffix""".toRegex()
 			string.replace(regex) { args[it.groupValues[1].toInt()].toString() }
-		} catch(e:Exception) {
+		} catch(e: Exception) {
 			throw IllegalArgumentException("Mismatched arguments, or invalid index in placeholder.", e)
 		}
 	}),
@@ -95,7 +95,7 @@ enum class FormatType(
 	Named({ string, args, _, placeholder ->
 		try {
 			val argPairs = mutableMapOf<String, Any?>()
-			args.forEach { (it as Pair<String, Any?>).let { (k,v)-> argPairs[k]= v } }
+			args.forEach { (it as Pair<String, Any?>).let { (k, v) -> argPairs[k] = v } }
 			val (prefix, suffix) = placeholder?.map { Regex.escape(it) } ?: defaultPlaceHolder
 			val regex = """$prefix([\w$]+)$suffix""".toRegex()
 			string.replace(regex) { argPairs[it.groupValues[1]].toString() }

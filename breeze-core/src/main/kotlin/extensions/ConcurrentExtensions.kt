@@ -9,7 +9,6 @@ package com.windea.breezeframework.core.extensions
 import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import java.util.concurrent.locks.*
-import kotlin.concurrent.*
 
 /**将当前整数转化为原子类型。*/
 inline fun Int.asAtomic() = AtomicInteger(this)
@@ -31,7 +30,7 @@ inline fun <T> Array<out T>.asAtomic() = AtomicReferenceArray(this)
 
 
 @JvmSynthetic
-inline fun <T> Condition.withAwait(signalAll:Boolean = true, action:() -> T):T {
+inline fun <T> Condition.withAwait(signalAll: Boolean = true, action: () -> T): T {
 	this.await()
 	try {
 		return action()
@@ -41,7 +40,7 @@ inline fun <T> Condition.withAwait(signalAll:Boolean = true, action:() -> T):T {
 }
 
 @JvmSynthetic
-inline fun <T> Semaphore.withAcquire(permits:Int = 1, action:() -> T):T {
+inline fun <T> Semaphore.withAcquire(permits: Int = 1, action: () -> T): T {
 	this.acquire(permits)
 	try {
 		return action()

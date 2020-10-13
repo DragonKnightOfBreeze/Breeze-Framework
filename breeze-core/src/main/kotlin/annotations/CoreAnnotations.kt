@@ -41,7 +41,7 @@ annotation class TodoMarker
 @Target(CLASS, FUNCTION, PROPERTY, ANNOTATION_CLASS, CONSTRUCTOR, PROPERTY_SETTER, PROPERTY_GETTER, TYPEALIAS)
 annotation class WeakDeprecated(
 	val message: String,
-	val replaceWith: ReplaceWith = ReplaceWith("")
+	val replaceWith: ReplaceWith = ReplaceWith(""),
 )
 
 

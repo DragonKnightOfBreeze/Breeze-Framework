@@ -10,6 +10,8 @@ import com.windea.breezeframework.core.extensions.*
 
 /**
  * 单词格式。
+ *
+ * 单词格式用于以某种大小写和分割方式，表示包含一个或多个单词的名字。
  */
 interface LetterCase {
 	/**
@@ -46,7 +48,7 @@ interface LetterCase {
 	companion object {
 		private val letterCases = mutableListOf<LetterCase>()
 
-		init{
+		init {
 			registerDefaultLetterCases()
 		}
 
@@ -87,7 +89,7 @@ interface LetterCase {
 			return this.replace(splitWordsRegex, " $1")
 		}
 
-		private fun registerDefaultLetterCases(){
+		private fun registerDefaultLetterCases() {
 			register(LowerCase)
 			register(UpperCase)
 			register(Capitalized)
@@ -106,7 +108,9 @@ interface LetterCase {
 			register(KebabUpperCase)
 			register(HyphenWords)
 
-			register(DotCase)
+			register(ReferencePath)
+			register(LinuxPath)
+			register(WindowsPath)
 		}
 	}
 
@@ -116,6 +120,7 @@ interface LetterCase {
 	 * 示例：`lowercase`
 	 */
 	object LowerCase : LetterCase {
+		val a = listOf(1,2,3)
 		override val regex = """[a-z]+""".toRegex()
 		override fun split(value: String) = listOf(value)
 		override fun splitToSequence(value: String) = sequenceOf(value)
@@ -310,7 +315,7 @@ interface LetterCase {
 	 * 以单个连接线分隔。
 	 * 示例：`Hyphen-words`
 	 */
-	object HyphenWords: LetterCase {
+	object HyphenWords : LetterCase {
 		override val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
 		override fun split(value: String) = value.split('-')
 		override fun splitToSequence(value: String) = value.splitToSequence('-')
@@ -320,16 +325,42 @@ interface LetterCase {
 	}
 
 	/**
-	 * 以单个点分隔。
-	 * 示例：`doc.case`
+	 * 以单个点分隔的路径。
+	 * 示例：`doc.path`
 	 */
-	object DotCase : LetterCase {
-		override val regex = """[a-zA-Z_{}\[\]$]+(?:\.[a-zA-Z_{}\[\]$]+)+""".toRegex()
+	object ReferencePath : LetterCase {
+		override val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
 		override fun split(value: String) = value.split('.')
 		override fun splitToSequence(value: String) = value.splitToSequence('.')
 		override fun joinToString(value: Array<String>) = value.joinToString(".")
 		override fun joinToString(value: Iterable<String>) = value.joinToString(".")
 		override fun joinToString(value: Sequence<String>) = value.joinToString(".")
+	}
+
+	/**
+	 * 以斜线分隔的路径。兼容开始和结尾的斜线。
+	 * 示例：`linux/path`
+	 */
+	object LinuxPath:LetterCase{
+		override val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
+		override fun split(value: String) = value.trim('/').split('/')
+		override fun splitToSequence(value: String) = value.trim('/').splitToSequence('/')
+		override fun joinToString(value: Array<String>) = value.joinToString("/")
+		override fun joinToString(value: Iterable<String>) = value.joinToString("/")
+		override fun joinToString(value: Sequence<String>) = value.joinToString("/")
+	}
+
+	/**
+	 * 以反斜线分隔的路径。兼容开始和结尾的反斜线。
+	 * 示例：`windows\path`
+	 */
+	object WindowsPath:LetterCase{
+		override val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
+		override fun split(value: String) = value.trim('\\').split('\\')
+		override fun splitToSequence(value: String) = value.trim('\\').splitToSequence('\\')
+		override fun joinToString(value: Array<String>) = value.joinToString("\\")
+		override fun joinToString(value: Iterable<String>) = value.joinToString("\\")
+		override fun joinToString(value: Sequence<String>) = value.joinToString("\\")
 	}
 	//endregion
 }

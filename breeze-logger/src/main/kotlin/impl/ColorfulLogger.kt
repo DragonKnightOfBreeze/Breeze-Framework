@@ -12,7 +12,7 @@ import java.util.*
 
 /**输出彩色文本的日志器。这些彩色文本可在控制台正常显示。*/
 class ColorfulLogger(
-	override val config: LoggerConfig = LoggerConfig()
+	override val config: LoggerConfig = LoggerConfig(),
 ) : Logger {
 	constructor(block: LoggerConfig.() -> Unit) : this(LoggerConfig().apply(block))
 

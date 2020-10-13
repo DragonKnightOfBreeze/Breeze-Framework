@@ -28,7 +28,7 @@ interface XmlDslDefinitions {
 	 */
 	@XmlDslMarker
 	class Statement @PublishedApi internal constructor(
-		val attributes: Map<String, Any?> = mapOf()
+		val attributes: Map<String, Any?> = mapOf(),
 	) : IDslElement {
 		override fun toString(): String {
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
@@ -58,11 +58,11 @@ interface XmlDslDefinitions {
 	 * CData text of [XmlDsl].
 	 */
 	@XmlDslMarker
-	class CData @PublishedApi internal constructor(val text:String) : Node, Wrappable, Indentable {
+	class CData @PublishedApi internal constructor(val text: String) : Node, Wrappable, Indentable {
 		override var wrapContent = true
 		override var indentContent = true
 
-		override fun toString():String {
+		override fun toString(): String {
 			val textSnippet = text.doIndent(indent, wrapContent).doWrap { "$ls$ls$ls" }
 			return "![CDATA[$textSnippet]]>"
 		}
@@ -88,7 +88,7 @@ interface XmlDslDefinitions {
 	@XmlDslMarker
 	class Element @PublishedApi internal constructor(
 		val name: String,
-		val attributes: Map<String, Any?> = mapOf()
+		val attributes: Map<String, Any?> = mapOf(),
 	) : Node, Wrappable, Indentable, WithId {
 		val nodes: MutableList<Node> = mutableListOf()
 		override var wrapContent = true
@@ -97,10 +97,10 @@ interface XmlDslDefinitions {
 
 		operator fun String.unaryPlus() = text(this)
 		operator fun String.unaryMinus() = comment(this)
-		operator fun String.invoke(block:Block<Element>) = element(this, block = block)
-		operator fun String.invoke(vararg args:Arg, block:Block<Element>) = element(this, *args, block = block)
+		operator fun String.invoke(block: Block<Element>) = element(this, block = block)
+		operator fun String.invoke(vararg args: Arg, block: Block<Element>) = element(this, *args, block = block)
 
-		override fun toString():String {
+		override fun toString(): String {
 			val nodesSnippet = nodes.joinToText(ls).doIndent(indent, wrapContent).doWrap { "$ls$it$ls" }
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
 				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(quote)}"

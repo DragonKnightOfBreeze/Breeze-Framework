@@ -13,7 +13,7 @@ import kotlin.annotation.AnnotationTarget.*
 @MustBeDocumented
 @Target(CLASS, PROPERTY, FIELD)
 annotation class Name(
-	vararg val value: String
+	vararg val value: String,
 )
 
 /**
@@ -24,7 +24,7 @@ annotation class Name(
 @MustBeDocumented
 @Target(CLASS, PROPERTY, FIELD)
 annotation class Alias(
-	vararg val value: String
+	vararg val value: String,
 )
 
 /**
@@ -35,5 +35,5 @@ annotation class Alias(
 @MustBeDocumented
 @Target(CLASS, PROPERTY, FIELD, FUNCTION, FILE)
 annotation class Reference(
-	vararg val value:String
+	vararg val value: String,
 )

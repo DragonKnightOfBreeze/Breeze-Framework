@@ -1,5 +1,4 @@
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.utils.*
 
 //配置要用到的插件
 plugins {
@@ -43,16 +42,16 @@ allprojects {
 		testImplementation(kotlin("test-junit"))
 	}
 
-	kotlin{
+	kotlin {
 		explicitApi()
 	}
 
 	//从模块名获取包名并设置为包的前缀
-	val modulePrefix = when{
-		project.parent  != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-",".").replace("-","")
-		else -> project.name.removePrefix("breeze-").replace("-","")
+	val modulePrefix = when {
+		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
+		else -> project.name.removePrefix("breeze-").replace("-", "")
 	}
-	val prefix = when{
+	val prefix = when {
 		project == rootProject -> "com.windea.breezeframework"
 		project.name == "breeze-unstable" -> "com.windea.breezeframework"
 		else -> "com.windea.breezeframework.$modulePrefix"
@@ -180,6 +179,6 @@ subprojects {
 	}
 }
 
-fun String.formatModuleName():String {
+fun String.formatModuleName(): String {
 	return this.split("-").map { it.capitalize() }.joinToString(" ")
 }

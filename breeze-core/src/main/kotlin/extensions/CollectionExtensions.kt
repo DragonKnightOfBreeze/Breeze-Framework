@@ -19,7 +19,7 @@ import kotlin.contracts.*
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
-//region operator extensions
+//region Operator extensions
 /**
  * 重复当前列表中的元素到指定次数。
  * @see com.windea.breezeframework.core.extensions.repeat
@@ -45,105 +45,36 @@ operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
 //endregion
 
-//region common extensions
+//region Element type extensions
 //虽然不知道为什么，但是的确可以这样做 ヾ(*´▽‘*)ﾉ
 
-/**得到当前数组的最为适配的元素类型。*/
+/**
+ * 得到当前数组的最为适配的元素类型。
+ */
 inline val Array<*>.elementType: Type get() = this::class.java.componentType
 
-/**得到当前集合的最为适配的元素类型。*/
+/**
+ * 得到当前集合的最为适配的元素类型。
+ */
 inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
-/**得到当前映射的最为适配的键类型。*/
+/**
+ * 得到当前映射的最为适配的键类型。
+ */
 inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
-/**得到当前映射的最为适配的值类型。*/
+/**
+ * 得到当前映射的最为适配的值类型。
+ */
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 
-/**得到当前序列的最为适配的键类型*/
+/**
+ * 得到当前序列的最为适配的键类型。
+ */
 inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
+//endregion
 
-
-/**判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。*/
-infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
-	//NOTE 某些具体的实现类的equals方法与这个方法应是等效的
-	return this == other || this.size == other.size && (this zip other).all { (a, b) -> a == b }
-}
-
-/**判断两个列表的结构是否递归相等。即，判断长度、元素、元素顺序是否递归相等。*/
-infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
-	return this == other || this.size == other.size && (this zip other).all { (a, b) ->
-		when {
-			a is Array<*> && b is Array<*> -> a contentDeepEquals b
-			a is List<*> && b is List<*> -> a contentDeepEquals b
-			else -> a == b
-		}
-	}
-}
-
-
-/**判断当前数组中的所有元素是否被另一数组包含。*/
-infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
-
-/**判断当前数组中的所有元素是否被另一集合包含。*/
-infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
-
-/**判断当前集合中的所有元素是否被另一数组包含。*/
-infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
-
-/**判断当前集合中的所有元素是否被另一集合包含。*/
-infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
-
-/**判断当前序列中的所有元素是否被另一序列包含。*/
-infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
-
-/**判断当前数组中的任意元素是否被另一数组包含。*/
-infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
-
-/**判断当前数组中的任意元素是否被另一集合包含。*/
-infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
-
-/**判断当前集合中的任意元素是否被另一数组包含。*/
-infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
-
-/**判断当前集合中的任意元素是否被另一集合包含。*/
-infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
-
-/**判断当前序列中的任意元素是否被另一序列包含。*/
-infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
-
-
-/**判断当前数组是否以指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**判断当前数组是否以任意指定元素开始。*/
-inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
-/**判断当前集合是否以指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**判断当前集合是否以任意指定元素开始。*/
-inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
-/**判断当前序列是否以指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**判断当前序列是否以任意指定元素开始。*/
-inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
-/**判断当前数组是否以指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
-
-/**判断当前数组是否以任意指定元素结束。*/
-inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
-
-/**判断当前集合是否以指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
-
-/**判断当前集合是否以任意指定元素结束。*/
-inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
-
-
+//region Optional operation extensions
 /**判断当前数组是否不为null，且不为空。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -222,6 +153,139 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, 
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R {
 	return if(this.isEmpty()) this else transform(this)
 }
+//endregion
+
+//region Operation extensions
+/**
+ * 判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。
+ */
+infix fun <T> List<T>.contentEquals(other: List<T>): Boolean {
+	//NOTE 某些具体的实现类的equals方法与这个方法应是等效的
+	return this == other || this.size == other.size && (this zip other).all { (a, b) -> a == b }
+}
+
+/**
+ * 判断两个列表的结构是否递归相等。即，判断长度、元素、元素顺序是否递归相等。
+ */
+infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
+	return this == other || this.size == other.size && (this zip other).all { (a, b) ->
+		when {
+			a is Array<*> && b is Array<*> -> a contentDeepEquals b
+			a is List<*> && b is List<*> -> a contentDeepEquals b
+			else -> a == b
+		}
+	}
+}
+
+
+/**
+ * 判断当前数组中的所有元素是否被另一数组包含。
+ */
+infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+
+/**
+ * 判断当前数组中的所有元素是否被另一集合包含。
+ */
+infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+
+/**
+ * 判断当前集合中的所有元素是否被另一数组包含。
+ */
+infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+
+/**
+ * 判断当前集合中的所有元素是否被另一集合包含。
+ */
+infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+
+/**
+ * 判断当前序列中的所有元素是否被另一序列包含。
+ */
+infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
+
+/**
+ * 判断当前数组中的任意元素是否被另一数组包含。
+ */
+infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+
+/**
+ * 判断当前数组中的任意元素是否被另一集合包含。
+ */
+infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+
+/**
+ * 判断当前集合中的任意元素是否被另一数组包含。
+ */
+infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+
+/**
+ * 判断当前集合中的任意元素是否被另一集合包含。
+ */
+infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+
+/**
+ * 判断当前序列中的任意元素是否被另一序列包含。
+ */
+infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+
+
+/**
+ * 判断当前数组是否以指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+
+/**
+ * 判断当前数组是否以任意指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+
+/**
+ * 判断当前集合是否以指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+
+/**
+ * 判断当前集合是否以任意指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+
+/**
+ * 判断当前序列是否以指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
+
+/**
+ * 判断当前序列是否以任意指定元素开始。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
+
+/**
+ * 判断当前数组是否以指定元素结束。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
+
+/**
+ * 判断当前数组是否以任意指定元素结束。
+ */
+@Deprecated("Duplicate implementation.",level=DeprecationLevel.HIDDEN)
+inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
+
+/**
+ * 判断当前集合是否以指定元素结束。
+ */
+inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
+
+/**
+ * 判断当前集合是否以任意指定元素结束。
+ */
+inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
 /**得到指定索引的元素，发生异常则得到默认值。*/
@@ -357,9 +421,11 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
  *
  * The default entry format is `$key=$value`.
  */
-fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
+fun <K, V, A : Appendable> Map<K, V>.joinTo(
+	buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "",
 	postfix: CharSequence = "", limit: Int = -1, truncated: CharSequence = "...",
-	transform: ((Map.Entry<K, V>) -> CharSequence)? = null): A {
+	transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
 
@@ -371,8 +437,10 @@ fun <K, V, A : Appendable> Map<K, V>.joinTo(buffer: A, separator: CharSequence =
  *
  * The default entry format is `$key=$value`.
  */
-fun <K, V> Map<K, V>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null): String {
+fun <K, V> Map<K, V>.joinToString(
+	separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
 
@@ -441,23 +509,23 @@ inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T
 
 
 /**根据指定的级别选择器，按级别从低到高向下折叠集合中的元素，返回包含完整的级别从低到高的元素组的列表。级别从1开始。*/
-fun <T:Any, L : Comparable<L>> List<T>.collapse(levelSelector:(T)->L):List<List<T>>{
-	val elementAndLevels = this.map{ it to levelSelector(it) }
+fun <T : Any, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List<List<T>> {
+	val elementAndLevels = this.map { it to levelSelector(it) }
 	val result = mutableListOf<List<T>>()
 	val parents = mutableListOf<T>()
 	val parentLevels = mutableListOf<L>()
-	elementAndLevels.forEachIndexed { index,(element,level)->
-		if(index == this.lastIndex ) {
-			result += parents +element
-		}else{
-			val (_,nextLevel ) = elementAndLevels[index + 1]
-			if(nextLevel <= level){
-				result += parents +element
-				repeat(parentLevels.count{ it >= nextLevel }){
+	elementAndLevels.forEachIndexed { index, (element, level) ->
+		if(index == this.lastIndex) {
+			result += parents + element
+		} else {
+			val (_, nextLevel) = elementAndLevels[index + 1]
+			if(nextLevel <= level) {
+				result += parents + element
+				repeat(parentLevels.count { it >= nextLevel }) {
 					parents.removeLast()
 					parentLevels.removeLast()
 				}
-			}else{
+			} else {
 				parents += element
 				parentLevels += level
 			}
@@ -482,7 +550,7 @@ inline fun <T> T.expand(operation: (T) -> Iterable<T>): List<T> {
 }
 //endregion
 
-//region deep operation extensions
+//region Deep operation extensions
 /**
  * 根据指定路径得到当前数组中的元素。
  * 可指定路径的格式，默认为路径引用。
@@ -684,8 +752,10 @@ private fun <T> Any?.deepSet0(path: String, value: T, pathCase: ReferenceCase) {
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> {
+fun <T> Array<*>.deepQuery(
+	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
+	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
+): Map<String, T> {
 	return this.deepQuery0(path, pathCase, returnPathCase)
 }
 
@@ -697,8 +767,10 @@ fun <T> Array<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Iterable<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> {
+fun <T> Iterable<*>.deepQuery(
+	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
+	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
+): Map<String, T> {
 	return this.deepQuery0(path, pathCase, returnPathCase)
 }
 
@@ -710,13 +782,15 @@ fun <T> Iterable<*>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceC
  * @see ReferenceCase.PathReference
  */
 @JvmOverloads
-fun <T> Map<*, *>.deepQuery(path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
-	returnPathCase: ReferenceCase = ReferenceCase.PathReference): Map<String, T> {
+fun <T> Map<*, *>.deepQuery(
+	path: String, pathCase: ReferenceCase = ReferenceCase.PathReference,
+	returnPathCase: ReferenceCase = ReferenceCase.PathReference,
+): Map<String, T> {
 	return this.deepQuery0(path, pathCase, returnPathCase)
 }
 
 private fun <T> Any?.deepQuery0(path: String, pathCase: ReferenceCase, returnPathCase: ReferenceCase): Map<String, T> {
-	val splitPaths =  path.splitBy(pathCase)
+	val splitPaths = path.splitBy(pathCase)
 	var pathValuePairs = listOf(arrayOf<String>() to this)
 	for(p in splitPaths) {
 		pathValuePairs = pathValuePairs.flatMap { (key, value) ->
@@ -886,7 +960,7 @@ private fun List<Pair<Array<String>, Any?>>.toDeepQueryMap(returnPathCase: Refer
 	this.toMap().mapKeys { (k, _) -> k.joinToStringBy(returnPathCase) }
 //endregion
 
-//region convert extensions
+//region Convert extensions
 /**将当前列表转化为新的并发列表。*/
 fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
 
@@ -963,7 +1037,7 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 }
 //endregion
 
-//region specific operations
+//region Specific operations
 /**得到指定索引的字符串，如果索引越界，则返回空字符串。*/
 inline fun Array<out String>.getOrEmpty(index: Int): String = this.getOrDefault(index, "")
 

@@ -13,6 +13,7 @@ import com.windea.breezeframework.dsl.*
 class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinitions.IDslEntry {
 	@MarkdownDslExtendedFeature
 	var frontMatter: MarkdownDslDefinitions.FrontMatter? = null
+
 	@MarkdownDslExtendedFeature
 	var toc: MarkdownDslDefinitions.Toc? = null
 	val references: MutableSet<MarkdownDslDefinitions.Reference> = mutableSetOf()

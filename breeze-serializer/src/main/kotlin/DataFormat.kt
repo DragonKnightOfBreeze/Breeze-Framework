@@ -15,7 +15,7 @@ enum class DataFormat(
 	/**兼容的扩展名一览。*/
 	val extensions: Array<String>, //参考自IDEA的Editor/File Types设置
 	/**序列化器。*/
-	val serializer: Serializer
+	val serializer: Serializer,
 ) {
 	/**Json。*/
 	Json(
@@ -23,12 +23,14 @@ enum class DataFormat(
 		arrayOf("json", "jsb2", "jsb3"),
 		JsonSerializer.instance
 	),
+
 	/**Properties。*/
 	Properties(
 		"properties",
 		arrayOf("properties", "scriptenginefactory"),
 		PropertiesSerializer.instance
 	),
+
 	/**Xml。*/
 	Xml(
 		"xml",
@@ -36,6 +38,7 @@ enum class DataFormat(
 			"xjb", "xsd", "xsl", "xslt", "xul"),
 		XmlSerializer.instance
 	),
+
 	/**Yaml。*/
 	Yaml(
 		"yaml",

@@ -134,7 +134,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown链接。*/
 	@MarkdownDslMarker
 	abstract class Link(
-		val name: String? = null, val url: String? = null
+		val name: String? = null, val url: String? = null,
 	) : InlineDslElement {
 		override fun toString(): String = inlineText.toString()
 	}
@@ -143,7 +143,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class AutoLink @PublishedApi internal constructor(
-		url: String
+		url: String,
 	) : Link(null, url) {
 		override val inlineText: CharSequence get() = "<$url>"
 	}
@@ -151,7 +151,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown内联链接。*/
 	@MarkdownDslMarker
 	open class InlineLink @PublishedApi internal constructor(
-		name: String, url: String, val title: String? = null
+		name: String, url: String, val title: String? = null,
 	) : Link(name, url) {
 		override val inlineText: CharSequence get() = "[$name]($url${title?.let { " ${it.quote(quote)}" }.orEmpty()})"
 	}
@@ -159,7 +159,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown内联图片链接。*/
 	@MarkdownDslMarker
 	class InlineImageLink @PublishedApi internal constructor(
-		name: String = "", url: String, title: String? = null
+		name: String = "", url: String, title: String? = null,
 	) : InlineLink(name, url, title) {
 		override val inlineText: CharSequence get() = "!${super.toString()}"
 	}
@@ -168,7 +168,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class WikiLink @PublishedApi internal constructor(
-		name: String, url: String
+		name: String, url: String,
 	) : Link(name, url) {
 		override val inlineText: CharSequence get() = "[[$name|$url]]"
 	}
@@ -176,7 +176,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown引用连接。*/
 	@MarkdownDslMarker
 	open class ReferenceLink @PublishedApi internal constructor(
-		val reference: String, name: String? = null
+		val reference: String, name: String? = null,
 	) : Link(name, null) {
 		override val inlineText: CharSequence get() = "${name?.let { "[$name]" }.orEmpty()}[$reference]"
 	}
@@ -184,7 +184,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown引用图片连接。*/
 	@MarkdownDslMarker
 	class ReferenceImageLink @PublishedApi internal constructor(
-		reference: String, name: String? = null
+		reference: String, name: String? = null,
 	) : ReferenceLink(reference, name) {
 		override val inlineText: CharSequence get() = "!${super.toString()}"
 	}
@@ -192,7 +192,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown文本块。*/
 	@MarkdownDslMarker
 	class TextBlock @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : TopDslElement, Wrappable {
 		override var wrapContent: Boolean = true
 
@@ -206,7 +206,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown标题。*/
 	@MarkdownDslMarker
 	abstract class Heading(
-		val headingLevel: Int, val text: String
+		val headingLevel: Int, val text: String,
 	) : TopDslElement, WithAttributes, Wrappable {
 		@MarkdownDslExtendedFeature
 		override var attributes: AttributeGroup? = null
@@ -216,7 +216,7 @@ interface MarkdownDslDefinitions {
 	/**MarkdownSetext风格的标题。*/
 	@MarkdownDslMarker
 	abstract class SetextHeading(
-		headingLevel: Int, text: String
+		headingLevel: Int, text: String,
 	) : Heading(headingLevel, text) {
 		@MarkdownDslExtendedFeature
 		override fun toString(): String {
@@ -233,19 +233,19 @@ interface MarkdownDslDefinitions {
 	/**Markdown主标题。*/
 	@MarkdownDslMarker
 	class MainHeading @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : SetextHeading(1, text)
 
 	/**Markdown副标题。*/
 	@MarkdownDslMarker
 	class SubHeading @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : SetextHeading(2, text)
 
 	/**MarkdownSetext风格的标题。*/
 	@MarkdownDslMarker
 	abstract class AtxHeading(
-		headingLevel: Int, text: String
+		headingLevel: Int, text: String,
 	) : Heading(headingLevel, text) {
 		@MarkdownDslExtendedFeature
 		override fun toString(): String {
@@ -264,37 +264,37 @@ interface MarkdownDslDefinitions {
 	/**Markdown一级标题。*/
 	@MarkdownDslMarker
 	class Heading1 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(1, text)
 
 	/**Markdown二级标题。*/
 	@MarkdownDslMarker
 	class Heading2 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(2, text)
 
 	/**Markdown三级标题。*/
 	@MarkdownDslMarker
 	class Heading3 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(3, text)
 
 	/**Markdown四级标题。*/
 	@MarkdownDslMarker
 	class Heading4 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(4, text)
 
 	/**Markdown五级标题。*/
 	@MarkdownDslMarker
 	class Heading5 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(5, text)
 
 	/**Markdown六级标题。*/
 	@MarkdownDslMarker
 	class Heading6 @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : AtxHeading(6, text)
 
 	/**Markdown水平分割线。*/
@@ -306,7 +306,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown列表。*/
 	@MarkdownDslMarker
 	class List @PublishedApi internal constructor(
-		val nodes: MutableList<ListNode> = mutableListOf()
+		val nodes: MutableList<ListNode> = mutableListOf(),
 	) : TopDslElement {
 		override fun toString() = nodes.joinToText(ls)
 	}
@@ -314,7 +314,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown列表节点。*/
 	@MarkdownDslMarker
 	abstract class ListNode(
-		internal val prefixMarkers: String, val text: String
+		internal val prefixMarkers: String, val text: String,
 	) : IDslElement, Wrappable {
 		val nodes: MutableList<ListNode> = mutableListOf()
 
@@ -337,26 +337,26 @@ interface MarkdownDslDefinitions {
 	@Suppress("CanBeParameter")
 	@MarkdownDslMarker
 	class OrderedListNode @PublishedApi internal constructor(
-		val order:String, text:String
+		val order: String, text: String,
 	) : ListNode("$order.", text)
 
 	/**Markdown无序列表节点。*/
 	@MarkdownDslMarker
 	class UnorderedListNode @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : ListNode(listNodeMarker.toString(), text)
 
 	/**Markdown任务列表节点。*/
 	@MarkdownDslMarker
 	class TaskListNode @PublishedApi internal constructor(
-		val isCompleted: Boolean, text: String
+		val isCompleted: Boolean, text: String,
 	) : ListNode("$listNodeMarker [${if(isCompleted) "X" else " "}]", text)
 
 	/**Markdown定义列表。*/
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class Definition @PublishedApi internal constructor(
-		val title: String
+		val title: String,
 	) : TopDslElement, Wrappable {
 		val nodes: MutableList<DefinitionNode> = mutableListOf()
 
@@ -377,7 +377,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class DefinitionNode @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : IDslElement, Wrappable {
 		override var wrapContent: Boolean = true
 
@@ -466,7 +466,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown表格的列。*/
 	@MarkdownDslMarker
 	class TableColumn @PublishedApi internal constructor(
-		val text: String = emptyColumnText
+		val text: String = emptyColumnText,
 	) : IDslElement {
 		var alignment: TableAlignment = TableAlignment.None //only for columns in table header
 
@@ -483,7 +483,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown引文。*/
 	@MarkdownDslMarker
 	abstract class Quote(
-		val prefixMarker: String
+		val prefixMarker: String,
 	) : TopDslElement, IDslEntry {
 		override val content: MutableList<TopDslElement> = mutableListOf()
 
@@ -514,7 +514,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown内联代码。*/
 	@MarkdownDslMarker
 	class InlineCode @PublishedApi internal constructor(
-		override val code: String
+		override val code: String,
 	) : InlineDslElement, Code {
 		override val inlineText: String get() = code
 		override fun toString() = "`$code`"
@@ -524,7 +524,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	class CodeFence @PublishedApi internal constructor(
 		val language: String,
-		override val code: String
+		override val code: String,
 	) : TopDslElement, Code, WithAttributes {
 		//DONE extended classes and properties
 		@MarkdownDslExtendedFeature
@@ -547,7 +547,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown内联数学表达式。*/
 	@MarkdownDslMarker
 	class InlineMath @PublishedApi internal constructor(
-		override val code: String
+		override val code: String,
 	) : InlineDslElement, Math {
 		override val inlineText get() = code
 		override fun toString() = "$$code$"
@@ -556,7 +556,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown多行数学表达式。*/
 	@MarkdownDslMarker
 	class MultilineMath @PublishedApi internal constructor(
-		override val code: String
+		override val code: String,
 	) : TopDslElement, Math {
 		override fun toString(): String {
 			return "$$$ls$code$ls$$"
@@ -567,7 +567,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class Admonition @PublishedApi internal constructor(
-		val qualifier: AdmonitionQualifier, val title: String = "", val type: AdmonitionType = AdmonitionType.Normal
+		val qualifier: AdmonitionQualifier, val title: String = "", val type: AdmonitionType = AdmonitionType.Normal,
 	) : TopDslElement, IDslEntry {
 		override val content: MutableList<TopDslElement> = mutableListOf()
 
@@ -584,7 +584,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class FrontMatter @PublishedApi internal constructor(
-		@Language("Yaml") val text: String
+		@Language("Yaml") val text: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "---$ls$text$ls---"
@@ -606,7 +606,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class Import @PublishedApi internal constructor(
-		val url: String
+		val url: String,
 	) : TopDslElement, Generatable, WithAttributes {
 		//DONE extended classes and properties
 		override var attributes: AttributeGroup? = null
@@ -623,7 +623,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class Macros @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : TopDslElement, Generatable {
 		override var generateContent: Boolean = false
 
@@ -636,7 +636,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class MacrosSnippet @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : TopDslElement, IDslEntry {
 		override val content: MutableList<TopDslElement> = mutableListOf()
 
@@ -649,7 +649,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown引用。*/
 	@MarkdownDslMarker
 	abstract class Reference(
-		val reference: String
+		val reference: String,
 	) : IDslElement, WithId {
 		override val id: String get() = reference
 	}
@@ -658,7 +658,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class FootNoteReference @PublishedApi internal constructor(
-		reference: String, val text: String
+		reference: String, val text: String,
 	) : Reference(reference) {
 		override fun equals(other: Any?) = equalsBy(this, other) { arrayOf(id) }
 
@@ -673,7 +673,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class Abbreviation @PublishedApi internal constructor(
-		reference: String, val text: String
+		reference: String, val text: String,
 	) : Reference(reference) {
 		override fun equals(other: Any?) = equalsBy(this, other) { arrayOf(id) }
 
@@ -687,7 +687,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown链接的引用。*/
 	@MarkdownDslMarker
 	class LinkReference @PublishedApi internal constructor(
-		reference: String, val url: String, val title: String? = null
+		reference: String, val url: String, val title: String? = null,
 	) : Reference(reference) {
 		override fun equals(other: Any?) = equalsBy(this, other) { arrayOf(id) }
 
@@ -703,7 +703,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	class AttributeGroup @PublishedApi internal constructor(
-		attributes: Set<Attribute>
+		attributes: Set<Attribute>,
 	) : InlineDslElement, Inlineable, Set<Attribute> by attributes {
 		override val inlineText: String get() = joinToString(" ", " {", "}")
 		override fun toString() = inlineText
@@ -741,7 +741,7 @@ interface MarkdownDslDefinitions {
 	/**Markdown表格的对齐方式。*/
 	@MarkdownDslMarker
 	enum class TableAlignment(
-		internal val textPair: Pair<String, String>
+		internal val textPair: Pair<String, String>,
 	) {
 		None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 	}
@@ -750,7 +750,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	enum class AdmonitionType(
-		internal val text: String
+		internal val text: String,
 	) {
 		Normal("!!!"), Collapsed("???"), Opened("!!!+")
 	}
@@ -759,7 +759,7 @@ interface MarkdownDslDefinitions {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	enum class AdmonitionQualifier(
-		internal val style: String, internal val text: String
+		internal val style: String, internal val text: String,
 	) {
 		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 		Bug("bug", "bug"),

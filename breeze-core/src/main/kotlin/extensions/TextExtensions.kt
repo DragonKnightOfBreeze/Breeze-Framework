@@ -9,7 +9,7 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.domain.*
 import java.util.*
 
-//region Format extensions
+//region Operation extensions
 private val defaultPlaceholder = "{" to "}"
 
 /**
@@ -19,9 +19,8 @@ private val defaultPlaceholder = "{" to "}"
 fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
 	return type.formatter(this, args, locale, placeholder)
 }
-//endregion
 
-//region Quote extensions
+
 private val quotes = charArrayOf('\'', '\"', '`')
 
 /**
@@ -53,9 +52,8 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
 	}
 }
-//endregion
 
-//region Escape extensions
+
 /**
  * 根据指定的转义器，转义当前字符串。
  */
@@ -69,9 +67,8 @@ fun String.escapeBy(escaper: Escaper): String {
 fun String.unescapeBy(escaper: Escaper): String {
 	return escaper.unescape(this)
 }
-//endregion
 
-//region Match extensions
+
 /**
  * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
  */
@@ -92,9 +89,8 @@ fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
 fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
 	return type.regexTransform(this).toRegex(options)
 }
-//endregion
 
-//region Letter Case extensions
+
 /**
  * 得到当前字符串的字母格式。
  */
@@ -149,9 +145,7 @@ fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 	val sourceLetterCase = this.letterCase ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return switchCaseBy(sourceLetterCase, targetLetterCase)
 }
-//endregion
 
-//region ReferenceCase extensions
 
 //TODO
 
@@ -174,7 +168,7 @@ fun Array<out CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String
  * * 如果当前对象是空值，则返回空字符串。
  * * 如果存在转化方法，则使用该方法将当前对象转化为字符串。
  */
-fun <T : Any> T?.toText(transform:((T) -> String)? = null):String {
+fun <T : Any> T?.toText(transform: ((T) -> String)? = null): String {
 	return if(this == null) "" else if(transform != null) transform(this) else toString()
 }
 
@@ -182,7 +176,7 @@ fun <T : Any> T?.toText(transform:((T) -> String)? = null):String {
  * 将当前布尔值转换成文本。
  * * 如果当前对象是空值，则返回空字符串。
  */
-fun Boolean?.toText(trueValue:String,falseValue:String):String{
+fun Boolean?.toText(trueValue: String, falseValue: String): String {
 	return if(this == null) "" else if(this) trueValue else falseValue
 }
 
@@ -202,8 +196,8 @@ fun <T : Any> Array<out T?>.joinToText(
 	indent: CharSequence = "",
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
-	transform: ((T) -> CharSequence)? = null
-):String {
+	transform: ((T) -> CharSequence)? = null,
+): String {
 	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
@@ -234,7 +228,7 @@ fun <T : Any> Iterable<T?>.joinToText(
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
 	transform: ((T) -> CharSequence)? = null,
-):String {
+): String {
 	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
@@ -265,8 +259,8 @@ fun <K, V> Map<K, V>.joinToText(
 	omitEmpty: Boolean = true,
 	omitEmptyValue: Boolean = true,
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
-):String {
-	var result =  buildString {
+): String {
+	var result = buildString {
 		var count = 0
 		for(entry in this@joinToText) {
 			val valueSnippet = entry.value?.toString()
@@ -297,8 +291,8 @@ fun <T : Any> Sequence<T?>.joinToText(
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
 	transform: ((T) -> CharSequence)? = null,
-):String {
-	var result =  buildString {
+): String {
+	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
 			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()

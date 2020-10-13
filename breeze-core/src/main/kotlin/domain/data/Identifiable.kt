@@ -16,7 +16,7 @@ import java.io.*
  *
  * @property id 主键。
  */
-interface Identifiable<T : Serializable>:Serializable {
+interface Identifiable<T : Serializable> : Serializable {
 	val id: T
 
 	override fun equals(other: Any?): Boolean
@@ -26,7 +26,7 @@ interface Identifiable<T : Serializable>:Serializable {
 	override fun toString(): String
 
 	class Delegate<T : Serializable> @PublishedApi internal constructor(
-		override val id: T
+		override val id: T,
 	) : Identifiable<T> {
 		override fun equals(other: Any?) = javaClass == other?.javaClass && id == (other as Identifiable<T>).id
 
@@ -36,6 +36,6 @@ interface Identifiable<T : Serializable>:Serializable {
 	}
 
 	companion object {
-		fun <T:Serializable> delegate(id: T): Delegate<T> = Delegate(id)
+		fun <T : Serializable> delegate(id: T): Delegate<T> = Delegate(id)
 	}
 }

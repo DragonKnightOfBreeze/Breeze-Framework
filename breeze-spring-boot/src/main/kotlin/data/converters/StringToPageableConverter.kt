@@ -15,7 +15,7 @@ import org.springframework.data.domain.*
  * * 默认值："1,10"。
  */
 open class StringToPageableConverter(
-	private val stringToSortConverter: StringToSortConverter
+	private val stringToSortConverter: StringToSortConverter,
 ) : Converter<String, Pageable> {
 	override fun convert(string: String): Pageable {
 		val splitStrings = string.split(",", limit = 3).map { it.trim() }

@@ -12,5 +12,5 @@ data class LoggerConfig(
 	var minLogLevel: LogLevel = LogLevel.Info,
 	var dateFormat: String = "yyyy-MM-dd HH:mm:ss",
 	var delimiter: String = " - ",
-	var outputPath: String? = null
+	var outputPath: String? = null,
 )

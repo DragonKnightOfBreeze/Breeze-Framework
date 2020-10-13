@@ -14,7 +14,7 @@ import java.nio.charset.*
  * @see java.net.http.HttpResponse
  */
 class Http(
-	val config: HttpConfig = HttpConfig()
+	val config: HttpConfig = HttpConfig(),
 ) {
 	constructor(block: HttpConfig.Builder.() -> Unit) : this(HttpConfig.Builder().apply(block).build())
 
@@ -107,8 +107,10 @@ class Http(
 		return buildRequest(method, url, bodyPublisher, config)
 	}
 
-	private fun buildRequest(method: String, url: String, bodyPublisher: HttpRequest.BodyPublisher?,
-		config: HttpRequestConfig?): HttpRequest {
+	private fun buildRequest(
+		method: String, url: String, bodyPublisher: HttpRequest.BodyPublisher?,
+		config: HttpRequestConfig?,
+	): HttpRequest {
 		return if(config == null) {
 			val uri = URI.create(url)
 			HttpRequest.newBuilder(uri).buildMethodRequest(method, bodyPublisher).build()

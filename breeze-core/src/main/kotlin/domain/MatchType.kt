@@ -9,7 +9,7 @@ import com.windea.breezeframework.core.extensions.*
 
 /**匹配类型。*/
 enum class MatchType(
-	internal val regexTransform: (String) -> String
+	internal val regexTransform: (String) -> String,
 ) {
 	/**
 	 * Ant风格的路径匹配类型。用于匹配路径。

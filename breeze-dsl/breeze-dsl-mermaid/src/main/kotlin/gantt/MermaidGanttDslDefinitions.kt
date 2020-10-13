@@ -39,7 +39,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Title @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "title $text"
@@ -52,7 +52,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class DateFormat @PublishedApi internal constructor(
-		val expression: String
+		val expression: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "dateFormat $expression"
@@ -66,7 +66,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Section @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, Indentable, WithId {
 		val tasks: MutableList<Task> = mutableListOf()
 		override var indentContent: Boolean = false
@@ -88,7 +88,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Task @PublishedApi internal constructor(
-		val name: String, var status: TaskStatus = TaskStatus.Todo
+		val name: String, var status: TaskStatus = TaskStatus.Todo,
 	) : IDslElement, WithId {
 		var alias: String? = null
 		var isCrit: Boolean = false

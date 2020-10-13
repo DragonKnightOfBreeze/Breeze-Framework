@@ -13,8 +13,8 @@ import java.io.*
  * @property code 码值。
  * @property text 文本。
  */
-interface Enumerable<T:Serializable> :Serializable{
-	val code:T
-	val text:String
+interface Enumerable<T : Serializable> : Serializable {
+	val code: T
+	val text: String
 }
 

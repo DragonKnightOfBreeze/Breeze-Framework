@@ -16,7 +16,7 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotImplemented(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -29,7 +29,7 @@ annotation class NotImplemented(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotIncluded(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -42,7 +42,7 @@ annotation class NotIncluded(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotTested(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -55,7 +55,7 @@ annotation class NotTested(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotOptimized(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -68,7 +68,7 @@ annotation class NotOptimized(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotRecommended(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -81,7 +81,7 @@ annotation class NotRecommended(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotSuitable(
-	val message: String = ""
+	val message: String = "",
 )
 
 /**
@@ -94,7 +94,7 @@ annotation class NotSuitable(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotUsable(
-	val message:String = ""
+	val message: String = "",
 )
 
 /**
@@ -107,5 +107,5 @@ annotation class NotUsable(
 @Target(CLASS, PROPERTY, FUNCTION, FILE)
 @Retention(SOURCE)
 annotation class NotSure(
-	val message:String = ""
+	val message: String = "",
 )

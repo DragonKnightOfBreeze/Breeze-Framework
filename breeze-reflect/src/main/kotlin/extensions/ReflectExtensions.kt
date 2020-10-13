@@ -12,7 +12,7 @@ import kotlin.reflect.full.*
 
 /**尝试得到当前类型的默认值。*/
 @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-inline fun <reified T : Any> defaultValue():T = when(val type = T::class) {
+inline fun <reified T : Any> defaultValue(): T = when(val type = T::class) {
 	Int::class -> 0
 	Long::class -> 0L
 	Float::class -> 0F
@@ -27,7 +27,7 @@ inline fun <reified T : Any> defaultValue():T = when(val type = T::class) {
 
 /**尝试得到当前类型的随机值。*/
 @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-inline fun <reified T : Any> randomValue():T = when(val type = T::class) {
+inline fun <reified T : Any> randomValue(): T = when(val type = T::class) {
 	Int::class -> Random.nextLong()
 	Long::class -> Random.nextLong()
 	Float::class -> Random.nextFloat()

@@ -20,8 +20,8 @@ interface Tree<out E> : Iterable<E> {
 	val size: Int
 	fun isEmpty(): Boolean
 	fun containsValue(value: @UnsafeVariance E): Boolean
-	fun containsNode(node:Tree<@UnsafeVariance E>): Boolean
-	operator fun get(value: @UnsafeVariance E):Tree<E>
-	fun getOrDefault(value: @UnsafeVariance E, defaultValue:Tree<@UnsafeVariance E>):Tree<E>
+	fun containsNode(node: Tree<@UnsafeVariance E>): Boolean
+	operator fun get(value: @UnsafeVariance E): Tree<E>
+	fun getOrDefault(value: @UnsafeVariance E, defaultValue: Tree<@UnsafeVariance E>): Tree<E>
 }
 

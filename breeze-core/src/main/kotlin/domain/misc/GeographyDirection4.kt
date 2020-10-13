@@ -10,12 +10,16 @@ import com.windea.breezeframework.core.annotations.*
 enum class GeographyDirection4 {
 	@Name("原点")
 	Origin,
+
 	@Name("东")
 	East,
+
 	@Name("南")
 	South,
+
 	@Name("西")
 	West,
+
 	@Name("北")
 	North
 }

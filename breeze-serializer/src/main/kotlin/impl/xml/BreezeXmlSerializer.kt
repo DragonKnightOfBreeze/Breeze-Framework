@@ -15,7 +15,7 @@ import java.lang.reflect.*
 internal object BreezeXmlSerializer : XmlSerializer, BreezeSerializer<XmlMapper> {
 	internal val configBuilder = XmlMapper.Config.Builder()
 	internal val mapper by lazy { XmlMapper(configBuilder.build()) }
-	override val delegate:XmlMapper get() = mapper
+	override val delegate: XmlMapper get() = mapper
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return mapper.unmap(string, type)

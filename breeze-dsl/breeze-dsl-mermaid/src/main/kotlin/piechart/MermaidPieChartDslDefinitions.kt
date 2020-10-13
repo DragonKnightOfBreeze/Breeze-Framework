@@ -38,7 +38,7 @@ interface MermaidPieChartDslDefinitions {
 	 */
 	@MermaidPieChartDslMarker
 	class Title @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : MermaidPieChartDslElement {
 		override fun toString(): String {
 			return "title $text"
@@ -52,7 +52,7 @@ interface MermaidPieChartDslDefinitions {
 	 */
 	@MermaidPieChartDslMarker
 	class Section @PublishedApi internal constructor(
-		val key: String, val value: String
+		val key: String, val value: String,
 	) : MermaidPieChartDslElement, WithId {
 		init {
 			require(value[0] != '-') { "Value of a section cannot be negative." }
@@ -64,7 +64,7 @@ interface MermaidPieChartDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			return "${key.quote('"')}: $value"
 		}
 	}

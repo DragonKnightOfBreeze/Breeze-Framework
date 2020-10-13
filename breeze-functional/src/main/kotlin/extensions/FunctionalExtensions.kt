@@ -217,13 +217,15 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, R> ((P1, P2, P3, P4, P5, P6, P7, 
 
 /**传入第一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & a -> fun(b)(c)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> R).partial(
-	param: P1) =
+	param: P1,
+) =
 	fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = fun(p6: P6) = fun(p7: P7) = fun(p8: P8) = fun(p9: P9) =
 		fun(p10: P10) = this(param, p2, p3, p4, p5, p6, p7, p8, p9, p10)
 
 /**传入第一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & a -> fun(b)(c)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).partial(
-	param: P1) =
+	param: P1,
+) =
 	fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = fun(p6: P6) = fun(p7: P7) = fun(p8: P8) = fun(p9: P9) =
 		fun(p10: P10) = fun(p11: P11) = this(param, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11)
 
@@ -265,13 +267,15 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, R> ((P1, P2, P3, P4, P5, P6, P7, 
 
 /**传入最后一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & c -> fun(a)(b)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> R).partialLast(
-	param: P10) =
+	param: P10,
+) =
 	fun(p1: P1) = fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = fun(p6: P6) = fun(p7: P7) = fun(p8: P8) =
 		fun(p9: P9) = this(p1, p2, p3, p4, p5, p6, p7, p8, p9, param)
 
 /**传入最后一个参数，得到当前函数的偏函数。即，`fun(a,b,c) & c -> fun(a)(b)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).partialLast(
-	param: P11) =
+	param: P11,
+) =
 	fun(p1: P1) = fun(p2: P2) = fun(p3: P3) = fun(p4: P4) = fun(p5: P5) = fun(p6: P6) = fun(p7: P7) = fun(p8: P8) =
 		fun(p9: P9) = fun(p10: P10) = this(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, param)
 //endregion
@@ -311,13 +315,15 @@ infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, R> ((P1, P2, P3, P4, P5, P6, P7, 
 
 /**传入第一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & a -> fun(b,c)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> R).pipe(
-	param: P1) =
+	param: P1,
+) =
 	fun(p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10) =
 		this(param, p2, p3, p4, p5, p6, p7, p8, p9, p10)
 
 /**传入第一个参数，得到当前函数的重写函数。即，`fun(a,b,c) & a -> fun(b,c)`。*/
 infix fun <P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> ((P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> R).pipes(
-	param: P1) =
+	param: P1,
+) =
 	fun(p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10, p11: P11) =
 		this(param, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11)
 

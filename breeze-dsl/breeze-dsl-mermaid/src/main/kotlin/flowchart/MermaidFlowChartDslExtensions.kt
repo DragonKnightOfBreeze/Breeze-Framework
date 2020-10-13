@@ -19,7 +19,7 @@ fun IDslEntry.link(fromNodeId: String, toNodeId: String) = Link(fromNodeId, toNo
 fun IDslEntry.link(
 	fromNodeId: String,
 	arrowShape: ArrowShape,
-	toNodeId: String
+	toNodeId: String,
 ) = Link(fromNodeId, toNodeId).apply { this.arrowShape = arrowShape }.also { links += it }
 
 @MermaidFlowChartDslMarker

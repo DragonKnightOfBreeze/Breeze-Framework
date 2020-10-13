@@ -15,8 +15,8 @@ import com.windea.breezeframework.core.annotations.*
 @UnstableApi
 interface MutableTree<E> : Tree<E> {
 	fun addValue(value: E): Boolean
-	fun addNode(node:Tree<E>): Boolean
+	fun addNode(node: Tree<E>): Boolean
 	fun removeValue(value: E): Boolean
-	fun removeNode(node:Tree<E>): Boolean
+	fun removeNode(node: Tree<E>): Boolean
 	fun clear()
 }

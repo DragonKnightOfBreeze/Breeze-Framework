@@ -9,7 +9,7 @@ import java.util.stream.*
 /**基于Java8的[Stream]的Linq实现。*/
 class StreamLinq<S, T>(
 	val isParallel: Boolean = false,
-	val statement: (Stream<S>) -> Stream<T>
+	val statement: (Stream<S>) -> Stream<T>,
 ) : Linq<S, T> {
 	override fun where(predicate: (T) -> Boolean): Linq<S, T> {
 		return StreamLinq { statement(it).filter(predicate) }

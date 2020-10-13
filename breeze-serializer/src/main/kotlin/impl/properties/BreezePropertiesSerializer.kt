@@ -16,7 +16,7 @@ import java.util.*
 internal object BreezePropertiesSerializer : PropertiesSerializer, BreezeSerializer<PropertiesMapper> {
 	internal val configBuilder = PropertiesMapper.Config.Builder()
 	internal val mapper by lazy { PropertiesMapper(configBuilder.build()) }
-	override val delegate:PropertiesMapper get() = mapper
+	override val delegate: PropertiesMapper get() = mapper
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return mapper.unmap(string, type)

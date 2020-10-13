@@ -255,7 +255,7 @@ interface Converter<T, R> {
 	}
 
 	private object StringToBooleanConverter : Converter<String, Boolean> {
-	override val typePair = String::class.java to Boolean::class.javaObjectType
+		override val typePair = String::class.java to Boolean::class.javaObjectType
 		override fun convert(value: String) = value.toBoolean()
 		override fun convertOrNull(value: String) = value.toBooleanOrNull()
 	}

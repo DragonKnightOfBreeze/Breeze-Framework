@@ -16,7 +16,7 @@ import kotlin.reflect.*
 inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
 
 /**得到当前对象的带有泛型参数信息的Java类型对象。*/
-inline fun <reified T> javaTypeOf(target:T) = object : TypeReference<T>() {}.type
+inline fun <reified T> javaTypeOf(target: T) = object : TypeReference<T>() {}.type
 
 /**类型引用。*/
 @PublishedApi

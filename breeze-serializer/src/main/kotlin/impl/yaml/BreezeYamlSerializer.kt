@@ -15,7 +15,7 @@ import java.lang.reflect.*
 internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer<YamlMapper> {
 	internal val configBuilder = YamlMapper.Config.Builder()
 	internal val mapper by lazy { YamlMapper(configBuilder.build()) }
-	override val delegate:YamlMapper get() = mapper
+	override val delegate: YamlMapper get() = mapper
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
 		return mapper.unmap(string, type)

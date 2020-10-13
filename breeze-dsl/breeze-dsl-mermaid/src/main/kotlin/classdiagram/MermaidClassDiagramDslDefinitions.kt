@@ -79,7 +79,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Class @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, Indentable, WithId {
 		var annotation: Annotation? = null
 		val statements: MutableList<Statement> = mutableListOf()
@@ -90,7 +90,7 @@ interface MermaidClassDiagramDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			val contentSnippet = when {
 				annotation == null && statements.isEmpty() -> ""
 				else -> "{$ls${arrayOf(annotation, statements.joinToText(ls)).joinToText(ls).doIndent(indent)}$ls}"
@@ -113,7 +113,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Annotation @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "<<$name>>"
@@ -127,7 +127,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Statement @PublishedApi internal constructor(
-		val expression: String
+		val expression: String,
 	) : IDslElement {
 		var visibility: Visibility = Visibility.None
 
@@ -149,7 +149,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Relation @PublishedApi internal constructor(
-		val fromClassId: String, val toClassId: String, val type: RelationType
+		val fromClassId: String, val toClassId: String, val type: RelationType,
 	) : IDslElement, WithNode {
 		var text: String? = null
 		var fromCardinality: String? = null //syntax: 0..1, 1, 0..*, 1..*, ls, 0..ls, 1..ls

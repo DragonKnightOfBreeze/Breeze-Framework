@@ -11,7 +11,7 @@ open class StateMachine<S : State<S>>(
 	/**初始状态。*/
 	val initialState: S,
 	/**结束状态。*/
-	val finalizeState: S
+	val finalizeState: S,
 ) {
 	/**已激活的状态列表。*/
 	val activeStates: CopyOnWriteArrayList<S> = CopyOnWriteArrayList()

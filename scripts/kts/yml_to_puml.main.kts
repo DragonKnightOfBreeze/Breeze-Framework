@@ -21,11 +21,11 @@ import java.io.*
 
 //得到输入的yml文件的路径
 val inputFilePath = args.getOrElse(0) {
-    throw IllegalArgumentException("Argument 'input_file_path' cannot be null.")
+	throw IllegalArgumentException("Argument 'input_file_path' cannot be null.")
 }
 //得到输出的yml文件的路径，如果没有，则使用输入文件的路径
 val outputFilePath = args.getOrElse(1) {
-    inputFilePath.replace(".yml", "")
+	inputFilePath.replace(".yml", "")
 }
 
 val mapper = YAMLMapper()
@@ -45,15 +45,15 @@ val file = File(outputFilePath)
 file.parentFile.mkdirs()
 file.writeText(text)
 
-fun Any?.toPumlText():String {
-    return when {
-        this == null -> ""
-        this is Map<*, *> -> this.entries.joinToString("\n") { (k, v) ->
-            if(v == "") "$k" else "$k {\n${v.toPumlText() .prependIndent("  ")}\n}"
-        }
-        this is List<*> -> this.joinToString("\n") { e ->
-            e.toPumlText()
-        }
-        else -> this.toString()
-    }
+fun Any?.toPumlText(): String {
+	return when {
+		this == null -> ""
+		this is Map<*, *> -> this.entries.joinToString("\n") { (k, v) ->
+			if(v == "") "$k" else "$k {\n${v.toPumlText().prependIndent("  ")}\n}"
+		}
+		this is List<*> -> this.joinToString("\n") { e ->
+			e.toPumlText()
+		}
+		else -> this.toString()
+	}
 }

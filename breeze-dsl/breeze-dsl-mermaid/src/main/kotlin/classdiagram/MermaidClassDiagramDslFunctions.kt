@@ -19,7 +19,7 @@ inline fun IDslEntry.`class`(name: String, block: Class.() -> Unit = {}) = Class
 fun IDslEntry.relation(
 	fromClassId: String,
 	toClassId: String,
-	type: RelationType
+	type: RelationType,
 ) = Relation(fromClassId, toClassId, type).also { relations += it }
 
 @MermaidClassDiagramDslMarker
@@ -28,7 +28,7 @@ fun IDslEntry.relation(
 	fromCardinality: String?,
 	type: RelationType,
 	toCardinality: String?,
-	toClassId: String
+	toClassId: String,
 ) = Relation(fromClassId, toClassId, type)
 	.apply { this.fromCardinality = fromCardinality; this.toCardinality = toCardinality }.also { relations += it }
 

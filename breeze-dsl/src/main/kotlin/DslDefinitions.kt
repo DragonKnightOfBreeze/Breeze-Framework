@@ -14,7 +14,7 @@ import com.windea.breezeframework.core.extensions.*
  */
 @DslApiMarker
 interface Dsl {
-	override fun toString():String
+	override fun toString(): String
 }
 
 /**
@@ -25,7 +25,7 @@ interface Dsl {
 @DslApiMarker
 interface DslEntry {
 	@InternalApi
-	fun toContentString():String = ""
+	fun toContentString(): String = ""
 }
 
 /**
@@ -59,10 +59,10 @@ object DslConstants {
 @DslApiMarker
 interface Wrappable {
 	/**是否需要对内容进行换行。*/
-	var wrapContent:Boolean
+	var wrapContent: Boolean
 
 	@InternalApi
-	fun String.doWrap(extraCondition:Boolean = true,transform:(String)->String):String {
+	fun String.doWrap(extraCondition: Boolean = true, transform: (String) -> String): String {
 		return if(wrapContent && extraCondition) transform(this) else this
 	}
 }
@@ -71,10 +71,10 @@ interface Wrappable {
 @DslApiMarker
 interface Indentable {
 	/**是否需要对内容进行缩进。*/
-	var indentContent:Boolean
+	var indentContent: Boolean
 
 	@InternalApi
-	fun String.doIndent(indent:String, extraCondition:Boolean = true):String {
+	fun String.doIndent(indent: String, extraCondition: Boolean = true): String {
 		return if(indentContent && extraCondition) this.prependIndent(indent) else this
 	}
 }
@@ -83,10 +83,10 @@ interface Indentable {
 @DslApiMarker
 interface Splitable {
 	/**是否需要对内容以空行分隔。*/
-	var splitContent:Boolean
+	var splitContent: Boolean
 
 	@InternalApi
-	fun Array<*>.doSplit(extraCondition:Boolean = true):String{
+	fun Array<*>.doSplit(extraCondition: Boolean = true): String {
 		return if(splitContent && extraCondition) this.joinToText(DslConstants.ss) else this.joinToText(DslConstants.ls)
 	}
 }
@@ -95,11 +95,11 @@ interface Splitable {
 @DslApiMarker
 interface Generatable {
 	/**是否需要生成文本。*/
-	var generateContent:Boolean
+	var generateContent: Boolean
 
 	/**生成文本。*/
 	@InternalApi
-	fun String.doGenerate(extraCondition:Boolean = true,transform:(String)->String):String {
+	fun String.doGenerate(extraCondition: Boolean = true, transform: (String) -> String): String {
 		return if(generateContent && extraCondition) transform(this) else this
 	}
 }
@@ -109,17 +109,17 @@ interface Generatable {
 @DslApiMarker
 interface WithId {
 	/**编号。（不需要保证唯一性）*/
-	val id:String
+	val id: String
 }
 
 /**包含一对可被视为节点的子元素。*/
 @DslApiMarker
 interface WithNode {
 	/**源结点的编号。*/
-	val sourceNodeId:String
+	val sourceNodeId: String
 
 	/**目标结点的编号。*/
-	val targetNodeId:String
+	val targetNodeId: String
 }
 
 /**包含有可被视为转化的子元素。*/
@@ -127,25 +127,25 @@ interface WithNode {
 interface WithTransition<in N : WithId, T : WithNode> {
 	/**根据节点元素创建过渡元素。*/
 	@DslApiMarker
-	infix fun String.links(other:String):T
+	infix fun String.links(other: String): T
 
 	/**根据节点元素创建过渡元素。*/
 	@DslApiMarker
-	infix fun String.links(other:N):T = this@WithTransition.run { this@links links other.id }
+	infix fun String.links(other: N): T = this@WithTransition.run { this@links links other.id }
 
 	/**根据节点元素创建过渡元素。*/
 	@DslApiMarker
-	infix fun N.links(other:String):T = this@WithTransition.run { this@links.id links other }
+	infix fun N.links(other: String): T = this@WithTransition.run { this@links.id links other }
 
 	/**根据节点元素创建过渡元素。*/
 	@DslApiMarker
-	infix fun N.links(other:N):T = this@WithTransition.run { this@links.id links other.id }
+	infix fun N.links(other: N): T = this@WithTransition.run { this@links.id links other.id }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@DslApiMarker
-	infix fun T.links(other:String):T = this@WithTransition.run { this@links.targetNodeId links other }
+	infix fun T.links(other: String): T = this@WithTransition.run { this@links.targetNodeId links other }
 
 	/**根据节点元素连续创建过渡元素。*/
 	@DslApiMarker
-	infix fun T.links(other:N):T = this@WithTransition.run { this@links.targetNodeId links other.id }
+	infix fun T.links(other: N): T = this@WithTransition.run { this@links.targetNodeId links other.id }
 }

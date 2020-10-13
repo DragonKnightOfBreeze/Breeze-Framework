@@ -12,7 +12,7 @@ enum class ReferenceCase(
 	override val joiner: (Iterable<CharSequence>) -> String = { it.joinToString("") },
 	override val arrayJoiner: (Array<out CharSequence>) -> String = { it.joinToString("") },
 	override val regex: Regex? = null,
-	override val predicate: (String) -> Boolean = { regex == null || it matches regex }
+	override val predicate: (String) -> Boolean = { regex == null || it matches regex },
 ) : DisplayCase {
 	/**
 	 * 路径引用。
@@ -40,6 +40,7 @@ enum class ReferenceCase(
 		{ it.joinToString("/", "/") },
 		"""(?:/.+)+""".toRegex()
 	),
+
 	/**
 	 * 对象引用。
 	 *

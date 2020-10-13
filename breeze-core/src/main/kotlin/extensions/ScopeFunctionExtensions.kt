@@ -13,11 +13,11 @@ import kotlin.contracts.*
  */
 @InlineOnly
 @JvmSynthetic
-inline fun <T1,T2,R> with(arg1:T1,arg2:T2,block:(T1,T2) -> R):R{
+inline fun <T1, T2, R> with(arg1: T1, arg2: T2, block: (T1, T2) -> R): R {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
-	return block(arg1,arg2)
+	return block(arg1, arg2)
 }
 
 /**
@@ -25,11 +25,11 @@ inline fun <T1,T2,R> with(arg1:T1,arg2:T2,block:(T1,T2) -> R):R{
  */
 @InlineOnly
 @JvmSynthetic
-inline fun <T1,T2,T3,R> with(arg1:T1,arg2:T2,arg3:T3,block:(T1,T2,T3) -> R):R{
+inline fun <T1, T2, T3, R> with(arg1: T1, arg2: T2, arg3: T3, block: (T1, T2, T3) -> R): R {
 	contract {
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
-	return block(arg1,arg2,arg3)
+	return block(arg1, arg2, arg3)
 }
 
 /**

@@ -40,20 +40,24 @@ object SqlGenerator : Generator {
 		return """
 		use $databaseName;
 
-		${database.joinToString("\n\n") { (tableName, table) ->
-			val columnNamesSnippet = table.first().keys.joinToString()
+		${
+			database.joinToString("\n\n") { (tableName, table) ->
+				val columnNamesSnippet = table.first().keys.joinToString()
 
-			"""
+				"""
 			insert into $tableName ($columnNamesSnippet) values
-			${table.joinToString(",\n", "", ";\n") { data ->
-				val columnsSnippet = data.values.joinToString {
-					it.toString().quote('\'').escapeBy(Escaper.JavaEscaper)
-				}
+			${
+					table.joinToString(",\n", "", ";\n") { data ->
+						val columnsSnippet = data.values.joinToString {
+							it.toString().quote('\'').escapeBy(Escaper.JavaEscaper)
+						}
 
-				"""  ($columnsSnippet)"""
-			}}
+						"""  ($columnsSnippet)"""
+					}
+				}
 			""".trimRelativeIndent()
-		}}
+			}
+		}
 		""".trimRelativeIndent()
 	}
 }

@@ -27,7 +27,7 @@ fun IDslEntry.participant(name: String) = Participant(name).also { participants 
 @MermaidSequenceDiagramDslMarker
 fun IDslEntry.message(
 	fromParticipantId: String,
-	toParticipantId: String
+	toParticipantId: String,
 ) = Message(fromParticipantId, toParticipantId).also { messages += it }
 
 @MermaidSequenceDiagramDslMarker
@@ -35,7 +35,7 @@ fun IDslEntry.message(
 	fromParticipantId: String,
 	arrowShape: ArrowShape,
 	isActivated: Boolean = false,
-	toParticipantId: String
+	toParticipantId: String,
 ) = Message(fromParticipantId, toParticipantId).apply { this.arrowShape = arrowShape; this.isActivated = isActivated }.also { messages += it }
 
 @MermaidSequenceDiagramDslMarker

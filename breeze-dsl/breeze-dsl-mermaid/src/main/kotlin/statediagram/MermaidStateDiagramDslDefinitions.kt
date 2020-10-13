@@ -120,7 +120,7 @@ interface MermaidStateDiagramDslDefinitions {
 	 * @property text （可选项）转化的文本。
 	 */
 	class Transition @PublishedApi internal constructor(
-		val fromStateId: String, val toStateId: String
+		val fromStateId: String, val toStateId: String,
 	) : IDslElement, WithNode {
 		var text: String? = null
 		override val sourceNodeId get() = fromStateId
@@ -139,7 +139,7 @@ interface MermaidStateDiagramDslDefinitions {
 	 */
 	@MermaidStateDiagramDslMarker
 	class Note @PublishedApi internal constructor(
-		val location: NoteLocation, var text: String
+		val location: NoteLocation, var text: String,
 	) : IDslElement, Wrappable, Indentable {
 		override var wrapContent: Boolean = false
 		override var indentContent: Boolean = true
@@ -155,7 +155,7 @@ interface MermaidStateDiagramDslDefinitions {
 	/**Mermaid状态图注释的位置。*/
 	@MermaidStateDiagramDslMarker
 	class NoteLocation @PublishedApi internal constructor(
-		internal val position: NotePosition, internal val stateId: String
+		internal val position: NotePosition, internal val stateId: String,
 	) {
 		override fun toString(): String {
 			return "${position.text} $stateId"

@@ -28,7 +28,7 @@ inline fun <reified T> Any?.cast(): T {
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T> Any?.castOrNull():T? {
+inline fun <reified T> Any?.castOrNull(): T? {
 	return this as? T
 }
 
@@ -45,11 +45,11 @@ inline fun <reified T> Any?.convert(): T {
 /**
  * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般转化逻辑得到的新对象。
  */
-inline fun <reified T> Any?.convertOrNull():T? {
+inline fun <reified T> Any?.convertOrNull(): T? {
 	return if(this is T) this else Converter.convertOrNull(this)
 }
 
 
-inline fun <T:Any> T.toBreeze(): Breeze<T> {
+inline fun <T : Any> T.toBreeze(): Breeze<T> {
 	return Breeze(this)
 }

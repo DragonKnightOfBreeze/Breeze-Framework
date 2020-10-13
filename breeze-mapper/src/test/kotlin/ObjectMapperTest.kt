@@ -24,13 +24,13 @@ class ObjectMapperTest {
 
 	data class Foo(
 		val name: String = "abc",
-		val age: Int = 123
+		val age: Int = 123,
 	)
 
 	data class Bar(
 		val name: String,
 		val age: Int,
-		val weapon: Any
+		val weapon: Any,
 	) {
 		val height: Int = 170
 	}

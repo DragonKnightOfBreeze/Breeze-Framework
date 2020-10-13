@@ -6,8 +6,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.annotations.*
-
 //region build extensions
 infix fun Long.downUntil(until: Byte): LongProgression {
 	return LongProgression.fromClosedRange(this, until.toLong() - 1, -1L)
@@ -75,7 +73,7 @@ infix fun Short.downUntil(until: Short): IntProgression {
 //endregion
 
 //region common extensions
-inline fun <T:Comparable<T>,R:Comparable<R>> ClosedRange<T>.map(transform:(T)->R):ClosedRange<R> {
+inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: (T) -> R): ClosedRange<R> {
 	return transform(start)..transform(endInclusive)
 }
 

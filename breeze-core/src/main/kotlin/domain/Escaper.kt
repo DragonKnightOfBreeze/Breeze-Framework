@@ -8,7 +8,8 @@ package com.windea.breezeframework.core.domain
 /**
  * 转义器。
  *
- * 注意：不转义反斜线，不考虑转义特殊的Unicode字符。
+ * 转义器用于基于指定的（语言）规则，转义和反转义字符串。
+ * 注意：不考虑转义特殊的Unicode字符。
  */
 interface Escaper {
 	fun escape(value: String): String
@@ -23,7 +24,7 @@ interface Escaper {
 			//这里直接遍历字符数组以提高性能
 			return buildString {
 				val chars = value.toCharArray()
-				for(char in chars){
+				for(char in chars) {
 					val index = escapeChars.indexOf(char)
 					if(index == -1) append(char) else append(escapedStrings[index])
 				}
@@ -33,8 +34,8 @@ interface Escaper {
 		private fun unescapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
 			var result = value
 			val size = escapeChars.size
-			for(i in 0 until size){
-				result = result.replace(escapedStrings[i],escapeChars[i].toString())
+			for(i in 0 until size) {
+				result = result.replace(escapedStrings[i], escapeChars[i].toString())
 			}
 			return result
 		}
@@ -139,9 +140,9 @@ interface Escaper {
 	 *
 	 * 将换行符`\n`转义。
 	 */
-	object LineBreakEscaper:Escaper{
-		override fun escape(value: String) = value.replace("\n","\\n")
-		override fun unescape(value: String) = value.replace("\\n","\n")
+	object LineBreakEscaper : Escaper {
+		override fun escape(value: String) = value.replace("\n", "\\n")
+		override fun unescape(value: String) = value.replace("\\n", "\n")
 	}
 
 	/**
@@ -149,10 +150,10 @@ interface Escaper {
 	 *
 	 * 将换行符`\n`转义为`<br>`。
 	 */
-	object HtmlLineBreakEscaper:Escaper{
+	object HtmlLineBreakEscaper : Escaper {
 		var escapedTag = "<br>"
-		override fun escape(value: String) = value.replace("\n",escapedTag)
-		override fun unescape(value: String) = value.replace(escapedTag,"\n",true)
+		override fun escape(value: String) = value.replace("\n", escapedTag)
+		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
 	}
 	//endregion
 }

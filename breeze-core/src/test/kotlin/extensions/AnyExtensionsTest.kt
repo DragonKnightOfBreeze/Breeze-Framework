@@ -2,9 +2,9 @@ package com.windea.breezeframework.core.extensions
 
 import org.junit.*
 
-class AnyExtensionsTest{
+class AnyExtensionsTest {
 	@Test
-	fun testConvert(){
+	fun testConvert() {
 		"123".convert<Int>().andPrintln()
 		"123".convertOrNull<Int>().andPrintln()
 		123.convertOrNull<String>().andPrintln()
@@ -12,7 +12,7 @@ class AnyExtensionsTest{
 	}
 
 	@Test
-	fun testCast(){
+	fun testCast() {
 		(123 as Number).javaClass.andPrintln()
 		(123 as Number).javaClass.andPrintln()
 	}

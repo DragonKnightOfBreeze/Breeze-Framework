@@ -12,13 +12,13 @@ package com.windea.breezeframework.core.domain
  * @property inlineText 内联文本。
  */
 interface Inlineable : CharSequence {
-	val inlineText:CharSequence
+	val inlineText: CharSequence
 
 	override val length get() = inlineText.length
 
-	override fun get(index:Int) = inlineText[index]
+	override fun get(index: Int) = inlineText[index]
 
-	override fun subSequence(startIndex:Int, endIndex:Int) = inlineText.subSequence(startIndex, endIndex)
+	override fun subSequence(startIndex: Int, endIndex: Int) = inlineText.subSequence(startIndex, endIndex)
 
-	override fun toString():String
+	override fun toString(): String
 }

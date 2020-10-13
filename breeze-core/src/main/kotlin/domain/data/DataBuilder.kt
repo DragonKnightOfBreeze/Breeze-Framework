@@ -19,5 +19,5 @@ interface DataBuilder<T : DataEntity> {
 	/**
 	 * 构建对应的数据实体。
 	 */
-	fun build():T
+	fun build(): T
 }

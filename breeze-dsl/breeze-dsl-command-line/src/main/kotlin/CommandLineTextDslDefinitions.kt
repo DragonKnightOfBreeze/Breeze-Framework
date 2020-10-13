@@ -90,7 +90,7 @@ interface CommandLineTextDslDefinitions {
 	 */
 	@CommandLineTextDslMarker
 	class ColoredText @PublishedApi internal constructor(
-		override val text: CharSequence, val color: Color
+		override val text: CharSequence, val color: Color,
 	) : RichText {
 		override fun toString(): String = richText(inlineText, color.code)
 	}
@@ -100,7 +100,7 @@ interface CommandLineTextDslDefinitions {
 	;	 */
 	@CommandLineTextDslMarker
 	class BgColoredText @PublishedApi internal constructor(
-		override val text: CharSequence, val color: Color
+		override val text: CharSequence, val color: Color,
 	) : RichText {
 		override fun toString(): String {
 			return richText(text, color.code + 10)
@@ -112,7 +112,7 @@ interface CommandLineTextDslDefinitions {
 	 */
 	@CommandLineTextDslMarker
 	class StyledText @PublishedApi internal constructor(
-		override val text: CharSequence, vararg val styles: Style
+		override val text: CharSequence, vararg val styles: Style,
 	) : RichText {
 		override fun toString(): String {
 			return richText(text, styles.joinToString(";") { it.code.toString() })

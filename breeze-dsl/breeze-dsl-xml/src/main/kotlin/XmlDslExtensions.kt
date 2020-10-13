@@ -26,7 +26,7 @@ fun XmlDsl.comment(text: String) = Comment(text).also { comments += it }
 @XmlDslMarker
 inline fun XmlDsl.element(
 	name: String,
-	block: Element.() -> Unit = {}
+	block: Element.() -> Unit = {},
 ) = Element(name).apply(block).also { rootElement = it }
 
 /**Create a [XmlDslDefinitions.Element] and register it.*/
@@ -34,7 +34,7 @@ inline fun XmlDsl.element(
 inline fun XmlDsl.element(
 	name: String,
 	vararg attributes: Pair<String, Any?>,
-	block: Element.() -> Unit = {}
+	block: Element.() -> Unit = {},
 ) = Element(name, attributes.toMap()).apply(block).also { rootElement = it }
 
 /**Create a [XmlDslDefinitions.Text] and register it.*/
@@ -53,7 +53,7 @@ fun Element.comment(text: String) = Comment(text).also { nodes += it }
 @XmlDslMarker
 inline fun Element.element(
 	name: String,
-	block: Element.() -> Unit = {}
+	block: Element.() -> Unit = {},
 ) = Element(name).apply(block).also { nodes += it }
 
 /**Create a [XmlDslDefinitions.Element] and register it.*/
@@ -61,5 +61,5 @@ inline fun Element.element(
 inline fun Element.element(
 	name: String,
 	vararg attributes: Pair<String, Any?>,
-	block: Element.() -> Unit = {}
+	block: Element.() -> Unit = {},
 ) = Element(name, attributes.toMap()).apply(block).also { nodes += it }

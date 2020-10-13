@@ -67,13 +67,13 @@ class StringExtensionsTest {
 	}
 
 	@Test
-	fun escapeByTest(){
-		assertEquals("hello\\tworld\\n","hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
+	fun escapeByTest() {
+		assertEquals("hello\\tworld\\n", "hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
 	}
 
 	@Test
-	fun unescapeByTest(){
-		assertEquals("hello\tworld\n","hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
+	fun unescapeByTest() {
+		assertEquals("hello\tworld\n", "hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
 	}
 
 	@Test
@@ -104,28 +104,30 @@ class StringExtensionsTest {
 
 	@Test
 	fun splitMatchedTest() {
-		val expectedResult = listOf("https","localhost","8080","www.test.com","name=Windea")
+		val expectedResult = listOf("https", "localhost", "8080", "www.test.com", "name=Windea")
 		val result = "https://localhost:8080/www.test.com?name=Windea"
-			.splitMatched("://", ":", "/", null, "?") { i, s -> arrayOf("", "", "", s,  "")[i] }
-		assertEquals(expectedResult,result)
+			.splitMatched("://", ":", "/", null, "?") { i, s -> arrayOf("", "", "", s, "")[i] }
+		assertEquals(expectedResult, result)
 	}
 
 	@Test
-	fun splitToStringsTest(){
-		val expectedResult = listOf("name" to "Windea","age" to "4000",
-			"weapon" to listOf("L" to "Breeze'sBreath","R" to "Breeze'sLanding}"), "gender" to "Female")
+	fun splitToStringsTest() {
+		val expectedResult = listOf("name" to "Windea", "age" to "4000",
+			"weapon" to listOf("L" to "Breeze'sBreath", "R" to "Breeze'sLanding}"), "gender" to "Female")
 		val result = "{name=Windea,age=4000,weapon={L=Breeze'sBreath,R=Breeze'sLanding},gender=Female}"
-			.splitToStrings(",","{","}").map{
-				it.split("=",limit=2).let{ (a,b)->a to when{
-					"," in b -> b.splitToStrings(",","{","}").map{e -> e.split("=",limit=2).let{ (a1,b1)->a1 to b1}}
-					else -> b.split("=",limit=2).let{ (a1,b1)->a1 to b1}
-				}}
+			.splitToStrings(",", "{", "}").map {
+				it.split("=", limit = 2).let { (a, b) ->
+					a to when {
+						"," in b -> b.splitToStrings(",", "{", "}").map { e -> e.split("=", limit = 2).let { (a1, b1) -> a1 to b1 } }
+						else -> b.split("=", limit = 2).let { (a1, b1) -> a1 to b1 }
+					}
+				}
 			}
-		assertEquals(expectedResult,result)
+		assertEquals(expectedResult, result)
 	}
 
 	@Test
-	fun toColorTest(){
+	fun toColorTest() {
 		println("red".toColor())
 		println("red".toColor())
 		println("Red".toColor())

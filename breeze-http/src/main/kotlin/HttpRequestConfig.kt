@@ -17,9 +17,9 @@ data class HttpRequestConfig(
 	val timeout: Duration? = null,
 	val version: HttpClient.Version? = null,
 	val expectContinue: Boolean? = null,
-	val encoding: String = "UTF-8"
+	val encoding: String = "UTF-8",
 ) : DataEntity {
-	class Builder: DataBuilder<HttpRequestConfig> {
+	class Builder : DataBuilder<HttpRequestConfig> {
 		val headers: MutableMap<String, List<String>> = mutableMapOf()
 		val query: MutableMap<String, List<String>> = mutableMapOf()
 		var timeout: Duration? = null

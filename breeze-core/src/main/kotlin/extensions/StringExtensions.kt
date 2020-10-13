@@ -66,7 +66,7 @@ operator fun String.get(startIndex: Int, endIndex: Int): String {
 }
 //endregion
 
-//region Optional handle extensions
+//region Optional operation extensions
 /**如果当前字符串不为空，则返回本身，否则返回null。*/
 @JvmSynthetic
 @InlineOnly
@@ -130,7 +130,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 }
 //endregion
 
-//region Misc extensions
+//region Operation extensions
 /**判断两个字符串是否相等，忽略大小写。。*/
 infix fun String?.equalsIgnoreCase(other: String?): Boolean {
 	return this.equals(other, true)
@@ -146,7 +146,6 @@ infix fun CharSequence.allIn(other: CharSequence): Boolean {
 infix fun CharSequence.anyIn(other: CharSequence): Boolean {
 	return this.any { it in other }
 }
-
 
 /**分别依次重复当前字符串中的字符到指定次数。*/
 fun CharSequence.repeatOrdinal(n: Int): String {
@@ -190,31 +189,8 @@ infix fun String.lineConcat(other: String): String {
 fun String.lineBreak(width: Int = 120): String {
 	return this.lines().joinToString("\n") { if(it.length > width) it.chunked(width).joinToString("\n") else it }
 }
-//endregion
 
-//region Regex extensions
-/**
- * Returns the first match of the [regex] in this char sequence, beginning at the specified [startIndex].
- *
- * @param startIndex An index to start search with, by default 0. Must be not less than zero and not greater than `this.length()`
- * @return An instance of [MatchResult] if match was found or `null` otherwise.
- */
-fun CharSequence.find(regex: Regex, startIndex: Int) = regex.find(this, startIndex)
 
-/**
- * Returns a sequence of all occurrences of the [regex] within this string, beginning at the specified [startIndex].
- */
-fun CharSequence.findAll(regex: Regex, startIndex: Int) = regex.findAll(this, startIndex)
-
-/**
- * Attempts to match this char sequence entirely against the [regex].
- *
- * @return An instance of [MatchResult] if the entire input matches or `null` otherwise.
- */
-fun CharSequence.matchEntire(regex: Regex) = regex.matchEntire(this)
-//endregion
-
-//region Is predicate extensions
 //不使用正则以提高性能
 
 /**
@@ -240,9 +216,8 @@ fun CharSequence.isAlpha(): Boolean {
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
 }
-//endregion
 
-//region Prefix and suffix extensions
+
 /**
  * Returns `true` if this char sequence surrounds with the specified characters.
  */
@@ -404,9 +379,8 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	if(length < prefix.length + suffix.length) return this
 	return "$prefix${this.drop(prefix.length).dropLast(suffix.length)}$suffix"
 }
-//endregion
 
-//region Remove extensions
+
 /**去除指定字符。*/
 fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
 	return this.replace(oldChar.toString(), "", ignoreCase)
@@ -421,9 +395,8 @@ fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
-//endregion
 
-//region Index extensions
+
 /**
  * Returns the indices within this string of all occurrences of the specified character.
  * If none is found, returns an empty list.
@@ -452,9 +425,29 @@ fun CharSequence.indicesOf(string: String, startIndex: Int = 0, ignoreCase: Bool
 	}
 	return indices
 }
-//endregion
 
-//region Replace extensions
+
+/**
+ * Returns the first match of the [regex] in this char sequence, beginning at the specified [startIndex].
+ *
+ * @param startIndex An index to start search with, by default 0. Must be not less than zero and not greater than `this.length()`
+ * @return An instance of [MatchResult] if match was found or `null` otherwise.
+ */
+fun CharSequence.find(regex: Regex, startIndex: Int) = regex.find(this, startIndex)
+
+/**
+ * Returns a sequence of all occurrences of the [regex] within this string, beginning at the specified [startIndex].
+ */
+fun CharSequence.findAll(regex: Regex, startIndex: Int) = regex.findAll(this, startIndex)
+
+/**
+ * Attempts to match this char sequence entirely against the [regex].
+ *
+ * @return An instance of [MatchResult] if the entire input matches or `null` otherwise.
+ */
+fun CharSequence.matchEntire(regex: Regex) = regex.matchEntire(this)
+
+
 /**将当前字符串中的指定字符替换成根据索引得到的字符。*/
 @JvmOverloads
 inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
@@ -595,9 +588,8 @@ fun String.replaceInEntire(prefix: String, suffix: String, replacement: String, 
 	val lastIndex = (substring(index).lastIndexOf(suffix) + index).also { if(it == -1) return missingDelimiterValue }
 	return replaceRange(index + prefix.length, lastIndex, replacement)
 }
-//endregion
 
-//region Substring extensions
+
 /**
  * 根据指定的前后缀，得到首个符合条件的子字符串，如果找不到前缀或后缀，则返回默认值。
  * 默认值默认为当前字符串自身。
@@ -663,9 +655,8 @@ fun String.substringInEntire(prefix: String, suffix: Char, missingDelimiterValue
 	val suffixIndex = lastIndexOf(suffix).also { if(it == -1) return missingDelimiterValue }
 	return substring(prefixIndex + prefix.length, suffixIndex)
 }
-//endregion
 
-//region Split extensions
+
 /**
  * 根据以null划分的从前往后和从后往前的分隔符，匹配并按顺序分割子字符串。
  * 不包含对应的分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
@@ -723,9 +714,8 @@ fun String.splitToStrings(
 		else -> content.split(separator.toString(), ignoreCase = ignoreCase, limit = limit + 1).dropLast(1) + truncated.toString()
 	}
 }
-//endregion
 
-//region Align extensions
+
 /**
  * 逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
  */
@@ -766,9 +756,8 @@ fun String.alignCenter(padChar: Char = ' '): String {
 		}
 	}
 }
-//endregion
 
-//region Truncate extensions
+
 /**
  * 根据指定的限定长度和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
  * 截断符默认为`"..."`。
