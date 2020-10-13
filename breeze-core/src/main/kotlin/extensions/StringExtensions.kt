@@ -21,6 +21,7 @@ import java.util.*
 import kotlin.contracts.*
 
 //org.apache.commons.lang3.StringUtils
+//org.springframework.util.StringUtils
 
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
@@ -67,7 +68,9 @@ operator fun String.get(startIndex: Int, endIndex: Int): String {
 //endregion
 
 //region Optional operation extensions
-/**如果当前字符串不为空，则返回本身，否则返回null。*/
+/**
+ * 如果当前字符串不为空，则返回本身，否则返回null。
+ */
 @JvmSynthetic
 @InlineOnly
 inline fun <C : CharSequence> C.orNull(): C? {
@@ -75,14 +78,18 @@ inline fun <C : CharSequence> C.orNull(): C? {
 }
 
 
-/**如果当前字符串不为空，则返回转化后的值，否则返回本身。*/
+/**
+ * 如果当前字符串不为空，则返回转化后的值，否则返回本身。
+ */
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : CharSequence, C : R {
 	return if(this.isEmpty()) this else transform(this)
 }
 
-/**如果当前字符串不为空白，则返回转化后的值，否则返回本身。*/
+/**
+ * 如果当前字符串不为空白，则返回转化后的值，否则返回本身。
+ */
 @JvmSynthetic
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 inline fun <C, R> C.ifNotBlank(transform: (C) -> R): R where C : CharSequence, C : R {
@@ -90,13 +97,17 @@ inline fun <C, R> C.ifNotBlank(transform: (C) -> R): R where C : CharSequence, C
 }
 
 
-/**如果当前字符串不为空，则返回本身，否则返回null。*/
+/**
+ * 如果当前字符串不为空，则返回本身，否则返回null。
+ */
 @JvmSynthetic
 inline fun <C : CharSequence> C.takeIfNotEmpty(): C? {
 	return if(this.isEmpty()) null else this
 }
 
-/**如果当前字符串不为空白，则返回本身，否则返回null。*/
+/**
+ * 如果当前字符串不为空白，则返回本身，否则返回null。
+ */
 @JvmSynthetic
 inline fun <C : CharSequence> C.takeIfNotBlank(): C? {
 	return if(this.isBlank()) null else this
@@ -131,23 +142,31 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 //endregion
 
 //region Operation extensions
-/**判断两个字符串是否相等，忽略大小写。。*/
+/**
+ * 判断两个字符串是否相等，忽略大小写。
+ */
 infix fun String?.equalsIgnoreCase(other: String?): Boolean {
 	return this.equals(other, true)
 }
 
 
-/**判断当前字符串中的所有字符是否被另一字符串包含。*/
+/**
+ * 判断当前字符串中的所有字符是否被另一字符串包含。
+ */
 infix fun CharSequence.allIn(other: CharSequence): Boolean {
 	return this in other
 }
 
-/**判断当前字符串中的任意字符是否被另一字符串包含。*/
+/**
+ * 判断当前字符串中的任意字符是否被另一字符串包含。
+ */
 infix fun CharSequence.anyIn(other: CharSequence): Boolean {
 	return this.any { it in other }
 }
 
-/**分别依次重复当前字符串中的字符到指定次数。*/
+/**
+ * 分别依次重复当前字符串中的字符到指定次数。
+ */
 fun CharSequence.repeatOrdinal(n: Int): String {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 
@@ -155,7 +174,9 @@ fun CharSequence.repeatOrdinal(n: Int): String {
 }
 
 
-/**限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+/**
+ * 限制在指定的前后缀之间的子字符串内，对其执行转化操作，最终返回连接后的字符串。
+ */
 @NotOptimized
 @UnstableApi
 fun String.transformIn(prefix: String, suffix: String, transform: (String) -> String): String {
@@ -164,7 +185,9 @@ fun String.transformIn(prefix: String, suffix: String, transform: (String) -> St
 	return this.replace("(?<=${Regex.escape(prefix)}).*?(?=${Regex.escape(suffix)})".toRegex()) { transform(it.groupValues[0]) }
 }
 
-/**限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。*/
+/**
+ * 限制在指定的正则表达式匹配的子字符串内，对其执行转化操作，最终返回连接后的字符串。
+ */
 @NotOptimized
 @UnstableApi
 fun String.transformIn(regex: Regex, transform: (String) -> String): String {
@@ -172,7 +195,9 @@ fun String.transformIn(regex: Regex, transform: (String) -> String): String {
 }
 
 
-/**逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。*/
+/**
+ * 逐行连接两个字符串。返回的字符串的长度为两者长度中的较大值。
+ */
 @UnstableApi
 infix fun String.lineConcat(other: String): String {
 	val lines = this.lines()
@@ -183,7 +208,9 @@ infix fun String.lineConcat(other: String): String {
 	}.joinToString("\n") { (a, b) -> "$a$b" }
 }
 
-/**逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。*/
+/**
+ * 逐行换行当前字符串，确保每行长度不超过指定长度。不做任何特殊处理。
+ */
 @UnstableApi
 @JvmOverloads
 fun String.lineBreak(width: Int = 120): String {
@@ -326,54 +353,70 @@ fun String.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 }
 
 
-/**为当前字符序列设置指定的前缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符序列设置指定的前缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun CharSequence.setPrefix(prefix: CharSequence): CharSequence {
 	if(length < prefix.length) return this
 	return "$prefix${this.substring(prefix.length, length)}"
 }
 
-/**为当前字符串设置指定的前缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符串设置指定的前缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun String.setPrefix(prefix: CharSequence): String {
 	if(length < prefix.length) return this
 	return "$prefix${this.drop(prefix.length)}"
 }
 
-/**为当前字符序列设置指定的后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符序列设置指定的后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun CharSequence.setSuffix(suffix: CharSequence): CharSequence {
 	if(length < suffix.length) return this
 	return "${this.substring(length - suffix.length)}$suffix"
 }
 
-/**为当前字符串设置指定的后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符串设置指定的后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun String.setSuffix(suffix: CharSequence): String {
 	if(length < suffix.length) return this
 	return "${this.dropLast(suffix.length)}$suffix"
 }
 
-/**为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符序列设置指定的前后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun CharSequence.setSurrounding(delimiter: CharSequence): CharSequence {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
-/**为当前字符串设置指定的前后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符串设置指定的前后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun String.setSurrounding(delimiter: CharSequence): String {
 	return this.setSurrounding(delimiter, delimiter)
 }
 
-/**为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符序列设置指定的前缀和后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun CharSequence.setSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
 	if(length < prefix.length + suffix.length) return this
 	return "$prefix${this.substring(prefix.length, length - suffix.length)}$suffix"
 }
 
-/**为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。*/
+/**
+ * 为当前字符串设置指定的前缀和后缀。如果长度不够，则返回自身。
+ */
 @UnstableApi
 fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 	if(length < prefix.length + suffix.length) return this
@@ -381,17 +424,23 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
 }
 
 
-/**去除指定字符。*/
+/**
+ * 去除指定字符。
+ */
 fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
 	return this.replace(oldChar.toString(), "", ignoreCase)
 }
 
-/**去除指定字符串。*/
+/**
+ * 去除指定字符串。
+ */
 fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 	return this.replace(oldValue, "", ignoreCase)
 }
 
-/**去除指定正则表达式的字符串。*/
+/**
+ * 去除指定正则表达式的字符串。
+ */
 fun String.remove(regex: Regex): String {
 	return this.replace(regex, "")
 }
@@ -448,7 +497,9 @@ fun CharSequence.findAll(regex: Regex, startIndex: Int) = regex.findAll(this, st
 fun CharSequence.matchEntire(regex: Regex) = regex.matchEntire(this)
 
 
-/**将当前字符串中的指定字符替换成根据索引得到的字符。*/
+/**
+ * 将当前字符串中的指定字符替换成根据索引得到的字符。
+ */
 @JvmOverloads
 inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, newChar: (Int) -> Char): String {
 	return buildString {
@@ -460,7 +511,9 @@ inline fun String.replaceIndexed(oldChar: Char, ignoreCase: Boolean = false, new
 	}
 }
 
-/**将当前字符串中的指定值替换成根据索引得到的字符串。*/
+/**
+ * 将当前字符串中的指定值替换成根据索引得到的字符串。
+ */
 @JvmOverloads
 inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, newValue: (Int) -> String): String {
 	return buildString {
@@ -473,7 +526,9 @@ inline fun String.replaceIndexed(oldValue: String, ignoreCase: Boolean = false, 
 }
 
 
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+/**
+ * 根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。
+ */
 @JvmOverloads
 @UnstableApi
 fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Boolean = false): String {
@@ -485,7 +540,9 @@ fun String.replaceAll(oldChars: CharArray, newChars: CharArray, ignoreCase: Bool
 	return result
 }
 
-/**根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。*/
+/**
+ * 根据指定的两组字符串，将当前字符串中的对应字符串替换成对应的替换后字符串。默认不忽略大小写。
+ */
 @JvmOverloads
 @UnstableApi
 fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignoreCase: Boolean = false): String {
@@ -498,7 +555,9 @@ fun String.replaceAll(oldValues: Array<String>, newValues: Array<String>, ignore
 }
 
 
-/**递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。*/
+/**
+ * 递归使用字符串替换当前字符串，直到已经不需要再做一次替换为止。
+ */
 @UnstableApi
 tailrec fun String.replaceRepeatedly(oldValue: String, newValue: String): String {
 	val result = this.replace(oldValue, newValue)
@@ -506,7 +565,9 @@ tailrec fun String.replaceRepeatedly(oldValue: String, newValue: String): String
 	return if(length != result.length || this != result) result.replaceRepeatedly(oldValue, newValue) else result
 }
 
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+/**
+ * 递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。
+ */
 @UnstableApi
 tailrec fun CharSequence.replaceRepeatedly(regex: Regex, replacement: String): String {
 	val result = this.replace(regex, replacement)
@@ -514,7 +575,9 @@ tailrec fun CharSequence.replaceRepeatedly(regex: Regex, replacement: String): S
 	return if(length != result.length || this != result) result.replaceRepeatedly(regex, replacement) else result
 }
 
-/**递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。*/
+/**
+ * 递归使用正则表达式替换当前字符串，直到已经不需要再做一次替换为止。
+ */
 @UnstableApi
 tailrec fun CharSequence.replaceRepeatedly(regex: Regex, transform: (MatchResult) -> CharSequence): String {
 	val result = this.replace(regex, transform)
