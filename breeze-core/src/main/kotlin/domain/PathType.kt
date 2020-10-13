@@ -1,9 +1,12 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
+@file:Suppress("UNCHECKED_CAST")
+
 package com.windea.breezeframework.core.domain
 
 import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.extensions.*
 
 /**
  * 路径类型。
@@ -18,6 +21,11 @@ interface PathType {
 	 * 判断指定的字符串是否匹配指定的路径。
 	 */
 	fun matches(value:String,path:String):Boolean
+
+	/**
+	 * 精简指定的路径。
+	 */
+	fun trim(path:String):String
 
 	/**
 	 * 将指定的字符串分隔成子路径列表。
@@ -45,12 +53,73 @@ interface PathType {
 	fun join(paths:Sequence<String>):String
 
 	/**
-	 * 根据指定类型的路径，查询目标查询对象。返回匹配的路径和查询结果的映射。
+	 * 根据指定路径查询目标查询对象，返回查询结果。
+	 *
+	 * 注意：如果需要递归查询，请使用[deepQuery]。
 	 */
-	fun query(path: String, target: Any): Map<String,Any?>
+	fun <R> query(path: String, target: Any): R?
+
+	/**
+	 * 根据指定路径递归查询目标查询对象，返回查询结果列表。
+	 */
+	fun <R> deepQuery(path:String,target:Any):List<R>
 
 	companion object{
 		//不需要进行注册
+	}
+
+	abstract class AbstractPath(val delimiter: String, val prefix: String?=null) :PathType{
+		override fun trim(path:String):String{
+			return path.trim().removeSuffix(delimiter)
+		}
+
+		override fun matches(value: String, path: String): Boolean {
+			return trim(value) == trim(path)
+		}
+
+		override fun split(path: String): List<String> {
+			return trim(path).let{if(prefix!= null) it.removePrefix(prefix) else it}.split(delimiter)
+		}
+
+		override fun splitToSequence(path: String): Sequence<String> {
+			return trim(path).let{if(prefix!= null) it.removePrefix(prefix) else it}.splitToSequence(delimiter)
+		}
+
+		override fun join(paths: List<String>): String {
+			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
+		}
+
+		override fun join(paths: Array<String>): String {
+			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
+		}
+
+		override fun join(paths: Sequence<String>): String {
+			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
+		}
+
+		override fun <R> query(path: String, target: Any): R? {
+			return Querier.StringQuerier.queryOrNull(path,target)
+		}
+
+		override fun <R> deepQuery(path: String, target: Any):List<R> {
+			val paths = split(path)
+			var result = listOf( target)
+			for(p in paths){
+				result = result.flatMap { value ->
+					try {
+						val r = query<Any?>(p,value)
+						when{
+							r == null -> listOf()
+							r is List<*> -> r.filterNotNull()
+							else -> listOf(r)
+						}
+					}catch(e:Exception){
+						throw IllegalArgumentException("Invalid path '$path' for query.", e)
+					}
+				}
+			}
+			return result as List<R>
+		}
 	}
 
 	//region Default Path Types
@@ -58,71 +127,51 @@ interface PathType {
 	 * 标准路径。
 	 *
 	 * 规则：
-	 * * `/` - 分隔符。
+	 * * 以`/`作为分隔符。
 	 */
-	object StandardPath:PathType{
-		private const val delimiter = '/'
-		private const val delimiterString = delimiter.toString()
-
-		override fun matches(value: String, path: String): Boolean {
-			return value.trimEnd(delimiter) == path.trimEnd(delimiter)
-		}
-
-		override fun split(path: String): List<String> {
-			return path.trim(delimiter).split(delimiter)
-		}
-
-		override fun splitToSequence(path: String): Sequence<String> {
-			return path.trim(delimiter).splitToSequence(delimiter)
-		}
-
-		override fun join(paths: List<String>): String {
-			return paths.joinToString(delimiterString)
-		}
-
-		override fun join(paths: Array<String>): String {
-			return paths.joinToString(delimiterString)
-		}
-
-		override fun join(paths: Sequence<String>): String {
-			return paths.joinToString(delimiterString)
-		}
-
-		override fun query(path: String, target: Any): Map<String,Any?> {
-			val paths = split(path)
-			var pathValuePairs = listOf(arrayOf<String>() to target)
-			for(p in paths){
-				pathValuePairs = pathValuePairs.flatMap { (key,value)->
-					listOf()
-				}
-			}
-			return pathValuePairs.toMap().mapKeys { (k, _) -> join(k) }
-		}
-	}
+	object StandardPath:AbstractPath("/","/")
 
 	/**
 	 * 扩展路径。
 	 *
 	 * 规则：
-	 * * `/` - 分隔符。
-	 * * `{name}` - 匹配指定名字的查询对象变量，可以不指定名字。
-	 * * `{name:regex}` - 匹配指定正则表达式的指定名字的查询对象变量，可以不指定正则表达式和名字。
+	 * * 以`/`作为分隔符。
+	 * * `{name:regex}` - 匹配指定正则表达式的指定名字的查询对象，可以不指定正则表达式和名字。
 	 * * `m-n` - 匹配指定索引范围的元素。
 	 */
-	object ExtendedPath{
+	object ExtendedPath:AbstractPath("/","/")
 
-	}
+	/**
+	 * Ant路径。
+	 *
+	 * 规则：
+	 * * 以`/`作为分隔符。
+	 * * `?` - 匹配任意单个字符。
+	 * * `*` - 匹配除了分隔符之外的任意数量的任意字符。
+	 * * `**` - 匹配任意数量的任意字符。
+	 * * `{name:regex}` - 匹配指定正则表达式的指定名字的查询对象，可以不指定正则表达式和名字。
+	 */
+	object AntPath:AbstractPath("/","/")
 
-	object AntPath{
+	/**
+	 * Json指针路径。
+	 *
+	 * 规则：
+	 * * 以`/`作为分隔符。
+	 * * `-` - 匹配数组最后一个元素的下一个元素（对于赋值操作）。
+	 * * 如果路径为空，则返回目标查询对象本身。
+	 */
+	object JsonPointerPath:AbstractPath("/","/")
 
-	}
+	/**
+	 * Json Schema路径。
+	 *
+	 * 规则：
+	 * * 以`/`作为分隔符。
+	 * * 以`/#/`作为前缀。
+	 */
+	object JsonSchemaPath:AbstractPath("/#/","/")
 
-	object JsonPointerPath{
-
-	}
-
-	object ReferencePath{
-
-	}
+	object ReferencePath:AbstractPath(".")
 	//endregion
 }

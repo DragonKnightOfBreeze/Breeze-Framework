@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("IMPLICIT_CAST_TO_ANY")
+@file:Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 
 package com.windea.breezeframework.core.domain
 
@@ -22,13 +22,13 @@ interface Querier<T : Any> {
 	/**
 	 * 根据指定类型的对象，查询目标查询对象。如果查询失败，则抛出异常。
 	 */
-	fun query(value: T, target: Any): Any?
+	fun <R> query(queryString: T, target: Any): R
 
 	/**
 	 * 根据指定类型的对象，查询目标查询对象。如果查询失败，则返回null。
 	 */
-	fun queryOrNull(value: T, target: Any): Any? {
-		return runCatching { query(value, target) }.getOrNull()
+	fun <R> queryOrNull(queryString: T, target: Any): R? {
+		return runCatching { query<R>(queryString, target) }.getOrNull()
 	}
 
 	companion object {
@@ -42,18 +42,18 @@ interface Querier<T : Any> {
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
 	object StringQuerier : Querier<String> {
-		override fun query(value: String, target: Any): Any? {
+		override fun <R> query(queryString: String, target: Any): R {
 			return try {
 				when(target) {
-					is Array<*> -> target.getOrNull(value.toInt())
-					is List<*> -> target.getOrNull(value.toInt())
-					is Iterable<*> -> target.elementAtOrNull(value.toInt())
-					is Map<*, *> -> target.cast<Map<String, Any?>>()[value]
-					is Sequence<*> -> target.elementAtOrNull(value.toInt())
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value'")
-				}
+					is Array<*> -> target.getOrNull(queryString.toInt())
+					is List<*> -> target.getOrNull(queryString.toInt())
+					is Iterable<*> -> target.elementAtOrNull(queryString.toInt())
+					is Map<*, *> -> target.cast<Map<String, Any?>>()[queryString]
+					is Sequence<*> -> target.elementAtOrNull(queryString.toInt())
+					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString'.")
+				} as R
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value'", e)
+				throw IllegalArgumentException("Invalid string '$queryString' for query.", e)
 			}
 		}
 	}
@@ -64,15 +64,15 @@ interface Querier<T : Any> {
 	 * 支持[Map]。
 	 */
 	object RegexQuerier : Querier<Regex> {
-		override fun query(value: Regex, target: Any): Any? {
+		override fun <R> query(queryString: Regex, target: Any): R {
 			return try {
 				when(target) {
 					//忽略数组、列表、序列等类型的查询对象
-					is Map<*, *> -> target.cast<Map<String, Any?>>().filterKeys { it.matches(value) }
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by regex '$value'")
-				}
+					is Map<*, *> -> target.cast<Map<String, Any?>>().filterKeys { it.matches(queryString) }
+					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by regex '$queryString'.")
+				} as R
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by regex '$value'", e)
+				throw IllegalArgumentException("Invalid regex '$queryString' for query.", e)
 			}
 		}
 	}
@@ -83,17 +83,17 @@ interface Querier<T : Any> {
 	 * 支持[Array]，[List]，[Iterable]，[Sequence]。
 	 */
 	object IndexQuerier : Querier<Int> {
-		override fun query(value: Int, target: Any): Any? {
+		override fun <R> query(queryString: Int, target: Any):  R {
 			return try {
 				when(target) {
-					is Array<*> -> target.getOrNull(value)
-					is List<*> -> target.getOrNull(value)
-					is Iterable<*> -> target.elementAtOrNull(value)
-					is Sequence<*> -> target.elementAtOrNull(value)
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by index '$value'")
-				}
+					is Array<*> -> target.getOrNull(queryString)
+					is List<*> -> target.getOrNull(queryString)
+					is Iterable<*> -> target.elementAtOrNull(queryString)
+					is Sequence<*> -> target.elementAtOrNull(queryString)
+					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by index '$queryString'.")
+				} as R
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by index '$value'", e)
+				throw IllegalArgumentException("Invalid index '$queryString' for query.", e)
 			}
 		}
 	}
@@ -104,17 +104,17 @@ interface Querier<T : Any> {
 	 * 支持[Array]，[List]，[Iterable]，[Sequence]。
 	 */
 	object IndexRangeQuerier : Querier<IntRange> {
-		override fun query(value: IntRange, target: Any): Any? {
+		override fun <R> query(queryString: IntRange, target: Any): R {
 			return try {
 				when(target) {
-					is Array<*> -> target.toList().slice(value)
-					is List<*> -> target.slice(value)
-					is Iterable<*> -> target.toList().slice(value)
-					is Sequence<*> -> target.toList().slice(value)
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by range '$value'")
-				}
+					is Array<*> -> target.toList().slice(queryString)
+					is List<*> -> target.slice(queryString)
+					is Iterable<*> -> target.toList().slice(queryString)
+					is Sequence<*> -> target.toList().slice(queryString)
+					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by range '$queryString'.")
+				} as R
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by range '$value'", e)
+				throw IllegalArgumentException("Invalid range '$queryString' for query.", e)
 			}
 		}
 	}
@@ -123,16 +123,16 @@ interface Querier<T : Any> {
 	 * 基于字符串，通过反射查询查询对象的字段和属性的值的查询器。
 	 */
 	object ReflectionQuerier : Querier<String> {
-		override fun query(value: String, target: Any): Any? {
+		override fun <R> query(queryString: String, target: Any): R {
 			try {
 				val targetType = target.javaClass
-				val field: Field? = runCatching { targetType.getDeclaredField(value) }.getOrNull()
-				if(field != null) return field.apply { trySetAccessible() }.get(target)
-				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(value)) }.getOrNull()
-				if(getter != null) return getter.apply { trySetAccessible() }.invoke(target)
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value' use reflection.")
+				val field: Field? = runCatching { targetType.getDeclaredField(queryString) }.getOrNull()
+				if(field != null) return field.apply { trySetAccessible() }.get(target) as R
+				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(queryString)) }.getOrNull()
+				if(getter != null) return getter.apply { trySetAccessible() }.invoke(target) as R
+				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.")
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value' use reflection.", e)
+				throw IllegalArgumentException("Invalid string '$queryString' for query use reflection.", e)
 			}
 		}
 
@@ -147,24 +147,24 @@ interface Querier<T : Any> {
 	 * 支持[Field]，[Method]，[Annotation]。
 	 */
 	object ReflectionMemberQuerier : Querier<String> {
-		override fun query(value: String, target: Any): Any? {
+		override fun <R> query(queryString: String, target: Any): R {
 			try {
 				val targetType = target.javaClass
 				val result = when {
-					value.startsWith("@") -> {
-						val name = getAnnotationName(value)
+					queryString.startsWith("@") -> {
+						val name = getAnnotationName(queryString)
 						targetType.declaredAnnotations.find { it.javaClass.simpleName == name }
 					}
-					value.endsWith("()") -> {
-						val name = getMethodName(value)
+					queryString.endsWith("()") -> {
+						val name = getMethodName(queryString)
 						targetType.declaredMethods.find { it.name == name }
 					}
-					else -> runCatching { targetType.getDeclaredField(value) }.getOrNull()
-				}
+					else -> runCatching { targetType.getDeclaredField(queryString) }.getOrNull()
+				} as R?
 				if(result != null) return result
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value' use reflection.")
+				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.")
 			} catch(e: Exception) {
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$value' use reflection.", e)
+				throw IllegalArgumentException("Invalid string '$queryString' for query use reflection.", e)
 			}
 		}
 

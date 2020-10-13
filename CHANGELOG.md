@@ -414,8 +414,7 @@
 * [X] 重构`LetterCase`
 * [X] 重构`EscapeType`并重命名为`Escaper`
 * [X] 实现`Querier`
-* [ ] 重构`ReferenceCase`
-* [ ] 重构`MatchType`并重命名为`PathType`
+* [ ] 重构`MatchType`和`ReferenceCase`并重命名为`PathType`
 
 # 长期
 

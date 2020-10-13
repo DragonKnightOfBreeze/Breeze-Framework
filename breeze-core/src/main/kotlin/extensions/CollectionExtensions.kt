@@ -591,7 +591,7 @@ fun <T> T.expand(operation: (T) -> Iterable<T>): List<T> {
 }
 //endregion
 
-//region Deep operation extensions
+//region Smart operation extensions
 /**
  * 根据指定路径递归查询当前数组，返回匹配的路径-值映射。
  * 指定路径的格式默认为路径引用。返回值中路径的格式默认为路径引用。
