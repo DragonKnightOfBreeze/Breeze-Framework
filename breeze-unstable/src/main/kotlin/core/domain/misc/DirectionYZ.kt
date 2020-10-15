@@ -4,19 +4,14 @@
 package com.windea.breezeframework.core.domain.misc
 
 import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.domain.misc.Dimension.*
 
-/**维度。*/
-@Name("维度")
-enum class Dimension {
-	@Name("点")
-	Point,
-
-	@Name("长度")
-	Length,
-
-	@Name("宽度")
-	Width,
-
-	@Name("高度")
-	Height
+/**
+ * 基于YZ轴的二维方向。
+ */
+enum class DirectionYZ{
+	Up,
+	Down,
+	Forward,
+	Backward
 }

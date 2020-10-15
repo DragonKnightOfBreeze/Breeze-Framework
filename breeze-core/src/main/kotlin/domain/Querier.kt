@@ -50,10 +50,10 @@ interface Querier<T : Any> {
 					is Iterable<*> -> target.elementAtOrNull(queryString.toInt())
 					is Map<*, *> -> target.cast<Map<String, Any?>>()[queryString]
 					is Sequence<*> -> target.elementAtOrNull(queryString.toInt())
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString'.")
+					else -> throw UnsupportedOperationException("Invalid string '$queryString' for query.")
 				} as R
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid string '$queryString' for query.", e)
+				throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by string '$queryString'.",e)
 			}
 		}
 	}
@@ -69,10 +69,10 @@ interface Querier<T : Any> {
 				when(target) {
 					//忽略数组、列表、序列等类型的查询对象
 					is Map<*, *> -> target.cast<Map<String, Any?>>().filterKeys { it.matches(queryString) }
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by regex '$queryString'.")
+					else -> throw UnsupportedOperationException("Invalid regex '$queryString' for query.")
 				} as R
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid regex '$queryString' for query.", e)
+				throw IllegalArgumentException ("Cannot query '${target.javaClass.simpleName}' by regex '$queryString'.",e)
 			}
 		}
 	}
@@ -90,10 +90,10 @@ interface Querier<T : Any> {
 					is List<*> -> target.getOrNull(queryString)
 					is Iterable<*> -> target.elementAtOrNull(queryString)
 					is Sequence<*> -> target.elementAtOrNull(queryString)
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by index '$queryString'.")
+					else -> throw UnsupportedOperationException("Invalid index '$queryString' for query.")
 				} as R
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid index '$queryString' for query.", e)
+				throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by index '$queryString'.", e)
 			}
 		}
 	}
@@ -111,10 +111,10 @@ interface Querier<T : Any> {
 					is List<*> -> target.slice(queryString)
 					is Iterable<*> -> target.toList().slice(queryString)
 					is Sequence<*> -> target.toList().slice(queryString)
-					else -> throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by range '$queryString'.")
+					else -> throw UnsupportedOperationException("Invalid range '$queryString' for query.")
 				} as R
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid range '$queryString' for query.", e)
+				throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by range '$queryString'.", e)
 			}
 		}
 	}
@@ -130,9 +130,9 @@ interface Querier<T : Any> {
 				if(field != null) return field.apply { trySetAccessible() }.get(target) as R
 				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(queryString)) }.getOrNull()
 				if(getter != null) return getter.apply { trySetAccessible() }.invoke(target) as R
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.")
+				throw UnsupportedOperationException("Invalid string '$queryString' for query use reflection.")
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid string '$queryString' for query use reflection.", e)
+				throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.", e)
 			}
 		}
 
@@ -162,9 +162,9 @@ interface Querier<T : Any> {
 					else -> runCatching { targetType.getDeclaredField(queryString) }.getOrNull()
 				} as R?
 				if(result != null) return result
-				throw UnsupportedOperationException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.")
+				throw UnsupportedOperationException("Invalid string '$queryString' for query use reflection.")
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Invalid string '$queryString' for query use reflection.", e)
+				throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by string '$queryString' use reflection.", e)
 			}
 		}
 

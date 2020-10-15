@@ -19,9 +19,9 @@ open class StringToPageableConverter(
 ) : Converter<String, Pageable> {
 	override fun convert(string: String): Pageable {
 		val splitStrings = string.split(",", limit = 3).map { it.trim() }
-		val page = splitStrings.getOrDefault(0, "1").toInt()
-		val size = splitStrings.getOrDefault(1, "10").toInt()
-		val sort = stringToSortConverter.convert(splitStrings.getOrDefault(2, ""))
+		val page = splitStrings.getOrElse(0){ "1"}.toInt()
+		val size = splitStrings.getOrElse(1){"10"}.toInt()
+		val sort = stringToSortConverter.convert(splitStrings.getOrElse(2){ ""})
 		return PageRequest.of(page - 1, size, sort)
 	}
 }

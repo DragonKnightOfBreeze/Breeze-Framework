@@ -707,7 +707,7 @@ fun String.substringInEntire(prefix: String, suffix: Char, missingDelimiterValue
 
 
 /**
- * 根据以null划分的从前往后和从后往前的分隔符，匹配并按顺序分割子字符串。
+ * 根据以null划分的从前往后和从后往前的分隔符，匹配并按顺序分割当前字符串。
  * 不包含对应的分隔符时，如果指定了默认值，则加入基于索引和剩余字符串得到的默认值。否则加入空字符串。
  */
 @NotOptimized
@@ -900,47 +900,31 @@ fun String.unescapeBy(escaper: Escaper): String {
 
 
 /**
- * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
+ * 尝试推断当前字符串的字母格式。
  */
-fun String.toRegexBy(type: MatchType): Regex {
-	return type.regexTransform(this).toRegex()
+fun String.inferLetterCase():LetterCase?{
+	return LetterCase.infer(this)
+}
+
+private fun String.inferLetterCaseOrThrow():LetterCase{
+	return LetterCase.infer(this)?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 }
 
 /**
- * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
- */
-fun String.toRegexBy(type: MatchType, option: RegexOption): Regex {
-	return type.regexTransform(this).toRegex(option)
-}
-
-/**
- * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
- */
-fun String.toRegexBy(type: MatchType, options: Set<RegexOption>): Regex {
-	return type.regexTransform(this).toRegex(options)
-}
-
-
-/**
- * 得到当前字符串的字母格式。
- */
-val String.letterCase: LetterCase? get() = LetterCase.infer(this)
-
-/**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。如果不指定字母格式，则尝试推断或者抛出异常。
  *
  * @see LetterCase
  */
-fun String.splitBy(letterCase: LetterCase): List<String> {
+fun String.splitBy(letterCase: LetterCase = inferLetterCaseOrThrow()): List<String> {
 	return letterCase.split(this)
 }
 
 /**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。如果不指定字母格式，则尝试推断或者抛出异常。
  *
  * @see LetterCase
  */
-fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+fun String.splitToSequenceBy(letterCase: LetterCase = inferLetterCaseOrThrow()): Sequence<String> {
 	return letterCase.splitToSequence(this)
 }
 
@@ -967,42 +951,27 @@ fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
  *
  * @see LetterCase
  */
-fun Sequence<String>.joinToStringBy(letterCase: LetterCase): String {
+fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
 	return letterCase.joinToString(this)
 }
 
 /**
- * 根据指定的字母格式，切换当前字符串的格式。
+ * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
  *
  * @see LetterCase
  */
-fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+fun String.switchCaseBy(sourceLetterCase: LetterCase = inferLetterCaseOrThrow(), targetLetterCase: LetterCase): String {
+	return splitToSequenceBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
+
 
 /**
- * 根据指定的字母格式，切换当前字符串的格式。可以自动推导出当前字符串的字母格式，
+ * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
  *
- * @see LetterCase
+ * @see PathType
  */
-fun String.switchCaseBy(targetLetterCase: LetterCase): String {
-	val sourceLetterCase = this.letterCase ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-	return switchCaseBy(sourceLetterCase, targetLetterCase)
-}
-
-
-//TODO
-
-fun String.splitBy(referenceCase: ReferenceCase): List<String> {
-	return referenceCase.splitter(this)
-}
-
-fun Iterable<CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
-	return referenceCase.joiner(this)
-}
-
-fun Array<out CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
-	return referenceCase.arrayJoiner(this)
+fun String.matchesBy(path:String,pathType:PathType):Boolean{
+	return pathType.matches(this,path)
 }
 //endregion
 

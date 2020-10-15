@@ -15,6 +15,7 @@ import java.io.*
  */
 interface Enumerable<T : Serializable> : Serializable {
 	val code: T
+
 	val text: String
 }
 

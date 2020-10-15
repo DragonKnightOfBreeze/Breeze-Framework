@@ -11,128 +11,144 @@ import com.windea.breezeframework.core.extensions.*
 /**
  * 路径类型。
  *
- * 路径用于表示目标查询对象在其系统中的位置，可以可以包含多个子路径和变量，可以用于匹配和查询。
+ * 路径用于表示目标查询对象在其系统中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  *
  * 查询对象可能是：文件，组件，元素，数组，列表，映射，序列，...
  */
 @ComponentMarker
 interface PathType {
+	val delimiter: String
+	val prefix: String
+
+	/**
+	 * 标准化指定的路径。
+	 */
+	fun normalize(path:String):String{
+		return path.trim().removeSuffix(delimiter)
+	}
+
 	/**
 	 * 判断指定的字符串是否匹配指定的路径。
 	 */
-	fun matches(value:String,path:String):Boolean
+	fun matches(value:String,path:String):Boolean{
+		return normalize(value) == normalize(path)
+	}
 
 	/**
-	 * 精简指定的路径。
+	 * 将指定的字符串分隔成元路径列表。
 	 */
-	fun trim(path:String):String
+	 fun split(path: String): List<String> {
+		return normalize(path).removePrefix(prefix).split(delimiter)
+	}
 
 	/**
-	 * 将指定的字符串分隔成子路径列表。
+	 * 将指定的字符串分隔成元路径序列。
 	 */
-	fun split(path:String):List<String>
+	 fun splitToSequence(path: String): Sequence<String> {
+		return normalize(path).removePrefix(prefix).splitToSequence(delimiter)
+	}
 
 	/**
-	 * 将指定的字符串分隔成子路径序列。
+	 * 将元路径数组组合成完整路径。
 	 */
-	fun splitToSequence(path:String):Sequence<String>
+	fun joinToString(metaPaths: Array<String>): String {
+		return metaPaths.joinToString(delimiter).addPrefix(prefix)
+	}
 
 	/**
-	 * 将子路径数组组合成完整路径。
+	 * 将元路径列表组合成完整路径。
 	 */
-	fun join(paths:Array<String>):String
+	fun joinToString(metaPaths: Iterable<String>): String {
+		return metaPaths.joinToString(delimiter).addPrefix(prefix)
+	}
 
 	/**
-	 * 将子路径列表组合成完整路径。
+	 * 将元路径序列组合成完整路径。
 	 */
-	fun join(paths:List<String>):String
+	fun joinToString(metaPaths: Sequence<String>): String {
+		return metaPaths.joinToString(delimiter).addPrefix(prefix)
+	}
 
 	/**
-	 * 将子路径序列组合成完整路径。
-	 */
-	fun join(paths:Sequence<String>):String
-
-	/**
-	 * 根据指定路径查询目标查询对象，返回查询结果。如果查询失败，则抛出异常。
+	 * 根据指定元路径查询目标查询对象，返回查询结果。如果查询失败，则返回null。
 	 *
-	 * 注意：如果需要递归查询，请使用[deepQueryBy]。
+	 * 注意：如果需要递归查询，请使用[query]。
 	 */
-	fun <T> query(path: String, target: Any): T
+	fun <T> metaQuery(path: String, target: Any): T? {
+		return Querier.StringQuerier.queryOrNull(path.removePrefix(prefix),target)
+	}
 
 	/**
-	 * 根据指定路径查询目标查询对象，返回查询结果。如果查询失败，则返回null。
-	 *
-	 * 注意：如果需要递归查询，请使用[deepQueryBy]。
+	 * 根据指定路径查询目标查询对象，返回查询结果列表。
+	 * 如果指定路径为空路径，则目标返回查询对象的单元素列表。
 	 */
-	fun <T> queryOrNull(path: String, target: Any): T?
+	fun <T> query(path: String, target: Any):List<T> {
+		val metaPaths = splitToSequence(path)
+		if(metaPaths.none()) return listOf(target) as List<T>
+		var result = listOf( target)
+		for(metaPath in metaPaths){
+			result = result.flatMap { value ->
+				try {
+					val r = metaQuery<Any?>(metaPath,value)
+					when{
+						r == null -> listOf()
+						r is List<*> -> r.filterNotNull()
+						else -> listOf(r)
+					}
+				}catch(e:Exception){
+					throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by path '$path'.", e)
+				}
+			}
+		}
+		return result as List<T>
+	}
 
 	/**
-	 * 根据指定路径递归查询目标查询对象，返回查询结果列表。
+	 * 根据指定路径查询目标查询对象，得到首个匹配的值，或者抛出异常。
+	 * 如果指定路径为空路径，则返回目标查询对象本身。
 	 */
-	fun <T> deepQuery(path:String,target:Any):List<T>
+	fun <T> get(path:String,target:Any):T{
+		val metaPaths = splitToSequence(path)
+		if(metaPaths.none()) return target as T
+		var currentValue = target
+		for(metaPath in metaPaths){
+			currentValue = metaQuery(metaPath,currentValue)
+			            ?: throw IllegalArgumentException("Cannot query '${target.javaClass.simpleName}' by path '$path'.")
+		}
+		return currentValue as T
+	}
+
+	/**
+	 * 根据指定路径查询目标查询对象，得到首个匹配的值，或者返回null。
+	 * 如果指定路径为空路径，则返回目标查询对象本身。
+	 */
+	fun <T> getOrNull(path:String,target:Any):T?{
+		val metaPaths = splitToSequence(path)
+		if(metaPaths.none()) return target as T
+		var currentValue = target
+		for(metaPath in metaPaths){
+			currentValue = metaQuery(metaPath,currentValue)?:return null
+		}
+		return currentValue as T
+	}
+
+	/**
+	 * 根据指定路径查询目标查询对象，得到首个匹配的值，或者返回默认值。
+	 * 如果指定路径为空路径，则返回目标查询对象本身。
+	 */
+	fun <T> getOrElse(path:String,target:Any,defaultValue:()->T):T{
+		val metaPaths = splitToSequence(path)
+		if(metaPaths.none()) return target as T
+		var currentValue = target
+		for(metaPath in metaPaths){
+			currentValue = metaQuery(metaPath,currentValue)?:return defaultValue()
+		}
+		return currentValue as T
+	}
+
 
 	companion object{
 		//不需要进行注册
-	}
-
-	abstract class AbstractPath(val delimiter: String, val prefix: String?=null) :PathType{
-		override fun trim(path:String):String{
-			return path.trim().removeSuffix(delimiter)
-		}
-
-		override fun matches(value: String, path: String): Boolean {
-			return trim(value) == trim(path)
-		}
-
-		override fun split(path: String): List<String> {
-			return trim(path).let{if(prefix!= null) it.removePrefix(prefix) else it}.split(delimiter)
-		}
-
-		override fun splitToSequence(path: String): Sequence<String> {
-			return trim(path).let{if(prefix!= null) it.removePrefix(prefix) else it}.splitToSequence(delimiter)
-		}
-
-		override fun join(paths: List<String>): String {
-			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
-		}
-
-		override fun join(paths: Array<String>): String {
-			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
-		}
-
-		override fun join(paths: Sequence<String>): String {
-			return paths.joinToString(delimiter).let{ if(prefix!= null) it.addPrefix(prefix) else it}
-		}
-
-		override fun <T> query(path: String, target: Any): T {
-			val fqPath = if(prefix!= null) path.removePrefix(prefix) else path
-			return Querier.StringQuerier.query(fqPath,target)
-		}
-
-		override fun <T> queryOrNull(path: String, target: Any): T? {
-			val fqPath = if(prefix!= null) path.removePrefix(prefix) else path
-			return Querier.StringQuerier.queryOrNull(fqPath,target)
-		}
-
-		override fun <T> deepQuery(path: String, target: Any):List<T> {
-			val paths = split(path)
-			var result = listOf( target)
-			for(p in paths){
-				result = result.flatMap { value ->
-					try {
-						val r = queryOrNull<Any?>(p,value)
-						when{
-							r == null -> listOf()
-							r is List<*> -> r.filterNotNull()
-							else -> listOf(r)
-						}
-					}catch(e:Exception){
-						throw IllegalArgumentException("Invalid path '$path' for query.", e)
-					}
-				}
-			}
-			return result as List<T>
-		}
 	}
 
 	//region Default Path Types
@@ -142,7 +158,10 @@ interface PathType {
 	 * 规则：
 	 * * 以`/`作为分隔符。
 	 */
-	object StandardPath:AbstractPath("/","/")
+	object StandardPath:PathType{
+		override val prefix = "/"
+		override val delimiter = "/"
+	}
 
 	/**
 	 * 扩展路径。
@@ -152,7 +171,10 @@ interface PathType {
 	 * * `{name:regex}` - 匹配指定正则表达式的指定名字的查询对象，可以不指定正则表达式和名字。
 	 * * `m-n` - 匹配指定索引范围的元素。
 	 */
-	object ExtendedPath:AbstractPath("/","/")
+	object ExtendedPath:PathType{
+		override val prefix = "/"
+		override val delimiter = "/"
+	}
 
 	/**
 	 * Ant路径。
@@ -164,7 +186,10 @@ interface PathType {
 	 * * `**` - 匹配任意数量的任意字符。
 	 * * `{name:regex}` - 匹配指定正则表达式的指定名字的查询对象，可以不指定正则表达式和名字。
 	 */
-	object AntPath:AbstractPath("/","/")
+	object AntPath:PathType{
+		override val prefix = "/"
+		override val delimiter = "/"
+	}
 
 	/**
 	 * Json指针路径。
@@ -174,7 +199,10 @@ interface PathType {
 	 * * `-` - 匹配数组最后一个元素的下一个元素（对于赋值操作）。
 	 * * 如果路径为空，则返回目标查询对象本身。
 	 */
-	object JsonPointerPath:AbstractPath("/","/")
+	object JsonPointerPath:PathType{
+		override val prefix = "/"
+		override val delimiter = "/"
+	}
 
 	/**
 	 * Json Schema路径。
@@ -183,8 +211,14 @@ interface PathType {
 	 * * 以`/`作为分隔符。
 	 * * 以`/#/`作为前缀。
 	 */
-	object JsonSchemaPath:AbstractPath("/#/","/")
+	object JsonSchemaPath:PathType{
+		override val prefix = "#/"
+		override val delimiter = "/"
+	}
 
-	object ReferencePath:AbstractPath(".")
+	object ReferencePath:PathType{
+		override val prefix = ""
+		override val delimiter = "."
+	}
 	//endregion
 }

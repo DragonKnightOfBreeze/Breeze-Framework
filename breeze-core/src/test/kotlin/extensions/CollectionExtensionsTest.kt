@@ -27,11 +27,11 @@ class CollectionExtensionsTest {
 
 	@Test
 	fun deepQueryTest() {
-		assertEquals(2,listOf(1,2,3).queryBy<Int>("/2"))
-		assertEquals(2,mapOf("a" to 1, "b" to 2, "c" to 3).queryBy<Int>("/b"))
+		assertEquals(2,listOf(1,2,3).queryBy("/1"))
+		assertEquals(2,mapOf("a" to 1, "b" to 2, "c" to 3).queryBy("/b"))
 
-		assertEquals(listOf(2),listOf(1,2,3).deepQueryBy("/2"))
-		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).deepQueryBy("/b"))
+		assertEquals(listOf(2),listOf(1,2,3).queryBy("/1"))
+		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).queryBy("/b"))
 	}
 
 	@Test

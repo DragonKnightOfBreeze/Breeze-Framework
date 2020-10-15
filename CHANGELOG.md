@@ -414,8 +414,8 @@
 * [X] 重构`LetterCase`
 * [X] 重构`EscapeType`并重命名为`Escaper`
 * [X] 实现`Querier`
-* [ ] 重构`MatchType`和`ReferenceCase`并重命名为`PathType`
-* [ ] 重构和添加`queryBy`、`queryOrNullBy`、`deepQueryBy`
+* [X] 重构`MatchType`和`ReferenceCase`并重命名为`PathType`
+* [X] 重构和添加`queryBy`、`getBy`、`getOrNullBy`、`getOrElseBy`
 
 # 长期
 

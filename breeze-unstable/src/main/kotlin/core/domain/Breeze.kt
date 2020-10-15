@@ -1,8 +1,6 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("IntroduceWhenSubject", "UNCHECKED_CAST", "DuplicatedCode")
-
 package com.windea.breezeframework.core.domain
 
 import com.windea.breezeframework.core.extensions.*

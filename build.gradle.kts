@@ -65,6 +65,7 @@ allprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xinline-classes",
+					"-Xjvm-default=all",
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
@@ -81,6 +82,7 @@ allprojects {
 				jvmTarget = "11"
 				freeCompilerArgs = listOf(
 					"-Xinline-classes",
+					"-Xjvm-default=all",
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
@@ -93,7 +95,12 @@ allprojects {
 	}
 }
 
-subprojects {
+allprojects {
+	//跳过某些模块
+	when {
+		project == rootProject -> return@allprojects
+		project.name == "breeze-unstable" -> return@allprojects
+	}
 	apply {
 		plugin("org.gradle.maven-publish")
 		plugin("com.jfrog.bintray")

@@ -5,21 +5,16 @@ package com.windea.breezeframework.core.domain.misc
 
 import com.windea.breezeframework.core.annotations.*
 
-/**地理方向。不包含斜向。*/
-@Name("地理方向")
-enum class GeographyDirection4 {
-	@Name("原点")
-	Origin,
-
-	@Name("东")
+/**
+ * 包含斜向方向的地理方向。
+ */
+enum class GeographyDirection8 {
 	East,
-
-	@Name("南")
 	South,
-
-	@Name("西")
 	West,
-
-	@Name("北")
-	North
+	North,
+	SouthEast,
+	SouthWest,
+	NorthEast,
+	NorthWest
 }
