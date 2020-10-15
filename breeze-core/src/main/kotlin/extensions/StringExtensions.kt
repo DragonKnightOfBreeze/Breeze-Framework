@@ -906,25 +906,21 @@ fun String.inferLetterCase():LetterCase?{
 	return LetterCase.infer(this)
 }
 
-private fun String.inferLetterCaseOrThrow():LetterCase{
-	return LetterCase.infer(this)?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-}
-
 /**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。如果不指定字母格式，则尝试推断或者抛出异常。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
  *
  * @see LetterCase
  */
-fun String.splitBy(letterCase: LetterCase = inferLetterCaseOrThrow()): List<String> {
+fun String.splitBy(letterCase: LetterCase): List<String> {
 	return letterCase.split(this)
 }
 
 /**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。如果不指定字母格式，则尝试推断或者抛出异常。
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
  *
  * @see LetterCase
  */
-fun String.splitToSequenceBy(letterCase: LetterCase = inferLetterCaseOrThrow()): Sequence<String> {
+fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
 	return letterCase.splitToSequence(this)
 }
 
@@ -956,11 +952,21 @@ fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
 }
 
 /**
+ * 根据指定的字母格式，切换当前字符串的格式。
+ *
+ * @see LetterCase
+ */
+fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
+	return splitToSequenceBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+}
+
+/**
  * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
  *
  * @see LetterCase
  */
-fun String.switchCaseBy(sourceLetterCase: LetterCase = inferLetterCaseOrThrow(), targetLetterCase: LetterCase): String {
+fun String.switchCaseBy(targetLetterCase: LetterCase): String {
+	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return splitToSequenceBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 
