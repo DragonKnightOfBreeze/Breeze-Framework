@@ -77,32 +77,6 @@ class StringExtensionsTest {
 	}
 
 	@Test
-	fun toRegexByTest() {
-		assertTrue("/home/123/detail" matches "/home/?23/detail".toRegexBy(MatchType.AntPath))
-		assertTrue("/home/123/detail" matches "/home/*/detail".toRegexBy(MatchType.AntPath))
-		assertTrue("/home/123/detail" matches "/home/**/detail".toRegexBy(MatchType.AntPath))
-		assertTrue("/home/123/detail" matches "/home/**".toRegexBy(MatchType.AntPath))
-		assertTrue("/home/123/detail" matches "/*/123/**".toRegexBy(MatchType.AntPath))
-		assertTrue("/home/123/detail" matches "/home/123/detail".toRegexBy(MatchType.AntPath))
-
-		assertTrue("Test.kt" matches "*.kt".toRegexBy(MatchType.EditorConfigPath))
-		assertTrue("Test.kt" matches "*.{kt, kts}".toRegexBy(MatchType.EditorConfigPath))
-		assertTrue("Test.kt" matches "Tes[a-z].kt".toRegexBy(MatchType.EditorConfigPath))
-		assertTrue("Test.kt" matches "Test.kt".toRegexBy(MatchType.EditorConfigPath))
-
-		assertTrue("/abc/123/def" matches "/abc/-/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/[]/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/[23-234]/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/[b]/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/[b]/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/{}/123/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/{a}/123/def".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123" matches "/abc/[b]".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/[b]/re:[def]*".toRegexBy(MatchType.PathReference))
-		assertTrue("/abc/123/def" matches "/abc/123/def".toRegexBy(MatchType.PathReference))
-	}
-
-	@Test
 	fun splitMatchedTest() {
 		val expectedResult = listOf("https", "localhost", "8080", "www.test.com", "name=Windea")
 		val result = "https://localhost:8080/www.test.com?name=Windea"
@@ -160,5 +134,17 @@ class StringExtensionsTest {
 		assertNotNull("rgba(255 0 0 255)".toColor())
 		assertNotNull("rgba(255,0,0,255)".toColor())
 		assertNotNull("rgba(255, 0, 0, 255)".toColor())
+	}
+
+	@Test
+	fun matchesByTest(){
+		assertTrue { "/foo/bar".matchesBy("/foo/bar") }
+		assertTrue { "/foo/bar".matchesBy("/foo/{a}") }
+		assertTrue { "/foo/bar".matchesBy("/{a}/bar") }
+
+		assertFalse { "/foo/bar".matchesBy("/foo/ba") }
+		assertFalse { "/foo/bar".matchesBy("/{a}/ba") }
+		assertFalse { "/foo/bar".matchesBy("/foo/bar/123") }
+		assertFalse { "/foo/bar".matchesBy("/{a}/bar/123") }
 	}
 }

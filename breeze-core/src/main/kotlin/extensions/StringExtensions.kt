@@ -957,7 +957,7 @@ fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
  * @see LetterCase
  */
 fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
-	return splitToSequenceBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 
 /**
@@ -967,16 +967,17 @@ fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCa
  */
 fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-	return splitToSequenceBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 
 
 /**
  * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
+ * 默认使用标准路径[PathType.StandardPath]。
  *
  * @see PathType
  */
-fun String.matchesBy(path:String,pathType:PathType):Boolean{
+fun String.matchesBy(path:String,pathType:PathType = PathType.StandardPath):Boolean{
 	return pathType.matches(this,path)
 }
 //endregion

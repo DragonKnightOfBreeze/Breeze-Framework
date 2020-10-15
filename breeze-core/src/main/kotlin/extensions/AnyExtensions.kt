@@ -48,8 +48,3 @@ inline fun <reified T> Any?.convert(): T {
 inline fun <reified T> Any?.convertOrNull(): T? {
 	return if(this is T) this else Converter.convertOrNull(this)
 }
-
-
-inline fun <T : Any> T.toBreeze(): Breeze<T> {
-	return Breeze(this)
-}

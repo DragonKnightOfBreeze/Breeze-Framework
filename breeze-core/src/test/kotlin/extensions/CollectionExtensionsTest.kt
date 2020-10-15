@@ -26,73 +26,6 @@ class CollectionExtensionsTest {
 	}
 
 	@Test
-	fun deepQueryTest() {
-		assertEquals(2,listOf(1,2,3).queryBy("/1"))
-		assertEquals(2,mapOf("a" to 1, "b" to 2, "c" to 3).queryBy("/b"))
-
-		assertEquals(listOf(2),listOf(1,2,3).queryBy("/1"))
-		assertEquals(listOf(2),mapOf("a" to 1, "b" to 2, "c" to 3).queryBy("/b"))
-	}
-
-	@Test
-	fun deepGetAndSetTest() {
-		val array = arrayOf(0, 1, 2, arrayOf(0, arrayOf(0, 1), 2))
-		val list = listOf(0, arrayOf(0, 1), 2, listOf(0, 1, 2), 4, mapOf("a" to 0))
-		val intMutableList = mutableListOf(0, 1, 2)
-		val mutableList = mutableListOf(0, intMutableList, mutableMapOf("a" to 0))
-
-		mutableList.deepSet("/2/a", "abc")
-		println(mutableList)
-
-		array.deepGet<Int>("/0").also { println(it) }
-		array.deepGet<Int>("/3/0").also { println(it) }
-		list.deepGet<Int>("/0").also { println(it) }
-		list.deepGet<Int>("/1/0").also { println(it) }
-		list.deepGet<Int>("/3/0").also { println(it) }
-		list.deepGet<Int>("/5/a").also { println(it) }
-
-		println()
-
-		assertFails {
-			array.deepSet("/3/1/0", "abc")
-			array.deepGet<Int>("/3/1/0").also { println(it) }
-			println(array.contentDeepToString())
-		}
-
-		println()
-
-		array.deepSet("/3/1/0", 111)
-		array.deepGet<Int>("/3/1/0").also { println(it) }
-		println(array.contentDeepToString())
-
-		println()
-
-		mutableList.deepSet("/0", 111)
-		mutableList.deepGet<Int>("/0").also { println(it) }
-		mutableList.deepSet("/1/0", 111)
-		mutableList.deepGet<Int>("/1/0").also { println(it) }
-		mutableList.deepSet("/2/a", 111)
-		mutableList.deepGet<Int>("/2/a").also { println(it) }
-		println(mutableList)
-
-		mutableList.deepSet("/0", "abc")
-		println(mutableList)
-
-		//返回值泛型会被擦除，因此这里会在方法外抛出ClassCastException
-		//mutableList.deepGet<String>("/0").also { println(it) }
-		assertFailsWith<IllegalArgumentException> {
-			mutableList.deepSet("/0/0", 1)
-		}
-		//输入值类型会被擦除，因此这里不会抛出异常，除非需要进行强制转化
-		//mutableList.deepSet("/1/0", "abc")
-		//mutableList.deepGet<Any>("/1/0").also { println(it) }
-		//println(mutableList)
-		//
-		//println(intMutableList[0])
-		//println(intMutableList)
-	}
-
-	@Test
 	fun deepFlattenTest() {
 		val list = listOf(
 			listOf(1, 2, 3),
@@ -135,5 +68,23 @@ class CollectionExtensionsTest {
 		println(list.deepFlatten<Any>(2))
 		println(list.deepFlatten<Any>(3))
 		println(list.deepFlatten<Any>(4))
+	}
+
+	@Test
+	fun queryByTest(){
+		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6, listOf(7))), 8)
+		assertEquals(listOf(list),list.queryBy("/"))
+		assertEquals(listOf(1),list.queryBy("/0"))
+		assertEquals(listOf(3),list.queryBy("/1/1"))
+		assertEquals(list,list.getBy("/"))
+		assertEquals(1,list.getBy("/0"))
+		assertEquals(3,list.getBy("/1/1"))
+		assertEquals<Any?>(1,list.getOrNullBy("/0"))
+		assertEquals(1,list.getOrElseBy("/0") {111})
+		assertEquals(null,list.getOrNullBy("/111"))
+		assertEquals(111,list.getOrElseBy("/111") {111})
+
+		assertEquals(list,list.queryBy("/{name}"))
+		assertEquals(listOf(2, 3, 4),list.queryBy("/1/{name}"))
 	}
 }

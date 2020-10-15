@@ -777,7 +777,7 @@ fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPa
  *
  * @see PathType
  */
-fun <T> List<*>.getOrgetOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
+fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
 	return pathType.getOrElse(path,this,defaultValue)
 }
 
