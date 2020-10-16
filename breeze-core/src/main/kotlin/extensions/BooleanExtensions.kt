@@ -9,7 +9,7 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.annotations.*
 import kotlin.contracts.*
 
-//region Optional handle extensions
+//region Optional operation extensions
 /**如果为null，则返回true，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic

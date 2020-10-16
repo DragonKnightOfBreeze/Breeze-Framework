@@ -3,7 +3,9 @@
 
 package com.windea.breezeframework.core.extensions
 
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.domain.*
+import java.util.*
 
 /**
  * 根据指定的匹配类型，将当前字符串转化为对应的正则表达式。
@@ -37,4 +39,17 @@ fun Iterable<CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String 
 
 fun Array<out CharSequence>.joinToStringBy(referenceCase: ReferenceCase): String {
 	return referenceCase.arrayJoiner(this)
+}
+
+
+private val defaultPlaceholder = "{" to "}"
+
+/**
+ * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
+ *
+ * @see FormatType
+ */
+@UnstableApi
+fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
+	return type.formatter(this, args, locale, placeholder)
 }

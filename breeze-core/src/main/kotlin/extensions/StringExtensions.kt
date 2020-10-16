@@ -867,19 +867,6 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 //endregion
 
 //region Smart operation extensions
-private val defaultPlaceholder = "{" to "}"
-
-/**
- * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
- *
- * @see FormatType
- */
-@UnstableApi
-fun String.formatBy(type: FormatType, vararg args: Any?, locale: Locale? = null, placeholder: Pair<String, String>? = defaultPlaceholder): String {
-	return type.formatter(this, args, locale, placeholder)
-}
-
-
 /**
  * 根据指定的转义器，转义当前字符串。
  *
