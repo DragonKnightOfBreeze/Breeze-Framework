@@ -659,35 +659,35 @@ private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
 //region Smart operation extensions
 /**
  * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单元素列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
  * 默认使用标准路径[PathType.StandardPath]。
  *
  * @see PathType
  */
 fun <T> Array<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(path,this)
+	return pathType.query(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型查询当前列表，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单元素列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
  * 默认使用标准路径[PathType.StandardPath]。
  *
  * @see PathType
  */
 fun <T> List<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(path,this)
+	return pathType.query(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单元素列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
  * 默认使用标准路径[PathType.StandardPath]。
  *
  * @see PathType
  */
 fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(path,this)
+	return pathType.query(this, path)
 }
 
 
@@ -699,7 +699,7 @@ fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):
  * @see PathType
  */
 fun <T> Array<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(path,this)
+	return pathType.get(this, path)
 }
 
 /**
@@ -710,7 +710,7 @@ fun <T> Array<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  * @see PathType
  */
 fun <T> List<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(path,this)
+	return pathType.get(this, path)
 }
 
 /**
@@ -721,7 +721,7 @@ fun <T> List<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  * @see PathType
  */
 fun <T> Map<*,*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(path,this)
+	return pathType.get(this, path)
 }
 
 
@@ -733,7 +733,7 @@ fun <T> Map<*,*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  * @see PathType
  */
 fun <T> Array<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(path,this)
+	return pathType.getOrNull(this, path)
 }
 
 /**
@@ -744,7 +744,7 @@ fun <T> Array<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPa
  * @see PathType
  */
 fun <T> List<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(path,this)
+	return pathType.getOrNull(this, path)
 }
 
 /**
@@ -755,7 +755,7 @@ fun <T> List<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPat
  * @see PathType
  */
 fun <T> Map<*,*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(path,this)
+	return pathType.getOrNull(this, path)
 }
 
 
@@ -767,7 +767,7 @@ fun <T> Map<*,*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPa
  * @see PathType
  */
 fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(path,this,defaultValue)
+	return pathType.getOrElse(this, path, defaultValue)
 }
 
 /**
@@ -778,7 +778,7 @@ fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPa
  * @see PathType
  */
 fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(path,this,defaultValue)
+	return pathType.getOrElse(this, path, defaultValue)
 }
 
 /**
@@ -789,7 +789,7 @@ fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPat
  * @see PathType
  */
 fun <T> Map<*,*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(path,this,defaultValue)
+	return pathType.getOrElse(this, path, defaultValue)
 }
 //endregion
 
@@ -811,37 +811,17 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 
 
 /**
- * 将当前对象转换为单例集合。
- *
- * 支持的类型参数：[Collection] [MutableCollection] [Set] [MutableSet] [List] [MutableList]。
+ * 将当前对象转换为单例列表。
  */
-inline fun <T, reified R> T.toSingleton(): R {
-	return when(val type = R::class) {
-		Collection::class -> Collections.singleton(this)
-		MutableCollection::class -> Collections.singleton(this)
-		Set::class -> Collections.singleton(this)
-		MutableSet::class -> Collections.singleton(this)
-		List::class -> Collections.singletonList(this)
-		MutableList::class -> Collections.singletonList(this)
-		else -> throw UnsupportedOperationException("Unsupported singleton collection type '${type.simpleName}'")
-	} as R
+ fun <T> T.toSingletonList(): List<T> {
+	return Collections.singletonList(this)
 }
 
 /**
- * 如果当前对象不为null，则将当前对象转换为单例集合，否则转化为空集合。
- *
- * 支持的类型参数：[Collection] [MutableCollection] [Set] [MutableSet] [List] [MutableList]。
+ * 将当前对象转换为单例列表。
  */
-inline fun <T, reified R> T.toSingletonOrEmpty(): R {
-	return when(val type = R::class) {
-		Collection::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
-		MutableCollection::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
-		Set::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
-		MutableSet::class -> if(this == null) Collections.emptySet() else Collections.singleton(this)
-		List::class -> if(this == null) Collections.emptyList() else Collections.singletonList(this)
-		MutableList::class -> if(this == null) Collections.emptyList() else Collections.singletonList(this)
-		else -> throw UnsupportedOperationException("Unsupported singleton collection type '${type.simpleName}'")
-	} as R
+fun <T> T.toSingletonSet(): Set<T> {
+	return Collections.singleton(this)
 }
 
 

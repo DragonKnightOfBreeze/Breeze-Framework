@@ -54,6 +54,7 @@ annotation class WeakDeprecated(
 @Retention(BINARY)
 annotation class TodoMarker
 
+
 /**
  * 当应用到接口或类X时，表示X定义了一个组件。
  * 组件是可以扩展的枚举，一般情况下，需要注册以被正确启用。
@@ -63,4 +64,13 @@ annotation class TodoMarker
  */
 @MustBeDocumented
 @Target(CLASS)
-annotation class ComponentMarker
+annotation class BreezeComponent
+
+/**
+ * 当应用到扩展方法X时，表示X定义了一个基于组件的扩展。
+ *
+ * When applied to extension function X specifies that X defines a component-based extension.
+ */
+@MustBeDocumented
+@Target(FUNCTION)
+annotation class BreezeComponentExtension

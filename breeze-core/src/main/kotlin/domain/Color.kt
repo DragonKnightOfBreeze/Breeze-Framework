@@ -15,7 +15,7 @@ import com.windea.breezeframework.core.extensions.*
  *
  * 颜色可以解构：`val (r,g,b,a) = color`
  */
-@ComponentMarker
+@BreezeComponent
 class Color {
 	constructor(hexValue: Int) {
 		val numbers = hexValue.toDigitNumberArray(256)

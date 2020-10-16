@@ -13,7 +13,7 @@ import com.windea.breezeframework.core.extensions.*
  *
  * 单词格式用于以某种大小写和分割方式，表示包含一个或多个单词的名字。
  */
-@ComponentMarker
+@BreezeComponent
 interface LetterCase {
 	/**
 	 * 用于进行推断的正则表达式。

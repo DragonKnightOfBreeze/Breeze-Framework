@@ -146,5 +146,13 @@ class StringExtensionsTest {
 		assertFalse { "/foo/bar".matchesBy("/{a}/ba") }
 		assertFalse { "/foo/bar".matchesBy("/foo/bar/123") }
 		assertFalse { "/foo/bar".matchesBy("/{a}/bar/123") }
+
+		assertTrue { "/foo/bar".matchesBy("/foo/bar",PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b?r",PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*r",PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*",PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/**",PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**",PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}",PathType.AntPath) }
 	}
 }

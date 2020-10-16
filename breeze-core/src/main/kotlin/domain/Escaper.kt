@@ -14,7 +14,7 @@ import com.windea.breezeframework.core.annotations.*
  * 转义器用于基于指定的（语言）规则，转义和反转义字符串。
  * 注意：不考虑转义特殊的Unicode字符。
  */
-@ComponentMarker
+@BreezeComponent
 interface Escaper {
 	fun escape(value: String): String
 
