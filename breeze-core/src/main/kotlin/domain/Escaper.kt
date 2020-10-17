@@ -21,7 +21,6 @@ interface Escaper {
 	fun unescape(value: String): String
 
 	companion object {
-		//不需要进行注册
 		//不验证escapeChars和escapedStrings长度是否一致：交由底层负责
 
 		private fun escapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
@@ -35,6 +34,7 @@ interface Escaper {
 			}
 		}
 
+		@NotOptimized
 		private fun unescapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
 			var result = value
 			val size = escapeChars.size
@@ -43,6 +43,8 @@ interface Escaper {
 			}
 			return result
 		}
+
+		//不需要进行注册
 	}
 
 	//region Default Escapers

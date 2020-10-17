@@ -43,6 +43,8 @@ interface Converter<T, R> {
 	}
 
 	companion object {
+		private val converterRegistry = mutableListOf<Converter<*, *>>()
+
 		/**
 		 * 注册转化器。
 		 */
@@ -109,9 +111,6 @@ interface Converter<T, R> {
 		private fun <T> throwException(value: Any?, targetType: Class<T>, cause: Throwable? = null): Nothing {
 			throw IllegalArgumentException("Cannot convert '${value}' to type '${targetType.name}'.", cause)
 		}
-
-
-		private val converterRegistry = mutableListOf<Converter<*, *>>()
 
 		init {
 			registerDefaultConverters()

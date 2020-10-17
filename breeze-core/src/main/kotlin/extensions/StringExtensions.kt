@@ -136,6 +136,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
+@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
@@ -872,6 +873,7 @@ fun String.unquote(omitQuotes: Boolean = true): String {
  *
  * @see Escaper
  */
+@BreezeComponentExtension
 fun String.escapeBy(escaper: Escaper): String {
 	return escaper.escape(this)
 }
@@ -881,6 +883,7 @@ fun String.escapeBy(escaper: Escaper): String {
  *
  * @see Escaper
  */
+@BreezeComponentExtension
 fun String.unescapeBy(escaper: Escaper): String {
 	return escaper.unescape(this)
 }
@@ -889,6 +892,7 @@ fun String.unescapeBy(escaper: Escaper): String {
 /**
  * 尝试推断当前字符串的字母格式。
  */
+@BreezeComponentExtension
 fun String.inferLetterCase():LetterCase?{
 	return LetterCase.infer(this)
 }
@@ -898,6 +902,7 @@ fun String.inferLetterCase():LetterCase?{
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun String.splitBy(letterCase: LetterCase): List<String> {
 	return letterCase.split(this)
 }
@@ -907,6 +912,7 @@ fun String.splitBy(letterCase: LetterCase): List<String> {
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
 	return letterCase.splitToSequence(this)
 }
@@ -916,6 +922,7 @@ fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
 	return letterCase.joinToString(this)
 }
@@ -925,6 +932,7 @@ fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
 	return letterCase.joinToString(this)
 }
@@ -934,6 +942,7 @@ fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
 	return letterCase.joinToString(this)
 }
@@ -943,6 +952,7 @@ fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
 	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
@@ -952,6 +962,7 @@ fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCa
  *
  * @see LetterCase
  */
+@BreezeComponentExtension
 fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
@@ -964,8 +975,20 @@ fun String.switchCaseBy(targetLetterCase: LetterCase): String {
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun String.matchesBy(path:String,pathType:PathType = PathType.StandardPath):Boolean{
 	return pathType.matches(this,path)
+}
+
+/**
+ * 根据指定的路径类型，解析路径变量。如果路径不匹配，则返回空结果。
+ * 默认使用标准路径[PathType.StandardPath]。
+ *
+ * @see PathType
+ */
+@BreezeComponentExtension
+fun String.resolveVariablesBy(path:String,pathType:PathType = PathType.StandardPath):Map<String,String>{
+	return pathType.resolveVariables(this,path)
 }
 //endregion
 
@@ -988,8 +1011,8 @@ inline fun String.toCharOrNull(): Char? {
  * 将当前字符串转化为布尔值。如果转化失败，则返回null。
  */
 inline fun String.toBooleanOrNull(): Boolean? = when {
-	this.equalsIgnoreCase("true") -> true
-	this.equalsIgnoreCase("false") -> false
+	this.equals("true",true) -> true
+	this.equals("false",true) -> false
 	else -> null
 }
 

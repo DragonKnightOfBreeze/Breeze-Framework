@@ -664,6 +664,7 @@ private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Array<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
 	return pathType.query(this, path)
 }
@@ -675,6 +676,7 @@ fun <T> Array<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> List<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
 	return pathType.query(this, path)
 }
@@ -686,6 +688,7 @@ fun <T> List<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):L
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
 	return pathType.query(this, path)
 }
@@ -698,6 +701,7 @@ fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Array<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
 	return pathType.get(this, path)
 }
@@ -709,6 +713,7 @@ fun <T> Array<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> List<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
 	return pathType.get(this, path)
 }
@@ -720,6 +725,7 @@ fun <T> List<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Map<*,*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
 	return pathType.get(this, path)
 }
@@ -732,6 +738,7 @@ fun <T> Map<*,*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Array<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
 	return pathType.getOrNull(this, path)
 }
@@ -743,6 +750,7 @@ fun <T> Array<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPa
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> List<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
 	return pathType.getOrNull(this, path)
 }
@@ -754,6 +762,7 @@ fun <T> List<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPat
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Map<*,*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
 	return pathType.getOrNull(this, path)
 }
@@ -766,6 +775,7 @@ fun <T> Map<*,*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPa
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
 	return pathType.getOrElse(this, path, defaultValue)
 }
@@ -777,6 +787,7 @@ fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPa
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
 	return pathType.getOrElse(this, path, defaultValue)
 }
@@ -788,6 +799,7 @@ fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPat
  *
  * @see PathType
  */
+@BreezeComponentExtension
 fun <T> Map<*,*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
 	return pathType.getOrElse(this, path, defaultValue)
 }

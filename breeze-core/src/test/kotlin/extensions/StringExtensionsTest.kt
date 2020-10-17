@@ -45,22 +45,6 @@ class StringExtensionsTest {
 	}
 
 	@Test
-	fun formatTest() {
-		assertEquals(
-			"hello world!",
-			"hello {}!".formatBy(FormatType.Log, "world")
-		)
-		assertEquals(
-			"hello world, hello java!",
-			"hello {0}, hello {1}!".formatBy(FormatType.Indexed, "world", "java")
-		)
-		assertEquals(
-			"hello world, hello java!",
-			"hello {arg1}, hello {arg2}!".formatBy(FormatType.Named, "arg1" to "world", "arg2" to "java")
-		)
-	}
-
-	@Test
 	fun quoteTest() {
 		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"', false))
 		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(false))
@@ -154,5 +138,13 @@ class StringExtensionsTest {
 		assertTrue { "/foo/bar".matchesBy("/foo/**",PathType.AntPath) }
 		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**",PathType.AntPath) }
 		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}",PathType.AntPath) }
+	}
+
+	@Test
+	fun resolveVariablesByTest(){
+		assertEquals(mapOf(),"/foo".resolveVariablesBy("/foo"))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/foo/{a}"))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}"))
+		assertEquals(mapOf(),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}/far"))
 	}
 }

@@ -47,6 +47,8 @@ interface LetterCase {
 	fun joinToString(value: Sequence<String>): String
 
 	companion object {
+		private val letterCaseRegistry = mutableListOf<LetterCase>()
+
 		/**
 		 * 注册单词格式。
 		 */
@@ -83,9 +85,6 @@ interface LetterCase {
 		private fun CharSequence.splitWords(): String {
 			return this.replace(splitWordsRegex, " $1")
 		}
-
-
-		private val letterCaseRegistry = mutableListOf<LetterCase>()
 
 		init {
 			registerDefaultLetterCases()
