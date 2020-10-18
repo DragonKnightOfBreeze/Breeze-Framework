@@ -18,7 +18,7 @@ import com.windea.breezeframework.core.extensions.*
 @BreezeComponent
 interface PathType {
 	/**
-	 * 标准化指定的路径。
+	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
 	 */
 	fun normalize(path: String): String
 
@@ -30,7 +30,7 @@ interface PathType {
 	/**
 	 * 解析路径变量。如果路径不匹配，则返回空结果。
 	 */
-	fun resolveVariables(value: String, path: String):Map<String,String>
+	fun resolveVariables(value: String, path: String): Map<String, String>
 
 	/**
 	 * 将指定的字符串分隔成元路径列表，并过滤空的元路径。
@@ -62,7 +62,7 @@ interface PathType {
 	 *
 	 * 注意：需要在相关实现中处理不支持的情况。
 	 */
-	fun supportsQuery():Boolean
+	fun supportsQuery(): Boolean
 
 	/**
 	 * 根据指定路径查询查询对象，返回查询结果列表。
@@ -97,61 +97,82 @@ interface PathType {
 		protected val delimiter: Char = '/',
 		protected val prefix: String = "/",
 		protected val variablePrefix: Char = '{',
-		protected val variableSuffix: Char? = '}'
+		protected val variableSuffix: Char? = '}',
 	) : PathType {
 		private val delimiterString: String = delimiter.toString()
 
 		override fun normalize(path: String): String {
-			return path.trim().trimEnd(delimiter)
+			return buildString {
+				for(char in path.trim().toCharArray()) {
+					if(!char.isWhitespace()) append(char)
+				}
+			}.trimEnd(delimiter)
 		}
 
 		override fun matches(value: String, path: String): Boolean {
 			//NOTE 遍历并比较两个字符串中的字符以优化性能
-			val valueCharIterator = normalize(value).toCharArray().iterator()
-			val pathCharIterator = normalize(path).toCharArray().iterator()
-			var valueChar: Char?
-			var pathChar: Char?
-			loop1@ while(valueCharIterator.hasNext() && pathCharIterator.hasNext()) {
-				valueChar = valueCharIterator.nextChar()
-				pathChar = pathCharIterator.nextChar()
+			var pathIndex = 0
+			var valueIndex = 0
+			val lastPathIndex = path.lastIndex
+			val lastValueIndex = value.lastIndex
+			while(pathIndex <= lastPathIndex && valueIndex <= lastValueIndex) {
+				val	pathChar = path[pathIndex]
 				when {
-					//如果path遍历到delimiter且下一个是pathVariablePrefix，则要跳到下一个delimiter且上一个是pathVariableSuffix处
-					//此时value要遍历到下一个delimiter处
-					pathChar == delimiter -> {
-						valueChar = valueCharIterator.nextChar()
-						pathChar = pathCharIterator.nextChar()
-						if(pathChar == variablePrefix) {
-							valueChar = valueCharIterator.next { current, _ ->
-								current == delimiter
-							}
-							pathChar = pathCharIterator.next { current, prev ->
-								current == delimiter && (variableSuffix == null || prev == variableSuffix)
-							}
-							if(valueChar == null || pathChar == null) return false
+					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
+					pathChar == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
+						do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter)
+						if(variableSuffix != null && path[pathIndex - 1] != variableSuffix) {
+							throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
 						}
 					}
-					pathChar != valueChar -> return false
+					//如果不匹配，则直接匹配失败
+					pathChar != value[valueIndex] -> return false
+					else -> {
+						pathIndex++
+						valueIndex++
+					}
 				}
 			}
-			if(valueCharIterator.hasNext() || pathCharIterator.hasNext()) return false
-			return true
+			//如果索引都最终遍历到了最后的索引，则匹配成功
+			return pathIndex - lastPathIndex == valueIndex - lastValueIndex
 		}
 
-		@NotOptimized
 		override fun resolveVariables(value: String, path: String): Map<String, String> {
-			val variables = mutableMapOf<String,String>()
-			val iterator1 = value.split('/').iterator()
-			val iterator2 = path.split('/').iterator()
-			loop@ while(iterator1.hasNext() && iterator2.hasNext()) {
-				val a = iterator1.next()
-				val b = iterator2.next()
+			//NOTE 遍历并比较两个字符串中的字符以优化性能
+			val variables = mutableMapOf<String, String>()
+			var pathIndex = 0
+			var valueIndex = 0
+			val lastPathIndex = path.lastIndex
+			val lastValueIndex = value.lastIndex
+			while(pathIndex <= lastPathIndex && valueIndex <= lastValueIndex) {
+				val pathChar = path[pathIndex]
 				when {
-					b.surroundsWith('{', '}') -> variables[b.substring(1, b.length - 1)] = a
-					b != a -> return mapOf()
+					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
+					pathChar == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
+						val variableNameStartIndex = pathIndex + 2
+						val variableValueStartIndex = valueIndex + 1
+						do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter)
+						if(variableSuffix != null && path[pathIndex - 1] != variableSuffix) {
+							throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
+						}
+						val variableNameEndIndex = pathIndex - 1
+						val variableValueEndIndex = valueIndex
+						val variableName = path.substring(variableNameStartIndex, variableNameEndIndex)
+						val variableValue = value.substring(variableValueStartIndex, variableValueEndIndex)
+						variables[variableName] = variableValue
+					}
+					//如果不匹配，则直接匹配失败
+					pathChar != value[valueIndex] -> return mapOf()
+					else -> {
+						pathIndex++
+						valueIndex++
+					}
 				}
 			}
-			if(iterator1.hasNext() || iterator2.hasNext()) return mapOf()
-			return variables
+			//如果索引都最终遍历到了最后的索引，则匹配成功
+			return if(pathIndex - lastPathIndex == valueIndex - lastValueIndex) variables else mapOf()
 		}
 
 		override fun split(path: String): List<String> {
@@ -178,22 +199,21 @@ interface PathType {
 			return true
 		}
 
-		private fun throwOnNotSupportsQuery(){
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
-		}
-
 		protected open fun <T> metaQuery(value: Any, path: String): List<T> {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			return when {
-				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix))-> {
+				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix)) -> {
 					Querier.ResultsQuerier.query(value, "")
+				}
+				path.startsWith(variablePrefix) -> {
+					throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
 				}
 				else -> Querier.StringQuerier.queryOrNull(value, path.removePrefix(prefix))?.toSingletonList() ?: listOf()
 			} as List<T>
 		}
 
 		override fun <T> query(value: Any, path: String): List<T> {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return listOf(value) as List<T>
 			var result = listOf<Any?>(value)
@@ -210,17 +230,20 @@ interface PathType {
 		}
 
 		protected open fun <T> metaGet(value: Any, path: String): T? {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			return when {
-				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix))-> {
+				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix)) -> {
 					Querier.FirstResultQuerier.queryOrNull(value, "")
+				}
+				path.startsWith(variablePrefix) -> {
+					throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
 				}
 				else -> Querier.StringQuerier.queryOrNull(value, path.removePrefix(prefix)) as T?
 			} as T?
 		}
 
 		override fun <T> get(value: Any, path: String): T {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -231,7 +254,7 @@ interface PathType {
 		}
 
 		override fun <T> getOrNull(value: Any, path: String): T? {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -242,7 +265,7 @@ interface PathType {
 		}
 
 		override fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T {
-			throwOnNotSupportsQuery()
+			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -275,7 +298,7 @@ interface PathType {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object JsonPointerPath :  AbstractPathType()
+	object JsonPointerPath : AbstractPathType()
 
 	/**
 	 * Json Schema路径。
@@ -287,7 +310,7 @@ interface PathType {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object JsonSchemaPath :  AbstractPathType('/',"/#/")
+	object JsonSchemaPath : AbstractPathType('/', "/#/")
 
 	/**
 	 * Ant路径。
@@ -302,16 +325,117 @@ interface PathType {
 	 * * `name` 匹配名字、键`name`。
 	 */
 	object AntPath : AbstractPathType() {
-		@NotOptimized
+		private const val singleWildcard = '?'
+		private const val wildCard = '*'
+
 		override fun matches(value: String, path: String): Boolean {
-			val fqValue = normalize(value)
-			val fqPath = normalize(path)
-			val fqPathRegex = Regex.escape(fqPath)
-				.transformIn("\\Q", "\\E") { it.replace("\\{.*?}".toRegex()) { "\\E[^/]*?\\Q" } }
-				.transformIn("\\Q", "\\E") { it.replace("?", "\\E.\\Q") }
-				.transformIn("\\Q", "\\E") { it.replace("**", "\\E.*\\Q") }
-				.transformIn("\\Q", "\\E") { it.replace("*", "\\E[^/]*?\\Q") }.toRegex()
-			return fqValue.matches(fqPathRegex)
+			//NOTE 遍历并比较两个字符串中的字符以优化性能
+			var pathIndex = 0
+			var valueIndex = 0
+			val lastPathIndex = path.lastIndex
+			val lastValueIndex = value.lastIndex
+			while(pathIndex <= lastPathIndex && valueIndex <= lastValueIndex) {
+				val pathChar = path[pathIndex]
+				when {
+					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
+					pathChar == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter)
+						do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
+						if(variableSuffix != null && path[pathIndex - 1] != variableSuffix) {
+							throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
+						}
+					}
+					//如果path遍历到'**'处，则需要跳到这之后，此时value需要遍历到下个继续匹配处，无法继续匹配则直接匹配成功
+					pathChar == wildCard && (pathIndex < lastPathIndex && path[pathIndex + 1] == wildCard) -> {
+						pathIndex += 2
+						if(pathIndex > lastPathIndex) return true
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != path[pathIndex])
+					}
+					//如果path遍历到'*'处，则需要跳到这之后，此时value需要遍历到下个继续匹配的'/'之前处，无法继续匹配则直接匹配成功
+					pathChar == wildCard -> {
+						pathIndex += 1
+						if(pathIndex > lastPathIndex) return true
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter && value[valueIndex] != path[pathIndex])
+					}
+					//如果path遍历到'?'处，则需要跳这之后，此时value需要遍历到下个字符
+					pathChar == singleWildcard -> {
+						pathIndex++
+						valueIndex++
+					}
+					//如果不匹配，则直接匹配失败
+					pathChar != value[valueIndex] -> return false
+					else -> {
+						pathIndex++
+						valueIndex++
+					}
+				}
+			}
+			//忽略多余的通配符
+			return when {
+				pathIndex - lastPathIndex == valueIndex - lastValueIndex -> true
+				pathIndex == lastPathIndex && path[pathIndex] == wildCard -> true
+				pathIndex == lastPathIndex-1 && path[pathIndex] == wildCard && path[pathIndex+1] == wildCard -> true
+				else -> false
+			}
+		}
+
+		override fun resolveVariables(value: String, path: String): Map<String, String> {
+			//NOTE 遍历并比较两个字符串中的字符以优化性能
+			val variables = mutableMapOf<String, String>()
+			var pathIndex = 0
+			var valueIndex = 0
+			val lastPathIndex = path.lastIndex
+			val lastValueIndex = value.lastIndex
+			while(pathIndex <= lastPathIndex && valueIndex <= lastValueIndex) {
+				val pathChar = path[pathIndex]
+				when {
+					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
+					pathChar== delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
+						val variableNameStartIndex = pathIndex + 2
+						val variableValueStartIndex = valueIndex + 1
+						do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter)
+						if(variableSuffix != null && path[pathIndex - 1] != variableSuffix) {
+							throw IllegalArgumentException("Invalid path '$path': mismatched variable prefix and suffix.")
+						}
+						val variableNameEndIndex = pathIndex - 1
+						val variableValueEndIndex = valueIndex
+						val variableName = path.substring(variableNameStartIndex, variableNameEndIndex)
+						val variableValue = value.substring(variableValueStartIndex, variableValueEndIndex)
+						variables[variableName] = variableValue
+					}
+					//如果path遍历到'**'处，则需要跳到这之后，此时value需要遍历到下个继续匹配处，无法继续匹配则直接匹配成功
+					pathChar== wildCard && (pathIndex < lastPathIndex && path[pathIndex + 1] == wildCard) -> {
+						pathIndex += 2
+						if(pathIndex > lastPathIndex) return variables
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != path[pathIndex])
+					}
+					//如果path遍历到'*'处，则需要跳到这之后，此时value需要遍历到下个继续匹配的'/'之前处，无法继续匹配则直接匹配成功
+					pathChar== wildCard -> {
+						pathIndex += 1
+						if(pathIndex > lastPathIndex) return variables
+						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter && value[valueIndex] != path[pathIndex])
+					}
+					//如果path遍历到'?'处，则需要跳这之后，此时value需要遍历到下个字符
+					pathChar == singleWildcard -> {
+						pathIndex ++
+						valueIndex ++
+					}
+					//如果不匹配，则直接匹配失败
+					pathChar!= value[valueIndex] -> return mapOf()
+					else ->{
+						pathIndex++
+						valueIndex++
+					}
+				}
+			}
+			//忽略多余的通配符
+			return when {
+				pathIndex - lastPathIndex == valueIndex - lastValueIndex -> variables
+				pathIndex == lastPathIndex && path[pathIndex] == wildCard -> variables
+				pathIndex == lastPathIndex-1 && path[pathIndex] == wildCard && path[pathIndex+1] == wildCard -> variables
+				else -> mapOf()
+			}
 		}
 
 		override fun supportsQuery(): Boolean {
@@ -327,16 +451,14 @@ interface PathType {
 	 * * `[index]` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object ReferencePath : AbstractPathType('.',"") {
+	object ReferencePath : AbstractPathType('.', "") {
 		private const val indexPrefix = '['
 		private const val indexSuffix = ']'
 
 		override fun normalize(path: String): String {
-			//NOTE 在'['之前插入'.'并且移除开始的'.'以提高性能
 			return buildString {
-				val chars = path.trim().toCharArray()
-				for(char in chars) {
-					if(char == '[') append('.').append(char) else append(char)
+				for(char in path.toCharArray()) {
+					if(char == '[') append('.').append(char) else if(!char.isWhitespace()) append(char)
 				}
 			}.trimStart('.')
 		}

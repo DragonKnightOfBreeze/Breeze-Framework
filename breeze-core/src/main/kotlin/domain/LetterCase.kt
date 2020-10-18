@@ -16,10 +16,9 @@ import com.windea.breezeframework.core.extensions.*
 @BreezeComponent
 interface LetterCase {
 	/**
-	 * 用于进行推断的正则表达式。
+	 * 判断指定的字符串是否匹配指定的单词格式。
 	 */
-	@NotOptimized
-	val regex: Regex
+	fun matches(value:String):Boolean
 
 	/**
 	 * 基于单词格式，分割字符串。
@@ -61,7 +60,7 @@ interface LetterCase {
 		 */
 		@JvmStatic fun infer(value: String): LetterCase? {
 			for(letterCase in letterCaseRegistry) {
-				if(letterCase.regex.matches(value)) return letterCase
+				if(letterCase.matches(value)) return letterCase
 			}
 			return null
 		}
@@ -125,8 +124,8 @@ interface LetterCase {
 	 * 示例：`lowercase`
 	 */
 	object LowerCase : LetterCase {
-		val a = listOf(1,2,3)
-		override val regex = """[a-z]+""".toRegex()
+		private val regex = """[a-z]+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
 		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").toLowerCase()
@@ -140,7 +139,8 @@ interface LetterCase {
 	 * 示例：`UPPERCASE`
 	 */
 	object UpperCase : LetterCase {
-		override val regex = """[A-Z]+""".toRegex()
+		private val regex = """[A-Z]+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
 		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").toUpperCase()
@@ -154,7 +154,8 @@ interface LetterCase {
 	 * 示例：`Capitalized`
 	 */
 	object Capitalized : LetterCase {
-		override val regex = """[A-Z][a-z]+""".toRegex()
+		private val regex = """[A-Z][a-z]+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
 		override fun splitToSequence(value: String) = sequenceOf(value)
 		override fun joinToString(value: Array<String>) = value.joinToString("").firstCharToUpperCase()
@@ -168,7 +169,8 @@ interface LetterCase {
 	 * 示例：`lowercase words`
 	 */
 	object LowerCaseWords : LetterCase {
-		override val regex = """[a-z']+(?:\s+[a-z']+)+""".toRegex()
+		private val regex = """[a-z']+(?:\s+[a-z']+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
 		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").toLowerCase()
@@ -182,7 +184,8 @@ interface LetterCase {
 	 * 示例：`UPPERCASE WORDS`
 	 */
 	object UpperCaseWords : LetterCase {
-		override val regex = """[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
+		private val regex = """[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
 		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").toUpperCase()
@@ -196,7 +199,8 @@ interface LetterCase {
 	 * 示例：`Uppercase words`
 	 */
 	object FirstWordCapitalized : LetterCase {
-		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		private val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
 		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ").firstCharToUpperCase()
@@ -210,7 +214,8 @@ interface LetterCase {
 	 * 示例：`Uppercase Words`
 	 */
 	object CapitalizedWords : LetterCase {
-		override val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		private val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
 		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ") { it.firstCharToUpperCase() }
@@ -224,7 +229,8 @@ interface LetterCase {
 	 * 示例：`Words words Words`
 	 */
 	object Words : LetterCase {
-		override val regex = """[a-zA-Z']+(?:\s+[a-zA-Z']+)+""".toRegex()
+		private val regex = """[a-zA-Z']+(?:\s+[a-zA-Z']+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
 		override fun splitToSequence(value: String) = value.splitToSequence(' ').filterNotEmpty()
 		override fun joinToString(value: Array<String>) = value.joinToString(" ")
@@ -238,7 +244,8 @@ interface LetterCase {
 	 * 示例：`camelCase`
 	 */
 	object CamelCase : LetterCase {
-		override val regex = """\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		private val regex = """\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.splitWords().split(' ')
 		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
 		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }.firstCharToLowerCase()
@@ -252,7 +259,8 @@ interface LetterCase {
 	 * 示例：`PascalCase`
 	 */
 	object PascalCase : LetterCase {
-		override val regex = """\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		private val regex = """\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.splitWords().split(' ')
 		override fun splitToSequence(value: String) = value.splitWords().splitToSequence(' ')
 		override fun joinToString(value: Array<String>) = value.joinToString("") { it.firstCharToUpperCase() }
@@ -266,7 +274,8 @@ interface LetterCase {
 	 * 示例：`snake_case`
 	 */
 	object SnakeCase : LetterCase {
-		override val regex = """\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
+		private val regex = """\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
 		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toLowerCase() }
@@ -280,7 +289,8 @@ interface LetterCase {
 	 * 示例：`SCREAMING_SNAKE_CASE`
 	 */
 	object ScreamingSnakeCase : LetterCase {
-		override val regex = """\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
+		private val regex = """\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
 		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_") { it.toUpperCase() }
@@ -294,7 +304,8 @@ interface LetterCase {
 	 * 示例：`Underscore_words`
 	 */
 	object UnderscoreWords : LetterCase {
-		override val regex = """_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
+		private val regex = """_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
 		override fun splitToSequence(value: String) = value.splitToSequence('_')
 		override fun joinToString(value: Array<String>) = value.joinToString("_")
@@ -308,7 +319,8 @@ interface LetterCase {
 	 * 示例：`kebab-case`
 	 */
 	object KebabCase : LetterCase {
-		override val regex = """[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
+		private val regex = """[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
 		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toLowerCase() }
@@ -322,7 +334,8 @@ interface LetterCase {
 	 * 示例：`KEBAB-UPPER-CASE`
 	 */
 	object KebabUpperCase : LetterCase {
-		override val regex = """[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
+		private val regex = """[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
 		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-") { it.toUpperCase() }
@@ -336,7 +349,8 @@ interface LetterCase {
 	 * 示例：`Hyphen-words`
 	 */
 	object HyphenWords : LetterCase {
-		override val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
+		private val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
 		override fun splitToSequence(value: String) = value.splitToSequence('-')
 		override fun joinToString(value: Array<String>) = value.joinToString("-")
@@ -352,7 +366,8 @@ interface LetterCase {
 	 * 示例：`doc.path`
 	 */
 	object ReferencePath : LetterCase {
-		override val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
+		private val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('.')
 		override fun splitToSequence(value: String) = value.splitToSequence('.')
 		override fun joinToString(value: Array<String>) = value.joinToString(".")
@@ -366,7 +381,8 @@ interface LetterCase {
 	 * 示例：`linux/path`
 	 */
 	object LinuxPath:LetterCase{
-		override val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
+		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
 		override fun splitToSequence(value: String) = value.trim('/').splitToSequence('/')
 		override fun joinToString(value: Array<String>) = value.joinToString("/")
@@ -380,7 +396,8 @@ interface LetterCase {
 	 * 示例：`windows\path`
 	 */
 	object WindowsPath:LetterCase{
-		override val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
+		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
+		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')
 		override fun splitToSequence(value: String) = value.trim('\\').splitToSequence('\\')
 		override fun joinToString(value: Array<String>) = value.joinToString("\\")

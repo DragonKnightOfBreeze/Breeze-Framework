@@ -898,6 +898,16 @@ fun String.inferLetterCase():LetterCase?{
 }
 
 /**
+ * 判断当前字符串是否匹配指定的字母格式。
+ *
+ * @see LetterCase
+ */
+@BreezeComponentExtension
+fun String.matchesBy(letterCase: LetterCase):Boolean{
+	return letterCase.matches(this)
+}
+
+/**
  * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
  *
  * @see LetterCase
