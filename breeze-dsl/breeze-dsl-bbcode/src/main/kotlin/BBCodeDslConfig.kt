@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.bbcode
 
 /**
- * Dsl config of [BBCodeDsl].
+ * DslDocument config of [BBCodeDsl].
  */
 object BBCodeDslConfig {
 	var indent: String = "  "

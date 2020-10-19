@@ -3,63 +3,101 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.dsl.xml.XmlDslDefinitions.*
+import com.windea.breezeframework.dsl.xml.XmlDsl.*
 
-/**Build a [XmlDsl].*/
+/**
+ * 开始构建[XmlDsl]。
+ */
 @XmlDslMarker
-inline fun xmlDsl(block: XmlDsl.() -> Unit) = XmlDsl().apply(block)
+inline fun xmlDsl(block: Document.() -> Unit): Document {
+	return Document().apply(block)
+}
 
-/**Configure a [XmlDsl] by [XmlDslConfig].*/
+/**
+ * 配置[XmlDsl]。
+ */
 @XmlDslMarker
-inline fun xmlDslConfig(block: XmlDslConfig.() -> Unit) = XmlDslConfig.block()
+inline fun xmlDslConfig(block: Config.() -> Unit) {
+	Config.block()
+}
 
 
-/**Create a [XmlDslDefinitions.Statement] and register it.*/
+/**
+ * 创建一个[XmlDsl.Statement]并注册。
+ */
 @XmlDslMarker
-fun XmlDsl.statement(vararg attributes: Pair<String, Any?>) = Statement(attributes.toMap()).also { declarations += it }
+fun Document.statement(vararg attributes: Pair<String, Any?>): Statement {
+	return Statement(attributes.toMap()).also { declarations += it }
+}
 
-/**Create a [XmlDslDefinitions.Comment] and register it.*/
+/**
+ * 创建一个[XmlDsl.Comment]并注册。
+ */
 @XmlDslMarker
-fun XmlDsl.comment(text: String) = Comment(text).also { comments += it }
+fun Document.comment(text: String): Comment {
+	return Comment(text).also { comments += it }
+}
 
-/**Create a [XmlDslDefinitions.Element] and register it.*/
+/**
+ * 创建一个[XmlDsl.Element]并注册。
+ */
 @XmlDslMarker
-inline fun XmlDsl.element(
-	name: String,
-	block: Element.() -> Unit = {},
-) = Element(name).apply(block).also { rootElement = it }
+inline fun Document.element(name: String, block: Element.() -> Unit = {}): Element {
+	return Element(name).apply(block).also { rootElement = it }
+}
 
-/**Create a [XmlDslDefinitions.Element] and register it.*/
+/**
+ * 创建一个[XmlDsl.Element]并注册。
+ */
 @XmlDslMarker
-inline fun XmlDsl.element(
-	name: String,
-	vararg attributes: Pair<String, Any?>,
-	block: Element.() -> Unit = {},
-) = Element(name, attributes.toMap()).apply(block).also { rootElement = it }
-
-/**Create a [XmlDslDefinitions.Text] and register it.*/
-@XmlDslMarker
-fun Element.text(text: String) = Text(text).also { nodes += it }
-
-/**Create a [XmlDslDefinitions.CData] and register it.*/
-@XmlDslMarker
-fun Element.cdata(text: String) = CData(text).also { nodes += it }
-
-/**Create a [XmlDslDefinitions.Comment] and register it.*/
-@XmlDslMarker
-fun Element.comment(text: String) = Comment(text).also { nodes += it }
-
-/**Create a [XmlDslDefinitions.Element] and register it.*/
-@XmlDslMarker
-inline fun Element.element(
-	name: String,
-	block: Element.() -> Unit = {},
-) = Element(name).apply(block).also { nodes += it }
-
-/**Create a [XmlDslDefinitions.Element] and register it.*/
-@XmlDslMarker
-inline fun Element.element(
+inline fun Document.element(
 	name: String,
 	vararg attributes: Pair<String, Any?>,
 	block: Element.() -> Unit = {},
-) = Element(name, attributes.toMap()).apply(block).also { nodes += it }
+): Element {
+	return Element(name, attributes.toMap()).apply(block).also { rootElement = it }
+}
+
+/**
+ * 创建一个[XmlDsl.Element]并注册。
+ */
+@XmlDslMarker
+fun Element.text(text: String): Text {
+	return Text(text).also { nodes += it }
+}
+
+/**
+ * 创建一个[XmlDsl.CData]并注册。
+ */
+@XmlDslMarker
+fun Element.cdata(text: String): CData {
+	return CData(text).also { nodes += it }
+}
+
+/**
+ * 创建一个[XmlDsl.Comment]并注册。
+ */
+@XmlDslMarker
+fun Element.comment(text: String): Comment {
+	return Comment(text).also { nodes += it }
+}
+
+/**
+ * 创建一个[XmlDsl.Element]并注册。
+ */
+@XmlDslMarker
+inline fun Element.element(name: String, block: Element.() -> Unit = {} ): Element {
+	return Element(name).apply(block).also { nodes += it }
+}
+
+/**
+ * 创建一个[XmlDsl.Element]并注册。
+ */
+@XmlDslMarker
+inline fun Element.element(
+	name: String,
+	vararg attributes: Pair<String, Any?>,
+	block: Element.() -> Unit = {},
+): Element {
+	return Element(name, attributes.toMap()).apply(block).also { nodes += it }
+}

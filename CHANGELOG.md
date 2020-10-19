@@ -417,6 +417,7 @@
 * [X] 重构`MatchType`和`ReferenceCase`并重命名为`PathType`
 * [X] 重构和添加`queryBy`、`getBy`、`getOrNullBy`、`getOrElseBy`
 * [X] 进一步实现`PathType`
+* [ ] 整理`breeze-dsl`中
 
 # 长期
 

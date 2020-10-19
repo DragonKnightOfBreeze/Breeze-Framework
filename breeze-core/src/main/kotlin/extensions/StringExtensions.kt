@@ -206,6 +206,12 @@ fun String.lineBreak(width: Int = 120): String {
 
 
 //不使用正则以提高性能
+/**
+ * 判断当前字符串是否是多行字符串。
+ */
+fun CharSequence.isMultiline(): Boolean {
+	return this.indexOf('\n') != -1
+}
 
 /**
  * Returns `true` if this char sequence contains only Unicode digits.

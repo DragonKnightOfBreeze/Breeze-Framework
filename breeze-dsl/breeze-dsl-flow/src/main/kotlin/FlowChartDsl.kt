@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.flow.FlowChartDslDefinitions.*
  * [Flow Chart](https://github.com/adrai/flowchart.js) dsl.
  */
 @FlowChartDslMarker
-class FlowChartDsl @PublishedApi internal constructor() : Dsl, IDslEntry {
+class FlowChartDsl @PublishedApi internal constructor() : DslDocument, IDslEntry {
 	override val nodes: MutableSet<FlowChartDslDefinitions.Node> = mutableSetOf()
 	override val connections: MutableList<FlowChartDslDefinitions.Connection> = mutableListOf()
 	override var splitContent: Boolean = true

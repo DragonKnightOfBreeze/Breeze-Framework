@@ -8,11 +8,11 @@ package com.windea.breezeframework.dsl.bbcode
 import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.bbcode.BBCodeDslConfig.indent
 
 /**
- * Dsl definitions of [BBCodeDsl].
+ * DslDocument definitions of [BBCodeDsl].
  */
 interface BBCodeDslDefinitions {
 	interface IDslElement : DslElement, Inlineable {
@@ -29,7 +29,7 @@ interface BBCodeDslDefinitions {
 
 	interface BlockDslElement : IDslElement, Indentable {
 		val contentText: String
-		override val inlineText: CharSequence get() = contentText.ifNotEmpty { ls + it.doIndent(indent) + ls }
+		override val inlineText: CharSequence get() = contentText.ifNotEmpty { '\n' + it.doIndent(indent) + '\n' }
 	}
 
 
@@ -110,7 +110,7 @@ interface BBCodeDslDefinitions {
 
 	class List @PublishedApi internal constructor() : Element("list"), BlockDslElement {
 		val nodes: MutableList<ListNode> = mutableListOf()
-		override val contentText: String get() = nodes.joinToText(ls)
+		override val contentText: String get() = nodes.joinToText("\n")
 		override var indentContent: Boolean = true
 	}
 
@@ -123,19 +123,19 @@ interface BBCodeDslDefinitions {
 	class Table @PublishedApi internal constructor() : Element("table"), BlockDslElement {
 		lateinit var header: TableHeader
 		val rows: MutableList<TableRow> = mutableListOf()
-		override val contentText: String get() = header.toString() + ls + rows.joinToText(ls)
+		override val contentText: String get() = header.toString() + "\n" + rows.joinToText("\n")
 		override var indentContent: Boolean = true
 	}
 
 	class TableHeader @PublishedApi internal constructor() : Element("th"), BlockDslElement {
 		val columns: MutableList<TableColumn> = mutableListOf()
-		override val contentText: String get() = columns.joinToText(ls)
+		override val contentText: String get() = columns.joinToText("\n")
 		override var indentContent: Boolean = true
 	}
 
 	class TableRow @PublishedApi internal constructor() : Element("tr"), BlockDslElement {
 		val columns: MutableList<TableColumn> = mutableListOf()
-		override val contentText: String get() = columns.joinToText(ls)
+		override val contentText: String get() = columns.joinToText("\n")
 		override var indentContent: Boolean = true
 	}
 

@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.sequence
 
 /**
- * Dsl marker of [SequenceDiagramDsl].
+ * DslDocument marker of [SequenceDiagramDsl].
  */
 @DslMarker
 @MustBeDocumented

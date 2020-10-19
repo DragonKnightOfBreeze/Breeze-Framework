@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.creole
 
 /**
- * Dsl marker of [CreoleDsl].
+ * DslDocument marker of [CreoleDsl].
  */
 @DslMarker
 @MustBeDocumented

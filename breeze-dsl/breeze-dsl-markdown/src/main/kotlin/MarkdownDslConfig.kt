@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 
 /**
- * Dsl config of [MarkdownDsl].
+ * DslDocument config of [MarkdownDsl].
  */
 @MarkdownDslMarker
 object MarkdownDslConfig : DslConfig {

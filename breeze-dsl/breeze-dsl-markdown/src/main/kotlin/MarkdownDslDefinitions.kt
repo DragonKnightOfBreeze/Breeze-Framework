@@ -9,6 +9,7 @@ import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.markdown.MarkdownDslConfig.addPrefixHeadingMarkers
 import com.windea.breezeframework.dsl.markdown.MarkdownDslConfig.emptyColumnLength
 import com.windea.breezeframework.dsl.markdown.MarkdownDslConfig.emptyColumnText
@@ -21,7 +22,7 @@ import com.windea.breezeframework.dsl.markdown.MarkdownDslConfig.wrapLength
 import org.intellij.lang.annotations.*
 
 /**
- * Dsl definitions of [MarkdownDsl].
+ * DslDocument definitions of [MarkdownDsl].
  */
 @MarkdownDslMarker
 interface MarkdownDslDefinitions {

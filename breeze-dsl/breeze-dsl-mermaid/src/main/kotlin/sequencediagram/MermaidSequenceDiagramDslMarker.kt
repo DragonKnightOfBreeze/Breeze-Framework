@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.mermaid.sequencediagram
 
 /**
- * Dsl marker of [MermaidSequenceDiagramDsl].
+ * DslDocument marker of [MermaidSequenceDiagramDsl].
  */
 @DslMarker
 @MustBeDocumented

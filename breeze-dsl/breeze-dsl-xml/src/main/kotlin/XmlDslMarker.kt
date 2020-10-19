@@ -6,7 +6,9 @@
 package com.windea.breezeframework.dsl.xml
 
 /**
- * Dsl marker of [XmlDsl].
+ * [XmlDsl]的标记注解。
+ *
+ * Marker annotation of [XmlDsl].
  */
 @DslMarker
 @MustBeDocumented

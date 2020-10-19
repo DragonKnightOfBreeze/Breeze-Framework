@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.*
  * Markdown dsl.
  */
 @MarkdownDslMarker
-class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinitions.IDslEntry {
+class MarkdownDsl @PublishedApi internal constructor() : DslDocument, MarkdownDslDefinitions.IDslEntry {
 	@MarkdownDslExtendedFeature
 	var frontMatter: MarkdownDslDefinitions.FrontMatter? = null
 

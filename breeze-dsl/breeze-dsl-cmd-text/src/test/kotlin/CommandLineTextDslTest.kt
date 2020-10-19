@@ -1,39 +1,40 @@
 package com.windea.breezeframework.dsl.commandline
 
 
-import com.windea.breezeframework.dsl.commandline.CommandLineTextDslDefinitions.*
+import com.windea.breezeframework.dsl.cmdtext.*
+import com.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
 import kotlin.test.*
 
 class CommandLineTextDslTest {
 	@Test
 	fun test1() {
-		println(commandLineTextDsl {
+		println(cmdTextDsl {
 			color("123", Color.Red)
 		})
 	}
 
 	@Test
 	fun testColor() {
-		println(commandLineTextDsl { color("hello world!", Color.Black) })
-		println(commandLineTextDsl { color("hello world!", Color.Red) })
-		println(commandLineTextDsl { color("hello world!", Color.Green) })
-		println(commandLineTextDsl { color("hello world!", Color.Yellow) })
-		println(commandLineTextDsl { color("hello world!", Color.Blue) })
-		println(commandLineTextDsl { color("hello world!", Color.Magenta) })
-		println(commandLineTextDsl { color("hello world!", Color.Cyan) })
-		println(commandLineTextDsl { color("hello world!", Color.LightGray) })
+		println(cmdTextDsl { color("hello world!", Color.Black) })
+		println(cmdTextDsl { color("hello world!", Color.Red) })
+		println(cmdTextDsl { color("hello world!", Color.Green) })
+		println(cmdTextDsl { color("hello world!", Color.Yellow) })
+		println(cmdTextDsl { color("hello world!", Color.Blue) })
+		println(cmdTextDsl { color("hello world!", Color.Magenta) })
+		println(cmdTextDsl { color("hello world!", Color.Cyan) })
+		println(cmdTextDsl { color("hello world!", Color.LightGray) })
 	}
 
 	@Test
 	fun test2() {
-		println(commandLineTextDsl {
+		println(cmdTextDsl {
 			bgColor("123", Color.Red)
 		})
 	}
 
 	@Test
 	fun test3() {
-		println(commandLineTextDsl {
+		println(cmdTextDsl {
 			"""
 			=================================================================
 			There is a story of ${color("dragons and dragon knights", Color.LightBlue)}
@@ -42,7 +43,7 @@ class CommandLineTextDslTest {
 			from time immemorial
 			for an immeasurable time,
 			which used to be very well-known ${color("across the galaxy", Color.Yellow)}
-			long-long ago.
+			even in the far-long past.
 			=================================================================
 			""".trimIndent()
 		})
@@ -50,7 +51,7 @@ class CommandLineTextDslTest {
 
 	@Test
 	fun test4() {
-		println(commandLineTextDsl {
+		println(cmdTextDsl {
 			"""
 			=================================================================
 			There is a story of ${bold(color("dragons and dragon knights", Color.LightBlue))}

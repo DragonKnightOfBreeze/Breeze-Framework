@@ -4,12 +4,12 @@
 package com.windea.breezeframework.dsl.mermaid.piechart
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 
 /**
- * Dsl definitions of [MermaidPieChartDsl].
+ * DslDocument definitions of [MermaidPieChartDsl].
  */
 @MermaidPieChartDslMarker
 interface MermaidPieChartDslDefinitions {

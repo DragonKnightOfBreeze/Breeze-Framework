@@ -4,13 +4,13 @@
 package com.windea.breezeframework.dsl.mermaid.flowchart
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidFlowChartDslDefinitions].
+ * DslDocument definitions of [MermaidFlowChartDslDefinitions].
  */
 @MermaidFlowChartDslMarker
 interface MermaidFlowChartDslDefinitions {

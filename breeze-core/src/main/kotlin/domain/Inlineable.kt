@@ -1,8 +1,6 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
-
 package com.windea.breezeframework.core.domain
 
 /**
@@ -22,5 +20,5 @@ interface Inlineable : CharSequence {
 
 	override fun subSequence(startIndex: Int, endIndex: Int) = inlineText.subSequence(startIndex, endIndex)
 
-	override fun toString(): String = ""
+	override fun toString(): String
 }

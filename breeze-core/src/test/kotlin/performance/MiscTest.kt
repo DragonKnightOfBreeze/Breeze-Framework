@@ -46,4 +46,23 @@ class MiscTest {
 	private fun insertCharBeforeByReplace(string:String,beforeChar:Char,afterChar:Char):String{
 		return string.replace(afterChar.toString(),beforeChar.toString() + afterChar)
 	}
+
+	@Test
+	fun constTest(){
+		val n = 1000000
+		val abc = "abc"
+		val executor = Executors.newFixedThreadPool(2)
+		val a = executor.submit(Callable {
+			measureNanoTime {
+				repeat(n) { abc.toCharArray().joinToString("\n") }
+			}
+		})
+		val b = executor.submit(Callable{
+			measureNanoTime {
+				repeat(n) { "ABC".toCharArray().joinToString("\n") }
+			}
+		})
+		println(a.get())
+		println(b.get())
+	}
 }

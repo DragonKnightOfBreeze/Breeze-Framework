@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.creole.CreoleDslConfig.indent
 import com.windea.breezeframework.dsl.creole.CreoleDslConfig.markerCount
 
 /**
- * Dsl definitions of [CreoleDsl].
+ * DslDocument definitions of [CreoleDsl].
  */
 @CreoleDslMarker
 interface CreoleDslDefinitions {

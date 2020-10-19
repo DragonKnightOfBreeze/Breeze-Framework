@@ -6,7 +6,7 @@ package com.windea.breezeframework.dsl.mermaid
 import com.windea.breezeframework.dsl.*
 
 /**
- * Dsl definitions of [MermaidDsl].
+ * DslDocument definitions of [MermaidDsl].
  */
 @MermaidDslMarker
 interface MermaidDslDefinitions {

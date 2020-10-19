@@ -4,14 +4,14 @@
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidStateDiagramDsl].
+ * DslDocument definitions of [MermaidStateDiagramDsl].
  */
 @MermaidStateDiagramDslMarker
 interface MermaidStateDiagramDslDefinitions {
