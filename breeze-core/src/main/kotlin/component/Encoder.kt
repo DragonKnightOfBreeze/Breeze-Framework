@@ -11,7 +11,7 @@ import java.util.*
 /**
  * 编码器。
  *
- * 编码器用于对字符串和二级制数据进行编码和解码，
+ * 编码器用于对字符串进行编码和解码，
  */
 @BreezeComponent
 interface Encoder {
@@ -23,7 +23,7 @@ interface Encoder {
 		//不需要进行注册
 	}
 
-	//region Specific Encoders
+	//region Default Encoders
 	/**
 	 * Base64编码器。
 	 */
@@ -73,73 +73,6 @@ interface Encoder {
 
 		override fun decode(value: String, charset: Charset): String {
 			return URLDecoder.decode(value,charset)
-		}
-	}
-	//endregion
-
-	//region Encrypt Encoders
-	/**
-	 * Md5加密方式的编码器。
-	 */
-	object Md5Encoder:Encoder{
-		override fun encode(value: String, charset: Charset): String {
-			TODO()
-		}
-
-		override fun decode(value: String, charset: Charset): String {
-			TODO()
-		}
-	}
-
-	/**
-	 * AES加密方式的编码器。
-	 */
-	object AesEncoder:Encoder{
-		override fun encode(value: String, charset: Charset): String {
-			TODO()
-		}
-
-		override fun decode(value: String, charset: Charset): String {
-			TODO()
-		}
-	}
-
-	/**
-	 * DES加密方式的编码器。
-	 */
-	object DesEncoder:Encoder{
-		override fun encode(value: String, charset: Charset): String {
-			TODO()
-		}
-
-		override fun decode(value: String, charset: Charset): String {
-			TODO()
-		}
-	}
-
-	/**
-	 * SHA256加密方式的编码器。
-	 */
-	object Sha256Encoder:Encoder{
-		override fun encode(value: String, charset: Charset): String {
-			TODO()
-		}
-
-		override fun decode(value: String, charset: Charset): String {
-			TODO()
-		}
-	}
-
-	/**
-	 * SHA512加密方式的编码器。
-	 */
-	object Sha512Encoder:Encoder{
-		override fun encode(value: String, charset: Charset): String {
-			TODO()
-		}
-
-		override fun decode(value: String, charset: Charset): String {
-			TODO()
 		}
 	}
 	//endregion
