@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.performance
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extensions.*
 import java.util.concurrent.*
 import kotlin.system.*

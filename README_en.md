@@ -4,7 +4,7 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
-Integrated code framework written by Kotlin,
+Integrated code framework written by Kotlin.
 provides many useful extensions for standard library and some frameworks.
 
 NOTE：
@@ -17,81 +17,52 @@ NOTE：
 
 ## breeze-core
 
-Provide utilities and extensions for Kotlin standard library and daily project developing. For example: 
-
-* Extra operator override functions. Such as `String.minus`, `String.times`, `String.div`.
-* Extra type convert functions. Such as `String.toFile`, `String.toLocalDateTime`, `String.toIntRange`.
-* Extra string handle functions. Such as `String.quote`, `String.escapeBy`, `String.switchCaseBy`.
-* Extra text handle functions. Such as `String.toText`, `Array<String>.joinToText`.
-* Extra collection handle functions. Such as `List.bind`, `List.queryBy`.
-* Extra tuple handle functions. Such as `Tuple.map`, `Tuple.toList`, `Tuple.toRange`.
-* Extra data class utility functions. Such as `equalsBy`, `hashCodeBy`, `toStringBy`, `toStringByReference`.
-* Functions that cast types and return same object: `Any?.cast` and `Any?.castOrNull`.
-* Functions that convert types and return new object: `Any?.convert` and `Any?.convertOrNull`.
+Provide utilities and extensions for the Kotlin standard library and common functional requirements.
 
 ## breeze-dsl
 
-* Powerful and clear builders for various domain specific languages.
-  * Provide dsl builders for common markup languages such as `Xml`, `Markdown`, `Creole`.
-  * Provide dsl builders for some graph languages such as `Mermaid`, `PlantUml`, `Flow`, `Sequence`.
-  * Provide dsl builders for specific text such as `CriticMarkupText`, `CommandLineText`.
+Provides a concise and flexible dsl api, used to generate text of markup languages by code.
+Can be sufficient configured.
 
 ## breeze-functional
 
-* Provide functional extensions for Functions. e.g, `curried`, `partial`, `compose`.
-* Provide functional extensions for Functions from 0 to 11 parameters.
-
-## breeze-generator
-
-* Provide generators for string and text. (e.g, `UrlGenerator`)
+Provide utilities and extensions for functional programming.
+Support functions with 0 to 11 parameters.
 
 ## breeze-http
 
-* Provide convenient http extensions delegated to `java.net.http.HttpClient`.
-* Simple and convenient API which is similar to `axios`.
-* Based on string body, so you should provide external json serializer implementation such as `Gson`, `Jackson`.
+Provide a concise and intuitive http api, based on the Java native http api, used to send http requests.
+Can be sufficient configured.
 
 ## breeze-javafx
 
-* Provide some useful extensions for javafx.
-
-## breeze-linq
-
-* Provide simulate language integrated search implementation.
-* Can be implemented by delegating to Kotlin Collection or Java Stream.
-* Do not store collection information, and can be defined independent.
+Provide tools and extensions for Java FX.
 
 ## breeze-logger
 
-* Provide lightweight, individual but enough powerful loggers for kotlin.
-* Provide basic implementations such as `SimpleLogger`, `ColorfulLogger`.
-* This implementation is a little simple, please consider for a while before use it.
+Provide a simple logger api.
 
 ## breeze-mapper
 
-* Provide some useful extensions for data mapping. e.g, `mapObject`, `unmapObject`.
-* Provide lightweight, individual but enough powerful mappers for data serialization.
-* Provide basic implementations such as `JsonMapper`, `YamlMapper`.
-* DO NOT FULLY IMPLEMENTED.
+Provide a simple mapper api, for serialize and deserialize data.
+Can be sufficient configured.
 
 ## breeze-reflect
 
-* Provide some useful extensions for kotlin reflect & java reflect. e.g, `checkClassForName`, `nameOf`.
+Provide utilities and extensions for Java reflection and Kotlin reflection.
 
 ## breeze-serializer
 
-* Provide some useful extensions for data serialization. e.g, `serialize`, `deserialize`.
-* Provide multi-data-type serializers delegate to third-party libraries such as `Jackson`, `Gson`, `FastJson`.
+Provides a concise and unified serializer api, based on third-party libraries, for serialize and deserialize data.
+Can be sufficient configured.
 
 ## breeze-spring-boot
 
-* Provide some useful extensions for `SpringBoot` and it's optional modules.
+Provide utilities and extensions for the Spring Boot Framework.
 
 ## breeze-time
 
-* Provide some useful extensions for time, including `Date`, `Temporal`, etc.
-* Including necessary dsl-like extensions. e.g, `20.minutes`, `20.minutes.ago`.
-* Including necessary convenient check extensions. e.g, `LocalDate.isToday`, `LocalDate.isInFuture`.
+Provide utilities and extensions for Java's time api.
 
 # Reference
 

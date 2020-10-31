@@ -1,9 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST", "HasPlatformType")
-
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
@@ -12,8 +10,6 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
-
-//TODO 支持泛型类型
 
 /**
  * 转化器。
@@ -590,5 +586,3 @@ interface Converter<T, R> {
 	}
 	//endregion
 }
-
-

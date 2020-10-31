@@ -4,7 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.component.*
 
 //region Any Extensions
 /**
@@ -48,7 +48,7 @@ fun String.unescapeBy(escaper: Escaper): String {
  * 尝试推断当前字符串的字母格式。
  */
 @BreezeComponentExtension
-fun String.inferLetterCase():CaseType?{
+fun String.inferLetterCase(): CaseType?{
 	return CaseType.infer(this)
 }
 
@@ -108,7 +108,7 @@ fun Iterable<String>.joinToStringBy(caseType: CaseType): String {
  * @see CaseType
  */
 @BreezeComponentExtension
-fun Sequence<String>.joinToStringBy(caseType: CaseType ): String {
+fun Sequence<String>.joinToStringBy(caseType: CaseType): String {
 	return caseType.joinToString(this)
 }
 
@@ -141,7 +141,7 @@ fun String.switchCaseBy(targetCaseType: CaseType): String {
  * @see PathType
  */
 @BreezeComponentExtension
-fun String.matchesBy(path:String,pathType:PathType = PathType.StandardPath):Boolean{
+fun String.matchesBy(path:String,pathType: PathType = PathType.StandardPath):Boolean{
 	return pathType.matches(this,path)
 }
 
@@ -152,7 +152,7 @@ fun String.matchesBy(path:String,pathType:PathType = PathType.StandardPath):Bool
  * @see PathType
  */
 @BreezeComponentExtension
-fun String.resolveVariablesBy(path:String,pathType:PathType = PathType.StandardPath):Map<String,String>{
+fun String.resolveVariablesBy(path:String,pathType: PathType = PathType.StandardPath):Map<String,String>{
 	return pathType.resolveVariables(this,path)
 }
 //endregion

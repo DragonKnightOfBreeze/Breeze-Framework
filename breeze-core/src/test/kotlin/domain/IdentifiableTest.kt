@@ -1,7 +1,6 @@
 package com.windea.breezeframework.core.domain
 
-import com.windea.breezeframework.core.domain.data.*
-import com.windea.breezeframework.core.domain.data.Identifiable.Companion.delegate
+import com.windea.breezeframework.core.domain.Identifiable.Companion.delegate
 import org.junit.*
 
 class IdentifiableTest {

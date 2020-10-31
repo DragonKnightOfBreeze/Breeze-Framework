@@ -1,7 +1,7 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.*
-import com.windea.breezeframework.core.domain.CaseType.*
+import com.windea.breezeframework.core.component.*
+import com.windea.breezeframework.core.component.CaseType.*
 import kotlin.test.*
 
 class StringExtensionsTest {
@@ -132,38 +132,38 @@ class StringExtensionsTest {
 		assertFalse { "/foo/bar".matchesBy("/foo/bar/123") }
 		assertFalse { "/foo/bar".matchesBy("/{a}/bar/123") }
 
-		assertTrue { "".matchesBy("",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b?r",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b*r",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b*",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar*",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/**",PathType.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar**",PathType.AntPath) }
-		assertTrue {"/foo/aaa".matchesBy("/f**o/aaa",PathType.AntPath)}
-		assertTrue {"/foo/aaa".matchesBy("/f*/aaa",PathType.AntPath)}
-		assertTrue {"/foo/aaa".matchesBy("/f**/aaa",PathType.AntPath)}
-		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**",PathType.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/*/var",PathType.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/**/var",PathType.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/*r/var",PathType.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/*/va",PathType.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/**/va",PathType.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/*r/va",PathType.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}",PathType.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/{bar}/var",PathType.AntPath) }
-		assertTrue { "".matchesBy("",PathType.AntPath)}
-		assertTrue { "/foo".matchesBy("/foo",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/foo/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/f?o/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/f*o/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/f**o/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/f*/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa".matchesBy("/f**/{a}",PathType.AntPath)}
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/bar/{b}",PathType.AntPath)}
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*/{b}",PathType.AntPath)}
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/**/{b}",PathType.AntPath)}
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*ar/{b}",PathType.AntPath)}
+		assertTrue { "".matchesBy("", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b?r", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*r", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar*", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/**", PathType.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar**", PathType.AntPath) }
+		assertTrue {"/foo/aaa".matchesBy("/f**o/aaa", PathType.AntPath)}
+		assertTrue {"/foo/aaa".matchesBy("/f*/aaa", PathType.AntPath)}
+		assertTrue {"/foo/aaa".matchesBy("/f**/aaa", PathType.AntPath)}
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**", PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/*/var", PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/**/var", PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/*r/var", PathType.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/*/va", PathType.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/**/va", PathType.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/*r/va", PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}", PathType.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/{bar}/var", PathType.AntPath) }
+		assertTrue { "".matchesBy("", PathType.AntPath)}
+		assertTrue { "/foo".matchesBy("/foo", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/foo/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/f?o/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/f*o/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/f**o/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/f*/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa".matchesBy("/f**/{a}", PathType.AntPath)}
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/bar/{b}", PathType.AntPath)}
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*/{b}", PathType.AntPath)}
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/**/{b}", PathType.AntPath)}
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*ar/{b}", PathType.AntPath)}
 
 		"/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathType.AntPath)
 	}
@@ -176,19 +176,19 @@ class StringExtensionsTest {
 		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}"))
 		assertEquals(mapOf(),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}/far"))
 
-		assertEquals(mapOf(),"".resolveVariablesBy("",PathType.AntPath))
-		assertEquals(mapOf(),"/foo".resolveVariablesBy("/foo",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/foo/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f?o/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f*o/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f**o/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f*/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f**/{a}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*/{b}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**/{b}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*ar/{b}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/?ar/{b}",PathType.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**ar/{b}",PathType.AntPath))
+		assertEquals(mapOf(),"".resolveVariablesBy("", PathType.AntPath))
+		assertEquals(mapOf(),"/foo".resolveVariablesBy("/foo", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/foo/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f?o/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f*o/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f**o/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f*/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa"),"/foo/aaa".resolveVariablesBy("/f**/{a}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*/{b}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**/{b}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*ar/{b}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/?ar/{b}", PathType.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"),"/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**ar/{b}", PathType.AntPath))
 	}
 }

@@ -17,103 +17,52 @@
 
 ## breeze-core
 
-为Kotlin标准库和日常项目开发提供工具和扩展。例如：
-
-* 额外的运算符重载方法。如`String.minus`、`String.times`、`String.div`。
-* 额外的类型转化方法。如`String.toFile`、`String.toLocalDateTime`、`String.toIntRange`。
-* 额外的字符串处理方法。如`String.quote`、`String.escapeBy`、`String.switchCaseBy`。
-* 额外的文本处理方法。如`String.toText`、`Array<String>.joinToText`。
-* 额外的集合处理方法。如`List.bind`、`List.queryBy`。
-* 额外的元组处理方法。如`Tuple.map`、`Tuple.toList`、`Tuple.toRange`。
-* 额外的数据类工具方法。如`equalsBy`、`hashCodeBy`、`toStringBy`、`toStringByReference`。
-* 用于转换类型并返回同一对象的方法：`Any?.cast`和`Any?.castOrNull`。
-* 用于转化类型并返回新的对象的方法：`Any?.convert`和`Any?.convertOrNull`。
+为Kotlin标准库和常见功能需求提供工具和扩展。
 
 ## breeze-dsl
 
-提供简洁而灵活的领域特定语言的api，为常见的标记语言提供支持，便于生成对应的文本，并允许进行充分的配置。例如：
-
-* `Xml`、`Markdown`、`Creole`等标记语言。
-* `Mermaid`、`Flow`、`Sequence`等绘图语言。
-* 其他一些特殊格式的文本。
+提供简洁而灵活的dsl api，用于通过代码生成标记语言的文本。
+可以进行充分的配置。
 
 ## breeze-functional
 
-提供一些函数式编程中可能用到的扩展方法。支持0到11个参数的函数。例如：
-
-* 用于柯里化/反柯里化当前函数的`curried`和`uncurried`方法。
-* 用于反转当前函数的参数的`reversed`方法。
-* 用于绑定/解绑当前函数的参数的`tupled`和`untupled`方法。
-* 用于得到当前函数的偏函数的`partial`和`partialLast`方法。
-
-## breeze-generator
-
-［有待完善］提供一些具有特定用途的生成器。例如：
-
-* 用于生成各种格式的链接的`UrlGenerator`。
-* 用于生成扩展Json Schema的`JsonSchemaGenerator`。
+为函数式编程中提供工具和扩展。
+支持0到11个参数的函数。
 
 ## breeze-http
 
-［有待完善］提供简洁而直观的Http api，封装Java原生的Http api，并允许进行充分的配置。
-
-注意：可能需要配合第三方序列化库如`Gson`使用。
+提供简洁而直观的http api，基于Java原生的http api，用于发起http请求。
+可以进行充分的配置。
 
 ## breeze-javafx
 
-［有待完善］为JavaFX补充功能和扩展。
-
-## breeze-linq
-
-［有待完善］提供简洁而直观的语言集成查询的api，允许以类似sql的方式，实现集合的查询操作。
-
-注意：这个api本身不包含集合数据。
+为JavaFX提供工具和扩展。
 
 ## breeze-logger
 
-［有待完善］提供简单而独立的日志器的api，并允许进行充分的配置。例如：
-
-* 包含了一般日志信息的`SimpleLogger`。
-* 可以输出彩色的控制台文本的`ColorfulLogger`。
+提供简单的日志器的api。
 
 ## breeze-mapper
 
-［有待完全实现］提供简单而独立的映射器的api，用于进行数据的序列化与反序列化操作，并允许进行充分的配置。例如：
-
-* 用于映射和反映射对象的`ObjectMapper`。
-* 用于映射常见标记语言的`JsonMapper`、`YamlMapper`、`XmlMapper`和`PropertiesMapper`。
+提供简单的映射器api，用于进行数据的序列化与反序列化。
+可以进行充分的配置。
 
 ## breeze-reflect
 
-为Java反射和Kotlin反射补充功能和扩展。例如：
-
-* 直接得到类型、对象、属性、方法的名字的`nameOf`方法。
-* 直接得到Java类型的`javaTypeOf`方法。
-* 直接得到取值方法和赋值方法的`Class.getters`和`Class.setters`属性。
+为Java反射和Kotlin反射提供工具和扩展。
 
 ## breeze-serializer
 
-提供简洁而统一的序列化器的api，用于进行数据的序列化和反序列化操作，并允许进行充分的配置。由第三方库委托实现，例如：
-
-* 由`breeze-mapper`委托实现的`BreezeJsonSerializer`、`BreezeXmlSerializer`等。这是默认的实现，也是最简单的一种实现。
-* 由`Kotlinx Serialization`委托实现的`KotlinJsonSerializer`等。这是最推荐的一种实现。
-* 由`Jackson`委托实现的`JacksonJsonSerializer`、`JacksonXmlSerializer`等。这是最全面的一种实现。
-* 由`Gson`委托实现的`GsonSerializer`。
-* 由`FastJson`委托实现的`FastJsonSerializer`。
-* 另外还提供了一些便于进行序列化和反序列化的扩展方法。如`Any?.serialize`和`String.deserialize`。
+提供简洁而统一的序列化器api，基于第三方库，用于进行数据的序列化与反序列化。
+可以进行充分的配置。
 
 ## breeze-spring-boot
 
-［有待完善］为Spring Boot补充功能和扩展，并且提供额外的组件和自动配置。
+为Spring Boot框架提供工具和扩展。
 
 ## breeze-time
 
-为Java的时间api补充功能和扩展。
-
-* 支持传统的时间api。包括`Date`、`Calendar`等。
-* 支持Java8的时间api。包括`LocalDate`、`LocalDateTime`等。
-* 为数字类型提供额外的属性，用于生成时间。如`1.seconds`、`2.minutes`和`3.years`。
-* 为时长和时期提供额外的运算符重载方法。如`Duration.unaryMinus`和`Period.times`。
+为Java的时间api提供工具和扩展。
 
 # 参考
 
@@ -147,7 +96,6 @@
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
-* [Json Pointer](https://tools.ietf.org/html/rfc6901)
 * [Json Path](https://github.com/json-path/JsonPath)
 
 ## 用法

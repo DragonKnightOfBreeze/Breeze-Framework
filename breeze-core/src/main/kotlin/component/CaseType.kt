@@ -1,9 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("ObjectPropertyName")
-
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
@@ -380,7 +378,7 @@ interface CaseType {
 	 *
 	 * 示例：`linux/path`
 	 */
-	object LinuxPath:CaseType{
+	object LinuxPath: CaseType {
 		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
@@ -395,7 +393,7 @@ interface CaseType {
 	 *
 	 * 示例：`windows\path`
 	 */
-	object WindowsPath:CaseType{
+	object WindowsPath: CaseType {
 		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')

@@ -1,9 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST", "KDocUnresolvedReference", "UNUSED_VALUE")
-
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*

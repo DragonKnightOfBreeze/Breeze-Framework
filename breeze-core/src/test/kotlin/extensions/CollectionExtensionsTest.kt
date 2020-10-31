@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.component.*
 import kotlin.test.*
 
 class CollectionExtensionsTest {

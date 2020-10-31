@@ -95,10 +95,12 @@ allprojects {
 	}
 }
 
+val ignoredModuleNames = arrayOf("breeze-unstable","breeze-linq")
+
 allprojects {
 	when {
 		project == rootProject -> return@allprojects
-		project.name == "breeze-unstable" -> return@allprojects
+		project.name in ignoredModuleNames -> return@allprojects
 	}
 	apply {
 		plugin("org.gradle.maven-publish")

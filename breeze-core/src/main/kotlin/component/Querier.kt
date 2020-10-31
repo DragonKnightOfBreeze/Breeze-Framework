@@ -1,16 +1,11 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-
-package com.windea.breezeframework.core.domain
+package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import java.lang.reflect.*
-
-//可以考虑将目标对象的类型也作为泛型参数，但是就目前来说，太过复杂，也没有必要
-//暂不显式实现queryOrNull方法，由query方法委托实现
 
 /**
  * 查询器。
@@ -41,7 +36,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object ResultsQuerier:Querier<String,List<Any?>>{
+	object ResultsQuerier: Querier<String, List<Any?>> {
 		override fun query(value: Any, queryObject: String): List<Any?> {
 			return try{
 				when (value){
@@ -63,7 +58,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object FilterableResultsQuerier:Querier<(Any?)->Boolean,List<Any?>>{
+	object FilterableResultsQuerier: Querier<(Any?) -> Boolean, List<Any?>> {
 		override fun query(value: Any, queryObject: (Any?)->Boolean): List<Any?> {
 			return try{
 				when (value){
@@ -85,7 +80,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object FirstResultQuerier:Querier<String,Any?>{
+	object FirstResultQuerier: Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
 			return try{
 				when (value){
@@ -122,7 +117,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object LastResultQuerier:Querier<String,Any?>{
+	object LastResultQuerier: Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
 			return try{
 				when (value){
@@ -161,7 +156,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object StringQuerier : Querier<String,Any?> {
+	object StringQuerier : Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
 			if(queryObject.isEmpty()) return value
 			return try {
@@ -184,7 +179,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Map]。
 	 */
-	object RegexQuerier : Querier<Regex,List<Any?>> {
+	object RegexQuerier : Querier<Regex, List<Any?>> {
 		override fun query(value: Any, queryObject: Regex): List<Any?> {
 			return try {
 				when(value) {
@@ -203,7 +198,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Sequence]。
 	 */
-	object IndexQuerier : Querier<Int,Any?> {
+	object IndexQuerier : Querier<Int, Any?> {
 		override fun query(value: Any, queryObject: Int):  Any? {
 			return try {
 				when(value) {
@@ -224,7 +219,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Sequence]。
 	 */
-	object IndexRangeQuerier : Querier<IntRange,List<Any?>> {
+	object IndexRangeQuerier : Querier<IntRange, List<Any?>> {
 		override fun query(value: Any, queryObject: IntRange): List<Any?> {
 			return try {
 				when(value) {
@@ -245,7 +240,7 @@ interface Querier<T : Any,R> {
 	/**
 	 * 基于字符串，通过反射查询查询对象的字段和属性的值的查询器。
 	 */
-	object ReflectionQuerier : Querier<String,Any?> {
+	object ReflectionQuerier : Querier<String, Any?> {
 		override fun  query(value: Any, queryObject: String): Any?{
 			try {
 				val targetType = value.javaClass
@@ -269,7 +264,7 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Field]，[Method]，[Annotation]。
 	 */
-	object ReflectionMemberQuerier : Querier<String,Any?> {
+	object ReflectionMemberQuerier : Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
 			try {
 				val targetType = value.javaClass

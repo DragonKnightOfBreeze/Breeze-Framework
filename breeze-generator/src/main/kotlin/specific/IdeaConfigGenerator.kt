@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*

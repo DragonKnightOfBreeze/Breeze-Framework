@@ -7,11 +7,6 @@
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
 
-# 待办
-
-* [ ] 整理`breeze-dsl`中
-* [ ] 用于处理CSV和TSV的`Mapper`
-
 # 版本
 
 ## 2.x.x
@@ -21,6 +16,9 @@
 #### 2.0.0
 
 * [X] 更新CHANGELOG
+* [X] 更新README
+* [ ] 整理`breeze-dsl`中
+* [ ] 用于处理CSV和TSV的`Mapper`
 
 ## 1.x.x
 
