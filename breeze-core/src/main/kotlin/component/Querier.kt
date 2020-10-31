@@ -12,6 +12,7 @@ import java.lang.reflect.*
  *
  * 查询器用于根据指定类型的查询对象，查询目标对象。
  */
+@Suppress("IMPLICIT_CAST_TO_ANY")
 @BreezeComponent
 interface Querier<T : Any,R> {
 	/**

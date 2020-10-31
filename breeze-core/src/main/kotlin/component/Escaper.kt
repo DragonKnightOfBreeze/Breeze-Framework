@@ -14,8 +14,14 @@ import com.windea.breezeframework.core.annotations.*
  */
 @BreezeComponent
 interface Escaper {
+	/**
+	 * 转义指定的字符串。
+	 */
 	fun escape(value: String): String
 
+	/**
+	 * 反转义指定的字符串。
+	 */
 	fun unescape(value: String): String
 
 	companion object {

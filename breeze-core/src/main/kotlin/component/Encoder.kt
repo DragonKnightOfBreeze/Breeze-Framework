@@ -15,8 +15,14 @@ import java.util.*
  */
 @BreezeComponent
 interface Encoder {
+	/**
+	 * 根据指定的字符集，编码指定的字符串。
+	 */
 	fun encode(value:String,charset:Charset=Charsets.UTF_8):String
 
+	/**
+	 * 根据指定的字符集，解码指定的字符串。
+	 */
 	fun decode(value:String,charset:Charset=Charsets.UTF_8):String
 
 	companion object{

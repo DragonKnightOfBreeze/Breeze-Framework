@@ -12,6 +12,7 @@ import com.windea.breezeframework.core.extensions.*
  * 路径类型用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
 @BreezeComponent
+@Suppress("UNCHECKED_CAST","KDocUnresolvedReference")
 interface PathType {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
@@ -54,13 +55,6 @@ interface PathType {
 	fun joinToString(metaPaths: Sequence<String>): String
 
 	/**
-	 * 是否支持查询。
-	 *
-	 * 注意：需要在相关实现中处理不支持的情况。
-	 */
-	fun supportsQuery(): Boolean
-
-	/**
 	 * 根据指定路径查询查询对象，返回查询结果列表。
 	 * 如果指定路径为空路径，则返回查询对象的单例列表。
 	 */
@@ -84,10 +78,11 @@ interface PathType {
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
-
 	companion object {
 		//不需要进行注册
 	}
+
+	//region Default Path Types
 
 	abstract class AbstractPathType(
 		protected val delimiter: Char = '/',
@@ -191,12 +186,7 @@ interface PathType {
 			return metaPaths.joinToString(delimiterString).addPrefix(prefix)
 		}
 
-		override fun supportsQuery(): Boolean {
-			return true
-		}
-
 		protected open fun <T> metaQuery(value: Any, path: String): List<T> {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			return when {
 				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix)) -> {
 					Querier.ResultsQuerier.query(value, "")
@@ -209,7 +199,6 @@ interface PathType {
 		}
 
 		override fun <T> query(value: Any, path: String): List<T> {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return listOf(value) as List<T>
 			var result = listOf<Any?>(value)
@@ -226,7 +215,6 @@ interface PathType {
 		}
 
 		protected open fun <T> metaGet(value: Any, path: String): T? {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			return when {
 				path.startsWith(variablePrefix) && (variableSuffix == null || path.endsWith(variableSuffix)) -> {
 					Querier.FirstResultQuerier.queryOrNull(value, "")
@@ -239,7 +227,6 @@ interface PathType {
 		}
 
 		override fun <T> get(value: Any, path: String): T {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -250,7 +237,6 @@ interface PathType {
 		}
 
 		override fun <T> getOrNull(value: Any, path: String): T? {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -261,7 +247,6 @@ interface PathType {
 		}
 
 		override fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T {
-			if(!supportsQuery()) throw UnsupportedOperationException("Query operation is not supported.")
 			val metaPaths = splitToSequence(path)
 			if(metaPaths.none()) return value as T
 			var currentValue = value
@@ -272,7 +257,6 @@ interface PathType {
 		}
 	}
 
-	//region Default Path Types
 	/**
 	 * 标准路径。
 	 *
@@ -434,8 +418,24 @@ interface PathType {
 			}
 		}
 
-		override fun supportsQuery(): Boolean {
-			return false
+		override fun <T> metaQuery(value: Any, path: String): List<T> {
+			throw UnsupportedOperationException("Query operation is not supported by ant path.")
+		}
+
+		override fun <T> query(value: Any, path: String): List<T> {
+			throw UnsupportedOperationException("Query operation is not supported by ant path.")
+		}
+
+		override fun <T> metaGet(value: Any, path: String): T? {
+			throw UnsupportedOperationException("Get operation is not supported by ant path.")
+		}
+
+		override fun <T> getOrNull(value: Any, path: String): T? {
+			throw UnsupportedOperationException("Get operation is not supported by ant path.")
+		}
+
+		override fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T {
+			throw UnsupportedOperationException("Get operation is not supported by ant path.")
 		}
 	}
 
@@ -464,7 +464,7 @@ interface PathType {
 		}
 
 		override fun resolveVariables(value: String, path: String): Map<String, String> {
-			return mapOf()
+			throw UnsupportedOperationException("Resolve variables operation is not supported by reference path.")
 		}
 
 		override fun <T> metaQuery(value: Any, path: String): List<T> {
