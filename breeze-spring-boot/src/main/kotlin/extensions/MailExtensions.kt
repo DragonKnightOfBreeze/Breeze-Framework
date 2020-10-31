@@ -3,7 +3,7 @@
 
 @file:JvmName("MailExtensions")
 
-package com.windea.breezeframework.springboot.mail.extensions
+package com.windea.breezeframework.springboot.extensions
 
 import org.springframework.mail.javamail.*
 

@@ -3,7 +3,7 @@
 
 @file:JvmName("DataExtensions")
 
-package com.windea.breezeframework.springboot.data.extensions
+package com.windea.breezeframework.springboot.extensions
 
 import org.springframework.data.domain.*
 import org.springframework.data.repository.query.*

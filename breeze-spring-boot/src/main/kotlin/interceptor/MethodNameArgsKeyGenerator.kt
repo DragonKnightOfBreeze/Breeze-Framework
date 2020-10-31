@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.springboot.cache.interceptors
+package com.windea.breezeframework.springboot.interceptor
 
 import org.springframework.cache.interceptor.*
 import java.lang.reflect.*

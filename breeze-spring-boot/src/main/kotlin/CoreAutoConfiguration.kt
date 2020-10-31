@@ -1,15 +1,15 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.springboot.core
+package com.windea.breezeframework.springboot
 
-import com.windea.breezeframework.springboot.core.converters.*
+import com.windea.breezeframework.springboot.converter.*
 import org.springframework.context.annotation.*
 
 @Configuration
 class CoreAutoConfiguration {
 	@Bean
-	fun stringToDoubleRangeConverter() = StringToDoubleRangeConverter()
+	fun stringToDoubleRangeConverter() = StringToRangeConverters()
 
 	@Bean
 	fun stringToFloatRangeConverter() = StringToFloatRangeConverter()

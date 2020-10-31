@@ -419,6 +419,7 @@
 * [X] 进一步实现`PathType`
 * [X] 移动相关扩展方法到`BreezeComponentExtensions`
 * [X] 重命名`LetterCase`为`CaseType`
+* [X] 重构`breeze-spring-boot`
 * [ ] 整理`breeze-dsl`中
 * [ ] 用于处理CSV和TSV的`Mapper`
 

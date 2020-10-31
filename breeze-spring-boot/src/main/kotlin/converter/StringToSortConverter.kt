@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.springboot.data.converters
+package com.windea.breezeframework.springboot.converter
 
 import org.springframework.core.convert.converter.*
 import org.springframework.data.domain.*
