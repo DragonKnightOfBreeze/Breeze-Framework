@@ -9,12 +9,12 @@ import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 
 /**
- * 单词格式。
+ * 格式类型。
  *
- * 单词格式用于以某种大小写和分割方式，表示包含一个或多个单词的名字。
+ * 格式类型用于表示字符串的显示格式，基于某种大小写和单词的分割方式。
  */
 @BreezeComponent
-interface LetterCase {
+interface CaseType {
 	/**
 	 * 判断指定的字符串是否匹配指定的单词格式。
 	 */
@@ -46,19 +46,19 @@ interface LetterCase {
 	fun joinToString(value: Sequence<String>): String
 
 	companion object {
-		private val letterCaseRegistry = mutableListOf<LetterCase>()
+		private val letterCaseRegistry = mutableListOf<CaseType>()
 
 		/**
 		 * 注册单词格式。
 		 */
-		@JvmStatic fun register(letterCase: LetterCase) {
-			letterCaseRegistry += letterCase
+		@JvmStatic fun register(caseType: CaseType) {
+			letterCaseRegistry += caseType
 		}
 
 		/**
 		 * 推断单词格式。
 		 */
-		@JvmStatic fun infer(value: String): LetterCase? {
+		@JvmStatic fun infer(value: String): CaseType? {
 			for(letterCase in letterCaseRegistry) {
 				if(letterCase.matches(value)) return letterCase
 			}
@@ -123,7 +123,7 @@ interface LetterCase {
 	 *
 	 * 示例：`lowercase`
 	 */
-	object LowerCase : LetterCase {
+	object LowerCase : CaseType {
 		private val regex = """[a-z]+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
@@ -138,7 +138,7 @@ interface LetterCase {
 	 *
 	 * 示例：`UPPERCASE`
 	 */
-	object UpperCase : LetterCase {
+	object UpperCase : CaseType {
 		private val regex = """[A-Z]+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
@@ -153,7 +153,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Capitalized`
 	 */
-	object Capitalized : LetterCase {
+	object Capitalized : CaseType {
 		private val regex = """[A-Z][a-z]+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = listOf(value)
@@ -168,7 +168,7 @@ interface LetterCase {
 	 *
 	 * 示例：`lowercase words`
 	 */
-	object LowerCaseWords : LetterCase {
+	object LowerCaseWords : CaseType {
 		private val regex = """[a-z']+(?:\s+[a-z']+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
@@ -183,7 +183,7 @@ interface LetterCase {
 	 *
 	 * 示例：`UPPERCASE WORDS`
 	 */
-	object UpperCaseWords : LetterCase {
+	object UpperCaseWords : CaseType {
 		private val regex = """[A-Z']+(?:\s+[A-Z']+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
@@ -198,7 +198,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Uppercase words`
 	 */
-	object FirstWordCapitalized : LetterCase {
+	object FirstWordCapitalized : CaseType {
 		private val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
@@ -213,7 +213,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Uppercase Words`
 	 */
-	object CapitalizedWords : LetterCase {
+	object CapitalizedWords : CaseType {
 		private val regex = """[A-Z][a-z']*(?:\s+[a-z']+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
@@ -228,7 +228,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Words words Words`
 	 */
-	object Words : LetterCase {
+	object Words : CaseType {
 		private val regex = """[a-zA-Z']+(?:\s+[a-zA-Z']+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split(' ').filterNotEmpty()
@@ -243,7 +243,7 @@ interface LetterCase {
 	 *
 	 * 示例：`camelCase`
 	 */
-	object CamelCase : LetterCase {
+	object CamelCase : CaseType {
 		private val regex = """\$?[a-z]+(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.splitWords().split(' ')
@@ -258,7 +258,7 @@ interface LetterCase {
 	 *
 	 * 示例：`PascalCase`
 	 */
-	object PascalCase : LetterCase {
+	object PascalCase : CaseType {
 		private val regex = """\$?(?:[A-Z][a-z]+|[A-Z]+)(?:\$?[A-Z][a-z]+\$?|\$?[A-Z]+\$?|\d+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.splitWords().split(' ')
@@ -273,7 +273,7 @@ interface LetterCase {
 	 *
 	 * 示例：`snake_case`
 	 */
-	object SnakeCase : LetterCase {
+	object SnakeCase : CaseType {
 		private val regex = """\$?[a-z]+(?:_(?:\$?[a-z]+\$?|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
@@ -288,7 +288,7 @@ interface LetterCase {
 	 *
 	 * 示例：`SCREAMING_SNAKE_CASE`
 	 */
-	object ScreamingSnakeCase : LetterCase {
+	object ScreamingSnakeCase : CaseType {
 		private val regex = """\$?[A-Z]+(?:_(?:\$?[A-Z]+|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
@@ -303,7 +303,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Underscore_words`
 	 */
-	object UnderscoreWords : LetterCase {
+	object UnderscoreWords : CaseType {
 		private val regex = """_*[a-zA-Z$]+(?:_+(?:[a-zA-Z$]+|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('_')
@@ -318,7 +318,7 @@ interface LetterCase {
 	 *
 	 * 示例：`kebab-case`
 	 */
-	object KebabCase : LetterCase {
+	object KebabCase : CaseType {
 		private val regex = """[a-z]+(?:-(?:[a-z]+|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
@@ -333,7 +333,7 @@ interface LetterCase {
 	 *
 	 * 示例：`KEBAB-UPPER-CASE`
 	 */
-	object KebabUpperCase : LetterCase {
+	object KebabUpperCase : CaseType {
 		private val regex = """[A-Z]+(?:-(?:[A-Z]+|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
@@ -348,7 +348,7 @@ interface LetterCase {
 	 *
 	 * 示例：`Hyphen-words`
 	 */
-	object HyphenWords : LetterCase {
+	object HyphenWords : CaseType {
 		private val regex = """-*[a-zA-Z]+(?:-+(?:[a-zA-Z]+|\d+))+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('-')
@@ -365,7 +365,7 @@ interface LetterCase {
 	 *
 	 * 示例：`doc.path`
 	 */
-	object ReferencePath : LetterCase {
+	object ReferencePath : CaseType {
 		private val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('.')
@@ -380,7 +380,7 @@ interface LetterCase {
 	 *
 	 * 示例：`linux/path`
 	 */
-	object LinuxPath:LetterCase{
+	object LinuxPath:CaseType{
 		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
@@ -395,7 +395,7 @@ interface LetterCase {
 	 *
 	 * 示例：`windows\path`
 	 */
-	object WindowsPath:LetterCase{
+	object WindowsPath:CaseType{
 		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')

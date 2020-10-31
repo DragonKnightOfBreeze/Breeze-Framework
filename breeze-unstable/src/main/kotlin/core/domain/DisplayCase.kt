@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.annotations.*
 
 /**
  * 显示格式。
- * @see LetterCase
+ * @see CaseType
  * @see ReferenceCase
  */
 interface DisplayCase {

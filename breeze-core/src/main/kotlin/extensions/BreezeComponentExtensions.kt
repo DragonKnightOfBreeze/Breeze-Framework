@@ -48,89 +48,89 @@ fun String.unescapeBy(escaper: Escaper): String {
  * 尝试推断当前字符串的字母格式。
  */
 @BreezeComponentExtension
-fun String.inferLetterCase():LetterCase?{
-	return LetterCase.infer(this)
+fun String.inferLetterCase():CaseType?{
+	return CaseType.infer(this)
 }
 
 /**
  * 判断当前字符串是否匹配指定的字母格式。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.matchesBy(letterCase: LetterCase):Boolean{
-	return letterCase.matches(this)
+fun String.matchesBy(caseType: CaseType):Boolean{
+	return caseType.matches(this)
 }
 
 /**
  * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.splitBy(letterCase: LetterCase): List<String> {
-	return letterCase.split(this)
+fun String.splitBy(caseType: CaseType): List<String> {
+	return caseType.split(this)
 }
 
 /**
  * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
-	return letterCase.splitToSequence(this)
+fun String.splitToSequenceBy(caseType: CaseType): Sequence<String> {
+	return caseType.splitToSequence(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
+fun Array<String>.joinToStringBy(caseType: CaseType): String {
+	return caseType.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
+fun Iterable<String>.joinToStringBy(caseType: CaseType): String {
+	return caseType.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
-	return letterCase.joinToString(this)
+fun Sequence<String>.joinToStringBy(caseType: CaseType ): String {
+	return caseType.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，切换当前字符串的格式。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+fun String.switchCaseBy(sourceCaseType: CaseType, targetCaseType: CaseType): String {
+	return splitBy(sourceCaseType).joinToStringBy(targetCaseType)
 }
 
 /**
  * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
  *
- * @see LetterCase
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.switchCaseBy(targetLetterCase: LetterCase): String {
+fun String.switchCaseBy(targetCaseType: CaseType): String {
 	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+	return splitBy(sourceLetterCase).joinToStringBy(targetCaseType)
 }
 
 

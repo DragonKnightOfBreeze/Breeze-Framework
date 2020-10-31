@@ -11,9 +11,7 @@ import com.windea.breezeframework.core.extensions.*
 /**
  * 路径类型。
  *
- * 路径用于表示查询对象在其系统中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
- *
- * 查询对象可能是：文件，组件，元素，数组，列表，映射，序列，...
+ * 路径类型用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
 @BreezeComponent
 interface PathType {
