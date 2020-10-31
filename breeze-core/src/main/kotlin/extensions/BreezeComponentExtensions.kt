@@ -25,19 +25,38 @@ inline fun <reified T> Any?.convertOrNull(): T? {
 
 //region String Extensions
 /**
+ * 根据指定的加密器，加密当前字节数组。
+ */
+@BreezeComponentExtension
+fun ByteArray.encryptBy(encrypter: Encrypter): ByteArray {
+	return encrypter.encrypt(this)
+}
+
+/**
+ * 根据指定的加密器，解密当前字符串。某些加密算法可能不支持解密。
+ *
+ * @throws UnsupportedOperationException 如果不支持解密。
+ */
+@BreezeComponentExtension
+fun ByteArray.decryptBy(encrypter: Encrypter): ByteArray {
+	return encrypter.decrypt(this)
+}
+
+
+/**
  * 根据指定的编码器，编码当前字符串。
  */
 @BreezeComponentExtension
-fun String.encodeBy(encoder: Encoder,charset: Charset =Charsets.UTF_8):String{
-	return encoder.encode(this,charset)
+fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
+	return encoder.encode(this, charset)
 }
 
 /**
  * 根据指定的编码器，解码当前字符串。
  */
 @BreezeComponentExtension
-fun String.decodeBy(encoder:Encoder,charset:Charset=Charsets.UTF_8):String{
-	return encoder.decode(this,charset)
+fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
+	return encoder.decode(this, charset)
 }
 
 
@@ -66,7 +85,7 @@ fun String.unescapeBy(escaper: Escaper): String {
  * 尝试推断当前字符串的字母格式。
  */
 @BreezeComponentExtension
-fun String.inferLetterCase(): CaseType?{
+fun String.inferLetterCase(): CaseType? {
 	return CaseType.infer(this)
 }
 
@@ -76,7 +95,7 @@ fun String.inferLetterCase(): CaseType?{
  * @see CaseType
  */
 @BreezeComponentExtension
-fun String.matchesBy(caseType: CaseType):Boolean{
+fun String.matchesBy(caseType: CaseType): Boolean {
 	return caseType.matches(this)
 }
 
@@ -147,7 +166,7 @@ fun String.switchCaseBy(sourceCaseType: CaseType, targetCaseType: CaseType): Str
  */
 @BreezeComponentExtension
 fun String.switchCaseBy(targetCaseType: CaseType): String {
-	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
+	val sourceLetterCase = inferLetterCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetCaseType)
 }
 
@@ -159,8 +178,8 @@ fun String.switchCaseBy(targetCaseType: CaseType): String {
  * @see PathType
  */
 @BreezeComponentExtension
-fun String.matchesBy(path:String,pathType: PathType = PathType.StandardPath):Boolean{
-	return pathType.matches(this,path)
+fun String.matchesBy(path: String, pathType: PathType = PathType.StandardPath): Boolean {
+	return pathType.matches(this, path)
 }
 
 /**
@@ -170,8 +189,8 @@ fun String.matchesBy(path:String,pathType: PathType = PathType.StandardPath):Boo
  * @see PathType
  */
 @BreezeComponentExtension
-fun String.resolveVariablesBy(path:String,pathType: PathType = PathType.StandardPath):Map<String,String>{
-	return pathType.resolveVariables(this,path)
+fun String.resolveVariablesBy(path: String, pathType: PathType = PathType.StandardPath): Map<String, String> {
+	return pathType.resolveVariables(this, path)
 }
 //endregion
 
@@ -184,7 +203,7 @@ fun String.resolveVariablesBy(path:String,pathType: PathType = PathType.Standard
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Array<*>.queryBy(path:String,pathType: PathType = PathType.StandardPath):List<T>{
+fun <T> Array<*>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
 	return pathType.query(this, path)
 }
 
@@ -196,7 +215,7 @@ fun <T> Array<*>.queryBy(path:String,pathType: PathType = PathType.StandardPath)
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> List<*>.queryBy(path:String,pathType: PathType = PathType.StandardPath):List<T>{
+fun <T> List<*>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
 	return pathType.query(this, path)
 }
 
@@ -208,7 +227,7 @@ fun <T> List<*>.queryBy(path:String,pathType: PathType = PathType.StandardPath):
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Map<*,*>.queryBy(path:String,pathType: PathType = PathType.StandardPath):List<T>{
+fun <T> Map<*, *>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
 	return pathType.query(this, path)
 }
 
@@ -221,7 +240,7 @@ fun <T> Map<*,*>.queryBy(path:String,pathType: PathType = PathType.StandardPath)
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Array<*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T{
+fun <T> Array<*>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
 	return pathType.get(this, path)
 }
 
@@ -233,7 +252,7 @@ fun <T> Array<*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> List<*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T{
+fun <T> List<*>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
 	return pathType.get(this, path)
 }
 
@@ -245,7 +264,7 @@ fun <T> List<*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T{
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Map<*,*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T{
+fun <T> Map<*, *>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
 	return pathType.get(this, path)
 }
 
@@ -258,7 +277,7 @@ fun <T> Map<*,*>.getBy(path:String,pathType: PathType = PathType.StandardPath):T
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Array<*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardPath):T?{
+fun <T> Array<*>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
 	return pathType.getOrNull(this, path)
 }
 
@@ -270,7 +289,7 @@ fun <T> Array<*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardP
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> List<*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardPath):T?{
+fun <T> List<*>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
 	return pathType.getOrNull(this, path)
 }
 
@@ -282,7 +301,7 @@ fun <T> List<*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardPa
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Map<*,*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardPath):T?{
+fun <T> Map<*, *>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
 	return pathType.getOrNull(this, path)
 }
 
@@ -295,7 +314,7 @@ fun <T> Map<*,*>.getOrNullBy(path:String,pathType: PathType = PathType.StandardP
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Array<*>.getOrElseBy(path:String,pathType: PathType = PathType.StandardPath,defaultValue:()->T):T{
+fun <T> Array<*>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
 	return pathType.getOrElse(this, path, defaultValue)
 }
 
@@ -307,7 +326,7 @@ fun <T> Array<*>.getOrElseBy(path:String,pathType: PathType = PathType.StandardP
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> List<*>.getOrElseBy(path:String,pathType: PathType = PathType.StandardPath,defaultValue:()->T):T{
+fun <T> List<*>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
 	return pathType.getOrElse(this, path, defaultValue)
 }
 
@@ -319,7 +338,7 @@ fun <T> List<*>.getOrElseBy(path:String,pathType: PathType = PathType.StandardPa
  * @see PathType
  */
 @BreezeComponentExtension
-fun <T> Map<*,*>.getOrElseBy(path:String,pathType: PathType = PathType.StandardPath,defaultValue:()->T):T{
+fun <T> Map<*, *>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
 	return pathType.getOrElse(this, path, defaultValue)
 }
 //endregion

@@ -9,7 +9,7 @@ import java.security.*
 /**
  * 加密器。
  *
- * 加密器用于根据指定的加密算法，对字符串进行加密和解密，某些算法可能不支持解密。
+ * 加密器用于根据指定的加密算法，对字符串进行加密和解密，某些加密算法可能不支持解密。
  */
 @BreezeComponent
 interface Encrypter {
@@ -19,7 +19,7 @@ interface Encrypter {
 	fun encrypt(value:ByteArray):ByteArray
 
 	/**
-	 * 解密指定的字节数组。某些算法可能不支持解密。
+	 * 解密指定的字节数组。某些加密算法可能不支持解密。
 	 */
 	fun decrypt(value:ByteArray):ByteArray
 
