@@ -248,11 +248,14 @@ fun DoubleArray.stream(start: Int = 0, end: Int = size): DoubleStream = Arrays.s
 
 
 /**将当前字节数组编码为base64格式的字节数组。*/
+@Deprecated("Use String.encodeBy()")
 fun ByteArray.encodeToBase64(): ByteArray = Base64.getEncoder().encode(this)
 
 /**将当前字节数组解码为base64格式的字节数组。*/
+@Deprecated("Use String.decodeBy()")
 fun ByteArray.decodeToBase64(): ByteArray = Base64.getDecoder().decode(this)
 
 /**将当前字节数组编码为base64格式的字符串。*/
+@Deprecated("Use String.encodeBy()")
 fun ByteArray.encodeToBase64String(): String = Base64.getEncoder().encodeToString(this)
 //endregion

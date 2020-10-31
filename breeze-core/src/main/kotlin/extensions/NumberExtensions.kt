@@ -178,7 +178,7 @@ inline fun <reified T : Number> Number.toNumber(): T {
 }
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
-@Deprecated("Use this.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
+@Deprecated("Use Number.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T?

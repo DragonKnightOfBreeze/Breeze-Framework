@@ -5,6 +5,7 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.component.*
+import java.nio.charset.*
 
 //region Any Extensions
 /**
@@ -23,6 +24,23 @@ inline fun <reified T> Any?.convertOrNull(): T? {
 //endregion
 
 //region String Extensions
+/**
+ * 根据指定的编码器，编码当前字符串。
+ */
+@BreezeComponentExtension
+fun String.encodeBy(encoder: Encoder,charset: Charset =Charsets.UTF_8):String{
+	return encoder.encode(this,charset)
+}
+
+/**
+ * 根据指定的编码器，解码当前字符串。
+ */
+@BreezeComponentExtension
+fun String.decodeBy(encoder:Encoder,charset:Charset=Charsets.UTF_8):String{
+	return encoder.decode(this,charset)
+}
+
+
 /**
  * 根据指定的转义器，转义当前字符串。
  *

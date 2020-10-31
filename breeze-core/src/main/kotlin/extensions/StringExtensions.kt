@@ -901,7 +901,7 @@ inline fun String.toBooleanOrNull(): Boolean? = when {
 /**
  * 将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。默认使用十进制。
  */
-@Deprecated("Use this.convert<T>()", ReplaceWith("this.convert<T>()"))
+@Deprecated("Use String.convert<T>()", ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt(radix) as T
@@ -920,7 +920,7 @@ inline fun <reified T : Number> String.toNumber(radix: Int = 10): T {
 /**
  * 将当前字符串转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。默认使用十进制。
  */
-@Deprecated("Use this.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
+@Deprecated("Use String.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> String.toNumberOrNull(radix: Int = 10): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toIntOrNull(radix) as T?
@@ -1178,6 +1178,7 @@ inline fun String.toColorOrNull(): Color? {
 /**
  * 将当前字符串解码为base64格式的字节数组。
  */
+@Deprecated("Use String.decodeBy()")
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
