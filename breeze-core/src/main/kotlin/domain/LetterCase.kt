@@ -117,7 +117,7 @@ interface LetterCase {
 		}
 	}
 
-	//region Default letter cases
+	//region Default Letter Cases
 	/**
 	 * 全小写。
 	 *

@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE", "CanBeParameter")
+@file:Suppress( "CanBeParameter")
 
 package com.windea.breezeframework.dsl.cmdtext
 
@@ -29,9 +29,9 @@ interface CmdTextDsl {
 	interface InlineDslEntry:Inlineable
 
 	@CmdTextDslMarker
-	interface RichText : InlineDslElement {
-		val text: CharSequence
-		val code:String
+	abstract class RichText : InlineDslElement {
+		abstract val text: CharSequence
+		abstract val code:String
 		override val inlineText get() = text
 
 		override fun toString(): String {
@@ -42,63 +42,63 @@ interface CmdTextDsl {
 	@CmdTextDslMarker
 	class BoldText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Bold.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class LightText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Light.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class ItalicText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Italic.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class UnderlineText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Underline.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class BlinkText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Blink.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class InvertText @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : RichText {
+	) : RichText() {
 		override val code = Style.Invert.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class ColoredText @PublishedApi internal constructor(
 		override val text: CharSequence, val color: Color
-	) : RichText {
+	) : RichText() {
 		override val code =color.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class BgColoredText @PublishedApi internal constructor(
 		override val text: CharSequence, val color: Color,
-	) : RichText {
+	) : RichText() {
 		override val code =(color.code + 10).toString()
 	}
 
 	@CmdTextDslMarker
 	class StyledText @PublishedApi internal constructor(
 		override val text: CharSequence, vararg val styles: Style,
-	) : RichText {
+	) : RichText() {
 		override val code =styles.joinToString(";") { it.code.toString() }
 	}
 

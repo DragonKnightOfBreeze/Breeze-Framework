@@ -18,6 +18,10 @@ allprojects {
 		plugin("org.jetbrains.dokka")
 	}
 
+	kotlin {
+		explicitApi()
+	}
+
 	buildscript {
 		//配置插件仓库
 		repositories {
@@ -40,10 +44,6 @@ allprojects {
 	dependencies {
 		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
-	}
-
-	kotlin {
-		explicitApi()
 	}
 
 	//从模块名获取包名并设置为包的前缀
@@ -96,7 +96,6 @@ allprojects {
 }
 
 allprojects {
-	//跳过某些模块
 	when {
 		project == rootProject -> return@allprojects
 		project.name == "breeze-unstable" -> return@allprojects

@@ -417,7 +417,9 @@
 * [X] 重构`MatchType`和`ReferenceCase`并重命名为`PathType`
 * [X] 重构和添加`queryBy`、`getBy`、`getOrNullBy`、`getOrElseBy`
 * [X] 进一步实现`PathType`
+* [X] 移动相关扩展方法到`BreezeComponentExtensions`
 * [ ] 整理`breeze-dsl`中
+* [ ] 用于处理CSV和TSV的`Mapper`
 
 # 长期
 

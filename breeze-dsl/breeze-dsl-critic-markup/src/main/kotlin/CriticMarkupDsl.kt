@@ -21,38 +21,38 @@ interface CriticMarkupDsl {
 	@CriticMarkupDslMarker
 	interface InlineDslEntry:Inlineable
 
-	interface Mark : InlineDslElement {
-		val text: CharSequence
+	abstract class Mark : InlineDslElement {
+		abstract val text: CharSequence
 		override val inlineText get() = text
 	}
 
 	class Addition @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : Mark {
+	) : Mark() {
 		override fun toString() = "{++$text++}"
 	}
 
 	class Deletion @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : Mark {
+	) : Mark() {
 		override fun toString() = "{--$text--}"
 	}
 
 	class Substitution @PublishedApi internal constructor(
 		override val text: CharSequence, val newText: CharSequence,
-	) : Mark {
+	) : Mark() {
 		override fun toString() = "{~~$text~>$newText~~}"
 	}
 
 	class Comment @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : Mark {
+	) : Mark() {
 		override fun toString() = "{>>$text<<}"
 	}
 
 	class Highlight @PublishedApi internal constructor(
 		override val text: CharSequence
-	) : Mark {
+	) : Mark() {
 		override fun toString() = "{==$text==}"
 	}
 }

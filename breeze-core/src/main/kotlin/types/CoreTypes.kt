@@ -3,8 +3,16 @@
 
 package com.windea.breezeframework.core.types
 
-/**Represents an argument.*/
+/**
+ * 代表一个参数。
+ *
+ * Represents an argument.
+ */
 typealias Arg = Pair<String, Any?>
 
-/**Represents a group of arguments.*/
+/**
+ * 代表一族参数。
+ *
+ * Represents a group of arguments.
+ */
 typealias Args = Map<String, Any?>

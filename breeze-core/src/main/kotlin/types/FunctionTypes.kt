@@ -3,14 +3,30 @@
 
 package com.windea.breezeframework.core.types
 
-/**Represents a code block with no receivers.*/
+/**
+ * 代表有一个没有接收者的代码块。
+ *
+ * Represents a code block with no receivers.
+ */
 typealias Block0 = () -> Unit
 
-/**Represents a code block with one receiver.*/
+/**
+ * 代表一个有一个接收者的代码块。
+ *
+ * Represents a code block with one receiver.
+ */
 typealias Block<T> = T.() -> Unit
 
-/**Represents a action with no arguments.*/
+/**
+ * 代表一个没有参数的代码块。
+ *
+ * Represents a action with no arguments.
+ */
 typealias Action0 = () -> Unit
 
-/**Represents a action with one argument.*/
+/**
+ * 代表一个有一个参数的代码块。
+ *
+ * Represents a action with one argument.
+ */
 typealias Action<T> = (T) -> Unit

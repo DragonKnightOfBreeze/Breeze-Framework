@@ -873,141 +873,6 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 }
 //endregion
 
-//region Smart operation extensions
-/**
- * 根据指定的转义器，转义当前字符串。
- *
- * @see Escaper
- */
-@BreezeComponentExtension
-fun String.escapeBy(escaper: Escaper): String {
-	return escaper.escape(this)
-}
-
-/**
- * 根据指定的转义器，反转义当前字符串。
- *
- * @see Escaper
- */
-@BreezeComponentExtension
-fun String.unescapeBy(escaper: Escaper): String {
-	return escaper.unescape(this)
-}
-
-
-/**
- * 尝试推断当前字符串的字母格式。
- */
-@BreezeComponentExtension
-fun String.inferLetterCase():LetterCase?{
-	return LetterCase.infer(this)
-}
-
-/**
- * 判断当前字符串是否匹配指定的字母格式。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun String.matchesBy(letterCase: LetterCase):Boolean{
-	return letterCase.matches(this)
-}
-
-/**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun String.splitBy(letterCase: LetterCase): List<String> {
-	return letterCase.split(this)
-}
-
-/**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
-	return letterCase.splitToSequence(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun Sequence<String>.joinToStringBy(letterCase: LetterCase ): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，切换当前字符串的格式。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
-}
-
-/**
- * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
- *
- * @see LetterCase
- */
-@BreezeComponentExtension
-fun String.switchCaseBy(targetLetterCase: LetterCase): String {
-	val sourceLetterCase = inferLetterCase()?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
-}
-
-
-/**
- * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun String.matchesBy(path:String,pathType:PathType = PathType.StandardPath):Boolean{
-	return pathType.matches(this,path)
-}
-
-/**
- * 根据指定的路径类型，解析路径变量。如果路径不匹配，则返回空结果。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun String.resolveVariablesBy(path:String,pathType:PathType = PathType.StandardPath):Map<String,String>{
-	return pathType.resolveVariables(this,path)
-}
-//endregion
-
 //region Convert extensions
 /**
  * 将当前字符串转化为字符。如果转化失败，则抛出异常。
@@ -1267,6 +1132,27 @@ inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL
 @JvmOverloads
 inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
 	return LocalDateTime.parse(this, formatter)
+}
+
+/**
+ * 将当前字符串转化为时长。
+ */
+inline fun CharSequence.toDuration():Duration{
+	return Duration.parse(this)
+}
+
+/**
+ * 将当前字符串转化为时期。
+ */
+inline fun CharSequence.toPeriod():Period{
+	return Period.parse(this)
+}
+
+/**
+ * 将当前字符串转化为瞬时。
+ */
+inline fun CharSequence.toInstant():Instant{
+	return Instant.parse(this)
 }
 
 

@@ -13,9 +13,6 @@ import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
 
-//参考：
-//org.springframework.cglib.core.Converter
-
 //TODO 支持泛型类型
 
 /**

@@ -614,11 +614,10 @@ fun <T> Iterable<*>.deepFlatten(depth: Int = -1): List<T> {
 }
 
 /**
- * 根据深度递归平滑化当前序列，返回匹配的值列表。
+ * 根据指定的深度递归平滑化当前序列。
+ * 如果指定了深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。默认不指定深度。
  *
- * 默认递归映射直到找不到集合类型的元素为止。
- * 支持的集合类型包括：[Array]、[Iterable]、[Map]和[Sequence]。
- * 如果指定了递归的深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。
+ * 支持[Array]、[Iterable]和[Sequence]。
  */
 @JvmOverloads
 fun <T> Sequence<*>.deepFlatten(depth: Int = -1): List<T> {
@@ -653,155 +652,6 @@ private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
 		currentDepth--
 	}
 	return values as List<T>
-}
-//endregion
-
-//region Smart operation extensions
-/**
- * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Array<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> List<*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Map<*,*>.queryBy(path:String,pathType:PathType = PathType.StandardPath):List<T>{
-	return pathType.query(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Array<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> List<*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Map<*,*>.getBy(path:String,pathType:PathType = PathType.StandardPath):T{
-	return pathType.get(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Array<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> List<*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Map<*,*>.getOrNullBy(path:String,pathType:PathType = PathType.StandardPath):T?{
-	return pathType.getOrNull(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Array<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(this, path, defaultValue)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> List<*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(this, path, defaultValue)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
- *
- * @see PathType
- */
-@BreezeComponentExtension
-fun <T> Map<*,*>.getOrElseBy(path:String,pathType:PathType = PathType.StandardPath,defaultValue:()->T):T{
-	return pathType.getOrElse(this, path, defaultValue)
 }
 //endregion
 

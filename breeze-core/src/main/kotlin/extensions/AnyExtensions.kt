@@ -6,8 +6,6 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.*
-
 //真的可以这么做
 
 /**
@@ -16,35 +14,14 @@ import com.windea.breezeframework.core.domain.*
 inline val <reified T> T.javaType get() = object : TypeReference<T>() {}.type
 
 
-//注意cast方法不适用于不同泛型的类型，因为它们实际上是同一种类型。
+//注意cast方法不适用于不同泛型的类型，因为它们实际上是同一种类型
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
  */
-inline fun <reified T> Any?.cast(): T {
-	return this as T
-}
+inline fun <reified T> Any?.cast(): T = this as T
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T> Any?.castOrNull(): T? {
-	return this as? T
-}
-
-
-//注意convert方法仅支持部分类型，但可以自行扩展
-
-/**
- * 将当前对象转化为指定类型。如果转换失败，则抛出异常。转化后的对象是基于一般转化逻辑得到的新对象。
- */
-inline fun <reified T> Any?.convert(): T {
-	return if(this is T) this else Converter.convert(this)
-}
-
-/**
- * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般转化逻辑得到的新对象。
- */
-inline fun <reified T> Any?.convertOrNull(): T? {
-	return if(this is T) this else Converter.convertOrNull(this)
-}
+inline fun <reified T> Any?.castOrNull(): T? = this as? T
