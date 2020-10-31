@@ -5,6 +5,7 @@ package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotations.*
 import java.net.*
+import java.nio.*
 import java.nio.charset.*
 import java.util.*
 
@@ -16,12 +17,12 @@ import java.util.*
 @BreezeComponent
 interface Encoder {
 	/**
-	 * 根据指定的字符集，编码指定的字符串。
+	 * 编码指定的字符串，以指定的字符集显示。
 	 */
 	fun encode(value:String,charset:Charset=Charsets.UTF_8):String
 
 	/**
-	 * 根据指定的字符集，解码指定的字符串。
+	 * 解码指定的字符串，以指定的字符集显示。
 	 */
 	fun decode(value:String,charset:Charset=Charsets.UTF_8):String
 

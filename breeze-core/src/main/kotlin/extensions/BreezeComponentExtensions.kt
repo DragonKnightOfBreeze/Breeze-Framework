@@ -44,7 +44,7 @@ fun ByteArray.decryptBy(encrypter: Encrypter): ByteArray {
 
 
 /**
- * 根据指定的编码器，编码当前字符串。
+ * 根据指定的编码器，编码当前字符串，以指定的字符集显示。
  */
 @BreezeComponentExtension
 fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
@@ -52,7 +52,7 @@ fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
 }
 
 /**
- * 根据指定的编码器，解码当前字符串。
+ * 根据指定的编码器，解码当前字符串，以指定的字符集显示。
  */
 @BreezeComponentExtension
 fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
@@ -166,7 +166,7 @@ fun String.switchCaseBy(sourceCaseType: CaseType, targetCaseType: CaseType): Str
  */
 @BreezeComponentExtension
 fun String.switchCaseBy(targetCaseType: CaseType): String {
-	val sourceLetterCase = inferLetterCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
+	val sourceLetterCase = inferLetterCase() ?: throw IllegalArgumentException("Cannot infer case type for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetCaseType)
 }
 
