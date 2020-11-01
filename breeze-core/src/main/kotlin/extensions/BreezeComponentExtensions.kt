@@ -28,8 +28,8 @@ inline fun <reified T> Any?.convertOrNull(): T? {
  * 根据指定的加密器，加密当前字节数组。
  */
 @BreezeComponentExtension
-fun ByteArray.encryptBy(encrypter: Encrypter): ByteArray {
-	return encrypter.encrypt(this)
+fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray {
+	return encrypter.encrypt(this,secret)
 }
 
 /**
@@ -38,8 +38,8 @@ fun ByteArray.encryptBy(encrypter: Encrypter): ByteArray {
  * @throws UnsupportedOperationException 如果不支持解密。
  */
 @BreezeComponentExtension
-fun ByteArray.decryptBy(encrypter: Encrypter): ByteArray {
-	return encrypter.decrypt(this)
+fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray {
+	return encrypter.decrypt(this,secret)
 }
 
 

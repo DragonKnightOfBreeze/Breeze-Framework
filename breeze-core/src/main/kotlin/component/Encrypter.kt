@@ -38,6 +38,8 @@ interface Encrypter {
 	):Encrypter{
 		private val cipher = Cipher.getInstance(transformation)
 
+		//处理字符串时，需要进行base64编码
+
 		override fun encrypt(value: ByteArray, secret: ByteArray?): ByteArray {
 			requireNotNull(secret)
 			val keySpec = SecretKeySpec(secret,transformation)
@@ -47,7 +49,7 @@ interface Encrypter {
 			} else {
 				cipher.init(Cipher.ENCRYPT_MODE, keySpec)
 			}
-			return cipher.doFinal(secret)
+			return cipher.doFinal(value)
 		}
 
 		override fun decrypt(value: ByteArray, secret: ByteArray?): ByteArray {
@@ -64,18 +66,19 @@ interface Encrypter {
 	}
 
 	/**
-	 * 基于AES加密算法的加密器。
+	 * 基于DES加密算法的加密器。使用8字节的密钥。
+	 *
+	 * @see CipherEncrypter
+	 */
+	object DesEncrypter:CipherEncrypter("DES")
+
+	/**
+	 * 基于AES加密算法的加密器。使用16字节的密钥。
 	 *
 	 * @see CipherEncrypter
 	 */
 	object AesEncrypter:CipherEncrypter("AES")
 
-	/**
-	 * 基于DES加密算法的加密器。
-	 *
-	 * @see CipherEncrypter
-	 */
-	object DesEncrypter:CipherEncrypter("DES")
 
 	/**
 	 * 基于消息摘要的加密器。不支持解密。不需要指定密钥。

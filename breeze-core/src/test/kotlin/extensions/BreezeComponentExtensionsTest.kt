@@ -32,6 +32,13 @@ class BreezeComponentExtensionsTest {
 	}
 
 	@Test
+	fun encrypterTest(){
+		val a = "hello".encodeToByteArray().encryptBy(Encrypter.DesEncrypter, "12345678".encodeToByteArray())
+		val b = a.decryptBy(Encrypter.DesEncrypter,"12345678".encodeToByteArray()).decodeToString()
+		assertEquals("hello",b)
+	}
+
+	@Test
 	fun caseTypeTest() {
 		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(CaseType.CamelCase))
 		assertEquals("AbcAbcAbc", "abcAbcAbc".switchCaseBy(CaseType.PascalCase))
