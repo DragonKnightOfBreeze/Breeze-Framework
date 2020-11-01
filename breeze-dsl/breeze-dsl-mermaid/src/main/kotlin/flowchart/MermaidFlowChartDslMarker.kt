@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.mermaid.flowchart
 
 /**
- * Dsl marker of [MermaidFlowChartDsl].
+ * DslDocument marker of [MermaidFlowChartDsl].
  */
 @DslMarker
 @MustBeDocumented

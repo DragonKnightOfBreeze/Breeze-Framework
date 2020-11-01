@@ -9,7 +9,7 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.domain.math.*
 
 /**将二维向量转化为三位向量。*/
-inline fun Vector2.toVector3():Vector3 = Vector3(this.x, this.y, 0f)
+inline fun Vector2.toVector3(): Vector3 = Vector3(this.x, this.y, 0f)
 
 
 /**将二维向量转化为二元素元组。*/

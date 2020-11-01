@@ -12,7 +12,7 @@ import java.util.*
 
 /**简单的日志器。*/
 class SimpleLogger(
-	override val config: LoggerConfig = LoggerConfig()
+	override val config: LoggerConfig = LoggerConfig(),
 ) : Logger {
 	constructor(block: LoggerConfig.() -> Unit) : this(LoggerConfig().apply(block))
 

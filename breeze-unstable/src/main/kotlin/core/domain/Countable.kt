@@ -13,12 +13,12 @@ import com.windea.breezeframework.core.annotations.*
  * @property totalCount 最大数量。
  */
 @UnstableApi
-interface Countable<T> where T : Number, T:Comparable<T> {
-	var count:T
-	var totalCount:T
+interface Countable<T> where T : Number, T : Comparable<T> {
+	var count: T
+	var totalCount: T
 
 	/**优化数量，避免出现非法的值。*/
-	fun optimizeCount(){
+	fun optimizeCount() {
 		count = count.coerceAtMost(totalCount)
 	}
 }

@@ -4,8 +4,8 @@
 package com.windea.breezeframework.dsl.mermaid.gantt
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 
 /**
@@ -23,7 +23,7 @@ interface MermaidGanttDslDefinitions {
 		val sections: MutableList<Section>
 
 		override fun toContentString(): String {
-			return sections.typingAll(ls)
+			return sections.joinToText(ls)
 		}
 	}
 
@@ -39,7 +39,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Title @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "title $text"
@@ -52,7 +52,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class DateFormat @PublishedApi internal constructor(
-		val expression: String
+		val expression: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "dateFormat $expression"
@@ -66,14 +66,14 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Section @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, Indentable, WithId {
 		val tasks: MutableList<Task> = mutableListOf()
 		override var indentContent: Boolean = false
 		override val id: String get() = name
 
 		override fun toString(): String {
-			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.typingAll(ls).doIndent(MermaidDslConfig.indent)}" }
+			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.joinToText(ls).doIndent(MermaidDslConfig.indent)}" }
 			return "section $name$tasksSnippet"
 		}
 	}
@@ -88,7 +88,7 @@ interface MermaidGanttDslDefinitions {
 	 */
 	@MermaidGanttDslMarker
 	class Task @PublishedApi internal constructor(
-		val name: String, var status: TaskStatus = TaskStatus.Todo
+		val name: String, var status: TaskStatus = TaskStatus.Todo,
 	) : IDslElement, WithId {
 		var alias: String? = null
 		var isCrit: Boolean = false
@@ -99,7 +99,7 @@ interface MermaidGanttDslDefinitions {
 		override fun toString(): String {
 			val critSnippet = if(isCrit) "crit" else ""
 			val statusSnippet = status.text
-			return "$name: ${arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).typingAll()}"
+			return "$name: ${arrayOf(critSnippet, statusSnippet, alias, initTime, finishTime).joinToText()}"
 		}
 	}
 

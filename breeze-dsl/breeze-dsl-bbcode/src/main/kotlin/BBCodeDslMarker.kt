@@ -4,9 +4,9 @@
 package com.windea.breezeframework.dsl.bbcode
 
 /**
- * BBCode（Bulletin Board Code）的领域特定语言。
+ * [BBCodeDsl]的标记注解。参见：[BBCode](https://www.bbcode.org/)
  *
- * 参见：[BBCode](https://www.bbcode.org/)
+ * Marker annotation of [BBCodeDsl]. See: [BBCode](https://www.bbcode.org/)
  */
 @DslMarker
 @MustBeDocumented

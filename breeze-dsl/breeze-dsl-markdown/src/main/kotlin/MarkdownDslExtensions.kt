@@ -155,7 +155,7 @@ inline fun IDslEntry.admonition(
 	qualifier: AdmonitionQualifier,
 	title: String = "",
 	type: AdmonitionType = AdmonitionType.Normal,
-	block: Admonition.() -> Unit
+	block: Admonition.() -> Unit,
 ) = Admonition(qualifier, title, type).apply(block).also { content += it }
 
 @MarkdownDslMarker

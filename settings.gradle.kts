@@ -2,7 +2,7 @@ include(
 	"breeze-core",
 	"breeze-dsl",
 	"breeze-dsl:breeze-dsl-bbcode",
-	"breeze-dsl:breeze-dsl-command-line",
+	"breeze-dsl:breeze-dsl-cmd-text",
 	"breeze-dsl:breeze-dsl-creole",
 	"breeze-dsl:breeze-dsl-critic-markup",
 	"breeze-dsl:breeze-dsl-flow",

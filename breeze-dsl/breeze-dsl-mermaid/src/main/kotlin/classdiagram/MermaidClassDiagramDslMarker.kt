@@ -6,7 +6,7 @@
 package com.windea.breezeframework.dsl.mermaid.classdiagram
 
 /**
- * Dsl mark of [MermaidClassDiagramDsl].
+ * DslDocument mark of [MermaidClassDiagramDsl].
  */
 @DslMarker
 @MustBeDocumented

@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
@@ -18,8 +18,8 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
-		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputText)
+	fun generateYamlAnnotation(inputText: String, inputType: DataType = DataType.Yaml): String {
+		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputText)
 		return getYamlAnnotationString(inputMap)
 	}
 
@@ -28,8 +28,8 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
-		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputFile)
+	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
+		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputFile)
 		outputFile.writeText(getYamlAnnotationString(inputMap))
 	}
 
@@ -37,20 +37,22 @@ object IdeaConfigGenerator : Generator {
 		val definitions = inputMap["definitions"] as SchemaMap
 		return """
 		<templateSet group="YamlAnnotation">
-		${definitions.joinToString("\n\n") { (templateName, template) ->
-			val description = (template.getOrDefault("description", "") as String).escapeBy(EscapeType.Java)
-			val params = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
-			val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
+		${
+			definitions.joinToString("\n\n") { (templateName, template) ->
+				val description = (template.getOrDefault("description", "") as String).escapeBy(Escaper.JavaEscaper)
+				val params = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
+				val paramSnippet = if(params.isEmpty()) "" else ": {${params.keys.joinToString(", ") { "$it: $$it$" }}}"
 
-			"""
+				"""
 			  <template name="@$templateName" value="@$templateName$paramSnippet"
 		                description="$description"
 		                toReformat="true" toShortenFQNames="true" useStaticImport="true">${
-			params.joinToString("\n") { (paramName, param) ->
-				val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(EscapeType.Java)
+					params.joinToString("\n") { (paramName, param) ->
+						val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(Escaper.JavaEscaper)
 
-				"""    <variable name="$paramName" expression="" defaultValue="&quot;$defaultValue&quot;" alwaysStopAt="true"/>"""
-			}.ifNotEmpty { "\n$it" }}
+						"""    <variable name="$paramName" expression="" defaultValue="&quot;$defaultValue&quot;" alwaysStopAt="true"/>"""
+					}.ifNotEmpty { "\n$it" }
+				}
 			    <context>
 			      <option name="CSS" value="false"/>
 			      <option name="CUCUMBER_FEATURE_FILE" value="false"/>
@@ -74,7 +76,8 @@ object IdeaConfigGenerator : Generator {
 			    </context>
 			  </template>
 			""".trimRelativeIndent()
-		}}
+			}
+		}
 		</templateSet>
 		""".trimRelativeIndent()
 	}

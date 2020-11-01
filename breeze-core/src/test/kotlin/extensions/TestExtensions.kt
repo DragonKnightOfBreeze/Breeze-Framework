@@ -5,7 +5,7 @@ import kotlin.system.*
 /**
  * 答应当前对象
  */
-internal fun Any?.andPrintln(){
+internal fun Any?.andPrintln() {
 	println(this)
 }
 

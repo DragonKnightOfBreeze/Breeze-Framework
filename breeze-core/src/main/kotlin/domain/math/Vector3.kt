@@ -14,7 +14,7 @@ import kotlin.math.*
 data class Vector3(
 	val x: Float,
 	val y: Float,
-	val z: Float
+	val z: Float,
 ) : Vector<Vector3> {
 	override val lengthSquared: Float = x * x + y * y + z * z
 	override val length: Float = sqrt(lengthSquared)
@@ -23,17 +23,17 @@ data class Vector3(
 	override val isUnitVector = length == 1f
 
 
-	operator fun compareTo(other: Vector3):Int = length.compareTo(other.length)
+	operator fun compareTo(other: Vector3): Int = length.compareTo(other.length)
 
-	operator fun plus(other: Vector2):Vector3 = this.plus(other.toVector3())
+	operator fun plus(other: Vector2): Vector3 = this.plus(other.toVector3())
 
-	operator fun plus(other: Vector3):Vector3 = Vector3(x + other.x, y + other.y, z + other.z)
+	operator fun plus(other: Vector3): Vector3 = Vector3(x + other.x, y + other.y, z + other.z)
 
-	operator fun minus(other: Vector2):Vector3 = this.minus(other.toVector3())
+	operator fun minus(other: Vector2): Vector3 = this.minus(other.toVector3())
 
-	operator fun minus(other: Vector3):Vector3 = Vector3(x - other.x, y - other.y, z - other.z)
+	operator fun minus(other: Vector3): Vector3 = Vector3(x - other.x, y - other.y, z - other.z)
 
-	operator fun times(other: Int):Vector3 = Vector3(x * other, y * other, z * other)
+	operator fun times(other: Int): Vector3 = Vector3(x * other, y * other, z * other)
 
 	operator fun times(other: Long) = Vector3(x * other, y * other, z * other)
 

@@ -19,7 +19,7 @@ fun MermaidGanttDsl.dateFormat(expression: String) = DateFormat(expression).also
 @MermaidGanttDslMarker
 inline fun MermaidGanttDsl.section(
 	name: String,
-	block: Section.() -> Unit = {}
+	block: Section.() -> Unit = {},
 ) = Section(name).apply(block).also { sections += it }
 
 @MermaidGanttDslMarker

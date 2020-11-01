@@ -10,9 +10,10 @@ import com.windea.breezeframework.dsl.*
  * Markdown dsl.
  */
 @MarkdownDslMarker
-class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinitions.IDslEntry {
+class MarkdownDsl @PublishedApi internal constructor() : DslDocument, MarkdownDslDefinitions.IDslEntry {
 	@MarkdownDslExtendedFeature
 	var frontMatter: MarkdownDslDefinitions.FrontMatter? = null
+
 	@MarkdownDslExtendedFeature
 	var toc: MarkdownDslDefinitions.Toc? = null
 	val references: MutableSet<MarkdownDslDefinitions.Reference> = mutableSetOf()
@@ -24,7 +25,7 @@ class MarkdownDsl @PublishedApi internal constructor() : Dsl, MarkdownDslDefinit
 			frontMatter,
 			toc,
 			toContentString(),
-			references.typingAll(DslConstants.ls)
-		).typingAll("${DslConstants.ls}${DslConstants.ls}")
+			references.joinToText(DslConstants.ls)
+		).joinToText("${DslConstants.ls}${DslConstants.ls}")
 	}
 }

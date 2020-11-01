@@ -4,12 +4,12 @@
 package com.windea.breezeframework.dsl.mermaid.piechart
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 
 /**
- * Dsl definitions of [MermaidPieChartDsl].
+ * DslDocument definitions of [MermaidPieChartDsl].
  */
 @MermaidPieChartDslMarker
 interface MermaidPieChartDslDefinitions {
@@ -22,7 +22,7 @@ interface MermaidPieChartDslDefinitions {
 		val sections: MutableSet<Section>
 
 		override fun toContentString(): String {
-			return sections.typingAll(ls)
+			return sections.joinToText(ls)
 		}
 	}
 
@@ -38,7 +38,7 @@ interface MermaidPieChartDslDefinitions {
 	 */
 	@MermaidPieChartDslMarker
 	class Title @PublishedApi internal constructor(
-		val text: String
+		val text: String,
 	) : MermaidPieChartDslElement {
 		override fun toString(): String {
 			return "title $text"
@@ -52,7 +52,7 @@ interface MermaidPieChartDslDefinitions {
 	 */
 	@MermaidPieChartDslMarker
 	class Section @PublishedApi internal constructor(
-		val key: String, val value: String
+		val key: String, val value: String,
 	) : MermaidPieChartDslElement, WithId {
 		init {
 			require(value[0] != '-') { "Value of a section cannot be negative." }
@@ -64,7 +64,7 @@ interface MermaidPieChartDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			return "${key.quote('"')}: $value"
 		}
 	}

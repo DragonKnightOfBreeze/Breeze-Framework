@@ -4,14 +4,14 @@
 package com.windea.breezeframework.dsl.mermaid.classdiagram
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidClassDiagramDsl].
+ * DslDocument definitions of [MermaidClassDiagramDsl].
  */
 @MermaidClassDiagramDslMarker
 interface MermaidClassDiagramDslDefinitions {
@@ -26,7 +26,7 @@ interface MermaidClassDiagramDslDefinitions {
 		val relations: MutableList<Relation>
 
 		override fun toContentString(): String {
-			return arrayOf(classes.typingAll(ls), relations.typingAll(ls)).doSplit()
+			return arrayOf(classes.joinToText(ls), relations.joinToText(ls)).doSplit()
 		}
 
 		@MermaidClassDiagramDslMarker
@@ -79,7 +79,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Class @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, Indentable, WithId {
 		var annotation: Annotation? = null
 		val statements: MutableList<Statement> = mutableListOf()
@@ -90,10 +90,10 @@ interface MermaidClassDiagramDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			val contentSnippet = when {
 				annotation == null && statements.isEmpty() -> ""
-				else -> "{$ls${arrayOf(annotation, statements.typingAll(ls)).typingAll(ls).doIndent(indent)}$ls}"
+				else -> "{$ls${arrayOf(annotation, statements.joinToText(ls)).joinToText(ls).doIndent(indent)}$ls}"
 			}
 			return "class $name$contentSnippet"
 		}
@@ -113,7 +113,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Annotation @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement {
 		override fun toString(): String {
 			return "<<$name>>"
@@ -127,7 +127,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Statement @PublishedApi internal constructor(
-		val expression: String
+		val expression: String,
 	) : IDslElement {
 		var visibility: Visibility = Visibility.None
 
@@ -149,7 +149,7 @@ interface MermaidClassDiagramDslDefinitions {
 	 */
 	@MermaidClassDiagramDslMarker
 	class Relation @PublishedApi internal constructor(
-		val fromClassId: String, val toClassId: String, val type: RelationType
+		val fromClassId: String, val toClassId: String, val type: RelationType,
 	) : IDslElement, WithNode {
 		var text: String? = null
 		var fromCardinality: String? = null //syntax: 0..1, 1, 0..*, 1..*, ls, 0..ls, 1..ls
@@ -158,10 +158,10 @@ interface MermaidClassDiagramDslDefinitions {
 		override val targetNodeId get() = toClassId
 
 		override fun toString(): String {
-			val fromCardinalitySnippet = fromCardinality.typing { it.quote('"') }
+			val fromCardinalitySnippet = fromCardinality.toText { it.quote('"') }
 			val typeSnippet = type.text
-			val toCardinalitySnippet = toCardinality.typing { it.quote('"') }
-			val textSnippet = text?.htmlWrap().typing { ": $it" }
+			val toCardinalitySnippet = toCardinality.toText { it.quote('"') }
+			val textSnippet = text?.htmlWrap().toText { ": $it" }
 			return "$fromClassId $fromCardinalitySnippet$typeSnippet$toCardinalitySnippet $toClassId$textSnippet"
 		}
 	}

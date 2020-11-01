@@ -93,7 +93,7 @@ class StudyTests {
 
 
 class Foo(
-	val bar: String
+	val bar: String,
 )
 
 @NoArg
@@ -102,7 +102,7 @@ interface IPerson
 @NoArg
 class PersonA(
 	var username: String,
-	val password: String
+	val password: String,
 ) : IPerson
 
 private inline fun <reified P : KProperty<*>> Collection<KProperty<*>>.getProperty(name: String): List<P> {

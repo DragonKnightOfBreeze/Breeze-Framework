@@ -29,14 +29,14 @@ fun IDslEntry.participant(name: String) = Participant(name).also { participants 
 @SequenceDiagramDslMarker
 fun IDslEntry.message(
 	fromParticipantId: String,
-	toParticipantId: String
+	toParticipantId: String,
 ) = Message(fromParticipantId, toParticipantId).also { messages += it }
 
 @SequenceDiagramDslMarker
 fun IDslEntry.message(
 	fromParticipantId: String,
 	arrowShape: ArrowShape,
-	toParticipantId: String
+	toParticipantId: String,
 ) = Message(fromParticipantId, toParticipantId).apply { this.arrowShape = arrowShape }.also { messages += it }
 
 @SequenceDiagramDslMarker

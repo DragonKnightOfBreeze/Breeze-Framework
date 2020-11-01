@@ -34,13 +34,13 @@ fun IDslEntry.state(name: String) = SimpleState(name).also { states += it }
 @MermaidStateDiagramDslMarker
 inline fun IDslEntry.compositedState(
 	name: String,
-	block: CompositedState.() -> Unit
+	block: CompositedState.() -> Unit,
 ) = CompositedState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDslMarker
 inline fun IDslEntry.concurrentState(
 	name: String,
-	block: ConcurrentState.() -> Unit
+	block: ConcurrentState.() -> Unit,
 ) = ConcurrentState(name).apply(block).also { states += it }
 
 @MermaidStateDiagramDslMarker

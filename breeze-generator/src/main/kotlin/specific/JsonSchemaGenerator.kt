@@ -25,7 +25,7 @@ object JsonSchemaGenerator : Generator {
 		},
 		"\$gen" to { (_, value) ->
 			//提取$dataMap中的路径`$value`对应的值列表
-			val newValue = dataMap.deepQuery<Any?>(value as String)
+			val newValue = dataMap.queryBy<Any?>(value as String)
 			when {
 				newValue.isNotEmpty() -> mapOf("enum" to newValue)
 				else -> mapOf()
@@ -79,10 +79,10 @@ object JsonSchemaGenerator : Generator {
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputText: String, inputFormat: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml): String {
-		val inputMap = inputFormat.serializer.read<MutableMap<String, Any?>>(inputText)
+	fun generateExtendedSchema(inputText: String, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml): String {
+		val inputMap = inputType.serializer.read<MutableMap<String, Any?>>(inputText)
 		convertRules(inputMap)
-		return outputFormat.serializer.write(inputMap)
+		return outputType.serializer.write(inputMap)
 	}
 
 	/**
@@ -90,10 +90,10 @@ object JsonSchemaGenerator : Generator {
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml) {
-		val inputMap = inputFormat.serializer.read<MutableMap<String, Any?>>(inputFile)
+	fun generateExtendedSchema(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml) {
+		val inputMap = inputType.serializer.read<MutableMap<String, Any?>>(inputFile)
 		convertRules(inputMap)
-		outputFormat.serializer.write(inputMap, outputFile)
+		outputType.serializer.write(inputMap, outputFile)
 	}
 
 	private fun convertRules(map: MutableMap<String, Any?>) {

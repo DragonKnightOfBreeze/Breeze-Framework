@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.generator.code
 
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
 import com.windea.breezeframework.serializer.*
@@ -18,8 +18,8 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
-		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputText)
+	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
+		val inputMap = inputType.serializer.read<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
 
@@ -28,8 +28,8 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
-		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputFile)
+	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
+		val inputMap = inputType.serializer.read<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
 
@@ -40,20 +40,24 @@ object SqlGenerator : Generator {
 		return """
 		use $databaseName;
 
-		${database.joinToString("\n\n") { (tableName, table) ->
-			val columnNamesSnippet = table.first().keys.joinToString()
+		${
+			database.joinToString("\n\n") { (tableName, table) ->
+				val columnNamesSnippet = table.first().keys.joinToString()
 
-			"""
+				"""
 			insert into $tableName ($columnNamesSnippet) values
-			${table.joinToString(",\n", "", ";\n") { data ->
-				val columnsSnippet = data.values.joinToString {
-					it.toString().quote('\'').escapeBy(EscapeType.Java)
-				}
+			${
+					table.joinToString(",\n", "", ";\n") { data ->
+						val columnsSnippet = data.values.joinToString {
+							it.toString().quote('\'').escapeBy(Escaper.JavaEscaper)
+						}
 
-				"""  ($columnsSnippet)"""
-			}}
+						"""  ($columnsSnippet)"""
+					}
+				}
 			""".trimRelativeIndent()
-		}}
+			}
+		}
 		""".trimRelativeIndent()
 	}
 }

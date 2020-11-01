@@ -4,13 +4,13 @@
 package com.windea.breezeframework.dsl.mermaid.sequencediagram
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidSequenceDiagramDsl].
+ * DslDocument definitions of [MermaidSequenceDiagramDsl].
  */
 @MermaidSequenceDiagramDslMarker
 interface MermaidSequenceDiagramDslDefinitions {
@@ -29,7 +29,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 		val scopes: MutableList<Scope>
 
 		override fun toContentString(): String {
-			return arrayOf(participants.typingAll(ls), messages.typingAll(ls), notes.typingAll(ls), scopes.typingAll(ls))
+			return arrayOf(participants.joinToText(ls), messages.joinToText(ls), notes.joinToText(ls), scopes.joinToText(ls))
 				.doSplit()
 		}
 
@@ -50,7 +50,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 	 */
 	@MermaidSequenceDiagramDslMarker
 	class Participant @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, WithId {
 		var alias: String? = null
 		override val id: String get() = alias ?: name
@@ -60,7 +60,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString(): String {
-			val aliasSnippet = alias.typing { "$it as " }
+			val aliasSnippet = alias.toText { "$it as " }
 			return "participant $aliasSnippet$name"
 		}
 	}
@@ -75,7 +75,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 	 */
 	@MermaidSequenceDiagramDslMarker
 	class Message @PublishedApi internal constructor(
-		val fromParticipantId: String, val toParticipantId: String
+		val fromParticipantId: String, val toParticipantId: String,
 	) : IDslElement, WithNode {
 		var text: String = ""
 		var arrowShape: ArrowShape = ArrowShape.Arrow
@@ -97,7 +97,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 	 */
 	@MermaidSequenceDiagramDslMarker
 	class Note @PublishedApi internal constructor(
-		val location: NoteLocation, var text: String = ""
+		val location: NoteLocation, var text: String = "",
 	) : IDslElement {
 		override fun toString(): String {
 			val textSnippet = text.htmlWrap()
@@ -108,11 +108,11 @@ interface MermaidSequenceDiagramDslDefinitions {
 	/**Mermaid序列图注释的位置。*/
 	@MermaidSequenceDiagramDslMarker
 	class NoteLocation @PublishedApi internal constructor(
-		internal val position: NotePosition, internal val participantId1: String, internal val participantId2: String?
+		internal val position: NotePosition, internal val participantId1: String, internal val participantId2: String?,
 	) {
 		override fun toString(): String {
 			val positionSnippet = position.text
-			val participantId2Snippet = participantId2.typing { ", $it" }
+			val participantId2Snippet = participantId2.toText { ", $it" }
 			return "$positionSnippet $participantId1$participantId2Snippet"
 		}
 	}
@@ -125,7 +125,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 	@MermaidSequenceDiagramDslMarker
 	abstract class Scope(
 		val type: String,
-		val text: String?
+		val text: String?,
 	) : IDslElement, IDslEntry, Indentable {
 		override val participants: MutableSet<Participant> = mutableSetOf()
 		override val messages: MutableList<Message> = mutableListOf()
@@ -143,13 +143,13 @@ interface MermaidSequenceDiagramDslDefinitions {
 	/**Mermaid序列图的循环作用域。*/
 	@MermaidSequenceDiagramDslMarker
 	class Loop @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : Scope("loop", text)
 
 	/**Mermaid序列图的可选作用域。*/
 	@MermaidSequenceDiagramDslMarker
 	class Optional @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : Scope("opt", text)
 
 	/**
@@ -158,13 +158,13 @@ interface MermaidSequenceDiagramDslDefinitions {
 	 */
 	@MermaidSequenceDiagramDslMarker
 	class Alternative @PublishedApi internal constructor(
-		text: String
+		text: String,
 	) : Scope("alt", text) {
 		val elseScopes: MutableList<Else> = mutableListOf()
 
 		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
-			val elseScopesSnippet = elseScopes.typingAll(ls, ls)
+			val elseScopesSnippet = elseScopes.joinToText(ls, ls)
 			return "$contentSnippet$elseScopesSnippet"
 		}
 	}
@@ -172,13 +172,13 @@ interface MermaidSequenceDiagramDslDefinitions {
 	/**Mermaid序列图的其余作用域。*/
 	@MermaidSequenceDiagramDslMarker
 	class Else @PublishedApi internal constructor(
-		text: String? = null
+		text: String? = null,
 	) : Scope("else", text)
 
 	/**Mermaid序列图的颜色高亮作用域。*/
 	@MermaidSequenceDiagramDslMarker
 	class Highlight @PublishedApi internal constructor(
-		color: String
+		color: String,
 	) : Scope("rect", color)
 
 

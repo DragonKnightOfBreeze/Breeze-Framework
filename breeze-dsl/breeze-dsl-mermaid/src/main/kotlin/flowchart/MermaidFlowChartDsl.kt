@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.mermaid.flowchart
 
-import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDslDefinitions.*
 
@@ -12,7 +12,7 @@ import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDslDefin
  */
 @MermaidFlowChartDslMarker
 class MermaidFlowChartDsl @PublishedApi internal constructor(
-	val direction: Direction
+	val direction: Direction,
 ) : MermaidDsl(), IDslEntry, Indentable {
 	override val nodes: MutableSet<Node> = mutableSetOf()
 	override val links: MutableList<Link> = mutableListOf()

@@ -6,7 +6,7 @@ package com.windea.breezeframework.dsl.creole
 import com.windea.breezeframework.dsl.*
 
 /**
- * Dsl configuration of [CreoleDsl].
+ * DslDocument configuration of [CreoleDsl].
  */
 @CreoleDslMarker
 object CreoleDslConfig : DslConfig {

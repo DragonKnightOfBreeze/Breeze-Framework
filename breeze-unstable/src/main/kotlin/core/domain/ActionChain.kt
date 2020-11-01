@@ -8,10 +8,10 @@ package com.windea.breezeframework.core.domain
  * which implies the *Chain of Responsibility* pattern.
  */
 class ActionChain<T, R>(
-	val value:T,
-	val nodes:Array<ActionNode<T, R>>
+	val value: T,
+	val nodes: Array<ActionNode<T, R>>,
 ) {
-	fun execute():R{
+	fun execute(): R {
 		for(node in nodes) {
 			if(node.predicate(value)) return node.action(value)
 		}

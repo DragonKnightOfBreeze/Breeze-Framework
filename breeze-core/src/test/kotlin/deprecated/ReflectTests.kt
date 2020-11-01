@@ -15,7 +15,7 @@ class ReflectTests {
 @ModelB
 data class Person(
 	val name: String,
-	val age: String
+	val age: String,
 )
 
 annotation class Model

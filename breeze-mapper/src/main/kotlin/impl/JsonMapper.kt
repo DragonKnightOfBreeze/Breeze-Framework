@@ -18,7 +18,7 @@ unmap
 
 */
 
-import com.windea.breezeframework.core.domain.data.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
@@ -29,9 +29,9 @@ import java.util.*
  * Json映射器。
  */
 class JsonMapper(
-	val config:Config = Config.Default
+	val config: Config = Config.Default,
 ) : Mapper {
-	constructor(configBlock:Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
+	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
 	/**
 	 * Json映射器的配置。
@@ -43,12 +43,12 @@ class JsonMapper(
 	 * @property prettyFormat 是否使用良好的格式进行输出。默认为`false`。
 	 */
 	data class Config(
-		val indent:String = "  ",
-		val lineSeparator:String = "\n",
-		val doubleQuoted:Boolean = true,
-		val unquoted:Boolean = false,
-		val trimSpaces:Boolean = false,
-		val prettyFormat:Boolean = false
+		val indent: String = "  ",
+		val lineSeparator: String = "\n",
+		val doubleQuoted: Boolean = true,
+		val unquoted: Boolean = false,
+		val trimSpaces: Boolean = false,
+		val prettyFormat: Boolean = false,
 	) : DataEntity {
 		init {
 			require(lineSeparator in validLineSeparators) { "Line Separator should be '\\n', '\\r' or '\\r\\n'." }
@@ -62,12 +62,12 @@ class JsonMapper(
 		}
 
 		class Builder : DataBuilder<Config> {
-			var indent:String = "  "
-			var lineSeparator:String = "\n"
-			var doubleQuoted:Boolean = true
-			var unquoted:Boolean = false
-			var trimSpaces:Boolean = false
-			var prettyFormat:Boolean = false
+			var indent: String = "  "
+			var lineSeparator: String = "\n"
+			var doubleQuoted: Boolean = true
+			var unquoted: Boolean = false
+			var trimSpaces: Boolean = false
+			var prettyFormat: Boolean = false
 
 			override fun build() = Config(indent, lineSeparator, doubleQuoted, unquoted, trimSpaces, prettyFormat)
 		}
@@ -89,7 +89,7 @@ class JsonMapper(
 	private fun String.doIndent() = if(config.prettyFormat) this.prependIndent(indent) else this
 
 
-	override fun <T> map(data:T):String {
+	override fun <T> map(data: T): String {
 		return data.map0()
 	}
 
@@ -102,7 +102,7 @@ class JsonMapper(
 	//* Map - json object
 	//* else - json object
 
-	private fun Any?.map0():String {
+	private fun Any?.map0(): String {
 		return when {
 			this == null -> mapNull()
 			this is Boolean -> mapBoolean()
@@ -144,12 +144,12 @@ class JsonMapper(
 	private fun Any?.mapValue() = this.map0()
 
 
-	override fun <T> unmap(string:String, type:Class<T>):T {
+	override fun <T> unmap(string: String, type: Class<T>): T {
 		return string.unmap0() as T
 	}
 
-	override fun <T> unmap(string:String, type:Type):T {
-	return 	string.unmap0() as T
+	override fun <T> unmap(string: String, type: Type): T {
+		return string.unmap0() as T
 	}
 
 	//支持的类型：
@@ -161,9 +161,9 @@ class JsonMapper(
 	//* Map - json object
 	//* else - json object
 
-	private fun String.unmap0():Any? {
+	private fun String.unmap0(): Any? {
 		val string = this.trim()
-		return when{
+		return when {
 			string.startsWith("{") && string.contains("}") -> unmapJsonObject()
 			string.startsWith("[") && string.contains("]") -> unmapJsonObject()
 			string.startsWith("\"") || string.startsWith("\'") -> unmapJsonString()

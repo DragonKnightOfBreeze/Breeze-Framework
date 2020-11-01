@@ -7,7 +7,7 @@ import com.windea.breezeframework.linq.*
 
 /**基于Kotlin的集合框架的Linq实现。*/
 class KotlinLinq<S, T>(
-	val statement: (Iterable<S>) -> Iterable<T>
+	val statement: (Iterable<S>) -> Iterable<T>,
 ) : Linq<S, T> {
 	override fun where(predicate: (T) -> Boolean): Linq<S, T> {
 		return KotlinLinq { statement(it).filter(predicate) }

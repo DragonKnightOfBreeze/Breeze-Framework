@@ -10,36 +10,36 @@ import java.util.*
 import kotlin.random.*
 import kotlin.random.Random
 
-fun Random.nextByte():Byte {
-	return Random.nextInt(Byte.MIN_VALUE.toInt(),Byte.MAX_VALUE.toInt()).toByte()
+fun Random.nextByte(): Byte {
+	return Random.nextInt(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()).toByte()
 }
 
-fun Random.nextByte(until:Byte):Byte {
+fun Random.nextByte(until: Byte): Byte {
 	return Random.nextInt(until.toInt()).toByte()
 }
 
-fun Random.nextByte(from:Byte,until:Byte):Byte {
-	return Random.nextInt(from.toInt(),until.toInt()).toByte()
+fun Random.nextByte(from: Byte, until: Byte): Byte {
+	return Random.nextInt(from.toInt(), until.toInt()).toByte()
 }
 
-fun Random.nextByte(range:ClosedRange<Byte>):Byte {
+fun Random.nextByte(range: ClosedRange<Byte>): Byte {
 	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toByte()
 }
 
 
-fun Random.nextShort():Short {
-	return Random.nextInt(Short.MIN_VALUE.toInt(),Short.MAX_VALUE.toInt()).toShort()
+fun Random.nextShort(): Short {
+	return Random.nextInt(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
 }
 
-fun Random.nextShort(until:Short):Short {
+fun Random.nextShort(until: Short): Short {
 	return Random.nextInt(until.toInt()).toShort()
 }
 
-fun Random.nextShort(from:Short,until:Short):Short {
-	return Random.nextInt(from.toInt(),until.toInt()).toShort()
+fun Random.nextShort(from: Short, until: Short): Short {
+	return Random.nextInt(from.toInt(), until.toInt()).toShort()
 }
 
-fun Random.nextShort(range:ClosedRange<Short>):Short {
+fun Random.nextShort(range: ClosedRange<Short>): Short {
 	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toShort()
 }
 
@@ -63,19 +63,19 @@ fun Random.nextDouble(range: ClosedFloatingPointRange<Double>, precision: Int = 
 }
 
 
-fun Random.nextChar():Char {
-	return Random.nextInt(Char.MIN_VALUE.toInt(),Char.MAX_VALUE.toInt()).toChar()
+fun Random.nextChar(): Char {
+	return Random.nextInt(Char.MIN_VALUE.toInt(), Char.MAX_VALUE.toInt()).toChar()
 }
 
-fun Random.nextChar(until:Char):Char {
+fun Random.nextChar(until: Char): Char {
 	return Random.nextInt(until.toInt()).toChar()
 }
 
-fun Random.nextChar(from:Char,until:Char):Char {
-	return Random.nextInt(from.toInt(),until.toInt()).toChar()
+fun Random.nextChar(from: Char, until: Char): Char {
+	return Random.nextInt(from.toInt(), until.toInt()).toChar()
 }
 
-fun Random.nextChar(range:ClosedRange<Char>):Char {
+fun Random.nextChar(range: ClosedRange<Char>): Char {
 	return Random.nextInt(range.start.toInt()..range.endInclusive.toInt()).toChar()
 }
 

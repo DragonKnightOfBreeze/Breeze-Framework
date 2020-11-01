@@ -7,8 +7,7 @@ import com.google.gson.*
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.Serializer
-import kotlinx.serialization.*
+import com.windea.breezeframework.serializer.*
 import kotlinx.serialization.json.*
 import com.fasterxml.jackson.databind.json.JsonMapper as JacksonJsonMapper
 

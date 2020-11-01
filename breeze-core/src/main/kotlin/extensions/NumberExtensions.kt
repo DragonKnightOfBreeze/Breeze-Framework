@@ -7,12 +7,12 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.text.*
+import com.windea.breezeframework.core.domain.*
 import java.text.*
 import java.util.*
 import kotlin.math.*
 
-//region Optional handle extensions
+//region Optional operation extensions
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -105,7 +105,7 @@ inline fun Double.orNull(): Double? {
 }
 //endregion
 
-//region Misc extensions
+//region Operation extensions
 /**进行一次计算并将结果转化为字节型。*/
 inline fun Byte.exact(block: (Byte) -> Number): Byte {
 	return block(this).toByte()
@@ -160,34 +160,9 @@ fun Number?.equalsNearly(other: Number?, precision: Float): Boolean {
 }
 //endregion
 
-//region Format extensions
-/**根据指定的格式化类型，格式化当前数字。可以指定可选的语言环境。*/
-@UnstableApi
-fun Number.formatBy(type:NumberFormatType,locale:Locale? = null):String{
-	return getNumberFormatInstance(type,locale?:Locale.getDefault(Locale.Category.FORMAT)).format(this)
-}
-
-/**根据指定的格式化类型，格式化当前数字。可以指定可选的语言环境。可以进行额外的配置。*/
-@UnstableApi
-fun Number.formatBy(type:NumberFormatType,locale:Locale? = null, configBlock:NumberFormat.()->Unit):String {
-	return getNumberFormatInstance(type,locale?:Locale.getDefault(Locale.Category.FORMAT)).apply(configBlock).format(this)
-}
-
-private fun getNumberFormatInstance(type:NumberFormatType,locale:Locale):NumberFormat {
-	return when(type){
-		NumberFormatType.Default -> NumberFormat.getInstance(locale)
-		NumberFormatType.Number -> NumberFormat.getNumberInstance(locale)
-		NumberFormatType.Integer -> NumberFormat.getIntegerInstance(locale)
-		NumberFormatType.Percent -> NumberFormat.getPercentInstance(locale)
-		NumberFormatType.Currency -> NumberFormat.getCurrencyInstance(locale)
-		else -> throw UnsupportedOperationException("Target number format type is not yet supported.")
-	}
-}
-//endregion
-
 //region Convert extensions
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
-@Deprecated("Use this.convert<T>()",ReplaceWith("this.convert<T>()"))
+@Deprecated("Use this.convert<T>()", ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> Number.toNumber(): T {
 	return when(val typeName = T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T
@@ -203,7 +178,7 @@ inline fun <reified T : Number> Number.toNumber(): T {
 }
 
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则返回null。*/
-@Deprecated("Use this.convertOrNull<T>()",ReplaceWith("this.convertOrNull<T>()"))
+@Deprecated("Use Number.convertOrNull<T>()", ReplaceWith("this.convertOrNull<T>()"))
 inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 	return when(T::class.java.name) {
 		"java.lang.Integer" -> this.toInt() as T?
@@ -221,7 +196,7 @@ inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为默认值。*/
 inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
-	return enumValues<T>().getOrDefault(this, enumValues<T>().first())
+	return enumValues<T>().getOrElse(this){ enumValues<T>().first()}
 }
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
@@ -231,7 +206,7 @@ inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 
 
 /**将当前整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Int.toDigitNumberArray(radix:Int=10): IntArray {
+fun Int.toDigitNumberArray(radix: Int = 10): IntArray {
 	val size = this.toString().length
 	var temp = this
 	val result = IntArray(size)
@@ -243,7 +218,7 @@ fun Int.toDigitNumberArray(radix:Int=10): IntArray {
 }
 
 /**将当前长整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Long.toDigitNumberArray(radix:Int=10): LongArray {
+fun Long.toDigitNumberArray(radix: Int = 10): LongArray {
 	val size = this.toString().length
 	var temp = this
 	val result = LongArray(size)

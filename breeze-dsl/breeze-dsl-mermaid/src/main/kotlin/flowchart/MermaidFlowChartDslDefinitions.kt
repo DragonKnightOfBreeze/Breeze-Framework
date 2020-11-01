@@ -4,13 +4,13 @@
 package com.windea.breezeframework.dsl.mermaid.flowchart
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidFlowChartDslDefinitions].
+ * DslDocument definitions of [MermaidFlowChartDslDefinitions].
  */
 @MermaidFlowChartDslMarker
 interface MermaidFlowChartDslDefinitions {
@@ -36,8 +36,8 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun toContentString(): String {
 			return arrayOf(
-				nodes.typingAll(ls), links.typingAll(ls), subGraphs.typingAll(ls), nodeStyles.typingAll(ls),
-				linkStyles.typingAll(ls), classDefs.typingAll(ls), classRefs.typingAll(ls)
+				nodes.joinToText(ls), links.joinToText(ls), subGraphs.joinToText(ls), nodeStyles.joinToText(ls),
+				linkStyles.joinToText(ls), classDefs.joinToText(ls), classRefs.joinToText(ls)
 			).doSplit()
 		}
 
@@ -59,7 +59,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class Node @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, WithId {
 		var text: String? = null
 		var shape: NodeShape = NodeShape.Rect
@@ -69,7 +69,7 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			val shapePrefixSnippet = shape.prefix
 			val textSnippet = text?.htmlWrap()?.quote(MermaidDslConfig.quote) ?: name
 			val shapeSuffixSnippet = shape.suffix
@@ -86,7 +86,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class Link @PublishedApi internal constructor(
-		val fromNodeId: String, val toNodeId: String
+		val fromNodeId: String, val toNodeId: String,
 	) : IDslElement, WithNode {
 		var text: String? = null
 		var arrowShape: ArrowShape = ArrowShape.Arrow
@@ -95,7 +95,7 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun toString(): String {
 			val arrowShapeSnippet = arrowShape.text
-			val textSnippet = text?.htmlWrap()?.quote(MermaidDslConfig.quote).typing { "|$it|" }
+			val textSnippet = text?.htmlWrap()?.quote(MermaidDslConfig.quote).toText { "|$it|" }
 			return "$fromNodeId $arrowShapeSnippet$textSnippet $toNodeId"
 		}
 	}
@@ -106,7 +106,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class SubGraph @PublishedApi internal constructor(
-		val name: String
+		val name: String,
 	) : IDslElement, IDslEntry, Indentable {
 		override val nodes: MutableSet<Node> = mutableSetOf()
 		override val links: MutableList<Link> = mutableListOf()
@@ -115,10 +115,10 @@ interface MermaidFlowChartDslDefinitions {
 		override val linkStyles: MutableList<LinkStyle> = mutableListOf()
 		override val classDefs: MutableList<ClassDef> = mutableListOf()
 		override val classRefs: MutableList<ClassRef> = mutableListOf()
-		override var indentContent:Boolean = true
-		override var splitContent:Boolean = true
+		override var indentContent: Boolean = true
+		override var splitContent: Boolean = true
 
-		override fun toString():String {
+		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
 			return "subgraph $name$ls$contentSnippet${ls}end}"
 		}
@@ -131,7 +131,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class NodeStyle @PublishedApi internal constructor(
-		val nodeId: String, val styles: Map<String, String>
+		val nodeId: String, val styles: Map<String, String>,
 	) : IDslElement {
 		override fun toString(): String {
 			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -146,7 +146,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class LinkStyle @PublishedApi internal constructor(
-		val linkOrder: Int, val styles: Map<String, String>
+		val linkOrder: Int, val styles: Map<String, String>,
 	) : IDslElement {
 		override fun toString(): String {
 			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -161,7 +161,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class ClassDef @PublishedApi internal constructor(
-		val className: String, val styles: Map<String, String>
+		val className: String, val styles: Map<String, String>,
 	) : IDslElement {
 		override fun toString(): String {
 			val stylesSnippet = styles.joinToString { (k, v) -> "$k: $v" }
@@ -176,7 +176,7 @@ interface MermaidFlowChartDslDefinitions {
 	 */
 	@MermaidFlowChartDslMarker
 	class ClassRef @PublishedApi internal constructor(
-		val className: String, val nodeIds: Set<String>
+		val className: String, val nodeIds: Set<String>,
 	) : IDslElement {
 		override fun toString(): String {
 			val nodeIdsSnippet = nodeIds.joinToString()

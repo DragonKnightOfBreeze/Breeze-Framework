@@ -9,7 +9,7 @@ package com.windea.breezeframework.core.extensions
 import com.windea.breezeframework.core.annotations.*
 import kotlin.contracts.*
 
-//region Optional handle extensions
+//region Optional operation extensions
 /**如果为null，则返回true，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -62,11 +62,11 @@ fun Boolean.toFloat(): Float = if(this) 1f else 0f
 fun Boolean.toDouble(): Double = if(this) 1.0 else 0.0
 
 /**将当前布尔值转化为以"true"和"false"表示的字符串。*/
-fun Boolean.toStringTrueFalse():String = if(this) "true" else "false"
+fun Boolean.toStringTrueFalse(): String = if(this) "true" else "false"
 
 /**将当前布尔值转化为以"yes"和"no"表示的字符串。*/
-fun Boolean.toStringYesNo():String = if(this) "yes" else "no"
+fun Boolean.toStringYesNo(): String = if(this) "yes" else "no"
 
 /**将当前布尔值转化为以"on"和"off"表示的字符串。*/
-fun Boolean.toStringOnOff():String = if(this) "on" else "off"
+fun Boolean.toStringOnOff(): String = if(this) "on" else "off"
 //endregion

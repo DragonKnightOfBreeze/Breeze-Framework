@@ -13,7 +13,7 @@ import kotlin.math.*
  */
 data class Vector2(
 	val x: Float,
-	val y: Float
+	val y: Float,
 ) : Vector<Vector2> {
 	override val lengthSquared: Float = x * x + y * y
 	override val length: Float = sqrt(lengthSquared)

@@ -8,7 +8,7 @@ import com.windea.breezeframework.dsl.*
 /**
  * [BBCode](https://www.bbcode.org/) dsl.
  */
-class BBCodeDsl @PublishedApi internal constructor() : Dsl {
+class BBCodeDsl @PublishedApi internal constructor() : DslDocument {
 	var text: CharSequence = ""
 
 	override fun toString(): String = text.toString()

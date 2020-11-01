@@ -67,8 +67,10 @@ private fun Date.assign(): Date = this.also { calendar.time = this }
 
 
 /**更改日期。*/
-fun Date.modify(year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
-	weekday: Int = -1): Date {
+fun Date.modify(
+	year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
+	weekday: Int = -1,
+): Date {
 	calendar.time = this
 	calendar.set(Calendar.YEAR, year)
 	if(month > 0) calendar.set(Calendar.MONTH, month - 1)

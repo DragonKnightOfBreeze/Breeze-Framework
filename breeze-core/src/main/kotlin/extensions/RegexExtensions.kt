@@ -5,6 +5,13 @@
 
 package com.windea.breezeframework.core.extensions
 
+/**
+ * 精简正则表达式字符串。
+ */
+fun Regex.Companion.trim(pattern:String): String {
+	return pattern.remove("\\Q\\E")
+}
+
 
 //参考：[2-13] -> [2-9]|[10-13] -> [2-9]|1[0-3]
 //参考：[23-45] -> [23-29]|[30-39]|[40-45] -> 2[3-9]|3[0-9]|4[0-5]

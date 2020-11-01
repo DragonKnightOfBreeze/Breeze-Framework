@@ -5,30 +5,42 @@
 
 package com.windea.breezeframework.dsl.criticmarkup
 
-import com.windea.breezeframework.dsl.criticmarkup.CriticMarkupDslDefinitions.*
+import com.windea.breezeframework.dsl.criticmarkup.CriticMarkupDsl.*
 
-/**Build a [CriticMarkupDsl].*/
+/**
+ * 开始构建[CriticMarkupDsl]。
+ */
 @CriticMarkupDslMarker
-inline fun criticMarkupDsl(block: CriticMarkupDsl.() -> CharSequence): CriticMarkupDsl =
-	CriticMarkupDsl().apply { text = block() }
+inline fun criticMarkupDsl(block: Document.() -> CharSequence): Document {
+	return Document().apply { text = block() }
+}
 
-
-/**Create a [CriticMarkupDslDefinitions.Addition].*/
+/**
+ * 创建一个[CriticMarkupDsl.Addition]。
+ */
 @CriticMarkupDslMarker
 fun InlineDslEntry.append(text: CharSequence): Addition = Addition(text)
 
-/**Create a [CriticMarkupDslDefinitions.Deletion].*/
+/**
+ * 创建一个[CriticMarkupDsl.Deletion]。
+ */
 @CriticMarkupDslMarker
 fun InlineDslEntry.delete(text: CharSequence): Deletion = Deletion(text)
 
-/**Create a [CriticMarkupDslDefinitions.Substitution].*/
+/**
+ * 创建一个[CriticMarkupDsl.Substitution]。
+ */
 @CriticMarkupDslMarker
 fun InlineDslEntry.substitute(text: CharSequence, newText: CharSequence): Substitution = Substitution(text, newText)
 
-/**Create a [CriticMarkupDslDefinitions.Comment].*/
+/**
+ * 创建一个[CriticMarkupDsl.Comment]。
+ */
 @CriticMarkupDslMarker
 fun InlineDslEntry.comment(text: CharSequence): Comment = Comment(text)
 
-/**Create a [CriticMarkupDslDefinitions.Highlight].*/
+/**
+ * 创建一个[CriticMarkupDsl.Highlight]。
+ */
 @CriticMarkupDslMarker
 fun InlineDslEntry.highlight(text: CharSequence): Highlight = Highlight(text)

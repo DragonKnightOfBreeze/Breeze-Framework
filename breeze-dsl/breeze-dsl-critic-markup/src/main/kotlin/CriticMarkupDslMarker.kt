@@ -1,12 +1,12 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS", "INLINE_CLASS_NOT_TOP_LEVEL")
-
 package com.windea.breezeframework.dsl.criticmarkup
 
 /**
- * Dsl marker of [CriticMarkupDsl].
+ * [CriticMarkupDsl]的标记注解。参见：[Critic Markup](http://criticmarkup.com)
+ *
+ * Marker annotation of [CriticMarkupDsl]. See: [Critic Markup](http://criticmarkup.com)
  */
 @DslMarker
 @MustBeDocumented

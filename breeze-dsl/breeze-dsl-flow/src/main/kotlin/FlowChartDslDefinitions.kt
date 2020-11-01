@@ -8,10 +8,11 @@ package com.windea.breezeframework.dsl.flow
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import java.util.*
 
 /**
- * Dsl definitions of [FlowChartDsl].
+ * DslDocument definitions of [FlowChartDsl].
  */
 @FlowChartDslMarker
 interface FlowChartDslDefinitions {
@@ -22,7 +23,7 @@ interface FlowChartDslDefinitions {
 		val connections: MutableList<Connection>
 
 		override fun toContentString(): String {
-			return arrayOf(nodes.typingAll(ls), connections.typingAll(ls)).doSplit()
+			return arrayOf(nodes.joinToText(ls), connections.joinToText(ls)).doSplit()
 		}
 
 		override fun String.links(other: String) = connection(this, other)
@@ -53,7 +54,7 @@ interface FlowChartDslDefinitions {
 	/**流程图的节点。*/
 	@FlowChartDslMarker
 	class Node @PublishedApi internal constructor(
-		val name: String, val type: NodeType
+		val name: String, val type: NodeType,
 	) : IDslElement, WithId {
 		var text: String? = null
 		var flowState: String? = null
@@ -65,10 +66,10 @@ interface FlowChartDslDefinitions {
 
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
-		override fun toString():String {
+		override fun toString(): String {
 			val typeSnippet = type.text
-			val flowStateSnippet = flowState.typing { "|$it" }
-			val urlLinkSnippet = urlLink.typing { ":>$it" }
+			val flowStateSnippet = flowState.toText { "|$it" }
+			val urlLinkSnippet = urlLink.toText { ":>$it" }
 			val blankSnippet = if(openNewTab) "[blank]" else ""
 			return "$name=>$typeSnippet: $text$flowStateSnippet$urlLinkSnippet$blankSnippet"
 		}
@@ -77,7 +78,7 @@ interface FlowChartDslDefinitions {
 	/**流程图的连接。*/
 	@FlowChartDslMarker
 	class Connection @PublishedApi internal constructor(
-		val fromNodeId: String, val toNodeId: String
+		val fromNodeId: String, val toNodeId: String,
 	) : IDslElement, WithNode {
 		private val builder = binderQueue.poll() ?: Binder()
 
@@ -87,19 +88,19 @@ interface FlowChartDslDefinitions {
 		override val sourceNodeId get() = fromNodeId
 		override val targetNodeId get() = toNodeId
 
-		override fun toString():String {
-			val specificationsSnippet = arrayOf(status?.text, path?.text, direction?.text).typingAll(", ", "(", ")")
+		override fun toString(): String {
+			val specificationsSnippet = arrayOf(status?.text, path?.text, direction?.text).joinToText(", ", "(", ")")
 			return "$fromNodeId$specificationsSnippet->$toNodeId"
 		}
 
 		internal class Binder(
-			var status:ConnectionStatus? = null,
-			var path:ConnectionPath? = null,
-			var direction:ConnectionDirection? = null
+			var status: ConnectionStatus? = null,
+			var path: ConnectionPath? = null,
+			var direction: ConnectionDirection? = null,
 		)
 
 		companion object {
-			internal val binderQueue:Queue<Binder> = ArrayDeque(2) //将部分属性存储在外部绑定器队列
+			internal val binderQueue: Queue<Binder> = ArrayDeque(2) //将部分属性存储在外部绑定器队列
 		}
 	}
 
@@ -107,7 +108,7 @@ interface FlowChartDslDefinitions {
 	/**流程图节点的类型。*/
 	@FlowChartDslMarker
 	enum class NodeType(
-		internal val text: String
+		internal val text: String,
 	) {
 		Start("start"), End("end"), Operation("operation"), InputOutput("inputoutput"),
 		Subroutine("subroutine"), Condition("condition"), Parallel("parallel")
@@ -116,7 +117,7 @@ interface FlowChartDslDefinitions {
 	/**流程图连接的状态。*/
 	@FlowChartDslMarker
 	enum class ConnectionStatus(
-		internal val text: String
+		internal val text: String,
 	) {
 		Yes("yes"), No("no")
 	}
@@ -124,7 +125,7 @@ interface FlowChartDslDefinitions {
 	/**流程图连接的路径。*/
 	@FlowChartDslMarker
 	enum class ConnectionPath(
-		internal val text: String
+		internal val text: String,
 	) {
 		Path1("path1"), Path2("path2"), Path3("path3")
 	}
@@ -132,7 +133,7 @@ interface FlowChartDslDefinitions {
 	/**流程图连接的方向。*/
 	@FlowChartDslMarker
 	enum class ConnectionDirection(
-		internal val text: String
+		internal val text: String,
 	) {
 		Left("left"), Right("right"), Top("top"), Bottom("bottom")
 	}

@@ -10,7 +10,7 @@ import com.windea.breezeframework.dsl.sequence.SequenceDiagramDslDefinitions.*
  * [Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/) dsl.
  */
 @SequenceDiagramDslMarker
-class SequenceDiagramDsl @PublishedApi internal constructor() : Dsl, IDslEntry {
+class SequenceDiagramDsl @PublishedApi internal constructor() : DslDocument, IDslEntry {
 	var title: Title? = null
 	override val participants: MutableSet<Participant> = mutableSetOf()
 	override val messages: MutableList<Message> = mutableListOf()

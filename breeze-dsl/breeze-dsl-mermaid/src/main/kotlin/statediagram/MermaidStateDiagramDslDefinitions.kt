@@ -4,14 +4,14 @@
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
 import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
+import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*
 import com.windea.breezeframework.dsl.mermaid.MermaidDslConfig.indent
 import com.windea.breezeframework.dsl.mermaid.MermaidDslDefinitions.Companion.htmlWrap
 
 /**
- * Dsl definitions of [MermaidStateDiagramDsl].
+ * DslDocument definitions of [MermaidStateDiagramDsl].
  */
 @MermaidStateDiagramDslMarker
 interface MermaidStateDiagramDslDefinitions {
@@ -28,7 +28,7 @@ interface MermaidStateDiagramDslDefinitions {
 		val notes: MutableList<Note>
 
 		override fun toContentString(): String {
-			return arrayOf(states.typingAll(ls), links.typingAll(ls), notes.typingAll(ls)).doSplit()
+			return arrayOf(states.joinToText(ls), links.joinToText(ls), notes.joinToText(ls)).doSplit()
 		}
 
 		@MermaidStateDiagramDslMarker
@@ -64,8 +64,8 @@ interface MermaidStateDiagramDslDefinitions {
 		var type: StateType? = null
 
 		override fun toString(): String {
-			val textSnippet = text.typing { ": $it" }
-			val typeSnippet = type?.text.typing { " <<$it>>" }
+			val textSnippet = text.toText { ": $it" }
+			val typeSnippet = type?.text.toText { " <<$it>>" }
 			return "$name$textSnippet$typeSnippet"
 		}
 	}
@@ -95,7 +95,7 @@ interface MermaidStateDiagramDslDefinitions {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val sectionsSnippet = sections.typingAll("$ls---$ls").doIndent(indent)
+			val sectionsSnippet = sections.joinToText("$ls---$ls").doIndent(indent)
 			return "state $name{$ls$sectionsSnippet$ls}"
 		}
 	}
@@ -120,14 +120,14 @@ interface MermaidStateDiagramDslDefinitions {
 	 * @property text （可选项）转化的文本。
 	 */
 	class Transition @PublishedApi internal constructor(
-		val fromStateId: String, val toStateId: String
+		val fromStateId: String, val toStateId: String,
 	) : IDslElement, WithNode {
 		var text: String? = null
 		override val sourceNodeId get() = fromStateId
 		override val targetNodeId get() = toStateId
 
 		override fun toString(): String {
-			val textSnippet = text.typing { ": $it" }
+			val textSnippet = text.toText { ": $it" }
 			return "$fromStateId --> $toStateId$textSnippet"
 		}
 	}
@@ -139,7 +139,7 @@ interface MermaidStateDiagramDslDefinitions {
 	 */
 	@MermaidStateDiagramDslMarker
 	class Note @PublishedApi internal constructor(
-		val location: NoteLocation, var text: String
+		val location: NoteLocation, var text: String,
 	) : IDslElement, Wrappable, Indentable {
 		override var wrapContent: Boolean = false
 		override var indentContent: Boolean = true
@@ -155,7 +155,7 @@ interface MermaidStateDiagramDslDefinitions {
 	/**Mermaid状态图注释的位置。*/
 	@MermaidStateDiagramDslMarker
 	class NoteLocation @PublishedApi internal constructor(
-		internal val position: NotePosition, internal val stateId: String
+		internal val position: NotePosition, internal val stateId: String,
 	) {
 		override fun toString(): String {
 			return "${position.text} $stateId"

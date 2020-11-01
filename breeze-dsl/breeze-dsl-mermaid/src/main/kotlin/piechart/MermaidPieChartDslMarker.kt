@@ -6,7 +6,7 @@
 package com.windea.breezeframework.dsl.mermaid.piechart
 
 /**
- * Dsl marker of [MermaidPieChartDsl].
+ * DslDocument marker of [MermaidPieChartDsl].
  */
 @DslMarker
 @MustBeDocumented

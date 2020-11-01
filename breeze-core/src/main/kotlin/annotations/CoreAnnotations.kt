@@ -25,30 +25,52 @@ annotation class AllOpen
 annotation class NoArg
 
 /**
- * When applied to method X specifies that X defines a Todo method.
- */
-@MustBeDocumented
-@Target(FUNCTION)
-@Retention(BINARY)
-@DslMarker
-annotation class TodoMarker
-
-/**
- * Marks the annotated declaration as deprecated in common situations.
- * While comparing to [Deprecated], this annotation do not get an IDE waring.
- */
-@MustBeDocumented
-@Target(CLASS, FUNCTION, PROPERTY, ANNOTATION_CLASS, CONSTRUCTOR, PROPERTY_SETTER, PROPERTY_GETTER, TYPEALIAS)
-annotation class WeakDeprecated(
-	val message: String,
-	val replaceWith: ReplaceWith = ReplaceWith("")
-)
-
-
-/**
  * Specifies that this function should not be called directly without inlining.
  * This annotation is a placeholder of [kotlin.internal.InlineOnly].
  */
 @Target(FUNCTION, PROPERTY, PROPERTY_GETTER, PROPERTY_SETTER)
 @Retention(BINARY)
 annotation class InlineOnly
+
+/**
+ * Marks the annotated declaration as deprecated in common situations.
+ * While comparing to [Deprecated], this annotation do not get an IDE warning.
+ */
+@MustBeDocumented
+@Target(CLASS, FUNCTION, PROPERTY, ANNOTATION_CLASS, CONSTRUCTOR, PROPERTY_SETTER, PROPERTY_GETTER, TYPEALIAS)
+annotation class WeakDeprecated(
+	val message: String,
+	val replaceWith: ReplaceWith = ReplaceWith(""),
+)
+
+
+/**
+ * 当应用到方法X时，表示X定义了一个TODO方法。
+ *
+ * When applied to method X specifies that X defines a Todo method.
+ */
+@MustBeDocumented
+@Target(FUNCTION)
+@Retention(BINARY)
+annotation class TodoMarker
+
+
+/**
+ * 当应用到接口或类X时，表示X定义了一个组件。
+ * 组件是可以扩展的枚举，一般情况下，需要注册以被正确启用。
+ *
+ * When applied to interface or class X specifies that X defines a component.
+ * Component is an extensible enumeration, normally, it should be registered to be enabled correctly.
+ */
+@MustBeDocumented
+@Target(CLASS)
+annotation class BreezeComponent
+
+/**
+ * 当应用到扩展方法X时，表示X定义了一个基于组件的扩展。
+ *
+ * When applied to extension function X specifies that X defines a component-based extension.
+ */
+@MustBeDocumented
+@Target(FUNCTION)
+annotation class BreezeComponentExtension

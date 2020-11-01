@@ -34,9 +34,9 @@ annotation class ExplicitApi
 annotation class OptionalApi
 
 /**
- * 实现方式不稳定的api。这意味着这个api在未来可能会被重构。
+ * 实现方式不稳定的api。这意味着它在未来可能会被重构。
  *
- * Api that is implemented unstably. It means, this api may be refactored or removed in the future.
+ * Api that is implemented unstably. It may be refactored or removed in the future.
  */
 @MustBeDocumented
 @RequiresOptIn("This api is unstable and should be used carefully.", RequiresOptIn.Level.WARNING)
@@ -44,9 +44,9 @@ annotation class OptionalApi
 annotation class UnstableApi
 
 /**
- * 实现方式较为取巧的api。这意味着这个api不可能被完全实现。
+ * 实现方式较为取巧的api。这意味着它几乎不可能被完全实现。
  *
- * Api that is implemented tricky. It means, this api cannot be fully implemented.
+ * Api that is implemented tricky. It it hard to be fully implemented.
  */
 @MustBeDocumented
 @RequiresOptIn("This api is tricky and should be used carefully.", RequiresOptIn.Level.WARNING)

@@ -13,7 +13,7 @@ fun HttpRequest.send(http: Http): HttpResponse<String> {
 	return http.client.send(this, stringBodyHandler)
 }
 
-fun <T> HttpRequest.send(http: Http, bodyHandler: BodyHandler<T>): HttpResponse<T>{
+fun <T> HttpRequest.send(http: Http, bodyHandler: BodyHandler<T>): HttpResponse<T> {
 	return http.client.send(this, bodyHandler)
 }
 

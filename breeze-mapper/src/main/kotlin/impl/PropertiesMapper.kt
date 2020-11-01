@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.mapper.impl
 
-import com.windea.breezeframework.core.domain.data.*
+import com.windea.breezeframework.core.domain.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
@@ -12,9 +12,9 @@ import java.lang.reflect.*
  * Properties映射器。
  */
 class PropertiesMapper(
-	val config:Config = Config.Default
+	val config: Config = Config.Default,
 ) : Mapper {
-	constructor(configBlock:Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
+	constructor(configBlock: Config.Builder.() -> Unit) : this(Config.Builder().apply(configBlock).build())
 
 	/**
 	 * Properties映射器的配置。
@@ -25,30 +25,30 @@ class PropertiesMapper(
 	 * @property flattenKeys 是否平滑键，将其作为单一的键而非路径进行映射。默认为`true`。
 	 */
 	data class Config(
-		val indent:String = "  ",
-		val lineSeparator:String = "\n",
-		val separator:String = "=",
-		val trimSpaces:Boolean = false,
-		val flattenKeys:Boolean = true
+		val indent: String = "  ",
+		val lineSeparator: String = "\n",
+		val separator: String = "=",
+		val trimSpaces: Boolean = false,
+		val flattenKeys: Boolean = true,
 	) : DataEntity {
 		init {
-			require(lineSeparator in validLineSeparators) {"Line Separator should be '\\n', '\\r' or '\\r\\n'."}
+			require(lineSeparator in validLineSeparators) { "Line Separator should be '\\n', '\\r' or '\\r\\n'." }
 			require(separator in validSeparators) { "Key value separator should be '=' or ':'." }
 		}
 
 		companion object {
-			private val validLineSeparators = arrayOf("\n","\r","\r\n")
-			private val validSeparators = arrayOf("=",":")
+			private val validLineSeparators = arrayOf("\n", "\r", "\r\n")
+			private val validSeparators = arrayOf("=", ":")
 
 			@JvmStatic val Default = Config()
 		}
 
 		class Builder : DataBuilder<Config> {
-			var indent:String = "  "
-			var separator:String = "="
-			var lineSeparator:String = "\n"
-			var trimSpaces:Boolean = true
-			var flattenKeys:Boolean = true
+			var indent: String = "  "
+			var separator: String = "="
+			var lineSeparator: String = "\n"
+			var trimSpaces: Boolean = true
+			var flattenKeys: Boolean = true
 
 			override fun build() = Config(indent, lineSeparator, separator, trimSpaces, flattenKeys)
 		}
@@ -66,7 +66,7 @@ class PropertiesMapper(
 	private fun Any?.doWrap() = this.toString().replace("\r\n", "\\\r\n").replace("\r", "\\\r").replace("\n", "\\\n")
 
 
-	override fun <T> map(data:T):String {
+	override fun <T> map(data: T): String {
 		return data.mapProperties()
 	}
 
@@ -76,7 +76,7 @@ class PropertiesMapper(
 	//* Map（将键作为属性名处理）
 	//* else（尝试映射为Map，然后将键作为属性名处理）
 
-	private fun Any?.mapProperties():String {
+	private fun Any?.mapProperties(): String {
 		return when {
 			this == null -> throw IllegalArgumentException("Cannot map null value to properties.")
 			this is Array<*> -> this.mapIndexedProperty()
@@ -87,30 +87,30 @@ class PropertiesMapper(
 		}
 	}
 
-	private fun Array<*>.mapIndexedProperty():String {
+	private fun Array<*>.mapIndexedProperty(): String {
 		return this.withIndex().joinToString(lineSeparator) { (i, e) -> "${i.mapKey()}$separator${e.mapValue()}" }
 	}
 
-	private fun Iterable<*>.mapIndexedProperty():String {
+	private fun Iterable<*>.mapIndexedProperty(): String {
 		return this.withIndex().joinToString(lineSeparator) { (i, e) -> "${i.mapKey()}$separator${e.mapValue()}" }
 	}
 
-	private fun Sequence<*>.mapIndexedProperty():String {
+	private fun Sequence<*>.mapIndexedProperty(): String {
 		return this.withIndex().joinToString(lineSeparator) { (i, e) -> "${i.mapKey()}$separator${e.mapValue()}" }
 	}
 
-	private fun Map<*, *>.mapMappedProperty():String {
+	private fun Map<*, *>.mapMappedProperty(): String {
 		return this.joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 	}
 
-	private fun Any.mapMappedProperty():String {
+	private fun Any.mapMappedProperty(): String {
 		return ObjectMapper.map(this).joinToString(lineSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }
 	}
 
 	//支持的类型（属性的名字）：
 	//* Any（转换为字符串）
 
-	private fun Any?.mapKey():String {
+	private fun Any?.mapKey(): String {
 		return this.toString()
 	}
 
@@ -119,7 +119,7 @@ class PropertiesMapper(
 	//* Array, Iterable, Sequence, !ClosedRange（转换为多行逗号分隔表达式）
 	//* else（转换为字符串）
 
-	private fun Any?.mapValue():String {
+	private fun Any?.mapValue(): String {
 		return when {
 			this == null -> mapNullValue()
 			this is Array<*> -> this.mapIndexedValue()
@@ -129,32 +129,32 @@ class PropertiesMapper(
 		}
 	}
 
-	private fun mapNullValue():String {
+	private fun mapNullValue(): String {
 		return "null"
 	}
 
-	private fun Array<*>.mapIndexedValue():String {
+	private fun Array<*>.mapIndexedValue(): String {
 		return this.joinToString(valueSeparator) { it.doWrap() }.doIndent().let { "$arrayPrefix$it" }
 	}
 
-	private fun Iterable<*>.mapIndexedValue():String {
+	private fun Iterable<*>.mapIndexedValue(): String {
 		return this.joinToString(valueSeparator) { it.doWrap() }.doIndent().let { "$arrayPrefix$it" }
 	}
 
-	private fun Sequence<*>.mapIndexedValue():String {
+	private fun Sequence<*>.mapIndexedValue(): String {
 		return this.joinToString(valueSeparator) { it.toString().doWrap() }.doIndent().let { "$arrayPrefix$it" }
 	}
 
-	private fun Any.mapNormalValue():String {
+	private fun Any.mapNormalValue(): String {
 		return this.doWrap()
 	}
 
 
-	override fun <T> unmap(string:String, type:Class<T>):T {
+	override fun <T> unmap(string: String, type: Class<T>): T {
 		TODO("not implemented")
 	}
 
-	override fun <T> unmap(string:String, type:Type):T {
+	override fun <T> unmap(string: String, type: Type): T {
 		TODO("not implemented")
 	}
 }
