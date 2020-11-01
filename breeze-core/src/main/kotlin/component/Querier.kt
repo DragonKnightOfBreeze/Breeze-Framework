@@ -27,10 +27,6 @@ interface Querier<T : Any,R> {
 		return runCatching { query(value, queryObject) }.getOrNull()
 	}
 
-	companion object {
-		//不需要进行注册
-	}
-
 	//region Default Queriers
 	/**
 	 * 查询所有结果的查询器。

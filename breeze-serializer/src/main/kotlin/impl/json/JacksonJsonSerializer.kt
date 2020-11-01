@@ -19,7 +19,7 @@ internal object JacksonJsonSerializer : JsonSerializer, JacksonSerializer<JsonMa
 	override val delegate: JsonMapper get() = mapper
 
 	init {
-		if(presentInClassPath("com.fasterxml.jackson.module.kotlin.KotlinModule")) mapper.registerKotlinModule()
+		mapper.findAndRegisterModules()
 	}
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {

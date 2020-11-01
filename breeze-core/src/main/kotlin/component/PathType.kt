@@ -78,10 +78,6 @@ interface PathType {
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
-	companion object {
-		//不需要进行注册
-	}
-
 	//region Default Path Types
 
 	abstract class AbstractPathType(

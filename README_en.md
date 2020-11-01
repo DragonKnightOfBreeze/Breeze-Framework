@@ -42,7 +42,7 @@ Provide tools and extensions for Java FX.
 
 Provide a simple logger api.
 
-## breeze-mapper
+## ~~breeze-mapper~~
 
 Provide a simple mapper api, for serialize and deserialize data.
 Can be sufficient configured.
@@ -51,7 +51,7 @@ Can be sufficient configured.
 
 Provide utilities and extensions for Java reflection and Kotlin reflection.
 
-## breeze-serializer
+## ~~breeze-serializer~~
 
 Provides a concise and unified serializer api, based on third-party libraries, for serialize and deserialize data.
 Can be sufficient configured.

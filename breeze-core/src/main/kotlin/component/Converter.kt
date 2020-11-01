@@ -17,6 +17,7 @@ import java.util.*
  * 转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
  */
 @BreezeComponent
+@Suppress("UNCHECKED_CAST")
 interface Converter<T, R> {
 	/**
 	 * 源类型和目标类型的类型对。

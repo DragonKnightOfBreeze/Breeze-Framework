@@ -26,10 +26,6 @@ interface Encoder {
 	 */
 	fun decode(value:String,charset:Charset=Charsets.UTF_8):String
 
-	companion object{
-		//不需要进行注册
-	}
-
 	//region Default Encoders
 	/**
 	 * Base64编码器。

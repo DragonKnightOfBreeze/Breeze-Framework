@@ -19,7 +19,8 @@
 * [X] 更新README
 * [X] 添加`Encoder`组件
 * [X] 添加`Encrypter`组件
-* [ ] 整理`breeze-dsl`中
+* [X] 添加模块`breeze-serialization`中
+* [ ] 整理模块`breeze-dsl`中
 * [ ] 用于处理CSV和TSV的`Mapper`
 
 ## 1.x.x

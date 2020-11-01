@@ -25,10 +25,6 @@ interface Encrypter {
 	 */
 	fun decrypt(value:ByteArray,secret:ByteArray? = null):ByteArray
 
-	companion object{
-		//不需要进行注册
-	}
-
 	//region Default Encrypters
 	/**
 	 * 基于密码器的加密器。支持解密。需要指定密钥。
