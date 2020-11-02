@@ -28,6 +28,7 @@
 * [ ] breeze-serialization 实现默认的用于处理CSV的`BreezeCsvMapper`
 * [ ] breeze-serialization 实现默认的用于处理TSV的`BreezeTsvMapper`
 * [ ] breeze-dsl 重构代码
+* [X] 移除`breeze-mapper`，`breeze-serializer`，`breeze-generator`并合并到`breeze-unstable`
 
 ## 1.x.x
 

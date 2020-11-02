@@ -42,16 +42,11 @@
 
 提供简单的日志器的api。
 
-## ~~breeze-mapper~~
-
-提供简单的映射器api，用于进行数据的序列化与反序列化。
-可以进行充分的配置。
-
 ## breeze-reflect
 
 为Java反射和Kotlin反射提供工具和扩展。
 
-## ~~breeze-serializer~~
+## breeze-serialization
 
 提供简洁而统一的序列化器api，基于第三方库，用于进行数据的序列化与反序列化。
 可以进行充分的配置。

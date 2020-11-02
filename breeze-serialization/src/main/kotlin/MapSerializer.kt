@@ -8,6 +8,8 @@ import java.lang.reflect.*
 
 /**
  * 映射的序列化器。
+ *
+ * 用于映射和对象之间的相互转化。
  */
 @Suppress("UNCHECKED_CAST")
 object MapSerializer {

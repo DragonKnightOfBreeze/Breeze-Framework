@@ -11,7 +11,6 @@ include(
 	"breeze-dsl:breeze-dsl-sequence",
 	"breeze-dsl:breeze-dsl-xml",
 	"breeze-functional",
-	"breeze-generator",
 	"breeze-http",
 	"breeze-javafx",
 	"breeze-linq",
