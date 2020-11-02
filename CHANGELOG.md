@@ -25,7 +25,6 @@
 * [X] 移除`breeze-serializer`
 * [X] breeze-serialization 添加`MapSerializer`
 * [ ] 整理模块`breeze-dsl`中
-* [ ] 
 * [ ] 用于处理CSV和TSV的`Mapper`
 
 ## 1.x.x

@@ -4,12 +4,12 @@
 package com.windea.breezeframework.serialization
 
 import com.windea.breezeframework.reflect.extensions.*
-
-//TODO 完善
+import java.lang.reflect.*
 
 /**
  * 映射的序列化器。
  */
+@Suppress("UNCHECKED_CAST")
 object MapSerializer {
 	/**
 	 * 序列化指定对象为映射。
@@ -53,5 +53,12 @@ object MapSerializer {
 			}
 			return result
 		}
+	}
+
+	/**
+	 * 反序列化指定映射为对象。
+	 */
+	fun <T : Any> deserialize(map: Map<String, Any?>, type: Type): T {
+		return deserialize(map,type.erasedType) as T
 	}
 }

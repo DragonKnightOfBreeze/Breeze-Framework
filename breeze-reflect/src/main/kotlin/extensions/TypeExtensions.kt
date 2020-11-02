@@ -7,24 +7,24 @@ package com.windea.breezeframework.reflect.extensions
 
 import java.lang.reflect.*
 
-//https://github.com/kohesive/klutter/blob/master/reflect/src/main/kotlin/uy/klutter/reflect/TypeErasure.kt
-/**得到当前类型的被擦除类型。*/
+/**
+ * 得到当前类型f的擦除类型。可用于将[Type]转花成[Class]。
+ */
 @Suppress("UNCHECKED_CAST")
-val Type.erasure: Class<out Any>
+val Type.erasedType: Class<Any>
 	get() = when(this) {
 		is Class<*> -> this as Class<Any>
-		is ParameterizedType -> this.rawType.erasure
+		is ParameterizedType -> this.rawType.erasedType
 		is GenericArrayType -> {
-			//getting the array type is a bit trickier
-			val elementType = this.genericComponentType.erasure
-			val testArray = java.lang.reflect.Array.newInstance(elementType, 0)
-			testArray.javaClass
+			val elementType = this.genericComponentType.erasedType
+			val array = java.lang.reflect.Array.newInstance(elementType, 0)
+			array.javaClass
 		}
 		is TypeVariable<*> -> {
-			throw IllegalStateException("Not sure what to do here yet.")
+			throw IllegalStateException("Not sure what to do here yet")
 		}
 		is WildcardType -> {
-			this.upperBounds[0].erasure
+			this.upperBounds[0].erasedType
 		}
 		else -> throw IllegalStateException("Should not get here.")
 	}

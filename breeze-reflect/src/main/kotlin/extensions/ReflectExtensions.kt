@@ -10,7 +10,9 @@ import com.windea.breezeframework.core.extensions.*
 import kotlin.random.*
 import kotlin.reflect.full.*
 
-/**尝试得到当前类型的默认值。*/
+/**
+ * 尝试得到当前类型的默认值。
+ */
 @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 inline fun <reified T : Any> defaultValue(): T = when(val type = T::class) {
 	Int::class -> 0
@@ -25,7 +27,9 @@ inline fun <reified T : Any> defaultValue(): T = when(val type = T::class) {
 	else -> type.createInstance()
 } as T
 
-/**尝试得到当前类型的随机值。*/
+/**
+ * 尝试得到当前类型的随机值。
+ */
 @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 inline fun <reified T : Any> randomValue(): T = when(val type = T::class) {
 	Int::class -> Random.nextLong()
