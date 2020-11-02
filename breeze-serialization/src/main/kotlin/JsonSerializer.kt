@@ -6,9 +6,13 @@ package com.windea.breezeframework.serialization
 import com.alibaba.fastjson.*
 import com.fasterxml.jackson.databind.json.*
 import com.google.gson.*
+import com.windea.breezeframework.core.domain.*
 import kotlinx.serialization.*
+import kotlinx.serialization.getContextualOrDefault
 import kotlinx.serialization.json.*
+import kotlinx.serialization.modules.*
 import java.lang.reflect.*
+import kotlin.reflect.full.*
 
 /**
  * Json序列化器。
@@ -22,11 +26,15 @@ interface JsonSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.databind.json.JsonMapper
 	 */
-	object JacksonJsonSerializer : JsonSerializer, JacksonSerializer, DelegateSerializer {
-		private val mapper by lazy { JsonMapper() }
+	object JacksonJsonSerializer : JsonSerializer, JacksonSerializer, Configurable<JsonMapper> {
+		val mapper by lazy { JsonMapper() }
 
 		init {
 			mapper.findAndRegisterModules()
+		}
+
+		override fun configure(block: JsonMapper.() -> Unit) {
+			mapper.block()
 		}
 
 		override fun <T : Any> serialize(value: T): String {
@@ -47,9 +55,13 @@ interface JsonSerializer : Serializer {
 	 *
 	 * @see com.google.gson.Gson
 	 */
-	object GsonSerializer : JsonSerializer, DelegateSerializer {
+	object GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
 		private val gsonBuilder by lazy { GsonBuilder() }
-		private val gson by lazy { gsonBuilder.create() }
+		val gson by lazy { gsonBuilder.create() }
+
+		override fun configure(block: GsonBuilder.() -> Unit) {
+			gsonBuilder.block()
+		}
 
 		override fun <T : Any> serialize(value: T): String {
 			return gson.toJson(value)
@@ -89,11 +101,22 @@ interface JsonSerializer : Serializer {
 	 * @see kotlinx.serialization.json.Json
 	 */
 	@Suppress("UNCHECKED_CAST")
-	object KotlinxJsonSerializer : JsonSerializer,KotlinxSerializer,DelegateSerializer {
-		private val json by lazy { Json }
+	@OptIn(UnsafeSerializationApi::class)
+	object KotlinxJsonSerializer : JsonSerializer, KotlinxSerializer, Configurable<JsonBuilder> {
+		private var jsonDelegate: Json = Json
+
+		val json by lazy { jsonDelegate }
+
+		override fun configure(block: JsonBuilder.() -> Unit) {
+			jsonDelegate = Json(Json.Default, block)
+		}
 
 		override fun <T : Any> serialize(value: T): String {
-			return json.encodeToString(serializer(value::class.java), value)
+			//FIXME 序列化有泛型参数的类型时会出错
+			val kSerializer = json.serializersModule.getContextual(value::class)
+			                  ?: value::class.serializerOrNull()
+			                  ?: serializer(value::class.createType())
+			return json.encodeToString(kSerializer as KSerializer<T>, value)
 		}
 
 		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
@@ -108,7 +131,7 @@ interface JsonSerializer : Serializer {
 	/**
 	 * 默认的Json序列化器。
 	 */
-	object BreezeJsonSerializer:JsonSerializer{
+	object BreezeJsonSerializer : JsonSerializer {
 		override fun <T : Any> serialize(value: T): String {
 			TODO()
 		}

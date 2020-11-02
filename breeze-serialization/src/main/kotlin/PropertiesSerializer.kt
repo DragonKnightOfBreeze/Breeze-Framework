@@ -4,6 +4,7 @@
 package com.windea.breezeframework.serialization
 
 import com.fasterxml.jackson.dataformat.javaprop.*
+import com.windea.breezeframework.core.domain.*
 import java.lang.reflect.*
 import java.util.*
 
@@ -34,11 +35,15 @@ interface PropertiesSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
 	 */
-	object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer, DelegateSerializer {
-		private val mapper by lazy { JavaPropsMapper() }
+	object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer, Configurable<JavaPropsMapper> {
+		val mapper by lazy { JavaPropsMapper() }
 
 		init {
 			mapper.findAndRegisterModules()
+		}
+
+		override fun configure(block: JavaPropsMapper.() -> Unit) {
+			mapper.block()
 		}
 
 		override fun <T : Any> serialize(value: T): String {

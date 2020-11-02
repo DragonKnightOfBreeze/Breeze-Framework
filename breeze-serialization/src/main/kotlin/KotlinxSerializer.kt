@@ -3,10 +3,12 @@
 
 package com.windea.breezeframework.serialization
 
+import com.windea.breezeframework.core.domain.*
+import kotlinx.serialization.*
+
 /**
  * 由Kotlinx Serialization委托实现的序列化器。
  *
- * @see kotlinx.serialization.SerialFormat
  * @see kotlinx.serialization.StringFormat
  */
-interface KotlinxSerializer : Serializer
+interface KotlinxSerializer : Serializer,DelegateSerializer

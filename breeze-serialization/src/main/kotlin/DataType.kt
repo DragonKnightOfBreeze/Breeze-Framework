@@ -25,9 +25,10 @@ interface DataType {
 	val fileExtensions: Array<String>
 
 	/**
-	 * 对应的序列化器。根据classpath中存在的可以委托实现的第三方库推断而来。
+	 * 对应的序列化器。
+	 * 根据classpath中存在的可以委托实现的第三方库推断而来，也可自行配置。
 	 */
-	val serializer: Serializer
+	var serializer: Serializer
 
 	/**
 	 * 序列化指定对象。
@@ -62,7 +63,7 @@ interface DataType {
 
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
-		override val serializer: Serializer = when {
+		override var serializer: Serializer = when {
 			presentInClassPath(kotlinJsonClassName) -> JsonSerializer.KotlinxJsonSerializer
 			presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer
 			presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer
@@ -80,7 +81,7 @@ interface DataType {
 
 		override val fileExtension: String = "yml"
 		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
-		override val serializer: Serializer=when {
+		override var serializer: Serializer=when {
 			presentInClassPath(jacksonYamlClassName) -> YamlSerializer.JacksonYamlSerializer
 			presentInClassPath(snackYamlClassName) -> YamlSerializer.SnakeYamlSerializer
 			else -> YamlSerializer.BreezeYamlSerializer
@@ -96,7 +97,7 @@ interface DataType {
 		override val fileExtension: String = "xml"
 		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
-		override val serializer: Serializer = when {
+		override var serializer: Serializer = when {
 			presentInClassPath(jacksonXmlClassName) -> XmlSerializer.JacksonXmlSerializer
 			else -> XmlSerializer.BreezeXmlSerializer
 		}
@@ -110,7 +111,7 @@ interface DataType {
 
 		override val fileExtension: String = "properties"
 		override val fileExtensions: Array<String> = arrayOf("properties")
-		override val serializer: Serializer = when {
+		override var serializer: Serializer = when {
 			presentInClassPath(jacksonPropertiesClassName) -> PropertiesSerializer.JacksonPropertiesSerializer
 			else -> PropertiesSerializer.BreezePropertiesSerializer
 		}
@@ -122,7 +123,7 @@ interface DataType {
 	object Csv : DataType {
 		override val fileExtension: String = "csv"
 		override val fileExtensions: Array<String> = arrayOf("csv")
-		override val serializer: Serializer = CsvSerializer.BreezeCsvSerializer
+		override var serializer: Serializer = CsvSerializer.BreezeCsvSerializer
 	}
 
 	/**
@@ -131,7 +132,7 @@ interface DataType {
 	object Tsv : DataType {
 		override val fileExtension: String = "tsv"
 		override val fileExtensions: Array<String> = arrayOf("tsv")
-		override val serializer: Serializer = TsvSerializer.BreezeTsvSerializer
+		override var serializer: Serializer = TsvSerializer.BreezeTsvSerializer
 	}
 	//endregion
 }

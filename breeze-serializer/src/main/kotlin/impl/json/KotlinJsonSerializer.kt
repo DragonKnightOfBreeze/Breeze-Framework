@@ -16,12 +16,13 @@ import kotlin.reflect.full.*
  * @see kotlinx.serialization.json.Json
  */
 @Suppress("UNCHECKED_CAST")
+@OptIn(ExperimentalSerializationApi::class)
 internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	internal val json by lazy { Json }
 	override val delegate: Json get() = json
 
 	override fun <T : Any> read(string: String, type: Class<T>): T {
-		return json.decodeFromString(json.serializersModule.getContextualOrDefault(type.kotlin.createType()), string)
+		return json.decodeFromString(json.serializersModule.getContextual(type.kotlin) as KSerializer<T>, string)
 	}
 
 	override fun <T : Any> read(string: String, type: Type): T {
@@ -29,7 +30,7 @@ internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	}
 
 	override fun <T : Any> read(file: File, type: Class<T>): T {
-		return json.decodeFromString(json.serializersModule.getContextualOrDefault(type.kotlin.createType()), file.readText())
+		return json.decodeFromString(json.serializersModule.getContextual(type.kotlin) as KSerializer<T>, file.readText())
 	}
 
 	override fun <T : Any> read(file: File, type: Type): T {
@@ -37,10 +38,10 @@ internal object KotlinJsonSerializer : JsonSerializer, KotlinSerializer<Json> {
 	}
 
 	override fun <T : Any> write(data: T): String {
-		return json.encodeToString(json.serializersModule.getContextualOrDefault(data::class.createType()), data)
+		return json.encodeToString(json.serializersModule.getContextual(data::class) as KSerializer<T>, data)
 	}
 
 	override fun <T : Any> write(data: T, file: File) {
-		return json.encodeToString(json.serializersModule.getContextualOrDefault(data::class.createType()), data).let { file.writeText(it) }
+		return json.encodeToString(json.serializersModule.getContextual(data::class) as KSerializer<T>, data).let { file.writeText(it) }
 	}
 }

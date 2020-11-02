@@ -348,37 +348,3 @@ fun <T> Map<*, *>.getOrElseBy(path: String, pathType: PathType = PathType.Standa
 	return pathType.getOrElse(this, path, defaultValue)
 }
 //endregion
-
-//region DataType Extensions
-/**
- * 根据指定的数据类型，序列化当前对象。
- */
-@BreezeComponentExtension
-fun <T:Any> T.serialize(dataType:DataType):String{
-	return dataType.serialize(this)
-}
-
-/**
- * 根据指定的数据类型，反序列化当前文本。
- */
-@BreezeComponentExtension
-inline fun <reified T:Any> String.deserialize(dataType:DataType):T{
-	return dataType.deserialize(this,javaTypeOf<T>())
-}
-
-/**
- * 根据指定的数据类型，反序列化当前文本。
- */
-@BreezeComponentExtension
-fun <T:Any> String.deserialize(dataType: DataType,type:Class<T>):T{
-	return dataType.deserialize(this,type)
-}
-
-/**
- * 根据指定的数据类型，反序列化当前文本。
- */
-@BreezeComponentExtension
-fun <T:Any> String.deserialize(dataType: DataType,type: Type):T{
-	return dataType.deserialize(this,type)
-}
-//endregion

@@ -4,6 +4,7 @@
 package com.windea.breezeframework.serialization
 
 import com.fasterxml.jackson.dataformat.yaml.*
+import com.windea.breezeframework.core.domain.*
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.representer.*
 import org.yaml.snakeyaml.constructor.Constructor
@@ -31,11 +32,15 @@ interface YamlSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 	 */
-	object JacksonYamlSerializer : YamlSerializer, JacksonSerializer, DelegateSerializer {
-		private val mapper by lazy { YAMLMapper() }
+	object JacksonYamlSerializer : YamlSerializer, JacksonSerializer, Configurable<YAMLMapper> {
+		val mapper by lazy { YAMLMapper() }
 
 		init {
 			mapper.findAndRegisterModules()
+		}
+
+		override fun configure(block: YAMLMapper.() -> Unit) {
+			mapper.block()
 		}
 
 		override fun <T : Any> serialize(value: T): String {
@@ -63,13 +68,17 @@ interface YamlSerializer : Serializer {
 	 * 由SnakeYaml实现的Yaml序列化器。
 	 * @see org.yaml.snakeyaml.Yaml
 	 */
-	object SnakeYamlSerializer : YamlSerializer, DelegateSerializer {
-		internal val loaderOptions = LoaderOptions()
-		internal val dumperOptions = DumperOptions()
-		internal val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
+	object SnakeYamlSerializer : YamlSerializer, DelegateSerializer,Configurable<Pair<LoaderOptions,DumperOptions>> {
+		private val loaderOptions = LoaderOptions()
+		private val dumperOptions = DumperOptions()
+		val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
 
 		init {
 			dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+		}
+
+		override fun configure(block: Pair<LoaderOptions, DumperOptions>.() -> Unit) {
+			(loaderOptions to dumperOptions).block()
 		}
 
 		override fun <T : Any> serialize(value: T): String {

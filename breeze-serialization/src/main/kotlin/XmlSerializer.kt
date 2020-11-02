@@ -5,6 +5,7 @@ package com.windea.breezeframework.serialization
 
 import com.fasterxml.jackson.databind.json.*
 import com.fasterxml.jackson.dataformat.xml.*
+import com.windea.breezeframework.core.domain.*
 import java.lang.reflect.*
 
 /**
@@ -19,11 +20,15 @@ interface XmlSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.xml.XmlMapper
 	 */
-	object JacksonXmlSerializer : XmlSerializer, JacksonSerializer, DelegateSerializer {
-		private val mapper by lazy { XmlMapper() }
+	object JacksonXmlSerializer : XmlSerializer, JacksonSerializer, Configurable<XmlMapper> {
+		 val mapper by lazy { XmlMapper() }
 
 		init {
 			mapper.findAndRegisterModules()
+		}
+
+		override fun configure(block: XmlMapper.() -> Unit) {
+			mapper.block()
 		}
 
 		override fun <T : Any> serialize(value: T): String {
