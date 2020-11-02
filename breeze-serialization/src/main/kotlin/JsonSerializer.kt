@@ -8,11 +8,8 @@ import com.fasterxml.jackson.databind.json.*
 import com.google.gson.*
 import com.windea.breezeframework.core.domain.*
 import kotlinx.serialization.*
-import kotlinx.serialization.getContextualOrDefault
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.*
 import java.lang.reflect.*
-import kotlin.reflect.full.*
 
 /**
  * Json序列化器。
@@ -57,7 +54,7 @@ interface JsonSerializer : Serializer {
 	 */
 	object GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
 		private val gsonBuilder by lazy { GsonBuilder() }
-		val gson by lazy { gsonBuilder.create() }
+		val gson: Gson by lazy { gsonBuilder.create() }
 
 		override fun configure(block: GsonBuilder.() -> Unit) {
 			gsonBuilder.block()
@@ -101,7 +98,7 @@ interface JsonSerializer : Serializer {
 	 * @see kotlinx.serialization.json.Json
 	 */
 	@Suppress("UNCHECKED_CAST")
-	@OptIn(UnsafeSerializationApi::class)
+	@OptIn(ExperimentalSerializationApi::class)
 	object KotlinxJsonSerializer : JsonSerializer, KotlinxSerializer, Configurable<JsonBuilder> {
 		private var jsonDelegate: Json = Json
 
@@ -112,19 +109,15 @@ interface JsonSerializer : Serializer {
 		}
 
 		override fun <T : Any> serialize(value: T): String {
-			//FIXME 序列化有泛型参数的类型时会出错
-			val kSerializer = json.serializersModule.getContextual(value::class)
-			                  ?: value::class.serializerOrNull()
-			                  ?: serializer(value::class.createType())
-			return json.encodeToString(kSerializer as KSerializer<T>, value)
+			return json.encodeToString(json.serializersModule.serializer(value.javaClass),value)
 		}
 
 		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
-			return json.decodeFromString(serializer(type), value) as T
+			return json.decodeFromString(json.serializersModule.serializer(type), value) as T
 		}
 
 		override fun <T : Any> deserialize(value: String, type: Type): T {
-			return json.decodeFromString(serializer(type), value) as T
+			return json.decodeFromString(json.serializersModule.serializer(type), value) as T
 		}
 	}
 

@@ -56,7 +56,7 @@ interface DataType {
 	 * Json数据类型。
 	 */
 	object Json : DataType {
-		private const val kotlinJsonClassName = "kotlinx.serialization.json.Json"
+		private const val kotlinxJsonClassName = "kotlinx.serialization.json.Json"
 		private const val jacksonJsonClassName = "com.fasterxml.jackson.databind.json.JsonMapper"
 		private const val gsonClassName = "com.google.gson.Gson"
 		private const val fastjsonClassName = "com.alibaba.fastjson.JSON"
@@ -64,7 +64,7 @@ interface DataType {
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
 		override var serializer: Serializer = when {
-			presentInClassPath(kotlinJsonClassName) -> JsonSerializer.KotlinxJsonSerializer
+			presentInClassPath(kotlinxJsonClassName) -> JsonSerializer.KotlinxJsonSerializer
 			presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer
 			presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer
 			presentInClassPath(fastjsonClassName) -> JsonSerializer.FastJsonSerializer

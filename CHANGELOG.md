@@ -21,6 +21,7 @@
 * [X] 添加`Encrypter`组件
 * [X] 添加模块`breeze-serialization`中
 * [X] 废弃`breeze-mapper`和`breeze-serializer`并完善`breeze-serialization`
+* [X] 完善`breeze-serialization`
 * [ ] 整理模块`breeze-dsl`中
 * [ ] 用于处理CSV和TSV的`Mapper`
 
