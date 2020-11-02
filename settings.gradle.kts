@@ -18,7 +18,6 @@ include(
 	"breeze-logger",
 	"breeze-mapper",
 	"breeze-reflect",
-	"breeze-serializer",
 	"breeze-serialization",
 	"breeze-spring-boot",
 	"breeze-time",

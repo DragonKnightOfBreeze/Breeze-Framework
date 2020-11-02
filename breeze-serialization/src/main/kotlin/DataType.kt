@@ -11,6 +11,8 @@ import java.lang.reflect.*
  * 数据类型。
  *
  * 数据类型基于一定的格式存储数据。
+ *
+ * @see Serializer
  */
 @BreezeComponent
 interface DataType {
@@ -26,12 +28,15 @@ interface DataType {
 
 	/**
 	 * 对应的序列化器。
-	 * 根据classpath中存在的可以委托实现的第三方库推断而来，也可自行配置。
+	 *
+	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
 	 */
 	var serializer: Serializer
 
 	/**
 	 * 序列化指定对象。
+	 *
+	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
 	 */
 	fun <T : Any> serialize(value: T): String {
 		return serializer.serialize(value)
@@ -39,6 +44,8 @@ interface DataType {
 
 	/**
 	 * 反序列化指定文本。
+	 *
+	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
 	 */
 	fun <T : Any> deserialize(value: String, type: Class<T>): T {
 		return serializer.deserialize(value, type)
@@ -46,6 +53,8 @@ interface DataType {
 
 	/**
 	 * 反序列化指定文本。
+	 *
+	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
 	 */
 	fun <T> deserialize(value: String, type: Type): T {
 		return serializer.deserialize(value, type)

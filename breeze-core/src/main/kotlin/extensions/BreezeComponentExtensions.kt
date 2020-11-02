@@ -5,12 +5,13 @@ package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.component.*
-import java.lang.reflect.*
 import java.nio.charset.*
 
 //region Converter Extensions
 /**
  * 将当前对象转化为指定类型。如果转换失败，则抛出异常。转化后的对象是基于一般转化逻辑得到的新对象。
+ *
+ * @see Converter
  */
 @BreezeComponentExtension
 inline fun <reified T> Any?.convert(): T {
@@ -19,6 +20,8 @@ inline fun <reified T> Any?.convert(): T {
 
 /**
  * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般转化逻辑得到的新对象。
+ *
+ * @see Converter
  */
 @BreezeComponentExtension
 inline fun <reified T> Any?.convertOrNull(): T? {
@@ -51,6 +54,8 @@ fun String.unescapeBy(escaper: Escaper): String {
 //region Decoder Extensions
 /**
  * 根据指定的编码器，编码当前字符串，以指定的字符集显示。
+ *
+ * @see Encoder
  */
 @BreezeComponentExtension
 fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
@@ -59,6 +64,8 @@ fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
 
 /**
  * 根据指定的编码器，解码当前字符串，以指定的字符集显示。
+ *
+ * @see Encoder
  */
 @BreezeComponentExtension
 fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
@@ -69,6 +76,8 @@ fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
 //region Encrypter Extensions
 /**
  * 根据指定的加密器，加密当前字节数组。
+ *
+ * @see Encrypter
  */
 @BreezeComponentExtension
 fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray {
@@ -79,6 +88,7 @@ fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray 
  * 根据指定的加密器，解密当前字符串。某些加密算法可能不支持解密。
  *
  * @throws UnsupportedOperationException 如果不支持解密。
+ * @see Encrypter
  */
 @BreezeComponentExtension
 fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray {
@@ -89,9 +99,11 @@ fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray
 //region CaseType Extensions
 /**
  * 尝试推断当前字符串的字母格式。
+ *
+ * @see CaseType
  */
 @BreezeComponentExtension
-fun String.inferLetterCase(): CaseType? {
+fun String.inferCase(): CaseType? {
 	return CaseType.infer(this)
 }
 
@@ -172,7 +184,7 @@ fun String.switchCaseBy(sourceCaseType: CaseType, targetCaseType: CaseType): Str
  */
 @BreezeComponentExtension
 fun String.switchCaseBy(targetCaseType: CaseType): String {
-	val sourceLetterCase = inferLetterCase() ?: throw IllegalArgumentException("Cannot infer case type for string '$this'.")
+	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer case type for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetCaseType)
 }
 //endregion

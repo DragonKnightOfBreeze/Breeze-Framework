@@ -20,6 +20,8 @@ import java.lang.reflect.*
  *
  * 序列化器用于对数据进行序列化和反序列化。
  * 其具体实现可能需要依赖第三方库，如`gson`，`fastjson`，`jackson`和`kotlinx-serialization`。
+ *
+ * @see DataType
  */
 @BreezeComponent
 interface Serializer {
