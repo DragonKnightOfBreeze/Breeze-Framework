@@ -81,7 +81,7 @@ interface MermaidStateDiagramDslDefinitions {
 
 		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(indent)
-			return "state $name{$ls$contentSnippet$ls}"
+			return "state $name{\n$contentSnippet\n}"
 		}
 	}
 
@@ -95,8 +95,8 @@ interface MermaidStateDiagramDslDefinitions {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val sectionsSnippet = sections.joinToText("$ls---$ls").doIndent(indent)
-			return "state $name{$ls$sectionsSnippet$ls}"
+			val sectionsSnippet = sections.joinToText("\n---\n").doIndent(indent)
+			return "state $name{\n$sectionsSnippet\n}"
 		}
 	}
 
@@ -146,7 +146,7 @@ interface MermaidStateDiagramDslDefinitions {
 
 		override fun toString(): String {
 			return when {
-				wrapContent -> "note $location$ls${text.htmlWrap().doIndent(indent)}${ls}end note"
+				wrapContent -> "note $location\n${text.htmlWrap().doIndent(indent)}${ls}end note"
 				else -> "note $location: ${text.htmlWrap()}"
 			}
 		}

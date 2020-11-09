@@ -136,7 +136,7 @@ interface MermaidSequenceDiagramDslDefinitions {
 
 		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
-			return "$type $text$ls$contentSnippet${ls}end"
+			return "$type $text\n$contentSnippet${ls}end"
 		}
 	}
 

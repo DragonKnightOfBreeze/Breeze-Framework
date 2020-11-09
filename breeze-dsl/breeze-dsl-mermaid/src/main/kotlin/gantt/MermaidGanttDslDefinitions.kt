@@ -73,7 +73,7 @@ interface MermaidGanttDslDefinitions {
 		override val id: String get() = name
 
 		override fun toString(): String {
-			val tasksSnippet = tasks.ifNotEmpty { "$ls${it.joinToText(ls).doIndent(MermaidDslConfig.indent)}" }
+			val tasksSnippet = tasks.ifNotEmpty { "\n${it.joinToText(ls).doIndent(MermaidDslConfig.indent)}" }
 			return "section $name$tasksSnippet"
 		}
 	}

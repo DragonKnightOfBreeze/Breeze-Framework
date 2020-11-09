@@ -26,15 +26,11 @@ interface CriticMarkupDsl {
 		override val inlineText get() = text
 	}
 
-	class Addition @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : Mark() {
+	class Addition @PublishedApi internal constructor(override val text: CharSequence) : Mark() {
 		override fun toString() = "{++$text++}"
 	}
 
-	class Deletion @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : Mark() {
+	class Deletion @PublishedApi internal constructor(override val text: CharSequence) : Mark() {
 		override fun toString() = "{--$text--}"
 	}
 
@@ -44,15 +40,11 @@ interface CriticMarkupDsl {
 		override fun toString() = "{~~$text~>$newText~~}"
 	}
 
-	class Comment @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : Mark() {
+	class Comment @PublishedApi internal constructor(override val text: CharSequence) : Mark() {
 		override fun toString() = "{>>$text<<}"
 	}
 
-	class Highlight @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : Mark() {
+	class Highlight @PublishedApi internal constructor(override val text: CharSequence) : Mark() {
 		override fun toString() = "{==$text==}"
 	}
 }

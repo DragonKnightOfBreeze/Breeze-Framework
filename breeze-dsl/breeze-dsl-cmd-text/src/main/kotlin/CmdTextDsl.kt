@@ -1,8 +1,6 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress( "CanBeParameter")
-
 package com.windea.breezeframework.dsl.cmdtext
 
 import com.windea.breezeframework.core.domain.*
@@ -40,44 +38,32 @@ interface CmdTextDsl {
 	}
 
 	@CmdTextDslMarker
-	class BoldText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class BoldText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Bold.code.toString()
 	}
 
 	@CmdTextDslMarker
-	class LightText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class LightText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Light.code.toString()
 	}
 
 	@CmdTextDslMarker
-	class ItalicText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class ItalicText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Italic.code.toString()
 	}
 
 	@CmdTextDslMarker
-	class UnderlineText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class UnderlineText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Underline.code.toString()
 	}
 
 	@CmdTextDslMarker
-	class BlinkText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class BlinkText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Blink.code.toString()
 	}
 
 	@CmdTextDslMarker
-	class InvertText @PublishedApi internal constructor(
-		override val text: CharSequence
-	) : RichText() {
+	class InvertText @PublishedApi internal constructor(override val text: CharSequence) : RichText() {
 		override val code = Style.Invert.code.toString()
 	}
 

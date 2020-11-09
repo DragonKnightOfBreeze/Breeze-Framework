@@ -93,7 +93,7 @@ interface MermaidClassDiagramDslDefinitions {
 		override fun toString(): String {
 			val contentSnippet = when {
 				annotation == null && statements.isEmpty() -> ""
-				else -> "{$ls${arrayOf(annotation, statements.joinToText(ls)).joinToText(ls).doIndent(indent)}$ls}"
+				else -> "{\n${arrayOf(annotation, statements.joinToText(ls)).joinToText(ls).doIndent(indent)}\n}"
 			}
 			return "class $name$contentSnippet"
 		}

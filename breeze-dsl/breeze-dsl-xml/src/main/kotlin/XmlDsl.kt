@@ -31,6 +31,7 @@ interface XmlDsl {
 		}
 	}
 
+	@XmlDslMarker
 	object Config : DslConfig {
 		var indent: String = "  "
 		var doubleQuoted: Boolean = true

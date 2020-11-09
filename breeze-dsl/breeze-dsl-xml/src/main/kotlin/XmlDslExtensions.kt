@@ -50,11 +50,7 @@ inline fun Document.element(name: String, block: Element.() -> Unit = {}): Eleme
  * 创建一个[XmlDsl.Element]并注册。
  */
 @XmlDslMarker
-inline fun Document.element(
-	name: String,
-	vararg attributes: Pair<String, Any?>,
-	block: Element.() -> Unit = {},
-): Element {
+inline fun Document.element(name: String, vararg attributes: Pair<String, Any?>, block: Element.() -> Unit = {}): Element {
 	return Element(name, attributes.toMap()).apply(block).also { rootElement = it }
 }
 
@@ -86,7 +82,7 @@ fun Element.comment(text: String): Comment {
  * 创建一个[XmlDsl.Element]并注册。
  */
 @XmlDslMarker
-inline fun Element.element(name: String, block: Element.() -> Unit = {} ): Element {
+inline fun Element.element(name: String, block: Element.() -> Unit = {}): Element {
 	return Element(name).apply(block).also { nodes += it }
 }
 
@@ -94,10 +90,6 @@ inline fun Element.element(name: String, block: Element.() -> Unit = {} ): Eleme
  * 创建一个[XmlDsl.Element]并注册。
  */
 @XmlDslMarker
-inline fun Element.element(
-	name: String,
-	vararg attributes: Pair<String, Any?>,
-	block: Element.() -> Unit = {},
-): Element {
+inline fun Element.element(name: String, vararg attributes: Pair<String, Any?>, block: Element.() -> Unit = {}): Element {
 	return Element(name, attributes.toMap()).apply(block).also { nodes += it }
 }

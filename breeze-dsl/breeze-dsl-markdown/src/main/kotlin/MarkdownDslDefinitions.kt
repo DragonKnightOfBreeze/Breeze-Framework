@@ -36,7 +36,7 @@ interface MarkdownDslDefinitions {
 	interface IDslEntry : DslEntry {
 		val content: MutableList<TopDslElement>
 
-		override fun toContentString(): String = content.joinToText("$ls$ls")
+		override fun toContentString(): String = content.joinToText("\n\n")
 
 		operator fun String.unaryPlus() = TextBlock(this).also { content += it }
 	}
@@ -227,7 +227,7 @@ interface MarkdownDslDefinitions {
 			}
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 			val suffixMarkers = (if(headingLevel == 1) "=" else "-").repeat(markerCount)
-			return "$textSnippet$attributesSnippet$ls$suffixMarkers"
+			return "$textSnippet$attributesSnippet\n$suffixMarkers"
 		}
 	}
 
@@ -370,7 +370,7 @@ interface MarkdownDslDefinitions {
 				title.let { if(wrapContent) it.chunked(wrapLength).joinToText(ls) else it }
 			else title
 			val nodesSnippet = nodes.joinToText(ls)
-			return "$titleSnippet$ls$nodesSnippet"
+			return "$titleSnippet\n$nodesSnippet"
 		}
 	}
 
@@ -410,7 +410,7 @@ interface MarkdownDslDefinitions {
 			val headerRowSnippet = header.toString()
 			val delimitersSnippet = header.toDelimitersString()
 			val rowsSnippet = rows.joinToText(ls)
-			return "$headerRowSnippet$ls$delimitersSnippet$ls$rowsSnippet"
+			return "$headerRowSnippet\n$delimitersSnippet\n$rowsSnippet"
 		}
 	}
 
@@ -535,7 +535,7 @@ interface MarkdownDslDefinitions {
 		override fun toString(): String {
 			val markersSnippet = horizontalLineMarkers
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			return "$markersSnippet$language$attributesSnippet$ls$code$ls$markersSnippet"
+			return "$markersSnippet$language$attributesSnippet\n$code\n$markersSnippet"
 		}
 	}
 
@@ -560,7 +560,7 @@ interface MarkdownDslDefinitions {
 		override val code: String,
 	) : TopDslElement, Math {
 		override fun toString(): String {
-			return "$$$ls$code$ls$$"
+			return "$$\n$code\n$$"
 		}
 	}
 
@@ -577,7 +577,7 @@ interface MarkdownDslDefinitions {
 
 			val titleSnippet = title.quote(quote)
 			val contentSnippet = toContentString().prependIndent(indent)
-			return "${type.text} ${qualifier.text} $titleSnippet$ls$contentSnippet"
+			return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 		}
 	}
 
@@ -588,7 +588,7 @@ interface MarkdownDslDefinitions {
 		@Language("Yaml") val text: String,
 	) : IDslElement {
 		override fun toString(): String {
-			return "---$ls$text$ls---"
+			return "---\n$text\n---"
 		}
 	}
 
@@ -643,7 +643,7 @@ interface MarkdownDslDefinitions {
 
 		override fun toString(): String {
 			val contentSnippet = toContentString()
-			return ">>> $name$ls$contentSnippet$ls<<<"
+			return ">>> $name\n$contentSnippet\n<<<"
 		}
 	}
 

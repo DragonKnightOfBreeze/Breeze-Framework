@@ -120,7 +120,7 @@ interface MermaidFlowChartDslDefinitions {
 
 		override fun toString(): String {
 			val contentSnippet = toContentString().doIndent(MermaidDslConfig.indent)
-			return "subgraph $name$ls$contentSnippet${ls}end}"
+			return "subgraph $name\n$contentSnippet${ls}end}"
 		}
 	}
 
