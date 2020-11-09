@@ -22,7 +22,7 @@ interface TsvSerializer : Serializer {
 	/**
 	 * 框架本身实现的Tsv序列化器。
 	 */
-	object BreezeTsvSerializer:TsvSerializer{
+	class BreezeTsvSerializer:TsvSerializer{
 		override fun <T : Any> serialize(value: T): String {
 			TODO()
 		}

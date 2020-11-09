@@ -39,7 +39,7 @@ interface YamlSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 	 */
-	object JacksonYamlSerializer : YamlSerializer, JacksonSerializer, Configurable<YAMLMapper> {
+	class JacksonYamlSerializer : YamlSerializer, JacksonSerializer, Configurable<YAMLMapper> {
 		val mapper by lazy { YAMLMapper() }
 
 		init {
@@ -75,7 +75,7 @@ interface YamlSerializer : Serializer {
 	 * 由SnakeYaml实现的Yaml序列化器。
 	 * @see org.yaml.snakeyaml.Yaml
 	 */
-	object SnakeYamlSerializer : YamlSerializer, DelegateSerializer,Configurable<Pair<LoaderOptions,DumperOptions>> {
+	class SnakeYamlSerializer : YamlSerializer, DelegateSerializer,Configurable<Pair<LoaderOptions,DumperOptions>> {
 		private val loaderOptions = LoaderOptions()
 		private val dumperOptions = DumperOptions()
 		val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
@@ -112,7 +112,7 @@ interface YamlSerializer : Serializer {
 	/**
 	 * 框架本身实现的Yaml序列化器。
 	 */
-	object BreezeYamlSerializer:YamlSerializer{
+	class BreezeYamlSerializer:YamlSerializer{
 		override fun serializeAll(value: List<Any>): String {
 			TODO()
 		}

@@ -30,7 +30,7 @@ interface JsonSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.databind.json.JsonMapper
 	 */
-	object JacksonJsonSerializer : JsonSerializer, JacksonSerializer, Configurable<JsonMapper> {
+	class JacksonJsonSerializer : JsonSerializer, JacksonSerializer, Configurable<JsonMapper> {
 		val mapper by lazy { JsonMapper() }
 
 		init {
@@ -59,7 +59,7 @@ interface JsonSerializer : Serializer {
 	 *
 	 * @see com.google.gson.Gson
 	 */
-	object GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
+	class GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
 		private val gsonBuilder by lazy { GsonBuilder() }
 		val gson: Gson by lazy { gsonBuilder.create() }
 
@@ -85,7 +85,7 @@ interface JsonSerializer : Serializer {
 	 *
 	 * @see com.alibaba.fastjson.JSON
 	 */
-	object FastJsonSerializer : JsonSerializer, DelegateSerializer {
+	class FastJsonSerializer : JsonSerializer, DelegateSerializer {
 		override fun <T : Any> serialize(value: T): String {
 			return JSON.toJSONString(value)
 		}
@@ -106,7 +106,7 @@ interface JsonSerializer : Serializer {
 	 */
 	@Suppress("UNCHECKED_CAST")
 	@OptIn(ExperimentalSerializationApi::class)
-	object KotlinxJsonSerializer : JsonSerializer, KotlinxSerializer, Configurable<JsonBuilder> {
+	class KotlinxJsonSerializer : JsonSerializer, KotlinxSerializer, Configurable<JsonBuilder> {
 		private var jsonDelegate: Json = Json
 
 		val json by lazy { jsonDelegate }
@@ -131,7 +131,7 @@ interface JsonSerializer : Serializer {
 	/**
 	 * 框架本身实现的Json序列化器。
 	 */
-	object BreezeJsonSerializer : JsonSerializer {
+	class BreezeJsonSerializer : JsonSerializer {
 		override fun <T : Any> serialize(value: T): String {
 			TODO()
 		}

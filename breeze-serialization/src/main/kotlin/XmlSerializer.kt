@@ -27,7 +27,7 @@ interface XmlSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.xml.XmlMapper
 	 */
-	object JacksonXmlSerializer : XmlSerializer, JacksonSerializer, Configurable<XmlMapper> {
+	class JacksonXmlSerializer : XmlSerializer, JacksonSerializer, Configurable<XmlMapper> {
 		 val mapper by lazy { XmlMapper() }
 
 		init {
@@ -54,7 +54,7 @@ interface XmlSerializer : Serializer {
 	/**
 	 * 框架本身实现的Xml序列化器。
 	 */
-	object BreezeXmlSerializer:XmlSerializer{
+	class BreezeXmlSerializer:XmlSerializer{
 		override fun <T : Any> serialize(value: T): String {
 			TODO()
 		}

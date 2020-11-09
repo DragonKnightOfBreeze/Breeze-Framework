@@ -7,7 +7,6 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.*
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.*
@@ -414,6 +413,7 @@ fun <T> MutableList<T>.removeAllAt(indices: IntRange) {
 	for(index in indices.reversed()) this.removeAt(index)
 }
 
+
 /**
  * 将指定索引的元素插入到另一索引处。注意后者为移动前的索引，而非移动后的索引。
  */
@@ -548,7 +548,7 @@ inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T
  * 级别从1开始。
  */
 @UnstableApi
-fun <T : Any, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List<List<T>> {
+fun <T, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List<List<T>> {
 	val elementAndLevels = this.map { it to levelSelector(it) }
 	val result = mutableListOf<List<T>>()
 	val parents = mutableListOf<T>()
@@ -574,18 +574,20 @@ fun <T : Any, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List
 }
 
 /**
- * 根据指定的操作，以初始值为起点，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，返回收集到的元素的列表。
+ * 根据指定的操作，遍历当前列表，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，返回收集到的元素的列表。
  */
 @UnstableApi
-fun <T> T.expand(operation: (T) -> Iterable<T>): List<T> {
-	var nextResult = operation(this)
-	//如果经过一次操作后没有发生变化，则直接返回
-	if(nextResult.singleOrNull() == this) return nextResult.toList()
-	//否则递归进行操作，直到结果中不再有数据
+fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 	val result = mutableListOf<T>()
-	while(nextResult.any()) {
+	var nextResult = this
+	//递归进行操作，直到结果中不再有数据
+	while(nextResult.any()){
 		result += nextResult
-		nextResult = nextResult.flatMap { operation(it) }
+		nextResult = nextResult.flatMap { e->
+			val r = operation(e)
+			//如果进行操作后得到的结果只有1个且与原元素相等，则跳过
+			if(r.singleOrNull() != e) r else emptyList()
+		}
 	}
 	return result
 }

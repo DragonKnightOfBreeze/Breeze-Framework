@@ -42,7 +42,7 @@ interface PropertiesSerializer : Serializer {
 	 *
 	 * @see com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
 	 */
-	object JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer, Configurable<JavaPropsMapper> {
+	class JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer, Configurable<JavaPropsMapper> {
 		val mapper by lazy { JavaPropsMapper() }
 
 		init {
@@ -81,7 +81,7 @@ interface PropertiesSerializer : Serializer {
 	/**
 	 * 框架本身实现的Properties序列化器。
 	 */
-	object BreezePropertiesSerializer:PropertiesSerializer{
+	class BreezePropertiesSerializer:PropertiesSerializer{
 		override fun <T : Any> serializeProperties(value: T): Properties {
 			TODO()
 		}

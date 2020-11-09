@@ -13,11 +13,11 @@ private const val gsonClassName = "com.google.gson.Gson"
 private const val fastjsonClassName = "com.alibaba.fastjson.JSON"
 
 internal val  defaultJsonSerializer: JsonSerializer = when {
-	presentInClassPath(kotlinxJsonClassName) -> JsonSerializer.KotlinxJsonSerializer
-	presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer
-	presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer
-	presentInClassPath(fastjsonClassName) -> JsonSerializer.FastJsonSerializer
-	else -> JsonSerializer.BreezeJsonSerializer
+	presentInClassPath(kotlinxJsonClassName) -> JsonSerializer.KotlinxJsonSerializer()
+	presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer()
+	presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer()
+	presentInClassPath(fastjsonClassName) -> JsonSerializer.FastJsonSerializer()
+	else -> JsonSerializer.BreezeJsonSerializer()
 }
 
 
@@ -25,9 +25,9 @@ private const val jacksonYamlClassName = "com.fasterxml.jackson.dataformat.yaml.
 private const val snackYamlClassName = "org.yaml.snakeyaml.Yaml"
 
 internal val defaultYamlSerializer: YamlSerializer = when {
-	presentInClassPath(jacksonYamlClassName) -> YamlSerializer.JacksonYamlSerializer
-	presentInClassPath(snackYamlClassName) -> YamlSerializer.SnakeYamlSerializer
-	else -> YamlSerializer.BreezeYamlSerializer
+	presentInClassPath(jacksonYamlClassName) -> YamlSerializer.JacksonYamlSerializer()
+	presentInClassPath(snackYamlClassName) -> YamlSerializer.SnakeYamlSerializer()
+	else -> YamlSerializer.BreezeYamlSerializer()
 }
 
 
@@ -35,20 +35,20 @@ internal val defaultYamlSerializer: YamlSerializer = when {
 private const val jacksonXmlClassName = "com.fasterxml.jackson.dataformat.xml.XmlMapper"
 
 internal val defaultXmlSerializer: XmlSerializer = when {
-	presentInClassPath(jacksonXmlClassName) -> XmlSerializer.JacksonXmlSerializer
-	else -> XmlSerializer.BreezeXmlSerializer
+	presentInClassPath(jacksonXmlClassName) -> XmlSerializer.JacksonXmlSerializer()
+	else -> XmlSerializer.BreezeXmlSerializer()
 }
 
 
 private const val jacksonPropertiesClassName = "com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper"
 
 internal val defaultPropertiesSerializer: PropertiesSerializer =  when {
-	presentInClassPath(jacksonPropertiesClassName) -> PropertiesSerializer.JacksonPropertiesSerializer
-	else -> PropertiesSerializer.BreezePropertiesSerializer
+	presentInClassPath(jacksonPropertiesClassName) -> PropertiesSerializer.JacksonPropertiesSerializer()
+	else -> PropertiesSerializer.BreezePropertiesSerializer()
 }
 
 
-internal val defaultCsvSerializer: CsvSerializer = CsvSerializer.BreezeCsvSerializer
+internal val defaultCsvSerializer: CsvSerializer = CsvSerializer.BreezeCsvSerializer()
 
 
-internal val defaultTsvSerializer: TsvSerializer = TsvSerializer.BreezeTsvSerializer
+internal val defaultTsvSerializer: TsvSerializer = TsvSerializer.BreezeTsvSerializer()

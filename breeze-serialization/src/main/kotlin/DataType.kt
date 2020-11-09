@@ -28,6 +28,8 @@ interface DataType {
 	 * 对应的序列化器。
 	 *
 	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 *
+	 * 可以进行自定义。
 	 */
 	val serializer: Serializer
 
@@ -65,7 +67,7 @@ interface DataType {
 	object Json : DataType {
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
-		override val serializer: JsonSerializer = defaultJsonSerializer
+		override var serializer: JsonSerializer = defaultJsonSerializer
 	}
 
 	/**
@@ -74,7 +76,7 @@ interface DataType {
 	object Yaml : DataType {
 		override val fileExtension: String = "yml"
 		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
-		override val serializer: YamlSerializer = defaultYamlSerializer
+		override var serializer: YamlSerializer = defaultYamlSerializer
 	}
 
 	/**
@@ -84,7 +86,7 @@ interface DataType {
 		override val fileExtension: String = "xml"
 		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
-		override val serializer: XmlSerializer = defaultXmlSerializer
+		override var serializer: XmlSerializer = defaultXmlSerializer
 	}
 
 	/**
@@ -93,7 +95,7 @@ interface DataType {
 	object Properties : DataType {
 		override val fileExtension: String = "properties"
 		override val fileExtensions: Array<String> = arrayOf("properties")
-		override val serializer: PropertiesSerializer = defaultPropertiesSerializer
+		override var serializer: PropertiesSerializer = defaultPropertiesSerializer
 	}
 
 	/**
@@ -102,7 +104,7 @@ interface DataType {
 	object Csv : DataType {
 		override val fileExtension: String = "csv"
 		override val fileExtensions: Array<String> = arrayOf("csv")
-		override val serializer: CsvSerializer = defaultCsvSerializer
+		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 
 	/**
@@ -111,7 +113,7 @@ interface DataType {
 	object Tsv : DataType {
 		override val fileExtension: String = "tsv"
 		override val fileExtensions: Array<String> = arrayOf("tsv")
-		override val serializer: TsvSerializer = defaultTsvSerializer
+		override var serializer: TsvSerializer = defaultTsvSerializer
 	}
 	//endregion
 }

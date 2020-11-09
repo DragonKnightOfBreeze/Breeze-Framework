@@ -22,7 +22,7 @@ interface CsvSerializer : Serializer{
 	/**
 	 * 框架本身实现的Csv序列化器。
 	 */
-	object BreezeCsvSerializer:CsvSerializer{
+	class BreezeCsvSerializer:CsvSerializer{
 		override fun <T : Any> serialize(value: T): String {
 			TODO()
 		}
