@@ -2,9 +2,7 @@
 // Breeze is blowing...
 
 package com.windea.breezeframework.serialization
-
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
 import java.lang.reflect.*
 
 /**
@@ -67,7 +65,7 @@ interface DataType {
 	object Json : DataType {
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
-		override var serializer: JsonSerializer = defaultJsonSerializer
+		override val serializer: JsonSerializer = defaultJsonSerializer
 	}
 
 	/**
@@ -76,7 +74,7 @@ interface DataType {
 	object Yaml : DataType {
 		override val fileExtension: String = "yml"
 		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
-		override var serializer: YamlSerializer = defaultYamlSerializer
+		override val serializer: YamlSerializer = defaultYamlSerializer
 	}
 
 	/**
@@ -86,7 +84,7 @@ interface DataType {
 		override val fileExtension: String = "xml"
 		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
-		override var serializer: XmlSerializer = defaultXmlSerializer
+		override val serializer: XmlSerializer = defaultXmlSerializer
 	}
 
 	/**
@@ -95,7 +93,7 @@ interface DataType {
 	object Properties : DataType {
 		override val fileExtension: String = "properties"
 		override val fileExtensions: Array<String> = arrayOf("properties")
-		override var serializer: PropertiesSerializer = defaultPropertiesSerializer
+		override val serializer: PropertiesSerializer = defaultPropertiesSerializer
 	}
 
 	/**
@@ -104,7 +102,7 @@ interface DataType {
 	object Csv : DataType {
 		override val fileExtension: String = "csv"
 		override val fileExtensions: Array<String> = arrayOf("csv")
-		override var serializer: CsvSerializer = defaultCsvSerializer
+		override val serializer: CsvSerializer = defaultCsvSerializer
 	}
 
 	/**
@@ -113,7 +111,7 @@ interface DataType {
 	object Tsv : DataType {
 		override val fileExtension: String = "tsv"
 		override val fileExtensions: Array<String> = arrayOf("tsv")
-		override var serializer: TsvSerializer = defaultTsvSerializer
+		override val serializer: TsvSerializer = defaultTsvSerializer
 	}
 	//endregion
 }
