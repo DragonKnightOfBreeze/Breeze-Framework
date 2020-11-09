@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.markdown
 
 /**
- * DslDocument marker of [MarkdownDsl].
+ * [MarkdownDsl]的标记注解。
  */
 @DslMarker
 @MustBeDocumented

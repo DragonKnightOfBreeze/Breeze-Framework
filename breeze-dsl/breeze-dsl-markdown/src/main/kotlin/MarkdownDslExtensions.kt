@@ -5,44 +5,62 @@
 
 package com.windea.breezeframework.dsl.markdown
 
-import com.windea.breezeframework.dsl.markdown.MarkdownDslConfig.emptyColumnText
-import com.windea.breezeframework.dsl.markdown.MarkdownDslDefinitions.*
-import com.windea.breezeframework.dsl.markdown.MarkdownDslDefinitions.List
+import com.windea.breezeframework.dsl.markdown.MarkdownDsl.*
 
 @MarkdownDslMarker
-inline fun markdownDsl(block: MarkdownDsl.() -> Unit) = MarkdownDsl().apply(block)
+inline fun markdownDsl(block: Document.() -> Unit): Document {
+	return Document().apply(block)
+}
 
 @MarkdownDslMarker
-inline fun markdownDslConfig(block: MarkdownDslConfig.() -> Unit) = MarkdownDslConfig.apply(block)
+inline fun markdownDslConfig(block: Config.() -> Unit): Config {
+	return Config.apply(block)
+}
 
 
 @MarkdownDslMarker
-fun InlineDslEntry.b(text: CharSequence) = BoldText(text)
+fun InlineDslEntry.b(text: CharSequence): BoldText {
+	return BoldText(text)
+}
 
 @MarkdownDslMarker
-fun InlineDslEntry.i(text: CharSequence) = ItalicText(text)
+fun InlineDslEntry.i(text: CharSequence): ItalicText {
+	return ItalicText(text)
+}
 
 @MarkdownDslMarker
-fun InlineDslEntry.s(text: CharSequence) = StrokedText(text)
-
-@MarkdownDslMarker
-@MarkdownDslExtendedFeature
-fun InlineDslEntry.u(text: CharSequence) = UnderlinedText(text)
-
-@MarkdownDslMarker
-@MarkdownDslExtendedFeature
-fun InlineDslEntry.em(text: CharSequence) = HighlightText(text)
-
-@MarkdownDslMarker
-@MarkdownDslExtendedFeature
-fun InlineDslEntry.sup(text: CharSequence) = SuperscriptText(text)
+fun InlineDslEntry.s(text: CharSequence): StrokedText {
+	return StrokedText(text)
+}
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun InlineDslEntry.sub(text: CharSequence) = SubscriptText(text)
+fun InlineDslEntry.u(text: CharSequence): UnderlinedText {
+	return UnderlinedText(text)
+}
 
 @MarkdownDslMarker
-fun InlineDslEntry.icon(name: String) = Icon(name)
+@MarkdownDslExtendedFeature
+fun InlineDslEntry.em(text: CharSequence): HighlightText {
+	return HighlightText(text)
+}
+
+@MarkdownDslMarker
+@MarkdownDslExtendedFeature
+fun InlineDslEntry.sup(text: CharSequence): SuperscriptText {
+	return SuperscriptText(text)
+}
+
+@MarkdownDslMarker
+@MarkdownDslExtendedFeature
+fun InlineDslEntry.sub(text: CharSequence): SubscriptText {
+	return SubscriptText(text)
+}
+
+@MarkdownDslMarker
+fun InlineDslEntry.icon(name: String): Icon {
+	return Icon(name)
+}
 
 @MarkdownDslMarker
 fun InlineDslEntry.footNote(reference: String) = FootNote(reference)
@@ -75,83 +93,83 @@ fun InlineDslEntry.math(text: String) = InlineMath(text)
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-inline fun MarkdownDsl.frontMatter(lazyText: () -> String) = FrontMatter(lazyText()).also { frontMatter = it }
+inline fun Document.frontMatter(lazyText: () -> String) = FrontMatter(lazyText()).also { frontMatter = it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun MarkdownDsl.toc() = Toc().also { toc = it }
+fun Document.toc() = Toc().also { toc = it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun MarkdownDsl.abbr(reference: String, text: String) = Abbreviation(reference, text).also { references += it }
+fun Document.abbr(reference: String, text: String) = Abbreviation(reference, text).also { references += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun MarkdownDsl.footNoteRef(reference: String, text: String) = FootNoteReference(reference, text).also { references += it }
+fun Document.footNoteRef(reference: String, text: String) = FootNoteReference(reference, text).also { references += it }
 
 @MarkdownDslMarker
-fun MarkdownDsl.linkRef(reference: String, url: String, title: String? = null) = LinkReference(reference, url, title).also { references += it }
+fun Document.linkRef(reference: String, url: String, title: String? = null) = LinkReference(reference, url, title).also { references += it }
 
 @MarkdownDslMarker
-inline fun IDslEntry.textBlock(lazyText: () -> String) = TextBlock(lazyText()).also { content += it }
+inline fun DslEntry.textBlock(lazyText: () -> String) = TextBlock(lazyText()).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.mainHeading(text: String) = MainHeading(text).also { content += it }
+fun DslEntry.mainHeading(text: String) = MainHeading(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.subHeading(text: String) = SubHeading(text).also { content += it }
+fun DslEntry.subHeading(text: String) = SubHeading(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h1(text: String) = Heading1(text).also { content += it }
+fun DslEntry.h1(text: String) = Heading1(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h2(text: String) = Heading2(text).also { content += it }
+fun DslEntry.h2(text: String) = Heading2(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h3(text: String) = Heading3(text).also { content += it }
+fun DslEntry.h3(text: String) = Heading3(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h4(text: String) = Heading4(text).also { content += it }
+fun DslEntry.h4(text: String) = Heading4(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h5(text: String) = Heading5(text).also { content += it }
+fun DslEntry.h5(text: String) = Heading5(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.h6(text: String) = Heading6(text).also { content += it }
+fun DslEntry.h6(text: String) = Heading6(text).also { content += it }
 
 @MarkdownDslMarker
-fun IDslEntry.hr() = HorizontalLine.also { content += it }
+fun DslEntry.hr() = HorizontalLine.also { content += it }
 
 @MarkdownDslMarker
-inline fun IDslEntry.list(block: List.() -> Unit) = List().apply(block).also { content += it }
-
-@MarkdownDslMarker
-@MarkdownDslExtendedFeature
-inline fun IDslEntry.def(title: String, block: Definition.() -> Unit) = Definition(title).apply(block).also { content += it }
-
-@MarkdownDslMarker
-inline fun IDslEntry.table(block: Table.() -> Unit) = Table().apply(block).also { content += it }
-
-@MarkdownDslMarker
-inline fun IDslEntry.blockQueue(block: BlockQuote.() -> Unit) = BlockQuote().apply(block).also { content += it }
+inline fun DslEntry.list(block: MarkdownDsl.List.() -> Unit) = List().apply(block).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-inline fun IDslEntry.indentedBlock(block: IndentedBlock.() -> Unit) = IndentedBlock().apply(block).also { content += it }
+inline fun DslEntry.def(title: String, block: Definition.() -> Unit) = Definition(title).apply(block).also { content += it }
+
+@MarkdownDslMarker
+inline fun DslEntry.table(block: Table.() -> Unit) = Table().apply(block).also { content += it }
+
+@MarkdownDslMarker
+inline fun DslEntry.blockQueue(block: BlockQuote.() -> Unit) = BlockQuote().apply(block).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-inline fun IDslEntry.sideBlock(block: SideBlock.() -> Unit) = SideBlock().apply(block).also { content += it }
-
-@MarkdownDslMarker
-inline fun IDslEntry.codeFence(language: String, lazyText: () -> String) = CodeFence(language, lazyText()).also { content += it }
-
-@MarkdownDslMarker
-inline fun IDslEntry.multilineMath(lazyText: () -> String) = MultilineMath(lazyText()).also { content += it }
+inline fun DslEntry.indentedBlock(block: IndentedBlock.() -> Unit) = IndentedBlock().apply(block).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-inline fun IDslEntry.admonition(
+inline fun DslEntry.sideBlock(block: SideBlock.() -> Unit) = SideBlock().apply(block).also { content += it }
+
+@MarkdownDslMarker
+inline fun DslEntry.codeFence(language: String, lazyText: () -> String) = CodeFence(language, lazyText()).also { content += it }
+
+@MarkdownDslMarker
+inline fun DslEntry.multilineMath(lazyText: () -> String) = MultilineMath(lazyText()).also { content += it }
+
+@MarkdownDslMarker
+@MarkdownDslExtendedFeature
+inline fun DslEntry.admonition(
 	qualifier: AdmonitionQualifier,
 	title: String = "",
 	type: AdmonitionType = AdmonitionType.Normal,
@@ -160,28 +178,28 @@ inline fun IDslEntry.admonition(
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun IDslEntry.import(url: String) = Import(url).also { content += it }
+fun DslEntry.import(url: String) = Import(url).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-fun IDslEntry.macros(name: String) = Macros(name).also { content += it }
+fun DslEntry.macros(name: String) = Macros(name).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
-inline fun IDslEntry.macrosSnippet(name: String, block: MacrosSnippet.() -> Unit) = MacrosSnippet(name).apply(block).also { content += it }
+inline fun DslEntry.macrosSnippet(name: String, block: MacrosSnippet.() -> Unit) = MacrosSnippet(name).apply(block).also { content += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature
 infix fun <T : WithAttributes> T.with(attributes: AttributeGroup) = apply { this.attributes = attributes }
 
 @MarkdownDslMarker
-inline fun List.ol(order: String, text: String, block: OrderedListNode.() -> Unit = {}) = OrderedListNode(order, text).apply(block).also { nodes += it }
+inline fun MarkdownDsl.List.ol(order: String, text: String, block: OrderedListNode.() -> Unit = {}) = OrderedListNode(order, text).apply(block).also { nodes += it }
 
 @MarkdownDslMarker
-inline fun List.ul(text: String, block: UnorderedListNode.() -> Unit = {}) = UnorderedListNode(text).apply(block).also { nodes += it }
+inline fun MarkdownDsl.List.ul(text: String, block: UnorderedListNode.() -> Unit = {}) = UnorderedListNode(text).apply(block).also { nodes += it }
 
 @MarkdownDslMarker
-inline fun List.task(status: Boolean, text: String, block: TaskListNode.() -> Unit = {}) = TaskListNode(status, text).apply(block).also { nodes += it }
+inline fun MarkdownDsl.List.task(status: Boolean, text: String, block: TaskListNode.() -> Unit = {}) = TaskListNode(status, text).apply(block).also { nodes += it }
 
 @MarkdownDslMarker
 inline fun ListNode.ol(order: String, text: String, block: OrderedListNode.() -> Unit = {}) = OrderedListNode(order, text).apply(block).also { nodes += it }
@@ -206,10 +224,10 @@ inline fun Table.row(block: TableRow.() -> Unit) = TableRow().apply(block).also 
 infix fun Table.columnSize(size: Int) = apply { columnSize = size }
 
 @MarkdownDslMarker
-fun TableHeader.column(text: String = emptyColumnText) = TableColumn(text).also { columns += it }
+fun TableHeader.column(text: String = Config.emptyColumnText) = TableColumn(text).also { columns += it }
 
 @MarkdownDslMarker
-fun TableRow.column(text: String = emptyColumnText) = TableColumn(text).also { columns += it }
+fun TableRow.column(text: String = Config.emptyColumnText) = TableColumn(text).also { columns += it }
 
 @MarkdownDslMarker
 @MarkdownDslExtendedFeature

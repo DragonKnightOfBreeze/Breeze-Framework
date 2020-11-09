@@ -675,17 +675,24 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 
 
 /**
- * 将当前对象转换为单例列表。
+ * 将当前对象转化为单例列表。
  */
  fun <T> T.toSingletonList(): List<T> {
 	return Collections.singletonList(this)
 }
 
 /**
- * 将当前对象转换为单例列表。
+ * 将当前对象转化为单例列表。
  */
 fun <T> T.toSingletonSet(): Set<T> {
 	return Collections.singleton(this)
+}
+
+/**
+ * 将当前二元素元组转化为单例映射。
+ */
+fun <K,V> Pair<K,V>.toSingletonMap():Map<K,V>{
+	return Collections.singletonMap(first,second)
 }
 
 

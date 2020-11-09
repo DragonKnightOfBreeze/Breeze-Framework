@@ -24,8 +24,8 @@ interface CreoleDsl {
 		var markerCount: Int = 3
 		var emptyColumnLength: Int = 3
 
-		internal val quote get() = if(doubleQuoted) '\"' else '\''
-		internal val emptyColumnText: String get() = " ".repeat(emptyColumnLength)
+		val quote get() = if(doubleQuoted) '\"' else '\''
+		val emptyColumnText: String get() = " ".repeat(emptyColumnLength)
 	}
 
 	@CreoleDslMarker
