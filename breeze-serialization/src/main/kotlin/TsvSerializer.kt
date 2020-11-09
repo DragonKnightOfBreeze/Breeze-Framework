@@ -14,6 +14,13 @@ interface TsvSerializer : Serializer {
 	//region Tsv Serializers
 	/**
 	 * 默认的Tsv序列化器。
+	 *
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 */
+	companion object Default:TsvSerializer by defaultTsvSerializer
+
+	/**
+	 * 框架本身实现的Tsv序列化器。
 	 */
 	object BreezeTsvSerializer:TsvSerializer{
 		override fun <T : Any> serialize(value: T): String {

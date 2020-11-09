@@ -29,14 +29,14 @@ interface DataType {
 	/**
 	 * 对应的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
 	 */
-	var serializer: Serializer
+	val serializer: Serializer
 
 	/**
 	 * 序列化指定对象。
 	 *
-	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
+	 * 可以由第三方库委托实现。基于classpath推断具体实现，或者使用框架本身的默认实现。
 	 */
 	fun <T : Any> serialize(value: T): String {
 		return serializer.serialize(value)
@@ -45,7 +45,7 @@ interface DataType {
 	/**
 	 * 反序列化指定文本。
 	 *
-	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
+	 * 可以由第三方库委托实现。基于classpath推断具体实现，或者使用框架本身的默认实现。
 	 */
 	fun <T : Any> deserialize(value: String, type: Class<T>): T {
 		return serializer.deserialize(value, type)
@@ -54,76 +54,48 @@ interface DataType {
 	/**
 	 * 反序列化指定文本。
 	 *
-	 * 可以由第三方库委托实现，基于classpath，推断具体实现。默认使用框架本身的简单实现，可以自定义。
+	 * 可以由第三方库委托实现。基于classpath推断具体实现，或者使用框架本身的默认实现。
 	 */
 	fun <T> deserialize(value: String, type: Type): T {
 		return serializer.deserialize(value, type)
 	}
 
-	//region Default Data Types
+	//region Data Types
 	/**
 	 * Json数据类型。
 	 */
 	object Json : DataType {
-		private const val kotlinxJsonClassName = "kotlinx.serialization.json.Json"
-		private const val jacksonJsonClassName = "com.fasterxml.jackson.databind.json.JsonMapper"
-		private const val gsonClassName = "com.google.gson.Gson"
-		private const val fastjsonClassName = "com.alibaba.fastjson.JSON"
-
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
-		override var serializer: Serializer = when {
-			presentInClassPath(kotlinxJsonClassName) -> JsonSerializer.KotlinxJsonSerializer
-			presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer
-			presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer
-			presentInClassPath(fastjsonClassName) -> JsonSerializer.FastJsonSerializer
-			else -> JsonSerializer.BreezeJsonSerializer
-		}
+		override var serializer: JsonSerializer = defaultJsonSerializer
 	}
 
 	/**
 	 * Yaml数据类型。
 	 */
 	object Yaml : DataType {
-		private const val jacksonYamlClassName = "com.fasterxml.jackson.dataformat.yaml.YAMLMapper"
-		private const val snackYamlClassName = "org.yaml.snakeyaml.Yaml"
-
 		override val fileExtension: String = "yml"
 		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
-		override var serializer: Serializer=when {
-			presentInClassPath(jacksonYamlClassName) -> YamlSerializer.JacksonYamlSerializer
-			presentInClassPath(snackYamlClassName) -> YamlSerializer.SnakeYamlSerializer
-			else -> YamlSerializer.BreezeYamlSerializer
-		}
+		override var serializer: YamlSerializer = defaultYamlSerializer
 	}
 
 	/**
 	 * Xml数据类型。
 	 */
 	object Xml : DataType {
-		private const val jacksonXmlClassName = "com.fasterxml.jackson.dataformat.xml.XmlMapper"
-
 		override val fileExtension: String = "xml"
 		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
-		override var serializer: Serializer = when {
-			presentInClassPath(jacksonXmlClassName) -> XmlSerializer.JacksonXmlSerializer
-			else -> XmlSerializer.BreezeXmlSerializer
-		}
+		override var serializer: XmlSerializer = defaultXmlSerializer
 	}
 
 	/**
 	 * Properties数据类型。基于键值对。
 	 */
 	object Properties : DataType {
-		private const val jacksonPropertiesClassName = "com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper"
-
 		override val fileExtension: String = "properties"
 		override val fileExtensions: Array<String> = arrayOf("properties")
-		override var serializer: Serializer = when {
-			presentInClassPath(jacksonPropertiesClassName) -> PropertiesSerializer.JacksonPropertiesSerializer
-			else -> PropertiesSerializer.BreezePropertiesSerializer
-		}
+		override var serializer: PropertiesSerializer = defaultPropertiesSerializer
 	}
 
 	/**
@@ -132,7 +104,7 @@ interface DataType {
 	object Csv : DataType {
 		override val fileExtension: String = "csv"
 		override val fileExtensions: Array<String> = arrayOf("csv")
-		override var serializer: Serializer = CsvSerializer.BreezeCsvSerializer
+		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 
 	/**
@@ -141,7 +113,7 @@ interface DataType {
 	object Tsv : DataType {
 		override val fileExtension: String = "tsv"
 		override val fileExtensions: Array<String> = arrayOf("tsv")
-		override var serializer: Serializer = TsvSerializer.BreezeTsvSerializer
+		override var serializer: TsvSerializer = defaultTsvSerializer
 	}
 	//endregion
 }

@@ -19,6 +19,13 @@ interface JsonSerializer : Serializer {
 
 	//region Json Serializers
 	/**
+	 * 默认的Json序列化器。
+	 *
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 */
+	companion object Default: JsonSerializer by defaultJsonSerializer
+
+	/**
 	 * 由Jackson实现的Json序列化器。
 	 *
 	 * @see com.fasterxml.jackson.databind.json.JsonMapper
@@ -122,7 +129,7 @@ interface JsonSerializer : Serializer {
 	}
 
 	/**
-	 * 默认的Json序列化器。
+	 * 框架本身实现的Json序列化器。
 	 */
 	object BreezeJsonSerializer : JsonSerializer {
 		override fun <T : Any> serialize(value: T): String {

@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.time.extensions
 
-import com.windea.breezeframework.time.domain.*
+import com.windea.breezeframework.time.*
 import java.text.*
 import java.util.*
 

@@ -28,6 +28,13 @@ interface YamlSerializer : Serializer {
 
 	//region Yaml Serializers
 	/**
+	 * 默认的Yaml序列化器。
+	 *
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 */
+	companion object Default:YamlSerializer by defaultYamlSerializer
+
+	/**
 	 * 由Jackson实现的Yaml序列化器。
 	 *
 	 * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
@@ -103,7 +110,7 @@ interface YamlSerializer : Serializer {
 	}
 
 	/**
-	 * 默认的Yaml序列化器。
+	 * 框架本身实现的Yaml序列化器。
 	 */
 	object BreezeYamlSerializer:YamlSerializer{
 		override fun serializeAll(value: List<Any>): String {

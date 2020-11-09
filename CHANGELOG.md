@@ -25,6 +25,7 @@
 * [X] 移除`breeze-serializer`
 * [X] breeze-serialization 添加`MapSerializer`
 * [X] breeze-serialization 完善`MapSerializer`
+* [X] breeze-serialization 为某一数据类型的`Serializer`如`JsonSerializer`提供作为伴生对象的默认实现。
 * [ ] breeze-serialization 实现默认的用于处理CSV的`BreezeCsvMapper`
 * [ ] breeze-serialization 实现默认的用于处理TSV的`BreezeTsvMapper`
 * [ ] breeze-dsl 重构代码

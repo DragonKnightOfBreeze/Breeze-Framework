@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.time.domain
+package com.windea.breezeframework.time
 
 /**日历的字段对象。如：年、月、日。*/
 data class CalendarField(

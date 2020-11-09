@@ -31,6 +31,13 @@ interface PropertiesSerializer : Serializer {
 
 	//region Properties Serializers
 	/**
+	 * 默认的Properties序列化器。
+	 *
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 */
+	companion object Default:PropertiesSerializer by defaultPropertiesSerializer
+
+	/**
 	 * 由Jackson实现的Properties序列化器。
 	 *
 	 * @see com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
@@ -72,7 +79,7 @@ interface PropertiesSerializer : Serializer {
 	}
 
 	/**
-	 * 默认的Properties序列化器。
+	 * 框架本身实现的Properties序列化器。
 	 */
 	object BreezePropertiesSerializer:PropertiesSerializer{
 		override fun <T : Any> serializeProperties(value: T): Properties {
