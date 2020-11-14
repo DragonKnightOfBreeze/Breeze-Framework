@@ -3,12 +3,11 @@
 
 package com.windea.breezeframework.dsl.markdown
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*
-import java.io.*
 
 @MarkdownDslMarker
 interface MarkdownDsl {

@@ -7,7 +7,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.core.types.*
 import java.io.*
 import java.net.*

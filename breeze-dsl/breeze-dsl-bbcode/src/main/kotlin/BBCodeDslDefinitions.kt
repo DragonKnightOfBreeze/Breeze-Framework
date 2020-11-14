@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.dsl.bbcode
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*

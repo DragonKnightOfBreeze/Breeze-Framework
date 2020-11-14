@@ -4,7 +4,7 @@
 package com.windea.breezeframework.core.extensions
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import java.util.*
 
 /**

@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.types
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 
 /**
  * 代表了一个二元素元组。

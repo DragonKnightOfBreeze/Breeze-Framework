@@ -3,8 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.component.*
-import java.nio.charset.*
+import com.windea.breezeframework.core.components.*
 import kotlin.test.*
 
 class BreezeComponentExtensionsTest {

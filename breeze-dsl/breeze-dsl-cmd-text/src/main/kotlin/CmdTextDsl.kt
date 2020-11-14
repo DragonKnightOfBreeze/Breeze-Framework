@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.cmdtext
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 
 @CmdTextDslMarker

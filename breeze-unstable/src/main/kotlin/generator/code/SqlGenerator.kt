@@ -5,10 +5,9 @@
 
 package com.windea.breezeframework.generator.code
 
-import com.windea.breezeframework.core.component.*
+import com.windea.breezeframework.core.components.*
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.generator.*
-import com.windea.breezeframework.serializer.*
 import java.io.*
 
 /**Sql语句的生成器。*/

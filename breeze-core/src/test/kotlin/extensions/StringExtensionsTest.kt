@@ -1,7 +1,5 @@
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.component.*
-import com.windea.breezeframework.core.component.CaseType.*
 import kotlin.test.*
 
 class StringExtensionsTest {

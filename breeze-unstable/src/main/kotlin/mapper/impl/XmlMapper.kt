@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.mapper.impl
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 

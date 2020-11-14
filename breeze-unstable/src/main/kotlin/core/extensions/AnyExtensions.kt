@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.extensions
 
-import com.windea.breezeframework.core.domain.*
+import com.windea.breezeframework.core.model.*
 
 inline fun <T : Any> T.toBreeze(): Breeze<T> {
 	return Breeze(this)

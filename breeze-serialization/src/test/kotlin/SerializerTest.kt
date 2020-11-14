@@ -3,6 +3,8 @@
 
 package com.windea.breezeframework.serialization
 
+import com.windea.breezeframework.serialization.components.*
+import com.windea.breezeframework.serialization.extensions.*
 import kotlin.test.*
 
 class SerializerTest {
