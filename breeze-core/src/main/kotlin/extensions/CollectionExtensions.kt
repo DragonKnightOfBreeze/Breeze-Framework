@@ -592,6 +592,19 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 	return result
 }
 
+/**
+ * 根据指定的预测，将当前列表中的符合条件的元素，依次固定到指定的索引处。默认固定到列表最前面。
+ */
+@UnstableApi
+fun <T> List<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
+	val result = mutableListOf<T>()
+	var i = index
+	for(e in this) {
+		if(predicate(e)) result.add(i++,e) else result.add(e)
+	}
+	return result
+}
+
 
 /**
  * 根据指定的深度递归平滑化当前数组。
