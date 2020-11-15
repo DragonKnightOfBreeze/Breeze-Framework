@@ -9,7 +9,7 @@ import java.io.*
 /**
  * 数据的读取器。
  */
-class DataWriter(
+open class DataWriter(
 	private val writer: Writer? = null,
 	private val initialSize: Int = 2048
 ) : Writer() {
@@ -22,8 +22,7 @@ class DataWriter(
 			field = value.coerceAtLeast(buffer.size)
 		}
 
-	fun expandCapacity(minCapacity: Int) {
-		buffer ?: return
+	open fun expandCapacity(minCapacity: Int) {
 		if(maxBufferSize != -1 && minCapacity >= maxBufferSize) {
 			throw SerializationException("Min capacity '$minCapacity' is greater than max buffer size '$maxBufferSize'")
 		}
@@ -40,8 +39,8 @@ class DataWriter(
 		buffer = newValue
 	}
 
+	@Throws(IOException::class)
 	override fun write(c: Int) {
-		buffer ?: return
 		var newCount = count + 1
 		if(newCount > buffer.size) {
 			if(writer == null) {
@@ -55,9 +54,24 @@ class DataWriter(
 		count = newCount
 	}
 
+	@Throws(IOException::class)
+	open fun write(c: Char) {
+		var newCount = count + 1
+		if(newCount > buffer.size) {
+			if(writer == null) {
+				expandCapacity(newCount)
+			} else {
+				flush()
+				newCount = 1
+			}
+		}
+		buffer[count] = c
+		count = newCount
+	}
+
+	@Throws(IOException::class)
 	@Suppress("NAME_SHADOWING")
 	override fun write(cbuf: CharArray, off: Int, len: Int) {
-		buffer ?: return
 		if(len == 0) return
 		var off = off
 		var len = len
@@ -82,9 +96,9 @@ class DataWriter(
 		count = newCount
 	}
 
+	@Throws(IOException::class)
 	@Suppress("NAME_SHADOWING")
 	override fun write(str: String, off: Int, len: Int) {
-		buffer ?: return
 		if(len == 0) return
 		var off = off
 		var len = len
@@ -100,7 +114,7 @@ class DataWriter(
 					flush()
 					len -= rest
 					off += rest
-				} while(len > (buffer).size)
+				} while(len > buffer.size)
 				newCount = len
 			}
 		}
@@ -108,25 +122,10 @@ class DataWriter(
 		count = newCount
 	}
 
-	override fun append(csq: CharSequence): DataWriter {
-		write(csq.toString(), 0, csq.length)
-		return this
-	}
-
-	override fun append(csq: CharSequence, start: Int, end: Int): DataWriter {
-		write(csq.subSequence(start, end).toString(), 0, csq.subSequence(start, end).toString().length)
-		return this
-	}
-
-	override fun append(c: Char): DataWriter {
-		write(c.toInt())
-		return this
-	}
-
+	@Throws(IOException::class)
 	override fun flush() {
-		writer ?: return
-		buffer ?: return
 		try {
+			writer ?: return
 			writer.write(buffer, 0, count)
 			writer.flush()
 		} catch(e: IOException) {
@@ -135,15 +134,14 @@ class DataWriter(
 		count = 0
 	}
 
+	@Throws(IOException::class)
 	override fun close() {
-		buffer ?: return
 		if(writer != null && count > 0) flush()
-		if((buffer).size <= bufferThreshold) bufferLocal.set(buffer)
-		this.buffer = null
+		if(buffer.size <= bufferThreshold) bufferLocal.set(buffer)
+		buffer = null
 	}
 
 	override fun toString(): String {
-		buffer ?: return ""
 		return String(buffer, 0, count)
 	}
 }

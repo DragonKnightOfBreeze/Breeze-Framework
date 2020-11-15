@@ -47,6 +47,7 @@
     <inspection_tool class="RedundantSamConstructor" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSemicolon" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSuspendModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantThrows" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantUnitExpression" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantUnitReturnType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantVisibilityModifier" enabled="true" level="WEAK WARNING" enabled_by_default="true" />

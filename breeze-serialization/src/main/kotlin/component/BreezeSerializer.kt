@@ -30,50 +30,23 @@ interface BreezeSerializer {
 	open class BreezeJsonSerializer : JsonSerializer, BreezeSerializer, Configurable<BreezeJsonSerializer.ConfigBuilder> {
 		constructor()
 
-		constructor(configBuilder: ConfigBuilder = ConfigBuilder()) {
-			this.config = configBuilder.build()
+		constructor(configBuilder: ConfigBuilder) {
+			this.configBuilder = configBuilder
 		}
 
 		constructor(configBuilder: ConfigBuilder.() -> Unit) {
-			this.config = ConfigBuilder().apply(configBuilder).build()
+			this.configBuilder = ConfigBuilder().apply(configBuilder)
 		}
 
-		data class Config(
-			val indent: String = "  ",
-			val lineSeparator: String = "\n",
-			val prettyPrint: Boolean = false,
-		) : DataEntity
-
-		data class ConfigBuilder(
-			var indent: String = "  ",
-			var lineSeparator: String = "\n",
-			var prettyPrint: Boolean = false
-		) : DataBuilder<Config> {
-			override fun build(): Config {
-				return Config(indent, lineSeparator, prettyPrint)
-			}
-		}
-
-		var config: Config = Config()
-			private set
-
-		companion object {
-			private const val quote = '\"'
-			private const val escapedQuote = "\\\""
-			private const val separator = ','
-			private const val keyValueSeparator = ':'
-			private const val arrayPrefix = '['
-			private const val arraySuffix = ']'
-			private const val objectPrefix = '{'
-			private const val objectSuffix = '}'
-		}
+		private var configBuilder: ConfigBuilder = ConfigBuilder()
+		val config by lazy { configBuilder.build() }
 
 		override fun configure(block: ConfigBuilder.() -> Unit) {
-			config = ConfigBuilder().apply(block).build()
+			configBuilder = ConfigBuilder().apply(block)
 		}
 
 		override fun <T> serialize(target: T): String {
-			return DataWriter().apply { doSerialize(target, this) }.toString()
+			return Serializer().serialize(target)
 		}
 
 		override fun <T> deserialize(value: String, type: Class<T>): T {
@@ -84,89 +57,187 @@ interface BreezeSerializer {
 			TODO()
 		}
 
-		private fun <T> doSerialize(target: T, writer: DataWriter) {
-			when {
-				target == null -> doSerializeNull(writer)
-				target is Boolean -> doSerializeBoolean(target, writer)
-				target is Number -> doSerializeNumber(target, writer)
-				target.isStringLike() -> doSerializeString(target.toString(), writer)
-				target is Array<*> -> doSerializeArray(target, writer)
-				target is Iterable<*> -> doSerializeIterable(target, writer)
-				target is Sequence<*> -> doSerializeSequence(target, writer)
-				target is Map<*, *> -> doSerializeMap(target, writer)
-				target.isMapLike() -> doSerializeMap(target.serializeBy(MapLikeSerializer), writer)
-				else -> throw UnsupportedOperationException("Unsupported serialize value type '$target.javaClass.name'.")
+		companion object {
+			private const val space = ' '
+			private const val doubleQuote = '\"'
+			private const val singleQuote = '\''
+			private const val separator = ','
+			private const val keyValueSeparator = ':'
+			private const val arrayPrefix = '['
+			private const val arraySuffix = ']'
+			private const val objectPrefix = '{'
+			private const val objectSuffix = '}'
+		}
+
+		data class Config(
+			val indent: String = "  ",
+			val lineSeparator: String = "\n",
+			val doubleQuoted: Boolean = true,
+			val unquoteKey: Boolean = false,
+			val unquoteValue: Boolean = false,
+			val prettyPrint: Boolean = false,
+		) : DataEntity {
+			val quote = if(doubleQuoted) doubleQuote else singleQuote
+			val escapedQuote = "\\" + quote
+		}
+
+		data class ConfigBuilder(
+			var indent: String = "  ",
+			var lineSeparator: String = "\n",
+			var doubleQuoted: Boolean = true,
+			var unquoteKey: Boolean = false,
+			var unquoteValue: Boolean = false,
+			var prettyPrint: Boolean = false
+		) : DataBuilder<Config> {
+			override fun build(): Config {
+				return Config(indent, lineSeparator, doubleQuoted, unquoteKey, unquoteValue, prettyPrint)
 			}
 		}
 
-		private fun doSerializeNull(writer: DataWriter) {
-			"null".writeTo(writer)
-		}
+		//TODO 对于数组和对象可以并发解析，等待全部完成
 
-		private fun doSerializeBoolean(target: Boolean, writer: DataWriter) {
-			target.toString().writeTo(writer)
-		}
-
-		private fun doSerializeNumber(target: Number, writer: DataWriter) {
-			target.toString().writeTo(writer)
-		}
-
-		private fun doSerializeString(target: String, writer: DataWriter) {
-			quote.writeTo(writer)
-			for(c in target) {
-				if(c == quote) escapedQuote.writeTo(writer) else c.writeTo(writer)
+		internal inner class Serializer {
+			fun <T> serialize(target: T): String {
+				return DataWriter().apply { doSerialize(target, this) }.toString()
 			}
-			quote.writeTo(writer)
-		}
 
-		private fun doSerializeArray(target: Array<*>, writer: DataWriter) {
-			arrayPrefix.writeTo(writer)
-			var shouldAppendSeparator = false
-			for(e in target) {
-				if(shouldAppendSeparator) separator.writeTo(writer) else shouldAppendSeparator = true
-				doSerialize(e, writer)
+			private fun <T> doSerialize(target: T, writer: DataWriter, depth: Int = 1) {
+				when {
+					target == null -> doSerializeNull(writer)
+					target is Boolean -> doSerializeBoolean(target, writer)
+					target is Number -> doSerializeNumber(target, writer)
+					target is String -> doSerializeString(target, writer)
+					target.isStringLike() -> doSerializeString(target.toString(), writer)
+					target is Array<*> -> doSerializeArray(target, writer, depth)
+					target is Iterable<*> -> doSerializeIterable(target, writer, depth)
+					target is Sequence<*> -> doSerializeSequence(target, writer, depth)
+					target is Map<*, *> -> doSerializeMap(target, writer, depth)
+					target.isMapLike() -> doSerializeMap(target.serializeBy(MapLikeSerializer), writer)
+					else -> throw UnsupportedOperationException("Unsupported serialize value type '$target.javaClass.name'.")
+				}
 			}
-			arraySuffix.writeTo(writer)
-		}
 
-		private fun doSerializeIterable(target: Iterable<*>, writer: DataWriter) {
-			arrayPrefix.writeTo(writer)
-			var shouldAppendSeparator = false
-			for(e in target) {
-				if(shouldAppendSeparator) separator.writeTo(writer) else shouldAppendSeparator = true
-				doSerialize(e, writer)
+			private fun doSerializeKey(target: String, writer: DataWriter) {
+				if(config.unquoteKey) {
+					target.writeTo(writer)
+				} else {
+					config.quote.writeTo(writer)
+					config.quote.writeTo(writer)
+					for(c in target) {
+						if(c == config.quote) config.escapedQuote.writeTo(writer) else c.writeTo(writer)
+					}
+					//target.writeTo(writer)
+					config.quote.writeTo(writer)
+				}
 			}
-			arraySuffix.writeTo(writer)
-		}
 
-		private fun doSerializeSequence(target: Sequence<*>, writer: DataWriter) {
-			arrayPrefix.writeTo(writer)
-			var shouldAppendSeparator = false
-			for(e in target) {
-				if(shouldAppendSeparator) separator.writeTo(writer) else shouldAppendSeparator = true
-				doSerialize(e, writer)
+			private fun doSerializeNull(writer: DataWriter) {
+				"null".writeTo(writer)
 			}
-			arraySuffix.writeTo(writer)
-		}
 
-		private fun doSerializeMap(target: Map<*, *>, writer: DataWriter) {
-			objectPrefix.writeTo(writer)
-			var shouldAppendSeparator = false
-			for((k, v) in target) {
-				if(shouldAppendSeparator) separator.writeTo(writer) else shouldAppendSeparator = true
-				doSerializeString(k.toString(), writer)
-				keyValueSeparator.writeTo(writer)
-				doSerialize(v, writer)
+			private fun doSerializeBoolean(target: Boolean, writer: DataWriter) {
+				target.toString().writeTo(writer)
 			}
-			objectSuffix.writeTo(writer)
-		}
 
-		private fun Any?.isStringLike(): Boolean {
-			return this is CharSequence || this is Char || this is Temporal || this is Date
-		}
+			private fun doSerializeNumber(target: Number, writer: DataWriter) {
+				target.toString().writeTo(writer)
+			}
 
-		private fun Any?.isMapLike(): Boolean {
-			return true
+			private fun doSerializeString(target: String, writer: DataWriter) {
+				if(config.unquoteValue) {
+					target.writeTo(writer)
+				} else {
+					config.quote.writeTo(writer)
+					for(c in target) {
+						if(c == config.quote) config.escapedQuote.writeTo(writer) else c.writeTo(writer)
+					}
+					//target.writeTo(writer)
+					config.quote.writeTo(writer)
+				}
+			}
+
+			private fun doSerializeArray(target: Array<*>, writer: DataWriter, depth: Int = 1) {
+				arrayPrefix.writeTo(writer)
+				var shouldWriteSeparator = false
+				for(e in target) {
+					if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+					if(config.prettyPrint) {
+						config.lineSeparator.writeTo(writer)
+						repeat(depth) { config.indent.writeTo(writer) }
+					}
+					doSerialize(e, writer, depth + 1)
+				}
+				if(config.prettyPrint) {
+					config.lineSeparator.writeTo(writer)
+				}
+				if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
+				arraySuffix.writeTo(writer)
+			}
+
+			private fun doSerializeIterable(target: Iterable<*>, writer: DataWriter, depth: Int = 1) {
+				arrayPrefix.writeTo(writer)
+				var shouldWriteSeparator = false
+				for(e in target) {
+					if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+					if(config.prettyPrint) {
+						config.lineSeparator.writeTo(writer)
+						repeat(depth) { config.indent.writeTo(writer) }
+					}
+					doSerialize(e, writer, depth + 1)
+				}
+				if(config.prettyPrint) {
+					config.lineSeparator.writeTo(writer)
+				}
+				if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
+				arraySuffix.writeTo(writer)
+			}
+
+			private fun doSerializeSequence(target: Sequence<*>, writer: DataWriter, depth: Int = 1) {
+				arrayPrefix.writeTo(writer)
+				var shouldWriteSeparator = false
+				for(e in target) {
+					if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+					if(config.prettyPrint) {
+						config.lineSeparator.writeTo(writer)
+						repeat(depth) { config.indent.writeTo(writer) }
+					}
+					doSerialize(e, writer, depth + 1)
+				}
+				if(config.prettyPrint) {
+					config.lineSeparator.writeTo(writer)
+				}
+				if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
+				arraySuffix.writeTo(writer)
+			}
+
+			private fun doSerializeMap(target: Map<*, *>, writer: DataWriter, depth: Int = 1) {
+				objectPrefix.writeTo(writer)
+				var shouldWriteSeparator = false
+				for((k, v) in target) {
+					if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+					if(config.prettyPrint) {
+						config.lineSeparator.writeTo(writer)
+						repeat(depth) { config.indent.writeTo(writer) }
+					}
+					doSerializeKey(k.toString(), writer)
+					keyValueSeparator.writeTo(writer)
+					if(config.prettyPrint) space.writeTo(writer)
+					doSerialize(v, writer, depth + 1)
+				}
+				if(config.prettyPrint) {
+					config.lineSeparator.writeTo(writer)
+				}
+				if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
+				objectSuffix.writeTo(writer)
+			}
+
+			private fun Any?.isStringLike(): Boolean {
+				return this is CharSequence || this is Char || this is Temporal || this is Date
+			}
+
+			private fun Any?.isMapLike(): Boolean {
+				return true
+			}
 		}
 	}
 

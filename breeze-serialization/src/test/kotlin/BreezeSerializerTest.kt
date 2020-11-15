@@ -15,15 +15,21 @@ class BreezeSerializerTest {
 			"name" to "Windea",
 			"gender" to "Female",
 			"age" to 3000,
-			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze")
+			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze"),
+			"belong" to mapOf(
+				"Country" to "Invoka",
+				"Organization" to "BreezeKnights"
+			)
 		)
 		println(a.serializeBy(BreezeSerializer.BreezeJsonSerializer()))
+		println(a.serializeBy(BreezeSerializer.BreezeJsonSerializer { prettyPrint = true }))
 	}
 
-	//1799108400
-	//174341900
-	//320961700
-	//241256700
+	//3~10倍 性能差距到底是怎么来的？
+	//1458238000
+	//274115400
+	//537588500
+	//342167900
 	@Test
 	fun jsonSerializePerformanceTest() {
 		val a = mapOf(
@@ -32,7 +38,7 @@ class BreezeSerializerTest {
 			"age" to 3000,
 			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze")
 		)
-		val b = List(100) { a }
+		val b = List(10) { a }
 		val s1: String
 		val s2: String
 		val s3: String
@@ -41,7 +47,5 @@ class BreezeSerializerTest {
 		println(measureNanoTime { s2 = b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
 		println(measureNanoTime { s3 = b.serializeBy(JsonSerializer.GsonSerializer()) })
 		println(measureNanoTime { s4 = b.serializeBy(JsonSerializer.FastJsonSerializer()) })
-		println(s1)
-		println(s2)
 	}
 }
