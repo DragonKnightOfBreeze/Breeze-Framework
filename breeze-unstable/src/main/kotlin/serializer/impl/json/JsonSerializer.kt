@@ -4,8 +4,8 @@
 package com.windea.breezeframework.serializer.impl.json
 
 import com.google.gson.*
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.*
 import kotlinx.serialization.json.*

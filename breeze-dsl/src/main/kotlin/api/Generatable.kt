@@ -3,8 +3,6 @@
 
 package com.windea.breezeframework.dsl.api
 
-import com.windea.breezeframework.core.annotations.*
-
 /**
  * 内容可生成的DSL元素。
  */

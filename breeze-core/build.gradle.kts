@@ -4,11 +4,11 @@ plugins {
 }
 
 noArg {
-	annotation("com.windea.breezeframework.core.annotations.NoArg")
+	annotation("com.windea.breezeframework.core.annotation.NoArg")
 }
 
 allOpen {
-	annotation("com.windea.breezeframework.core.annotations.AllOpen")
+	annotation("com.windea.breezeframework.core.annotation.AllOpen")
 }
 
 dependencies {

@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.mermaid.*

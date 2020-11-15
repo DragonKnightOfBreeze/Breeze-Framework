@@ -5,9 +5,7 @@
 
 package com.windea.breezeframework.serializer
 
-import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.serializer.impl.*
-import kotlinx.serialization.*
+import com.windea.breezeframework.core.extension.*
 import java.io.*
 
 //如果使用KotlinxSerialization，则需要委托给特定的方法

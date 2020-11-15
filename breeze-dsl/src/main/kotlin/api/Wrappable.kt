@@ -3,9 +3,6 @@
 
 package com.windea.breezeframework.dsl.api
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.dsl.api.*
-
 /**
  * 内容可换行的DSL元素。
  */

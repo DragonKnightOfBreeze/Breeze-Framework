@@ -69,9 +69,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
 				)
 			}
 		}
@@ -86,9 +86,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
 				)
 			}
 		}

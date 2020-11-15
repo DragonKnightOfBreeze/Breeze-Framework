@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.core.performance
 
-import com.windea.breezeframework.core.components.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.component.*
+import com.windea.breezeframework.core.extension.*
 import java.util.concurrent.*
 import kotlin.system.*
 import kotlin.test.*

@@ -1,6 +1,6 @@
 package com.windea.breezeframework.core.deprecated
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.annotation.*
 import kotlin.reflect.*
 import kotlin.test.*
 

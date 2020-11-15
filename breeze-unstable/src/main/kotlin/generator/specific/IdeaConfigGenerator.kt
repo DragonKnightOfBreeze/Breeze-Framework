@@ -5,8 +5,8 @@
 
 package com.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.components.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.component.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.generator.*
 import java.io.*
 

@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.criticmarkup
 
-import com.windea.breezeframework.core.model.*
+import com.windea.breezeframework.core.*
 import com.windea.breezeframework.dsl.*
 
 interface CriticMarkupDsl {
@@ -19,7 +19,7 @@ interface CriticMarkupDsl {
 	interface InlineDslElement : DslElement, Inlineable
 
 	@CriticMarkupDslMarker
-	interface InlineDslEntry:Inlineable
+	interface InlineDslEntry : Inlineable
 
 	abstract class Mark : InlineDslElement {
 		abstract val text: CharSequence

@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.mapper
 
-import com.windea.breezeframework.reflect.extensions.*
+import com.windea.breezeframework.reflect.extension.*
 
 /**
  * 对象的映射器。

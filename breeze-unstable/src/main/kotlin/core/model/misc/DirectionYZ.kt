@@ -3,8 +3,6 @@
 
 package com.windea.breezeframework.core.model.misc
 
-import com.windea.breezeframework.core.model.misc.Dimension.*
-
 /**
  * 基于YZ轴的二维方向。
  */

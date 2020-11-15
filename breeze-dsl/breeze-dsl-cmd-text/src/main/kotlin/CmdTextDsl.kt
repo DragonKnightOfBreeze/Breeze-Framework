@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.cmdtext
 
-import com.windea.breezeframework.core.model.*
+import com.windea.breezeframework.core.*
 import com.windea.breezeframework.dsl.*
 
 @CmdTextDslMarker
@@ -24,7 +24,7 @@ interface CmdTextDsl {
 	interface InlineDslElement : DslElement, Inlineable
 
 	@CmdTextDslMarker
-	interface InlineDslEntry:Inlineable
+	interface InlineDslEntry : Inlineable
 
 	@CmdTextDslMarker
 	abstract class RichText : InlineDslElement {

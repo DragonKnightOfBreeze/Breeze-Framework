@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslConstants.ls
 import com.windea.breezeframework.dsl.api.*

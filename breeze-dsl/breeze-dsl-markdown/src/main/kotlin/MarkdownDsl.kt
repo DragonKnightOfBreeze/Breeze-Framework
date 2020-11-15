@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.dsl.markdown
 
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*
@@ -361,7 +361,7 @@ interface MarkdownDsl {
 			require(rows.isNotEmpty()) { "Table row size must be positive." }
 
 			//actual column size may not equal to columns.size, and can be user defined
-			val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.max() ?: 0)
+			val actualColumnSize = columnSize ?: maxOf(header.columns.size, rows.map { it.columns.size }.maxOrNull() ?: 0)
 			//adjust column size
 			header.columnSize = actualColumnSize
 			rows.forEach { it.columnSize = actualColumnSize }

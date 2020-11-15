@@ -3,9 +3,9 @@
 
 package com.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.core.components.*
-import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.types.*
+import com.windea.breezeframework.core.component.*
+import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.core.type.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 

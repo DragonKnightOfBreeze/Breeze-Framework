@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.generator.text
 
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.generator.*
 
 /**地址生成器。*/

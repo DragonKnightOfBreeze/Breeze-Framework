@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.serializer.impl.properties
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.*
 import java.lang.reflect.*

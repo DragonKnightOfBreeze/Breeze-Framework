@@ -5,7 +5,7 @@ package com.windea.breezeframework.serializer.impl.properties
 
 import com.fasterxml.jackson.dataformat.javaprop.*
 import com.fasterxml.jackson.module.kotlin.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
