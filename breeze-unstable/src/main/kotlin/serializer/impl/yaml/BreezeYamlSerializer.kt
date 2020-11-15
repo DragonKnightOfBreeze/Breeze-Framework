@@ -9,7 +9,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由BreezeYaml实现的Yaml序列化器。
+ * 由BreezeYaml实现的Yaml的序列化器。
  * @see com.windea.breezeframework.mapper.impl.YamlMapper
  */
 internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer<YamlMapper> {

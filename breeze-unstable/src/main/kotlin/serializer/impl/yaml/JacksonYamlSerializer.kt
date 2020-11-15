@@ -11,7 +11,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由Jackson实现的Yaml序列化器。
+ * 由Jackson实现的Yaml的序列化器。
  * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
  */
 internal object JacksonYamlSerializer : YamlSerializer, JacksonSerializer<YAMLMapper> {

@@ -4,12 +4,7 @@
 package com.windea.breezeframework.serialization.components
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.serialization.extensions.defaultCsvSerializer
-import com.windea.breezeframework.serialization.extensions.defaultJsonSerializer
-import com.windea.breezeframework.serialization.extensions.defaultPropertiesSerializer
-import com.windea.breezeframework.serialization.extensions.defaultTsvSerializer
-import com.windea.breezeframework.serialization.extensions.defaultXmlSerializer
-import com.windea.breezeframework.serialization.extensions.defaultYamlSerializer
+import com.windea.breezeframework.serialization.extensions.*
 import java.lang.reflect.*
 
 /**
@@ -34,7 +29,7 @@ interface DataType {
 	/**
 	 * 对应的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
 	 *
 	 * 可以进行自定义。
 	 */

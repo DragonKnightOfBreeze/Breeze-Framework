@@ -10,4 +10,4 @@ import com.windea.breezeframework.core.annotations.*
  * 其具体实现需要依赖第三方库，如`gson`，`fastjson`，`jackson`和`kotlinx-serialization`。
  */
 @BreezeComponent
-interface DelegateSerializer : DataSerializer
+interface DelegateSerializer

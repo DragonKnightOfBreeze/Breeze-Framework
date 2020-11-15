@@ -54,7 +54,7 @@ fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Type):T{
 /**
  * 根据指定的数据类型，序列化当前对象。
  *
- * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+ * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
  * @see DataType
  */
@@ -66,7 +66,7 @@ fun <T> T.serializeDataBy(dataType: DataType):String{
 /**
  * 根据指定的数据类型，反序列化当前文本。
  *
- * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+ * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
  * @see DataType
  */
@@ -78,7 +78,7 @@ inline fun <reified T> String.deserializeDataBy(dataType: DataType):T{
 /**
  * 根据指定的数据类型，反序列化当前文本。
  *
- * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+ * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
  * @see DataType
  */
@@ -90,7 +90,7 @@ fun <T> String.deserializeDataBy(dataType: DataType,type:Class<T>):T{
 /**
  * 根据指定的数据类型，反序列化当前文本。
  *
- * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
+ * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
  * @see DataType
  */

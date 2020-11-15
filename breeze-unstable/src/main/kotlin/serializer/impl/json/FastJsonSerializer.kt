@@ -8,7 +8,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由FastJson实现的Json序列化器。
+ * 由FastJson实现的Json的序列化器。
  * @see com.alibaba.fastjson.JSON
  */
 internal object FastJsonSerializer : JsonSerializer {

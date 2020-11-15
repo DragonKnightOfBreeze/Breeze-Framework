@@ -11,7 +11,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由Jackson实现的Json序列化器。
+ * 由Jackson实现的Json的序列化器。
  * @see com.fasterxml.jackson.databind.json.JsonMapper
  */
 internal object JacksonJsonSerializer : JsonSerializer, JacksonSerializer<JsonMapper> {

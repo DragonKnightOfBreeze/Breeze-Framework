@@ -8,14 +8,18 @@ package com.windea.breezeframework.serialization.extensions
 import com.windea.breezeframework.core.extensions.*
 import com.windea.breezeframework.serialization.components.*
 
-internal val defaultMapLikeSerializer:MapLikeSerializer = MapLikeSerializer.BreezeMapLikeSerializer()
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Any?.appendTo(builder: StringBuilder) = builder.append(this)
+
+
+internal val defaultMapLikeSerializer: MapLikeSerializer = MapLikeSerializer.BreezeMapLikeSerializer()
 
 private const val kotlinxJsonClassName = "kotlinx.serialization.json.Json"
 private const val jacksonJsonClassName = "com.fasterxml.jackson.databind.json.JsonMapper"
 private const val gsonClassName = "com.google.gson.Gson"
 private const val fastjsonClassName = "com.alibaba.fastjson.JSON"
 
-internal val  defaultJsonSerializer: JsonSerializer = when {
+internal val defaultJsonSerializer: JsonSerializer = when {
 	presentInClassPath(kotlinxJsonClassName) -> JsonSerializer.KotlinxJsonSerializer()
 	presentInClassPath(jacksonJsonClassName) -> JsonSerializer.JacksonJsonSerializer()
 	presentInClassPath(gsonClassName) -> JsonSerializer.GsonSerializer()
@@ -41,7 +45,7 @@ internal val defaultXmlSerializer: XmlSerializer = when {
 
 private const val jacksonPropertiesClassName = "com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper"
 
-internal val defaultPropertiesSerializer: PropertiesSerializer =  when {
+internal val defaultPropertiesSerializer: PropertiesSerializer = when {
 	presentInClassPath(jacksonPropertiesClassName) -> PropertiesSerializer.JacksonPropertiesSerializer()
 	else -> PropertiesSerializer.BreezePropertiesSerializer()
 }

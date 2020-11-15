@@ -845,13 +845,13 @@ private val quotes = charArrayOf('\'', '\"', '`')
 /**
  * 尝试使用指定的引号包围当前字符串。
  * 适用于单引号、双引号、反引号。
- * 默认忽略其中的引号，不对其进行转义。
+ * 默认对其中的引号进行必要的转义。
  */
-fun String.quote(quote: Char, omitQuotes: Boolean = true): String {
+fun String.quote(quote: Char, escapeQuotes: Boolean = true): String {
 	return when {
 		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
 		this.surroundsWith(quote) -> this
-		omitQuotes -> this.addSurrounding(quote.toString())
+		escapeQuotes -> this.addSurrounding(quote.toString())
 		else -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
 	}
 }

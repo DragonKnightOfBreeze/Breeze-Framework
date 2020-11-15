@@ -9,7 +9,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由BreezeXml实现的Xml序列化器。
+ * 由BreezeXml实现的Xml的序列化器。
  * @see com.windea.breezeframework.mapper.impl.XmlMapper
  */
 internal object BreezeXmlSerializer : XmlSerializer, BreezeSerializer<XmlMapper> {

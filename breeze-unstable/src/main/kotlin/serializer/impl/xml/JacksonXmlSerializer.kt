@@ -11,7 +11,7 @@ import java.io.*
 import java.lang.reflect.*
 
 /**
- * 由Jackson实现的Xml序列化器。
+ * 由Jackson实现的Xml的序列化器。
  * @see com.fasterxml.jackson.dataformat.xml.XmlMapper
  */
 internal object JacksonXmlSerializer : XmlSerializer, JacksonSerializer<XmlMapper> {
