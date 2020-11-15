@@ -43,78 +43,6 @@ interface CaseType {
 	 */
 	fun joinToString(value: Sequence<String>): String
 
-	companion object {
-		private val letterCaseRegistry = mutableListOf<CaseType>()
-
-		/**
-		 * 注册单词格式。
-		 */
-		@JvmStatic fun register(caseType: CaseType) {
-			letterCaseRegistry += caseType
-		}
-
-		/**
-		 * 推断单词格式。
-		 */
-		@JvmStatic fun infer(value: String): CaseType? {
-			for(letterCase in letterCaseRegistry) {
-				if(letterCase.matches(value)) return letterCase
-			}
-			return null
-		}
-
-		private fun CharSequence.firstCharToUpperCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toUpperCase() + this.substring(1)
-			}
-		}
-
-		private fun CharSequence.firstCharToLowerCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toLowerCase() + this.substring(1)
-			}
-		}
-
-		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
-
-		private fun CharSequence.splitWords(): String {
-			return this.replace(splitWordsRegex, " $1")
-		}
-
-		init {
-			registerDefaultLetterCases()
-			registerPathLikeLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
-			register(LowerCase)
-			register(UpperCase)
-			register(Capitalized)
-			register(LowerCaseWords)
-			register(UpperCaseWords)
-			register(FirstWordCapitalized)
-			register(CapitalizedWords)
-			register(Words)
-
-			register(CamelCase)
-			register(PascalCase)
-			register(SnakeCase)
-			register(ScreamingSnakeCase)
-			register(UnderscoreWords)
-			register(KebabCase)
-			register(KebabUpperCase)
-			register(HyphenWords)
-		}
-
-		private fun registerPathLikeLetterCases(){
-			register(ReferencePath)
-			register(LinuxPath)
-			register(WindowsPath)
-		}
-	}
-
 	//region Default Letter Cases
 	/**
 	 * 全小写。
@@ -403,4 +331,76 @@ interface CaseType {
 		override fun joinToString(value: Sequence<String>) = value.joinToString("\\")
 	}
 	//endregion
+
+	companion object {
+		private val letterCaseRegistry = mutableListOf<CaseType>()
+
+		/**
+		 * 注册单词格式。
+		 */
+		@JvmStatic fun register(caseType: CaseType) {
+			letterCaseRegistry += caseType
+		}
+
+		/**
+		 * 推断单词格式。
+		 */
+		@JvmStatic fun infer(value: String): CaseType? {
+			for(letterCase in letterCaseRegistry) {
+				if(letterCase.matches(value)) return letterCase
+			}
+			return null
+		}
+
+		private fun CharSequence.firstCharToUpperCase(): String {
+			return when {
+				isEmpty() -> this.toString()
+				else -> this[0].toUpperCase() + this.substring(1)
+			}
+		}
+
+		private fun CharSequence.firstCharToLowerCase(): String {
+			return when {
+				isEmpty() -> this.toString()
+				else -> this[0].toLowerCase() + this.substring(1)
+			}
+		}
+
+		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
+
+		private fun CharSequence.splitWords(): String {
+			return this.replace(splitWordsRegex, " $1")
+		}
+
+		init {
+			registerDefaultLetterCases()
+			registerPathLikeLetterCases()
+		}
+
+		private fun registerDefaultLetterCases() {
+			register(LowerCase)
+			register(UpperCase)
+			register(Capitalized)
+			register(LowerCaseWords)
+			register(UpperCaseWords)
+			register(FirstWordCapitalized)
+			register(CapitalizedWords)
+			register(Words)
+
+			register(CamelCase)
+			register(PascalCase)
+			register(SnakeCase)
+			register(ScreamingSnakeCase)
+			register(UnderscoreWords)
+			register(KebabCase)
+			register(KebabUpperCase)
+			register(HyphenWords)
+		}
+
+		private fun registerPathLikeLetterCases(){
+			register(ReferencePath)
+			register(LinuxPath)
+			register(WindowsPath)
+		}
+	}
 }

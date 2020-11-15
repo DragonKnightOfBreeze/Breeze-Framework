@@ -40,6 +40,11 @@ inline fun Boolean.onFalse(block: () -> Unit): Boolean {
 	if(!this) block()
 	return this
 }
+
+/**合并作为参数的值，将当前布尔值转化为对象。*/
+fun Boolean?.coalesce(trueValue: String, falseValue: String, nullValue: String = falseValue): String {
+	return if(this == null) nullValue else if(this) trueValue else falseValue
+}
 //endregion
 
 //region Convert extensions

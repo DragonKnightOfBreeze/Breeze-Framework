@@ -1233,15 +1233,6 @@ fun <T : Any> T?.toText(transform: ((T) -> String)? = null): String {
 }
 
 /**
- * 将当前布尔值转换成文本。
- * * 如果当前对象是空值，则返回空字符串。
- */
-fun Boolean?.toText(trueValue: String, falseValue: String): String {
-	return if(this == null) "" else if(this) trueValue else falseValue
-}
-
-
-/**
  * 将当前数组拼接并转化成文本。
  * 默认忽略空数组，忽略空元素，没有缩进。
  * * 允许指定前缀、后缀、分隔符和缩进。

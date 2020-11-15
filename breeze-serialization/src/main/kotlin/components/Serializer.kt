@@ -9,30 +9,22 @@ import java.lang.reflect.*
 /**
  * 序列化器。
  *
- * 序列化器用于对数据进行序列化和反序列化。
- * 其具体实现可能需要依赖第三方库，如`gson`，`fastjson`，`jackson`和`kotlinx-serialization`。
- *
- * @see DataType
+ * 序列化器用于基于特定的格式，对数据进行序列化和反序列化。
  */
 @BreezeComponent
-interface Serializer {
-	/**
-	 * 对应的数据类型。
-	 */
-	val dataType: DataType
-
+interface Serializer<V>{
 	/**
 	 * 序列化指定对象。
 	 */
-	fun <T:Any> serialize(value: T): String
+	fun <T> serialize(target:T):V
 
 	/**
-	 * 反序列化指定的文本。
+	 * 反序列化指定的格式。
 	 */
-	fun <T:Any> deserialize(value: String, type: Class<T>): T
+	fun <T> deserialize(value:V,type: Class<T>):T
 
 	/**
-	 * 反序列化指定的文本。
+	 * 反序列化指定的格式。
 	 */
-	fun <T:Any> deserialize(value: String, type: Type): T
+	fun <T> deserialize(value:V,type: Type):T
 }

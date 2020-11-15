@@ -24,33 +24,6 @@ interface Escaper {
 	 */
 	fun unescape(value: String): String
 
-	companion object {
-		//不验证escapeChars和escapedStrings长度是否一致：交由底层负责
-
-		private fun escapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
-			//这里直接遍历字符数组以提高性能
-			return buildString {
-				val chars = value.toCharArray()
-				for(char in chars) {
-					val index = escapeChars.indexOf(char)
-					if(index == -1) append(char) else append(escapedStrings[index])
-				}
-			}
-		}
-
-		@NotOptimized
-		private fun unescapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
-			var result = value
-			val size = escapeChars.size
-			for(i in 0 until size) {
-				result = result.replace(escapedStrings[i], escapeChars[i].toString())
-			}
-			return result
-		}
-
-		//不需要进行注册
-	}
-
 	//region Default Escapers
 	/**
 	 * Kotlin字符串的转义器。
@@ -166,4 +139,31 @@ interface Escaper {
 		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
 	}
 	//endregion
+
+	companion object {
+		//不验证escapeChars和escapedStrings长度是否一致：交由底层负责
+
+		private fun escapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
+			//这里直接遍历字符数组以提高性能
+			return buildString {
+				val chars = value.toCharArray()
+				for(char in chars) {
+					val index = escapeChars.indexOf(char)
+					if(index == -1) append(char) else append(escapedStrings[index])
+				}
+			}
+		}
+
+		@NotOptimized
+		private fun unescapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
+			var result = value
+			val size = escapeChars.size
+			for(i in 0 until size) {
+				result = result.replace(escapedStrings[i], escapeChars[i].toString())
+			}
+			return result
+		}
+
+		//不需要进行注册
+	}
 }

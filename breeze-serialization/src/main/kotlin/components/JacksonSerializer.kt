@@ -3,9 +3,12 @@
 
 package com.windea.breezeframework.serialization.components
 
+import com.windea.breezeframework.core.annotations.*
+
 /**
  * 由Jackson委托实现的序列化器。
  *
  * @see com.fasterxml.jackson.databind.ObjectMapper
  */
-interface JacksonSerializer : Serializer, DelegateSerializer
+@BreezeComponent
+interface JacksonSerializer : DataSerializer, DelegateSerializer

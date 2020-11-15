@@ -40,8 +40,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.toList()
 					is List<*> -> value
 					is Iterable<*> -> value.toList()
-					is Map<*,*> -> value.values.toList()
 					is Sequence<*> -> value.toList()
+					is Map<*,*> -> value.values.toList()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query results.")
 				}
 			} catch(e: Exception) {
@@ -62,8 +62,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.filter(queryObject)
 					is List<*> -> value.filter(queryObject)
 					is Iterable<*> -> value.filter(queryObject)
-					is Map<*,*> -> value.values.filter(queryObject)
 					is Sequence<*> -> value.filter(queryObject).toList()
+					is Map<*,*> -> value.values.filter(queryObject)
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query filterable results.")
 				}
 			} catch(e: Exception) {
@@ -84,8 +84,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.firstOrNull()
 					is List<*> -> value.firstOrNull()
 					is Iterable<*> -> value.firstOrNull()
-					is Map<*,*> -> value.values.firstOrNull()
 					is Sequence<*> -> value.firstOrNull()
+					is Map<*,*> -> value.values.firstOrNull()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query first result.")
 				}
 			} catch(e: Exception) {
@@ -99,8 +99,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.first()
 					is List<*> -> value.first()
 					is Iterable<*> -> value.first()
-					is Map<*,*> -> value.values.first()
 					is Sequence<*> -> value.first()
+					is Map<*,*> -> value.values.first()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query first result.")
 				}
 			} catch(e: Exception) {
@@ -121,8 +121,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.lastOrNull()
 					is List<*> -> value.lastOrNull()
 					is Iterable<*> -> value.lastOrNull()
-					is Map<*,*> -> value.values.lastOrNull()
 					is Sequence<*> -> value.lastOrNull()
+					is Map<*,*> -> value.values.lastOrNull()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query last result.")
 				}
 			} catch(e: Exception) {
@@ -136,8 +136,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.last()
 					is List<*> -> value.last()
 					is Iterable<*> -> value.last()
-					is Map<*,*> -> value.values.last()
 					is Sequence<*> -> value.last()
+					is Map<*,*> -> value.values.last()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query last result.")
 				}
 			} catch(e: Exception) {
@@ -161,8 +161,8 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.getOrNull(queryObject.toInt())
 					is List<*> -> value.getOrNull(queryObject.toInt())
 					is Iterable<*> -> value.elementAtOrNull(queryObject.toInt())
-					is Map<*, *> -> value.cast<Map<String, Any?>>()[queryObject]
 					is Sequence<*> -> value.elementAtOrNull(queryObject.toInt())
+					is Map<*, *> -> value.cast<Map<String, Any?>>()[queryObject]
 					else -> throw UnsupportedOperationException("Invalid string '$queryObject' for query ${value.javaClass.simpleName}.")
 				}
 			} catch(e: Exception) {

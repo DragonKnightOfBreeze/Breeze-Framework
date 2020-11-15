@@ -4,7 +4,6 @@
 package com.windea.breezeframework.serialization.components
 
 import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.serialization.extensions.*
 import com.windea.breezeframework.serialization.extensions.defaultCsvSerializer
 import com.windea.breezeframework.serialization.extensions.defaultJsonSerializer
 import com.windea.breezeframework.serialization.extensions.defaultPropertiesSerializer
@@ -18,7 +17,7 @@ import java.lang.reflect.*
  *
  * 数据类型基于一定的格式存储数据。
  *
- * @see Serializer
+ * @see DataSerializer
  */
 @BreezeComponent
 interface DataType {
@@ -39,14 +38,14 @@ interface DataType {
 	 *
 	 * 可以进行自定义。
 	 */
-	val serializer: Serializer
+	val serializer: DataSerializer
 
 	/**
 	 * 序列化指定对象。
 	 *
 	 * 可以由第三方库委托实现。基于classpath推断具体实现，或者使用框架本身的默认实现。
 	 */
-	fun <T : Any> serialize(value: T): String {
+	fun <T> serialize(value: T): String {
 		return serializer.serialize(value)
 	}
 
@@ -55,7 +54,7 @@ interface DataType {
 	 *
 	 * 可以由第三方库委托实现。基于classpath推断具体实现，或者使用框架本身的默认实现。
 	 */
-	fun <T : Any> deserialize(value: String, type: Class<T>): T {
+	fun <T> deserialize(value: String, type: Class<T>): T {
 		return serializer.deserialize(value, type)
 	}
 

@@ -4,15 +4,16 @@
 package com.windea.breezeframework.serialization.components
 
 import com.fasterxml.jackson.dataformat.xml.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.serialization.extensions.*
 import com.windea.breezeframework.serialization.extensions.defaultXmlSerializer
 import java.lang.reflect.*
 
 /**
  * Xml序列化器。
  */
-interface XmlSerializer : Serializer {
+@BreezeComponent
+interface XmlSerializer : DataSerializer {
 	override val dataType: DataType get() = DataType.Xml
 
 	//region Xml Serializers
@@ -39,15 +40,15 @@ interface XmlSerializer : Serializer {
 			mapper.block()
 		}
 
-		override fun <T : Any> serialize(value: T): String {
-			return mapper.writeValueAsString(value)
+		override fun <T> serialize(target: T): String {
+			return mapper.writeValueAsString(target)
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
+		override fun <T> deserialize(value: String, type: Class<T>): T {
 			return mapper.readValue(value, type)
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Type): T {
+		override fun <T> deserialize(value: String, type: Type): T {
 			return mapper.readValue(value, mapper.typeFactory.constructType(type))
 		}
 	}
@@ -56,15 +57,15 @@ interface XmlSerializer : Serializer {
 	 * 框架本身实现的Xml序列化器。
 	 */
 	class BreezeXmlSerializer: XmlSerializer {
-		override fun <T : Any> serialize(value: T): String {
+		override fun <T> serialize(target: T): String {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
+		override fun <T> deserialize(value: String, type: Class<T>): T {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Type): T {
+		override fun <T> deserialize(value: String, type: Type): T {
 			TODO()
 		}
 	}

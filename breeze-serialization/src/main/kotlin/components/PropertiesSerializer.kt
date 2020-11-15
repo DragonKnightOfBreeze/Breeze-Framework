@@ -4,8 +4,8 @@
 package com.windea.breezeframework.serialization.components
 
 import com.fasterxml.jackson.dataformat.javaprop.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.serialization.extensions.*
 import com.windea.breezeframework.serialization.extensions.defaultPropertiesSerializer
 import java.lang.reflect.*
 import java.util.*
@@ -13,23 +13,24 @@ import java.util.*
 /**
  * Properties的序列化器。
  */
-interface PropertiesSerializer : Serializer {
+@BreezeComponent
+interface PropertiesSerializer : DataSerializer {
 	override val dataType: DataType get() = DataType.Properties
 
 	/**
 	 * 序列化指定属性对象。
 	 */
-	fun <T : Any> serializeProperties(value: T): Properties
+	fun <T> serializeProperties(value: T): Properties
 
 	/**
 	 * 反序列化指定属性对象。
 	 */
-	fun <T : Any> deserializeProperties(properties: Properties, type: Class<T>): T
+	fun <T> deserializeProperties(properties: Properties, type: Class<T>): T
 
 	/**
 	 * 反序列化指定属性对象。
 	 */
-	fun <T : Any> deserializeProperties(properties: Properties, type: Type): T
+	fun <T> deserializeProperties(properties: Properties, type: Type): T
 
 	//region Properties Serializers
 	/**
@@ -55,27 +56,27 @@ interface PropertiesSerializer : Serializer {
 			mapper.block()
 		}
 
-		override fun <T : Any> serialize(value: T): String {
-			return mapper.writeValueAsString(value)
+		override fun <T> serialize(target: T): String {
+			return mapper.writeValueAsString(target)
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
+		override fun <T> deserialize(value: String, type: Class<T>): T {
 			return mapper.readValue(value, type)
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Type): T {
+		override fun <T> deserialize(value: String, type: Type): T {
 			return mapper.readValue(value, mapper.typeFactory.constructType(type))
 		}
 
-		override fun <T : Any> serializeProperties(value: T): Properties {
+		override fun <T> serializeProperties(value: T): Properties {
 			return Properties().apply{ this.putAll(mapper.writeValueAsProperties(value)) }
 		}
 
-		override fun <T : Any> deserializeProperties(properties: Properties, type: Class<T>): T {
+		override fun <T> deserializeProperties(properties: Properties, type: Class<T>): T {
 			return mapper.readPropertiesAs(properties,type)
 		}
 
-		override fun <T : Any> deserializeProperties(properties: Properties, type: Type): T {
+		override fun <T> deserializeProperties(properties: Properties, type: Type): T {
 			return mapper.readPropertiesAs(properties,mapper.typeFactory.constructType(type))
 		}
 	}
@@ -84,27 +85,27 @@ interface PropertiesSerializer : Serializer {
 	 * 框架本身实现的Properties序列化器。
 	 */
 	class BreezePropertiesSerializer: PropertiesSerializer {
-		override fun <T : Any> serializeProperties(value: T): Properties {
+		override fun <T> serializeProperties(value: T): Properties {
 			TODO()
 		}
 
-		override fun <T : Any> deserializeProperties(properties: Properties, type: Class<T>): T {
+		override fun <T> deserializeProperties(properties: Properties, type: Class<T>): T {
 			TODO()
 		}
 
-		override fun <T : Any> deserializeProperties(properties: Properties, type: Type): T {
+		override fun <T> deserializeProperties(properties: Properties, type: Type): T {
 			TODO()
 		}
 
-		override fun <T : Any> serialize(value: T): String {
+		override fun <T> serialize(target: T): String {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Type): T {
+		override fun <T> deserialize(value: String, type: Type): T {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
+		override fun <T> deserialize(value: String, type: Class<T>): T {
 			TODO()
 		}
 

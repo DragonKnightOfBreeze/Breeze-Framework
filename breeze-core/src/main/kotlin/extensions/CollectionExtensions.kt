@@ -63,14 +63,14 @@ inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
 /**
- * 得到当前映射的最为适配的值类型。
- */
-inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
-
-/**
  * 得到当前序列的最为适配的键类型。
  */
 inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
+
+/**
+ * 得到当前映射的最为适配的值类型。
+ */
+inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 //endregion
 
 //region Optional operation extensions

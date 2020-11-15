@@ -445,8 +445,7 @@
 * [X] 移除`breeze-mapper`，`breeze-serializer`，`breeze-generator`并合并到`breeze-unstable`
 * [X] 添加`List<T>.pin()`扩展
 * [X] 整理目录
-* [ ] breeze-serialization 实现默认的用于处理CSV的`BreezeCsvMapper`
-* [ ] breeze-serialization 实现默认的用于处理TSV的`BreezeTsvMapper`
+* [X] breeze-serialization 重构代码
 * [ ] breeze-dsl 重构代码
   * [X] breeze-dsl-xml
   * [X] breeze-dsl-cmd-text

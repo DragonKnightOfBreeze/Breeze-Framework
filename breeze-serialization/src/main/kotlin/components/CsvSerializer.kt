@@ -3,14 +3,15 @@
 
 package com.windea.breezeframework.serialization.components
 
-import com.windea.breezeframework.serialization.extensions.*
+import com.windea.breezeframework.core.annotations.*
 import com.windea.breezeframework.serialization.extensions.defaultCsvSerializer
 import java.lang.reflect.*
 
 /**
  * Csv序列化器。
  */
-interface CsvSerializer : Serializer {
+@BreezeComponent
+interface CsvSerializer : DataSerializer {
 	override val dataType: DataType get() = DataType.Csv
 
 	//region Csv Serializers
@@ -25,15 +26,15 @@ interface CsvSerializer : Serializer {
 	 * 框架本身实现的Csv序列化器。
 	 */
 	class BreezeCsvSerializer: CsvSerializer {
-		override fun <T : Any> serialize(value: T): String {
+		override fun <T> serialize(target: T): String {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Class<T>): T {
+		override fun <T> deserialize(value: String, type: Class<T>): T {
 			TODO()
 		}
 
-		override fun <T : Any> deserialize(value: String, type: Type): T {
+		override fun <T> deserialize(value: String, type: Type): T {
 			TODO()
 		}
 	}
