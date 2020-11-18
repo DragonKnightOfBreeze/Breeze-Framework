@@ -13,6 +13,7 @@ import javax.crypto.spec.*
  *
  * 加密器用于根据指定的加密算法，对字符串进行加密和解密，某些加密算法可能不支持解密。
  */
+@UnstableApi
 @BreezeComponent
 interface Encrypter {
 	/**

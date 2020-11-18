@@ -13,6 +13,7 @@ import java.util.*
  *
  * 编码器用于对字符串进行编码和解码，
  */
+@UnstableApi
 @BreezeComponent
 interface Encoder {
 	/**

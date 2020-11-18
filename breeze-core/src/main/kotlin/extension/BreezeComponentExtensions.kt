@@ -57,6 +57,7 @@ fun String.unescapeBy(escaper: Escaper): String {
  *
  * @see Encoder
  */
+@UnstableApi
 @BreezeComponentExtension
 fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
 	return encoder.encode(this, charset)
@@ -67,6 +68,7 @@ fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
  *
  * @see Encoder
  */
+@UnstableApi
 @BreezeComponentExtension
 fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
 	return encoder.decode(this, charset)
@@ -79,6 +81,7 @@ fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
  *
  * @see Encrypter
  */
+@UnstableApi
 @BreezeComponentExtension
 fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray {
 	return encrypter.encrypt(this,secret)
@@ -90,6 +93,7 @@ fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray 
  * @throws UnsupportedOperationException 如果不支持解密。
  * @see Encrypter
  */
+@UnstableApi
 @BreezeComponentExtension
 fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray {
 	return encrypter.decrypt(this,secret)

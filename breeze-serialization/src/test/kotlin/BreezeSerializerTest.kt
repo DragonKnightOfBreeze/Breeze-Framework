@@ -5,6 +5,8 @@ package com.windea.breezeframework.serialization
 
 import com.windea.breezeframework.serialization.component.*
 import com.windea.breezeframework.serialization.extension.*
+import java.util.concurrent.*
+import kotlin.random.*
 import kotlin.system.*
 import kotlin.test.*
 
@@ -38,7 +40,7 @@ class BreezeSerializerTest {
 			"age" to 3000,
 			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze")
 		)
-		val b = List(10) { a }
+		val b = List(10000) { a }
 		val s1: String
 		val s2: String
 		val s3: String
@@ -48,4 +50,27 @@ class BreezeSerializerTest {
 		println(measureNanoTime { s3 = b.serializeBy(JsonSerializer.GsonSerializer()) })
 		println(measureNanoTime { s4 = b.serializeBy(JsonSerializer.FastJsonSerializer()) })
 	}
+
+	@Test
+	fun asyncMapTest(){
+		val range = (0..20).toList().toTypedArray()
+		println(measureNanoTime{range.mapToArray{ i->
+			Thread.sleep(200)
+			buildString{repeat(Random.nextInt(10)) { append(i) }} }.contentToString()})
+		println(measureNanoTime{range.mapToArrayAsync(Executors.newFixedThreadPool(20)){ i->
+			Thread.sleep(200)
+			buildString{repeat(Random.nextInt(10)) { append(i) }} }.contentToString()})
+	}
+}
+
+internal inline fun <T, reified R> Array<T>.mapToArray(block:(T)->R) :Array<R>{
+	return Array(this.size){ block(this[it]) }
+}
+
+internal inline fun <T, reified R> Array<T>.mapToArrayAsync(executor:ExecutorService,crossinline block:(T)->R) :Array<R>{
+	val result = arrayOfNulls<R>(this.size)
+	for(index in this.indices) {
+		result[index] = executor.submit(Callable{ block(this[index]) }).get()
+	}
+	return Array(this.size){ block(this[it]) }
 }
