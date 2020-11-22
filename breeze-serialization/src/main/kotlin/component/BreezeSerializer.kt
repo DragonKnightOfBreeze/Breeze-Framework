@@ -97,9 +97,8 @@ interface BreezeSerializer {
 		}
 
 		//TODO 优化性能
-		//使用StringWriter而非StringBuilder
 
-		private val executor = Executors.newWorkStealingPool(64)
+		//private val executor = Executors.newWorkStealingPool(64)
 
 		private fun <T> doSerialize(target: T): String {
 			return StringBuilder(1024).apply { doSerialize(target, this) }.toString()

@@ -46,27 +46,4 @@ class BreezeSerializerTest {
 		println(measureNanoTime { b.serializeBy(JsonSerializer.GsonSerializer()) })
 		println(measureNanoTime { b.serializeBy(JsonSerializer.FastJsonSerializer()) })
 	}
-
-	@Test
-	fun asyncMapTest(){
-		val range = (0..20).toList().toTypedArray()
-		println(measureNanoTime{range.mapToArray{ i->
-			Thread.sleep(200)
-			buildString{repeat(Random.nextInt(10)) { append(i) }} }.contentToString()})
-		println(measureNanoTime{range.mapToArrayAsync(Executors.newFixedThreadPool(20)){ i->
-			Thread.sleep(200)
-			buildString{repeat(Random.nextInt(10)) { append(i) }} }.contentToString()})
-	}
-}
-
-internal inline fun <T, reified R> Array<T>.mapToArray(block:(T)->R) :Array<R>{
-	return Array(this.size){ block(this[it]) }
-}
-
-internal inline fun <T, reified R> Array<T>.mapToArrayAsync(executor:ExecutorService,crossinline block:(T)->R) :Array<R>{
-	val result = arrayOfNulls<R>(this.size)
-	for(index in this.indices) {
-		result[index] = executor.submit(Callable{ block(this[index]) }).get()
-	}
-	return Array(this.size){ block(this[it]) }
 }
