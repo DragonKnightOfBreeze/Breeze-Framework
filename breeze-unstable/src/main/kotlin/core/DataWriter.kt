@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization
+package com.windea.breezeframework.core
 
 import java.io.*
 
 /**
  * 数据的读取器。
  */
-open class DataWriter(
+class DataWriter(
 	private val writer: Writer? = null,
 	private val initialSize: Int = 2048
 ) : Writer() {
@@ -21,9 +21,9 @@ open class DataWriter(
 			field = value.coerceAtLeast(buffer.size)
 		}
 
-	open fun expandCapacity(minCapacity: Int) {
+	fun expandCapacity(minCapacity: Int) {
 		if(maxBufferSize != -1 && minCapacity >= maxBufferSize) {
-			throw SerializationException("Min capacity '$minCapacity' is greater than max buffer size '$maxBufferSize'")
+			throw IllegalStateException("Min capacity '$minCapacity' is greater than max buffer size '$maxBufferSize'")
 		}
 		var newCapacity = buffer.size + (buffer.size shr 1) + 1
 		if(newCapacity < minCapacity) newCapacity = minCapacity
@@ -54,7 +54,7 @@ open class DataWriter(
 	}
 
 	@Throws(IOException::class)
-	open fun write(c: Char) {
+	fun write(c: Char) {
 		var newCount = count + 1
 		if(newCount > buffer.size) {
 			if(writer == null) {
@@ -128,7 +128,7 @@ open class DataWriter(
 			writer.write(buffer, 0, count)
 			writer.flush()
 		} catch(e: IOException) {
-			throw SerializationException(e.message, e)
+			throw IllegalStateException(e.message, e)
 		}
 		count = 0
 	}

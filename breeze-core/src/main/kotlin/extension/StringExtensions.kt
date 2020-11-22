@@ -1221,13 +1221,6 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 
 //region Text Extensions
 /**
- * 构建文本。
- */
-fun buildText(buffer:Appendable = StringWriter(),builderAction:Appendable.()->Unit):String{
-	return buffer.apply(builderAction).toString()
-}
-
-/**
  * 将当前对象转化成文本。
  * * 如果当前对象是空值，则返回空字符串。
  * * 如果存在转化方法，则使用该方法将当前对象转化为字符串。
@@ -1251,10 +1244,9 @@ fun <T : Any> Array<out T?>.joinToText(
 	indent: CharSequence = "",
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
-	buffer:Appendable = StringWriter(),
 	transform: ((T) -> CharSequence)? = null,
 ): String {
-	var result = buildText(buffer) {
+	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
 			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()
@@ -1283,10 +1275,9 @@ fun <T : Any> Iterable<T?>.joinToText(
 	indent: CharSequence = "",
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
-	buffer:Appendable = StringWriter(),
 	transform: ((T) -> CharSequence)? = null,
 ): String {
-	var result = buildText(buffer) {
+	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
 			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()
@@ -1318,7 +1309,7 @@ fun <K, V> Map<K, V>.joinToText(
 	buffer:Appendable = StringWriter(),
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
 ): String {
-	var result = buildText(buffer) {
+	var result = buildString {
 		var count = 0
 		for(entry in this@joinToText) {
 			val valueSnippet = entry.value?.toString()
@@ -1351,7 +1342,7 @@ fun <T : Any> Sequence<T?>.joinToText(
 	buffer:Appendable = StringWriter(),
 	transform: ((T) -> CharSequence)? = null,
 ): String {
-	var result = buildText(buffer) {
+	var result = buildString {
 		var count = 0
 		for(element in this@joinToText) {
 			val snippet = if(element == null) null else if(transform != null) transform(element) else element.toString()

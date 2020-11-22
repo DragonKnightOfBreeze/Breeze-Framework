@@ -445,7 +445,7 @@
 * [X] 移除`breeze-mapper`，`breeze-serializer`，`breeze-generator`并合并到`breeze-unstable`
 * [X] 添加`List<T>.pin()`扩展
 * [X] 整理目录
-* [X] 添加`buildText`和`Iterable.select()`
+* [X] 添加`Iterable.select()`
 * [X] breeze-serialization 重构代码
 * [ ] breeze-dsl 重构代码
   * [X] breeze-dsl-xml

@@ -6,11 +6,12 @@ package com.windea.breezeframework.serialization.component
 import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.reflect.extension.*
-import com.windea.breezeframework.serialization.*
 import com.windea.breezeframework.serialization.extension.*
+import java.io.*
 import java.lang.reflect.*
 import java.time.temporal.*
 import java.util.*
+import java.util.concurrent.*
 import kotlin.jvm.internal.*
 import kotlin.reflect.*
 
@@ -47,7 +48,7 @@ interface BreezeSerializer {
 		}
 
 		override fun <T> serialize(target: T): String {
-			return DataWriter().apply { doSerialize(target, this) }.toString()
+			return doSerialize(target)
 		}
 
 		override fun <T> deserialize(value: String, type: Class<T>): T {
@@ -95,136 +96,142 @@ interface BreezeSerializer {
 			}
 		}
 
-		//TODO 尝试继续提高性能
+		//TODO 优化性能
+		//使用StringWriter而非StringBuilder
 
-		private fun <T> doSerialize(target: T, writer: DataWriter, depth: Int = 1) {
+		private val executor = Executors.newWorkStealingPool(64)
+
+		private fun <T> doSerialize(target: T): String {
+			return StringBuilder(1024).apply { doSerialize(target, this) }.toString()
+		}
+
+		private fun <T> doSerialize(target: T, buffer: Appendable, depth: Int = 1) {
 			when {
-				target == null -> doSerializeNull(writer)
-				target is Boolean -> doSerializeBoolean(target, writer)
-				target is Number -> doSerializeNumber(target, writer)
-				target is String -> doSerializeString(target, writer)
-				target.isStringLike() -> doSerializeString(target.toString(), writer)
-				target is Array<*> -> doSerializeArray(target, writer, depth)
-				target is Iterable<*> -> doSerializeIterable(target, writer, depth)
-				target is Sequence<*> -> doSerializeSequence(target, writer, depth)
-				target is Map<*, *> -> doSerializeMap(target, writer, depth)
-				target.isMapLike() -> doSerializeMap(target.serializeBy(MapLikeSerializer), writer)
+				target == null -> doSerializeNull(buffer)
+				target is Boolean -> doSerializeBoolean(target, buffer)
+				target is Number -> doSerializeNumber(target, buffer)
+				target is String -> doSerializeString(target, buffer)
+				target.isStringLike() -> doSerializeString(target.toString(), buffer)
+				target is Array<*> -> doSerializeArray(target, buffer, depth)
+				target is Iterable<*> -> doSerializeIterable(target, buffer, depth)
+				target is Sequence<*> -> doSerializeSequence(target, buffer, depth)
+				target is Map<*, *> -> doSerializeMap(target, buffer, depth)
+				target.isMapLike() -> doSerializeMap(target.serializeBy(MapLikeSerializer), buffer)
 				else -> throw UnsupportedOperationException("Unsupported serialize value type '$target.javaClass.name'.")
 			}
 		}
 
-		private fun doSerializeKey(target: String, writer: DataWriter) {
+		private fun doSerializeKey(target: String, buffer: Appendable) {
 			if(config.unquoteKey) {
-				target.writeTo(writer)
+				target.appendTo(buffer)
 			} else {
-				config.quote.writeTo(writer)
-				config.quote.writeTo(writer)
+				config.quote.appendTo(buffer)
 				for(c in target) {
-					if(c == config.quote) config.escapedQuote.writeTo(writer) else c.writeTo(writer)
+					if(c == config.quote) config.escapedQuote.appendTo(buffer) else c.appendTo(buffer)
 				}
-				//target.writeTo(writer)
-				config.quote.writeTo(writer)
+				//target.appendTo(buffer)
+				config.quote.appendTo(buffer)
 			}
 		}
 
-		private fun doSerializeNull(writer: DataWriter) {
-			"null".writeTo(writer)
+		private fun doSerializeNull(buffer: Appendable) {
+			"null".appendTo(buffer)
 		}
 
-		private fun doSerializeBoolean(target: Boolean, writer: DataWriter) {
-			target.toString().writeTo(writer)
+		private fun doSerializeBoolean(target: Boolean, buffer: Appendable) {
+			target.toString().appendTo(buffer)
 		}
 
-		private fun doSerializeNumber(target: Number, writer: DataWriter) {
-			target.toString().writeTo(writer)
+		private fun doSerializeNumber(target: Number, buffer: Appendable) {
+			target.toString().appendTo(buffer)
 		}
 
-		private fun doSerializeString(target: String, writer: DataWriter) {
+		private fun doSerializeString(target: String, buffer: Appendable) {
 			if(config.unquoteValue) {
-				target.writeTo(writer)
+				target.appendTo(buffer)
 			} else {
-				config.quote.writeTo(writer)
+				config.quote.appendTo(buffer)
 				for(c in target) {
-					if(c == config.quote) config.escapedQuote.writeTo(writer) else c.writeTo(writer)
+					if(c == config.quote) config.escapedQuote.appendTo(buffer) else c.appendTo(buffer)
 				}
-				//target.writeTo(writer)
-				config.quote.writeTo(writer)
+				//target.appendTo(buffer)
+				config.quote.appendTo(buffer)
 			}
 		}
 
-		private fun doSerializeArray(target: Array<*>, writer: DataWriter, depth: Int = 1) {
-			arrayPrefix.writeTo(writer)
+		private fun doSerializeArray(target: Array<*>, buffer: Appendable, depth: Int = 1) {
+			arrayPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for(e in target) {
-				if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+				if(shouldWriteSeparator) separator.appendTo(buffer) else shouldWriteSeparator = true
 				if(config.prettyPrint) {
-					config.lineSeparator.writeTo(writer)
-					repeat(depth) { config.indent.writeTo(writer) }
+					config.lineSeparator.appendTo(buffer)
+					repeat(depth) { config.indent.appendTo(buffer) }
 				}
-				doSerialize(e, writer, depth + 1)
+				doSerialize(e, buffer, depth + 1)
 			}
 			if(config.prettyPrint) {
-				config.lineSeparator.writeTo(writer)
+				config.lineSeparator.appendTo(buffer)
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
-			arraySuffix.writeTo(writer)
+			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
+			arraySuffix.appendTo(buffer)
 		}
 
-		private fun doSerializeIterable(target: Iterable<*>, writer: DataWriter, depth: Int = 1) {
-			arrayPrefix.writeTo(writer)
+		private fun doSerializeIterable(target: Iterable<*>, buffer: Appendable, depth: Int = 1) {
+			arrayPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for(e in target) {
-				if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+				if(shouldWriteSeparator) separator.appendTo(buffer) else shouldWriteSeparator = true
 				if(config.prettyPrint) {
-					config.lineSeparator.writeTo(writer)
-					repeat(depth) { config.indent.writeTo(writer) }
+					config.lineSeparator.appendTo(buffer)
+					repeat(depth) { config.indent.appendTo(buffer) }
 				}
-				doSerialize(e, writer, depth + 1)
+				doSerialize(e, buffer, depth + 1)
 			}
 			if(config.prettyPrint) {
-				config.lineSeparator.writeTo(writer)
+				config.lineSeparator.appendTo(buffer)
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
-			arraySuffix.writeTo(writer)
+			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
+			arraySuffix.appendTo(buffer)
 		}
 
-		private fun doSerializeSequence(target: Sequence<*>, writer: DataWriter, depth: Int = 1) {
-			arrayPrefix.writeTo(writer)
+		private fun doSerializeSequence(target: Sequence<*>, buffer: Appendable, depth: Int = 1) {
+			arrayPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for(e in target) {
-				if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+				if(shouldWriteSeparator) separator.appendTo(buffer) else shouldWriteSeparator = true
 				if(config.prettyPrint) {
-					config.lineSeparator.writeTo(writer)
-					repeat(depth) { config.indent.writeTo(writer) }
+					config.lineSeparator.appendTo(buffer)
+					repeat(depth) { config.indent.appendTo(buffer) }
 				}
-				doSerialize(e, writer, depth + 1)
+				doSerialize(e, buffer, depth + 1)
 			}
 			if(config.prettyPrint) {
-				config.lineSeparator.writeTo(writer)
+				config.lineSeparator.appendTo(buffer)
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
-			arraySuffix.writeTo(writer)
+			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
+			arraySuffix.appendTo(buffer)
 		}
 
-		private fun doSerializeMap(target: Map<*, *>, writer: DataWriter, depth: Int = 1) {
-			objectPrefix.writeTo(writer)
+		private fun doSerializeMap(target: Map<*, *>, buffer: Appendable, depth: Int = 1) {
+			objectPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for((k, v) in target) {
-				if(shouldWriteSeparator) separator.writeTo(writer) else shouldWriteSeparator = true
+				if(shouldWriteSeparator) separator.appendTo(buffer) else shouldWriteSeparator = true
 				if(config.prettyPrint) {
-					config.lineSeparator.writeTo(writer)
-					repeat(depth) { config.indent.writeTo(writer) }
+					config.lineSeparator.appendTo(buffer)
+					repeat(depth) { config.indent.appendTo(buffer) }
 				}
-				doSerializeKey(k.toString(), writer)
-				keyValueSeparator.writeTo(writer)
-				if(config.prettyPrint) space.writeTo(writer)
-				doSerialize(v, writer, depth + 1)
+				doSerializeKey(k.toString(), buffer)
+				keyValueSeparator.appendTo(buffer)
+				if(config.prettyPrint) space.appendTo(buffer)
+				doSerialize(v, buffer, depth + 1)
 			}
 			if(config.prettyPrint) {
-				config.lineSeparator.writeTo(writer)
+				config.lineSeparator.appendTo(buffer)
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.writeTo(writer) }
-			objectSuffix.writeTo(writer)
+			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
+			objectSuffix.appendTo(buffer)
 		}
 
 		private fun Any?.isStringLike(): Boolean {

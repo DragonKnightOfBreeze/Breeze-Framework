@@ -40,15 +40,11 @@ class BreezeSerializerTest {
 			"age" to 3000,
 			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze")
 		)
-		val b = List(10000) { a }
-		val s1: String
-		val s2: String
-		val s3: String
-		val s4: String
-		println(measureNanoTime { s1 = b.serializeBy(JsonSerializer.BreezeJsonSerializer()) })
-		println(measureNanoTime { s2 = b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
-		println(measureNanoTime { s3 = b.serializeBy(JsonSerializer.GsonSerializer()) })
-		println(measureNanoTime { s4 = b.serializeBy(JsonSerializer.FastJsonSerializer()) })
+		val b = List(100) { a }
+		println(measureNanoTime {  b.serializeBy(JsonSerializer.BreezeJsonSerializer()) })
+		println(measureNanoTime {  b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
+		println(measureNanoTime { b.serializeBy(JsonSerializer.GsonSerializer()) })
+		println(measureNanoTime { b.serializeBy(JsonSerializer.FastJsonSerializer()) })
 	}
 
 	@Test
