@@ -14,7 +14,7 @@ import com.windea.breezeframework.core.type.*
 //应当提供一系列用于创建元组的中缀扩展。
 //提供其他必要的扩展方法。
 
-//region dsl build extensions
+//region Build extensions
 /**从二元素元组构造三元素元组。*/
 infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
 
@@ -25,7 +25,7 @@ infix fun <A, B, C, D> Tuple3<A, B, C>.fromTo(that: D): Tuple4<A, B, C, D> = Tup
 infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.fromTo(that: E): Tuple5<A, B, C, D, E> = Tuple5(first, second, third, fourth, that)
 //endregion
 
-//region common extensions
+//region Common Extensions
 /**映射单一元素类型的二元素元组的元素。*/
 inline fun <T, R> TypedTuple2<T>.map(transform: (T) -> R): TypedTuple2<R> =
 	TypedTuple2(transform(first), transform(second))
@@ -43,7 +43,7 @@ inline fun <T, R> TypedTuple5<T>.map(transform: (T) -> R): TypedTuple5<R> =
 	TypedTuple5(transform(first), transform(second), transform(third), transform(fourth), transform(fifth))
 //endregion
 
-//region convert extensions
+//region Convert Extensions
 /**将单一元素类型的三元素元组转化为列表。*/
 fun <T> TypedTuple3<T>.toList() = listOf(first, second, third)
 

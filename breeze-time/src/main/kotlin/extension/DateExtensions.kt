@@ -11,7 +11,7 @@ import java.util.*
 
 internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
-//region operator extensions
+//region Operator Extensions
 /** @see java.util.Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
@@ -27,7 +27,7 @@ operator fun Date.minus(calendarField: CalendarField): Date {
 }
 //endregion
 
-//region common extensions
+//region Common Extensions
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 
 val Date.endOfYear: Date get() = this.modify(month = 12, day = 31, hour = 23, minute = 59, second = 59)

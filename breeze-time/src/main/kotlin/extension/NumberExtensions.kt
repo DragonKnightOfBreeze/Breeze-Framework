@@ -7,7 +7,7 @@ package com.windea.breezeframework.time.extension
 
 import java.time.*
 
-//region Number to Duration extensions
+//region Number to Duration Extensions
 /**创建指定小时的时长。*/
 inline val Int.hours: Duration get() = Duration.ofHours(this.toLong())
 
@@ -40,7 +40,7 @@ inline val Long.milliseconds: Duration get() = Duration.ofMillis(this)
 inline val Long.nanoseconds: Duration get() = Duration.ofNanos(this)
 //endregion
 
-//region Number to Period extensions
+//region Number to Period Extensions
 /**创建指定年数的时期。*/
 inline val Int.years: Period get() = Period.ofYears(this)
 
@@ -67,7 +67,7 @@ inline val Long.days: Period get() = Period.ofDays(this.toInt())
 inline val Long.weeks: Period get() = Period.ofWeeks(this.toInt())
 //endregion
 
-//region Number to Year, Month, ... extensions
+//region Number to Year, Month, ... Extensions
 /**得到指定的年。*/
 inline val Int.year: Year get() = Year.of(this)
 

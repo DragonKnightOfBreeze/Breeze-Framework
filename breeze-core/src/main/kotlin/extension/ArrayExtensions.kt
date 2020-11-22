@@ -8,7 +8,7 @@ package com.windea.breezeframework.core.extension
 import java.util.*
 import java.util.stream.*
 
-//region operator extensions
+//region Operator extensions
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
  * @see com.windea.breezeframework.core.extension.repeat
@@ -229,7 +229,7 @@ operator fun BooleanArray.get(startIndex: Int, endIndex: Int): BooleanArray = th
 operator fun CharArray.get(startIndex: Int, endIndex: Int): CharArray = this.sliceArray(startIndex until endIndex)
 //endregion
 
-//region common extensions
+//region Common extensions
 /**将数组转化为流对象。可指定索引范围，默认为整个数组。*/
 @JvmSynthetic
 fun <T> Array<out T>.stream(start: Int = 0, end: Int = size): Stream<T> = Arrays.stream(this, start, end)!!

@@ -9,7 +9,7 @@ package com.windea.breezeframework.core.extension
 import com.windea.breezeframework.core.annotation.*
 import kotlin.math.*
 
-//region Optional operation extensions
+//region Optional Operation Extensions
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -102,7 +102,7 @@ inline fun Double.orNull(): Double? {
 }
 //endregion
 
-//region Operation extensions
+//region Operation Extensions
 /**进行一次计算并将结果转化为字节型。*/
 inline fun Byte.exact(block: (Byte) -> Number): Byte {
 	return block(this).toByte()
@@ -157,7 +157,7 @@ fun Number?.equalsNearly(other: Number?, precision: Float): Boolean {
 }
 //endregion
 
-//region Convert extensions
+//region Convert Extensions
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
 @Deprecated("Use this.convert<T>()", ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> Number.toNumber(): T {

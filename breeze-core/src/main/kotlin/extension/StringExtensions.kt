@@ -20,13 +20,10 @@ import java.time.format.DateTimeFormatter.*
 import java.util.*
 import kotlin.contracts.*
 
-//参考：
 //org.apache.commons.lang3.StringUtils
 //org.springframework.util.StringUtils
 
-//注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
-
-//region Operator override extensions
+//region Operator Override Extensions
 /**
  * 移除当前字符串中的指定子字符串。
  * @see com.windea.breezeframework.core.extension.remove
@@ -58,7 +55,7 @@ operator fun String.get(indices: IntRange): String = this.slice(indices)
 operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
 //endregion
 
-//region Optional operation extensions
+//region Optional Operation Extensions
 /**
  * 如果当前字符串不为空，则返回本身，否则返回null。
  */
@@ -132,7 +129,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 }
 //endregion
 
-//region Operation extensions
+//region Operation Extensions
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
@@ -873,7 +870,7 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 }
 //endregion
 
-//region Convert extensions
+//region Convert Extensions
 /**
  * 将当前字符串转化为字符。如果转化失败，则抛出异常。
  */
@@ -1184,7 +1181,7 @@ fun String.decodeToBase64ByteArray(): ByteArray {
 }
 //endregion
 
-//region Raw string convert extensions
+//region Raw String Convert Extensions
 /**
  * 将当前字符串转为内联文本。
  * @see com.windea.breezeframework.core.extension.trimWrap
@@ -1222,7 +1219,7 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 }
 //endregion
 
-//region Text convert extensions
+//region Text Extensions
 /**
  * 将当前对象转化成文本。
  * * 如果当前对象是空值，则返回空字符串。

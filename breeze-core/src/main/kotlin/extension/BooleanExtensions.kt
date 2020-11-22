@@ -9,7 +9,7 @@ package com.windea.breezeframework.core.extension
 import com.windea.breezeframework.core.annotation.*
 import kotlin.contracts.*
 
-//region Optional operation extensions
+//region Optional Operation Extensions
 /**如果为null，则返回true，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -47,7 +47,7 @@ fun Boolean?.coalesce(trueValue: String, falseValue: String, nullValue: String =
 }
 //endregion
 
-//region Convert extensions
+//region Convert Extensions
 /**将当前布尔值转化为字节类型的1或0。*/
 fun Boolean.toByte(): Byte = if(this) 1 else 0
 

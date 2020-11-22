@@ -7,8 +7,8 @@
 package com.windea.breezeframework.serialization.extension
 
 import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.serialization.*
 import com.windea.breezeframework.serialization.component.*
-import java.util.concurrent.*
 
 internal inline fun Char.writeTo(writer: DataWriter) = writer.write(this)
 

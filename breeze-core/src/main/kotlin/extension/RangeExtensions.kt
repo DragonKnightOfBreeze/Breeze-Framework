@@ -6,7 +6,7 @@
 
 package com.windea.breezeframework.core.extension
 
-//region build extensions
+//region Build Extensions
 infix fun Long.downUntil(until: Byte): LongProgression {
 	return LongProgression.fromClosedRange(this, until.toLong() - 1, -1L)
 }
@@ -72,7 +72,7 @@ infix fun Short.downUntil(until: Short): IntProgression {
 }
 //endregion
 
-//region common extensions
+//region Common Extensions
 inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: (T) -> R): ClosedRange<R> {
 	return transform(start)..transform(endInclusive)
 }
@@ -85,7 +85,7 @@ inline fun Float.coerceIn(): Float = this.coerceIn(0f, 1f)
 inline fun Double.coerceIn(): Double = this.coerceIn(0.0, 1.0)
 //endregion
 
-//region convert extensions
+//region Convert Extensions
 /**将范围转化为二元素元组。*/
 inline fun <T : Comparable<T>> ClosedRange<T>.toPair(): Pair<T, T> = this.start to this.endInclusive
 

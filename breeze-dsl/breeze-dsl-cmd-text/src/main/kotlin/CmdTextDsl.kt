@@ -33,7 +33,7 @@ interface CmdTextDsl {
 		override val inlineText get() = text
 
 		override fun toString(): String {
-			return "\u001B[${code}m$text\u001B[0m"
+			return "\u001B[${code}m${text}\u001B[0m"
 		}
 	}
 
@@ -105,7 +105,7 @@ interface CmdTextDsl {
 		LightBlue(94),
 		LightMagenta(95),
 		LightCyan(96),
-		White(97)
+		White(97);
 	}
 
 	@CmdTextDslMarker

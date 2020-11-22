@@ -18,7 +18,7 @@ import kotlin.contracts.*
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
-//region Operator extensions
+//region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
  * @see com.windea.breezeframework.core.extension.repeat
@@ -44,7 +44,7 @@ operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
 operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
 //endregion
 
-//region Element type extensions
+//region Element Type Extensions
 //虽然不知道为什么，但是的确可以这样做 ヾ(*´▽‘*)ﾉ
 
 /**
@@ -73,7 +73,7 @@ inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 //endregion
 
-//region Optional operation extensions
+//region Optional Operation Extensions
 /**
  * 判断当前数组是否不为null，且不为空。
  */
@@ -180,7 +180,7 @@ inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : 
 }
 //endregion
 
-//region Operation extensions
+//region Operation Extensions
 //注意：某些具体的实现类的equals方法与这个方法是等效的
 /**
  * 判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。
@@ -670,7 +670,7 @@ private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
 }
 //endregion
 
-//region Convert extensions
+//region Convert Extensions
 /**
  * 将当前列表转化为新的并发列表。
  */
@@ -760,7 +760,7 @@ inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 }
 //endregion
 
-//region Specific operations
+//region Specific Operations
 /**
  * 得到指定索引的字符串，如果索引越界，则返回空字符串。
  */

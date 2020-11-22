@@ -6,6 +6,7 @@ package com.windea.breezeframework.serialization.component
 import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.reflect.extension.*
+import com.windea.breezeframework.serialization.*
 import com.windea.breezeframework.serialization.extension.*
 import java.lang.reflect.*
 import java.time.temporal.*

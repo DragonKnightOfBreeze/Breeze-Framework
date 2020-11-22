@@ -8,7 +8,7 @@ package com.windea.breezeframework.time.extension
 import java.time.*
 import java.time.temporal.*
 
-//region operator extensions
+//region Operator Extensions
 /** @see java.time.Year.plusYears*/
 operator fun Year.plus(years: Int): Year = this.plusYears(years.toLong())
 
@@ -60,7 +60,7 @@ operator fun DayOfWeek.inc(): DayOfWeek = this.plus(1L)
 operator fun DayOfWeek.dec(): DayOfWeek = this.minus(1L)
 //endregion
 
-//region dsl build extensions
+//region Build Extensions
 /**得到当前月开始时的时间。*/
 inline val <T : Temporal> T.atStartOfMonth: Temporal get() = with(TemporalAdjusters.firstDayOfMonth())
 
@@ -80,7 +80,7 @@ inline val <T : Temporal> T.atEndOfYear: Temporal get() = with(TemporalAdjusters
 inline val <T : Temporal> T.atStartOfNextYear: Temporal get() = with(TemporalAdjusters.firstDayOfNextYear())
 //endregion
 
-//region common extensions
+//region Common Extensions
 /**判断是否是今天。*/
 val LocalDate.isToday: Boolean get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
 

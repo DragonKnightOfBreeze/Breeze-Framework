@@ -7,7 +7,7 @@ import com.windea.breezeframework.core.annotation.*
 import java.text.*
 import java.util.*
 
-//region Format extensions
+//region Format Extensions
 /**根据指定的格式化类型，格式化当前数字。可以指定可选的语言环境。*/
 @UnstableApi
 fun Number.formatBy(type: NumberFormatType, locale: Locale? = null): String {

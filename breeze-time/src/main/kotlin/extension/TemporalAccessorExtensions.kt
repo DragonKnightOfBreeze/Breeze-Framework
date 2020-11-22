@@ -8,7 +8,7 @@ package com.windea.breezeframework.time.extension
 import java.time.*
 import java.time.temporal.*
 
-//region temporal query extensions
+//region Temporal Query Extensions
 inline val TemporalAccessor.year: Year? get() = query(Year::from)
 
 inline val TemporalAccessor.yearMonth: YearMonth? get() = query(YearMonth::from)
@@ -42,7 +42,7 @@ inline val TemporalAccessor.zonedDateTime: ZonedDateTime? get() = query(ZonedDat
 inline val TemporalAccessor.precision: TemporalUnit? get() = query(TemporalQueries.precision())
 //endregion
 
-//region common extensions
+//region Common Extensions
 /**判断是否支持指定的是时间域。*/
 infix fun TemporalAccessor.supports(temporalField: TemporalField) = isSupported(temporalField)
 //endregion
