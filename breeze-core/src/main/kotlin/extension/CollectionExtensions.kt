@@ -18,6 +18,50 @@ import kotlin.contracts.*
 //注意：可以通过添加注解 @Suppress("UNSUPPORTED") 启用字面量数组如 [1, 2, 3]
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
+//region Entry Extensions
+
+/**构建一个映射并事先过滤值为空的键值对。*/
+fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>): Map<K, V?> = if(pair.second != null) mapOf(pair) else emptyMap()
+
+/**构建一个映射并事先过滤值为空的键值对。*/
+fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>): LinkedHashMap<K, V> =
+	LinkedHashMap<K, V>().apply { for((key, value) in pairs) if(value != null) put(key, value) }
+
+
+/**构建一个空的枚举集。*/
+inline fun <reified T : Enum<T>> enumSetOf(): EnumSet<T> = EnumSet.noneOf(T::class.java)
+
+/**构建一个包含所有枚举值的枚举集。*/
+inline fun <reified T : Enum<T>> enumSetOfAll(): EnumSet<T> = EnumSet.allOf(T::class.java)
+
+/**构建一个枚举集。*/
+fun <T : Enum<T>> enumSetOf(first: T, vararg elements: T): EnumSet<T> = EnumSet.of(first, *elements)
+
+/**构建一个空的枚举映射。*/
+inline fun <reified K : Enum<K>, V> enumMapOf(): EnumMap<K, V> = EnumMap(K::class.java)
+
+/**构建一个枚举映射。*/
+fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMap(pairs.toMap())
+
+
+/**构建一个空的线程安全的并发列表。*/
+fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
+
+/**构建一个线程安全的并发列表。*/
+fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
+
+/**构建一个空的线程安全的并发集。*/
+fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
+
+/**构建一个线程安全的并发集。*/
+fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
+
+/**构建一个空的线程安全的并发映射。*/
+fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
+
+/**构建一个线程安全的并发映射。*/
+fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
+
 //region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
@@ -468,7 +512,7 @@ fun <K, V> Map<K, V>.joinToString(
  * Returns a array containing the results of applying the given [transform] function
  * to each element in the original array.
  */
-inline fun <T, reified R> Array<out T>.mapArray(transform: (T) -> R): Array<R> {
+inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }
 
@@ -476,7 +520,7 @@ inline fun <T, reified R> Array<out T>.mapArray(transform: (T) -> R): Array<R> {
  * Returns a array containing the results of applying the given [transform] function
  * to each element in the original list.
  */
-inline fun <T, reified R> List<T>.mapArray(transform: (T) -> R): Array<R> {
+inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }
 
@@ -593,14 +637,27 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 }
 
 /**
- * 根据指定的预测，将当前列表中的符合条件的元素，依次固定到指定的索引处。默认固定到列表最前面。
+ * 根据指定的预测，将当前集合中的符合条件的元素，依次固定到指定的索引处。默认固定到列表最前面。
  */
 @UnstableApi
-fun <T> List<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
+inline fun <T> Iterable<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
 	val result = mutableListOf<T>()
 	var i = index
 	for(e in this) {
 		if(predicate(e)) result.add(i++,e) else result.add(e)
+	}
+	return result
+}
+
+/**
+ * 根据指定的一组键以及键选择器，选择当前集合中的元素，返回选择后的元素的列表。保持原有顺序，并覆盖先选择的元素。
+ */
+@UnstableApi
+inline fun <T,K> Iterable<T>.select(vararg keys:K,keySelector:(T)->K):List<T>{
+	val result = ArrayList<T>(keys.size)
+	for(e in this) {
+		val keyIndex = keys.indexOf(keySelector(e))
+		if(keyIndex != -1) result[keyIndex] = e
 	}
 	return result
 }
@@ -614,7 +671,7 @@ fun <T> List<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
  */
 @JvmOverloads
 fun <T> Array<*>.deepFlatten(depth: Int = -1): List<T> {
-	return this.deepFlatten0(depth)
+	return this.doDeepFlatten(depth)
 }
 
 /**
@@ -625,7 +682,7 @@ fun <T> Array<*>.deepFlatten(depth: Int = -1): List<T> {
  */
 @JvmOverloads
 fun <T> Iterable<*>.deepFlatten(depth: Int = -1): List<T> {
-	return this.deepFlatten0(depth)
+	return this.doDeepFlatten(depth)
 }
 
 /**
@@ -636,10 +693,10 @@ fun <T> Iterable<*>.deepFlatten(depth: Int = -1): List<T> {
  */
 @JvmOverloads
 fun <T> Sequence<*>.deepFlatten(depth: Int = -1): List<T> {
-	return this.deepFlatten0(depth)
+	return this.doDeepFlatten(depth)
 }
 
-private fun <T> Any?.deepFlatten0(depth: Int): List<T> {
+private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 	require(depth == -1 || depth > 0) { "Flatten depth '$depth' cannot be non-positive." }
 	var values = listOf(this)
 	var currentDepth = depth
