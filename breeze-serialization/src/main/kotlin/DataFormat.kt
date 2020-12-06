@@ -1,21 +1,22 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization
 
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.serialization.extension.*
+import com.windea.breezeframework.serialization.serializer.*
 import java.lang.reflect.*
 
 /**
- * 数据类型。
+ * 数据格式。
  *
- * 数据类型基于一定的格式存储数据。
+ * 数据格式基于一定的格式存储数据。
  *
  * @see DataSerializer
  */
 @BreezeComponent
-interface DataType {
+interface DataFormat {
 	/**
 	 * 文件扩展名。
 	 */
@@ -62,11 +63,11 @@ interface DataType {
 		return serializer.deserialize(value, type)
 	}
 
-	//region Data Types
+	//region String Data Formats
 	/**
 	 * Json数据类型。
 	 */
-	object Json : DataType {
+	object Json : DataFormat {
 		override val fileExtension: String = "json"
 		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
 		override var serializer: JsonSerializer = defaultJsonSerializer
@@ -75,7 +76,7 @@ interface DataType {
 	/**
 	 * Yaml数据类型。
 	 */
-	object Yaml : DataType {
+	object Yaml : DataFormat {
 		override val fileExtension: String = "yml"
 		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
 		override var serializer: YamlSerializer = defaultYamlSerializer
@@ -84,7 +85,7 @@ interface DataType {
 	/**
 	 * Xml数据类型。
 	 */
-	object Xml : DataType {
+	object Xml : DataFormat {
 		override val fileExtension: String = "xml"
 		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
@@ -94,7 +95,7 @@ interface DataType {
 	/**
 	 * Properties数据类型。基于键值对。
 	 */
-	object Properties : DataType {
+	object Properties : DataFormat {
 		override val fileExtension: String = "properties"
 		override val fileExtensions: Array<String> = arrayOf("properties")
 		override var serializer: PropertiesSerializer = defaultPropertiesSerializer
@@ -103,19 +104,10 @@ interface DataType {
 	/**
 	 * Csv数据类型。基于以逗号分隔的值。
 	 */
-	object Csv : DataType {
+	object Csv : DataFormat {
 		override val fileExtension: String = "csv"
 		override val fileExtensions: Array<String> = arrayOf("csv")
 		override var serializer: CsvSerializer = defaultCsvSerializer
-	}
-
-	/**
-	 * Tsv数据类型，基于以缩进分割的值。
-	 */
-	object Tsv : DataType {
-		override val fileExtension: String = "tsv"
-		override val fileExtensions: Array<String> = arrayOf("tsv")
-		override var serializer: TsvSerializer = defaultTsvSerializer
 	}
 	//endregion
 }

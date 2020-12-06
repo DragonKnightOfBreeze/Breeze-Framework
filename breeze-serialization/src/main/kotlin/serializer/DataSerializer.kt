@@ -1,9 +1,9 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.serialization.*
 import java.lang.reflect.*
 
 /**
@@ -12,14 +12,13 @@ import java.lang.reflect.*
  * 数据的序列化器基于特定的数据类型，对数据进行序列化和反序列化。
  * 其具体实现可能需要依赖第三方库，如`gson`，`fastjson`，`jackson`和`kotlinx-serialization`。
  *
- * @see DataType
+ * @see DataFormat
  */
-@BreezeComponent
 interface DataSerializer:Serializer<String> {
 	/**
 	 * 对应的数据类型。
 	 */
-	val dataType: DataType
+	val dataFormat: DataFormat
 
 	/**
 	 * 序列化指定对象。

@@ -448,8 +448,8 @@
 * [X] 添加`Iterable.select()`
 * [X] 添加`Validated`，`Ordered`，`Named`
 * [X] breeze-serialization 重构代码
-  * [ ] 委托实现的serializer
-  * [ ] serializer不再作为内部类
+  * [X] 委托实现的serializer
+  * [X] serializer不再作为内部类
   * [ ] dataReader和dataWriter
 * [ ] breeze-dsl 重构代码
   * [X] breeze-dsl-xml

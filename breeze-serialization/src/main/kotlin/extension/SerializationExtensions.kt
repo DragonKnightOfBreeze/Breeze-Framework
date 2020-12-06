@@ -7,7 +7,8 @@ package com.windea.breezeframework.serialization.extension
 
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.serialization.component.*
+import com.windea.breezeframework.serialization.*
+import com.windea.breezeframework.serialization.serializer.*
 import java.lang.reflect.*
 
 /**
@@ -56,11 +57,11 @@ fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Type):T{
  *
  * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
- * @see DataType
+ * @see DataFormat
  */
 @BreezeComponentExtension
-fun <T> T.serializeDataBy(dataType: DataType):String{
-	return dataType.serialize(this)
+fun <T> T.serializeDataBy(dataFormat: DataFormat):String{
+	return dataFormat.serialize(this)
 }
 
 /**
@@ -68,11 +69,11 @@ fun <T> T.serializeDataBy(dataType: DataType):String{
  *
  * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
- * @see DataType
+ * @see DataFormat
  */
 @BreezeComponentExtension
-inline fun <reified T> String.deserializeDataBy(dataType: DataType):T{
-	return dataType.deserialize(this, javaTypeOf<T>())
+inline fun <reified T> String.deserializeDataBy(dataFormat: DataFormat):T{
+	return dataFormat.deserialize(this, javaTypeOf<T>())
 }
 
 /**
@@ -80,11 +81,11 @@ inline fun <reified T> String.deserializeDataBy(dataType: DataType):T{
  *
  * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
- * @see DataType
+ * @see DataFormat
  */
 @BreezeComponentExtension
-fun <T> String.deserializeDataBy(dataType: DataType,type:Class<T>):T{
-	return dataType.deserialize(this,type)
+fun <T> String.deserializeDataBy(dataFormat: DataFormat,type:Class<T>):T{
+	return dataFormat.deserialize(this,type)
 }
 
 /**
@@ -92,9 +93,9 @@ fun <T> String.deserializeDataBy(dataType: DataType,type:Class<T>):T{
  *
  * 这个方法使用的序列化器可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
  *
- * @see DataType
+ * @see DataFormat
  */
 @BreezeComponentExtension
-fun <T> String.deserializeDataBy(dataType: DataType,type: Type):T{
-	return dataType.deserialize(this,type)
+fun <T> String.deserializeDataBy(dataFormat: DataFormat,type: Type):T{
+	return dataFormat.deserialize(this,type)
 }

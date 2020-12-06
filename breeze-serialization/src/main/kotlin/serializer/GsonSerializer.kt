@@ -1,11 +1,10 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization.serializer
 
 import com.google.gson.*
 import com.windea.breezeframework.core.*
-import com.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 
 /**
@@ -13,8 +12,7 @@ import java.lang.reflect.*
  *
  * @see com.google.gson.Gson
  */
-@BreezeComponent
-open class GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
+class GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
 	private val gsonBuilder by lazy { GsonBuilder() }
 	val gson: Gson by lazy { gsonBuilder.create() }
 

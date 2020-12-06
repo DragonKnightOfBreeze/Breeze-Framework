@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization.serializer
 
 import com.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
@@ -11,7 +11,6 @@ import java.lang.reflect.*
  *
  * 序列化器用于基于特定的格式，对数据进行序列化和反序列化。
  */
-@BreezeComponent
 interface Serializer<V>{
 	/**
 	 * 序列化指定对象。

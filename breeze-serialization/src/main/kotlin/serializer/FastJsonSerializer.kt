@@ -1,10 +1,9 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization.serializer
 
 import com.alibaba.fastjson.*
-import com.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 
 /**
@@ -12,8 +11,7 @@ import java.lang.reflect.*
  *
  * @see com.alibaba.fastjson.JSON
  */
-@BreezeComponent
-open class FastJsonSerializer : JsonSerializer, DelegateSerializer {
+class FastJsonSerializer : JsonSerializer, DelegateSerializer {
 	override fun <T> serialize(target: T): String {
 		return JSON.toJSONString(target)
 	}

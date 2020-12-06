@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.component
+package com.windea.breezeframework.serialization.serializer
 
 import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.annotation.*
@@ -14,8 +14,7 @@ import java.lang.reflect.*
  * 由SnakeYaml实现的Yaml的序列化器。
  * @see org.yaml.snakeyaml.Yaml
  */
-@BreezeComponent
-open class SnakeYamlSerializer : YamlSerializer, DelegateSerializer, Configurable<Pair<LoaderOptions, DumperOptions>> {
+class SnakeYamlSerializer : YamlSerializer, DelegateSerializer, Configurable<Pair<LoaderOptions, DumperOptions>> {
 	private val loaderOptions = LoaderOptions()
 	private val dumperOptions = DumperOptions()
 	val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
