@@ -8,9 +8,15 @@ import com.windea.breezeframework.serialization.extension.*
 
 /**
  * Json的序列化器。
+ *
+ * @see JacksonJsonSerializer
+ * @see KotlinxJsonSerializer
+ * @see GsonSerializer
+ * @see FastJsonSerializer
+ * @see BreezeJsonSerializer
  */
 interface JsonSerializer : DataSerializer {
-	val dataFormat: DataFormat get() = DataFormat.Json
+	override val dataFormat: DataFormat get() = DataFormat.Json
 
 	/**
 	 * 默认的Json的序列化器。

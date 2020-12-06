@@ -11,10 +11,13 @@ import java.util.*
 
 /**
  * Properties的序列化器。
+ *
+ * @see JacksonPropertiesSerializer
+ * @see BreezePropertiesSerializer
  */
 @BreezeComponent
 interface PropertiesSerializer : DataSerializer {
-	val dataFormat: DataFormat get() = DataFormat.Properties
+	override val dataFormat: DataFormat get() = DataFormat.Properties
 
 	/**
 	 * 序列化指定属性对象。

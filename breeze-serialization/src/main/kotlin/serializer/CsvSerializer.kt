@@ -12,7 +12,7 @@ import com.windea.breezeframework.serialization.extension.*
  * @see BreezeCsvSerializer
  */
 interface CsvSerializer : DataSerializer {
-	val dataFormat: DataFormat get() = DataFormat.Csv
+	override val dataFormat: DataFormat get() = DataFormat.Csv
 
 	/**
 	 * 默认的Csv的序列化器。

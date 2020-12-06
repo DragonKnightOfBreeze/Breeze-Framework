@@ -450,7 +450,7 @@
 * [X] breeze-serialization 重构代码
   * [X] 委托实现的serializer
   * [X] serializer不再作为内部类
-  * [ ] dataReader和dataWriter
+  * [X] dataReader和dataWriter
 * [ ] breeze-dsl 重构代码
   * [X] breeze-dsl-xml
   * [X] breeze-dsl-cmd-text

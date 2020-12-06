@@ -13,7 +13,6 @@ import java.lang.reflect.*
  * 由Kotlinx Serialization委托实现的序列化器。
  *
  * @see kotlinx.serialization.SerialFormat
+ * @see KotlinxJsonSerializer
  */
-interface KotlinxSerializer : DelegateSerializer {
-
-}
+interface KotlinxSerializer : DelegateSerializer

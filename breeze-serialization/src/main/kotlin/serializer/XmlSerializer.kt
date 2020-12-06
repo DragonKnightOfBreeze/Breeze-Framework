@@ -8,9 +8,12 @@ import com.windea.breezeframework.serialization.extension.*
 
 /**
  * Xml的序列化器。
+ *
+ * @see JacksonXmlSerializer
+ * @see BreezeXmlSerializer
  */
 interface XmlSerializer : DataSerializer {
-	val dataFormat: DataFormat get() = DataFormat.Xml
+	override val dataFormat: DataFormat get() = DataFormat.Xml
 
 	/**
 	 * 默认的Xml的序列化器。

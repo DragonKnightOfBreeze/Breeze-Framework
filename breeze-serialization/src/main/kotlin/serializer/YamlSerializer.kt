@@ -8,9 +8,12 @@ import com.windea.breezeframework.serialization.extension.*
 
 /**
  * Yaml的序列化器。
+ *
+ * @see JacksonYamlSerializer
+ * @see SnakeYamlSerializer
  */
 interface YamlSerializer : DataSerializer {
-	val dataFormat: DataFormat get() = DataFormat.Yaml
+	override val dataFormat: DataFormat get() = DataFormat.Yaml
 
 	/**
 	 * 序列化指定的一组对象。
