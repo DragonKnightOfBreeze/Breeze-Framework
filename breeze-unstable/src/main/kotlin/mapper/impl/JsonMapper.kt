@@ -61,7 +61,7 @@ class JsonMapper(
 			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
 		}
 
-		class Builder : DataBuilder<Config> {
+		class Builder : com.windea.breezeframework.core.Builder<Config> {
 			var indent: String = "  "
 			var lineSeparator: String = "\n"
 			var doubleQuoted: Boolean = true

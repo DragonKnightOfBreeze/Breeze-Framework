@@ -4,7 +4,11 @@
 package com.windea.breezeframework.core
 
 /**
- * 可排序的对象。按照[order]的值从小到大排列。
+ * 可排序的对象。
+ *
+ * 按照[order]的值从小到大排列。
+ *
+ * @property order 顺序。
  */
 interface Ordered:Comparable<Ordered> {
 	val order:Int

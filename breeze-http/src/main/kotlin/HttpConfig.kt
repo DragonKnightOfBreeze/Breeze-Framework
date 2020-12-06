@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.http
 
-import com.windea.breezeframework.core.*
 import java.net.*
 import java.net.http.*
 import java.time.*
@@ -26,8 +25,8 @@ data class HttpConfig(
 	val proxy: ProxySelector? = null,
 	val authenticator: Authenticator? = null,
 	val encoding: String = "UTF-8",
-) : DataEntity {
-	class Builder : DataBuilder<DataEntity> {
+) {
+	class Builder : com.windea.breezeframework.core.Builder<HttpConfig> {
 		var cookieHandler: CookieHandler? = null
 		var connectTimeout: Duration? = null
 		var sslContext: SSLContext? = null

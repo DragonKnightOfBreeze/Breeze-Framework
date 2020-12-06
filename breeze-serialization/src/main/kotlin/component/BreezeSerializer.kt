@@ -91,7 +91,7 @@ interface BreezeSerializer {
 			var unquoteKey: Boolean = false,
 			var unquoteValue: Boolean = false,
 			var prettyPrint: Boolean = false
-		) : DataBuilder<Config> {
+		) : Builder<Config> {
 			override fun build(): Config {
 				return Config(indent, lineSeparator, doubleQuoted, unquoteKey, unquoteValue, prettyPrint)
 			}

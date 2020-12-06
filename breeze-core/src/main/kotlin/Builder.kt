@@ -4,13 +4,11 @@
 package com.windea.breezeframework.core
 
 /**
- * 可验证的对象。
+ * 构建器。
  */
-interface Validated {
+interface Builder<T> {
 	/**
-	 * 验证对象是否合法。
+	 * 构建对应类型的对象。
 	 */
-	fun validate(): Boolean {
-		return true
-	}
+	fun build(): T
 }
