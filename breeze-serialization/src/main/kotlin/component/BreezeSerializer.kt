@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.serialization.component
 
+import com.alibaba.fastjson.serializer.*
 import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.reflect.extension.*
@@ -11,9 +12,9 @@ import java.io.*
 import java.lang.reflect.*
 import java.time.temporal.*
 import java.util.*
-import java.util.concurrent.*
 import kotlin.jvm.internal.*
 import kotlin.reflect.*
+import kotlin.system.*
 
 /**
  * 由Breeze Framework实现的轻量的数据的序列化器。
@@ -98,10 +99,8 @@ interface BreezeSerializer {
 
 		//TODO 优化性能
 
-		//private val executor = Executors.newWorkStealingPool(64)
-
 		private fun <T> doSerialize(target: T): String {
-			return StringBuilder(1024).apply { doSerialize(target, this) }.toString()
+			return StringBuilder(2048).apply { doSerialize(target, this) }.toString()
 		}
 
 		private fun <T> doSerialize(target: T, buffer: Appendable, depth: Int = 1) {
@@ -146,23 +145,26 @@ interface BreezeSerializer {
 		}
 
 		private fun doSerializeString(target: String, buffer: Appendable) {
-			if(config.unquoteValue) {
-				target.appendTo(buffer)
-			} else {
-				config.quote.appendTo(buffer)
-				for(c in target) {
-					if(c == config.quote) config.escapedQuote.appendTo(buffer) else c.appendTo(buffer)
+			//measureNanoTime {
+				if(config.unquoteValue) {
+					target.appendTo(buffer)
+				} else {
+					config.quote.appendTo(buffer)
+					for(c in target) {
+						if(c == config.quote) config.escapedQuote.appendTo(buffer) else c.appendTo(buffer)
+					}
+					//target.appendTo(buffer)
+					config.quote.appendTo(buffer)
 				}
-				//target.appendTo(buffer)
-				config.quote.appendTo(buffer)
-			}
+			//}.also{ println("doSerializeString $target: $it")}
 		}
 
 		private fun doSerializeArray(target: Array<*>, buffer: Appendable, depth: Int = 1) {
+			//measureNanoTime {
 			arrayPrefix.appendTo(buffer)
-			var shouldWriteSeparator = false
+			var appendSeparator = false
 			for(e in target) {
-				if(shouldWriteSeparator) separator.appendTo(buffer) else shouldWriteSeparator = true
+				if(appendSeparator) separator.appendTo(buffer) else appendSeparator = true
 				if(config.prettyPrint) {
 					config.lineSeparator.appendTo(buffer)
 					repeat(depth) { config.indent.appendTo(buffer) }
@@ -171,12 +173,14 @@ interface BreezeSerializer {
 			}
 			if(config.prettyPrint) {
 				config.lineSeparator.appendTo(buffer)
+				if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			arraySuffix.appendTo(buffer)
+			//}.also{ println("doSerializeArray $target: $it")}
 		}
 
 		private fun doSerializeIterable(target: Iterable<*>, buffer: Appendable, depth: Int = 1) {
+			//measureNanoTime {
 			arrayPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for(e in target) {
@@ -189,12 +193,14 @@ interface BreezeSerializer {
 			}
 			if(config.prettyPrint) {
 				config.lineSeparator.appendTo(buffer)
+				if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			arraySuffix.appendTo(buffer)
+			//}.also{ println("doSerializeIterable $target: $it")}
 		}
 
 		private fun doSerializeSequence(target: Sequence<*>, buffer: Appendable, depth: Int = 1) {
+			//measureNanoTime {
 			arrayPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for(e in target) {
@@ -207,12 +213,14 @@ interface BreezeSerializer {
 			}
 			if(config.prettyPrint) {
 				config.lineSeparator.appendTo(buffer)
+				if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			arraySuffix.appendTo(buffer)
+			//}.also{ println("doSerializeSequence $target: $it")}
 		}
 
 		private fun doSerializeMap(target: Map<*, *>, buffer: Appendable, depth: Int = 1) {
+			//measureNanoTime {
 			objectPrefix.appendTo(buffer)
 			var shouldWriteSeparator = false
 			for((k, v) in target) {
@@ -228,9 +236,10 @@ interface BreezeSerializer {
 			}
 			if(config.prettyPrint) {
 				config.lineSeparator.appendTo(buffer)
+				if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			}
-			if(depth != 1) repeat(depth - 1) { config.indent.appendTo(buffer) }
 			objectSuffix.appendTo(buffer)
+			//}.also{ println("doSerializeMap $target: $it")}
 		}
 
 		private fun Any?.isStringLike(): Boolean {

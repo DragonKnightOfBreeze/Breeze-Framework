@@ -7,13 +7,45 @@
 package com.windea.breezeframework.serialization.extension
 
 import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.serialization.*
 import com.windea.breezeframework.serialization.component.*
-import java.io.*
+import java.util.concurrent.*
 
 internal inline fun Char.appendTo(buffer: Appendable) = buffer.append(this)
 
 internal inline fun String.appendTo(buffer: Appendable) = buffer.append(this)
+
+
+private val executor by lazy { Executors.newWorkStealingPool(1024) }
+
+@Suppress("UNCHECKED_CAST")
+internal inline fun <T,reified R> Array<T>.mapToArrayAsync( crossinline transform:(T)->R):Array<R>{
+	val threadLocal = ThreadLocal.withInitial { arrayOfNulls<R>(size) }
+	val result = threadLocal.get()
+	for((i, e) in this.withIndex()) {
+		executor.submit { result[i] = transform(e) }.get()
+	}
+	return result as Array<R>
+}
+
+internal fun <T> Array<T>.joinToAsync(buffer:Appendable,separator:Char, transform:(T)->String): Appendable {
+	val strings = this.mapToArrayAsync(transform)
+	var appendSeparator = false
+	for(string in strings) {
+		if(appendSeparator) buffer.append(separator) else appendSeparator = true
+		buffer.append(string)
+	}
+	return buffer
+}
+
+internal fun <T> Array<T>.joinToAsync(buffer:Appendable,separator:String, transform:(T)->String): Appendable {
+	val strings = this.mapToArrayAsync(transform)
+	var appendSeparator = false
+	for(string in strings) {
+		if(appendSeparator) buffer.append(separator) else appendSeparator = true
+		buffer.append(string)
+	}
+	return buffer
+}
 
 
 internal val defaultMapLikeSerializer: MapLikeSerializer = MapLikeSerializer.BreezeMapLikeSerializer()

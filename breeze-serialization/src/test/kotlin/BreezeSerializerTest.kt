@@ -17,7 +17,7 @@ class BreezeSerializerTest {
 			"name" to "Windea",
 			"gender" to "Female",
 			"age" to 3000,
-			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze"),
+			"weapon" to listOf("BreezesLanding", "BreathOfBreeze"),
 			"belong" to mapOf(
 				"Country" to "Invoka",
 				"Organization" to "BreezeKnights"
@@ -40,10 +40,14 @@ class BreezeSerializerTest {
 			"age" to 3000,
 			"weapon" to arrayOf("BreezesLanding", "BreathOfBreeze")
 		)
-		val b = List(100) { a }
-		println(measureNanoTime {  b.serializeBy(JsonSerializer.BreezeJsonSerializer()) })
-		println(measureNanoTime {  b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
+		val b = Array(100) { a }
+		val s1:String
+		val s2:String
+		println(measureNanoTime {s1=  b.serializeBy(JsonSerializer.BreezeJsonSerializer()) })
+		println(measureNanoTime { s2= b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
 		println(measureNanoTime { b.serializeBy(JsonSerializer.GsonSerializer()) })
 		println(measureNanoTime { b.serializeBy(JsonSerializer.FastJsonSerializer()) })
+		println(measureNanoTime { buildString { append(s1) } })
+		println(s1 == s2)
 	}
 }

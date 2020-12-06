@@ -14,6 +14,7 @@ import java.io.*
  *
  * @property id 主键。
  */
+@Suppress("UNCHECKED_CAST")
 interface Identifiable<T : Serializable> : Serializable {
 	val id: T
 

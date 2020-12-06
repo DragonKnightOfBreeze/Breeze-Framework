@@ -76,7 +76,6 @@ interface Encrypter {
 	 */
 	object AesEncrypter:CipherEncrypter("AES")
 
-
 	/**
 	 * 基于消息摘要的加密器。不支持解密。不需要指定密钥。
 	 */

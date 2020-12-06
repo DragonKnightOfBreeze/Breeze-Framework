@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.serialization
 
+import com.windea.breezeframework.serialization.extension.*
 import java.io.*
 import java.util.*
 import java.util.concurrent.*
@@ -32,13 +33,6 @@ class StringTest {
 		}.also{println(it)}
 
 		measureNanoTime {
-			val buffer = DataWriter()
-			repeat(10){
-				buffer.append(uuid)
-			}
-		}.also{println(it)}
-
-		measureNanoTime {
 			var str = ""
 			repeat(10) {
 				str += uuid
@@ -55,13 +49,6 @@ class StringTest {
 		measureNanoTime {
 			val buffer = StringWriter()
 			repeat(10000) {
-				buffer.append(uuid)
-			}
-		}.also{println(it)}
-
-		measureNanoTime {
-			val buffer = DataWriter()
-			repeat(10000){
 				buffer.append(uuid)
 			}
 		}.also{println(it)}
@@ -147,5 +134,28 @@ class StringTest {
 				}
 			}.also { println("5: $it") }
 		}
+		run {
+			val a = ThreadLocal.withInitial {  arrayOfNulls<String>(n)}
+			val array =  a.get()
+			val executor = Executors.newWorkStealingPool(256)
+			measureNanoTime {
+				repeat(n) {
+					executor.submit {
+						array[it] = uuid
+					}.get()
+				}
+			}.also { println("5: $it") }
+		}
+	}
+
+	@Test
+	fun joinToStringTest(){
+		val array = Array(1000){it*10}
+		println(measureNanoTime {
+			array.joinToAsync(StringBuilder(),", ") { (it * 3 / 5 + 2).toString().repeat(2) }
+		})
+		println(measureNanoTime {
+			array.joinToString(", ") { (it * 3 / 5 + 2).toString().repeat(2) }
+		})
 	}
 }

@@ -16,10 +16,6 @@ interface CmdTextDsl {
 		override fun toString(): String = text.toString()
 	}
 
-	companion object {
-		private fun richText(text: CharSequence, code: Any) = "\u001B[${code}m$text\u001B[0m"
-	}
-
 	@CmdTextDslMarker
 	interface InlineDslElement : DslElement, Inlineable
 
