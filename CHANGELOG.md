@@ -448,6 +448,7 @@
 * [X] 添加`Iterable.select()`
 * [X] 添加`Validated`，`Ordered`，`Named`
 * [X] 为所有`BreezeComponent`提供静态方法`values`和`register`。
+* [X] 实现`com.windea.breezeframework.core.component.Encoder.HexEncoder`。
 * [X] breeze-serialization 重构代码
   * [X] 委托实现的serializer
   * [X] serializer不再作为内部类

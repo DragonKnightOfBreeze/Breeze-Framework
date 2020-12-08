@@ -43,7 +43,7 @@ class Color {
 	val rgbaExpression get() = "rgba($r, $g, $b, $a)"
 
 	private fun Int.toHexString(): String {
-		return this.toString(16).padStart(2, '0')
+		return Integer.toHexString(this).padStart(2, '0')
 	}
 
 	operator fun component1() = r

@@ -868,6 +868,30 @@ fun String.unquote(omitQuotes: Boolean = true): String {
 		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
 	}
 }
+
+
+/**
+ * 将当前字符串转化为两位十六机制字符串。
+ */
+fun String.hex(charset: Charset = Charsets.UTF_8): String {
+	val bytes = this.toByteArray(charset)
+	return buildString{
+		for(byte in bytes){
+			val hex = byte.toString(16)
+			val hexString = if(hex.length != 1) hex else "0$hex"
+			append(hexString)
+		}
+	}
+}
+
+/**
+ * 将当前字符串从两位十六机制字符串转化为常规字符串。
+ */
+fun String.unhex(charset: Charset = Charsets.UTF_8):String{
+	val hexStrings = this.chunked(2)
+	val bytes = ByteArray(hexStrings.size){ hexStrings[it].toByte(16) }
+	return String(bytes,charset)
+}
 //endregion
 
 //region Convert Extensions
@@ -1170,7 +1194,6 @@ inline fun String.toColor(): Color {
 inline fun String.toColorOrNull(): Color? {
 	return Color.parseOrNull(this)
 }
-
 
 /**
  * 将当前字符串解码为base64格式的字节数组。

@@ -4,6 +4,7 @@
 package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import java.net.*
 import java.nio.charset.*
 import java.util.*
@@ -19,79 +20,81 @@ interface Encoder {
 	/**
 	 * 编码指定的字符串，以指定的字符集显示。
 	 */
-	fun encode(value:String,charset:Charset=Charsets.UTF_8):String
+	fun encode(value: String, charset: Charset = Charsets.UTF_8): String
 
 	/**
 	 * 解码指定的字符串，以指定的字符集显示。
 	 */
-	fun decode(value:String,charset:Charset=Charsets.UTF_8):String
+	fun decode(value: String, charset: Charset = Charsets.UTF_8): String
 
 	//region Default Encoders
 	/**
 	 * Base64编码器。
 	 */
-	object Base64Encoder:Encoder{
+	object Base64Encoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
 			return Base64.getEncoder().encodeToString(value.toByteArray(charset))
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return Base64.getDecoder().decode(value).let { String(it,charset) }
+			return Base64.getDecoder().decode(value).let { String(it, charset) }
 		}
 	}
 
 	/**
 	 * Url安全的Base64编码器。
 	 */
-	object Base64UrlEncoder:Encoder{
+	object Base64UrlEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
 			return Base64.getUrlEncoder().encodeToString(value.toByteArray(charset))
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return Base64.getUrlDecoder().decode(value).let { String(it,charset) }
+			return Base64.getUrlDecoder().decode(value).let { String(it, charset) }
 		}
 	}
 
 	/**
 	 * 基于Mime类型的Base64编码器。
 	 */
-	object Base64MimeEncoder:Encoder{
+	object Base64MimeEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
 			return Base64.getMimeEncoder().encodeToString(value.toByteArray(charset))
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return Base64.getMimeDecoder().decode(value).let { String(it,charset) }
+			return Base64.getMimeDecoder().decode(value).let { String(it, charset) }
 		}
 	}
 
 	/**
 	 * Url编码器。
 	 */
-	object UrlEncoder:Encoder{
+	object UrlEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
-			return URLEncoder.encode(value,charset)
+			return URLEncoder.encode(value, charset)
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return URLDecoder.decode(value,charset)
+			return URLDecoder.decode(value, charset)
 		}
 	}
 
-	//55524c456e636f646572
-	object HexEncoder:Encoder{
+	/**
+	 * 十六进制编码器。
+	 */
+	object HexEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
-			TODO()
+			return value.hex(charset)
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			TODO()
+			return value.unhex(charset)
 		}
 	}
 	//endregion
 
-	companion object{
+	companion object {
 		private val encoders = mutableListOf<Encoder>()
 
 		/**
@@ -104,7 +107,7 @@ interface Encoder {
 		/**
 		 *  注册指定的编码器。
 		 */
-		@JvmStatic fun register(encoder:Encoder){
+		@JvmStatic fun register(encoder: Encoder) {
 			encoders.add(encoder)
 		}
 
@@ -112,11 +115,12 @@ interface Encoder {
 			registerDefaultEncoders()
 		}
 
-		private fun registerDefaultEncoders(){
+		private fun registerDefaultEncoders() {
 			register(Base64Encoder)
 			register(Base64UrlEncoder)
 			register(Base64MimeEncoder)
 			register(UrlEncoder)
+			register(HexEncoder)
 		}
 	}
 }
