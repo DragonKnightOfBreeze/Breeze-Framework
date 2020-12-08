@@ -420,13 +420,20 @@ interface Converter<T, R> {
 	//endregion
 
 	companion object {
-		private val converterRegistry = mutableListOf<Converter<*, *>>()
+		private val converters = mutableListOf<Converter<*, *>>()
 
 		/**
-		 * 注册转化器。
+		 * 得到已注册的转化器列表。
+		 */
+		@JvmStatic fun <T, R> values(): List<Converter<*, *>> {
+			return converters
+		}
+
+		/**
+		 * 注册指定的转化器。
 		 */
 		@JvmStatic fun <T, R> register(converter: Converter<T, R>) {
-			converterRegistry += converter
+			converters.add(converter)
 		}
 
 		/**
@@ -445,7 +452,7 @@ interface Converter<T, R> {
 					value == null -> null as T
 					targetType.isAssignableFrom(value.javaClass) -> value as T
 					else -> {
-						for(converter in converterRegistry) {
+						for(converter in converters) {
 							val (sType, tType) = converter.typePair
 							if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
 								return (converter as Converter<Any?, Any?>).convert(value) as T
@@ -474,7 +481,7 @@ interface Converter<T, R> {
 				value == null -> null
 				targetType.isAssignableFrom(value.javaClass) -> value as T
 				else -> {
-					for(converter in converterRegistry) {
+					for(converter in converters) {
 						val (sType, tType) = converter.typePair
 						if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
 							return (converter as Converter<Any?, Any?>).convertOrNull(value) as T?
@@ -587,3 +594,5 @@ interface Converter<T, R> {
 		}
 	}
 }
+
+

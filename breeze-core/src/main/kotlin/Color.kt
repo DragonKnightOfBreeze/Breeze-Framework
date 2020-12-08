@@ -154,7 +154,6 @@ class Color {
 		}
 
 		//148种
-		//language=css prefix=*{color: suffix=;}
 
 		private fun addCssColors() {
 			colors["aliceblue"] = Color(0xf0f8ff)

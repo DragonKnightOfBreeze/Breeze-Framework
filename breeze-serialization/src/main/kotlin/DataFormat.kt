@@ -65,7 +65,7 @@ interface DataFormat {
 
 	//region String Data Formats
 	/**
-	 * Json数据类型。
+	 * Json数据格式。
 	 */
 	object Json : DataFormat {
 		override val fileExtension: String = "json"
@@ -74,7 +74,7 @@ interface DataFormat {
 	}
 
 	/**
-	 * Yaml数据类型。
+	 * Yaml数据格式。
 	 */
 	object Yaml : DataFormat {
 		override val fileExtension: String = "yml"
@@ -83,7 +83,7 @@ interface DataFormat {
 	}
 
 	/**
-	 * Xml数据类型。
+	 * Xml数据格式。
 	 */
 	object Xml : DataFormat {
 		override val fileExtension: String = "xml"
@@ -93,7 +93,7 @@ interface DataFormat {
 	}
 
 	/**
-	 * Properties数据类型。基于键值对。
+	 * Properties数据格式。
 	 */
 	object Properties : DataFormat {
 		override val fileExtension: String = "properties"
@@ -102,7 +102,7 @@ interface DataFormat {
 	}
 
 	/**
-	 * Csv数据类型。基于以逗号分隔的值。
+	 * Csv数据格式。
 	 */
 	object Csv : DataFormat {
 		override val fileExtension: String = "csv"
@@ -110,4 +110,34 @@ interface DataFormat {
 		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 	//endregion
+
+	companion object{
+		private val dataFormats = mutableListOf<DataFormat>()
+
+		/**
+		 * 得到已注册的数据格式列表。
+		 */
+		@JvmStatic fun values():List<DataFormat>{
+			return dataFormats
+		}
+
+		/**
+		 * 注册指定的数据格式。
+		 */
+		@JvmStatic fun register(dataFormat: DataFormat){
+			dataFormats.add(dataFormat)
+		}
+
+		init {
+			registerStringDataFormats()
+		}
+
+		private fun registerStringDataFormats() {
+			register(Json)
+			register(Yaml)
+			register(Xml)
+			register(Properties)
+			register(Csv)
+		}
+	}
 }

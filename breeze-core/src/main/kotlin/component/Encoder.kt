@@ -78,5 +78,45 @@ interface Encoder {
 			return URLDecoder.decode(value,charset)
 		}
 	}
+
+	//55524c456e636f646572
+	object HexEncoder:Encoder{
+		override fun encode(value: String, charset: Charset): String {
+			TODO()
+		}
+
+		override fun decode(value: String, charset: Charset): String {
+			TODO()
+		}
+	}
 	//endregion
+
+	companion object{
+		private val encoders = mutableListOf<Encoder>()
+
+		/**
+		 * 得到已注册的编码器列表。
+		 */
+		@JvmStatic fun values(): List<Encoder> {
+			return encoders
+		}
+
+		/**
+		 *  注册指定的编码器。
+		 */
+		@JvmStatic fun register(encoder:Encoder){
+			encoders.add(encoder)
+		}
+
+		init {
+			registerDefaultEncoders()
+		}
+
+		private fun registerDefaultEncoders(){
+			register(Base64Encoder)
+			register(Base64UrlEncoder)
+			register(Base64MimeEncoder)
+			register(UrlEncoder)
+		}
+	}
 }

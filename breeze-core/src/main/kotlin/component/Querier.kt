@@ -262,7 +262,7 @@ interface Querier<T : Any,R> {
 	 * 支持[Field]，[Method]，[Annotation]。
 	 */
 	object ReflectionMemberQuerier : Querier<String, Any?> {
-		override fun query(value: Any, queryObject: String): Any? {
+		override fun query(value: Any, queryObject: String): Any {
 			try {
 				val targetType = value.javaClass
 				val result = when {
@@ -292,4 +292,43 @@ interface Querier<T : Any,R> {
 		}
 	}
 	//endregion
+
+	companion object{
+		private val queriers = mutableListOf<Querier<*,*>>()
+
+		/**
+		 * 得到已注册的查询器。
+		 */
+		@JvmStatic fun values(): List<Querier<*, *>> {
+			return queriers
+		}
+
+		/**
+		 * 注册指定的查询器。
+		 */
+		@JvmStatic fun register(querier: Querier<*,*>){
+			queriers.add(querier)
+		}
+
+		init {
+			registerDefaultQueriers()
+			registerReflectionQueriers()
+		}
+
+		private fun registerDefaultQueriers() {
+			register(ResultsQuerier)
+			register(FilterableResultsQuerier)
+			register(FirstResultQuerier)
+			register(LastResultQuerier)
+			register(StringQuerier)
+			register(RegexQuerier)
+			register(IndexQuerier)
+			register(IndexRangeQuerier)
+		}
+
+		private fun registerReflectionQueriers() {
+			register(ReflectionQuerier)
+			register(ReflectionMemberQuerier)
+		}
+	}
 }

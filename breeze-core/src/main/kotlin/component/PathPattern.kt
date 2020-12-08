@@ -7,13 +7,13 @@ import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
 
 /**
- * 路径类型。
+ * 路径模式。
  *
- * 路径类型用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
+ * 路径模式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
 @BreezeComponent
 @Suppress("UNCHECKED_CAST","KDocUnresolvedReference")
-interface PathType {
+interface PathPattern {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
 	 */
@@ -78,14 +78,13 @@ interface PathType {
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
-	//region Default Path Types
-
-	abstract class AbstractPathType(
+	//region Default Path Patterns
+	abstract class AbstractPathPattern(
 		protected val delimiter: Char = '/',
 		protected val prefix: String = "/",
 		protected val variablePrefix: Char = '{',
 		protected val variableSuffix: Char? = '}',
-	) : PathType {
+	) : PathPattern {
 		private val delimiterString: String = delimiter.toString()
 
 		override fun normalize(path: String): String {
@@ -262,7 +261,7 @@ interface PathType {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object StandardPath : AbstractPathType()
+	object StandardPath : AbstractPathPattern()
 
 	/**
 	 * Json指针路径。
@@ -274,19 +273,7 @@ interface PathType {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object JsonPointerPath : AbstractPathType()
-
-	/**
-	 * Json Schema路径。
-	 *
-	 * 规则：
-	 * * 以`/`作为分隔符。
-	 * * 以`/#/`作为前缀。
-	 * * `{name}` 匹配任意项，并命名为`name`。
-	 * * `index` 匹配索引`index`，`index`是整数。
-	 * * `name` 匹配名字、键`name`。
-	 */
-	object JsonSchemaPath : AbstractPathType('/', "/#/")
+	object JsonPointerPath : AbstractPathPattern()
 
 	/**
 	 * Ant路径。
@@ -300,7 +287,7 @@ interface PathType {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object AntPath : AbstractPathType() {
+	object AntPath : AbstractPathPattern() {
 		private const val singleWildcard = '?'
 		private const val wildCard = '*'
 
@@ -443,7 +430,7 @@ interface PathType {
 	 * * `[index]` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object ReferencePath : AbstractPathType('.', "") {
+	object ReferencePath : AbstractPathPattern('.', "") {
 		private const val indexPrefix = '['
 		private const val indexSuffix = ']'
 
@@ -484,4 +471,33 @@ interface PathType {
 		}
 	}
 	//endregion
+
+	companion object{
+		private val pathPatterns = mutableListOf<PathPattern>()
+
+		/**
+		 * 得到已注册的路径模式列表。
+		 */
+		@JvmStatic fun values(): List<PathPattern> {
+			return pathPatterns
+		}
+
+		/**
+		 * 注册指定的路径模式。
+		 */
+		@JvmStatic fun register(pathPattern: PathPattern){
+			pathPatterns.add(pathPattern)
+		}
+
+		init {
+			registerDefaultPathPatterns()
+		}
+
+		private fun registerDefaultPathPatterns() {
+			register(StandardPath)
+			register(JsonPointerPath)
+			register(AntPath)
+			register(ReferencePath)
+		}
+	}
 }

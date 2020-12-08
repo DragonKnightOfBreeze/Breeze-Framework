@@ -13,7 +13,6 @@ import java.nio.charset.*
  *
  * @see Converter
  */
-@BreezeComponentExtension
 inline fun <reified T> Any?.convert(): T {
 	return if(this is T) this else Converter.convert(this)
 }
@@ -23,7 +22,6 @@ inline fun <reified T> Any?.convert(): T {
  *
  * @see Converter
  */
-@BreezeComponentExtension
 inline fun <reified T> Any?.convertOrNull(): T? {
 	return if(this is T) this else Converter.convertOrNull(this)
 }
@@ -35,7 +33,6 @@ inline fun <reified T> Any?.convertOrNull(): T? {
  *
  * @see Escaper
  */
-@BreezeComponentExtension
 fun String.escapeBy(escaper: Escaper): String {
 	return escaper.escape(this)
 }
@@ -45,20 +42,18 @@ fun String.escapeBy(escaper: Escaper): String {
  *
  * @see Escaper
  */
-@BreezeComponentExtension
 fun String.unescapeBy(escaper: Escaper): String {
 	return escaper.unescape(this)
 }
 //endregion
 
-//region Decoder Extensions
+//region Encoder Extensions
 /**
  * 根据指定的编码器，编码当前字符串，以指定的字符集显示。
  *
  * @see Encoder
  */
 @UnstableApi
-@BreezeComponentExtension
 fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
 	return encoder.encode(this, charset)
 }
@@ -69,7 +64,6 @@ fun String.encodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
  * @see Encoder
  */
 @UnstableApi
-@BreezeComponentExtension
 fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String {
 	return encoder.decode(this, charset)
 }
@@ -82,7 +76,6 @@ fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
  * @see Encrypter
  */
 @UnstableApi
-@BreezeComponentExtension
 fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray {
 	return encrypter.encrypt(this,secret)
 }
@@ -94,273 +87,249 @@ fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray 
  * @see Encrypter
  */
 @UnstableApi
-@BreezeComponentExtension
 fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray {
 	return encrypter.decrypt(this,secret)
 }
 //endregion
 
-//region CaseType Extensions
+//region LetterCase Extensions
 /**
  * 尝试推断当前字符串的字母格式。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.inferCase(): CaseType? {
-	return CaseType.infer(this)
+fun String.inferCase(): LetterCase? {
+	return LetterCase.infer(this)
 }
 
 /**
  * 判断当前字符串是否匹配指定的字母格式。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.matchesBy(caseType: CaseType): Boolean {
-	return caseType.matches(this)
+fun String.matchesBy(letterCase: LetterCase): Boolean {
+	return letterCase.matches(this)
 }
 
 /**
  * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.splitBy(caseType: CaseType): List<String> {
-	return caseType.split(this)
+fun String.splitBy(letterCase: LetterCase): List<String> {
+	return letterCase.split(this)
 }
 
 /**
  * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.splitToSequenceBy(caseType: CaseType): Sequence<String> {
-	return caseType.splitToSequence(this)
+fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+	return letterCase.splitToSequence(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun Array<String>.joinToStringBy(caseType: CaseType): String {
-	return caseType.joinToString(this)
+fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun Iterable<String>.joinToStringBy(caseType: CaseType): String {
-	return caseType.joinToString(this)
+fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun Sequence<String>.joinToStringBy(caseType: CaseType): String {
-	return caseType.joinToString(this)
+fun Sequence<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
 }
 
 /**
  * 根据指定的字母格式，切换当前字符串的格式。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.switchCaseBy(sourceCaseType: CaseType, targetCaseType: CaseType): String {
-	return splitBy(sourceCaseType).joinToStringBy(targetCaseType)
+fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 
 /**
  * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
  *
- * @see CaseType
+ * @see LetterCase
  */
-@BreezeComponentExtension
-fun String.switchCaseBy(targetCaseType: CaseType): String {
+fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer case type for string '$this'.")
-	return splitBy(sourceLetterCase).joinToStringBy(targetCaseType)
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 //endregion
 
-//region PathType Extensions
+//region PathPattern Extensions
 /**
  * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun String.matchesBy(path: String, pathType: PathType = PathType.StandardPath): Boolean {
-	return pathType.matches(this, path)
+fun String.matchesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Boolean {
+	return pathPattern.matches(this, path)
 }
 
 /**
  * 根据指定的路径类型，解析路径变量。如果路径不匹配，则返回空结果。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun String.resolveVariablesBy(path: String, pathType: PathType = PathType.StandardPath): Map<String, String> {
-	return pathType.resolveVariables(this, path)
+fun String.resolveVariablesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Map<String, String> {
+	return pathPattern.resolveVariables(this, path)
 }
 
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
  * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Array<*>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
-	return pathType.query(this, path)
+fun <T> Array<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型查询当前列表，返回查询结果列表。
  * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> List<*>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
-	return pathType.query(this, path)
+fun <T> List<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
  * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Map<*, *>.queryBy(path: String, pathType: PathType = PathType.StandardPath): List<T> {
-	return pathType.query(this, path)
+fun <T> Map<*, *>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
 }
 
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者抛出异常。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Array<*>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
-	return pathType.get(this, path)
+fun <T> Array<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者抛出异常。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> List<*>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
-	return pathType.get(this, path)
+fun <T> List<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者抛出异常。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Map<*, *>.getBy(path: String, pathType: PathType = PathType.StandardPath): T {
-	return pathType.get(this, path)
+fun <T> Map<*, *>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
 }
 
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Array<*>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
-	return pathType.getOrNull(this, path)
+fun <T> Array<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> List<*>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
-	return pathType.getOrNull(this, path)
+fun <T> List<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
 }
 
 /**
  * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Map<*, *>.getOrNullBy(path: String, pathType: PathType = PathType.StandardPath): T? {
-	return pathType.getOrNull(this, path)
+fun <T> Map<*, *>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
 }
 
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Array<*>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
-	return pathType.getOrElse(this, path, defaultValue)
+fun <T> Array<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
 }
 
 /**
  * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> List<*>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
-	return pathType.getOrElse(this, path, defaultValue)
+fun <T> List<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
 }
 
 /**
  * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
  * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathType.StandardPath]。
+ * 默认使用标准路径[PathPattern.StandardPath]。
  *
- * @see PathType
+ * @see PathPattern
  */
-@BreezeComponentExtension
-fun <T> Map<*, *>.getOrElseBy(path: String, pathType: PathType = PathType.StandardPath, defaultValue: () -> T): T {
-	return pathType.getOrElse(this, path, defaultValue)
+fun <T> Map<*, *>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
 }
 //endregion
