@@ -5,6 +5,6 @@ package com.windea.breezeframework.core.extension
 
 import com.windea.breezeframework.core.model.*
 
-inline fun <T : Any> T.toBreeze(): Breeze<T> {
+fun <T : Any> T.toBreeze(): Breeze<T> {
 	return Breeze(this)
 }

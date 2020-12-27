@@ -5,7 +5,7 @@
 
 package com.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.core.type.*
 
 /**将浮点数二元素元组转化为二维向量。*/

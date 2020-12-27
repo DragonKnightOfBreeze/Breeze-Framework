@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.serialization.serializer
 
+import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*

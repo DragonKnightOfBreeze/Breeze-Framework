@@ -1,13 +1,14 @@
 dependencies {
 	api(project(":breeze-core"))
+	api(project(":breeze-serialization"))
 	api(project(":breeze-reflect"))
 	implementation(kotlin("reflect:1.4.0"))
 
 	implementation("org.apache.commons:commons-lang3:3.10")
 	implementation("com.google.guava:guava:29.0-jre")
 
-	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
-	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
+	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 	compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
 	compileOnly("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2")
 	compileOnly("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2")

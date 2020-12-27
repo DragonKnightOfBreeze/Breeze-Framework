@@ -8,7 +8,6 @@ import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.mapper.impl.*
 import com.windea.breezeframework.serializer.*
-import kotlinx.serialization.json.*
 import com.fasterxml.jackson.databind.json.JsonMapper as JacksonJsonMapper
 
 /**
@@ -18,14 +17,12 @@ import com.fasterxml.jackson.databind.json.JsonMapper as JacksonJsonMapper
  */
 interface JsonSerializer : Serializer {
 	companion object {
-		private const val kotlinJsonClassName = "kotlinx.serialization.json.Json"
 		private const val jacksonJsonClassName = "com.fasterxml.jackson.databind.json.JsonMapper"
 		private const val gsonClassName = "com.google.gson.Gson"
 		private const val fastjsonClassName = "com.alibaba.fastjson.JSON"
 
 		/**得到Json的序列化器的实例。*/
 		val instance: JsonSerializer = when {
-			presentInClassPath(kotlinJsonClassName) -> KotlinJsonSerializer
 			presentInClassPath(jacksonJsonClassName) -> JacksonJsonSerializer
 			presentInClassPath(gsonClassName) -> GsonSerializer
 			presentInClassPath(fastjsonClassName) -> FastJsonSerializer
@@ -37,12 +34,6 @@ interface JsonSerializer : Serializer {
 		@OptionalApi
 		fun configureBreezeJson(block: (JsonMapper.Config.Builder) -> Unit) {
 			block(BreezeJsonSerializer.configBuilder)
-		}
-
-		/**配置KotlinxSerializationJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/
-		@OptionalApi
-		fun configureKotlinJson(block: (Json) -> Unit) {
-			block(KotlinJsonSerializer.json)
 		}
 
 		/**配置JacksonJson的序列化器。注意需要在使用前配置，并且仅当对应的序列化器适用时才应调用。*/

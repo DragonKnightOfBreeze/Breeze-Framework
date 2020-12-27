@@ -7,6 +7,7 @@ package com.windea.breezeframework.generator.specific
 
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.generator.*
+import com.windea.breezeframework.serializer.*
 import java.io.*
 import java.util.concurrent.*
 
@@ -74,25 +75,25 @@ object JsonSchemaGenerator : Generator {
 
 
 	/**
-	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
+	 * 根据输入文本和输入数据格式，生成能被解析的扩展的Json Schema。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputText: String, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml): String {
+	fun generateExtendedSchema(inputText: String, inputType: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml): String {
 		val inputMap = inputType.serializer.read<MutableMap<String, Any?>>(inputText)
 		convertRules(inputMap)
-		return outputType.serializer.write(inputMap)
+		return outputFormat.serializer.write(inputMap)
 	}
 
 	/**
-	 * 根据输入文本和输入数据类型，生成能被解析的扩展的Json Schema。默认使用Yaml类型。
+	 * 根据输入文本和输入数据格式，生成能被解析的扩展的Json Schema。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml, outputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.read<MutableMap<String, Any?>>(inputFile)
+	fun generateExtendedSchema(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml) {
+		val inputMap = inputFormat.serializer.read<MutableMap<String, Any?>>(inputFile)
 		convertRules(inputMap)
-		outputType.serializer.write(inputMap, outputFile)
+		outputFormat.serializer.write(inputMap, outputFile)
 	}
 
 	private fun convertRules(map: MutableMap<String, Any?>) {

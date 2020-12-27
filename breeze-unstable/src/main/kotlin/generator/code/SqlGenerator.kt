@@ -8,27 +8,28 @@ package com.windea.breezeframework.generator.code
 import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.generator.*
+import com.windea.breezeframework.serializer.*
 import java.io.*
 
 /**Sql语句的生成器。*/
 object SqlGenerator : Generator {
 	/**
-	 * 根据输入文本和输入数据类型，生成Sql数据。默认使用Yaml类型。
+	 * 根据输入文本和输入数据格式，生成Sql数据。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.read<SqlDataMap>(inputText)
+	fun generateSqlData(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
 
 	/**
-	 * 根据输入文件和输入数据类型，生成Sql数据到指定输出文件。默认使用Yaml类型。
+	 * 根据输入文件和输入数据格式，生成Sql数据到指定输出文件。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.read<SqlDataMap>(inputFile)
+	fun generateSqlData(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
 

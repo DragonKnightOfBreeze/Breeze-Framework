@@ -8,7 +8,7 @@ dependencies {
 	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-yaml:1.0.0")
 	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-xml:1.0.0")
 	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.0.0")
-	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-csv:1.0.0")
+	//compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-csv:1.0.0")
 	compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
 	compileOnly("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2")
 	compileOnly("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2")

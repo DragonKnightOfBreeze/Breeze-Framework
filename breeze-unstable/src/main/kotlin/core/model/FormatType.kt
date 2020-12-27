@@ -8,6 +8,7 @@ import java.text.*
 import java.util.*
 
 /**格式化类型。*/
+@Suppress("UNCHECKED_CAST")
 enum class FormatType(
 	internal val formatter: (String, Array<out Any?>, Locale?, Pair<String, String>?) -> String,
 ) {

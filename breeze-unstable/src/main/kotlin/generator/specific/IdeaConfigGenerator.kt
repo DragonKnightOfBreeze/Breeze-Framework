@@ -8,27 +8,28 @@ package com.windea.breezeframework.generator.specific
 import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.generator.*
+import com.windea.breezeframework.serializer.*
 import java.io.*
 
 /**Intellij IDEA配置文件文本的生成器。*/
 object IdeaConfigGenerator : Generator {
 	/**
-	 * 根据输入文本和输入数据类型，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml类型。
+	 * 根据输入文本和输入数据格式，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputText: String, inputType: DataType = DataType.Yaml): String {
-		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputText)
+	fun generateYamlAnnotation(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputText)
 		return getYamlAnnotationString(inputMap)
 	}
 
 	/**
-	 * 根据输入文件和输入数据类型，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml类型。
+	 * 根据输入文件和输入数据格式，生成自定义Yaml注解的动态模版配置文件文本。默认使用Yaml格式。
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputType: DataType = DataType.Yaml) {
-		val inputMap = inputType.serializer.read<SchemaDefinitionMap>(inputFile)
+	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputFile)
 		outputFile.writeText(getYamlAnnotationString(inputMap))
 	}
 

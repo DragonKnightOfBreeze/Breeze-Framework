@@ -21,8 +21,8 @@ class BreezeSerializerTest {
 				"Organization" to "BreezeKnights"
 			)
 		)
-		println(a.serializeBy(BreezeSerializer.BreezeJsonSerializer()))
-		println(a.serializeBy(BreezeSerializer.BreezeJsonSerializer { prettyPrint = true }))
+		println(a.serializeBy(BreezeJsonSerializer()))
+		println(a.serializeBy(BreezeJsonSerializer { prettyPrint = true }))
 	}
 
 	//3~10倍 性能差距到底是怎么来的？
@@ -41,10 +41,10 @@ class BreezeSerializerTest {
 		val b = Array(100) { a }
 		val s1:String
 		val s2:String
-		println(measureNanoTime {s1=  b.serializeBy(JsonSerializer.BreezeJsonSerializer()) })
-		println(measureNanoTime { s2= b.serializeBy(JsonSerializer.JacksonJsonSerializer()) })
-		println(measureNanoTime { b.serializeBy(JsonSerializer.GsonSerializer()) })
-		println(measureNanoTime { b.serializeBy(JsonSerializer.FastJsonSerializer()) })
+		println(measureNanoTime {s1=  b.serializeBy(BreezeJsonSerializer()) })
+		println(measureNanoTime { s2= b.serializeBy(JacksonJsonSerializer()) })
+		println(measureNanoTime { b.serializeBy(GsonSerializer()) })
+		println(measureNanoTime { b.serializeBy(FastJsonSerializer()) })
 		println(measureNanoTime { buildString { append(s1) } })
 		println(s1 == s2)
 	}
