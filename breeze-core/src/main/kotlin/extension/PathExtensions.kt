@@ -13,7 +13,7 @@ import java.nio.file.*
 val Path.fileExtension: String get() = this.fileName.toString().substringAfterLast('.', "")
 
 /**除去扩展名后的文件名。*/
-val Path.fileShotName: String get() = this.fileName.toString().substringBeforeLast(".")
+val Path.fileShortName: String get() = this.fileName.toString().substringBeforeLast(".")
 
 
 /**判断对应文件是否存在。*/

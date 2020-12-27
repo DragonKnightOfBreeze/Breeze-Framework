@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.http
 
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import java.net.*
 import java.net.http.*
 import java.time.*

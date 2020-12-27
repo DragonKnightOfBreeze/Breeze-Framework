@@ -4,7 +4,7 @@
 package com.windea.breezeframework.serialization.serializer
 
 import com.google.gson.*
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**

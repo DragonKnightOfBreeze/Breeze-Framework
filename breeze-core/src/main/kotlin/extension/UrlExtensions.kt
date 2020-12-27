@@ -17,7 +17,7 @@ val URL.fullPath get() = "$host$path"
 val URL.hasQueryParams: Boolean get() = this.query != null
 
 /**查询参数映射。*/
-val URL.queryParams: Map<String, List<String>>? get() = this.query?.split("&")?.groupBy({ it.substringBefore("=") }, { it.substringAfter("=") })
+val URL.queryParams: Map<String, List<String>>? get() = this.query?.toQueryParams()
 
 
 /**将当前统一资源定位符转化为文件。*/

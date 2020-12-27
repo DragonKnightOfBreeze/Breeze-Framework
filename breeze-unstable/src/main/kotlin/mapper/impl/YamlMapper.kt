@@ -54,7 +54,7 @@ class YamlMapper(
 			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
 		}
 
-		class Builder : com.windea.breezeframework.core.Builder<Config> {
+		class Builder : com.windea.breezeframework.core.model.Builder<Config> {
 			var indent: String = "  "
 			var indicatorIndent: String = ""
 			var lineSeparator: String = "\n"

@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.dsl.markdown
 
-import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*

@@ -3,8 +3,7 @@
 
 package com.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.*
-import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.model.*
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.representer.*

@@ -111,21 +111,27 @@ fun <T : Any> toStringByReference(
 	}
 }
 
-private fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true) = when {
-	this !is Array<*> || other !is Array<*> -> this == other
-	!deepOp -> this.contentEquals(other)
-	else -> this.contentDeepEquals(other)
+private fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true): Boolean {
+	return when {
+		this !is Array<*> || other !is Array<*> -> this == other
+		!deepOp -> this.contentEquals(other)
+		else -> this.contentDeepEquals(other)
+	}
 }
 
-private fun Any?.hashCodeSmartly(deepOp: Boolean = true) = when {
-	this !is Array<*> -> this.hashCode()
-	!deepOp -> this.contentHashCode()
-	else -> this.contentDeepHashCode()
+private fun Any?.hashCodeSmartly(deepOp: Boolean = true): Int {
+	return when {
+		this !is Array<*> -> this.hashCode()
+		!deepOp -> this.contentHashCode()
+		else -> this.contentDeepHashCode()
+	}
 }
 
-private fun Any?.toStringSmartly(deepOp: Boolean = true) = when {
-	this !is Array<*> -> this.toString()
-	!deepOp -> this.contentToString()
-	else -> this.contentDeepToString()
+private fun Any?.toStringSmartly(deepOp: Boolean = true): String {
+	return when {
+		this !is Array<*> -> this.toString()
+		!deepOp -> this.contentToString()
+		else -> this.contentDeepToString()
+	}
 }
 

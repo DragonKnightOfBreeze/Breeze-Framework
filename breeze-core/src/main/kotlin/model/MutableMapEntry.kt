@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.collections
+package com.windea.breezeframework.core.model
 
 /**
  * 可变的映射入口。

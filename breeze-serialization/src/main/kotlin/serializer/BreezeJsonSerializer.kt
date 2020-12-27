@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.serialization.io.*
 import java.lang.reflect.*
 

@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.dsl.cmdtext
 
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 
 @CmdTextDslMarker
@@ -31,7 +31,7 @@ interface CmdTextDsl {
 		//linux使用echo命令输出时需要加上-e参数，windows不能直接通过echo命令输出
 		//linux: "\e[${code}m${text}\e[0m"
 		//windows: "\u001B[${code}m${text}\u001B[0m"
-		
+
 		override fun toString(): String {
 			return when{
 				isWindowsOsType -> "\u001B[${code}m${text}\u001B[0m"
@@ -121,7 +121,7 @@ interface CmdTextDsl {
 		Blink(5),
 		Invert(7)
 	}
-	
+
 	companion object {
 		private val isWindowsOsType = System.getProperty("os.name").contains("windows",true)
 	}

@@ -43,7 +43,7 @@ class PropertiesMapper(
 			@JvmStatic val Default = Config()
 		}
 
-		class Builder : com.windea.breezeframework.core.Builder<Config> {
+		class Builder : com.windea.breezeframework.core.model.Builder<Config> {
 			var indent: String = "  "
 			var separator: String = "="
 			var lineSeparator: String = "\n"

@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.dsl.creole
 
-import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 
 @CreoleDslMarker

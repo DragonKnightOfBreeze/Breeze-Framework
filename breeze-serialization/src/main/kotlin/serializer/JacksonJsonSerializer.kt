@@ -4,7 +4,7 @@
 package com.windea.breezeframework.serialization.serializer
 
 import com.fasterxml.jackson.databind.json.*
-import com.windea.breezeframework.core.*
+import com.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**

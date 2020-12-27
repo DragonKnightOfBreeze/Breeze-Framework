@@ -374,6 +374,24 @@
 
 ### 1.2.x
 
+#### 1.2.0
+
+* [X] 更新版本。更新Kotlin版本到1.3.72。
+* [X] 整理和重构代码。
+* [X] 添加一些扩展。
+* [X] 添加`String.replaceIn`相关扩展
+* [X] 重构和添加`String.truncate`相关扩展
+* [X] 重构`breeze-dsl`的代码。
+* [X] 添加`String.isXxx`等扩展。
+* [X] 重构和添加 ~~`String.replaceMatch`~~ 、`String.substringMatch`扩展
+* [X] 移除`tryOrIgnore`和`tryOrPrint`扩展并添加`Result.andPrintStackTrace`、`Result.andPrint`和`Result.andPrintln`扩展
+* [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
+* [X] 准备添加COPYRIGHT
+* [X] 添加COPYRIGHT
+* [X] 更新Kotlin版本到1.4.0-rc。
+* [X] 更新Kotlin版本到1.4.0.
+* [X] 移除`breeze-serialization`。
+
 #### 1.2.1
 
 * [X] 更新版本
@@ -404,25 +422,6 @@
 * [X] 移动相关扩展方法到`BreezeComponentExtensions`
 * [X] 重命名`LetterCase`为`CaseType`
 * [X] 重构`breeze-spring-boot`
-
-
-#### 1.2.0
-
-* [X] 更新版本。更新Kotlin版本到1.3.72。
-* [X] 整理和重构代码。
-* [X] 添加一些扩展。
-* [X] 添加`String.replaceIn`相关扩展
-* [X] 重构和添加`String.truncate`相关扩展
-* [X] 重构`breeze-dsl`的代码。
-* [X] 添加`String.isXxx`等扩展。
-* [X] 重构和添加 ~~`String.replaceMatch`~~ 、`String.substringMatch`扩展
-* [X] 移除`tryOrIgnore`和`tryOrPrint`扩展并添加`Result.andPrintStackTrace`、`Result.andPrint`和`Result.andPrintln`扩展
-* [X] 实现`Any?.toSingleton`和`Any?.toSingletonOrEmpty`。
-* [X] 准备添加COPYRIGHT
-* [X] 添加COPYRIGHT
-* [X] 更新Kotlin版本到1.4.0-rc。
-* [X] 更新Kotlin版本到1.4.0.
-* [X] 移除`breeze-serialization`。
 
 ## 2.x.x
 

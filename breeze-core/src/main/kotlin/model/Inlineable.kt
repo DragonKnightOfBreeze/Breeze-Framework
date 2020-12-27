@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core
+package com.windea.breezeframework.core.model
 
 /**
  * 可内联的对象。

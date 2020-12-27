@@ -8,6 +8,7 @@ package com.windea.breezeframework.core.extension
 
 import com.windea.breezeframework.core.*
 import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.core.type.*
 import java.io.*
 import java.net.*
@@ -1194,6 +1195,15 @@ inline fun String.toColor(): Color {
 inline fun String.toColorOrNull(): Color? {
 	return Color.parseOrNull(this)
 }
+
+
+/**
+ * 当当前字符串转化为查询参数映射。
+ */
+internal fun String.toQueryParams(): Map<String, List<String>> {
+	return this.split("&").groupBy({ it.substringBefore("=") }, { it.substringAfter("=","") })
+}
+
 
 /**
  * 将当前字符串解码为base64格式的字节数组。
