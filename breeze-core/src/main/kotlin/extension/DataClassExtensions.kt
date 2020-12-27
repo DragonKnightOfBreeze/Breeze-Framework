@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("DataClassExtensions")
-@file:Suppress("DuplicatedCode", "UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST")
 
 package com.windea.breezeframework.core.extension
 

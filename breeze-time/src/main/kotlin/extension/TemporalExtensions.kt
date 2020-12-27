@@ -8,58 +8,6 @@ package com.windea.breezeframework.time.extension
 import java.time.*
 import java.time.temporal.*
 
-//region Operator Extensions
-/** @see java.time.Year.plusYears*/
-operator fun Year.plus(years: Int): Year = this.plusYears(years.toLong())
-
-/** @see java.time.Year.plusYears*/
-operator fun Year.plus(years: Long): Year = this.plusYears(years)
-
-/** @see java.time.Year.atMonth*/
-operator fun Year.plus(month: Month): YearMonth = this.atMonth(month)
-
-/** @see java.time.Year.atMonthDay*/
-operator fun Year.plus(monthDay: MonthDay): LocalDate = atMonthDay(monthDay)
-
-/** @see java.time.Year.minusYears*/
-operator fun Year.minus(years: Int): Year = this.minusYears(years.toLong())
-
-/** @see java.time.Year.minusYears*/
-operator fun Year.minus(years: Long): Year = this.minusYears(years)
-
-/** @see java.time.Year.plusYears*/
-operator fun Year.inc(): Year = this.plusYears(1L)
-
-/** @see java.time.Year.minusYears*/
-operator fun Year.dec(): Year = this.minusYears(1L)
-
-
-/** @see java.time.Month.plus*/
-operator fun Month.plus(months: Int): Month = this.plus(months.toLong())
-
-/** @see java.time.Month.minus*/
-operator fun Month.minus(months: Int): Month = this.minus(months.toLong())
-
-/** @see java.time.Month.plus*/
-operator fun Month.inc(): Month = this.plus(1L)
-
-/** @see java.time.Month.minus*/
-operator fun Month.dec(): Month = this.minus(1L)
-
-
-/** @see java.time.DayOfWeek.plus*/
-operator fun DayOfWeek.plus(days: Int): DayOfWeek = this.plus(days.toLong())
-
-/** @see java.time.DayOfWeek.minus*/
-operator fun DayOfWeek.minus(days: Int): DayOfWeek = this.minus(days.toLong())
-
-/** @see java.time.DayOfWeek.plus*/
-operator fun DayOfWeek.inc(): DayOfWeek = this.plus(1L)
-
-/** @see java.time.DayOfWeek.minus*/
-operator fun DayOfWeek.dec(): DayOfWeek = this.minus(1L)
-//endregion
-
 //region Build Extensions
 /**得到当前月开始时的时间。*/
 inline val <T : Temporal> T.atStartOfMonth: Temporal get() = with(TemporalAdjusters.firstDayOfMonth())

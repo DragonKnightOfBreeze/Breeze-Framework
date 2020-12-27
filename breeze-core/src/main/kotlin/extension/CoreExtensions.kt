@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("CoreExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "FunctionName", "UseWithIndex", "UNUSED_PARAMETER")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extension
 

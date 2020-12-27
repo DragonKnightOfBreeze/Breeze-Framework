@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("StringExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extension
 
@@ -29,31 +29,41 @@ import kotlin.contracts.*
  * 移除当前字符串中的指定子字符串。
  * @see com.windea.breezeframework.core.extension.remove
  */
-operator fun String.minus(other: Any?): String = if(other == null) this else this.remove(other.toString())
+operator fun String.minus(other: Any?): String {
+	return if(other == null) this else this.remove(other.toString())
+}
 
 /**
  * 重复当前字符串到指定次数。
  * @see kotlin.text.repeat
  */
-operator fun String.times(n: Int): String = this.repeat(n)
+operator fun String.times(n: Int): String {
+	return this.repeat(n)
+}
 
 /**
  * 切分当前字符串到指定个数。
  * @see kotlin.text.chunked
  */
-operator fun String.div(n: Int): List<String> = this.chunked(n)
+operator fun String.div(n: Int): List<String> {
+	return this.chunked(n)
+}
 
 /**
  * 得到索引指定范围内的子字符串。
  * @see kotlin.text.slice
  */
-operator fun String.get(indices: IntRange): String = this.slice(indices)
+operator fun String.get(indices: IntRange): String {
+	return this.slice(indices)
+}
 
 /**
  * 得到指定索引范围内的子字符串。
  * @see kotlin.text.substring
  */
-operator fun String.get(startIndex: Int, endIndex: Int): String = this.substring(startIndex, endIndex)
+operator fun String.get(startIndex: Int, endIndex: Int): String {
+	return this.substring(startIndex, endIndex)
+}
 //endregion
 
 //region Optional Operation Extensions
@@ -1339,7 +1349,6 @@ fun <K, V> Map<K, V>.joinToText(
 	indent: CharSequence = "",
 	omitEmpty: Boolean = true,
 	omitEmptyValue: Boolean = true,
-	buffer:Appendable = StringWriter(),
 	transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
 ): String {
 	var result = buildString {
@@ -1372,7 +1381,6 @@ fun <T : Any> Sequence<T?>.joinToText(
 	indent: CharSequence = "",
 	omitEmpty: Boolean = true,
 	omitEmptyElement: Boolean = true,
-	buffer:Appendable = StringWriter(),
 	transform: ((T) -> CharSequence)? = null,
 ): String {
 	var result = buildString {

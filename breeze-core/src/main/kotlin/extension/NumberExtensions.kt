@@ -2,11 +2,13 @@
 // Breeze is blowing...
 
 @file:JvmName("NumberExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "DuplicatedCode")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extension
 
 import com.windea.breezeframework.core.annotation.*
+import java.math.*
+import java.util.concurrent.atomic.*
 import kotlin.math.*
 
 //region Optional Operation Extensions

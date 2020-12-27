@@ -12,9 +12,7 @@ import java.lang.reflect.*
 //由于java.lang.Object的clone方法默认是受保护的，不能直接在扩展方法中访问
 //这里采用反射的方式实现，但是不能保证克隆能够成功
 
-private val cloneMethod = Any::class.java.getDeclaredMethod("clone").apply {
-	isAccessible = true
-}
+private val cloneMethod = Any::class.java.getDeclaredMethod("clone").apply { isAccessible = true }
 
 private fun <T : Cloneable> T.cloneMethod() = try {
 	this::class.java.getMethod("clone")

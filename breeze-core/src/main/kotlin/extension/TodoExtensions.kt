@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("TodoExtensions")
-@file:Suppress("FunctionName", "NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "FunctionName")
 
 package com.windea.breezeframework.core.extension
 

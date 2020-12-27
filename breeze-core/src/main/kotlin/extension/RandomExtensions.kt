@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("RandomExtensions")
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.windea.breezeframework.core.extension
 
@@ -96,7 +96,11 @@ fun Random.checkChance(chance: Float): Boolean {
 }
 
 /**检查一个几率发生的事件是否发生，附带额外条件。*/
-fun Random.checkChance(chance: Float, condition: Boolean): Boolean = condition && checkChance(chance)
+fun Random.checkChance(chance: Float, condition: Boolean): Boolean {
+	return condition && checkChance(chance)
+}
 
 /**检查一个几率发生的事件是否发生，附带额外条件。*/
-fun Random.checkChance(chance: Float, predicate: () -> Boolean): Boolean = predicate() && checkChance(chance)
+fun Random.checkChance(chance: Float, predicate: () -> Boolean): Boolean {
+	return predicate() && checkChance(chance)
+}

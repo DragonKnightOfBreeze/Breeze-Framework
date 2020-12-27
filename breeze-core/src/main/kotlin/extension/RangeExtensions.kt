@@ -79,16 +79,21 @@ inline fun <T : Comparable<T>, R : Comparable<R>> ClosedRange<T>.map(transform: 
 
 
 /**限定在0和1之间。*/
-inline fun Float.coerceIn(): Float = this.coerceIn(0f, 1f)
+inline fun Float.coerceIn(): Float {
+	return this.coerceIn(0f, 1f)
+}
 
 /**限定在0和1之间。*/
-inline fun Double.coerceIn(): Double = this.coerceIn(0.0, 1.0)
+inline fun Double.coerceIn(): Double {
+	return this.coerceIn(0.0, 1.0)
+}
 //endregion
 
 //region Convert Extensions
 /**将范围转化为二元素元组。*/
-inline fun <T : Comparable<T>> ClosedRange<T>.toPair(): Pair<T, T> = this.start to this.endInclusive
-
+inline fun <T : Comparable<T>> ClosedRange<T>.toPair(): Pair<T, T> {
+	return this.start to this.endInclusive
+}
 
 /**将范围转化为基于指定长度的循环范围。即，当上限或下限为负数时，尝试将其加上指定长度。*/
 fun IntRange.toCircledRange(length: Int): IntRange {

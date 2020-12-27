@@ -16,31 +16,41 @@ import com.windea.breezeframework.core.type.*
 
 //region Build extensions
 /**从二元素元组构造三元素元组。*/
-infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> = Tuple3(first, second, that)
+infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> {
+	return Tuple3(first, second, that)
+}
 
 /**从三元素元组构造四元素元组。*/
-infix fun <A, B, C, D> Tuple3<A, B, C>.fromTo(that: D): Tuple4<A, B, C, D> = Tuple4(first, second, third, that)
+infix fun <A, B, C, D> Tuple3<A, B, C>.fromTo(that: D): Tuple4<A, B, C, D> {
+	return Tuple4(first, second, third, that)
+}
 
 /**从四元素元组构造五元素元组。*/
-infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.fromTo(that: E): Tuple5<A, B, C, D, E> = Tuple5(first, second, third, fourth, that)
+infix fun <A, B, C, D, E> Tuple4<A, B, C, D>.fromTo(that: E): Tuple5<A, B, C, D, E> {
+	return Tuple5(first, second, third, fourth, that)
+}
 //endregion
 
 //region Common Extensions
 /**映射单一元素类型的二元素元组的元素。*/
-inline fun <T, R> TypedTuple2<T>.map(transform: (T) -> R): TypedTuple2<R> =
-	TypedTuple2(transform(first), transform(second))
+inline fun <T, R> TypedTuple2<T>.map(transform: (T) -> R): TypedTuple2<R> {
+	return TypedTuple2(transform(first), transform(second))
+}
 
 /**映射单一元素类型的三元素元组的元素。*/
-inline fun <T, R> TypedTuple3<T>.map(transform: (T) -> R): TypedTuple3<R> =
-	TypedTuple3(transform(first), transform(second), transform(third))
+inline fun <T, R> TypedTuple3<T>.map(transform: (T) -> R): TypedTuple3<R> {
+	return TypedTuple3(transform(first), transform(second), transform(third))
+}
 
 /**映射单一元素类型的四元素元组的元素。*/
-inline fun <T, R> TypedTuple4<T>.map(transform: (T) -> R): TypedTuple4<R> =
-	TypedTuple4(transform(first), transform(second), transform(third), transform(fourth))
+inline fun <T, R> TypedTuple4<T>.map(transform: (T) -> R): TypedTuple4<R> {
+	return TypedTuple4(transform(first), transform(second), transform(third), transform(fourth))
+}
 
 /**映射单一元素类型的五元素元组的元素。*/
-inline fun <T, R> TypedTuple5<T>.map(transform: (T) -> R): TypedTuple5<R> =
-	TypedTuple5(transform(first), transform(second), transform(third), transform(fourth), transform(fifth))
+inline fun <T, R> TypedTuple5<T>.map(transform: (T) -> R): TypedTuple5<R> {
+	return TypedTuple5(transform(first), transform(second), transform(third), transform(fourth), transform(fifth))
+}
 //endregion
 
 //region Convert Extensions

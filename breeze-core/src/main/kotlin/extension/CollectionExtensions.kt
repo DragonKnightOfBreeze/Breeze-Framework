@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY", "unused")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
 
 package com.windea.breezeframework.core.extension
 
@@ -19,73 +19,106 @@ import kotlin.contracts.*
 //注意：某些情况下，如果直接参照标准库的写法编写扩展方法，会报编译器错误
 
 //region Entry Extensions
+/**构建一个映射并事先过滤值为空的键值对。*/
+fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>): Map<K, V?> {
+	return if(pair.second != null) mapOf(pair) else emptyMap()
+}
 
 /**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>): Map<K, V?> = if(pair.second != null) mapOf(pair) else emptyMap()
-
-/**构建一个映射并事先过滤值为空的键值对。*/
-fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>): LinkedHashMap<K, V> =
-	LinkedHashMap<K, V>().apply { for((key, value) in pairs) if(value != null) put(key, value) }
+fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>): Map<K, V> {
+	return LinkedHashMap<K, V>().apply { for((key, value) in pairs) if(value != null) put(key, value) }
+}
 
 
 /**构建一个空的枚举集。*/
-inline fun <reified T : Enum<T>> enumSetOf(): EnumSet<T> = EnumSet.noneOf(T::class.java)
+inline fun <reified T : Enum<T>> enumSetOf(): EnumSet<T> {
+	return EnumSet.noneOf(T::class.java)
+}
 
 /**构建一个包含所有枚举值的枚举集。*/
-inline fun <reified T : Enum<T>> enumSetOfAll(): EnumSet<T> = EnumSet.allOf(T::class.java)
+inline fun <reified T : Enum<T>> enumSetOfAll(): EnumSet<T> {
+	return EnumSet.allOf(T::class.java)
+}
 
 /**构建一个枚举集。*/
-fun <T : Enum<T>> enumSetOf(first: T, vararg elements: T): EnumSet<T> = EnumSet.of(first, *elements)
+fun <T : Enum<T>> enumSetOf(first: T, vararg elements: T): EnumSet<T> {
+	return EnumSet.of(first, *elements)
+}
 
 /**构建一个空的枚举映射。*/
-inline fun <reified K : Enum<K>, V> enumMapOf(): EnumMap<K, V> = EnumMap(K::class.java)
+inline fun <reified K : Enum<K>, V> enumMapOf(): EnumMap<K, V> {
+	return EnumMap(K::class.java)
+}
 
 /**构建一个枚举映射。*/
-fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> = EnumMap(pairs.toMap())
+fun <K : Enum<K>, V> enumMapOf(vararg pairs: Pair<K, V>): EnumMap<K, V> {
+	return EnumMap(pairs.toMap())
+}
 
 
 /**构建一个空的线程安全的并发列表。*/
-fun <T> concurrentListOf(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList()
+fun <T> concurrentListOf(): CopyOnWriteArrayList<T> {
+	return CopyOnWriteArrayList()
+}
 
 /**构建一个线程安全的并发列表。*/
-fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(elements)
+fun <T> concurrentListOf(vararg elements: T): CopyOnWriteArrayList<T> {
+	return CopyOnWriteArrayList(elements)
+}
 
 /**构建一个空的线程安全的并发集。*/
-fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet()
+fun <T> concurrentSetOf(): CopyOnWriteArraySet<T> {
+	return CopyOnWriteArraySet()
+}
 
 /**构建一个线程安全的并发集。*/
-fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(elements.toSet())
+fun <T> concurrentSetOf(vararg elements: T): CopyOnWriteArraySet<T> {
+	return CopyOnWriteArraySet(elements.toSet())
+}
 
 /**构建一个空的线程安全的并发映射。*/
-fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> = ConcurrentHashMap()
+fun <K, V> concurrentMapOf(): ConcurrentHashMap<K, V> {
+	return ConcurrentHashMap()
+}
 
 /**构建一个线程安全的并发映射。*/
-fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> = ConcurrentHashMap(pairs.toMap())
+fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> {
+	return ConcurrentHashMap(pairs.toMap())
+}
+//endregion
 
 //region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
  * @see com.windea.breezeframework.core.extension.repeat
  */
-operator fun <T> List<T>.times(n: Int): List<T> = this.repeat(n)
+operator fun <T> List<T>.times(n: Int): List<T> {
+	return this.repeat(n)
+}
 
 /**
  * 切分当前集合中的元素到指定个数。
  * @see kotlin.collections.chunked
  **/
-operator fun <T> Iterable<T>.div(n: Int): List<List<T>> = this.chunked(n)
+operator fun <T> Iterable<T>.div(n: Int): List<List<T>> {
+	return this.chunked(n)
+}
 
 /**
  * 得到索引指定范围内的子列表。
  * @see kotlin.collections.slice
  */
-operator fun <T> List<T>.get(indices: IntRange): List<T> = this.slice(indices)
+operator fun <T> List<T>.get(indices: IntRange): List<T> {
+	return this.slice(indices)
+}
 
 /**
  * 得到索引指定范围内的子列表。
  * @see kotlin.collections.List.subList
  */
-operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> = this.subList(startIndex, endIndex)
+operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
+	return this.subList(startIndex, endIndex)
+}
 //endregion
 
 //region Element Type Extensions
@@ -791,28 +824,28 @@ fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
 /**
  * 将当前数组转化为新的以键为值的映射。
  */
-inline fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Array<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**
  * 将当前集合转化为新的以键为值的映射。
  */
-inline fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**
  * 将当前序列转化为新的以键为值的映射。
  */
-inline fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 
 /**
  * 将当前映射转化为新的以字符串为键的映射。
  */
-inline fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
+fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
 }
 //endregion
@@ -843,53 +876,73 @@ inline fun <K> Map<K, String>.getOrEmpty(key: K): String {
 /**
  * 去除起始的空字符串。
  */
-inline fun <T : CharSequence> Array<out T>.dropEmpty(): List<T> = this.dropWhile { it.isEmpty() }
+inline fun <T : CharSequence> Array<out T>.dropEmpty(): List<T> {
+	return this.dropWhile { it.isEmpty() }
+}
 
 /**
  * 去除起始的空字符串。
  */
-inline fun <T : CharSequence> Iterable<T>.dropEmpty(): List<T> = this.dropWhile { it.isEmpty() }
+inline fun <T : CharSequence> Iterable<T>.dropEmpty(): List<T> {
+	return this.dropWhile { it.isEmpty() }
+}
 
 /**
  * 去除起始的空字符串。
  */
-inline fun <T : CharSequence> Sequence<T>.dropEmpty(): Sequence<T> = this.dropWhile { it.isEmpty() }
+inline fun <T : CharSequence> Sequence<T>.dropEmpty(): Sequence<T> {
+	return this.dropWhile { it.isEmpty() }
+}
 
 /**
  * 去除尾随的空字符串。
  */
-inline fun <T : CharSequence> Array<out T>.dropLastEmpty(): List<T> = this.dropLastWhile { it.isEmpty() }
+inline fun <T : CharSequence> Array<out T>.dropLastEmpty(): List<T> {
+	return this.dropLastWhile { it.isEmpty() }
+}
 
 /**
  * 去除尾随的空字符串。
  */
-inline fun <T : CharSequence> List<T>.dropLastEmpty(): List<T> = this.dropLastWhile { it.isEmpty() }
+inline fun <T : CharSequence> List<T>.dropLastEmpty(): List<T> {
+	return this.dropLastWhile { it.isEmpty() }
+}
 
 
 /**
  * 去除起始的空白字符串。
  */
-inline fun <T : CharSequence> Array<out T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
+inline fun <T : CharSequence> Array<out T>.dropBlank(): List<T> {
+	return this.dropWhile { it.isBlank() }
+}
 
 /**
  * 去除起始的空白字符串。
  */
-inline fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> = this.dropWhile { it.isBlank() }
+inline fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> {
+	return this.dropWhile { it.isBlank() }
+}
 
 /**
  * 去除起始的空白字符串。
  */
-inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> = this.dropWhile { it.isBlank() }
+inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> {
+	return this.dropWhile { it.isBlank() }
+}
 
 /**
  * 去除尾随的空白字符串。
  */
-inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
+inline fun <T : CharSequence> Array<out T>.dropLastBlank(): List<T> {
+	return this.dropLastWhile { it.isBlank() }
+}
 
 /**
  * 去除尾随的空白字符串。
  */
-inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> = this.dropLastWhile { it.isBlank() }
+inline fun <T : CharSequence> List<T>.dropLastBlank(): List<T> {
+	return this.dropLastWhile { it.isBlank() }
+}
 
 
 /**

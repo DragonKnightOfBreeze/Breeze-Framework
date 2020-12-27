@@ -10,25 +10,7 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import java.util.concurrent.locks.*
 
-/**将当前整数转化为原子类型。*/
-inline fun Int.asAtomic() = AtomicInteger(this)
-
-/**将当前长整数转化为原子类型。*/
-inline fun Long.asAtomic() = AtomicLong(this)
-
-/**将当前整数数组转化为原子类型。*/
-inline fun IntArray.asAtomic() = AtomicIntegerArray(this)
-
-/**将当前长整数数组转化为原子类型。*/
-inline fun LongArray.asAtomic() = AtomicLongArray(this)
-
-/**将当前引用转化为原子类型。*/
-inline fun <T> T.asAtomic() = AtomicReference(this)
-
-/**将当前引用数组转化为原子类型。*/
-inline fun <T> Array<out T>.asAtomic() = AtomicReferenceArray(this)
-
-
+//region Operation Extensions
 @JvmSynthetic
 inline fun <T> Condition.withAwait(signalAll: Boolean = true, action: () -> T): T {
 	this.await()
@@ -48,3 +30,41 @@ inline fun <T> Semaphore.withAcquire(permits: Int = 1, action: () -> T): T {
 		release(permits)
 	}
 }
+//endregion
+
+//region Convert Extensions
+/**
+ *将当前布尔值转化为原子类型。
+ */
+fun Boolean.asAtomic() = AtomicBoolean(this)
+
+/**
+ * 将当前整数转化为原子类型。
+ */
+fun Int.asAtomic() = AtomicInteger(this)
+
+/**
+ * 将当前长整数转化为原子类型。
+ */
+fun Long.asAtomic() = AtomicLong(this)
+
+/**
+ * 将当前整数数组转化为原子类型。
+ */
+fun IntArray.asAtomic() = AtomicIntegerArray(this)
+
+/**
+ * 将当前长整数数组转化为原子类型。
+ */
+fun LongArray.asAtomic() = AtomicLongArray(this)
+
+/**
+ * 将当前引用转化为原子类型。
+ */
+fun <T> T.asAtomic() = AtomicReference(this)
+
+/**
+ * 将当前引用数组转化为原子类型。
+ */
+fun <T> Array<out T>.asAtomic() = AtomicReferenceArray(this)
+//endregion

@@ -67,10 +67,7 @@ inline fun execBlocking(vararg environmentVariables: String, workDirectory: File
 
 /**执行一段懒加载的命令，并保持进程阻塞直到执行完毕为止。默认环境变量为空，默认工作目录为当前工作目录。*/
 @JvmSynthetic
-inline fun execBlocking(
-	vararg environmentVariables: String, workDirectory: File? = null,
-	timeout: Long, unit: TimeUnit, lazyCommand: () -> String,
-): Process {
+inline fun execBlocking(vararg environmentVariables: String, workDirectory: File? = null, timeout: Long, unit: TimeUnit, lazyCommand: () -> String): Process {
 	return Runtime.getRuntime().exec(lazyCommand(), environmentVariables, workDirectory).also { it.waitFor(timeout, unit) }
 }
 

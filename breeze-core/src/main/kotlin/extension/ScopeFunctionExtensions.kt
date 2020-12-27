@@ -46,21 +46,3 @@ inline fun <T : R, R> T.where(condition: Boolean, block: (T) -> R): R {
 	}
 	return if(condition) block(this) else this
 }
-
-/**
- * Calls the specified function [block] only once,
- * if the [resetStatus] returns `true`, reset the once status.
- */
-@InlineOnly
-@JvmSynthetic
-inline fun once(resetStatus: Boolean = false, block: () -> Unit) {
-	contract {
-		callsInPlace(block, InvocationKind.AT_MOST_ONCE)
-	}
-	if(resetStatus) enableOnce = false
-	if(enableOnce) return
-	enableOnce = true
-	block()
-}
-
-@PublishedApi internal var enableOnce = false
