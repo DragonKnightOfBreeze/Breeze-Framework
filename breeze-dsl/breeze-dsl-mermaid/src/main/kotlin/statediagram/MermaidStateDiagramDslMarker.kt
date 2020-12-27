@@ -3,8 +3,6 @@
 
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
-import com.windea.breezeframework.dsl.mermaid.sequencediagram.*
-
 /**
  * [MermaidStateDiagramDsl]的标记注解。参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
  */

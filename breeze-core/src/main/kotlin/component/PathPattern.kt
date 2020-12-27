@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.extension.*
  * 路径模式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
 @BreezeComponent
-@Suppress("UNCHECKED_CAST","KDocUnresolvedReference")
+@Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
 interface PathPattern {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
@@ -102,7 +102,7 @@ interface PathPattern {
 			val lastPathIndex = path.lastIndex
 			val lastValueIndex = value.lastIndex
 			while(pathIndex <= lastPathIndex && valueIndex <= lastValueIndex) {
-				val	pathChar = path[pathIndex]
+				val pathChar = path[pathIndex]
 				when {
 					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
 					pathChar == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
@@ -337,7 +337,7 @@ interface PathPattern {
 			return when {
 				pathIndex - lastPathIndex == valueIndex - lastValueIndex -> true
 				pathIndex == lastPathIndex && path[pathIndex] == wildCard -> true
-				pathIndex == lastPathIndex-1 && path[pathIndex] == wildCard && path[pathIndex+1] == wildCard -> true
+				pathIndex == lastPathIndex - 1 && path[pathIndex] == wildCard && path[pathIndex + 1] == wildCard -> true
 				else -> false
 			}
 		}
@@ -353,7 +353,7 @@ interface PathPattern {
 				val pathChar = path[pathIndex]
 				when {
 					//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
-					pathChar== delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
+					pathChar == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix) -> {
 						val variableNameStartIndex = pathIndex + 2
 						val variableValueStartIndex = valueIndex + 1
 						do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
@@ -368,25 +368,25 @@ interface PathPattern {
 						variables[variableName] = variableValue
 					}
 					//如果path遍历到'**'处，则需要跳到这之后，此时value需要遍历到下个继续匹配处，无法继续匹配则直接匹配成功
-					pathChar== wildCard && (pathIndex < lastPathIndex && path[pathIndex + 1] == wildCard) -> {
+					pathChar == wildCard && (pathIndex < lastPathIndex && path[pathIndex + 1] == wildCard) -> {
 						pathIndex += 2
 						if(pathIndex > lastPathIndex) return variables
 						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != path[pathIndex])
 					}
 					//如果path遍历到'*'处，则需要跳到这之后，此时value需要遍历到下个继续匹配的'/'之前处，无法继续匹配则直接匹配成功
-					pathChar== wildCard -> {
+					pathChar == wildCard -> {
 						pathIndex += 1
 						if(pathIndex > lastPathIndex) return variables
 						do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter && value[valueIndex] != path[pathIndex])
 					}
 					//如果path遍历到'?'处，则需要跳这之后，此时value需要遍历到下个字符
 					pathChar == singleWildcard -> {
-						pathIndex ++
-						valueIndex ++
+						pathIndex++
+						valueIndex++
 					}
 					//如果不匹配，则直接匹配失败
-					pathChar!= value[valueIndex] -> return mapOf()
-					else ->{
+					pathChar != value[valueIndex] -> return mapOf()
+					else -> {
 						pathIndex++
 						valueIndex++
 					}
@@ -396,7 +396,7 @@ interface PathPattern {
 			return when {
 				pathIndex - lastPathIndex == valueIndex - lastValueIndex -> variables
 				pathIndex == lastPathIndex && path[pathIndex] == wildCard -> variables
-				pathIndex == lastPathIndex-1 && path[pathIndex] == wildCard && path[pathIndex+1] == wildCard -> variables
+				pathIndex == lastPathIndex - 1 && path[pathIndex] == wildCard && path[pathIndex + 1] == wildCard -> variables
 				else -> mapOf()
 			}
 		}
@@ -472,7 +472,7 @@ interface PathPattern {
 	}
 	//endregion
 
-	companion object{
+	companion object {
 		private val pathPatterns = mutableListOf<PathPattern>()
 
 		/**
@@ -485,7 +485,7 @@ interface PathPattern {
 		/**
 		 * 注册指定的路径模式。
 		 */
-		@JvmStatic fun register(pathPattern: PathPattern){
+		@JvmStatic fun register(pathPattern: PathPattern) {
 			pathPatterns.add(pathPattern)
 		}
 

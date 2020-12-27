@@ -19,11 +19,11 @@ import java.io.*
 interface Identifiable<T : Serializable> : Serializable {
 	val id: T
 
-	override fun equals(other: Any?): Boolean{
+	override fun equals(other: Any?): Boolean {
 		return other != null && other is Identifiable<*> && id == other.id
 	}
 
-	override fun hashCode(): Int{
+	override fun hashCode(): Int {
 		return id.hashCode()
 	}
 

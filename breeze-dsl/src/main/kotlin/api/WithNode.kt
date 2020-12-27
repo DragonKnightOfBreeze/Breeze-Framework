@@ -10,6 +10,6 @@ package com.windea.breezeframework.dsl.api
  */
 @DslApiMarker
 interface WithNode {
-	val sourceNodeId:String
-	val targetNodeId:String
+	val sourceNodeId: String
+	val targetNodeId: String
 }

@@ -55,7 +55,7 @@ interface Escaper {
 	 * Kotlin字符串的转义器。
 	 */
 	object KotlinEscaper : AbstractEscaper() {
-		 override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
+		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"", "\\\$")
 	}
 
@@ -63,8 +63,8 @@ interface Escaper {
 	 * Java的转义器。
 	 */
 	object JavaEscaper : AbstractEscaper() {
-		 override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
-		 override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
+		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
+		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
 	}
 
 	/**
@@ -145,14 +145,14 @@ interface Escaper {
 		/**
 		 * 得到已注册的转义器列表。
 		 */
-		@JvmStatic fun values():List<Escaper>{
+		@JvmStatic fun values(): List<Escaper> {
 			return escapers
 		}
 
 		/**
 		 * 注册指定的转义器。
 		 */
-		@JvmStatic fun register(escaper: Escaper){
+		@JvmStatic fun register(escaper: Escaper) {
 			escapers.add(escaper)
 		}
 
@@ -171,7 +171,7 @@ interface Escaper {
 			register(XmlContentEscaper)
 		}
 
-		private fun registerLineBreakEscapers(){
+		private fun registerLineBreakEscapers() {
 			register(LineBreakEscaper)
 			register(HtmlLineBreakEscaper)
 		}

@@ -10,8 +10,8 @@ package com.windea.breezeframework.core.model
  *
  * @property order 顺序。
  */
-interface Ordered:Comparable<Ordered> {
-	val order:Int
+interface Ordered : Comparable<Ordered> {
+	val order: Int
 
 	override fun compareTo(other: Ordered): Int {
 		return other.order - order

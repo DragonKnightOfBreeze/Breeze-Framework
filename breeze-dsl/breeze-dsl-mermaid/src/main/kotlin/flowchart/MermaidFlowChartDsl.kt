@@ -27,7 +27,7 @@ interface MermaidFlowChartDsl {
 
 		override fun toString(): String {
 			val directionSnippet = direction.text
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "graph $directionSnippet\n$contentSnippet"
 		}
 	}
@@ -136,7 +136,7 @@ interface MermaidFlowChartDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "subgraph $name\n$contentSnippet\nend"
 		}
 	}

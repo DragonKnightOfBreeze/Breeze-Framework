@@ -8,7 +8,7 @@ package com.windea.breezeframework.core.extension
 /**
  * 精简正则表达式字符串。
  */
-fun Regex.Companion.trim(pattern:String): String {
+fun Regex.Companion.trim(pattern: String): String {
 	return pattern.remove("\\Q\\E")
 }
 

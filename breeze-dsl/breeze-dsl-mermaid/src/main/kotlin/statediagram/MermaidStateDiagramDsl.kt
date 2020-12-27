@@ -19,7 +19,7 @@ interface MermaidStateDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "stateDiagram\n$contentSnippet"
 		}
 	}
@@ -90,7 +90,7 @@ interface MermaidStateDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "state $name{\n$contentSnippet\n}"
 		}
 	}
@@ -105,7 +105,7 @@ interface MermaidStateDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val sectionsSnippet = sections.joinToText("\n---\n").let{if(indentContent) it.prependIndent(indent) else it}
+			val sectionsSnippet = sections.joinToText("\n---\n").let { if(indentContent) it.prependIndent(indent) else it }
 			return "state $name{\n$sectionsSnippet\n}"
 		}
 	}
@@ -157,7 +157,7 @@ interface MermaidStateDiagramDsl {
 
 		override fun toString(): String {
 			return when {
-				wrapContent -> "note $location\n${text.htmlWrap().let{if(indentContent) it.prependIndent(indent) else it}}\nend note"
+				wrapContent -> "note $location\n${text.htmlWrap().let { if(indentContent) it.prependIndent(indent) else it }}\nend note"
 				else -> "note $location: ${text.htmlWrap()}"
 			}
 		}

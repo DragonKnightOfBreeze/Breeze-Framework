@@ -5,13 +5,12 @@ package com.windea.breezeframework.dsl.markdown
 
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 @MarkdownDslMarker
 interface MarkdownDsl {
@@ -19,6 +18,7 @@ interface MarkdownDsl {
 	class DslDocument @PublishedApi internal constructor() : IDslDocument, DslEntry {
 		@MarkdownDslExtendedFeature
 		var frontMatter: FrontMatter? = null
+
 		@MarkdownDslExtendedFeature
 		var toc: Toc? = null
 		override val content: MutableList<TopDslElement> = mutableListOf()
@@ -56,7 +56,7 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	interface DslEntry:IDslEntry {
+	interface DslEntry : IDslEntry {
 		val content: MutableList<TopDslElement>
 
 		override fun toContentString(): String {
@@ -67,7 +67,7 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	interface InlineDslEntry:IDslEntry
+	interface InlineDslEntry : IDslEntry
 
 	@MarkdownDslMarker
 	interface DslElement : IDslElement, InlineDslEntry
@@ -119,7 +119,7 @@ interface MarkdownDsl {
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
-	 class SuperscriptText(override val text: CharSequence) : RichText() {
+	class SuperscriptText(override val text: CharSequence) : RichText() {
 		override fun toString() = "^$text^"
 	}
 
@@ -130,13 +130,13 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	 class Icon(val name: String) : InlineDslElement {
+	class Icon(val name: String) : InlineDslElement {
 		override val inlineText get() = name
 		override fun toString() = ":$name:"
 	}
 
 	@MarkdownDslMarker
-	 class FootNote(val reference: String) : InlineDslElement {
+	class FootNote(val reference: String) : InlineDslElement {
 		override val inlineText: String get() = reference
 		override fun toString() = ":$reference:"
 	}
@@ -205,9 +205,10 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	abstract class Heading: TopDslElement, WithAttributes, Wrappable {
+	abstract class Heading : TopDslElement, WithAttributes, Wrappable {
 		abstract val headingLevel: Int
 		abstract val text: String
+
 		@MarkdownDslExtendedFeature
 		override var attributes: AttributeGroup? = null
 
@@ -232,7 +233,7 @@ interface MarkdownDsl {
 	class MainHeading @PublishedApi internal constructor(override val text: String) : SetextHeading(1)
 
 	@MarkdownDslMarker
-	class SubHeading @PublishedApi internal constructor(override val text: String, ) : SetextHeading(2)
+	class SubHeading @PublishedApi internal constructor(override val text: String) : SetextHeading(2)
 
 	@MarkdownDslMarker
 	abstract class AtxHeading(override val headingLevel: Int) : Heading() {
@@ -661,14 +662,14 @@ interface MarkdownDsl {
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
-	 class ClassAttribute(val name: String) : Attribute {
+	class ClassAttribute(val name: String) : Attribute {
 		override val inlineText: String get() = ".$name"
 		override fun toString() = inlineText
 	}
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
-	 class PropertyAttribute(val pair: Pair<String, String>) : Attribute {
+	class PropertyAttribute(val pair: Pair<String, String>) : Attribute {
 		override val inlineText: String get() = "${pair.first}=${pair.second.quote(DslConfig.quote)}"
 		override fun toString() = inlineText
 	}

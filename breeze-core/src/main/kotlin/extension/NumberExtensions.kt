@@ -7,8 +7,6 @@
 package com.windea.breezeframework.core.extension
 
 import com.windea.breezeframework.core.annotation.*
-import java.math.*
-import java.util.concurrent.atomic.*
 import kotlin.math.*
 
 //region Optional Operation Extensions
@@ -195,7 +193,7 @@ inline fun <reified T : Number> Number.toNumberOrNull(): T? {
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为默认值。*/
 inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
-	return enumValues<T>().getOrElse(this){ enumValues<T>().first()}
+	return enumValues<T>().getOrElse(this) { enumValues<T>().first() }
 }
 
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/

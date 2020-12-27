@@ -5,28 +5,27 @@ package com.windea.breezeframework.dsl.bbcode
 
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.bbcode.BBCodeDsl.DslConfig.indent
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 interface BBCodeDsl {
-	class DslDocument @PublishedApi internal constructor() : IDslDocument,InlineDslEntry {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument, InlineDslEntry {
 		var text: CharSequence = ""
 
 		override fun toString(): String = text.toString()
 	}
 
-	object DslConfig:IDslConfig {
+	object DslConfig : IDslConfig {
 		var indent: String = "  "
 	}
 
-	interface InlineDslEntry:IDslEntry
+	interface InlineDslEntry : IDslEntry
 
-	interface DslElement : IDslElement, Inlineable,InlineDslEntry {
+	interface DslElement : IDslElement, Inlineable, InlineDslEntry {
 		override val inlineText: CharSequence
 	}
 
@@ -151,7 +150,7 @@ interface BBCodeDsl {
 
 	class TableColumn @PublishedApi internal constructor(override val inlineText: CharSequence) : Element("td")
 
-	class Quote @PublishedApi internal constructor(val name: String?, ) : OneArgElement("quote", name), BlockDslElement {
+	class Quote @PublishedApi internal constructor(val name: String?) : OneArgElement("quote", name), BlockDslElement {
 		override var inlineText: CharSequence = ""
 		override val contentText: String get() = inlineText.toString()
 		override var indentContent: Boolean = true

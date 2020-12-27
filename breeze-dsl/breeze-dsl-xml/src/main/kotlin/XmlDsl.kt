@@ -6,7 +6,6 @@ package com.windea.breezeframework.dsl.xml
 import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.type.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
@@ -75,7 +74,7 @@ interface XmlDsl {
 	class CData @PublishedApi internal constructor(
 		val text: String,
 	) : Node, Wrappable, Indentable {
-		override var wrapContent   = text.isMultiline()
+		override var wrapContent = text.isMultiline()
 		override var indentContent = true
 
 		override fun toString(): String {
@@ -91,12 +90,12 @@ interface XmlDsl {
 	class Comment @PublishedApi internal constructor(
 		val text: String
 	) : Node, Wrappable, Indentable {
-		override var wrapContent  = text.isMultiline()
+		override var wrapContent = text.isMultiline()
 		override var indentContent = true
 
 		override fun toString(): String {
 			val textSnippet = text.escapeBy(Escaper.XmlContentEscaper)
-			return when{
+			return when {
 				wrapContent && indentContent -> "<!--\n${textSnippet.prependIndent(DslConfig.indent)}\n-->"
 				wrapContent -> "<!--\n$textSnippet\n-->"
 				else -> "<!--$textSnippet-->"
@@ -125,9 +124,9 @@ interface XmlDsl {
 			}
 			val prefixSnippet = "<$name$attributesSnippet>"
 			val suffixSnippet = if(DslConfig.autoCloseTag && nodes.isEmpty()) "/>" else "</$name>"
-			return when{
+			return when {
 				wrapContent && indentContent -> "$prefixSnippet\n${nodesSnippet.prependIndent(DslConfig.indent)}\n$suffixSnippet"
-				wrapContent  -> "$prefixSnippet\n$nodesSnippet\n$suffixSnippet"
+				wrapContent -> "$prefixSnippet\n$nodesSnippet\n$suffixSnippet"
 				else -> "$prefixSnippet$nodesSnippet$suffixSnippet"
 			}
 		}

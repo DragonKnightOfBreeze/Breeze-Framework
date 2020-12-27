@@ -4,12 +4,10 @@
 package com.windea.breezeframework.dsl.sequence
 
 import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 @SequenceDiagramDslMarker
 interface SequenceDiagramDsl {
@@ -26,7 +24,7 @@ interface SequenceDiagramDsl {
 	}
 
 	@SequenceDiagramDslMarker
-	interface DslEntry : IDslEntry,WithTransition<Participant, Message> {
+	interface DslEntry : IDslEntry, WithTransition<Participant, Message> {
 		val participants: MutableSet<Participant>
 		val messages: MutableList<Message>
 		val notes: MutableList<Note>

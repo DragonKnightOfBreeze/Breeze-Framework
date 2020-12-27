@@ -78,8 +78,8 @@ fun String.decodeBy(encoder: Encoder, charset: Charset = Charsets.UTF_8): String
  * @see Encrypter
  */
 @UnstableApi
-fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray {
-	return encrypter.encrypt(this,secret)
+fun ByteArray.encryptBy(encrypter: Encrypter, secret: ByteArray? = null): ByteArray {
+	return encrypter.encrypt(this, secret)
 }
 
 /**
@@ -89,8 +89,8 @@ fun ByteArray.encryptBy(encrypter: Encrypter,secret:ByteArray?=null): ByteArray 
  * @see Encrypter
  */
 @UnstableApi
-fun ByteArray.decryptBy(encrypter: Encrypter,secret: ByteArray?=null): ByteArray {
-	return encrypter.decrypt(this,secret)
+fun ByteArray.decryptBy(encrypter: Encrypter, secret: ByteArray? = null): ByteArray {
+	return encrypter.decrypt(this, secret)
 }
 //endregion
 

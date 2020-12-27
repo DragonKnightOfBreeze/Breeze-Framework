@@ -6,6 +6,7 @@
 package com.windea.breezeframework.dsl.markdown
 
 import com.windea.breezeframework.dsl.markdown.MarkdownDsl.*
+import com.windea.breezeframework.dsl.markdown.MarkdownDsl.List
 
 /**
  * 开始构建[MarkdownDsl]。
@@ -173,6 +174,7 @@ fun InlineDslEntry.math(text: String): InlineMath {
 inline fun DslDocument.frontMatter(lazyText: () -> String): FrontMatter {
 	return FrontMatter(lazyText()).also { frontMatter = it }
 }
+
 /**
  * 创建一个[MarkdownDsl.Toc]并注册。
  */

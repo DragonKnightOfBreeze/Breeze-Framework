@@ -17,7 +17,7 @@ interface MermaidPieChartDsl {
 
 		override fun toString(): String {
 			val titleSnippet = title.toText { "$it\n" }
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(MermaidDsl.DslConfig.indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(MermaidDsl.DslConfig.indent) else it }
 			return "pie\n$titleSnippet$contentSnippet"
 		}
 	}

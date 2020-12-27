@@ -18,7 +18,7 @@ interface MermaidClassDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			return when{
+			return when {
 				indentContent -> "classDiagram\n${toContentString().prependIndent(indent)}"
 				else -> "classDiagram\n${toContentString()}"
 			}

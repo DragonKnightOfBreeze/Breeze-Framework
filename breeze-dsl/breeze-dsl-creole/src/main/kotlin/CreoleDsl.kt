@@ -5,11 +5,10 @@ package com.windea.breezeframework.dsl.creole
 
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 @CreoleDslMarker
 interface CreoleDsl {
@@ -33,7 +32,7 @@ interface CreoleDsl {
 	}
 
 	@CreoleDslMarker
-	interface DslEntry:IDslEntry {
+	interface DslEntry : IDslEntry {
 		val content: MutableList<TopDslElement>
 
 		override fun toContentString() = content.joinToString("\n\n")
@@ -42,7 +41,7 @@ interface CreoleDsl {
 	}
 
 	@CreoleDslMarker
-	interface InlineDslEntry:IDslEntry
+	interface InlineDslEntry : IDslEntry
 
 	@CreoleDslMarker
 	interface DslElement : IDslElement, InlineDslEntry

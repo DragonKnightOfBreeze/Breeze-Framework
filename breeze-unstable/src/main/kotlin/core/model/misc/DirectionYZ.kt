@@ -6,7 +6,7 @@ package com.windea.breezeframework.core.model.misc
 /**
  * 基于YZ轴的二维方向。
  */
-enum class DirectionYZ{
+enum class DirectionYZ {
 	Up,
 	Down,
 	Forward,

@@ -3,11 +3,10 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.dsl.*
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
 import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 
 @MermaidDslMarker
@@ -24,7 +23,7 @@ interface MermaidDsl {
 	}
 
 	@MermaidDslMarker
-	interface DslEntry:IDslEntry
+	interface DslEntry : IDslEntry
 
 	@MermaidDslMarker
 	interface DslElement : IDslElement

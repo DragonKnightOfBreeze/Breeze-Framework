@@ -886,8 +886,8 @@ fun String.unquote(omitQuotes: Boolean = true): String {
  */
 fun String.hex(charset: Charset = Charsets.UTF_8): String {
 	val bytes = this.toByteArray(charset)
-	return buildString{
-		for(byte in bytes){
+	return buildString {
+		for(byte in bytes) {
 			val hex = byte.toString(16)
 			val hexString = if(hex.length != 1) hex else "0$hex"
 			append(hexString)
@@ -898,10 +898,10 @@ fun String.hex(charset: Charset = Charsets.UTF_8): String {
 /**
  * 将当前字符串从两位十六机制字符串转化为常规字符串。
  */
-fun String.unhex(charset: Charset = Charsets.UTF_8):String{
+fun String.unhex(charset: Charset = Charsets.UTF_8): String {
 	val hexStrings = this.chunked(2)
-	val bytes = ByteArray(hexStrings.size){ hexStrings[it].toByte(16) }
-	return String(bytes,charset)
+	val bytes = ByteArray(hexStrings.size) { hexStrings[it].toByte(16) }
+	return String(bytes, charset)
 }
 //endregion
 
@@ -924,8 +924,8 @@ inline fun String.toCharOrNull(): Char? {
  * 将当前字符串转化为布尔值。如果转化失败，则返回null。
  */
 inline fun String.toBooleanOrNull(): Boolean? = when {
-	this.equals("true",true) -> true
-	this.equals("false",true) -> false
+	this.equals("true", true) -> true
+	this.equals("false", true) -> false
 	else -> null
 }
 
@@ -1169,21 +1169,21 @@ inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIM
 /**
  * 将当前字符串转化为时长。
  */
-inline fun CharSequence.toDuration():Duration{
+inline fun CharSequence.toDuration(): Duration {
 	return Duration.parse(this)
 }
 
 /**
  * 将当前字符串转化为时期。
  */
-inline fun CharSequence.toPeriod():Period{
+inline fun CharSequence.toPeriod(): Period {
 	return Period.parse(this)
 }
 
 /**
  * 将当前字符串转化为瞬时。
  */
-inline fun CharSequence.toInstant():Instant{
+inline fun CharSequence.toInstant(): Instant {
 	return Instant.parse(this)
 }
 
@@ -1211,7 +1211,7 @@ inline fun String.toColorOrNull(): Color? {
  * 当当前字符串转化为查询参数映射。
  */
 internal fun String.toQueryParams(): Map<String, List<String>> {
-	return this.split("&").groupBy({ it.substringBefore("=") }, { it.substringAfter("=","") })
+	return this.split("&").groupBy({ it.substringBefore("=") }, { it.substringAfter("=", "") })
 }
 
 

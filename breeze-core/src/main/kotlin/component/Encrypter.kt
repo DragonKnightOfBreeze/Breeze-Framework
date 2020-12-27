@@ -19,27 +19,27 @@ interface Encrypter {
 	/**
 	 * 加密指定的字节数组。
 	 */
-	fun encrypt(value:ByteArray,secret:ByteArray? = null):ByteArray
+	fun encrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
 
 	/**
 	 * 解密指定的字节数组。某些加密算法可能不支持解密。
 	 */
-	fun decrypt(value:ByteArray,secret:ByteArray? = null):ByteArray
+	fun decrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
 
 	//region Default Encrypters
 	/**
 	 * 基于密码器的加密器。支持解密。需要指定密钥。
 	 */
 	open class CipherEncrypter(
-		val transformation:String
-	):Encrypter{
+		val transformation: String
+	) : Encrypter {
 		private val cipher = Cipher.getInstance(transformation)
 
 		//处理字符串时，需要进行base64编码
 
 		override fun encrypt(value: ByteArray, secret: ByteArray?): ByteArray {
 			requireNotNull(secret)
-			val keySpec = SecretKeySpec(secret,transformation)
+			val keySpec = SecretKeySpec(secret, transformation)
 			//使用CBC模式时，这里需要添加额外参数
 			if("CBC" in transformation) {
 				cipher.init(Cipher.ENCRYPT_MODE, keySpec, IvParameterSpec(secret))
@@ -67,21 +67,21 @@ interface Encrypter {
 	 *
 	 * @see CipherEncrypter
 	 */
-	object DesEncrypter:CipherEncrypter("DES")
+	object DesEncrypter : CipherEncrypter("DES")
 
 	/**
 	 * 基于AES加密算法的加密器。使用16字节的密钥。
 	 *
 	 * @see CipherEncrypter
 	 */
-	object AesEncrypter:CipherEncrypter("AES")
+	object AesEncrypter : CipherEncrypter("AES")
 
 	/**
 	 * 基于消息摘要的加密器。不支持解密。不需要指定密钥。
 	 */
 	open class MessageDigestEncrypter(
-		val algorithm:String
-	):Encrypter{
+		val algorithm: String
+	) : Encrypter {
 		private val messageDigest = MessageDigest.getInstance(algorithm)
 
 		override fun encrypt(value: ByteArray, secret: ByteArray?): ByteArray {
@@ -98,47 +98,47 @@ interface Encrypter {
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Md5Encrypter:MessageDigestEncrypter("MD5")
+	object Md5Encrypter : MessageDigestEncrypter("MD5")
 
 	/**
 	 * 基于SHA-1加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha1Encrypter:MessageDigestEncrypter("SHA-1")
+	object Sha1Encrypter : MessageDigestEncrypter("SHA-1")
 
 	/**
 	 * 基于SHA-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha256Encrypter:MessageDigestEncrypter("SHA-256")
+	object Sha256Encrypter : MessageDigestEncrypter("SHA-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha512Encrypter:MessageDigestEncrypter("SHA3-512")
+	object Sha512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	/**
 	 * 基于SHA3-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3256Encrypter:MessageDigestEncrypter("SHA3-256")
+	object Sha3256Encrypter : MessageDigestEncrypter("SHA3-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3512Encrypter:MessageDigestEncrypter("SHA3-512")
+	object Sha3512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	//TODO 数字签名
 	//endregion
 
-	companion object{
+	companion object {
 		private val encrypters = mutableListOf<Encrypter>()
 
 		/**
@@ -151,7 +151,7 @@ interface Encrypter {
 		/**
 		 * 注册指定的加密器。
 		 */
-		@JvmStatic fun register(encrypter: Encrypter){
+		@JvmStatic fun register(encrypter: Encrypter) {
 			encrypters.add(encrypter)
 		}
 
@@ -159,7 +159,7 @@ interface Encrypter {
 			registerDefaultEncrypters()
 		}
 
-		private fun registerDefaultEncrypters(){
+		private fun registerDefaultEncrypters() {
 			register(DesEncrypter)
 			register(AesEncrypter)
 			register(Md5Encrypter)

@@ -658,9 +658,9 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 	val result = mutableListOf<T>()
 	var nextResult = this
 	//递归进行操作，直到结果中不再有数据
-	while(nextResult.any()){
+	while(nextResult.any()) {
 		result += nextResult
-		nextResult = nextResult.flatMap { e->
+		nextResult = nextResult.flatMap { e ->
 			val r = operation(e)
 			//如果进行操作后得到的结果只有1个且与原元素相等，则跳过
 			if(r.singleOrNull() != e) r else emptyList()
@@ -673,11 +673,11 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
  * 根据指定的预测，将当前集合中的符合条件的元素，依次固定到指定的索引处。默认固定到列表最前面。
  */
 @UnstableApi
-inline fun <T> Iterable<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
+inline fun <T> Iterable<T>.pin(index: Int = 0, predicate: (T) -> Boolean): List<T> {
 	val result = mutableListOf<T>()
 	var i = index
 	for(e in this) {
-		if(predicate(e)) result.add(i++,e) else result.add(e)
+		if(predicate(e)) result.add(i++, e) else result.add(e)
 	}
 	return result
 }
@@ -686,7 +686,7 @@ inline fun <T> Iterable<T>.pin(index:Int = 0,predicate:(T)->Boolean) :List<T>{
  * 根据指定的一组键以及键选择器，选择当前集合中的元素，返回选择后的元素的列表。保持原有顺序，并覆盖先选择的元素。
  */
 @UnstableApi
-inline fun <T,K> Iterable<T>.select(vararg keys:K,keySelector:(T)->K):List<T>{
+inline fun <T, K> Iterable<T>.select(vararg keys: K, keySelector: (T) -> K): List<T> {
 	val result = ArrayList<T>(keys.size)
 	for(e in this) {
 		val keyIndex = keys.indexOf(keySelector(e))
@@ -780,7 +780,7 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 /**
  * 将当前对象转化为单例列表。
  */
- fun <T> T.toSingletonList(): List<T> {
+fun <T> T.toSingletonList(): List<T> {
 	return Collections.singletonList(this)
 }
 
@@ -794,8 +794,8 @@ fun <T> T.toSingletonSet(): Set<T> {
 /**
  * 将当前二元素元组转化为单例映射。
  */
-fun <K,V> Pair<K,V>.toSingletonMap():Map<K,V>{
-	return Collections.singletonMap(first,second)
+fun <K, V> Pair<K, V>.toSingletonMap(): Map<K, V> {
+	return Collections.singletonMap(first, second)
 }
 
 

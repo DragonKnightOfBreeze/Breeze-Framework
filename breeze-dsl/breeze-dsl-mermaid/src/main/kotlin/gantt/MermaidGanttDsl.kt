@@ -22,7 +22,7 @@ interface MermaidGanttDsl {
 
 		override fun toString(): String {
 			val contentSnippet = arrayOf(title, dateFormat, toContentString()).joinToText("\n\n")
-				.let{if(indentContent) it.prependIndent(indent) else it}
+				.let { if(indentContent) it.prependIndent(indent) else it }
 			return "gantt\n$contentSnippet"
 		}
 	}
@@ -87,9 +87,9 @@ interface MermaidGanttDsl {
 		override val id: String get() = name
 
 		override fun toString(): String {
-			return when{
+			return when {
 				tasks.isEmpty() -> "section $name"
-				else ->  "section $name\n${tasks.joinToText("\n").let{if(indentContent) it.prependIndent(indent) else it}}"
+				else -> "section $name\n${tasks.joinToText("\n").let { if(indentContent) it.prependIndent(indent) else it }}"
 			}
 		}
 	}

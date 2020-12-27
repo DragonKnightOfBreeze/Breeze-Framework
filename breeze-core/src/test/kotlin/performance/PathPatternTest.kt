@@ -113,7 +113,7 @@ class PathPatternTest {
 		val lastPathIndex = path.lastIndex
 		while(valueIndex <= lastValueIndex && pathIndex <= lastPathIndex) {
 			//如果path遍历到下一个'/'并且之后是'{'处，则需要跳到'/'并且之前必须是'}'处，此时value要遍历到下一个'/'处
-			if(path[pathIndex] == delimiter &&  (pathIndex < lastPathIndex && path[pathIndex +1] == variablePrefix)) {
+			if(path[pathIndex] == delimiter && (pathIndex < lastPathIndex && path[pathIndex + 1] == variablePrefix)) {
 				do valueIndex++ while(valueIndex <= lastValueIndex && value[valueIndex] != delimiter)
 				do pathIndex++ while(pathIndex <= lastPathIndex && path[pathIndex] != delimiter)
 				if(variableSuffix != null && path[pathIndex - 1] != variableSuffix) throw IllegalArgumentException()
@@ -134,8 +134,8 @@ class PathPatternTest {
 	fun matchesByVsMatchesTest() {
 		val n = 1000000
 		val executor = Executors.newFixedThreadPool(3)
-		val f1 = executor.submit(Callable { measureNanoTime { repeat(n){"/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathPattern.AntPath)} } })
-		val f2 = executor.submit(Callable { measureNanoTime { repeat(n){"/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex())} } })
+		val f1 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathPattern.AntPath) } } })
+		val f2 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()) } } })
 
 		println("/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathPattern.AntPath))
 		println("/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()))

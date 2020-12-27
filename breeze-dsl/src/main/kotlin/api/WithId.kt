@@ -9,6 +9,6 @@ package com.windea.breezeframework.dsl.api
  */
 @DslApiMarker
 interface WithId {
-	val id:String
+	val id: String
 }
 

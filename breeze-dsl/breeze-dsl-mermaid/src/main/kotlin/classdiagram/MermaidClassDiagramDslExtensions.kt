@@ -6,6 +6,7 @@
 package com.windea.breezeframework.dsl.mermaid.classdiagram
 
 import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDsl.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDsl.Annotation
 
 /**
  * 开始构建[MermaidClassDiagramDsl]。

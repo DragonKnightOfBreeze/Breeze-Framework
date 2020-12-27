@@ -4,10 +4,7 @@
 package com.windea.breezeframework.dsl.cmdtext
 
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 @CmdTextDslMarker
@@ -29,7 +26,7 @@ interface CmdTextDsl {
 	@CmdTextDslMarker
 	abstract class RichText : InlineDslElement {
 		abstract val text: CharSequence
-		abstract val code:String
+		abstract val code: String
 		override val inlineText get() = text
 
 		//linux使用echo命令输出时需要加上-e参数，windows不能直接通过echo命令输出
@@ -37,7 +34,7 @@ interface CmdTextDsl {
 		//windows: "\u001B[${code}m${text}\u001B[0m"
 
 		override fun toString(): String {
-			return when{
+			return when {
 				isWindowsOsType -> "\u001B[${code}m${text}\u001B[0m"
 				else -> "\u001B[${code}m${text}\u001B[0m"
 			}
@@ -78,21 +75,21 @@ interface CmdTextDsl {
 	class ColoredText @PublishedApi internal constructor(
 		override val text: CharSequence, val color: Color
 	) : RichText() {
-		override val code =color.code.toString()
+		override val code = color.code.toString()
 	}
 
 	@CmdTextDslMarker
 	class BgColoredText @PublishedApi internal constructor(
 		override val text: CharSequence, val color: Color,
 	) : RichText() {
-		override val code =(color.code + 10).toString()
+		override val code = (color.code + 10).toString()
 	}
 
 	@CmdTextDslMarker
 	class StyledText @PublishedApi internal constructor(
 		override val text: CharSequence, vararg val styles: Style,
 	) : RichText() {
-		override val code =styles.joinToString(";") { it.code.toString() }
+		override val code = styles.joinToString(";") { it.code.toString() }
 	}
 
 	@CmdTextDslMarker
@@ -127,6 +124,6 @@ interface CmdTextDsl {
 	}
 
 	companion object {
-		private val isWindowsOsType = System.getProperty("os.name").contains("windows",true)
+		private val isWindowsOsType = System.getProperty("os.name").contains("windows", true)
 	}
 }

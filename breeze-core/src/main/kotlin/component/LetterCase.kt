@@ -16,7 +16,7 @@ interface LetterCase {
 	/**
 	 * 判断指定的字符串是否匹配指定的单词格式。
 	 */
-	fun matches(value:String):Boolean
+	fun matches(value: String): Boolean
 
 	/**
 	 * 基于单词格式，分割字符串。
@@ -306,7 +306,7 @@ interface LetterCase {
 	 *
 	 * 示例：`linux/path`
 	 */
-	object LinuxPath: LetterCase {
+	object LinuxPath : LetterCase {
 		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
@@ -321,7 +321,7 @@ interface LetterCase {
 	 *
 	 * 示例：`windows\path`
 	 */
-	object WindowsPath: LetterCase {
+	object WindowsPath : LetterCase {
 		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')
@@ -338,7 +338,7 @@ interface LetterCase {
 		/**
 		 * 得到已注册的单词格式列表。
 		 */
-		@JvmStatic fun values():List<LetterCase>{
+		@JvmStatic fun values(): List<LetterCase> {
 			return letterCases
 		}
 
@@ -404,7 +404,7 @@ interface LetterCase {
 			register(HyphenWords)
 		}
 
-		private fun registerPathLikeLetterCases(){
+		private fun registerPathLikeLetterCases() {
 			register(ReferencePath)
 			register(LinuxPath)
 			register(WindowsPath)

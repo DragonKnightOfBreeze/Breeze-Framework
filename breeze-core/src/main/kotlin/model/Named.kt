@@ -8,6 +8,6 @@ package com.windea.breezeframework.core.model
  *
  * @property name 名字。
  */
-interface Named<T:CharSequence> {
-	val name:T
+interface Named<T : CharSequence> {
+	val name: T
 }

@@ -22,7 +22,7 @@ interface MermaidSequenceDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "sequenceDiagram\n$contentSnippet"
 		}
 	}
@@ -149,7 +149,7 @@ interface MermaidSequenceDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			return "$type $text\n$contentSnippet\nend"
 		}
 	}
@@ -181,7 +181,7 @@ interface MermaidSequenceDiagramDsl {
 		val elseScopes: MutableList<Else> = mutableListOf()
 
 		override fun toString(): String {
-			val contentSnippet = toContentString().let{if(indentContent) it.prependIndent(indent) else it}
+			val contentSnippet = toContentString().let { if(indentContent) it.prependIndent(indent) else it }
 			val elseScopesSnippet = elseScopes.joinToText("\n", "\n")
 			return "$contentSnippet$elseScopesSnippet"
 		}
