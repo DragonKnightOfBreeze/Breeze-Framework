@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("unused")
+@file:JvmName("CreoleDslExtensions")
 
 package com.windea.breezeframework.dsl.creole
 
@@ -12,18 +12,17 @@ import com.windea.breezeframework.dsl.creole.CreoleDsl.List
  * 开始构建[CreoleDsl]。
  */
 @CreoleDslMarker
-inline fun creoleDsl(block: Document.() -> Unit): Document {
-	return Document().apply(block)
+inline fun creoleDsl(block: DslDocument.() -> Unit): DslDocument {
+	return DslDocument().apply(block)
 }
 
 /**
  * 配置[CreoleDsl]。
  */
 @CreoleDslMarker
-inline fun creoleDslConfig(block: Config.() -> Unit) {
-	Config.block()
+inline fun creoleDslConfig(block: DslConfig.() -> Unit) {
+	DslConfig.block()
 }
-
 
 /**
  * 创建一个[CreoleDsl.UnicodeText]。
@@ -253,7 +252,7 @@ infix fun Table.columnSize(size: Int): Table {
  * 创建一个[CreoleDsl.TableColumn]并注册。
  */
 @CreoleDslMarker
-fun TableHeader.column(text: String = Config.emptyColumnText): TableColumn {
+fun TableHeader.column(text: String = DslConfig.emptyColumnText): TableColumn {
 	return TableColumn(text).also { columns += it }
 }
 
@@ -261,7 +260,7 @@ fun TableHeader.column(text: String = Config.emptyColumnText): TableColumn {
  * 创建一个[CreoleDsl.TableColumn]并注册。
  */
 @CreoleDslMarker
-fun TableRow.column(text: String = Config.emptyColumnText): TableColumn {
+fun TableRow.column(text: String = DslConfig.emptyColumnText): TableColumn {
 	return TableColumn(text).also { columns += it }
 }
 

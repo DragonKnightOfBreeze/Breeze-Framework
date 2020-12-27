@@ -4,11 +4,12 @@
 package com.windea.breezeframework.dsl.criticmarkup
 
 import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 interface CriticMarkupDsl {
 	@CriticMarkupDslMarker
-	class Document @PublishedApi internal constructor() : DslDocument, InlineDslEntry {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument, InlineDslEntry {
 		var text: CharSequence = ""
 		override val inlineText: CharSequence get() = text
 
@@ -16,7 +17,7 @@ interface CriticMarkupDsl {
 	}
 
 	@CriticMarkupDslMarker
-	interface InlineDslElement : DslElement, Inlineable
+	interface InlineDslElement : IDslElement, Inlineable
 
 	@CriticMarkupDslMarker
 	interface InlineDslEntry : Inlineable
@@ -34,9 +35,7 @@ interface CriticMarkupDsl {
 		override fun toString() = "{--$text--}"
 	}
 
-	class Substitution @PublishedApi internal constructor(
-		override val text: CharSequence, val newText: CharSequence,
-	) : Mark() {
+	class Substitution @PublishedApi internal constructor(override val text: CharSequence, val newText: CharSequence) : Mark() {
 		override fun toString() = "{~~$text~>$newText~~}"
 	}
 

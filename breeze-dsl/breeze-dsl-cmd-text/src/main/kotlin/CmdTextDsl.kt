@@ -5,11 +5,13 @@ package com.windea.breezeframework.dsl.cmdtext
 
 import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 @CmdTextDslMarker
 interface CmdTextDsl {
 	@CmdTextDslMarker
-	class Document @PublishedApi internal constructor() : DslDocument, InlineDslEntry {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument, InlineDslEntry {
 		var text: CharSequence = ""
 		override val inlineText: CharSequence get() = text
 
@@ -17,7 +19,7 @@ interface CmdTextDsl {
 	}
 
 	@CmdTextDslMarker
-	interface InlineDslElement : DslElement, Inlineable
+	interface InlineDslElement : IDslElement, Inlineable
 
 	@CmdTextDslMarker
 	interface InlineDslEntry : Inlineable

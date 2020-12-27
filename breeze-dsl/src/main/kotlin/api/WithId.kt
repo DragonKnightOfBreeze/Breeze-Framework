@@ -4,10 +4,11 @@
 package com.windea.breezeframework.dsl.api
 
 /**
- * 可分割内容。
- * @property splitContent 是否分割内容。
+ * 带有一个可用于查询的编号。
+ * @property id 编号。（不保证唯一性）
  */
 @DslApiMarker
-interface Splitable {
-	var splitContent: Boolean
+interface WithId {
+	val id:String
 }
+

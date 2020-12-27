@@ -1,7 +1,7 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("unused")
+@file:JvmName("CmdTextDslExtensions")
 
 package com.windea.breezeframework.dsl.cmdtext
 
@@ -11,10 +11,9 @@ import com.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
  * 开始构建[CmdTextDsl]。
  */
 @CmdTextDslMarker
-inline fun cmdTextDsl(block: Document.() -> CharSequence): Document {
-	return Document().apply { text = block() }
+inline fun cmdTextDsl(block: DslDocument.() -> CharSequence): DslDocument {
+	return DslDocument().apply { text = block() }
 }
-
 
 /**
  * 创建一个[CmdTextDsl.BoldText]。

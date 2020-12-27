@@ -6,18 +6,21 @@ package com.windea.breezeframework.dsl.creole
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslConfig as IDslConfig
 
 @CreoleDslMarker
 interface CreoleDsl {
 	@CreoleDslMarker
-	class Document @PublishedApi internal constructor() : DslEntry, InlineDslEntry {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument, DslEntry, InlineDslEntry {
 		override val content: MutableList<TopDslElement> = mutableListOf()
 
 		override fun toString() = toContentString()
 	}
 
 	@CreoleDslMarker
-	object Config : DslConfig {
+	object DslConfig : IDslConfig {
 		var indent: String = "  "
 		var truncated: String = "..."
 		var doubleQuoted: Boolean = true
@@ -29,7 +32,7 @@ interface CreoleDsl {
 	}
 
 	@CreoleDslMarker
-	interface DslElement : com.windea.breezeframework.dsl.DslElement, InlineDslEntry
+	interface DslElement : IDslElement, InlineDslEntry
 
 	@CreoleDslMarker
 	interface InlineDslElement : DslElement, Inlineable
@@ -132,7 +135,7 @@ interface CreoleDsl {
 		val type: HorizontalLineType = HorizontalLineType.Normal,
 	) : TopDslElement {
 		override fun toString(): String {
-			return type.marker.repeat(Config.markerCount)
+			return type.marker.repeat(DslConfig.markerCount)
 		}
 	}
 
@@ -141,7 +144,7 @@ interface CreoleDsl {
 		val text: String, val type: HorizontalLineType = HorizontalLineType.Normal,
 	) : TopDslElement {
 		override fun toString(): String {
-			return type.marker.repeat(Config.markerCount).let { "$it$text$it" }
+			return type.marker.repeat(DslConfig.markerCount).let { "$it$text$it" }
 		}
 	}
 
@@ -183,11 +186,10 @@ interface CreoleDsl {
 	) : DslElement {
 		val nodes: MutableList<TreeNode> = mutableListOf()
 
-		override fun toString() = "|_ $text${nodes.joinToText("\n", "\n").prependIndent(Config.indent)}"
+		override fun toString() = "|_ $text${nodes.joinToText("\n", "\n").prependIndent(DslConfig.indent)}"
 	}
 
 	//DELAY pretty format
-	/**Creole表格。*/
 	@CreoleDslMarker
 	class Table @PublishedApi internal constructor() : TopDslElement {
 		var header: TableHeader = TableHeader()
@@ -207,7 +209,6 @@ interface CreoleDsl {
 		}
 	}
 
-	/**Creole表格头部。*/
 	@CreoleDslMarker
 	class TableHeader @PublishedApi internal constructor() : DslElement {
 		val columns: MutableList<TableColumn> = mutableListOf()
@@ -219,7 +220,7 @@ interface CreoleDsl {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toStringInHeader() }
-				else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, Config.emptyColumnText)
+				else -> columns.map { it.toStringInHeader() }.fillEnd(columnSize!!, DslConfig.emptyColumnText)
 			}.joinToString("|", "|", "|")
 		}
 
@@ -229,7 +230,6 @@ interface CreoleDsl {
 		infix fun TableColumn.align(alignment: TableAlignment) = apply { this.alignment = alignment }
 	}
 
-	/**Creole表格行。*/
 	@CreoleDslMarker
 	open class TableRow @PublishedApi internal constructor() : DslElement {
 		val columns: MutableList<TableColumn> = mutableListOf()
@@ -241,17 +241,16 @@ interface CreoleDsl {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-				else -> columns.map { it.toString() }.fillEnd(columnSize!!, Config.emptyColumnText)
+				else -> columns.map { it.toString() }.fillEnd(columnSize!!, DslConfig.emptyColumnText)
 			}.joinToString(" | ", "| ", " |")
 		}
 
 		operator fun String.unaryPlus() = column(this)
 	}
 
-	/**Creole表格列。*/
 	@CreoleDslMarker
 	open class TableColumn @PublishedApi internal constructor(
-		val text: String = Config.emptyColumnText,
+		val text: String = DslConfig.emptyColumnText,
 	) : DslElement {
 		var color: String? = null
 		var alignment: TableAlignment = TableAlignment.None //only for columns in table header
@@ -268,19 +267,13 @@ interface CreoleDsl {
 		}
 	}
 
-	/**Creole水平线的类型。*/
 	@CreoleDslMarker
-	enum class HorizontalLineType(
-		internal val marker: Char,
-	) {
+	enum class HorizontalLineType(val marker: Char) {
 		Normal('-'), Double('='), Strong('_'), Dotted('.')
 	}
 
-	/**Creole表格的对齐方式。*/
 	@CreoleDslMarker
-	enum class TableAlignment(
-		internal val textPair: Pair<String, String>,
-	) {
+	enum class TableAlignment(val textPair: Pair<String, String>) {
 		None("" to ""), Left("=" to ""), Center("=" to "="), Right("" to "=")
 	}
 }

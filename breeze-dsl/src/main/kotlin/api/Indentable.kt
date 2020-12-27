@@ -4,7 +4,8 @@
 package com.windea.breezeframework.dsl.api
 
 /**
- * 内容可缩进的DSL元素。
+ * 可缩进内容。
+ * @property indentContent 是否缩进内容。
  */
 @DslApiMarker
 interface Indentable {

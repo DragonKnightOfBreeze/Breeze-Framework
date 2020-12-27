@@ -459,8 +459,8 @@
   * [X] breeze-dsl-critic-markup
   * [X] breeze-dsl-creole
   * [X] breeze-dsl-markdown
-  * [ ] breeze-dsl-flow
-  * [ ] breeze-dsl-sequence
+  * [X] breeze-dsl-flow
+  * [X] breeze-dsl-sequence
   * [ ] breeze-dsl-mermaid
 
 # 长期

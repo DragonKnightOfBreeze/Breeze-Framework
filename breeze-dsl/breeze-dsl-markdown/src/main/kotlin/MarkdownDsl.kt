@@ -8,11 +8,14 @@ import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslElement as IDslElement
+import com.windea.breezeframework.dsl.DslConfig as IDslConfig
 
 @MarkdownDslMarker
 interface MarkdownDsl {
 	@MarkdownDslMarker
-	class Document @PublishedApi internal constructor() : DslDocument, DslEntry {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument, DslEntry {
 		@MarkdownDslExtendedFeature
 		var frontMatter: FrontMatter? = null
 		@MarkdownDslExtendedFeature
@@ -32,7 +35,7 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	object Config : DslConfig {
+	object DslConfig : IDslConfig {
 		var indent: String = "  "
 		var truncated: String = "..."
 		var listNodeMarker: Char = '*'
@@ -56,7 +59,7 @@ interface MarkdownDsl {
 	}
 
 	@MarkdownDslMarker
-	interface DslElement : com.windea.breezeframework.dsl.DslElement, InlineDslEntry
+	interface DslElement : IDslElement, InlineDslEntry
 
 	@MarkdownDslMarker
 	interface InlineDslElement : DslElement, Inlineable
@@ -158,7 +161,7 @@ interface MarkdownDsl {
 	open class InlineLink @PublishedApi internal constructor(
 		name: String, url: String, val title: String? = null,
 	) : Link(name, url) {
-		override val inlineText: CharSequence get() = "[$name]($url${title?.let { " ${it.quote(Config.quote)}" }.orEmpty()})"
+		override val inlineText: CharSequence get() = "[$name]($url${title?.let { " ${it.quote(DslConfig.quote)}" }.orEmpty()})"
 	}
 
 	@MarkdownDslMarker
@@ -198,7 +201,7 @@ interface MarkdownDsl {
 
 		override fun toString(): String {
 			return when {
-				text.length > Config.wrapLength -> text.let { if(wrapContent) it.chunked(Config.wrapLength).joinToString("\n") else it }
+				text.length > DslConfig.wrapLength -> text.let { if(wrapContent) it.chunked(DslConfig.wrapLength).joinToString("\n") else it }
 				else -> text
 			}
 		}
@@ -219,11 +222,11 @@ interface MarkdownDsl {
 		@MarkdownDslExtendedFeature
 		override fun toString(): String {
 			val textSnippet = when {
-				text.length > Config.wrapLength -> text.let { if(wrapContent) it.chunked(Config.wrapLength).joinToText("\n") else it }
+				text.length > DslConfig.wrapLength -> text.let { if(wrapContent) it.chunked(DslConfig.wrapLength).joinToText("\n") else it }
 				else -> text
 			}
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val suffixMarkers = (if(headingLevel == 1) "=" else "-").repeat(Config.markerCount)
+			val suffixMarkers = (if(headingLevel == 1) "=" else "-").repeat(DslConfig.markerCount)
 			return "$textSnippet$attributesSnippet\n$suffixMarkers"
 		}
 	}
@@ -239,12 +242,12 @@ interface MarkdownDsl {
 		override fun toString(): String {
 			val indent = " " * (headingLevel + 1)
 			val prefixMarkers = "#" * headingLevel
-			val textSnippet = if(text.length > Config.wrapLength)
-				text.let { if(wrapContent) it.chunked(Config.wrapLength).joinToText("\n") else it }
+			val textSnippet = if(text.length > DslConfig.wrapLength)
+				text.let { if(wrapContent) it.chunked(DslConfig.wrapLength).joinToText("\n") else it }
 					.prependIndent(indent).setPrefix(prefixMarkers)
 			else text
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val suffixMarkers = if(Config.addPrefixHeadingMarkers) " $prefixMarkers" else ""
+			val suffixMarkers = if(DslConfig.addPrefixHeadingMarkers) " $prefixMarkers" else ""
 			return "$textSnippet$attributesSnippet$suffixMarkers"
 		}
 	}
@@ -269,7 +272,7 @@ interface MarkdownDsl {
 
 	@MarkdownDslMarker
 	object HorizontalLine : TopDslElement {
-		override fun toString() = Config.horizontalLineMarkers
+		override fun toString() = DslConfig.horizontalLineMarkers
 	}
 
 	@MarkdownDslMarker
@@ -290,8 +293,8 @@ interface MarkdownDsl {
 		override fun toString(): String {
 			val indent = " " * (prefixMarkers.length + 1)
 			val textSnippet = when {
-				text.length > Config.wrapLength -> text.let {
-					if(wrapContent) it.chunked(Config.wrapLength).joinToText("\n") else it
+				text.length > DslConfig.wrapLength -> text.let {
+					if(wrapContent) it.chunked(DslConfig.wrapLength).joinToText("\n") else it
 				}.prependIndent(indent).setPrefix(prefixMarkers)
 				else -> text
 			}
@@ -308,12 +311,12 @@ interface MarkdownDsl {
 	@MarkdownDslMarker
 	class UnorderedListNode @PublishedApi internal constructor(
 		text: String,
-	) : ListNode(Config.listNodeMarker.toString(), text)
+	) : ListNode(DslConfig.listNodeMarker.toString(), text)
 
 	@MarkdownDslMarker
 	class TaskListNode @PublishedApi internal constructor(
 		val isCompleted: Boolean, text: String,
-	) : ListNode("${Config.listNodeMarker} [${if(isCompleted) "X" else " "}]", text)
+	) : ListNode("${DslConfig.listNodeMarker} [${if(isCompleted) "X" else " "}]", text)
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
@@ -327,8 +330,8 @@ interface MarkdownDsl {
 		override fun toString(): String {
 			require(nodes.isNotEmpty()) { "Definition node size must be positive." }
 
-			val titleSnippet = if(title.length > Config.wrapLength)
-				title.let { if(wrapContent) it.chunked(Config.wrapLength).joinToText("\n") else it }
+			val titleSnippet = if(title.length > DslConfig.wrapLength)
+				title.let { if(wrapContent) it.chunked(DslConfig.wrapLength).joinToText("\n") else it }
 			else title
 			val nodesSnippet = nodes.joinToText("\n")
 			return "$titleSnippet\n$nodesSnippet"
@@ -343,9 +346,9 @@ interface MarkdownDsl {
 		override var wrapContent: Boolean = true
 
 		override fun toString(): String {
-			return if(text.length > Config.wrapLength)
-				text.let { if(wrapContent) it.chunked(Config.wrapLength).joinToText("\n") else it }
-					.prependIndent(Config.indent).setPrefix(":")
+			return if(text.length > DslConfig.wrapLength)
+				text.let { if(wrapContent) it.chunked(DslConfig.wrapLength).joinToText("\n") else it }
+					.prependIndent(DslConfig.indent).setPrefix(":")
 			else text
 		}
 	}
@@ -384,7 +387,7 @@ interface MarkdownDsl {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-				else -> columns.map { it.toString() }.fillEnd(columnSize!!, Config.emptyColumnText)
+				else -> columns.map { it.toString() }.fillEnd(columnSize!!, DslConfig.emptyColumnText)
 			}.joinToString(" | ", "| ", " |")
 		}
 
@@ -414,7 +417,7 @@ interface MarkdownDsl {
 			//actual column size may not equal to columns.size
 			return when {
 				columnSize == null || columnSize == columns.size -> columns.map { it.toString() }
-				else -> columns.map { it.toString() }.fillEnd(columnSize!!, Config.emptyColumnText)
+				else -> columns.map { it.toString() }.fillEnd(columnSize!!, DslConfig.emptyColumnText)
 			}.joinToString(" | ", "| ", " |")
 		}
 
@@ -423,7 +426,7 @@ interface MarkdownDsl {
 
 	@MarkdownDslMarker
 	class TableColumn @PublishedApi internal constructor(
-		val text: String = Config.emptyColumnText,
+		val text: String = DslConfig.emptyColumnText,
 	) : DslElement {
 		var alignment: TableAlignment = TableAlignment.None //only for columns in table header
 
@@ -433,7 +436,7 @@ interface MarkdownDsl {
 
 		fun toDelimitersString(): String {
 			val (l, r) = alignment.textPair
-			return "$l${" " * (Config.emptyColumnLength - 2)}$r"
+			return "$l${" " * (DslConfig.emptyColumnLength - 2)}$r"
 		}
 	}
 
@@ -482,7 +485,7 @@ interface MarkdownDsl {
 
 		@MarkdownDslExtendedFeature
 		override fun toString(): String {
-			val markersSnippet = Config.horizontalLineMarkers
+			val markersSnippet = DslConfig.horizontalLineMarkers
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
 			return "$markersSnippet$language$attributesSnippet\n$code\n$markersSnippet"
 		}
@@ -520,8 +523,8 @@ interface MarkdownDsl {
 		override fun toString(): String {
 			require(content.isNotEmpty()) { "Alert box content must not be empty." }
 
-			val titleSnippet = title.quote(Config.quote)
-			val contentSnippet = toContentString().prependIndent(Config.indent)
+			val titleSnippet = title.quote(DslConfig.quote)
+			val contentSnippet = toContentString().prependIndent(DslConfig.indent)
 			return "${type.text} ${qualifier.text} $titleSnippet\n$contentSnippet"
 		}
 	}
@@ -557,7 +560,7 @@ interface MarkdownDsl {
 
 		override fun toString(): String {
 			val attributesSnippet = attributes?.let { " $it" }.orEmpty()
-			val urlSnippet = url.quote(Config.quote)
+			val urlSnippet = url.quote(DslConfig.quote)
 			return "@import $urlSnippet$attributesSnippet"
 		}
 	}
@@ -634,7 +637,7 @@ interface MarkdownDsl {
 		override fun hashCode() = hashCodeBy(this) { arrayOf(id) }
 
 		override fun toString(): String {
-			val titleSnippet = title?.let { " ${it.quote(Config.quote)}" }.orEmpty()
+			val titleSnippet = title?.let { " ${it.quote(DslConfig.quote)}" }.orEmpty()
 			return "[$reference]: $url$titleSnippet"
 		}
 	}
@@ -669,30 +672,24 @@ interface MarkdownDsl {
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
 	 class PropertyAttribute(val pair: Pair<String, String>) : Attribute {
-		override val inlineText: String get() = "${pair.first}=${pair.second.quote(Config.quote)}"
+		override val inlineText: String get() = "${pair.first}=${pair.second.quote(DslConfig.quote)}"
 		override fun toString() = inlineText
 	}
 
 	@MarkdownDslMarker
-	enum class TableAlignment(
-		internal val textPair: Pair<String, String>,
-	) {
+	enum class TableAlignment(val textPair: Pair<String, String>) {
 		None("-" to "-"), Left(":" to "-"), Center(":" to ":"), Right("-" to ":")
 	}
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
-	enum class AdmonitionType(
-		internal val text: String,
-	) {
+	enum class AdmonitionType(val text: String) {
 		Normal("!!!"), Collapsed("???"), Opened("!!!+")
 	}
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature
-	enum class AdmonitionQualifier(
-		internal val style: String, internal val text: String,
-	) {
+	enum class AdmonitionQualifier(val style: String, val text: String) {
 		Abstract("abstract", "abstract"), Summary("abstract", "summary"), Tldr("abstract", "tldr"),
 		Bug("bug", "bug"),
 		Danger("danger", "danger"), Error("danger", "error"),
