@@ -5,6 +5,7 @@
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
 基于Kotlin的整合代码框架。
+
 为标准库和部分框架提供各种有用的扩展。
 
 注意：
@@ -22,16 +23,19 @@
 ## breeze-dsl
 
 提供简洁而灵活的dsl api，用于通过代码生成标记语言的文本。
+
 可以进行充分的配置。
 
 ## breeze-functional
 
 为函数式编程中提供工具和扩展。
+
 支持0到11个参数的函数。
 
 ## breeze-http
 
 提供简洁而直观的http api，基于Java原生的http api，用于发起http请求。
+
 可以进行充分的配置。
 
 ## breeze-javafx
@@ -49,6 +53,7 @@
 ## breeze-serialization
 
 提供简洁而统一的序列化器api，基于第三方库，用于进行数据的序列化与反序列化。
+
 可以进行充分的配置。
 
 ## breeze-spring-boot

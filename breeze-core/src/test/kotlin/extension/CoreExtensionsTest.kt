@@ -32,14 +32,14 @@ class CoreExtensionsTest {
 	fun nearestLogger() {
 	}
 
-	@ExperimentalContracts
-	@Test
-	fun onceTest() {
-		//a, a
-		once { println("a") }
-		once { println("b") }
-		once { println("c") }
-		once(true) { println("a") }
-		once { println("b") }
-	}
+	//@ExperimentalContracts
+	//@Test
+	//fun onceTest() {
+	//	//a, a
+	//	once { println("a") }
+	//	once { println("b") }
+	//	once { println("c") }
+	//	once(true) { println("a") }
+	//	once { println("b") }
+	//}
 }
