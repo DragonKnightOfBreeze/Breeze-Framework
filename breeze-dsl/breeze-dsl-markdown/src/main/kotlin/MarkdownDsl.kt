@@ -9,8 +9,9 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import org.intellij.lang.annotations.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslElement as IDslElement
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 @MarkdownDslMarker
 interface MarkdownDsl {
@@ -54,9 +55,19 @@ interface MarkdownDsl {
 		val emptyColumnSeparatorText: String = "-".repeat(emptyColumnLength)
 	}
 
-	companion object {
-		internal fun heading(text: String, headingLevel: Int) = "${"#".repeat(headingLevel)} $text"
+	@MarkdownDslMarker
+	interface DslEntry:IDslEntry {
+		val content: MutableList<TopDslElement>
+
+		override fun toContentString(): String {
+			return content.joinToText("\n\n")
+		}
+
+		operator fun String.unaryPlus() = TextBlock(this).also { content += it }
 	}
+
+	@MarkdownDslMarker
+	interface InlineDslEntry:IDslEntry
 
 	@MarkdownDslMarker
 	interface DslElement : IDslElement, InlineDslEntry
@@ -66,20 +77,6 @@ interface MarkdownDsl {
 
 	@MarkdownDslMarker
 	interface TopDslElement : DslElement
-
-	@MarkdownDslMarker
-	interface DslEntry {
-		val content: MutableList<TopDslElement>
-
-		fun toContentString(): String {
-			return content.joinToText("\n\n")
-		}
-
-		operator fun String.unaryPlus() = TextBlock(this).also { content += it }
-	}
-
-	@MarkdownDslMarker
-	interface InlineDslEntry
 
 	@MarkdownDslMarker
 	@MarkdownDslExtendedFeature

@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.mermaid.sequencediagram
 
 /**
- * DslDocument marker of [MermaidSequenceDiagramDsl].
+ * [MermaidSequenceDiagramDsl]的标记注解。参见：[Mermaid Sequence Diagram](https://mermaidjs.github.io/#/sequenceDiagram)
  */
 @DslMarker
 @MustBeDocumented

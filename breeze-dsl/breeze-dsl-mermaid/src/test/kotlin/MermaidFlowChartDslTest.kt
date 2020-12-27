@@ -1,8 +1,8 @@
 package com.windea.breezeframework.dsl.mermaid
 
 import com.windea.breezeframework.dsl.mermaid.flowchart.*
-import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDslDefinitions.ArrowShape.*
-import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDslDefinitions.Direction.*
+import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDsl.ArrowShape.*
+import com.windea.breezeframework.dsl.mermaid.flowchart.MermaidFlowChartDsl.Direction.*
 import kotlin.system.*
 import kotlin.test.*
 

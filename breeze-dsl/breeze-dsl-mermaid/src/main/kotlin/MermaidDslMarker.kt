@@ -3,7 +3,9 @@
 
 package com.windea.breezeframework.dsl.mermaid
 
-/**Mermaid领域特定语言。*/
+/**
+ * [MermaidDsl]的标记注解。参见：[Mermaid](https://mermaidjs.github.io)
+ */
 @DslMarker
 @MustBeDocumented
 annotation class MermaidDslMarker

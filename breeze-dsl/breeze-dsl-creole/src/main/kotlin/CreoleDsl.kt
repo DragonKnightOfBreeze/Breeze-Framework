@@ -7,8 +7,9 @@ import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslElement as IDslElement
 import com.windea.breezeframework.dsl.DslConfig as IDslConfig
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 @CreoleDslMarker
 interface CreoleDsl {
@@ -32,6 +33,18 @@ interface CreoleDsl {
 	}
 
 	@CreoleDslMarker
+	interface DslEntry:IDslEntry {
+		val content: MutableList<TopDslElement>
+
+		override fun toContentString() = content.joinToString("\n\n")
+
+		operator fun String.unaryPlus() = textBlock { this }
+	}
+
+	@CreoleDslMarker
+	interface InlineDslEntry:IDslEntry
+
+	@CreoleDslMarker
 	interface DslElement : IDslElement, InlineDslEntry
 
 	@CreoleDslMarker
@@ -39,18 +52,6 @@ interface CreoleDsl {
 
 	@CreoleDslMarker
 	interface TopDslElement : DslElement
-
-	@CreoleDslMarker
-	interface DslEntry {
-		val content: MutableList<TopDslElement>
-
-		fun toContentString() = content.joinToString("\n\n")
-
-		operator fun String.unaryPlus() = textBlock { this }
-	}
-
-	@CreoleDslMarker
-	interface InlineDslEntry
 
 	@CreoleDslMarker
 	abstract class RichText : InlineDslElement {

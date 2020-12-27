@@ -1,65 +1,93 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("unused")
+@file:JvmName("MermaidStateDiagramDslExtensions")
 
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
 import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.statediagram.MermaidStateDiagramDslDefinitions.*
+import com.windea.breezeframework.dsl.mermaid.statediagram.MermaidStateDiagramDsl.*
+
+/**
+ * 开始构建[MermaidStateDiagramDsl]。
+ */
+@MermaidStateDiagramDslMarker
+inline fun mermaidStateDiagramDsl(block: DslDocument.() -> Unit): DslDocument {
+	return DslDocument().apply(block)
+}
 
 @MermaidStateDiagramDslMarker
-inline fun mermaidStateDiagramDsl(block: MermaidStateDiagramDsl.() -> Unit) = MermaidStateDiagramDsl().apply(block)
-
-
-@MermaidStateDiagramDslMarker
-fun IDslEntry.initState() = "[*]"
+fun DslEntry.initState(): String {
+	return "[*]"
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.finishState() = "[*]"
+fun DslEntry.finishState(): String {
+	return "[*]"
+}
 
 @MermaidStateDiagramDslMarker
-@MermaidExtendedFeature
-fun IDslEntry.anyState() = "<Any State>"
+@MermaidDslExtendedFeature
+fun DslEntry.anyState(): String {
+	return "<Any State>"
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.leftOf(stateName: String) = NoteLocation(NotePosition.LeftOf, stateName)
+fun DslEntry.leftOf(stateName: String): NoteLocation {
+	return NoteLocation(NotePosition.LeftOf, stateName)
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.rightOf(stateName: String) = NoteLocation(NotePosition.RightOf, stateName)
+fun DslEntry.rightOf(stateName: String): NoteLocation {
+	return NoteLocation(NotePosition.RightOf, stateName)
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.state(name: String) = SimpleState(name).also { states += it }
+fun DslEntry.state(name: String): SimpleState {
+	return SimpleState(name).also { states += it }
+}
 
 @MermaidStateDiagramDslMarker
-inline fun IDslEntry.compositedState(
-	name: String,
-	block: CompositedState.() -> Unit,
-) = CompositedState(name).apply(block).also { states += it }
+inline fun DslEntry.compositedState(name: String, block: CompositedState.() -> Unit): CompositedState {
+	return CompositedState(name).apply(block).also { states += it }
+}
 
 @MermaidStateDiagramDslMarker
-inline fun IDslEntry.concurrentState(
-	name: String,
-	block: ConcurrentState.() -> Unit,
-) = ConcurrentState(name).apply(block).also { states += it }
+inline fun DslEntry.concurrentState(name: String, block: ConcurrentState.() -> Unit): ConcurrentState {
+	return ConcurrentState(name).apply(block).also { states += it }
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.transition(fromStateId: String, toStateId: String) = Transition(fromStateId, toStateId).also { links += it }
+fun DslEntry.transition(fromStateId: String, toStateId: String): Transition {
+	return Transition(fromStateId, toStateId).also { links += it }
+}
 
 @MermaidStateDiagramDslMarker
-fun IDslEntry.note(location: NoteLocation, text: String = "") = Note(location, text).also { notes += it }
+fun DslEntry.note(location: NoteLocation, text: String = ""): Note {
+	return Note(location, text).also { notes += it }
+}
 
 @MermaidStateDiagramDslMarker
-infix fun State.text(text: String) = apply { this.text = text }
+infix fun State.text(text: String): State {
+	return apply { this.text = text }
+}
 
 @MermaidStateDiagramDslMarker
-infix fun SimpleState.type(type: StateType) = apply { this.type = type }
+infix fun SimpleState.type(type: StateType): SimpleState {
+	return apply { this.type = type }
+}
 
 @MermaidStateDiagramDslMarker
-inline fun ConcurrentState.section(block: ConcurrentSection.() -> Unit) = ConcurrentSection().apply(block).also { sections += it }
+inline fun ConcurrentState.section(block: ConcurrentSection.() -> Unit): ConcurrentSection {
+	return ConcurrentSection().apply(block).also { sections += it }
+}
 
 @MermaidStateDiagramDslMarker
-infix fun Transition.text(text: String) = apply { this.text = text }
+infix fun Transition.text(text: String): Transition {
+	return apply { this.text = text }
+}
 
 @MermaidStateDiagramDslMarker
-infix fun Note.text(text: String) = apply { this.text = text }
+infix fun Note.text(text: String): Note {
+	return apply { this.text = text }
+}

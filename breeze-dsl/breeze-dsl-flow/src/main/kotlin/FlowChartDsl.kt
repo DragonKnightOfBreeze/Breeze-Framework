@@ -8,6 +8,8 @@ import com.windea.breezeframework.dsl.*
 import com.windea.breezeframework.dsl.api.*
 import java.util.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslConfig as IDslConfig
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 @FlowChartDslMarker
@@ -23,11 +25,11 @@ interface FlowChartDsl {
 	}
 
 	@FlowChartDslMarker
-	interface DslEntry : WithTransition<Node, Connection> {
+	interface DslEntry : IDslEntry,WithTransition<Node, Connection> {
 		val nodes: MutableSet<Node>
 		val connections: MutableList<Connection>
 
-		fun toContentString(): String {
+		override fun toContentString(): String {
 			return arrayOf(nodes.joinToText("\n"), connections.joinToText("\n")).joinToText("\n\n")
 		}
 

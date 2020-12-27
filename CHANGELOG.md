@@ -46,7 +46,7 @@
 * [X] breeze-data 代理实现`DataSerializer`的相关类
 * [X] breeze-reflect 添加`checkClassForName`方法
 * [X] breeze-core 添加核心扩展方法：`once`
- 
+
 #### 1.0.2
 
 * [X] 更新版本号
@@ -287,10 +287,10 @@
 * [X] breeze-core 为`SystemExtensions`添加`executeCommand`扩展
 * [X] breeze-core 添加一些字符串集合的特殊处理扩展
 * [X] breeze-core 重构字符串和集合类型的`repeat`相关扩展
-* [X] ~~breeze-core 从类型推断出对应的默认值。（来自guava）~~ 
+* [X] ~~breeze-core 从类型推断出对应的默认值。（来自guava）~~
 
 #### 1.0.12
- 
+
 * [X] 更新版本
 * [X] 减少项目依赖
 
@@ -305,12 +305,12 @@
 * [X] 将breeze-data重命名为breeze-serializer，并添加`kotlinx-serialization`的代理实现
 
 #### 1.0.14
- 
+
 * [X] 更新版本
 * [X] 上传到远程仓库
 
 #### 1.0.15
- 
+
 * [X] 更新版本
 * [X] breeze-core 添加`String.toCharset`扩展
 * [X] breeze-core 重构`String.toIntRange`等扩展的逻辑，为字符串、集合和数组添加更多的运算符重载扩展
@@ -321,7 +321,7 @@
 ### 1.1.x
 
 #### 1.1.0
- 
+
 * [X] 更新版本。更新Kotlin版本到1.3.70。
 * [X] breeze-core 移除集合类型的`randomOrNull`方法，其他一些更新
 * [X] breeze-core 添加`expandTo`和`expand`方法，相当于`fold`的反操作，用于根据指定的操作展开初始值，并收集展开过程中的所有项
@@ -345,7 +345,7 @@
 
 #### 1.1.1
 
-* [X] 更新版本。 
+* [X] 更新版本。
 * [X] 为集合类型添加`query`扩展（基于`deepQuery`扩展）
 * [X] 删除`breeze-dsl-json`和`breeze-dsl-yaml`
 * [X] breeze-mapper 完善代码
@@ -358,7 +358,7 @@
 * [X] 更新项目文档
 
 #### 1.1.2
- 
+
 * [X] 移除breeze-game模块（应当放到一个独立的框架中）和breeze-text模块（不是非常必要的方法）
 * [X] breeze-core 实现`toStringByReference`
 * [X] breeze-core 对字符串的多种方式的格式化方法，参数可能不确定，参考Format、MessageFormat、日志器
@@ -453,7 +453,7 @@
   * [X] 委托实现的serializer
   * [X] serializer不再作为内部类
   * [X] dataReader和dataWriter
-* [ ] breeze-dsl 重构代码
+* [X] breeze-dsl 重构代码
   * [X] breeze-dsl-xml
   * [X] breeze-dsl-cmd-text
   * [X] breeze-dsl-critic-markup
@@ -461,7 +461,7 @@
   * [X] breeze-dsl-markdown
   * [X] breeze-dsl-flow
   * [X] breeze-dsl-sequence
-  * [ ] breeze-dsl-mermaid
+  * [X] breeze-dsl-mermaid
 
 # 长期
 
@@ -471,3 +471,4 @@
 * [X] 发布项目到JCenter。（格式上存在一些问题）
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
+

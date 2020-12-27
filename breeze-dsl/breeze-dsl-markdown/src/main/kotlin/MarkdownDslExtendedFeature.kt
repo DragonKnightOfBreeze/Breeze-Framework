@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.markdown
 
 /**
- * [MarkdownDsl]的扩展特性注解。
+ * [MarkdownDsl]的扩展特性。
  */
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)

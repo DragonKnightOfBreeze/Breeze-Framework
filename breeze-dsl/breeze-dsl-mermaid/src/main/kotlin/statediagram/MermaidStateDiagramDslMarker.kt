@@ -3,9 +3,10 @@
 
 package com.windea.breezeframework.dsl.mermaid.statediagram
 
+import com.windea.breezeframework.dsl.mermaid.sequencediagram.*
+
 /**
- * Mermaid状态图的领域特定语言。
- * 参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
+ * [MermaidStateDiagramDsl]的标记注解。参见：[Mermaid State Diagram](https://mermaidjs.github.io/#/stateDiagram)
  */
 @DslMarker
 @MustBeDocumented

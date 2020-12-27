@@ -5,6 +5,8 @@ package com.windea.breezeframework.dsl.criticmarkup
 
 import com.windea.breezeframework.core.model.*
 import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslConfig as IDslConfig
+import com.windea.breezeframework.dsl.DslEntry as IDslEntry
 import com.windea.breezeframework.dsl.DslElement as IDslElement
 
 interface CriticMarkupDsl {
