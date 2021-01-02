@@ -2,7 +2,7 @@ import org.gradle.jvm.tasks.Jar
 
 //配置要用到的插件
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.4.0"
+	id("org.jetbrains.kotlin.jvm") version "1.4.10"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("org.gradle.maven-publish")
 	id("com.jfrog.bintray") version "1.8.5"
@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
 	group = "com.windea.breezeframework"
-	version = "1.2.1"
+	version = "2.0.0"
 
 	//应用插件
 	apply {
@@ -69,9 +69,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
 				)
 			}
 		}
@@ -86,9 +86,9 @@ allprojects {
 					"-Xopt-in=kotlin.RequiresOptIn",
 					"-Xopt-in=kotlin.ExperimentalStdlibApi",
 					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotations.TrickApi"
+					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
+					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
 				)
 			}
 		}

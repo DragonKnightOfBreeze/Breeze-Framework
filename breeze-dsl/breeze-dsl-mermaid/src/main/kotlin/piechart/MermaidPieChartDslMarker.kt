@@ -5,8 +5,10 @@
 
 package com.windea.breezeframework.dsl.mermaid.piechart
 
+import com.windea.breezeframework.dsl.mermaid.gantt.*
+
 /**
- * DslDocument marker of [MermaidPieChartDsl].
+ * [MermaidPieChart]的标记注解。参见：[Mermaid Pie Chart](https://mermaidjs.github.io/#/pie)
  */
 @DslMarker
 @MustBeDocumented

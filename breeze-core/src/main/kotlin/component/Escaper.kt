@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotations.*
+import com.windea.breezeframework.core.annotation.*
 
 /**
  * 转义器。
@@ -24,10 +24,12 @@ interface Escaper {
 	 */
 	fun unescape(value: String): String
 
-	companion object {
-		//不验证escapeChars和escapedStrings长度是否一致：交由底层负责
+	//region Default Escapers
+	abstract class AbstractEscaper : Escaper {
+		protected abstract val escapeChars: CharArray
+		protected abstract val escapedStrings: Array<String>
 
-		private fun escapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
+		override fun escape(value: String): String {
 			//这里直接遍历字符数组以提高性能
 			return buildString {
 				val chars = value.toCharArray()
@@ -39,7 +41,7 @@ interface Escaper {
 		}
 
 		@NotOptimized
-		private fun unescapeByPair(value: String, escapeChars: CharArray, escapedStrings: Array<String>): String {
+		override fun unescape(value: String): String {
 			var result = value
 			val size = escapeChars.size
 			for(i in 0 until size) {
@@ -47,100 +49,70 @@ interface Escaper {
 			}
 			return result
 		}
-
-		//不需要进行注册
 	}
 
-	//region Default Escapers
 	/**
 	 * Kotlin字符串的转义器。
 	 */
-	object KotlinEscaper : Escaper {
-		private val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
-		private val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"", "\\\$")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object KotlinEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
+		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"", "\\\$")
 	}
 
 	/**
 	 * Java的转义器。
 	 */
-	object JavaEscaper : Escaper {
-		private val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
-		private val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object JavaEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
+		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
 	}
 
 	/**
 	 * JavaScript的转义器。
 	 */
-	object JavaScriptEscaper : Escaper {
-		private val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
-		private val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\b", "\\'", "\\\"")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object JavaScriptEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
+		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\b", "\\'", "\\\"")
 	}
 
 	/**
 	 * Json的转义器。
 	 */
-	object JsonEscaper : Escaper {
-		private val escapeChars = charArrayOf('\t', '\b', '\n', '\r', '\"')
-		private val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\\"")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object JsonEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('\t', '\b', '\n', '\r', '\"')
+		override val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\\"")
 	}
 
 	/**
 	 * Xml的转义器。
 	 */
-	object XmlEscaper : Escaper {
-		private val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
-		private val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object XmlEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
+		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
 
 	/**
 	 * Xml属性的转义器。
 	 */
-	object XmlAttributeEscaper : Escaper {
-		private val escapeChars = charArrayOf('<', '>', '&', '\'', '\"', '\n', '\r', '\t')
-		private val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#xA;", "&#xD", "&#x9")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object XmlAttributeEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"', '\n', '\r', '\t')
+		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#xA;", "&#xD", "&#x9")
 	}
 
 	/**
 	 * Xml内容的转义器。
 	 */
-	object XmlContentEscaper : Escaper {
-		private val escapeChars = charArrayOf('<', '>', '&')
-		private val escapedStrings = arrayOf("&lt;", "&gt;", "amp;")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
+	object XmlContentEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('<', '>', '&')
+		override val escapedStrings = arrayOf("&lt;", "&gt;", "amp;")
 	}
 
 	/**
 	 * Html的转义器。
 	 */
-	object HtmlEscaper : Escaper {
-		private val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
-		private val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
-		override fun escape(value: String) = escapeByPair(value, escapeChars, escapedStrings)
-		override fun unescape(value: String) = unescapeByPair(value, escapeChars, escapedStrings)
-	}
-
-	/**
-	 * 正则表达式的转义器。
-	 *
-	 * 注意：使用`Regex.escape(value)`进行转义，不支持反转义。
-	 */
-	object RegexEscaper : Escaper {
-		override fun escape(value: String) = Regex.escape(value)
-		override fun unescape(value: String) =
-			throw UnsupportedOperationException("Unescape regex is not supported by regex escaper.")
+	object HtmlEscaper : AbstractEscaper() {
+		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
+		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
 	//endregion
 
@@ -148,7 +120,7 @@ interface Escaper {
 	/**
 	 * 换行转义器。
 	 *
-	 * 转义换行符`\n`。
+	 * 转义换行符`\n`为`\\n`。
 	 */
 	object LineBreakEscaper : Escaper {
 		override fun escape(value: String) = value.replace("\n", "\\n")
@@ -161,9 +133,47 @@ interface Escaper {
 	 * 转义换行符`\n`为`<br>`。
 	 */
 	object HtmlLineBreakEscaper : Escaper {
-		var escapedTag = "<br>"
+		private const val escapedTag = "<br>"
 		override fun escape(value: String) = value.replace("\n", escapedTag)
 		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
 	}
 	//endregion
+
+	companion object {
+		private val escapers = mutableListOf<Escaper>()
+
+		/**
+		 * 得到已注册的转义器列表。
+		 */
+		@JvmStatic fun values(): List<Escaper> {
+			return escapers
+		}
+
+		/**
+		 * 注册指定的转义器。
+		 */
+		@JvmStatic fun register(escaper: Escaper) {
+			escapers.add(escaper)
+		}
+
+		init {
+			registerDefaultEscapers()
+			registerLineBreakEscapers()
+		}
+
+		private fun registerDefaultEscapers() {
+			register(KotlinEscaper)
+			register(JavaEscaper)
+			register(JavaScriptEscaper)
+			register(JsonEscaper)
+			register(XmlEscaper)
+			register(XmlAttributeEscaper)
+			register(XmlContentEscaper)
+		}
+
+		private fun registerLineBreakEscapers() {
+			register(LineBreakEscaper)
+			register(HtmlLineBreakEscaper)
+		}
+	}
 }

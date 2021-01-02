@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.creole
 
 /**
- * DslDocument marker of [CreoleDsl].
+ * [CreoleDsl]的标记注解。参见：[Creole](http://plantuml.com/zh/creoleDsl)
  */
 @DslMarker
 @MustBeDocumented

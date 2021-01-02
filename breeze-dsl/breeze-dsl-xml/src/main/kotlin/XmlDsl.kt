@@ -4,15 +4,18 @@
 package com.windea.breezeframework.dsl.xml
 
 import com.windea.breezeframework.core.component.*
-import com.windea.breezeframework.core.extensions.*
-import com.windea.breezeframework.core.types.*
-import com.windea.breezeframework.dsl.*
+import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.core.type.*
 import com.windea.breezeframework.dsl.api.*
+import com.windea.breezeframework.dsl.DslConfig as IDslConfig
+import com.windea.breezeframework.dsl.DslDocument as IDslDocument
+import com.windea.breezeframework.dsl.DslElement as IDslElement
+
 
 @XmlDslMarker
 interface XmlDsl {
 	@XmlDslMarker
-	class Document @PublishedApi internal constructor() : DslDocument {
+	class DslDocument @PublishedApi internal constructor() : IDslDocument {
 		val declarations: MutableList<Statement> = mutableListOf()
 		val comments: MutableList<Comment> = mutableListOf()
 		var rootElement: Element? = null
@@ -31,7 +34,8 @@ interface XmlDsl {
 		}
 	}
 
-	object Config : DslConfig {
+	@XmlDslMarker
+	object DslConfig : IDslConfig {
 		var indent: String = "  "
 		var doubleQuoted: Boolean = true
 		var autoCloseTag: Boolean = false
@@ -40,7 +44,7 @@ interface XmlDsl {
 	}
 
 	@XmlDslMarker
-	interface DslElement : com.windea.breezeframework.dsl.DslElement
+	interface DslElement : IDslElement
 
 	@XmlDslMarker
 	class Statement @PublishedApi internal constructor(
@@ -48,7 +52,7 @@ interface XmlDsl {
 	) : DslElement {
 		override fun toString(): String {
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
-				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(Config.quote)}"
+				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(DslConfig.quote)}"
 			}
 			return "<?xml$attributesSnippet?>"
 		}
@@ -70,14 +74,14 @@ interface XmlDsl {
 	class CData @PublishedApi internal constructor(
 		val text: String,
 	) : Node, Wrappable, Indentable {
-		override var wrapContent   = text.isMultiline()
+		override var wrapContent = text.isMultiline()
 		override var indentContent = true
 
 		override fun toString(): String {
 			return when {
-				wrapContent && indentContent -> "![CDATA[\n${text.prependIndent(Config.indent)}\n]]>"
+				wrapContent && indentContent -> "![CDATA[\n${text.prependIndent(DslConfig.indent)}\n]]>"
 				wrapContent -> "![CDATA[\n$text\n]]>"
-				else -> "![CDATA[${text.prependIndent(Config.indent)}]]>"
+				else -> "![CDATA[${text.prependIndent(DslConfig.indent)}]]>"
 			}
 		}
 	}
@@ -86,13 +90,13 @@ interface XmlDsl {
 	class Comment @PublishedApi internal constructor(
 		val text: String
 	) : Node, Wrappable, Indentable {
-		override var wrapContent  = text.isMultiline()
+		override var wrapContent = text.isMultiline()
 		override var indentContent = true
 
 		override fun toString(): String {
 			val textSnippet = text.escapeBy(Escaper.XmlContentEscaper)
-			return when{
-				wrapContent && indentContent -> "<!--\n${textSnippet.prependIndent(Config.indent)}\n-->"
+			return when {
+				wrapContent && indentContent -> "<!--\n${textSnippet.prependIndent(DslConfig.indent)}\n-->"
 				wrapContent -> "<!--\n$textSnippet\n-->"
 				else -> "<!--$textSnippet-->"
 			}
@@ -116,13 +120,13 @@ interface XmlDsl {
 		override fun toString(): String {
 			val nodesSnippet = nodes.joinToText("\n")
 			val attributesSnippet = attributes.joinToText(" ", " ") { (k, v) ->
-				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(Config.quote)}"
+				"$k=${v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(DslConfig.quote)}"
 			}
 			val prefixSnippet = "<$name$attributesSnippet>"
-			val suffixSnippet = if(Config.autoCloseTag && nodes.isEmpty()) "/>" else "</$name>"
-			return when{
-				wrapContent && indentContent -> "$prefixSnippet\n${nodesSnippet.prependIndent(Config.indent)}\n$suffixSnippet"
-				wrapContent  -> "$prefixSnippet\n$nodesSnippet\n$suffixSnippet"
+			val suffixSnippet = if(DslConfig.autoCloseTag && nodes.isEmpty()) "/>" else "</$name>"
+			return when {
+				wrapContent && indentContent -> "$prefixSnippet\n${nodesSnippet.prependIndent(DslConfig.indent)}\n$suffixSnippet"
+				wrapContent -> "$prefixSnippet\n$nodesSnippet\n$suffixSnippet"
 				else -> "$prefixSnippet$nodesSnippet$suffixSnippet"
 			}
 		}

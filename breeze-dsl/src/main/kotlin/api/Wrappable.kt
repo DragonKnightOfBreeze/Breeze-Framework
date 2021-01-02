@@ -3,11 +3,9 @@
 
 package com.windea.breezeframework.dsl.api
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.dsl.api.*
-
 /**
- * 内容可换行的DSL元素。
+ * 可换行内容。
+ * @property wrapContent 是否换行内容。
  */
 @DslApiMarker
 interface Wrappable {

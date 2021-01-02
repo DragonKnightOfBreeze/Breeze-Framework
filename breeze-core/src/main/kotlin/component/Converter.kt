@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -17,6 +17,7 @@ import java.util.*
  * 转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
  */
 @BreezeComponent
+@Suppress("UNCHECKED_CAST")
 interface Converter<T, R> {
 	/**
 	 * 源类型和目标类型的类型对。
@@ -33,174 +34,6 @@ interface Converter<T, R> {
 	 */
 	fun convertOrNull(value: T): R? {
 		return runCatching { convert(value) }.getOrNull()
-	}
-
-	companion object {
-		private val converterRegistry = mutableListOf<Converter<*, *>>()
-
-		/**
-		 * 注册转化器。
-		 */
-		@JvmStatic fun <T, R> register(converter: Converter<T, R>) {
-			converterRegistry += converter
-		}
-
-		/**
-		 * 将指定的对象转化为指定的类型。如果转化失败，这抛出异常。
-		 */
-		inline fun <reified T> convert(value: Any?): T {
-			return convert(value, T::class.java)
-		}
-
-		/**
-		 * 将指定的对象转化为指定的类型。如果转化失败，这抛出异常。
-		 */
-		@JvmStatic fun <T> convert(value: Any?, targetType: Class<T>): T {
-			return try {
-				when {
-					value == null -> null as T
-					targetType.isAssignableFrom(value.javaClass) -> value as T
-					else -> {
-						for(converter in converterRegistry) {
-							val (sType, tType) = converter.typePair
-							if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
-								return (converter as Converter<Any?, Any?>).convert(value) as T
-							}
-						}
-						throwException(value, targetType)
-					}
-				}
-			} catch(e: Exception) {
-				throwException(value, targetType, e)
-			}
-		}
-
-		/**
-		 * 将指定的对象转化为指定的类型。如果转化失败，这返回null。
-		 */
-		inline fun <reified T> convertOrNull(value: Any?): T? {
-			return convertOrNull(value, T::class.java)
-		}
-
-		/**
-		 * 将指定的对象转化为指定的类型。如果转化失败，这返回null。
-		 */
-		@JvmStatic fun <T> convertOrNull(value: Any?, targetType: Class<T>): T? {
-			return when {
-				value == null -> null
-				targetType.isAssignableFrom(value.javaClass) -> value as T
-				else -> {
-					for(converter in converterRegistry) {
-						val (sType, tType) = converter.typePair
-						if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
-							return (converter as Converter<Any?, Any?>).convertOrNull(value) as T?
-						}
-					}
-					null
-				}
-			}
-		}
-
-		private fun <T> throwException(value: Any?, targetType: Class<T>, cause: Throwable? = null): Nothing {
-			throw IllegalArgumentException("Cannot convert '${value}' to type '${targetType.name}'.", cause)
-		}
-
-		init {
-			registerDefaultConverters()
-			registerExtendedStringConverters()
-			registerIoConverters()
-		}
-
-		private fun registerDefaultConverters() {
-			register(AnyToStringConverter)
-
-			register(StringToIntConverter)
-			register(StringToLongConverter)
-			register(StringToFloatConverter)
-			register(StringToDoubleConverter)
-			register(StringToByteConverter)
-			register(StringToShortConverter)
-			register(StringToCharConverter)
-			register(StringToBooleanConverter)
-
-			register(IntToLongConverter)
-			register(IntToFloatConverter)
-			register(IntToDoubleConverter)
-			register(IntToByteConverter)
-			register(IntToShortConverter)
-			register(IntToCharConverter)
-
-			register(LongToIntConverter)
-			register(LongToFloatConverter)
-			register(LongToDoubleConverter)
-			register(LongToByteConverter)
-			register(LongToShortConverter)
-			register(LongToCharConverter)
-
-			register(FloatToIntConverter)
-			register(FloatToLongConverter)
-			register(FloatToDoubleConverter)
-			register(FloatToByteConverter)
-			register(FloatToShortConverter)
-			register(FloatToCharConverter)
-
-			register(DoubleToIntConverter)
-			register(DoubleToLongConverter)
-			register(DoubleToFloatConverter)
-			register(DoubleToByteConverter)
-			register(DoubleToShortConverter)
-			register(DoubleToCharConverter)
-
-			register(ByteToIntConverter)
-			register(ByteToLongConverter)
-			register(ByteToFloatConverter)
-			register(ByteToDoubleConverter)
-			register(ByteToShortConverter)
-			register(ByteToCharConverter)
-
-			register(ShortToIntConverter)
-			register(ShortToLongConverter)
-			register(ShortToFloatConverter)
-			register(ShortToDoubleConverter)
-			register(ShortToByteConverter)
-			register(ShortToCharConverter)
-
-			register(CharToIntConverter)
-			register(CharToLongConverter)
-			register(CharToFloatConverter)
-			register(CharToDoubleConverter)
-			register(CharToByteConverter)
-			register(CharToShortConverter)
-		}
-
-		private fun registerExtendedStringConverters() {
-			register(StringToRegexConverter)
-			register(StringToFileConverter)
-			register(StringToPathConverter)
-			register(StringToUrlConverter)
-			register(StringToUriConverter)
-			register(StringToCharsetConverter)
-			register(StringToTimeZoneConverter)
-			register(StringToClassConverter)
-		}
-
-		private fun registerIoConverters() {
-			register(FileToPathConverter)
-			register(FileToUriConverter)
-			register(FileToUrlConverter)
-
-			register(PathToFileConverter)
-			register(PathToUriConverter)
-			register(PathToUrlConverter)
-
-			register(UriToFileConverter)
-			register(UriToPathConverter)
-			register(UriToUrlConverter)
-
-			register(UrlToPathConverter)
-			register(UrlToFileConverter)
-			register(UrlToUriConverter)
-		}
 	}
 
 	//不公开默认注册的转换器：数量过多
@@ -585,4 +418,181 @@ interface Converter<T, R> {
 		override fun convert(value: URL) = value.toUri()
 	}
 	//endregion
+
+	companion object {
+		private val converters = mutableListOf<Converter<*, *>>()
+
+		/**
+		 * 得到已注册的转化器列表。
+		 */
+		@JvmStatic fun <T, R> values(): List<Converter<*, *>> {
+			return converters
+		}
+
+		/**
+		 * 注册指定的转化器。
+		 */
+		@JvmStatic fun <T, R> register(converter: Converter<T, R>) {
+			converters.add(converter)
+		}
+
+		/**
+		 * 将指定的对象转化为指定的类型。如果转化失败，这抛出异常。
+		 */
+		inline fun <reified T> convert(value: Any?): T {
+			return convert(value, T::class.java)
+		}
+
+		/**
+		 * 将指定的对象转化为指定的类型。如果转化失败，这抛出异常。
+		 */
+		@JvmStatic fun <T> convert(value: Any?, targetType: Class<T>): T {
+			return try {
+				when {
+					value == null -> null as T
+					targetType.isAssignableFrom(value.javaClass) -> value as T
+					else -> {
+						for(converter in converters) {
+							val (sType, tType) = converter.typePair
+							if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
+								return (converter as Converter<Any?, Any?>).convert(value) as T
+							}
+						}
+						throwException(value, targetType)
+					}
+				}
+			} catch(e: Exception) {
+				throwException(value, targetType, e)
+			}
+		}
+
+		/**
+		 * 将指定的对象转化为指定的类型。如果转化失败，这返回null。
+		 */
+		inline fun <reified T> convertOrNull(value: Any?): T? {
+			return convertOrNull(value, T::class.java)
+		}
+
+		/**
+		 * 将指定的对象转化为指定的类型。如果转化失败，这返回null。
+		 */
+		@JvmStatic fun <T> convertOrNull(value: Any?, targetType: Class<T>): T? {
+			return when {
+				value == null -> null
+				targetType.isAssignableFrom(value.javaClass) -> value as T
+				else -> {
+					for(converter in converters) {
+						val (sType, tType) = converter.typePair
+						if(tType == targetType && sType.isAssignableFrom(value.javaClass)) {
+							return (converter as Converter<Any?, Any?>).convertOrNull(value) as T?
+						}
+					}
+					null
+				}
+			}
+		}
+
+		private fun <T> throwException(value: Any?, targetType: Class<T>, cause: Throwable? = null): Nothing {
+			throw IllegalArgumentException("Cannot convert '${value}' to type '${targetType.name}'.", cause)
+		}
+
+		init {
+			registerDefaultConverters()
+			registerExtendedStringConverters()
+			registerIoConverters()
+		}
+
+		private fun registerDefaultConverters() {
+			register(AnyToStringConverter)
+
+			register(StringToIntConverter)
+			register(StringToLongConverter)
+			register(StringToFloatConverter)
+			register(StringToDoubleConverter)
+			register(StringToByteConverter)
+			register(StringToShortConverter)
+			register(StringToCharConverter)
+			register(StringToBooleanConverter)
+
+			register(IntToLongConverter)
+			register(IntToFloatConverter)
+			register(IntToDoubleConverter)
+			register(IntToByteConverter)
+			register(IntToShortConverter)
+			register(IntToCharConverter)
+
+			register(LongToIntConverter)
+			register(LongToFloatConverter)
+			register(LongToDoubleConverter)
+			register(LongToByteConverter)
+			register(LongToShortConverter)
+			register(LongToCharConverter)
+
+			register(FloatToIntConverter)
+			register(FloatToLongConverter)
+			register(FloatToDoubleConverter)
+			register(FloatToByteConverter)
+			register(FloatToShortConverter)
+			register(FloatToCharConverter)
+
+			register(DoubleToIntConverter)
+			register(DoubleToLongConverter)
+			register(DoubleToFloatConverter)
+			register(DoubleToByteConverter)
+			register(DoubleToShortConverter)
+			register(DoubleToCharConverter)
+
+			register(ByteToIntConverter)
+			register(ByteToLongConverter)
+			register(ByteToFloatConverter)
+			register(ByteToDoubleConverter)
+			register(ByteToShortConverter)
+			register(ByteToCharConverter)
+
+			register(ShortToIntConverter)
+			register(ShortToLongConverter)
+			register(ShortToFloatConverter)
+			register(ShortToDoubleConverter)
+			register(ShortToByteConverter)
+			register(ShortToCharConverter)
+
+			register(CharToIntConverter)
+			register(CharToLongConverter)
+			register(CharToFloatConverter)
+			register(CharToDoubleConverter)
+			register(CharToByteConverter)
+			register(CharToShortConverter)
+		}
+
+		private fun registerExtendedStringConverters() {
+			register(StringToRegexConverter)
+			register(StringToFileConverter)
+			register(StringToPathConverter)
+			register(StringToUrlConverter)
+			register(StringToUriConverter)
+			register(StringToCharsetConverter)
+			register(StringToTimeZoneConverter)
+			register(StringToClassConverter)
+		}
+
+		private fun registerIoConverters() {
+			register(FileToPathConverter)
+			register(FileToUriConverter)
+			register(FileToUrlConverter)
+
+			register(PathToFileConverter)
+			register(PathToUriConverter)
+			register(PathToUrlConverter)
+
+			register(UriToFileConverter)
+			register(UriToPathConverter)
+			register(UriToUrlConverter)
+
+			register(UrlToPathConverter)
+			register(UrlToFileConverter)
+			register(UrlToUriConverter)
+		}
+	}
 }
+
+

@@ -3,8 +3,8 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import java.lang.reflect.*
 
 /**
@@ -14,7 +14,7 @@ import java.lang.reflect.*
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
 @BreezeComponent
-interface Querier<T : Any,R> {
+interface Querier<T : Any, R> {
 	/**
 	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则抛出异常。
 	 */
@@ -27,29 +27,25 @@ interface Querier<T : Any,R> {
 		return runCatching { query(value, queryObject) }.getOrNull()
 	}
 
-	companion object {
-		//不需要进行注册
-	}
-
 	//region Default Queriers
 	/**
 	 * 查询所有结果的查询器。
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object ResultsQuerier: Querier<String, List<Any?>> {
+	object ResultsQuerier : Querier<String, List<Any?>> {
 		override fun query(value: Any, queryObject: String): List<Any?> {
-			return try{
-				when (value){
+			return try {
+				when(value) {
 					is Array<*> -> value.toList()
 					is List<*> -> value
 					is Iterable<*> -> value.toList()
-					is Map<*,*> -> value.values.toList()
 					is Sequence<*> -> value.toList()
+					is Map<*, *> -> value.values.toList()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query results.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query results.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query results.", e)
 			}
 		}
 	}
@@ -59,19 +55,19 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object FilterableResultsQuerier: Querier<(Any?) -> Boolean, List<Any?>> {
-		override fun query(value: Any, queryObject: (Any?)->Boolean): List<Any?> {
-			return try{
-				when (value){
+	object FilterableResultsQuerier : Querier<(Any?) -> Boolean, List<Any?>> {
+		override fun query(value: Any, queryObject: (Any?) -> Boolean): List<Any?> {
+			return try {
+				when(value) {
 					is Array<*> -> value.filter(queryObject)
 					is List<*> -> value.filter(queryObject)
 					is Iterable<*> -> value.filter(queryObject)
-					is Map<*,*> -> value.values.filter(queryObject)
 					is Sequence<*> -> value.filter(queryObject).toList()
+					is Map<*, *> -> value.values.filter(queryObject)
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query filterable results.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query filterable results.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query filterable results.", e)
 			}
 		}
 	}
@@ -81,34 +77,34 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object FirstResultQuerier: Querier<String, Any?> {
+	object FirstResultQuerier : Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
-			return try{
-				when (value){
+			return try {
+				when(value) {
 					is Array<*> -> value.firstOrNull()
 					is List<*> -> value.firstOrNull()
 					is Iterable<*> -> value.firstOrNull()
-					is Map<*,*> -> value.values.firstOrNull()
 					is Sequence<*> -> value.firstOrNull()
+					is Map<*, *> -> value.values.firstOrNull()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query first result.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query first result.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query first result.", e)
 			}
 		}
 
 		override fun queryOrNull(value: Any, queryObject: String): Any? {
-			return try{
-				when (value){
+			return try {
+				when(value) {
 					is Array<*> -> value.first()
 					is List<*> -> value.first()
 					is Iterable<*> -> value.first()
-					is Map<*,*> -> value.values.first()
 					is Sequence<*> -> value.first()
+					is Map<*, *> -> value.values.first()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query first result.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by get first result.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by get first result.", e)
 			}
 		}
 	}
@@ -118,34 +114,34 @@ interface Querier<T : Any,R> {
 	 *
 	 * 支持[Array]，[List]，[Iterable]，[Map]，[Sequence]。
 	 */
-	object LastResultQuerier: Querier<String, Any?> {
+	object LastResultQuerier : Querier<String, Any?> {
 		override fun query(value: Any, queryObject: String): Any? {
-			return try{
-				when (value){
+			return try {
+				when(value) {
 					is Array<*> -> value.lastOrNull()
 					is List<*> -> value.lastOrNull()
 					is Iterable<*> -> value.lastOrNull()
-					is Map<*,*> -> value.values.lastOrNull()
 					is Sequence<*> -> value.lastOrNull()
+					is Map<*, *> -> value.values.lastOrNull()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query last result.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query last result.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query last result.", e)
 			}
 		}
 
 		override fun queryOrNull(value: Any, queryObject: String): Any? {
-			return try{
-				when (value){
+			return try {
+				when(value) {
 					is Array<*> -> value.last()
 					is List<*> -> value.last()
 					is Iterable<*> -> value.last()
-					is Map<*,*> -> value.values.last()
 					is Sequence<*> -> value.last()
+					is Map<*, *> -> value.values.last()
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query last result.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by get last result.",e)
+				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by get last result.", e)
 			}
 		}
 	}
@@ -165,12 +161,12 @@ interface Querier<T : Any,R> {
 					is Array<*> -> value.getOrNull(queryObject.toInt())
 					is List<*> -> value.getOrNull(queryObject.toInt())
 					is Iterable<*> -> value.elementAtOrNull(queryObject.toInt())
-					is Map<*, *> -> value.cast<Map<String, Any?>>()[queryObject]
 					is Sequence<*> -> value.elementAtOrNull(queryObject.toInt())
+					is Map<*, *> -> value.cast<Map<String, Any?>>()[queryObject]
 					else -> throw UnsupportedOperationException("Invalid string '$queryObject' for query ${value.javaClass.simpleName}.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query by string '$queryObject'.",e)
+				throw IllegalArgumentException("Cannot query by string '$queryObject'.", e)
 			}
 		}
 	}
@@ -189,7 +185,7 @@ interface Querier<T : Any,R> {
 					else -> throw UnsupportedOperationException("Invalid regex '$queryObject' for query ${value.javaClass.simpleName}.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException ("Cannot query by regex '$queryObject'.",e)
+				throw IllegalArgumentException("Cannot query by regex '$queryObject'.", e)
 			}
 		}
 	}
@@ -200,7 +196,7 @@ interface Querier<T : Any,R> {
 	 * 支持[Array]，[List]，[Iterable]，[Sequence]。
 	 */
 	object IndexQuerier : Querier<Int, Any?> {
-		override fun query(value: Any, queryObject: Int):  Any? {
+		override fun query(value: Any, queryObject: Int): Any? {
 			return try {
 				when(value) {
 					is Array<*> -> value.getOrNull(queryObject)
@@ -242,7 +238,7 @@ interface Querier<T : Any,R> {
 	 * 基于字符串，通过反射查询查询对象的字段和属性的值的查询器。
 	 */
 	object ReflectionQuerier : Querier<String, Any?> {
-		override fun  query(value: Any, queryObject: String): Any?{
+		override fun query(value: Any, queryObject: String): Any? {
 			try {
 				val targetType = value.javaClass
 				val field: Field? = runCatching { targetType.getDeclaredField(queryObject) }.getOrNull()
@@ -266,7 +262,7 @@ interface Querier<T : Any,R> {
 	 * 支持[Field]，[Method]，[Annotation]。
 	 */
 	object ReflectionMemberQuerier : Querier<String, Any?> {
-		override fun query(value: Any, queryObject: String): Any? {
+		override fun query(value: Any, queryObject: String): Any {
 			try {
 				val targetType = value.javaClass
 				val result = when {
@@ -296,4 +292,43 @@ interface Querier<T : Any,R> {
 		}
 	}
 	//endregion
+
+	companion object {
+		private val queriers = mutableListOf<Querier<*, *>>()
+
+		/**
+		 * 得到已注册的查询器。
+		 */
+		@JvmStatic fun values(): List<Querier<*, *>> {
+			return queriers
+		}
+
+		/**
+		 * 注册指定的查询器。
+		 */
+		@JvmStatic fun register(querier: Querier<*, *>) {
+			queriers.add(querier)
+		}
+
+		init {
+			registerDefaultQueriers()
+			registerReflectionQueriers()
+		}
+
+		private fun registerDefaultQueriers() {
+			register(ResultsQuerier)
+			register(FilterableResultsQuerier)
+			register(FirstResultQuerier)
+			register(LastResultQuerier)
+			register(StringQuerier)
+			register(RegexQuerier)
+			register(IndexQuerier)
+			register(IndexRangeQuerier)
+		}
+
+		private fun registerReflectionQueriers() {
+			register(ReflectionQuerier)
+			register(ReflectionMemberQuerier)
+		}
+	}
 }

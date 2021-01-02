@@ -3,10 +3,9 @@
 
 package com.windea.breezeframework.dsl.api
 
-import com.windea.breezeframework.core.annotations.*
-
 /**
- * 内容可生成的DSL元素。
+ * 可生成内容。
+ * @property generateContent 是否生成内容。
  */
 @DslApiMarker
 interface Generatable {

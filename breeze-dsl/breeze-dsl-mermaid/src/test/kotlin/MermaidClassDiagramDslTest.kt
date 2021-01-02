@@ -1,6 +1,7 @@
 package com.windea.breezeframework.dsl.mermaid
 
 import com.windea.breezeframework.dsl.mermaid.classdiagram.*
+import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDsl.*
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {
@@ -22,7 +23,7 @@ class MermaidClassDiagramDslTest {
 				statement("dragonDrive"("dragon", "licence"))
 			}
 			`class`("Gender") {
-				annotation(MermaidClassDiagramDslDefinitions.AnnotationType.Enumeration)
+				annotation(AnnotationType.Enumeration)
 				statement("Male")
 				statement("Female")
 				statement("ImmortalMale")

@@ -3,8 +3,6 @@
 
 package com.windea.breezeframework.dsl.api
 
-import com.windea.breezeframework.dsl.*
-
 /**
  * 配置是否缩进内容。
  */

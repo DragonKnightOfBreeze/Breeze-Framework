@@ -4,8 +4,8 @@
 package com.windea.breezeframework.dsl
 
 /**
- * DSl语言的配置。
+ * DSl配置。
  *
- * DSL language configuration.
+ * DSL configuration.
  */
 interface DslConfig

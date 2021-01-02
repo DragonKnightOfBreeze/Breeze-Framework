@@ -4,10 +4,10 @@
 @file:JvmName("NumberAndAbbreviationExtensions")
 @file:Suppress("DuplicatedCode")
 
-package com.windea.breezeframework.text.extensions
+package com.windea.breezeframework.text.extension
 
-import com.windea.breezeframework.core.annotations.*
-import com.windea.breezeframework.core.extensions.*
+import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.extension.*
 import kotlin.math.*
 
 /**转化为简写形式。可指定1到9的缩放级别，可指定默认为0的精确度。*/

@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.mermaid.flowchart
 
 /**
- * DslDocument marker of [MermaidFlowChartDsl].
+ * [MermaidFlowChartDsl]的标记注解。参见：[Mermaid Flow Chart](https://mermaidjs.github.io/#/flowchart)
  */
 @DslMarker
 @MustBeDocumented

@@ -14,28 +14,28 @@ class MiscTest {
 	@Test
 	fun insertCharBeforeTest() {
 		val n = 1000000
-		println(insertCharBeforeByLoop("Foo.bar[1].abc[def]",'.','['))
-		println(insertCharBeforeByReplace("Foo.bar[1].abc[def]",'.','['))
+		println(insertCharBeforeByLoop("Foo.bar[1].abc[def]", '.', '['))
+		println(insertCharBeforeByReplace("Foo.bar[1].abc[def]", '.', '['))
 		val executor = Executors.newFixedThreadPool(2)
-		val a = executor.submit(Callable{
+		val a = executor.submit(Callable {
 			measureNanoTime {
-				repeat(n) { insertCharBeforeByLoop("Foo.bar[1].abc[def]",'.','[') }
+				repeat(n) { insertCharBeforeByLoop("Foo.bar[1].abc[def]", '.', '[') }
 			}
 		})
-		val b = executor.submit(Callable{
+		val b = executor.submit(Callable {
 			measureNanoTime {
-				repeat(n) { insertCharBeforeByReplace("Foo.bar[1].abc[def]",'.','[') }
+				repeat(n) { insertCharBeforeByReplace("Foo.bar[1].abc[def]", '.', '[') }
 			}
 		})
 		println(a.get())
 		println(b.get())
 	}
 
-	private fun insertCharBeforeByLoop(string:String,beforeChar:Char,afterChar:Char):String{
+	private fun insertCharBeforeByLoop(string: String, beforeChar: Char, afterChar: Char): String {
 		return buildString {
 			val chars = string.toCharArray()
 			for(char in chars) {
-				when{
+				when {
 					char == afterChar -> append(beforeChar).append(afterChar)
 					else -> append(char)
 				}
@@ -43,12 +43,12 @@ class MiscTest {
 		}
 	}
 
-	private fun insertCharBeforeByReplace(string:String,beforeChar:Char,afterChar:Char):String{
-		return string.replace(afterChar.toString(),beforeChar.toString() + afterChar)
+	private fun insertCharBeforeByReplace(string: String, beforeChar: Char, afterChar: Char): String {
+		return string.replace(afterChar.toString(), beforeChar.toString() + afterChar)
 	}
 
 	@Test
-	fun constTest(){
+	fun constTest() {
 		val n = 1000000
 		val abc = "abc"
 		val executor = Executors.newFixedThreadPool(2)
@@ -57,7 +57,7 @@ class MiscTest {
 				repeat(n) { abc.toCharArray().joinToString("\n") }
 			}
 		})
-		val b = executor.submit(Callable{
+		val b = executor.submit(Callable {
 			measureNanoTime {
 				repeat(n) { "ABC".toCharArray().joinToString("\n") }
 			}

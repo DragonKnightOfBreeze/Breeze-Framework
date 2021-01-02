@@ -16,7 +16,7 @@ import java.nio.charset.*
 class Http(
 	val config: HttpConfig = HttpConfig(),
 ) {
-	constructor(block: HttpConfig.Builder.() -> Unit) : this(HttpConfig.Builder().apply(block).build())
+	constructor(block: HttpConfigBuilder.() -> Unit) : this(HttpConfigBuilder().apply(block).build())
 
 	internal val client: HttpClient = buildClient()
 
@@ -47,8 +47,8 @@ class Http(
 	}
 
 	/**发送GET请求，附带额外配置。*/
-	fun get(url: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("GET", url, null, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun get(url: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("GET", url, null, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	/**发送POST请求。*/
@@ -57,8 +57,8 @@ class Http(
 	}
 
 	/**发送POST请求，附带额外配置。*/
-	fun post(url: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("POST", url, null, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun post(url: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("POST", url, null, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	/**发送PUT请求。*/
@@ -67,8 +67,8 @@ class Http(
 	}
 
 	/**发送PUT请求，附带额外配置。*/
-	fun put(url: String, body: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("PUT", url, body, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun put(url: String, body: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("PUT", url, body, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	/**发送DELETE请求。*/
@@ -77,8 +77,8 @@ class Http(
 	}
 
 	/**发送DELETE请求，附带额外配置。*/
-	fun delete(url: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("DELETE", url, null, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun delete(url: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("DELETE", url, null, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	/**发送HEAD请求。*/
@@ -87,8 +87,8 @@ class Http(
 	}
 
 	/**发送HEAD请求，附带额外配置。*/
-	fun head(url: String, body: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("HEAD", url, body, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun head(url: String, body: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("HEAD", url, body, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	/**发送BATCH请求。*/
@@ -97,8 +97,8 @@ class Http(
 	}
 
 	/**发送BATCH请求，附带额外配置。*/
-	fun batch(url: String, body: String, configBlock: HttpRequestConfig.Builder.() -> Unit): HttpRequest {
-		return request("BATCH", url, body, HttpRequestConfig.Builder().apply(configBlock).build())
+	fun batch(url: String, body: String, configBlock: HttpRequestConfigBuilder.() -> Unit): HttpRequest {
+		return request("BATCH", url, body, HttpRequestConfigBuilder().apply(configBlock).build())
 	}
 
 	private fun request(method: String, url: String, body: String?, config: HttpRequestConfig?): HttpRequest {

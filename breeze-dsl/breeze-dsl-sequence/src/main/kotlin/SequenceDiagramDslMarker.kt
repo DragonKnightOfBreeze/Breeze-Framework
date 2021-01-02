@@ -4,7 +4,7 @@
 package com.windea.breezeframework.dsl.sequence
 
 /**
- * DslDocument marker of [SequenceDiagramDsl].
+ * [SequenceDiagramDsl]的标记注解。参见：[Sequence Diagram](https://bramp.github.io/js-sequence-diagrams/)
  */
 @DslMarker
 @MustBeDocumented

@@ -5,7 +5,8 @@
 [Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
 
 Integrated code framework written by Kotlin.
-provides many useful extensions for standard library and some frameworks.
+
+Provides many useful extensions for standard library and some frameworks.
 
 NOTE：
 
@@ -22,16 +23,19 @@ Provide utilities and extensions for the Kotlin standard library and common func
 ## breeze-dsl
 
 Provides a concise and flexible dsl api, used to generate text of markup languages by code.
+
 Can be sufficient configured.
 
 ## breeze-functional
 
 Provide utilities and extensions for functional programming.
+
 Support functions with 0 to 11 parameters.
 
 ## breeze-http
 
 Provide a concise and intuitive http api, based on the Java native http api, used to send http requests.
+
 Can be sufficient configured.
 
 ## breeze-javafx
@@ -42,18 +46,14 @@ Provide tools and extensions for Java FX.
 
 Provide a simple logger api.
 
-## breeze-mapper
-
-Provide a simple mapper api, for serialize and deserialize data.
-Can be sufficient configured.
-
 ## breeze-reflect
 
 Provide utilities and extensions for Java reflection and Kotlin reflection.
 
-## breeze-serializer
+## breeze-serialization
 
 Provides a concise and unified serializer api, based on third-party libraries, for serialize and deserialize data.
+
 Can be sufficient configured.
 
 ## breeze-spring-boot
