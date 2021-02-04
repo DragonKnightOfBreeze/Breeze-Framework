@@ -11,7 +11,7 @@ package com.windea.breezeframework.core.type
 typealias Arg = Pair<String, Any?>
 
 /**
- * 代表一族参数。
+ * 代表一组参数。
  *
  * Represents a group of arguments.
  */
