@@ -3,14 +3,14 @@
 
 package com.windea.breezeframework.core.expression
 
-open class ConditionalExpression(
-	final override val expression: String
+class ConditionalExpression(
+	override val expression: String
 ) : Expression {
 	companion object {
 		private val markers = charArrayOf('?', '!', '*', '+')
 	}
 
-	val marker: Char? = expression.lastOrNull { it in markers }
+	val marker: Char? = expression.lastOrNull()?.takeIf { it in markers }
 	val value: String = if(marker != null) expression.dropLast(1) else expression
 	val optional: Boolean = marker == '?' || marker == '*'
 	val required: Boolean = marker == '!' || marker == '+'

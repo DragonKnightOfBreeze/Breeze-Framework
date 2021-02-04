@@ -463,6 +463,10 @@
   * [X] breeze-dsl-sequence
   * [X] breeze-dsl-mermaid
 
+#### 2.0.1
+
+* 修正Expression的BUG
+
 # 长期
 
 * [X] 移除对非框架类的第三方库的依赖
