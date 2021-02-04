@@ -6,6 +6,8 @@
 
 package com.windea.breezeframework.core.extension
 
+import com.windea.breezeframework.core.model.*
+
 /**
  * 得到当前对象的带有泛型参数信息的Java类型对象。
  */

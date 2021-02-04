@@ -173,7 +173,7 @@ fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCa
  * @see LetterCase
  */
 fun String.switchCaseBy(targetLetterCase: LetterCase): String {
-	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer case type for string '$this'.")
+	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 //endregion

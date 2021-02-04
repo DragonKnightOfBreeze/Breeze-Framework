@@ -1208,7 +1208,7 @@ inline fun String.toColorOrNull(): Color? {
 
 
 /**
- * 当当前字符串转化为查询参数映射。
+ * 将当前字符串转化为查询参数映射。
  */
 internal fun String.toQueryParams(): Map<String, List<String>> {
 	return this.split("&").groupBy({ it.substringBefore("=") }, { it.substringAfter("=", "") })
@@ -1227,12 +1227,14 @@ fun String.decodeToBase64ByteArray(): ByteArray {
 //region Raw String Convert Extensions
 /**
  * 将当前字符串转为内联文本。
+ *
  * @see com.windea.breezeframework.core.extension.trimWrap
  */
 inline fun String.inline(): String = trimWrap()
 
 /**
  * 将当前字符串转为多行文本。
+ *
  * @see kotlin.text.trimIndent
  */
 inline fun String.multiline(): String = trimIndent()
