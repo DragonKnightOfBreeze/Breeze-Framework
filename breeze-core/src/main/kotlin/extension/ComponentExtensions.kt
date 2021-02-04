@@ -178,6 +178,17 @@ fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 }
 //endregion
 
+//region StringPattern Extensions
+/**
+ * 判断指定的字符串是否匹配指定的字符串模式。
+ *
+ * @see StringPattern
+ */
+fun String.matchesBy(stringPattern:StringPattern):Boolean{
+	return stringPattern.matches(this)
+}
+//endregion
+
 //region PathPattern Extensions
 /**
  * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。

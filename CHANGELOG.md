@@ -466,6 +466,7 @@
 #### 2.0.1
 
 * 修正Expression的BUG
+* 实现StringPattern
 
 # 长期
 
