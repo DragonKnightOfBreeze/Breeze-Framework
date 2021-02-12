@@ -111,12 +111,14 @@ allprojects {
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
 		from(sourceSets.main.get().allSource)
+		from("$rootDir/LICENSE") //添加LICENSE
 	}
 
 	//构建javadoc jar
 	val javadocJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("javadoc")
 		from(tasks.dokka)
+		from("$rootDir/LICENSE") //添加LICENSE
 	}
 
 	//上传的配置
