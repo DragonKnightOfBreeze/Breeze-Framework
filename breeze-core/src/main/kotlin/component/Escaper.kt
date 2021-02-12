@@ -169,6 +169,7 @@ interface Escaper {
 			register(XmlEscaper)
 			register(XmlAttributeEscaper)
 			register(XmlContentEscaper)
+			register(HtmlEscaper)
 		}
 
 		private fun registerLineBreakEscapers() {

@@ -17,7 +17,7 @@ interface StringPattern {
 	 */
 	fun matches(value: String): Boolean
 
-	//region Default String Patterns
+	// Default String Patterns
 	object BooleanPattern : StringPattern {
 		private val values = arrayOf("true", "false")
 
@@ -60,8 +60,23 @@ interface StringPattern {
 		}
 	}
 
-	//TODO
+	object NumericPattern: StringPattern{
+		override fun matches(value : String): Boolean{
+			return value.isNotEmpty() && value.all { it.isLetter() }
+		}
+	}
 
+	object AlphaPattern:StringPattern{
+		override fun matches(value: String): Boolean {
+			return value.isNotEmpty() &&value.all {it.isDigit()}
+		}
+	}
+
+	object AlphanumericPattern:StringPattern{
+		override fun matches(value: String): Boolean {
+			return value.isNotEmpty() && value.all{ it.isLetterOrDigit()}
+		}
+	}
 	//endregion
 
 	companion object {
@@ -86,7 +101,13 @@ interface StringPattern {
 		}
 
 		private fun registerDefaultLetterCases() {
-
+			register(BooleanPattern)
+			register(WildcardBooleanPattern)
+			register(IntegerPattern)
+			register(NumberPattern)
+			register(NumericPattern)
+			register(AlphaPattern)
+			register(AlphanumericPattern)
 		}
 	}
 }

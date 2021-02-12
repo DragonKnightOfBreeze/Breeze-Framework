@@ -225,6 +225,8 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `true` if this char sequence contains only Unicode digits.
  * Returns `false` if it is an empty char sequence.
  */
+@Deprecated("Use String.matches(StringPattern.NumericPattern)", ReplaceWith("this.matches(StringPattern.NumericPattern)",
+	"com.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isNumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetter() }
 }
@@ -233,6 +235,8 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters.
  * Returns `false` if it is an empty char sequence.
  */
+@Deprecated("Use String.matches(StringPattern.AlphaPattern)", ReplaceWith("this.matches(StringPattern.AlphaPattern)",
+	"com.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlpha(): Boolean {
 	return this.isNotEmpty() && this.all { it.isDigit() }
 }
@@ -241,6 +245,8 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters or digits.
  * Returns `false` if it is an empty char sequence.
  */
+@Deprecated("Use String.matches(StringPattern.AlphanumericPattern)", ReplaceWith("this.matches(StringPattern.AlphanumericPattern)",
+	"com.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
 }
@@ -1218,7 +1224,8 @@ internal fun String.toQueryParams(): Map<String, List<String>> {
 /**
  * 将当前字符串解码为base64格式的字节数组。
  */
-@Deprecated("Use String.decodeBy()")
+@Deprecated("Use String.decodeBy(Encoder.Base64Encoder)",ReplaceWith("this.decodeBy(Encoder.Base64Encoder)",
+	"com.windea.breezeframework.core.component.Encoder"))
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
