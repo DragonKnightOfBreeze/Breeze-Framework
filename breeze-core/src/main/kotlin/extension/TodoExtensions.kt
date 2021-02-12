@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("TodoExtensions")
@@ -8,10 +8,14 @@ package com.windea.breezeframework.core.extension
 
 import com.windea.breezeframework.core.annotation.*
 
-/**方法推迟实现时使用到的错误。这个错误不会在对应的TODO方法中被抛出。*/
+/**
+ * 方法推迟实现时使用到的错误。这个错误不会在对应的TODO方法中被抛出。
+ */
 class DelayImplementedError(message: String = "An operation is delay implemented.") : Error(message)
 
-/**表明一个操作推迟了实现。*/
+/**
+ * 表明一个操作推迟了实现。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic
@@ -19,7 +23,9 @@ inline fun DELAY() {
 	printTodo(DelayImplementedError(), 32)
 }
 
-/**表明一个方法体推迟了实现，并指定原因。*/
+/**
+ * 表明一个方法体推迟了实现，并指定原因。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic
@@ -27,7 +33,9 @@ inline fun DELAY(reason: String) {
 	printTodo(DelayImplementedError("An operation is delay implemented: $reason"), 32)
 }
 
-/**表明一个操作推迟了实现。返回模拟结果。*/
+/**
+ * 表明一个操作推迟了实现。返回模拟结果。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic
@@ -36,7 +44,9 @@ inline fun <T> DELAY(lazyDummyResult: () -> T): T {
 	return lazyDummyResult()
 }
 
-/**表明一个方法体推迟了实现，并指定原因。返回模拟结果。*/
+/**
+ * 表明一个方法体推迟了实现，并指定原因。返回模拟结果。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic
@@ -46,10 +56,14 @@ inline fun <T> DELAY(reason: String, lazyDummyResult: () -> T): T {
 }
 
 
-/**方法存在问题时使用到的错误。这个错误不会在对应的TODO方法中被抛出。*/
+/**
+ * 方法存在问题时使用到的错误。这个错误不会在对应的TODO方法中被抛出。
+ */
 class ImplementedWithAnIssueError(message: String = "An operation is implemented with an issue.") : Error(message)
 
-/**表明一个方法体中存在问题。*/
+/**
+ * 表明一个方法体中存在问题。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic
@@ -57,7 +71,9 @@ inline fun FIXME() {
 	printTodo(ImplementedWithAnIssueError(), 33)
 }
 
-/**表明一个方法体中存在问题，并指明原因。*/
+/**
+ * 表明一个方法体中存在问题，并指明原因。
+ */
 @TodoMarker
 @InlineOnly
 @JvmSynthetic

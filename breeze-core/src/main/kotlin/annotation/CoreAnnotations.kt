@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 package com.windea.breezeframework.core.annotation
@@ -7,6 +7,10 @@ import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
 
 /**
+ * 适用于Kotlin的allOpen编译器插件的标准注解。
+ * 让被注解的类及其属性和方法默认是开放的。
+ * 需要自行配置。
+ *
  * Annotation that is used together with kotlin compiler plugin `allOpen`.
  * Let the annotated classes and it's properties and methods be open by default.
  * Should be configured manually.
@@ -16,6 +20,10 @@ import kotlin.annotation.AnnotationTarget.*
 annotation class AllOpen
 
 /**
+ * 适用于Kotlin的noArg编译器插件的标准注解。
+ * 为被注解的类生成仅能通过反射调用的无参构造方法。
+ * 需要自行配置。
+ *
  * Annotation that is used together with kotlin compiler plugin 'noArg'.
  * Let the annotated classes generated an no-arg constructor that can be invoked by reflection.
  * Should be configured manually.
@@ -25,6 +33,9 @@ annotation class AllOpen
 annotation class NoArg
 
 /**
+ * 注明这个方法不应以内联以外的方式调用。
+ * 这个注解是[kotlin.internal.InlineOnly]的占位符。
+ *
  * Specifies that this function should not be called directly without inlining.
  * This annotation is a placeholder of [kotlin.internal.InlineOnly].
  */
@@ -33,6 +44,9 @@ annotation class NoArg
 annotation class InlineOnly
 
 /**
+ * 注明这个注解对应的项（在通常情况下）已废弃。
+ * 相比[Deprecated]，这个注解不会附带警告。
+ *
  * Marks the annotated declaration as deprecated in common situations.
  * While comparing to [Deprecated], this annotation do not get an IDE warning.
  */
@@ -67,12 +81,3 @@ annotation class TodoMarker
 @MustBeDocumented
 @Target(CLASS)
 annotation class BreezeComponent
-
-/**
- * 当应用到扩展方法X时，表示X定义了一个基于组件的扩展。
- *
- * When applied to extension function X specifies that X defines a component-based extension.
- */
-@MustBeDocumented
-@Target(FUNCTION)
-annotation class BreezeComponentExtension

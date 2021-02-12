@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 package com.windea.breezeframework.core.component
@@ -169,6 +169,7 @@ interface Escaper {
 			register(XmlEscaper)
 			register(XmlAttributeEscaper)
 			register(XmlContentEscaper)
+			register(HtmlEscaper)
 		}
 
 		private fun registerLineBreakEscapers() {

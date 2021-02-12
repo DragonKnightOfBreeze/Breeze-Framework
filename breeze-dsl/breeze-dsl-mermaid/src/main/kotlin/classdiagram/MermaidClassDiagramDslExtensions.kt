@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MermaidClassDiagramDslExtensions")

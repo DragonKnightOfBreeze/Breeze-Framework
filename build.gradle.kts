@@ -2,7 +2,7 @@ import org.gradle.jvm.tasks.Jar
 
 //配置要用到的插件
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.4.10"
+	id("org.jetbrains.kotlin.jvm") version "1.4.30"
 	id("org.jetbrains.dokka") version "0.10.1"
 	id("org.gradle.maven-publish")
 	id("com.jfrog.bintray") version "1.8.5"
@@ -95,7 +95,7 @@ allprojects {
 	}
 }
 
-val ignoredModuleNames = arrayOf("breeze-unstable","breeze-linq")
+val ignoredModuleNames = arrayOf("breeze-unstable")
 
 allprojects {
 	when {
@@ -111,12 +111,14 @@ allprojects {
 	val sourcesJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("sources")
 		from(sourceSets.main.get().allSource)
+		from("$rootDir/LICENSE") //添加LICENSE
 	}
 
 	//构建javadoc jar
 	val javadocJar by tasks.creating(Jar::class) {
 		archiveClassifier.set("javadoc")
 		from(tasks.dokka)
+		from("$rootDir/LICENSE") //添加LICENSE
 	}
 
 	//上传的配置
@@ -188,5 +190,5 @@ allprojects {
 }
 
 fun String.formatModuleName(): String {
-	return this.split("-").map { it.capitalize() }.joinToString(" ")
+	return this.split("-").joinToString(" ") { it.capitalize() }
 }

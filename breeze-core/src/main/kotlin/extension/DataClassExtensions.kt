@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
+// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("DataClassExtensions")
@@ -7,8 +7,6 @@
 package com.windea.breezeframework.core.extension
 
 import kotlin.reflect.*
-
-//https://github.com/consoleau/kassava
 
 //为了避免污染Any?的代码提示，不要定义为Any?的扩展方法
 //可以使用Kotlin委托为接口委托实现这些方法，但是结合Kotlin反射使用可能出现问题
