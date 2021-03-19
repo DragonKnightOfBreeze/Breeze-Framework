@@ -14,6 +14,28 @@ import com.windea.breezeframework.core.type.*
 //应当提供一系列用于创建元组的中缀扩展。
 //提供其他必要的扩展方法。
 
+//region Entry Extensions
+/**构建一个二元素元组。*/
+fun <A,B> tupleOf(first:A,second:B):Tuple2<A,B>{
+	return Tuple2(first,second)
+}
+
+/**构建一个三元素元组。*/
+fun <A,B,C> tupleOf(first:A,second:B,third:C):Tuple3<A,B,C>{
+	return Tuple3(first,second,third)
+}
+
+/**构建一个四元素元组。*/
+fun <A,B,C,D> tupleOf(first:A,second:B,third: C,fourth:D):Tuple4<A,B,C,D>{
+	return Tuple4(first,second,third,fourth)
+}
+
+/**构建一个五元素元组。*/
+fun <A,B,C,D,E> tupleOf(first:A,second:B,third:C,fourth: D,fifth:E):Tuple5<A,B,C,D,E>{
+	return Tuple5(first,second,third,fourth,fifth)
+}
+//endregion
+
 //region Build extensions
 /**从二元素元组构造三元素元组。*/
 infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> {

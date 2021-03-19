@@ -465,8 +465,10 @@
 
 #### 2.0.1
 
-* 修正Expression的BUG
-* 实现StringPattern
+* [X] 修正Expression的BUG
+* [X] 实现StringPattern
+* [X] 添加`tupleOf()`方法用于构造元组
+* [ ] 实现并发迭代的集合（基于`list.parallelStream().forEach()`）
 
 # 长期
 
