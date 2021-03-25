@@ -440,7 +440,6 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
  */
 fun <T> List<T>.repeat(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-
 	return ArrayList<T>(this.size * n).also { list -> repeat(n) { list += this } }
 }
 
@@ -562,14 +561,14 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
  * 映射当前映射中的值，并过滤转化后为null的值。
  */
 inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?): Map<K, R> {
-	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
+	return mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
 /**
  * 映射当前映射中的值，并过滤转化后为null的值，然后加入指定的映射。
  */
-inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
-	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
+inline fun <K, V, R : Any, M : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: M, transform: (V) -> R?): M {
+	for((key, value) in this) transform(value)?.let { destination[key] = it }
 	return destination
 }
 
@@ -578,9 +577,15 @@ inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNul
  * 过滤当前映射中值为null的键值对。
  */
 fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
-	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value != null) result[key] = value
-	return result
+	return filterValuesNotNullTo(LinkedHashMap())
+}
+
+/**
+ * 过滤当前映射中值为null的键值对，然后加入指定的映射。
+ */
+fun <K, V : Any,M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M):M {
+	for((key, value) in this) if(value != null) destination[key] = value
+	return destination
 }
 
 
@@ -757,6 +762,121 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 		currentDepth--
 	}
 	return values as List<T>
+}
+
+
+@PublishedApi
+internal val parallelExecutor by lazy{ Executors.newCachedThreadPool() }
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
+	crossinline action: (T) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get(timeout,timeUnit)
+	}
+	countDownLatch.await(awaitTimeout,timeUnit)
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
+	crossinline action: (T) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get(timeout,timeUnit)
+	}
+	countDownLatch.await(awaitTimeout,timeUnit)
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作。
+ *
+ * Performs the given [action] on each entry in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <K,V> Map<out K,V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.submit {
+			action(entry)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each entry in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T>  Map<out K,V>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
+	crossinline action: (Map.Entry<K, V>) -> Unit):Unit{
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.submit {
+			action(entry)
+			countDownLatch.countDown()
+		}.get(timeout,timeUnit)
+	}
+	countDownLatch.await(awaitTimeout,timeUnit)
 }
 //endregion
 

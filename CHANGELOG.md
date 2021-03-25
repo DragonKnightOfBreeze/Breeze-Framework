@@ -469,7 +469,8 @@
 * [X] 实现StringPattern
 * [X] 添加`tupleOf()`方法用于构造元组
 * [X] 公开`xxxSmartly()`方法
-* [ ] 实现并发迭代的集合（基于`list.parallelStream().forEach()`）
+* [X] 实现并行迭代方法`parallelForEach`
+* [ ] 实现并发迭代的集合
 
 # 长期
 
