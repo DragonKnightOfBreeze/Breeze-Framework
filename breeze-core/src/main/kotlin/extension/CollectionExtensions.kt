@@ -867,7 +867,7 @@ inline fun <K,V> Map<out K,V>.parallelForEach(crossinline action: (Map.Entry<K, 
  *
  * @see kotlin.collections.forEach
  */
-inline fun <T>  Map<out K,V>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
+inline fun <K,V>  Map<out K,V>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
 	crossinline action: (Map.Entry<K, V>) -> Unit):Unit{
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
