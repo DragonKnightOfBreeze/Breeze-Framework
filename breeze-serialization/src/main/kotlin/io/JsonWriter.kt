@@ -3,6 +3,7 @@
 
 package com.windea.breezeframework.serialization.io
 
+import com.windea.breezeframework.serialization.config.*
 import com.windea.breezeframework.serialization.extension.*
 import com.windea.breezeframework.serialization.serializer.*
 import java.time.temporal.*
@@ -11,16 +12,9 @@ import java.util.*
 /**
  * Json数据的写入器。
  */
-class JsonWriter @PublishedApi internal constructor(
-	private val config: BreezeJsonSerializer.Config = BreezeJsonSerializer.Config()
+internal class JsonWriter @PublishedApi internal constructor(
+	override val config: JsonConfig = JsonConfig()
 ): DataWriter {
-	private val buffer:StringBuffer = StringBuffer(2048)
-
-	override fun <T> write(target: T): String {
-		doWrite(target)
-		return buffer.toString()
-	}
-
 	companion object {
 		private const val space = ' '
 		private const val doubleQuote = '\"'
@@ -35,6 +29,13 @@ class JsonWriter @PublishedApi internal constructor(
 
 	private val quote = if(config.doubleQuoted) doubleQuote else singleQuote
 	private val escapedQuote = "\\" + quote
+
+	private val buffer:StringBuffer = StringBuffer(2048)
+
+	override fun <T> write(target: T): String {
+		doWrite(target)
+		return buffer.toString()
+	}
 
 	private fun <T> doWrite(target: T, depth: Int = 1) {
 		when {

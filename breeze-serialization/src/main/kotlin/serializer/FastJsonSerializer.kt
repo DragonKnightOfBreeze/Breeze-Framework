@@ -7,7 +7,7 @@ import com.alibaba.fastjson.*
 import java.lang.reflect.*
 
 /**
- * 由FastJson实现的Json的序列化器。
+ * 由FastJson委托实现的Json数据的序列化器。
  *
  * @see com.alibaba.fastjson.JSON
  */

@@ -9,6 +9,8 @@ package com.windea.breezeframework.core.extension
 import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.model.*
 import java.lang.reflect.*
+import java.math.*
+import kotlin.random.*
 import kotlin.reflect.*
 
 //通过这个方法可以得到泛型参数的信息
@@ -49,3 +51,43 @@ inline fun nameOf(target: Any?): String? = when(target) {
 	is KParameter -> target.name
 	else -> target::class.java.simpleName
 }
+
+//得到指定类型的默认值
+
+/**
+ * 尝试得到当前类型的默认值。
+ */
+@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
+inline fun <reified T : Any> defaultValue(): T = when(val type = T::class) {
+	Byte::class -> 0.toByte()
+	Short::class -> 0.toShort()
+	Int::class -> 0
+	Long::class -> 0L
+	Float::class -> 0F
+	Double::class -> 0.0
+	BigInteger::class -> BigInteger.ZERO
+	BigDecimal::class -> BigDecimal.ZERO
+	Boolean::class -> false
+	Char::class -> '\u0000'
+	String::class -> ""
+	else -> type.java.getDeclaredConstructor().newInstance()
+} as T
+
+//得到指定类型的随机值
+
+/**
+ * 尝试得到当前类型的随机值。
+ */
+@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
+inline fun <reified T : Any> randomValue(): T = when(val type = T::class) {
+	Byte::class -> Random.nextByte()
+	Short::class -> Random.nextShort()
+	Int::class -> Random.nextInt()
+	Long::class -> Random.nextLong()
+	Float::class -> Random.nextFloat()
+	Double::class -> Random.nextDouble()
+	Boolean::class -> Random.nextBoolean()
+	Char::class -> Random.nextChar()
+	String::class -> Random.nextUUIDString()
+	else -> type.java.getDeclaredConstructor().newInstance()
+} as T

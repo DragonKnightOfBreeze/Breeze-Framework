@@ -8,17 +8,14 @@ import com.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**
- * 由Gson实现的Json的序列化器。
+ * 由Gson委托实现的Json数据的序列化器。
  *
  * @see com.google.gson.Gson
  */
-class GsonSerializer : JsonSerializer, DelegateSerializer, Configurable<GsonBuilder> {
-	private val gsonBuilder by lazy { GsonBuilder() }
-	val gson: Gson by lazy { gsonBuilder.create() }
-
-	override fun configure(block: GsonBuilder.() -> Unit) {
-		gsonBuilder.block()
-	}
+class GsonSerializer(
+	val gsonBuilder: GsonBuilder = GsonBuilder()
+) : JsonSerializer, DelegateSerializer {
+	val gson: Gson = gsonBuilder.create()
 
 	override fun <T> serialize(target: T): String {
 		return gson.toJson(target)

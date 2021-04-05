@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 
 /**
@@ -19,6 +18,16 @@ interface Serializer<V>{
 	 * 序列化指定对象。
 	 */
 	fun <T> serialize(target:T):V
+
+	/**
+	 * 序列化指定对象。
+	 */
+	fun <T> serialize(target:T,type:Class<T>):V = serialize(target)
+
+	/**
+	 * 序列化指定对象。
+	 */
+	fun <T> serialize(target:T,type:Type):V = serialize(target)
 
 	/**
 	 * 反序列化指定的格式。

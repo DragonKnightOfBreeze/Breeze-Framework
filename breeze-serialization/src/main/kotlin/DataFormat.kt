@@ -30,7 +30,7 @@ interface DataFormat {
 	/**
 	 * 对应的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的序列化器。
 	 *
 	 * 可以进行自定义。
 	 */

@@ -4,23 +4,18 @@
 package com.windea.breezeframework.serialization.serializer
 
 import com.fasterxml.jackson.dataformat.yaml.*
-import com.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**
- * 由Jackson实现的Yaml的序列化器。
+ * 由Jackson委托实现的Yaml数据的序列化器。
  *
  * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
  */
-class JacksonYamlSerializer : YamlSerializer, JacksonSerializer, Configurable<YAMLMapper> {
-	val mapper by lazy { YAMLMapper() }
-
+class JacksonYamlSerializer(
+	val mapper:YAMLMapper = YAMLMapper()
+) : YamlSerializer, JacksonSerializer{
 	init {
 		mapper.findAndRegisterModules()
-	}
-
-	override fun configure(block: YAMLMapper.() -> Unit) {
-		mapper.block()
 	}
 
 	override fun <T> serialize(target: T): String {

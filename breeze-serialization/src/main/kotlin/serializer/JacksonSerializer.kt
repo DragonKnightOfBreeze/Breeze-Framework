@@ -4,7 +4,7 @@
 package com.windea.breezeframework.serialization.serializer
 
 /**
- * 由Jackson委托实现的序列化器。
+ * 由Jackson委托实现的数据的序列化器。
  *
  * @see com.fasterxml.jackson.databind.json.JsonMapper
  * @see JacksonJsonSerializer

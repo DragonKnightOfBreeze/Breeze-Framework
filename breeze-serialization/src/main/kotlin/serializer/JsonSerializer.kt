@@ -7,7 +7,7 @@ import com.windea.breezeframework.serialization.*
 import com.windea.breezeframework.serialization.extension.*
 
 /**
- * Json的序列化器。
+ * Json数据的序列化器。
  *
  * @see JacksonJsonSerializer
  * @see KotlinxJsonSerializer
@@ -19,9 +19,9 @@ interface JsonSerializer : DataSerializer {
 	override val dataFormat: DataFormat get() = DataFormat.Json
 
 	/**
-	 * 默认的Json的序列化器。
+	 * 默认的Json数据的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的序列化器。
 	 */
 	companion object Default: JsonSerializer by defaultJsonSerializer
 }

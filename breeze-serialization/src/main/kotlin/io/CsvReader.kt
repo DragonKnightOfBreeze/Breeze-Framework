@@ -7,10 +7,10 @@ import com.windea.breezeframework.serialization.config.*
 import java.lang.reflect.*
 
 /**
- * Json数据的读取器。
+ * Csv数据的读取器。
  */
-internal class JsonReader @PublishedApi internal constructor(
-	override val config: JsonConfig = JsonConfig()
+internal class CsvReader @PublishedApi internal constructor(
+	override val config: CsvConfig = CsvConfig()
 ): DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
@@ -20,4 +20,3 @@ internal class JsonReader @PublishedApi internal constructor(
 		TODO()
 	}
 }
-

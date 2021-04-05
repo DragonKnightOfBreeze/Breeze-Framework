@@ -10,22 +10,12 @@ import org.yaml.snakeyaml.representer.*
 import java.lang.reflect.*
 
 /**
- * 由SnakeYaml实现的Yaml的序列化器。
+ * 由SnakeYaml委托实现的Yaml数据的序列化器。
  * @see org.yaml.snakeyaml.Yaml
  */
-class SnakeYamlSerializer : YamlSerializer, DelegateSerializer, Configurable<Pair<LoaderOptions, DumperOptions>> {
-	private val loaderOptions = LoaderOptions()
-	private val dumperOptions = DumperOptions()
-	val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
-
-	init {
-		dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-	}
-
-	override fun configure(block: Pair<LoaderOptions, DumperOptions>.() -> Unit) {
-		(loaderOptions to dumperOptions).block()
-	}
-
+class SnakeYamlSerializer(
+	val yaml:Yaml = Yaml()
+) : YamlSerializer, DelegateSerializer{
 	override fun <T> serialize(target: T): String {
 		return yaml.dump(target)
 	}
