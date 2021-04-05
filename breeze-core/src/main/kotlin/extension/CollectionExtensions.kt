@@ -122,8 +122,6 @@ operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
 //endregion
 
 //region Element Type Extensions
-//虽然不知道为什么，但是的确可以这样做 ヾ(*´▽‘*)ﾉ
-
 /**
  * 得到当前数组的最为适配的元素类型。
  */
@@ -135,14 +133,14 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
 inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
 /**
- * 得到当前映射的最为适配的键类型。
- */
-inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
-
-/**
  * 得到当前序列的最为适配的键类型。
  */
 inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
+
+/**
+ * 得到当前映射的最为适配的键类型。
+ */
+inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
 /**
  * 得到当前映射的最为适配的值类型。

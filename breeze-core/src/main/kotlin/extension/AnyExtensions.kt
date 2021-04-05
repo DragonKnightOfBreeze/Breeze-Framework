@@ -29,7 +29,7 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
  *
  * 特殊对待数组类型。
  */
-public fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true): Boolean {
+fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true): Boolean {
 	return when {
 		this !is Array<*> || other !is Array<*> -> this == other
 		!deepOp -> this.contentEquals(other)
@@ -42,7 +42,7 @@ public fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true): Boolean {
  *
  * 特殊对待数组类型。
  */
-public fun Any?.hashCodeSmartly(deepOp: Boolean = true): Int {
+fun Any?.hashCodeSmartly(deepOp: Boolean = true): Int {
 	return when {
 		this !is Array<*> -> this.hashCode()
 		!deepOp -> this.contentHashCode()
@@ -55,7 +55,7 @@ public fun Any?.hashCodeSmartly(deepOp: Boolean = true): Int {
  *
  * 特殊对待数组类型。
  */
-public fun Any?.toStringSmartly(deepOp: Boolean = true): String {
+fun Any?.toStringSmartly(deepOp: Boolean = true): String {
 	return when {
 		this !is Array<*> -> this.toString()
 		!deepOp -> this.contentToString()

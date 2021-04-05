@@ -13,7 +13,7 @@ import java.math.*
 import kotlin.random.*
 import kotlin.reflect.*
 
-//通过这个方法可以得到泛型参数的信息
+//得到带有泛型信息的类型
 
 /**
  * 得到指定类型的带有泛型参数信息的Java类型对象。
@@ -26,6 +26,7 @@ inline fun <reified T> javaTypeOf(): Type = object : TypeReference<T>() {}.type
 @Suppress("UNUSED_PARAMETER")
 inline fun <reified T> javaTypeOf(target: T) = object : TypeReference<T>() {}.type
 
+//得到类型、方法、属性、参数等的名字
 //无法直接通过方法的引用得到参数，也无法得到局部变量的任何信息
 
 /**
