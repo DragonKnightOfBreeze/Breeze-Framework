@@ -6,39 +6,40 @@
 package com.windea.breezeframework.core.extension
 
 import java.math.*
+import java.text.*
 import java.util.*
 import kotlin.math.*
 import kotlin.random.Random
 
 /**得到随机的字节。*/
 fun Random.nextByte(): Byte {
-	return Random.nextInt(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()).toByte()
+	return nextInt(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()).toByte()
 }
 
 /**得到随机的字节。*/
 fun Random.nextByte(until: Byte): Byte {
-	return Random.nextInt(until.toInt()).toByte()
+	return nextInt(until.toInt()).toByte()
 }
 
 /**得到随机的字节。*/
 fun Random.nextByte(from: Byte, until: Byte): Byte {
-	return Random.nextInt(from.toInt(), until.toInt()).toByte()
+	return nextInt(from.toInt(), until.toInt()).toByte()
 }
 
 
 /**得到随机的短整数。*/
 fun Random.nextShort(): Short {
-	return Random.nextInt(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+	return nextInt(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
 }
 
 /**得到随机的短整数。*/
 fun Random.nextShort(until: Short): Short {
-	return Random.nextInt(until.toInt()).toShort()
+	return nextInt(until.toInt()).toShort()
 }
 
 /**得到随机的短整数。*/
 fun Random.nextShort(from: Short, until: Short): Short {
-	return Random.nextInt(from.toInt(), until.toInt()).toShort()
+	return nextInt(from.toInt(), until.toInt()).toShort()
 }
 
 
@@ -67,66 +68,110 @@ internal fun boundsErrorMessage(from: Any, until: Any) = "Random range is empty:
 
 /**得到随机的大整数。*/
 fun Random.nextBigInteger(): BigInteger {
-	return Random.nextLong().toBigInteger()
+	return nextLong().toBigInteger()
 }
 
 /**得到随机的大整数。*/
 fun Random.nextBigInteger(until:Long):BigInteger{
-	return Random.nextLong(until).toBigInteger()
+	return nextLong(until).toBigInteger()
 }
 
 /**得到随机的大整数。*/
 fun Random.nextBigInteger(from:Long,until:Long):BigInteger{
-	return Random.nextLong(from,until).toBigInteger()
+	return nextLong(from,until).toBigInteger()
 }
 
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal():BigDecimal{
-	return Random.nextDouble().toBigDecimal()
+	return nextDouble().toBigDecimal()
 }
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal(until:Double):BigDecimal{
-	return Random.nextDouble(until).toBigDecimal()
+	return nextDouble(until).toBigDecimal()
 }
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal(from:Double,until:Double):BigDecimal{
-	return Random.nextDouble(from,until).toBigDecimal()
+	return nextDouble(from,until).toBigDecimal()
 }
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal(mathContext: MathContext):BigDecimal{
-	return Random.nextDouble().toBigDecimal(mathContext)
+	return nextDouble().toBigDecimal(mathContext)
 }
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal(until:Double,mathContext: MathContext):BigDecimal{
-	return Random.nextDouble(until).toBigDecimal(mathContext)
+	return nextDouble(until).toBigDecimal(mathContext)
 }
 
 /**得到随机的大数字。*/
 fun Random.nextBigDecimal(from:Double,until:Double,mathContext: MathContext):BigDecimal{
-	return Random.nextDouble(from,until).toBigDecimal(mathContext)
+	return nextDouble(from,until).toBigDecimal(mathContext)
 }
 
 
 /**得到随机的字符。*/
 fun Random.nextChar(): Char {
-	return Random.nextInt(Char.MIN_VALUE.toInt(), Char.MAX_VALUE.toInt()).toChar()
+	return nextInt(Char.MIN_VALUE.toInt(), Char.MAX_VALUE.toInt()).toChar()
 }
 
 /**得到随机的字符。*/
 fun Random.nextChar(until: Char): Char {
-	return Random.nextInt(until.toInt()).toChar()
+	return nextInt(until.toInt()).toChar()
 }
 
 /**得到随机的字符。*/
 fun Random.nextChar(from: Char, until: Char): Char {
-	return Random.nextInt(from.toInt(), until.toInt()).toChar()
+	return nextInt(from.toInt(), until.toInt()).toChar()
 }
 
+
+/**
+ * 得到随机的元素。
+ */
+fun <T> Random.nextElement(elements: Array<out T>):T{
+	val size = elements.size
+	return when(size) {
+		0 -> throw IllegalArgumentException("Elements cannot be empty.")
+		1 -> elements[0]
+		else -> elements[nextInt(size)]
+	}
+}
+
+/**
+ * 得到随机的元素。
+ */
+fun <T> Random.nextElement(elements: List<T>):T{
+	val size = elements.size
+	return when(size) {
+		0 -> throw IllegalArgumentException("Elements cannot be empty.")
+		1 -> elements[0]
+		else -> elements[nextInt(size)]
+	}
+}
+
+
+/**
+ * 得到由[source]中的字符组成的长度为[length]的字符串。
+ */
+fun Random.nextString(source:String,length:Int):String{
+	val chars = source.toCharArray()
+	val size = chars.size
+	return when{
+		length < 0 -> throw IllegalArgumentException("Length cannot be negetive.")
+		length == 0 -> ""
+		else -> {
+			buildString{
+				repeat(length){
+					append(chars[nextInt(size)])
+				}
+			}
+		}
+	}
+}
 
 /**得到随机的UUID字符串。*/
 fun Random.nextUUIDString(): String {

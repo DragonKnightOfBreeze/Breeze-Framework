@@ -92,3 +92,4 @@ interface StringPattern : Component {
 	}
 	//endregion
 }
+

@@ -1102,6 +1102,22 @@ fun String.toCharsetOrNull(): Charset? {
 	return runCatching { Charset.forName(this) }.getOrNull()
 }
 
+
+/**
+ * 将当前字符串转化为类型。如果转化失败，则抛出异常。
+ */
+fun String.toClass(): Class<*> {
+	return Class.forName(this)
+}
+
+/**
+ * 将当前字符串转化为类型。如果转化失败，则返回null。
+ */
+fun String.toClassOrNull(): Class<*>? {
+	return runCatching { Class.forName(this) }.getOrNull()
+}
+
+
 /**
  * 将当前字符串转化为语言区域。如果转化失败，则抛出异常。
  */
@@ -1112,6 +1128,7 @@ fun String.toLocale():Locale{
 	val variant = strings.getOrNull(2)?:""
 	return Locale(language,region,variant)
 }
+
 
 /**
  * 将当前字符串转化为时区。如果转化失败，则抛出异常。
@@ -1136,21 +1153,6 @@ fun String.toTimeZoneOrNull(): TimeZone? {
 }
 
 
-/**
- * 将当前字符串转化为类型。如果转化失败，则抛出异常。
- */
-fun String.toClass(): Class<*> {
-	return Class.forName(this)
-}
-
-/**
- * 将当前字符串转化为类型。如果转化失败，则返回null。
- */
-fun String.toClassOrNull(): Class<*>? {
-	return runCatching { Class.forName(this) }.getOrNull()
-}
-
-
 private val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 
 /**
@@ -1169,7 +1171,7 @@ fun String.toDate(format: String = defaultDateFormat, locale:Locale = defaultLoc
 /**
  * 将当前字符串转化为日期。
  */
-fun String.toDate(dateFormat:DateFormat){
+fun String.toDate(dateFormat:DateFormat):Date{
 	return dateFormat.parse(this)
 }
 

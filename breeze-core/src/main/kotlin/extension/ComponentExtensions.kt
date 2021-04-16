@@ -16,7 +16,7 @@ import java.nio.charset.*
  * @see Converter
  */
 inline fun <reified T> Any?.convert(): T {
-	return if(this is T) this else Converter.convert(this)
+	return TypeConverter.convert(this)
 }
 
 /**
@@ -25,7 +25,7 @@ inline fun <reified T> Any?.convert(): T {
  * @see Converter
  */
 inline fun <reified T> Any?.convertOrNull(): T? {
-	return if(this is T) this else Converter.convertOrNull(this)
+	return TypeConverter.convertOrNull(this)
 }
 //endregion
 
