@@ -18,6 +18,7 @@ import java.util.*
  *
  * 转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
  */
+@Deprecated
 interface Converter<S,T> :ConfigurableComponent{
 	/**
 	 * 源类型。

@@ -4,14 +4,18 @@
 package com.windea.breezeframework.core.component
 
 import com.windea.breezeframework.core.extension.*
+import java.io.*
 import java.math.*
+import java.net.*
 import java.nio.charset.*
+import java.nio.file.*
 import java.text.*
 import java.time.*
 import java.time.format.*
 import java.time.temporal.*
 import java.util.*
 import java.util.concurrent.atomic.*
+import java.util.regex.*
 
 /**
  * 类型转化器。
@@ -430,6 +434,47 @@ interface TypeConverter<T> : ConfigurableComponent {
 		}
 	}
 
+	class RegexConverter:TypeConverter<Regex>{
+		override val targetType: Class<Regex> = Regex::class.java
+
+		val regexOptions = mutableSetOf<RegexOption>()
+
+		override fun configure(params: Map<String, Any?>) {
+			params.get("regexOptions")?.let { when{
+				it is Array<*> -> it.filterIsInstanceTo(regexOptions)
+				it is Iterable<*> -> it.filterIsInstanceTo(regexOptions)
+				it is Sequence<*> -> it.filterIsInstanceTo(regexOptions)
+				else -> {}
+			} }
+		}
+
+		override fun convert(value: Any): Regex {
+			return when{
+				value is Regex -> value
+				value is Pattern -> value.toRegex()
+				else -> {
+					when(regexOptions.size){
+						0 -> value.toString().toRegex()
+						1 -> value.toString().toRegex(regexOptions.first())
+						else -> value.toString().toRegex(regexOptions)
+					}
+				}
+			}
+		}
+	}
+
+	class PatternConverter:TypeConverter<Pattern>{
+		override val targetType: Class<Pattern> = Pattern::class.java
+
+		override fun convert(value: Any): Pattern {
+			return when{
+				value is Regex -> value.toPattern()
+				value is Pattern -> value
+				else -> Pattern.compile(value.toString())
+			}
+		}
+	}
+
 	class CharsetConverter:TypeConverter<Charset>{
 		override val targetType: Class<Charset> = Charset::class.java
 
@@ -603,6 +648,125 @@ interface TypeConverter<T> : ConfigurableComponent {
 				value is TemporalAccessor -> LocalDateTime.from(value)
 				value is Date ->  LocalDateTime.from(value.toInstant())
 				else -> LocalDateTime.parse(value.toString())
+			}
+		}
+	}
+
+	class InstantConverter:TypeConverter<Instant>{
+		override val targetType: Class<Instant> = Instant::class.java
+
+		override fun convert(value: Any): Instant {
+			return when{
+				value is Instant -> value
+				value is TemporalAccessor -> Instant.from(value)
+				else -> Instant.parse(value.toString())
+			}
+		}
+	}
+
+	class DurationConverter:TypeConverter<Duration>{
+		override val targetType: Class<Duration> = Duration::class.java
+
+		override fun convert(value: Any): Duration {
+			return when{
+				value is Duration -> value
+				value is TemporalAmount -> Duration.from(value)
+				value is Pair<*,*> -> {
+					val (start,end) = value
+					if(start is Temporal && end is Temporal) {
+						Duration.between(start,end)
+					}else{
+						throw IllegalArgumentException("Cannot convert '$value' to Duration.")
+					}
+				}
+				else -> Duration.parse(value.toString())
+			}
+		}
+	}
+
+	class PeriodConverter:TypeConverter<Period>{
+		override val targetType: Class<Period> = Period::class.java
+
+		var format = defaultDateTimeFormat
+		var locale = defaultLocale
+		var timeZone = defaultTimeZone
+		val formatter by lazy { DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId()) }
+
+		override fun configure(params: Map<String, Any?>) {
+			params["format"]?.let{ format = it.toString() }
+			params["locale"]?.let { locale=it.toString().toLocale() }
+			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
+		}
+
+		override fun convert(value: Any): Period {
+			return when{
+				value is Period -> value
+				value is TemporalAmount -> Period.from(value)
+				value is Pair<*,*> -> {
+					val (start,end) = value
+					if(start is LocalDate && end is LocalDate) {
+						Period.between(start,end)
+					}else{
+						throw IllegalArgumentException("Cannot convert '$value' to Period.")
+					}
+				}
+				else -> Period.parse(value.toString())
+			}
+		}
+	}
+
+	class FileConverter:TypeConverter<File>{
+		override val targetType: Class<File> = File::class.java
+
+		override fun convert(value: Any): File {
+			return when{
+				value is File -> value
+				value is Path -> value.toFile()
+				value is URL -> value.toFile()
+				value is URI -> value.toFile()
+				else -> value.toString().toFile()
+			}
+		}
+	}
+
+	class PathConverter:TypeConverter<Path>{
+		override val targetType: Class<Path> = Path::class.java
+
+		override fun convert(value: Any): Path {
+			return when{
+				value is File -> value.toPath()
+				value is Path -> value
+				value is URL -> value.toPath()
+				value is URI -> value.toPath()
+				else -> value.toString().toPath()
+			}
+		}
+	}
+
+	class UrlConverter:TypeConverter<URL>{
+		override val targetType: Class<URL> = URL::class.java
+
+		override fun convert(value: Any): URL {
+			return when{
+				value is File -> value.toUrl()
+				value is Path -> value.toUrl()
+				value is URL -> value
+				value is URI -> value.toUrl()
+				else -> value.toString().toUrl()
+			}
+		}
+	}
+
+	class UriConverter:TypeConverter<URI>{
+		override val targetType: Class<URI> = URI::class.java
+
+		override fun convert(value: Any): URI {
+			return when{
+				value is File -> value.toUri()
+				value is Path -> value.toUri()
+				value is URL -> value.toUri()
+				value is URI -> value
+				else -> value.toString().toUri()
 			}
 		}
 	}
