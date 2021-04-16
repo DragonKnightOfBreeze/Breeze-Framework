@@ -14,7 +14,6 @@ import kotlin.reflect.*
  *
  * 用于类映射对象和映射之间的相互转化。
  */
-@BreezeComponent
 interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 	/**
 	 * 默认的类映射对象的序列化器。

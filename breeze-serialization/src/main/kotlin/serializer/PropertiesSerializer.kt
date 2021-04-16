@@ -15,7 +15,6 @@ import java.util.*
  * @see JacksonPropertiesSerializer
  * @see BreezePropertiesSerializer
  */
-@BreezeComponent
 interface PropertiesSerializer : DataSerializer {
 	override val dataFormat: DataFormat get() = DataFormat.Properties
 

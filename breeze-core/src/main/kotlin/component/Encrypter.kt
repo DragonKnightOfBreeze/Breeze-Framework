@@ -14,8 +14,7 @@ import javax.crypto.spec.*
  * 加密器用于根据指定的加密算法，对字符串进行加密和解密，某些加密算法可能不支持解密。
  */
 @UnstableApi
-@BreezeComponent
-interface Encrypter {
+interface Encrypter:Component {
 	/**
 	 * 加密指定的字节数组。
 	 */
@@ -25,6 +24,23 @@ interface Encrypter {
 	 * 解密指定的字节数组。某些加密算法可能不支持解密。
 	 */
 	fun decrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
+
+	companion object Registry:AbstractComponentRegistry<Encrypter>(){
+		init {
+			registerDefaultEncrypters()
+		}
+
+		private fun registerDefaultEncrypters() {
+			register(DesEncrypter)
+			register(AesEncrypter)
+			register(Md5Encrypter)
+			register(Sha1Encrypter)
+			register(Sha256Encrypter)
+			register(Sha512Encrypter)
+			register(Sha3256Encrypter)
+			register(Sha3512Encrypter)
+		}
+	}
 
 	//region Default Encrypters
 	/**
@@ -137,37 +153,4 @@ interface Encrypter {
 
 	//TODO 数字签名
 	//endregion
-
-	companion object {
-		private val encrypters = mutableListOf<Encrypter>()
-
-		/**
-		 * 得到已注册的加密器列表。
-		 */
-		@JvmStatic fun values(): MutableList<Encrypter> {
-			return encrypters
-		}
-
-		/**
-		 * 注册指定的加密器。
-		 */
-		@JvmStatic fun register(encrypter: Encrypter) {
-			encrypters.add(encrypter)
-		}
-
-		init {
-			registerDefaultEncrypters()
-		}
-
-		private fun registerDefaultEncrypters() {
-			register(DesEncrypter)
-			register(AesEncrypter)
-			register(Md5Encrypter)
-			register(Sha1Encrypter)
-			register(Sha256Encrypter)
-			register(Sha512Encrypter)
-			register(Sha3256Encrypter)
-			register(Sha3512Encrypter)
-		}
-	}
 }

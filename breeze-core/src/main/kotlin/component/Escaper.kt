@@ -12,8 +12,7 @@ import com.windea.breezeframework.core.annotation.*
  *
  * 注意：不考虑转义特殊的Unicode字符。
  */
-@BreezeComponent
-interface Escaper {
+interface Escaper:Component {
 	/**
 	 * 转义指定的字符串。
 	 */
@@ -23,6 +22,29 @@ interface Escaper {
 	 * 反转义指定的字符串。
 	 */
 	fun unescape(value: String): String
+
+	companion object :AbstractComponentRegistry<Escaper>(){
+		init {
+			registerDefaultEscapers()
+			registerLineBreakEscapers()
+		}
+
+		private fun registerDefaultEscapers() {
+			register(KotlinEscaper)
+			register(JavaEscaper)
+			register(JavaScriptEscaper)
+			register(JsonEscaper)
+			register(XmlEscaper)
+			register(XmlAttributeEscaper)
+			register(XmlContentEscaper)
+			register(HtmlEscaper)
+		}
+
+		private fun registerLineBreakEscapers() {
+			register(LineBreakEscaper)
+			register(HtmlLineBreakEscaper)
+		}
+	}
 
 	//region Default Escapers
 	abstract class AbstractEscaper : Escaper {
@@ -138,43 +160,4 @@ interface Escaper {
 		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
 	}
 	//endregion
-
-	companion object {
-		private val escapers = mutableListOf<Escaper>()
-
-		/**
-		 * 得到已注册的转义器列表。
-		 */
-		@JvmStatic fun values(): List<Escaper> {
-			return escapers
-		}
-
-		/**
-		 * 注册指定的转义器。
-		 */
-		@JvmStatic fun register(escaper: Escaper) {
-			escapers.add(escaper)
-		}
-
-		init {
-			registerDefaultEscapers()
-			registerLineBreakEscapers()
-		}
-
-		private fun registerDefaultEscapers() {
-			register(KotlinEscaper)
-			register(JavaEscaper)
-			register(JavaScriptEscaper)
-			register(JsonEscaper)
-			register(XmlEscaper)
-			register(XmlAttributeEscaper)
-			register(XmlContentEscaper)
-			register(HtmlEscaper)
-		}
-
-		private fun registerLineBreakEscapers() {
-			register(LineBreakEscaper)
-			register(HtmlLineBreakEscaper)
-		}
-	}
 }

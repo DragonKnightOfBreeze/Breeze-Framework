@@ -15,8 +15,7 @@ import java.util.*
  * 编码器用于对字符串进行编码和解码，
  */
 @UnstableApi
-@BreezeComponent
-interface Encoder {
+interface Encoder:Component {
 	/**
 	 * 编码指定的字符串，以指定的字符集显示。
 	 */
@@ -26,6 +25,20 @@ interface Encoder {
 	 * 解码指定的字符串，以指定的字符集显示。
 	 */
 	fun decode(value: String, charset: Charset = Charsets.UTF_8): String
+
+	companion object Registry: AbstractComponentRegistry<Encoder>(){
+		init {
+			registerDefaultEncoders()
+		}
+
+		private fun registerDefaultEncoders() {
+			register(Base64Encoder)
+			register(Base64UrlEncoder)
+			register(Base64MimeEncoder)
+			register(UrlEncoder)
+			register(HexEncoder)
+		}
+	}
 
 	//region Default Encoders
 	/**
@@ -93,34 +106,4 @@ interface Encoder {
 		}
 	}
 	//endregion
-
-	companion object {
-		private val encoders = mutableListOf<Encoder>()
-
-		/**
-		 * 得到已注册的编码器列表。
-		 */
-		@JvmStatic fun values(): List<Encoder> {
-			return encoders
-		}
-
-		/**
-		 *  注册指定的编码器。
-		 */
-		@JvmStatic fun register(encoder: Encoder) {
-			encoders.add(encoder)
-		}
-
-		init {
-			registerDefaultEncoders()
-		}
-
-		private fun registerDefaultEncoders() {
-			register(Base64Encoder)
-			register(Base64UrlEncoder)
-			register(Base64MimeEncoder)
-			register(UrlEncoder)
-			register(HexEncoder)
-		}
-	}
 }

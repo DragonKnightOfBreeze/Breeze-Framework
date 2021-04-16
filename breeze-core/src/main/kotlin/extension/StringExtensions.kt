@@ -19,6 +19,7 @@ import java.time.*
 import java.time.format.*
 import java.time.format.DateTimeFormatter.*
 import java.util.*
+import java.util.concurrent.*
 import kotlin.contracts.*
 
 //org.apache.commons.lang3.StringUtils
@@ -1101,9 +1102,19 @@ fun String.toCharsetOrNull(): Charset? {
 	return runCatching { Charset.forName(this) }.getOrNull()
 }
 
+/**
+ * 将当前字符串转化为语言区域。如果转化失败，则抛出异常。
+ */
+fun String.toLocale():Locale{
+	val strings = this.split('_')
+	val language = strings.getOrNull(0)?:""
+	val region = strings.getOrNull(1)?:""
+	val variant = strings.getOrNull(2)?:""
+	return Locale(language,region,variant)
+}
 
 /**
- * 将当前字符串转化为时区。如果转化失败， 则抛出异常。
+ * 将当前字符串转化为时区。如果转化失败，则抛出异常。
  */
 fun String.toTimeZone(): TimeZone {
 	val timeZone = TimeZone.getTimeZone(this)
@@ -1140,19 +1151,33 @@ fun String.toClassOrNull(): Class<*>? {
 }
 
 
+private val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
+
 /**
  * 将当前字符串转化为日期。
  */
 @JvmOverloads
-inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date {
-	return SimpleDateFormat(format).parse(this)
+fun String.toDate(format: String = defaultDateFormat, locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
+	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
+		ThreadLocal.withInitial {
+			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
+		}
+	}.get()
+	return dateFormat.parse(this)
+}
+
+/**
+ * 将当前字符串转化为日期。
+ */
+fun String.toDate(dateFormat:DateFormat){
+	return dateFormat.parse(this)
 }
 
 /**
  * 将当前字符串转化为本地日期。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate {
+fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate {
 	return LocalDate.parse(this, formatter)
 }
 
@@ -1160,7 +1185,7 @@ inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DAT
  * 将当前字符串转化为本地日期时间。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime {
+fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime {
 	return LocalDateTime.parse(this, formatter)
 }
 
@@ -1168,28 +1193,28 @@ inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL
  * 将当前字符串转化为本地时间。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
+fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
 	return LocalDateTime.parse(this, formatter)
 }
 
 /**
  * 将当前字符串转化为时长。
  */
-inline fun CharSequence.toDuration(): Duration {
+fun CharSequence.toDuration(): Duration {
 	return Duration.parse(this)
 }
 
 /**
  * 将当前字符串转化为时期。
  */
-inline fun CharSequence.toPeriod(): Period {
+fun CharSequence.toPeriod(): Period {
 	return Period.parse(this)
 }
 
 /**
  * 将当前字符串转化为瞬时。
  */
-inline fun CharSequence.toInstant(): Instant {
+fun CharSequence.toInstant(): Instant {
 	return Instant.parse(this)
 }
 
@@ -1199,7 +1224,7 @@ inline fun CharSequence.toInstant(): Instant {
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColor(): Color {
+fun String.toColor(): Color {
 	return Color.parse(this)
 }
 
@@ -1208,7 +1233,7 @@ inline fun String.toColor(): Color {
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColorOrNull(): Color? {
+fun String.toColorOrNull(): Color? {
 	return Color.parseOrNull(this)
 }
 

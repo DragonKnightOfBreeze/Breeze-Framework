@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
 
 /**
@@ -11,8 +10,7 @@ import com.windea.breezeframework.core.extension.*
  *
  * 字母格式用于表示单词组的显示格式，基于某种大小写和单词的分割方式。
  */
-@BreezeComponent
-interface LetterCase {
+interface LetterCase:Component {
 	/**
 	 * 判断指定的字符串是否匹配指定的单词格式。
 	 */
@@ -42,6 +40,49 @@ interface LetterCase {
 	 * 基于单词格式，拼接字符串。
 	 */
 	fun joinToString(value: Sequence<String>): String
+
+	companion object Registry: AbstractComponentRegistry<LetterCase>(){
+		init {
+			registerDefaultLetterCases()
+			registerPathLikeLetterCases()
+		}
+
+		private fun registerDefaultLetterCases() {
+			register(LowerCase)
+			register(UpperCase)
+			register(Capitalized)
+			register(LowerCaseWords)
+			register(UpperCaseWords)
+			register(FirstWordCapitalized)
+			register(CapitalizedWords)
+			register(Words)
+
+			register(CamelCase)
+			register(PascalCase)
+			register(SnakeCase)
+			register(ScreamingSnakeCase)
+			register(UnderscoreWords)
+			register(KebabCase)
+			register(KebabUpperCase)
+			register(HyphenWords)
+		}
+
+		private fun registerPathLikeLetterCases() {
+			register(ReferencePath)
+			register(LinuxPath)
+			register(WindowsPath)
+		}
+
+		/**
+		 * 推断单词格式。
+		 */
+		fun infer(value: String): LetterCase? {
+			for(letterCase in values()) {
+				if(letterCase.matches(value)) return letterCase
+			}
+			return null
+		}
+	}
 
 	//region Default Letter Cases
 	/**
@@ -285,7 +326,7 @@ interface LetterCase {
 	}
 	//endregion
 
-	//region Path-like Letter Cases
+	//region Path Like Letter Cases
 	/**
 	 * 以单个点分隔的路径。
 	 *
@@ -331,83 +372,4 @@ interface LetterCase {
 		override fun joinToString(value: Sequence<String>) = value.joinToString("\\")
 	}
 	//endregion
-
-	companion object {
-		private val letterCases = mutableListOf<LetterCase>()
-
-		/**
-		 * 得到已注册的单词格式列表。
-		 */
-		@JvmStatic fun values(): List<LetterCase> {
-			return letterCases
-		}
-
-		/**
-		 * 注册指定的单词格式。
-		 */
-		@JvmStatic fun register(letterCase: LetterCase) {
-			letterCases += letterCase
-		}
-
-		/**
-		 * 推断单词格式。
-		 */
-		@JvmStatic fun infer(value: String): LetterCase? {
-			for(letterCase in letterCases) {
-				if(letterCase.matches(value)) return letterCase
-			}
-			return null
-		}
-
-		private fun CharSequence.firstCharToUpperCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toUpperCase() + this.substring(1)
-			}
-		}
-
-		private fun CharSequence.firstCharToLowerCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toLowerCase() + this.substring(1)
-			}
-		}
-
-		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
-
-		private fun CharSequence.splitWords(): String {
-			return this.replace(splitWordsRegex, " $1")
-		}
-
-		init {
-			registerDefaultLetterCases()
-			registerPathLikeLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
-			register(LowerCase)
-			register(UpperCase)
-			register(Capitalized)
-			register(LowerCaseWords)
-			register(UpperCaseWords)
-			register(FirstWordCapitalized)
-			register(CapitalizedWords)
-			register(Words)
-
-			register(CamelCase)
-			register(PascalCase)
-			register(SnakeCase)
-			register(ScreamingSnakeCase)
-			register(UnderscoreWords)
-			register(KebabCase)
-			register(KebabUpperCase)
-			register(HyphenWords)
-		}
-
-		private fun registerPathLikeLetterCases() {
-			register(ReferencePath)
-			register(LinuxPath)
-			register(WindowsPath)
-		}
-	}
 }

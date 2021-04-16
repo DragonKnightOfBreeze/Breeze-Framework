@@ -3,7 +3,6 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
 import java.lang.reflect.*
 
@@ -13,8 +12,7 @@ import java.lang.reflect.*
  * 查询器用于根据指定类型的查询对象，查询目标对象。
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
-@BreezeComponent
-interface Querier<T : Any, R> {
+interface Querier<T : Any, R> : Component {
 	/**
 	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则抛出异常。
 	 */
@@ -25,6 +23,43 @@ interface Querier<T : Any, R> {
 	 */
 	fun queryOrNull(value: Any, queryObject: T): R? {
 		return runCatching { query(value, queryObject) }.getOrNull()
+	}
+
+	/**
+	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则返回默认值。
+	 */
+	fun queryOrDefault(value: Any, queryObject: T, defaultValue: R): R? {
+		return queryOrNull(value, queryObject) ?: defaultValue
+	}
+
+	/**
+	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则返回默认值。
+	 */
+	fun queryOrElse(value: Any, queryObject: T, defaultValue: (Any,T)->R): R? {
+		return queryOrNull(value, queryObject) ?: defaultValue(value,queryObject)
+	}
+
+	companion object Registry: AbstractComponentRegistry<Querier<*,*>>(){
+		init {
+			registerDefaultQueriers()
+			registerReflectionQueriers()
+		}
+
+		private fun registerDefaultQueriers() {
+			register(ResultsQuerier)
+			register(FilterableResultsQuerier)
+			register(FirstResultQuerier)
+			register(LastResultQuerier)
+			register(StringQuerier)
+			register(RegexQuerier)
+			register(IndexQuerier)
+			register(IndexRangeQuerier)
+		}
+
+		private fun registerReflectionQueriers() {
+			register(ReflectionQuerier)
+			register(ReflectionMemberQuerier)
+		}
 	}
 
 	//region Default Queriers
@@ -292,43 +327,4 @@ interface Querier<T : Any, R> {
 		}
 	}
 	//endregion
-
-	companion object {
-		private val queriers = mutableListOf<Querier<*, *>>()
-
-		/**
-		 * 得到已注册的查询器。
-		 */
-		@JvmStatic fun values(): List<Querier<*, *>> {
-			return queriers
-		}
-
-		/**
-		 * 注册指定的查询器。
-		 */
-		@JvmStatic fun register(querier: Querier<*, *>) {
-			queriers.add(querier)
-		}
-
-		init {
-			registerDefaultQueriers()
-			registerReflectionQueriers()
-		}
-
-		private fun registerDefaultQueriers() {
-			register(ResultsQuerier)
-			register(FilterableResultsQuerier)
-			register(FirstResultQuerier)
-			register(LastResultQuerier)
-			register(StringQuerier)
-			register(RegexQuerier)
-			register(IndexQuerier)
-			register(IndexRangeQuerier)
-		}
-
-		private fun registerReflectionQueriers() {
-			register(ReflectionQuerier)
-			register(ReflectionMemberQuerier)
-		}
-	}
 }

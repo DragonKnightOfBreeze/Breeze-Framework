@@ -3,7 +3,7 @@
 
 package com.windea.breezeframework.serialization
 
-import com.windea.breezeframework.core.annotation.*
+import com.windea.breezeframework.core.component.*
 import com.windea.breezeframework.serialization.extension.*
 import com.windea.breezeframework.serialization.serializer.*
 import java.lang.reflect.*
@@ -15,8 +15,7 @@ import java.lang.reflect.*
  *
  * @see DataSerializer
  */
-@BreezeComponent
-interface DataFormat {
+interface DataFormat: Component {
 	/**
 	 * 文件扩展名。
 	 */
@@ -63,7 +62,21 @@ interface DataFormat {
 		return serializer.deserialize(value, type)
 	}
 
-	//region String Data Formats
+	companion object Registry:AbstractComponentRegistry<DataFormat>(){
+		init {
+			registerStringDataFormats()
+		}
+
+		private fun registerStringDataFormats() {
+			register(Json)
+			register(Yaml)
+			register(Xml)
+			register(Properties)
+			register(Csv)
+		}
+	}
+
+	//region Default Data Formats
 	/**
 	 * Json数据格式。
 	 */
@@ -110,34 +123,4 @@ interface DataFormat {
 		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 	//endregion
-
-	companion object{
-		private val dataFormats = mutableListOf<DataFormat>()
-
-		/**
-		 * 得到已注册的数据格式列表。
-		 */
-		@JvmStatic fun values():List<DataFormat>{
-			return dataFormats
-		}
-
-		/**
-		 * 注册指定的数据格式。
-		 */
-		@JvmStatic fun register(dataFormat: DataFormat){
-			dataFormats.add(dataFormat)
-		}
-
-		init {
-			registerStringDataFormats()
-		}
-
-		private fun registerStringDataFormats() {
-			register(Json)
-			register(Yaml)
-			register(Xml)
-			register(Properties)
-			register(Csv)
-		}
-	}
 }

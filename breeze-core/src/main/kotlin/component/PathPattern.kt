@@ -11,9 +11,8 @@ import com.windea.breezeframework.core.extension.*
  *
  * 路径模式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
-@BreezeComponent
 @Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
-interface PathPattern {
+interface PathPattern:Component {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
 	 */
@@ -77,6 +76,19 @@ interface PathPattern {
 	 * 如果指定路径为空路径，则返回查询对象本身。
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
+
+	companion object Registry: AbstractComponentRegistry<PathPattern>(){
+		init {
+			registerDefaultPathPatterns()
+		}
+
+		private fun registerDefaultPathPatterns() {
+			register(StandardPath)
+			register(JsonPointerPath)
+			register(AntPath)
+			register(ReferencePath)
+		}
+	}
 
 	//region Default Path Patterns
 	abstract class AbstractPathPattern(
@@ -471,33 +483,4 @@ interface PathPattern {
 		}
 	}
 	//endregion
-
-	companion object {
-		private val pathPatterns = mutableListOf<PathPattern>()
-
-		/**
-		 * 得到已注册的路径模式列表。
-		 */
-		@JvmStatic fun values(): List<PathPattern> {
-			return pathPatterns
-		}
-
-		/**
-		 * 注册指定的路径模式。
-		 */
-		@JvmStatic fun register(pathPattern: PathPattern) {
-			pathPatterns.add(pathPattern)
-		}
-
-		init {
-			registerDefaultPathPatterns()
-		}
-
-		private fun registerDefaultPathPatterns() {
-			register(StandardPath)
-			register(JsonPointerPath)
-			register(AntPath)
-			register(ReferencePath)
-		}
-	}
 }

@@ -3,21 +3,34 @@
 
 package com.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
-
 /**
  * 字符串模式。
  *
  * 字符串模式用于表示字符串符合某种格式或规则。
  */
-@BreezeComponent
-interface StringPattern {
+interface StringPattern : Component {
 	/**
 	 * 判断指定的字符串是否匹配指定的字符串模式。
 	 */
 	fun matches(value: String): Boolean
 
-	// Default String Patterns
+	companion object Registry : AbstractComponentRegistry<StringPattern>() {
+		init {
+			registerDefaultStringPatterns()
+		}
+
+		private fun registerDefaultStringPatterns() {
+			register(BooleanPattern)
+			register(WildcardBooleanPattern)
+			register(IntegerPattern)
+			register(NumberPattern)
+			register(NumericPattern)
+			register(AlphaPattern)
+			register(AlphanumericPattern)
+		}
+	}
+
+	//region Default String Patterns
 	object BooleanPattern : StringPattern {
 		private val values = arrayOf("true", "false")
 
@@ -60,54 +73,22 @@ interface StringPattern {
 		}
 	}
 
-	object NumericPattern: StringPattern{
-		override fun matches(value : String): Boolean{
+	object NumericPattern : StringPattern {
+		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetter() }
 		}
 	}
 
-	object AlphaPattern:StringPattern{
+	object AlphaPattern : StringPattern {
 		override fun matches(value: String): Boolean {
-			return value.isNotEmpty() &&value.all {it.isDigit()}
+			return value.isNotEmpty() && value.all { it.isDigit() }
 		}
 	}
 
-	object AlphanumericPattern:StringPattern{
+	object AlphanumericPattern : StringPattern {
 		override fun matches(value: String): Boolean {
-			return value.isNotEmpty() && value.all{ it.isLetterOrDigit()}
+			return value.isNotEmpty() && value.all { it.isLetterOrDigit() }
 		}
 	}
 	//endregion
-
-	companion object {
-		private val stringPatterns = mutableListOf<StringPattern>()
-
-		/**
-		 * 得到已注册的字符串模式列表。
-		 */
-		@JvmStatic fun values(): List<StringPattern> {
-			return stringPatterns
-		}
-
-		/**
-		 * 注册指定的字符串模式。
-		 */
-		@JvmStatic fun register(letterCase: StringPattern) {
-			stringPatterns += letterCase
-		}
-
-		init {
-			registerDefaultLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
-			register(BooleanPattern)
-			register(WildcardBooleanPattern)
-			register(IntegerPattern)
-			register(NumberPattern)
-			register(NumericPattern)
-			register(AlphaPattern)
-			register(AlphanumericPattern)
-		}
-	}
 }

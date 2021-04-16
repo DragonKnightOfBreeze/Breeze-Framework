@@ -69,15 +69,15 @@ annotation class WeakDeprecated(
 annotation class TodoMarker
 
 
-/**
- * 当应用到接口或类X时，表示X定义了一个组件。
- * 组件用于实现某个特定的功能，拥有数种不同类型的实现，并可进行扩展。
- * 一般情况下，需要注册以被正确启用。
- *
- * When applied to interface or class X specifies that X defines a component.
- * Component is used to implement a specific function, with various types of implementation, and is extensible.
- * Normally, it should be registered to be enabled correctly.
- */
-@MustBeDocumented
-@Target(CLASS)
-annotation class BreezeComponent
+///**
+// * 当应用到接口或类X时，表示X定义了一个组件。
+// * 组件用于实现某个特定的功能，拥有数种不同类型的实现，并可进行扩展。
+// * 一般情况下，需要注册以被正确启用。
+// *
+// * When applied to interface or class X specifies that X defines a component.
+// * Component is used to implement a specific function, with various types of implementation, and is extensible.
+// * Normally, it should be registered to be enabled correctly.
+// */
+//@MustBeDocumented
+//@Target(CLASS)
+//annotation class BreezeComponent

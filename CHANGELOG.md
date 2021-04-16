@@ -471,6 +471,7 @@
 * [X] 公开`xxxSmartly()`方法
 * [X] 实现并行迭代方法`parallelForEach`
 * [X] 完善`breeze-serialization`
+* [X] 重构组件相关代码
 * [ ] 实现并发迭代的集合
 
 # 长期
