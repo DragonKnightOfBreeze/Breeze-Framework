@@ -118,6 +118,7 @@ interface Converter<T> : Component {
 								}
 							}
 						} catch(e: Exception) {
+							e.printStackTrace()
 							continue
 						}
 					}
@@ -162,6 +163,7 @@ interface Converter<T> : Component {
 								return (converter as Converter<Any?>).convert(value) as T
 							}
 						} catch(e: Exception) {
+							e.printStackTrace()
 							continue
 						}
 					}
@@ -454,7 +456,7 @@ interface Converter<T> : Component {
 		ConfigurableParam("raw", "Boolean", "false", comment = "Convert value to string by 'toString()' method"),
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class StringConverter : Converter<String>, Configurable<StringConverter> {
 		companion object Default : StringConverter()
@@ -494,8 +496,8 @@ interface Converter<T> : Component {
 		}
 
 		override fun convert(value: Any): String {
-			 if(raw) return value.toString()
-			return when{
+			if(raw) return value.toString()
+			return when {
 				value is Date -> threadLocalDateFormat.get().format(value)
 				value is TemporalAccessor -> formatter.format(value)
 				else -> value.toString()
@@ -504,7 +506,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>",comment = "Regex options")
+		ConfigurableParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", comment = "Regex options")
 	)
 	open class RegexConverter : Converter<Regex>, Configurable<RegexConverter> {
 		companion object Default : RegexConverter()
@@ -642,7 +644,7 @@ interface Converter<T> : Component {
 	@ConfigurableParams(
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class DateConverter : Converter<Date>, Configurable<DateConverter> {
 		companion object Default : DateConverter()
@@ -684,7 +686,7 @@ interface Converter<T> : Component {
 	@ConfigurableParams(
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class LocalDateConverter : Converter<LocalDate>, Configurable<LocalDateConverter> {
 		companion object Default : LocalDateConverter()
@@ -728,7 +730,7 @@ interface Converter<T> : Component {
 	@ConfigurableParams(
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class LocalTimeConverter : Converter<LocalTime>, Configurable<LocalTimeConverter> {
 		companion object Default : LocalTimeConverter()
@@ -772,7 +774,7 @@ interface Converter<T> : Component {
 	@ConfigurableParams(
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class LocalDateTimeConverter : Converter<LocalDateTime>, Configurable<LocalDateTimeConverter> {
 		companion object Default : LocalDateTimeConverter()
@@ -848,7 +850,7 @@ interface Converter<T> : Component {
 	@ConfigurableParams(
 		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
 	open class PeriodConverter : Converter<Period>, Configurable<PeriodConverter> {
 		companion object Default : PeriodConverter()
@@ -951,11 +953,85 @@ interface Converter<T> : Component {
 			}
 		}
 	}
+
+
+	@ConfigurableParams(
+		ConfigurableParam("className", "String", comment = "Ful class name of enum")
+	)
+	open class EnumConverter : Converter<Enum<*>>, Configurable<EnumConverter> {
+		companion object Default : EnumConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Enum<*>> = Enum::class.java
+
+		var className: String? = null
+			private set
+		var enumClass: Class<*>? = null
+			private set
+		val enumValues :MutableList<Enum<*>> = mutableListOf()
+		val enumValueMap: MutableMap<String, Enum<*>> = mutableMapOf()
+
+		fun setEnumClassAndValues() {
+			if(className == null) throw IllegalArgumentException("Param 'className' must not be null.")
+			val enumClass = className?.toClassOrNull()
+			if(enumClass == null ||!enumClass.isEnum) throw IllegalArgumentException("Param 'className' does not represent an enum class.")
+			this.enumClass = enumClass
+			val enumConstants = enumClass.enumConstants
+			for(enumConstant in enumConstants) {
+				enumConstant as Enum<*>
+				enumValues += enumConstant
+				enumValueMap[enumConstant.name] = enumConstant
+			}
+		}
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["className"]?.toString()?.let { className = it }
+			setEnumClassAndValues()
+		}
+
+		override fun copy(params: Map<String, Any?>): EnumConverter {
+			return EnumConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): Enum<*> {
+			if(className == null || enumClass == null){
+				throw IllegalArgumentException("Cannot get enum class. Param 'className' is not valid.")
+			}
+			return when{
+				value is Number -> {
+					val index = value.toInt()
+					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
+				}
+				else -> {
+					val name = value.toString()
+					enumValueMap[name]?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
+				}
+			}
+		}
+
+		override fun convertOrNull(value: Any): Enum<*>? {
+			if(className == null || enumClass == null){
+				throw IllegalArgumentException("Cannot get enum class. Param 'className' is not valid.")
+			}
+			return when{
+				value is Number -> {
+					val index = value.toInt()
+					enumValues.getOrNull(index)
+				}
+				else -> {
+					val name = value.toString()
+					enumValueMap[name]
+				}
+			}
+		}
+	}
 	//endregion
 
 	//region Collection Converters
-	open class ByteArrayConverter:Converter <ByteArray>,Configurable<ByteArrayConverter>{
-		companion object Default: ByteArrayConverter()
+	open class ByteArrayConverter : Converter<ByteArray>, Configurable<ByteArrayConverter> {
+		companion object Default : ByteArrayConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -974,8 +1050,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-	open class StringArrayConverter:Converter<Array<String>>,Configurable<StringArrayConverter>{
-		companion object Default:StringArrayConverter()
+	open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
+		companion object Default : StringArrayConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -994,8 +1070,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-	open class StringListConverter:Converter<List<*>>,Configurable<StringListConverter>{
-		companion object Default:StringListConverter()
+	open class StringListConverter : Converter<List<*>>, Configurable<StringListConverter> {
+		companion object Default : StringListConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -1014,8 +1090,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-	open class StringSetConverter:Converter<Set<*>>,Configurable<StringSetConverter>{
-		companion object Default:StringSetConverter()
+	open class StringSetConverter : Converter<Set<*>>, Configurable<StringSetConverter> {
+		companion object Default : StringSetConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -1034,8 +1110,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-	open class StringSequenceConverter:Converter<Sequence<*>>,Configurable<StringSequenceConverter>{
-		companion object Default:StringSequenceConverter()
+	open class StringSequenceConverter : Converter<Sequence<*>>, Configurable<StringSequenceConverter> {
+		companion object Default : StringSequenceConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -1054,8 +1130,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-	open class StringMapConverter:Converter<Map<*,*>>,Configurable<StringMapConverter>{
-		companion object Default:StringMapConverter()
+	open class StringMapConverter : Converter<Map<*, *>>, Configurable<StringMapConverter> {
+		companion object Default : StringMapConverter()
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -1069,7 +1145,7 @@ interface Converter<T> : Component {
 			TODO("Not yet implemented")
 		}
 
-		override fun convert(value: Any): Map<String,String> {
+		override fun convert(value: Any): Map<String, String> {
 			TODO("Not yet implemented")
 		}
 	}
