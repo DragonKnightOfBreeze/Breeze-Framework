@@ -981,7 +981,7 @@ interface Converter<T> : Component {
 			for(enumConstant in enumConstants) {
 				enumConstant as Enum<*>
 				enumValues += enumConstant
-				enumValueMap[enumConstant.name] = enumConstant
+				enumValueMap[enumConstant.name.toLowerCase()] = enumConstant
 			}
 		}
 
@@ -1005,7 +1005,7 @@ interface Converter<T> : Component {
 					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
 				}
 				else -> {
-					val name = value.toString()
+					val name = value.toString().toLowerCase()
 					enumValueMap[name]?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
 				}
 			}
