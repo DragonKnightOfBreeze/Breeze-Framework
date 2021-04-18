@@ -77,7 +77,7 @@ interface LetterCase:Component {
 		 * 推断单词格式。
 		 */
 		fun infer(value: String): LetterCase? {
-			for(letterCase in values()) {
+			for(letterCase in components) {
 				if(letterCase.matches(value)) return letterCase
 			}
 			return null

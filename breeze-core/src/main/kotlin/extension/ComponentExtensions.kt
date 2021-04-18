@@ -11,21 +11,31 @@ import java.nio.charset.*
 
 //region Converter Extensions
 /**
- * 将当前对象转化为指定类型。如果转换失败，则抛出异常。转化后的对象是基于一般转化逻辑得到的新对象。
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则抛出异常。
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convert(): T {
-	return TypeConverter.convert(this)
+inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
+	return Converter.convert(this, params)
 }
 
 /**
- * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般转化逻辑得到的新对象。
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则返回null。
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convertOrNull(): T? {
-	return TypeConverter.convertOrNull(this)
+inline fun <reified T> Any?.convertOrNull(params: Map<String, Any?> = emptyMap()): T? {
+	return Converter.convertOrNull(this, params)
+}
+//endregion
+
+//region Random Generator Extensions
+/**
+ * 生成指定类型的随机值。
+ */
+@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
+inline fun <reified T : Any> randomValue(): T {
+	return RandomGenerator.generate()
 }
 //endregion
 
@@ -184,7 +194,7 @@ fun String.switchCaseBy(targetLetterCase: LetterCase): String {
  *
  * @see StringPattern
  */
-fun String.matchesBy(stringPattern:StringPattern):Boolean{
+fun String.matchesBy(stringPattern: StringPattern): Boolean {
 	return stringPattern.matches(this)
 }
 //endregion
@@ -209,7 +219,6 @@ fun String.matchesBy(path: String, pathPattern: PathPattern = PathPattern.Standa
 fun String.resolveVariablesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Map<String, String> {
 	return pathPattern.resolveVariables(this, path)
 }
-
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
@@ -244,7 +253,6 @@ fun <T> Map<*, *>.queryBy(path: String, pathPattern: PathPattern = PathPattern.S
 	return pathPattern.query(this, path)
 }
 
-
 /**
  * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者抛出异常。
  * 如果指定路径为空路径，则目标返回查询对象本身。
@@ -277,7 +285,6 @@ fun <T> List<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.Stand
 fun <T> Map<*, *>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
 	return pathPattern.get(this, path)
 }
-
 
 /**
  * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
@@ -312,9 +319,41 @@ fun <T> Map<*, *>.getOrNullBy(path: String, pathPattern: PathPattern = PathPatte
 	return pathPattern.getOrNull(this, path)
 }
 
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
 
 /**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回默认值。
  * 如果指定路径为空路径，则目标返回查询对象本身。
  * 默认使用标准路径[PathPattern.StandardPath]。
  *
@@ -325,7 +364,7 @@ fun <T> Array<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPatter
 }
 
 /**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回默认值。
  * 如果指定路径为空路径，则目标返回查询对象本身。
  * 默认使用标准路径[PathPattern.StandardPath]。
  *
@@ -336,7 +375,7 @@ fun <T> List<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern
 }
 
 /**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回默认值。
  * 如果指定路径为空路径，则目标返回查询对象本身。
  * 默认使用标准路径[PathPattern.StandardPath]。
  *

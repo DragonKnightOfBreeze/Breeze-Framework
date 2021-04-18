@@ -73,22 +73,3 @@ inline fun <reified T : Any> defaultValue(): T = when(val type = T::class) {
 	String::class -> ""
 	else -> type.java.getDeclaredConstructor().newInstance()
 } as T
-
-//得到指定类型的随机值
-
-/**
- * 尝试得到当前类型的随机值。
- */
-@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-inline fun <reified T : Any> randomValue(): T = when(val type = T::class) {
-	Byte::class -> Random.nextByte()
-	Short::class -> Random.nextShort()
-	Int::class -> Random.nextInt()
-	Long::class -> Random.nextLong()
-	Float::class -> Random.nextFloat()
-	Double::class -> Random.nextDouble()
-	Boolean::class -> Random.nextBoolean()
-	Char::class -> Random.nextChar()
-	String::class -> Random.nextUUIDString()
-	else -> type.java.getDeclaredConstructor().newInstance()
-} as T

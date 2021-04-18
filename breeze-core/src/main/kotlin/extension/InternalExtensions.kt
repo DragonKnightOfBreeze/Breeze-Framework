@@ -29,8 +29,7 @@ internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
 
-
-internal const val defaultDateFormat = "yyyy-MM-yy"
+internal const val defaultDateFormat = "yyyy-MM-dd"
 internal const val defaultTimeFormat = "HH:mm:ss"
 internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
 internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
@@ -38,30 +37,30 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
 //internal val threadLocalDateFormatCache = ConcurrentHashMap<String,ThreadLocal<DateFormat>>()
 
-internal fun Any.isNullLike():Boolean{
-	return when(this){
-		is Boolean -> !this
-		is Number -> toString().let{ it=="0" || it=="0.0" }
-		is CharSequence -> isEmpty()
-		is Array<*> -> isEmpty()
-		is Collection<*> -> isEmpty()
-		is Iterable<*> -> none()
-		is Sequence<*> -> none()
-		is Map<*,*> -> isEmpty()
-		else -> false
-	}
-}
-
-internal fun Any.isNotNullLike():Boolean{
-	return when(this){
-		is Boolean -> this
-		is Number -> toString().let{ it!="0" || it!="0.0" }
-		is CharSequence -> isNotEmpty()
-		is Array<*> -> isNotEmpty()
-		is Collection<*> -> isNotEmpty()
-		is Iterable<*> -> any()
-		is Sequence<*> -> any()
-		is Map<*,*> -> isNotEmpty()
-		else -> false
-	}
-}
+//internal fun Any.isNullLike():Boolean{
+//	return when(this){
+//		is Boolean -> !this
+//		is Number -> toString().let{ it=="0" || it=="0.0" }
+//		is CharSequence -> isEmpty()
+//		is Array<*> -> isEmpty()
+//		is Collection<*> -> isEmpty()
+//		is Iterable<*> -> none()
+//		is Sequence<*> -> none()
+//		is Map<*,*> -> isEmpty()
+//		else -> false
+//	}
+//}
+//
+//internal fun Any.isNotNullLike():Boolean{
+//	return when(this){
+//		is Boolean -> this
+//		is Number -> toString().let{ it!="0" || it!="0.0" }
+//		is CharSequence -> isNotEmpty()
+//		is Array<*> -> isNotEmpty()
+//		is Collection<*> -> isNotEmpty()
+//		is Iterable<*> -> any()
+//		is Sequence<*> -> any()
+//		is Map<*,*> -> isNotEmpty()
+//		else -> false
+//	}
+//}

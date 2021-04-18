@@ -4,7 +4,7 @@
 package com.windea.breezeframework.core.component
 
 abstract class AbstractComponentRegistry<T : Component> : ComponentRegistry<T> {
-	private val components = mutableListOf<T>()
+	protected val components = mutableListOf<T>()
 
 	override fun values(): List<T> {
 		return components

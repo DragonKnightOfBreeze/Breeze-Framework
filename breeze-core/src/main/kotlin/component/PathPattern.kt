@@ -75,6 +75,12 @@ interface PathPattern:Component {
 	 * 根据指定路径查询查询对象，得到首个匹配的值，或者返回默认值。
 	 * 如果指定路径为空路径，则返回查询对象本身。
 	 */
+	fun <T> getOrDefault(value: Any, path: String, defaultValue: T): T
+
+	/**
+	 * 根据指定路径查询查询对象，得到首个匹配的值，或者返回默认值。
+	 * 如果指定路径为空路径，则返回查询对象本身。
+	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
 	companion object Registry: AbstractComponentRegistry<PathPattern>(){
@@ -249,6 +255,16 @@ interface PathPattern:Component {
 			var currentValue = value
 			for(metaPath in metaPaths) {
 				currentValue = metaGet(currentValue, metaPath) ?: return null
+			}
+			return currentValue as T
+		}
+
+		override fun <T> getOrDefault(value: Any, path: String, defaultValue: T): T {
+			val metaPaths = splitToSequence(path)
+			if(metaPaths.none()) return value as T
+			var currentValue = value
+			for(metaPath in metaPaths) {
+				currentValue = metaGet(currentValue, metaPath) ?: return defaultValue
 			}
 			return currentValue as T
 		}

@@ -3,225 +3,171 @@
 
 package com.windea.breezeframework.core.component
 
+import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
+import com.windea.breezeframework.core.model.*
 import java.io.*
+import java.math.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.text.*
 import java.time.*
 import java.time.format.*
+import java.time.temporal.*
 import java.util.*
+import java.util.concurrent.atomic.*
+import java.util.regex.*
 
 /**
  * 转化器。
  *
- * 转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
+ * 类型转化器用于根据一般规则，将指定对象从一个类型转化到另一个类型。
+ *
+ * 同一兼容类型的转化器可以注册多个。
  */
-@Deprecated
-interface Converter<S,T> :ConfigurableComponent{
-	/**
-	 * 源类型。
-	 */
-	val sourceType:Class<S>
-
+interface Converter<T> : Component {
 	/**
 	 * 目标类型。
 	 */
-	val targetType:Class<T>
+	val targetType: Class<T>
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
-	fun convert(value: S): T
+	@Suppress("UNCHECKED_CAST")
+	fun convert(value: Any): T
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
-	fun convertOrNull(value: S): T? {
+	fun convertOrNull(value: Any): T? {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
-	/**
-	 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-	 */
-	fun convertOrElse(value:S,defaultValue:T):T{
-		return convertOrNull(value)?:defaultValue
-	}
-
-	/**
-	 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-	 */
-	fun convertOrDefault(value:S,defaultValue:()->T):T{
-		return convertOrNull(value)?:defaultValue()
-	}
-
-	companion object Registry:AbstractComponentRegistry<Converter<*,*>>(){
-		init{
-			registerStringConverters()
-			registerNumberAndPrimitiveConverters()
-			registerIoConverters()
-			registerTimeConverters()
+	companion object Registry : AbstractComponentRegistry<Converter<*>>() {
+		init {
+			registerDefaultConverters()
 		}
 
-		private fun registerStringConverters(){
-			register(StringToIntConverter())
-			register(StringToLongConverter())
-			register(StringToFloatConverter())
-			register(StringToDoubleConverter())
-			register(StringToByteConverter())
-			register(StringToShortConverter())
-			register(StringToCharConverter())
-			register(StringToBooleanConverter())
-			register(StringToRegexConverter())
-			register(StringToFileConverter())
-			register(StringToPathConverter())
-			register(StringToUrlConverter())
-			register(StringToUriConverter())
-			register(StringToCharsetConverter())
-			register(StringToTimeZoneConverter())
-			register(StringToLocaleConverter())
-			register(StringToClassConverter())
-			register(StringToDateConverter())
-			register(StringToLocalDateConverter())
-			register(StringToLocalTimeConverter())
-			register(StringToLocalDateTimeConverter())
-			register(DateToStringConverter())
-			register(LocalDateToStringConverter())
-		}
-
-		private fun registerNumberAndPrimitiveConverters(){
-			register(IntToLongConverter())
-			register(IntToFloatConverter())
-			register(IntToDoubleConverter())
-			register(IntToByteConverter())
-			register(IntToShortConverter())
-			register(IntToCharConverter())
-			register(LongToIntConverter())
-			register(LongToFloatConverter())
-			register(LongToDoubleConverter())
-			register(LongToByteConverter())
-			register(LongToShortConverter())
-			register(LongToCharConverter())
-			register(FloatToIntConverter())
-			register(FloatToLongConverter())
-			register(FloatToDoubleConverter())
-			register(FloatToByteConverter())
-			register(FloatToShortConverter())
-			register(FloatToCharConverter())
-			register(DoubleToIntConverter())
-			register(DoubleToLongConverter())
-			register(DoubleToFloatConverter())
-			register(DoubleToByteConverter())
-			register(DoubleToShortConverter())
-			register(DoubleToCharConverter())
-			register(ByteToIntConverter())
-			register(ByteToLongConverter())
-			register(ByteToFloatConverter())
-			register(ByteToDoubleConverter())
-			register(ByteToShortConverter())
-			register(ByteToCharConverter())
-			register(ShortToIntConverter())
-			register(ShortToLongConverter())
-			register(ShortToFloatConverter())
-			register(ShortToDoubleConverter())
-			register(ShortToByteConverter())
-			register(ShortToCharConverter())
-			register(CharToIntConverter())
-			register(CharToLongConverter())
-			register(CharToFloatConverter())
-			register(CharToDoubleConverter())
-			register(CharToByteConverter())
-			register(CharToShortConverter())
-		}
-
-		private fun registerIoConverters(){
-			register(FileToPathConverter())
-			register(FileToUriConverter())
-			register(FileToUrlConverter())
-			register(PathToFileConverter())
-			register(PathToUriConverter())
-			register(PathToUrlConverter())
-			register(UriToFileConverter())
-			register(UriToPathConverter())
-			register(UriToUrlConverter())
-			register(UrlToFileConverter())
-			register(UrlToPathConverter())
-			register(UrlToUriConverter())
-		}
-
-		private fun registerTimeConverters(){
-			register(DateToInstantConverter())
-			register(InstantToDateConverter())
-			register(LocalDateTimeToLocalDateConverter())
-			register(LocalDateTimeToLocalTimeConverter())
+		private fun registerDefaultConverters() {
+			register(ByteConverter)
+			register(ShortConverter)
+			register(IntConverter)
+			register(LongConverter)
+			register(FloatConverter)
+			register(DoubleConverter)
+			register(BigIntegerConverter)
+			register(BigDecimalConverter)
+			register(AtomicIntegerConverter)
+			register(AtomicLongConverter)
+			register(BooleanConverter)
+			register(CharConverter)
+			register(StringConverter)
+			register(RegexConverter)
+			register(PatternConverter)
+			register(CharsetConverter)
+			register(ClassConverter)
+			register(LocaleConverter)
+			register(TimeZoneConverter)
+			register(ZoneIdConverter)
+			register(DateConverter)
+			register(LocalDateConverter)
+			register(LocalTimeConverter)
+			register(LocalDateTimeConverter)
+			register(InstantConverter)
+			register(DurationConverter)
+			register(PeriodConverter)
+			register(FileConverter)
+			register(PathConverter)
+			register(UrlConverter)
+			register(UriConverter)
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
 		@Suppress("UNCHECKED_CAST")
-		inline fun <reified T> convert(value:Any?):T{
-			return convert(value,T::class.java)
+		inline fun <reified T> convert(value: Any?, params: Map<String, Any?> = emptyMap()): T {
+			return convert(value, T::class.java, params)
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
 		@Suppress("UNCHECKED_CAST")
-		fun <T> convert(value:Any?,targetType:Class<T>):T{
-			return try {
-				when {
-					//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
-					value == null -> (if(targetType == String::class.java) "null" else null) as T
-					targetType.isAssignableFrom(value.javaClass) -> value as T
-					else -> {
-						for(converter in values()) {
-							val s = converter.sourceType
-							val t = converter.targetType
-							if(t.isAssignableFrom(targetType) && s.isAssignableFrom(value.javaClass)) {
-								return (converter as Converter<Any?, Any?>).convert(value) as T
+		fun <T> convert(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T {
+			when {
+				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
+				value == null -> return (if(targetType == String::class.java) "null" else null) as T
+				//如果value的类型兼容targetType，则直接返回
+				targetType.isInstance(value) -> return value as T
+				//否则，尝试使用第一个匹配且可用的转化器进行转化
+				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则抛出异常
+				else -> {
+					for((index, converter) in components.withIndex()) {
+						try {
+							if(converter.targetType.isAssignableFrom(targetType)) {
+								//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要新注册转化器
+								if(converter is Configurable<*> && converter.configurableInfo.params != params) {
+									val newConverter = converter.copy(params) as Converter<*>
+									components.add(index, newConverter)
+									return (newConverter as Converter<Any?>).convert(value) as T
+								} else {
+									return (converter as Converter<Any?>).convert(value) as T
+								}
 							}
-						}
-						if(targetType == String::class.java){
-							value.toString() as T
-						}else {
-							throw IllegalArgumentException("No suitable converter found for target type '$targetType'.")
+						} catch(e: Exception) {
+							continue
 						}
 					}
+					return if(targetType == String::class.java) {
+						value.toString() as T
+					} else {
+						throw IllegalArgumentException("No suitable converter found for target type '$targetType'.")
+					}
 				}
-			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot convert '${value}' to type '${targetType}'.", e)
 			}
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型。如果转化失败，则返回null。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 		 */
 		@Suppress("UNCHECKED_CAST")
-		inline fun <reified T> convertOrNull(value:Any?):T?{
-			return convertOrNull(value,T::class.java)
+		inline fun <reified T> convertOrNull(value: Any?, params: Map<String, Any?> = emptyMap()): T? {
+			return convertOrNull(value, T::class.java, params)
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型。如果转化失败，则返回null。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 		 */
 		@Suppress("UNCHECKED_CAST")
-		fun <T> convertOrNull(value:Any?,targetType:Class<T>):T?{
-			return when {
-				value == null -> (if(targetType == String::class.java) "null" else null) as T?
-				targetType.isAssignableFrom(value.javaClass) -> value as T?
+		fun <T> convertOrNull(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T? {
+			when {
+				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
+				value == null -> return (if(targetType == String::class.java) "null" else null) as T?
+				//如果value的类型兼容targetType，则直接返回
+				targetType.isInstance(value) -> return value as T?
+				//否则，尝试使用第一个匹配且可用的转化器进行转化
+				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则返回null
 				else -> {
-					for(converter in values()) {
-						val s = converter.sourceType
-						val t = converter.targetType
-						if(t.isAssignableFrom(targetType) && s.isAssignableFrom(value.javaClass)) {
-							return (converter as Converter<Any?, Any?>).convertOrNull(value) as T?
+					for((index, converter) in components.withIndex()) {
+						try {
+							//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要新注册转化器
+							if(converter is Configurable<*> && converter.configurableInfo.params != params) {
+								val newConverter = converter.copy(params) as Converter<*>
+								components.add(index, newConverter)
+								return (newConverter as Converter<Any?>).convert(value) as T
+							} else {
+								return (converter as Converter<Any?>).convert(value) as T
+							}
+						} catch(e: Exception) {
+							continue
 						}
 					}
-					if(targetType == String::class.java){
+					return if(targetType == String::class.java) {
 						value.toString() as T?
-					}else{
+					} else {
 						null
 					}
 				}
@@ -229,686 +175,903 @@ interface Converter<S,T> :ConfigurableComponent{
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
 		 */
-		inline fun <reified T> convertOrElse(value:Any?,defaultValue:T):T{
-			return convertOrElse(value,T::class.java,defaultValue)
+		inline fun <reified T> convertOrElse(value: Any?, defaultValue: T): T {
+			return convertOrElse(value, T::class.java, defaultValue)
 		}
 
 		/**
-		 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
 		 */
-		fun <T> convertOrElse(value:Any?,targetType:Class<T>,defaultValue:T):T{
-			return convertOrNull(value,targetType)?:defaultValue
-		}
-
-		/**
-		 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-		 */
-		inline fun <reified T> convertOrDefault(value:Any?, noinline defaultValue:()->T):T{
-			return convertOrDefault(value,T::class.java,defaultValue)
-		}
-
-		/**
-		 * 将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-		 */
-		fun <T> convertOrDefault(value:Any?,targetType:Class<T>,defaultValue:()->T):T{
-			return convertOrNull(value,targetType)?:defaultValue()
+		fun <T> convertOrElse(value: Any?, targetType: Class<T>, defaultValue: T): T {
+			return convertOrNull(value, targetType) ?: defaultValue
 		}
 	}
 
-	//region String Converters
-	class StringToIntConverter : Converter<String, Int> {
-		override val sourceType = String::class.java
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: String) = value.toInt()
-		override fun convertOrNull(value: String) = value.toIntOrNull()
+	//region Default Converters
+	object ByteConverter : Converter<Byte> {
+		override val targetType: Class<Byte> = Byte::class.javaObjectType
+
+		override fun convert(value: Any): Byte {
+			return when {
+				value is Byte -> value
+				value is Number -> value.toByte()
+				value is Char -> value.toByte()
+				else -> value.toString().toByte()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Byte? {
+			return when {
+				value is Byte -> value
+				value is Number -> value.toByte()
+				value is Char -> value.toByte()
+				else -> value.toString().toByteOrNull()
+			}
+		}
 	}
 
-	class StringToLongConverter : Converter<String, Long> {
-		override val sourceType = String::class.java
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: String) = value.toLong()
-		override fun convertOrNull(value: String) = value.toLongOrNull()
+	object ShortConverter : Converter<Short> {
+		override val targetType: Class<Short> = Short::class.javaObjectType
+
+		override fun convert(value: Any): Short {
+			return when {
+				value is Short -> value
+				value is Number -> value.toShort()
+				value is Char -> value.toShort()
+				else -> value.toString().toShort()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Short? {
+			return when {
+				value is Short -> value
+				value is Number -> value.toShort()
+				value is Char -> value.toShort()
+				else -> value.toString().toShortOrNull()
+			}
+		}
 	}
 
-	class StringToFloatConverter : Converter<String, Float> {
-		override val sourceType = String::class.java
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: String) = value.toFloat()
-		override fun convertOrNull(value: String) = value.toFloatOrNull()
+	object IntConverter : Converter<Int> {
+		override val targetType: Class<Int> = Int::class.javaObjectType
+
+		override fun convert(value: Any): Int {
+			return when {
+				value is Int -> value
+				value is Number -> value.toInt()
+				value is Char -> value.toInt()
+				else -> value.toString().toInt()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Int? {
+			return when {
+				value is Int -> value
+				value is Number -> value.toInt()
+				value is Char -> value.toInt()
+				else -> value.toString().toIntOrNull()
+			}
+		}
 	}
 
-	class StringToDoubleConverter : Converter<String, Double> {
-		override val sourceType = String::class.java
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: String) = value.toDouble()
-		override fun convertOrNull(value: String) = value.toDoubleOrNull()
+	object LongConverter : Converter<Long> {
+		override val targetType: Class<Long> = Long::class.javaObjectType
+
+		override fun convert(value: Any): Long {
+			return when {
+				value is Long -> value
+				value is Number -> value.toLong()
+				value is Char -> value.toLong()
+				else -> value.toString().toLong()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Long? {
+			return when {
+				value is Long -> value
+				value is Number -> value.toLong()
+				value is Char -> value.toLong()
+				else -> value.toString().toLongOrNull()
+			}
+		}
 	}
 
-	class StringToByteConverter : Converter<String, Byte> {
-		override val sourceType = String::class.java
-		override val targetType = Byte::class.javaObjectType
-		override fun convert(value: String) = value.toByte()
-		override fun convertOrNull(value: String) = value.toByteOrNull()
+	object FloatConverter : Converter<Float> {
+		override val targetType: Class<Float> = Float::class.javaObjectType
+
+		override fun convert(value: Any): Float {
+			return when {
+				value is Float -> value
+				value is Number -> value.toFloat()
+				value is Char -> value.toFloat()
+				else -> value.toString().toFloat()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Float? {
+			return when {
+				value is Float -> value
+				value is Number -> value.toFloat()
+				value is Char -> value.toFloat()
+				else -> value.toString().toFloatOrNull()
+			}
+		}
 	}
 
-	class StringToShortConverter : Converter<String, Short> {
-		override val sourceType = String::class.java
-		override val targetType = Short::class.javaObjectType
-		override fun convert(value: String) = value.toShort()
-		override fun convertOrNull(value: String) = value.toShortOrNull()
+	object DoubleConverter : Converter<Double> {
+		override val targetType: Class<Double> = Double::class.javaObjectType
+
+		override fun convert(value: Any): Double {
+			return when {
+				value is Double -> value
+				value is Number -> value.toDouble()
+				value is Char -> value.toDouble()
+				else -> value.toString().toDouble()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Double? {
+			return when {
+				value is Double -> value
+				value is Number -> value.toDouble()
+				value is Char -> value.toDouble()
+				else -> value.toString().toDoubleOrNull()
+			}
+		}
 	}
 
-	class StringToCharConverter : Converter<String, Char> {
-		override val sourceType = String::class.java
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: String) = value.toChar()
-		override fun convertOrNull(value: String) = value.toCharOrNull()
+	object BigIntegerConverter : Converter<BigInteger> {
+		override val targetType: Class<BigInteger> = BigInteger::class.java
+
+		override fun convert(value: Any): BigInteger {
+			return when {
+				value is BigInteger -> value
+				value is Long -> BigInteger.valueOf(value)
+				value is Number -> BigInteger.valueOf(value.toLong())
+				else -> BigInteger.valueOf(value.toString().toLong())
+			}
+		}
+
+		override fun convertOrNull(value: Any): BigInteger? {
+			return when {
+				value is BigInteger -> value
+				value is Long -> BigInteger.valueOf(value)
+				value is Number -> BigInteger.valueOf(value.toLong())
+				else -> BigInteger.valueOf(value.toString().toLongOrNull() ?: return null)
+			}
+		}
 	}
 
-	class StringToBooleanConverter : Converter<String, Boolean> {
-		override val sourceType = String::class.java
-		override val targetType = Boolean::class.javaObjectType
-		override fun convert(value: String) = value.toBoolean()
-		override fun convertOrNull(value: String) = value.toBooleanOrNull()
+	object BigDecimalConverter : Converter<BigDecimal> {
+		override val targetType: Class<BigDecimal> = BigDecimal::class.java
+
+		override fun convert(value: Any): BigDecimal {
+			return when {
+				value is BigDecimal -> value
+				value is Double -> BigDecimal.valueOf(value)
+				value is Number -> BigDecimal.valueOf(value.toDouble())
+				else -> BigDecimal.valueOf(value.toString().toDouble())
+			}
+		}
+
+		override fun convertOrNull(value: Any): BigDecimal? {
+			return when {
+				value is BigDecimal -> value
+				value is Double -> BigDecimal.valueOf(value)
+				value is Number -> BigDecimal.valueOf(value.toDouble())
+				else -> BigDecimal.valueOf(value.toString().toDoubleOrNull() ?: return null)
+			}
+		}
 	}
 
-	class StringToRegexConverter : Converter<String, Regex> {
-		override val sourceType = String::class.java
-		override val targetType = Regex::class.java
-		override fun convert(value: String) = value.toRegex()
+	object AtomicIntegerConverter : Converter<AtomicInteger> {
+		override val targetType: Class<AtomicInteger> = AtomicInteger::class.java
+
+		override fun convert(value: Any): AtomicInteger {
+			return when {
+				value is AtomicInteger -> value
+				value is Int -> AtomicInteger(value)
+				value is Number -> AtomicInteger(value.toInt())
+				else -> AtomicInteger(value.toString().toInt())
+			}
+		}
+
+		override fun convertOrNull(value: Any): AtomicInteger? {
+			return when {
+				value is AtomicInteger -> value
+				value is Int -> AtomicInteger(value)
+				value is Number -> AtomicInteger(value.toInt())
+				else -> AtomicInteger(value.toString().toIntOrNull() ?: return null)
+			}
+		}
 	}
 
-	class StringToFileConverter : Converter<String, File> {
-		override val sourceType = String::class.java
-		override val targetType = File::class.java
-		override fun convert(value: String) = value.toFile()
+	object AtomicLongConverter : Converter<AtomicLong> {
+		override val targetType: Class<AtomicLong> = AtomicLong::class.java
+
+		override fun convert(value: Any): AtomicLong {
+			return when {
+				value is AtomicLong -> value
+				value is Long -> AtomicLong(value)
+				value is Number -> AtomicLong(value.toLong())
+				else -> AtomicLong(value.toString().toLong())
+			}
+		}
+
+		override fun convertOrNull(value: Any): AtomicLong? {
+			return when {
+				value is AtomicLong -> value
+				value is Long -> AtomicLong(value)
+				value is Number -> AtomicLong(value.toLong())
+				else -> AtomicLong(value.toString().toLongOrNull() ?: return null)
+			}
+		}
 	}
 
-	class StringToPathConverter : Converter<String, Path> {
-		override val sourceType = String::class.java
-		override val targetType = Path::class.java
-		override fun convert(value: String) = value.toPath()
+	object BooleanConverter : Converter<Boolean> {
+		override val targetType: Class<Boolean> = Boolean::class.javaObjectType
+
+		override fun convert(value: Any): Boolean {
+			return when {
+				value is Boolean -> value
+				value is Number -> value.toString().let { it != "0" || it != "0.0" }
+				value is CharSequence -> value.isNotEmpty()
+				value is Array<*> -> value.isNotEmpty()
+				value is Collection<*> -> value.isNotEmpty()
+				value is Iterable<*> -> value.any()
+				value is Sequence<*> -> value.any()
+				value is Map<*, *> -> value.isNotEmpty()
+				else -> false
+			}
+		}
 	}
 
-	class StringToUrlConverter : Converter<String, URL> {
-		override val sourceType = String::class.java
-		override val targetType = URL::class.java
-		override fun convert(value: String) = value.toUrl()
+	object CharConverter : Converter<Char> {
+		override val targetType: Class<Char> = Char::class.javaObjectType
+
+		override fun convert(value: Any): Char {
+			return when {
+				value is Char -> value
+				value is Number -> value.toChar()
+				value is CharSequence -> value.single()
+				else -> throw IllegalArgumentException("Cannot convert '$value' to Char.")
+			}
+		}
+
+		override fun convertOrNull(value: Any): Char? {
+			return when {
+				value is Char -> value
+				value is Number -> value.toChar()
+				value is CharSequence -> value.singleOrNull()
+				else -> null
+			}
+		}
 	}
 
-	class StringToUriConverter : Converter<String, URI> {
-		override val sourceType = String::class.java
-		override val targetType = URI::class.java
-		override fun convert(value: String) = value.toUri()
-	}
+	@ConfigurableParams(
+		ConfigurableParam("raw", "Boolean", "false", comment = "Convert value to string by 'toString()' method"),
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class StringConverter : Converter<String>, Configurable<StringConverter> {
+		companion object Default : StringConverter()
 
-	class StringToCharsetConverter : Converter<String, Charset> {
-		override val sourceType = String::class.java
-		override val targetType = Charset::class.java
-		override fun convert(value: String) = value.toCharset()
-		override fun convertOrNull(value: String) = value.toCharsetOrNull()
-	}
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
-	class StringToTimeZoneConverter : Converter<String, TimeZone> {
-		override val sourceType = String::class.java
-		override val targetType = TimeZone::class.java
-		override fun convert(value: String) = value.toTimeZone()
-		override fun convertOrNull(value: String) = value.toTimeZoneOrNull()
-	}
+		override val targetType: Class<String> = String::class.java
 
-	class StringToLocaleConverter:Converter<String,Locale>{
-		override val sourceType = String::class.java
-		override val targetType = Locale::class.java
-		override fun convert(value: String) = value.toLocale()
-	}
-
-	class StringToClassConverter : Converter<String, Class<*>> {
-		override val sourceType = String::class.java
-		override val targetType = Class::class.java
-		override fun convert(value: String) = value.toClass()
-		override fun convertOrNull(value: String) = value.toClassOrNull()
-	}
-
-	class StringToDateConverter:Converter<String,Date>{
-		override val sourceType = String::class.java
-		override val targetType = Date::class.java
-
+		var raw = false
 		var format = defaultDateFormat
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
-		val threadLocalDateFormat = ThreadLocal.withInitial{
-			SimpleDateFormat(format,locale).apply{ this.timeZone = timeZone }
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			threadLocalDateFormat.set(SimpleDateFormat(format,locale).apply{ this.timeZone = timeZone } )
-		}
-
-		override fun convert(value: String): Date {
-			return threadLocalDateFormat.get().parse(value)
-		}
-	}
-
-	class DateToStringConverter : Converter<Date, String> {
-		override val sourceType = Date::class.java
-		override val targetType = String::class.java
-
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		val threadLocalDateFormat = ThreadLocal.withInitial{
-			SimpleDateFormat(format,locale).apply{ this.timeZone = timeZone }
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			threadLocalDateFormat.set(SimpleDateFormat(format,locale).apply{ this.timeZone = timeZone } )
-		}
-
-		override fun convert(value: Date): String {
-			return threadLocalDateFormat.get().format(value)
-		}
-	}
-
-	class StringToLocalDateConverter:Converter<String, LocalDate>{
-		override val sourceType = String::class.java
-		override val targetType = LocalDate::class.java
-
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
-		private set
-
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun convert(value: String): LocalDate {
-			return LocalDate.parse(value,formatter)
-		}
-	}
-
-	class LocalDateToStringConverter : Converter<LocalDate, String> {
-		override val sourceType = LocalDate::class.java
-		override val targetType = String::class.java
-
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 			private set
 
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		fun setThreadLocalDateFormat() {
+			threadLocalDateFormat.set(SimpleDateFormat(format, locale).also { it.timeZone = timeZone })
 		}
 
-		override fun convert(value: LocalDate): String {
-			return formatter.format(value)
+		fun setFormatter() {
+			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		}
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["raw"]?.convertOrNull<Boolean>()?.let { raw = it }
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setThreadLocalDateFormat()
+			setFormatter()
+		}
+
+		override fun copy(params: Map<String, Any?>): StringConverter {
+			return StringConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): String {
+			 if(raw) return value.toString()
+			return when{
+				value is Date -> threadLocalDateFormat.get().format(value)
+				value is TemporalAccessor -> formatter.format(value)
+				else -> value.toString()
+			}
 		}
 	}
 
-	class StringToLocalTimeConverter:Converter<String, LocalTime>{
-		override val sourceType = String::class.java
-		override val targetType = LocalTime::class.java
+	@ConfigurableParams(
+		ConfigurableParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>",comment = "Regex options")
+	)
+	open class RegexConverter : Converter<Regex>, Configurable<RegexConverter> {
+		companion object Default : RegexConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Regex> = Regex::class.java
+
+		val regexOptions = mutableSetOf<RegexOption>()
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["regexOptions"]?.let {
+				when {
+					it is Array<*> -> it.filterIsInstanceTo(regexOptions)
+					it is Iterable<*> -> it.filterIsInstanceTo(regexOptions)
+					it is Sequence<*> -> it.filterIsInstanceTo(regexOptions)
+					else -> {
+					}
+				}
+			}
+		}
+
+		override fun copy(params: Map<String, Any?>): RegexConverter {
+			return RegexConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): Regex {
+			return when {
+				value is Regex -> value
+				value is Pattern -> value.toRegex()
+				else -> {
+					when(regexOptions.size) {
+						0 -> value.toString().toRegex()
+						1 -> value.toString().toRegex(regexOptions.first())
+						else -> value.toString().toRegex(regexOptions)
+					}
+				}
+			}
+		}
+	}
+
+	object PatternConverter : Converter<Pattern> {
+		override val targetType: Class<Pattern> = Pattern::class.java
+
+		override fun convert(value: Any): Pattern {
+			return when {
+				value is Regex -> value.toPattern()
+				value is Pattern -> value
+				else -> Pattern.compile(value.toString())
+			}
+		}
+	}
+
+	object CharsetConverter : Converter<Charset> {
+		override val targetType: Class<Charset> = Charset::class.java
+
+		override fun convert(value: Any): Charset {
+			return when {
+				value is Charset -> value
+				else -> value.toString().toCharset()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Charset? {
+			return when {
+				value is Charset -> value
+				else -> value.toString().toCharsetOrNull()
+			}
+		}
+	}
+
+	object ClassConverter : Converter<Class<*>> {
+		override val targetType: Class<Class<*>> = Class::class.java
+
+		override fun convert(value: Any): Class<*> {
+			return when {
+				value is Class<*> -> value
+				else -> value.toString().toClass()
+			}
+		}
+
+		override fun convertOrNull(value: Any): Class<*>? {
+			return when {
+				value is Class<*> -> value
+				else -> value.toString().toClassOrNull()
+			}
+		}
+	}
+
+	object LocaleConverter : Converter<Locale> {
+		override val targetType: Class<Locale> = Locale::class.java
+
+		override fun convert(value: Any): Locale {
+			return when {
+				value is Locale -> value
+				else -> value.toString().toLocale()
+			}
+		}
+	}
+
+	object TimeZoneConverter : Converter<TimeZone> {
+		override val targetType: Class<TimeZone> = TimeZone::class.java
+
+		override fun convert(value: Any): TimeZone {
+			return when {
+				value is TimeZone -> value
+				value is ZoneId -> TimeZone.getTimeZone(value)
+				else -> value.toString().toTimeZone()
+			}
+		}
+
+		override fun convertOrNull(value: Any): TimeZone? {
+			return when {
+				value is TimeZone -> value
+				value is ZoneId -> TimeZone.getTimeZone(value)
+				else -> value.toString().toTimeZoneOrNull()
+			}
+		}
+	}
+
+	object ZoneIdConverter : Converter<ZoneId> {
+		override val targetType: Class<ZoneId> = ZoneId::class.java
+
+		override fun convert(value: Any): ZoneId {
+			return when {
+				value is ZoneId -> value
+				value is TimeZone -> value.toZoneId()
+				value is TemporalAccessor -> ZoneId.from(value)
+				else -> ZoneId.of(value.toString())
+			}
+		}
+	}
+
+	@ConfigurableParams(
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class DateConverter : Converter<Date>, Configurable<DateConverter> {
+		companion object Default : DateConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Date> = Date::class.java
+
+		var format = defaultDateFormat
+		var locale = defaultLocale
+		var timeZone = defaultTimeZone
+		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+
+		fun setThreadLocalDateFormat() {
+			threadLocalDateFormat.set(SimpleDateFormat(format, locale).also { it.timeZone = timeZone })
+		}
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setThreadLocalDateFormat()
+		}
+
+		override fun copy(params: Map<String, Any?>): DateConverter {
+			return DateConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): Date {
+			return when {
+				value is Date -> value
+				value is Instant -> Date.from(value)
+				else -> threadLocalDateFormat.get().parse(value.toString())
+			}
+		}
+	}
+
+	@ConfigurableParams(
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class LocalDateConverter : Converter<LocalDate>, Configurable<LocalDateConverter> {
+		companion object Default : LocalDateConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<LocalDate> = LocalDate::class.java
+
+		var format = defaultDateFormat
+		var locale = defaultLocale
+		var timeZone = defaultTimeZone
+		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+			private set
+
+		fun setFormatter() {
+			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		}
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setFormatter()
+		}
+
+		override fun copy(params: Map<String, Any?>): LocalDateConverter {
+			return LocalDateConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): LocalDate {
+			return when {
+				value is LocalDate -> value
+				value is TemporalAccessor -> LocalDate.from(value)
+				value is Date -> LocalDate.from(value.toInstant())
+				else -> LocalDate.parse(value.toString())
+			}
+		}
+	}
+
+	@ConfigurableParams(
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class LocalTimeConverter : Converter<LocalTime>, Configurable<LocalTimeConverter> {
+		companion object Default : LocalTimeConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<LocalTime> = LocalTime::class.java
 
 		var format = defaultTimeFormat
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 			private set
 
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		fun setFormatter() {
+			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 		}
 
-		override fun convert(value: String): LocalTime {
-			return LocalTime.parse(value,formatter)
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setFormatter()
+		}
+
+		override fun copy(params: Map<String, Any?>): LocalTimeConverter {
+			return LocalTimeConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): LocalTime {
+			return when {
+				value is LocalTime -> value
+				value is TemporalAccessor -> LocalTime.from(value)
+				value is Date -> LocalTime.from(value.toInstant())
+				else -> LocalTime.parse(value.toString())
+			}
 		}
 	}
 
-	class LocalTimeToStringConverter : Converter<LocalDate, String> {
-		override val sourceType = LocalDate::class.java
-		override val targetType = String::class.java
+	@ConfigurableParams(
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class LocalDateTimeConverter : Converter<LocalDateTime>, Configurable<LocalDateTimeConverter> {
+		companion object Default : LocalDateTimeConverter()
 
-		var format = defaultTimeFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
-			private set
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun convert(value: LocalDate): String {
-			return formatter.format(value)
-		}
-	}
-
-	class StringToLocalDateTimeConverter:Converter<String, LocalDateTime>{
-		override val sourceType = String::class.java
-		override val targetType = LocalDateTime::class.java
+		override val targetType: Class<LocalDateTime> = LocalDateTime::class.java
 
 		var format = defaultDateTimeFormat
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 			private set
 
-		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		fun setFormatter() {
+			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 		}
 
-		override fun convert(value: String): LocalDateTime {
-			return LocalDateTime.parse(value,formatter)
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setFormatter()
+		}
+
+		override fun copy(params: Map<String, Any?>): LocalDateTimeConverter {
+			return LocalDateTimeConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): LocalDateTime {
+			return when {
+				value is LocalDateTime -> value
+				value is TemporalAccessor -> LocalDateTime.from(value)
+				value is Date -> LocalDateTime.from(value.toInstant())
+				else -> LocalDateTime.parse(value.toString())
+			}
 		}
 	}
 
-	class LocalDateTimeToStringConverter : Converter<LocalDate, String> {
-		override val sourceType = LocalDate::class.java
-		override val targetType = String::class.java
+	object InstantConverter : Converter<Instant> {
+		override val targetType: Class<Instant> = Instant::class.java
+
+		override fun convert(value: Any): Instant {
+			return when {
+				value is Instant -> value
+				value is TemporalAccessor -> Instant.from(value)
+				else -> Instant.parse(value.toString())
+			}
+		}
+	}
+
+	object DurationConverter : Converter<Duration> {
+		override val targetType: Class<Duration> = Duration::class.java
+
+		override fun convert(value: Any): Duration {
+			return when {
+				value is Duration -> value
+				value is TemporalAmount -> Duration.from(value)
+				value is Pair<*, *> -> {
+					val (start, end) = value
+					if(start is Temporal && end is Temporal) {
+						Duration.between(start, end)
+					} else {
+						throw IllegalArgumentException("Cannot convert '$value' to Duration.")
+					}
+				}
+				else -> Duration.parse(value.toString())
+			}
+		}
+	}
+
+	@ConfigurableParams(
+		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
+		ConfigurableParam("timeZone", "String | TimeZone", "<utc>",comment = "Format time zone")
+	)
+	open class PeriodConverter : Converter<Period>, Configurable<PeriodConverter> {
+		companion object Default : PeriodConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Period> = Period::class.java
 
 		var format = defaultDateTimeFormat
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 			private set
 
+		fun setFormatter() {
+			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		}
+
 		override fun configure(params: Map<String, Any?>) {
-			params["format"]?.let{ format = it.toString() }
-			params["locale"]?.let{ locale = it.toString().toLocale() }
-			params["timeZone"]?.let{ timeZone = it.toString().toTimeZone() }
-			formatter = DateTimeFormatter.ofPattern(format,locale).withZone(timeZone.toZoneId())
+			super.configure(params)
+			params["format"]?.convertOrNull<String>()?.let { format = it }
+			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
+			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
+			setFormatter()
 		}
 
-		override fun convert(value: LocalDate): String {
-			return formatter.format(value)
+		override fun copy(params: Map<String, Any?>): PeriodConverter {
+			return PeriodConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): Period {
+			return when {
+				value is Period -> value
+				value is TemporalAmount -> Period.from(value)
+				value is Pair<*, *> -> {
+					val (start, end) = value
+					if(start is LocalDate && end is LocalDate) {
+						Period.between(start, end)
+					} else {
+						throw IllegalArgumentException("Cannot convert '$value' to Period.")
+					}
+				}
+				else -> Period.parse(value.toString())
+			}
+		}
+	}
+
+	object FileConverter : Converter<File> {
+		override val targetType: Class<File> = File::class.java
+
+		override fun convert(value: Any): File {
+			return when {
+				value is File -> value
+				value is Path -> value.toFile()
+				value is URL -> value.toFile()
+				value is URI -> value.toFile()
+				else -> value.toString().toFile()
+			}
+		}
+	}
+
+	object PathConverter : Converter<Path> {
+		override val targetType: Class<Path> = Path::class.java
+
+		override fun convert(value: Any): Path {
+			return when {
+				value is File -> value.toPath()
+				value is Path -> value
+				value is URL -> value.toPath()
+				value is URI -> value.toPath()
+				else -> value.toString().toPath()
+			}
+		}
+	}
+
+	object UrlConverter : Converter<URL> {
+		override val targetType: Class<URL> = URL::class.java
+
+		override fun convert(value: Any): URL {
+			return when {
+				value is File -> value.toUrl()
+				value is Path -> value.toUrl()
+				value is URL -> value
+				value is URI -> value.toUrl()
+				else -> value.toString().toUrl()
+			}
+		}
+	}
+
+	object UriConverter : Converter<URI> {
+		override val targetType: Class<URI> = URI::class.java
+
+		override fun convert(value: Any): URI {
+			return when {
+				value is File -> value.toUri()
+				value is Path -> value.toUri()
+				value is URL -> value.toUri()
+				value is URI -> value
+				else -> value.toString().toUri()
+			}
 		}
 	}
 	//endregion
 
-	//region Number And Primitive Converters
-	class IntToLongConverter : Converter<Int, Long> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Int) = value.toLong()
+	//region Collection Converters
+	open class ByteArrayConverter:Converter <ByteArray>,Configurable<ByteArrayConverter>{
+		companion object Default: ByteArrayConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<ByteArray> = ByteArray::class.java
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
+
+		override fun copy(params: Map<String, Any?>): ByteArrayConverter {
+			return ByteArrayConverter().apply { configure(params) }
+		}
+
+		override fun convert(value: Any): ByteArray {
+			TODO("Not yet implemented")
+		}
 	}
 
-	class IntToFloatConverter : Converter<Int, Float> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Int) = value.toFloat()
+	open class StringArrayConverter:Converter<Array<String>>,Configurable<StringArrayConverter>{
+		companion object Default:StringArrayConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Array<String>> = Array<String>::class.java
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
+
+		override fun copy(params: Map<String, Any?>): StringArrayConverter {
+			TODO("Not yet implemented")
+		}
+
+		override fun convert(value: Any): Array<String> {
+			TODO("Not yet implemented")
+		}
 	}
 
-	class IntToDoubleConverter : Converter<Int, Double> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Int) = value.toDouble()
+	open class StringListConverter:Converter<List<*>>,Configurable<StringListConverter>{
+		companion object Default:StringListConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<List<*>> = List::class.java
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
+
+		override fun copy(params: Map<String, Any?>): StringListConverter {
+			TODO("Not yet implemented")
+		}
+
+		override fun convert(value: Any): List<String> {
+			TODO("Not yet implemented")
+		}
 	}
 
-	class IntToByteConverter : Converter<Int, Byte> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-		override fun convert(value: Int) = value.toByte()
+	open class StringSetConverter:Converter<Set<*>>,Configurable<StringSetConverter>{
+		companion object Default:StringSetConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Set<*>> = Set::class.java
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
+
+		override fun copy(params: Map<String, Any?>): StringSetConverter {
+			TODO("Not yet implemented")
+		}
+
+		override fun convert(value: Any): Set<String> {
+			TODO("Not yet implemented")
+		}
 	}
 
-	class IntToShortConverter : Converter<Int, Short> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-		override fun convert(value: Int) = value.toShort()
+	open class StringSequenceConverter:Converter<Sequence<*>>,Configurable<StringSequenceConverter>{
+		companion object Default:StringSequenceConverter()
+
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+
+		override val targetType: Class<Sequence<*>> = Sequence::class.java
+
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
+
+		override fun copy(params: Map<String, Any?>): StringSequenceConverter {
+			TODO("Not yet implemented")
+		}
+
+		override fun convert(value: Any): Sequence<String> {
+			TODO("Not yet implemented")
+		}
 	}
 
-	class IntToCharConverter : Converter<Int, Char> {
-		override val sourceType = Int::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Int) = value.toChar()
-	}
+	open class StringMapConverter:Converter<Map<*,*>>,Configurable<StringMapConverter>{
+		companion object Default:StringMapConverter()
 
-	class LongToIntConverter : Converter<Long, Int> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Long) = value.toInt()
-	}
+		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
-	class LongToFloatConverter : Converter<Long, Float> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Long) = value.toFloat()
-	}
+		override val targetType: Class<Map<*, *>> = Map::class.java
 
-	class LongToDoubleConverter : Converter<Long, Double> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Long) = value.toDouble()
-	}
+		override fun configure(params: Map<String, Any?>) {
+			super.configure(params)
+		}
 
-	class LongToByteConverter : Converter<Long, Byte> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-		override fun convert(value: Long) = value.toByte()
-	}
+		override fun copy(params: Map<String, Any?>): StringMapConverter {
+			TODO("Not yet implemented")
+		}
 
-	class LongToShortConverter : Converter<Long, Short> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-		override fun convert(value: Long) = value.toShort()
-	}
-
-	class LongToCharConverter : Converter<Long, Char> {
-		override val sourceType = Long::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Long) = value.toChar()
-	}
-
-	class FloatToIntConverter : Converter<Float, Int> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Float) = value.toInt()
-	}
-
-	class FloatToLongConverter : Converter<Float, Long> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Float) = value.toLong()
-	}
-
-	class FloatToDoubleConverter : Converter<Float, Double> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Float) = value.toDouble()
-	}
-
-	class FloatToByteConverter : Converter<Float, Byte> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-
-		@Suppress("DEPRECATION")
-		override fun convert(value: Float) = value.toByte()
-	}
-
-	class FloatToShortConverter : Converter<Float, Short> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-
-		@Suppress("DEPRECATION")
-		override fun convert(value: Float) = value.toShort()
-	}
-
-	class FloatToCharConverter : Converter<Float, Char> {
-		override val sourceType = Float::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Float) = value.toChar()
-	}
-
-	class DoubleToIntConverter : Converter<Double, Int> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Double) = value.toInt()
-	}
-
-	class DoubleToLongConverter : Converter<Double, Long> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Double) = value.toLong()
-	}
-
-	class DoubleToFloatConverter : Converter<Double, Float> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Double) = value.toFloat()
-	}
-
-	class DoubleToByteConverter : Converter<Double, Byte> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-
-		@Suppress("DEPRECATION")
-		override fun convert(value: Double) = value.toByte()
-	}
-
-	class DoubleToShortConverter : Converter<Double, Short> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-
-		@Suppress("DEPRECATION")
-		override fun convert(value: Double) = value.toShort()
-	}
-
-	class DoubleToCharConverter : Converter<Double, Char> {
-		override val sourceType = Double::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Double) = value.toChar()
-	}
-
-	class ByteToIntConverter : Converter<Byte, Int> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Byte) = value.toInt()
-	}
-
-	class ByteToLongConverter : Converter<Byte, Long> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Byte) = value.toLong()
-	}
-
-	class ByteToFloatConverter : Converter<Byte, Float> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Byte) = value.toFloat()
-	}
-
-	class ByteToDoubleConverter : Converter<Byte, Double> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Byte) = value.toDouble()
-	}
-
-	class ByteToShortConverter : Converter<Byte, Short> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-		override fun convert(value: Byte) = value.toShort()
-	}
-
-	class ByteToCharConverter : Converter<Byte, Char> {
-		override val sourceType = Byte::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Byte) = value.toChar()
-	}
-
-	class ShortToIntConverter : Converter<Short, Int> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Short) = value.toInt()
-	}
-
-	class ShortToLongConverter : Converter<Short, Long> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Short) = value.toLong()
-	}
-
-	class ShortToFloatConverter : Converter<Short, Float> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Short) = value.toFloat()
-	}
-
-	class ShortToDoubleConverter : Converter<Short, Double> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Short) = value.toDouble()
-	}
-
-	class ShortToByteConverter : Converter<Short, Byte> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-		override fun convert(value: Short) = value.toByte()
-	}
-
-	class ShortToCharConverter : Converter<Short, Char> {
-		override val sourceType = Short::class.javaObjectType
-		override val targetType = Char::class.javaObjectType
-		override fun convert(value: Short) = value.toChar()
-	}
-
-	class CharToIntConverter : Converter<Char, Int> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Int::class.javaObjectType
-		override fun convert(value: Char) = value.toInt()
-	}
-
-	class CharToLongConverter : Converter<Char, Long> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Long::class.javaObjectType
-		override fun convert(value: Char) = value.toLong()
-	}
-
-	class CharToFloatConverter : Converter<Char, Float> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Float::class.javaObjectType
-		override fun convert(value: Char) = value.toFloat()
-	}
-
-	class CharToDoubleConverter : Converter<Char, Double> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Double::class.javaObjectType
-		override fun convert(value: Char) = value.toDouble()
-	}
-
-	class CharToByteConverter : Converter<Char, Byte> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Byte::class.javaObjectType
-		override fun convert(value: Char) = value.toByte()
-	}
-
-	class CharToShortConverter : Converter<Char, Short> {
-		override val sourceType = Char::class.javaObjectType
-		override val targetType = Short::class.javaObjectType
-		override fun convert(value: Char) = value.toShort()
-	}
-	//endregion
-
-	//region IO Converters
-	class FileToPathConverter : Converter<File, Path> {
-		override val sourceType = File::class.java
-		override val targetType = Path::class.java
-		override fun convert(value: File) = value.toPath()
-	}
-
-	class FileToUriConverter : Converter<File, URI> {
-		override val sourceType = File::class.java
-		override val targetType = URI::class.java
-		override fun convert(value: File) = value.toUri()
-	}
-
-	class FileToUrlConverter : Converter<File, URL> {
-		override val sourceType = File::class.java
-		override val targetType = URL::class.java
-		override fun convert(value: File) = value.toUrl()
-	}
-
-	class PathToFileConverter : Converter<Path, File> {
-		override val sourceType = Path::class.java
-		override val targetType = File::class.java
-		override fun convert(value: Path) = value.toFile()
-	}
-
-	class PathToUriConverter : Converter<Path, URI> {
-		override val sourceType = Path::class.java
-		override val targetType = URI::class.java
-		override fun convert(value: Path) = value.toUri()
-	}
-
-	class PathToUrlConverter : Converter<Path, URL> {
-		override val sourceType = Path::class.java
-		override val targetType = URL::class.java
-		override fun convert(value: Path) = value.toUrl()
-	}
-
-	class UriToFileConverter : Converter<URI, File> {
-		override val sourceType = URI::class.java
-		override val targetType = File::class.java
-		override fun convert(value: URI) = value.toFile()
-	}
-
-	class UriToPathConverter : Converter<URI, Path> {
-		override val sourceType = URI::class.java
-		override val targetType = Path::class.java
-		override fun convert(value: URI): Path = value.toPath()
-	}
-
-	class UriToUrlConverter : Converter<URI, URL> {
-		override val sourceType = URI::class.java
-		override val targetType = URL::class.java
-		override fun convert(value: URI) = value.toUrl()
-	}
-
-	class UrlToFileConverter : Converter<URL, File> {
-		override val sourceType = URL::class.java
-		override val targetType = File::class.java
-		override fun convert(value: URL) = value.toFile()
-	}
-
-	class UrlToPathConverter : Converter<URL, Path> {
-		override val sourceType = URL::class.java
-		override val targetType = Path::class.java
-		override fun convert(value: URL) = value.toPath()
-	}
-
-	class UrlToUriConverter : Converter<URL, URI> {
-		override val sourceType = URL::class.java
-		override val targetType = URI::class.java
-		override fun convert(value: URL) = value.toUri()
-	}
-	//endregion
-
-	//region Time Converters
-	class DateToInstantConverter:Converter<Date,Instant>{
-		override val sourceType = Date::class.java
-		override val targetType = Instant::class.java
-		override fun convert(value: Date) = value.toInstant()
-	}
-
-	class InstantToDateConverter:Converter<Instant,Date>{
-		override val sourceType = Instant::class.java
-		override val targetType = Date::class.java
-		override fun convert(value: Instant) = Date.from(value)
-	}
-
-	class LocalDateTimeToLocalDateConverter:Converter<LocalDateTime,LocalDate>{
-		override val sourceType = LocalDateTime::class.java
-		override val targetType = LocalDate::class.java
-		override fun convert(value: LocalDateTime) = value.toLocalDate()
-	}
-
-	class LocalDateTimeToLocalTimeConverter:Converter<LocalDateTime,LocalTime>{
-		override val sourceType = LocalDateTime::class.java
-		override val targetType = LocalTime::class.java
-		override fun convert(value: LocalDateTime) = value.toLocalTime()
+		override fun convert(value: Any): Map<String,String> {
+			TODO("Not yet implemented")
+		}
 	}
 	//endregion
 }

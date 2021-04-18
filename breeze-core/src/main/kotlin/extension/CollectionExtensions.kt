@@ -281,52 +281,72 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 /**
  * 判断当前数组中的所有元素是否被另一数组包含。
  */
-infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前数组中的所有元素是否被另一集合包含。
  */
-infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前集合中的所有元素是否被另一数组包含。
  */
-infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前集合中的所有元素是否被另一集合包含。
  */
-infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前序列中的所有元素是否被另一序列包含。
  */
-infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
+infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前数组中的任意元素是否被另一数组包含。
  */
-infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前数组中的任意元素是否被另一集合包含。
  */
-infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前集合中的任意元素是否被另一数组包含。
  */
-infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前集合中的任意元素是否被另一集合包含。
  */
-infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前序列中的任意元素是否被另一序列包含。
  */
-infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean {
+	return this.any { it in other }
+}
 
 
 /**
@@ -410,7 +430,9 @@ fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 /**
  * 将指定的键值对放入当前映射中。
  */
-fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) = this.put(pair.first, pair.second)
+fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>): V? {
+	return this.put(pair.first, pair.second)
+}
 
 
 /**
@@ -517,7 +539,7 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
  */
 fun <K, V, A : Appendable> Map<K, V>.joinTo(
 	buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null
 ): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
@@ -532,7 +554,7 @@ fun <K, V, A : Appendable> Map<K, V>.joinTo(
  */
 fun <K, V> Map<K, V>.joinToString(
 	separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null
 ): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
@@ -581,7 +603,7 @@ fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
 /**
  * 过滤当前映射中值为null的键值对，然后加入指定的映射。
  */
-fun <K, V : Any,M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M):M {
+fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
 	for((key, value) in this) if(value != null) destination[key] = value
 	return destination
 }
@@ -764,7 +786,7 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 
 
 @PublishedApi
-internal val parallelExecutor by lazy{ Executors.newCachedThreadPool() }
+internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
 
 /**
  * 并行遍历数组中的每个元素，执行指定的操作。
@@ -773,7 +795,7 @@ internal val parallelExecutor by lazy{ Executors.newCachedThreadPool() }
  *
  * @see kotlin.collections.forEach
  */
-inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit):Unit{
+inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
 		parallelExecutor.submit {
@@ -791,16 +813,16 @@ inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit):Uni
  *
  * @see kotlin.collections.forEach
  */
-inline fun <T> Array<out T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
-	crossinline action: (T) -> Unit):Unit{
+inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
+	crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
 		parallelExecutor.submit {
 			action(element)
 			countDownLatch.countDown()
-		}.get(timeout,timeUnit)
+		}.get(timeout, timeUnit)
 	}
-	countDownLatch.await(awaitTimeout,timeUnit)
+	countDownLatch.await(awaitTimeout, timeUnit)
 }
 
 /**
@@ -810,7 +832,7 @@ inline fun <T> Array<out T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeU
  *
  * @see kotlin.collections.forEach
  */
-inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit):Unit{
+inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
 		parallelExecutor.submit {
@@ -828,16 +850,15 @@ inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit):Unit{
  *
  * @see kotlin.collections.forEach
  */
-inline fun <T> List<T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
-	crossinline action: (T) -> Unit):Unit{
+inline fun <T> List<T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
 		parallelExecutor.submit {
 			action(element)
 			countDownLatch.countDown()
-		}.get(timeout,timeUnit)
+		}.get(timeout, timeUnit)
 	}
-	countDownLatch.await(awaitTimeout,timeUnit)
+	countDownLatch.await(awaitTimeout, timeUnit)
 }
 
 /**
@@ -847,7 +868,7 @@ inline fun <T> List<T>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:T
  *
  * @see kotlin.collections.forEach
  */
-inline fun <K,V> Map<out K,V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit):Unit{
+inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
 		parallelExecutor.submit {
@@ -865,16 +886,15 @@ inline fun <K,V> Map<out K,V>.parallelForEach(crossinline action: (Map.Entry<K, 
  *
  * @see kotlin.collections.forEach
  */
-inline fun <K,V>  Map<out K,V>.parallelForEach(timeout:Long,awaitTimeout:Long,timeUnit:TimeUnit,
-	crossinline action: (Map.Entry<K, V>) -> Unit):Unit{
+inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
 		parallelExecutor.submit {
 			action(entry)
 			countDownLatch.countDown()
-		}.get(timeout,timeUnit)
+		}.get(timeout, timeUnit)
 	}
-	countDownLatch.await(awaitTimeout,timeUnit)
+	countDownLatch.await(awaitTimeout, timeUnit)
 }
 //endregion
 
@@ -896,24 +916,24 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 
 
 /**
- * 将当前对象转化为单例列表。
+ * 将当前对象转化为单例列表。如果当前对象为null且参数`orEmpty`为true，则会返回空列表。
  */
-fun <T> T.toSingletonList(): List<T> {
-	return Collections.singletonList(this)
+fun <T> T.toSingletonList(orEmpty: Boolean = false): List<T> {
+	return if(orEmpty && this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
 /**
- * 将当前对象转化为单例列表。
+ * 将当前对象转化为单例集。如果当前对象为null且参数`orEmpty`为true，则会返回空集。
  */
-fun <T> T.toSingletonSet(): Set<T> {
-	return Collections.singleton(this)
+fun <T> T.toSingletonSet(orEmpty: Boolean = false): Set<T> {
+	return if(orEmpty && this == null) Collections.emptySet() else Collections.singleton(this)
 }
 
 /**
- * 将当前二元素元组转化为单例映射。
+ * 将当前二元素元组转化为单例映射。如果当前二元素元组其中对应的键或值为null且参数`orEmpty`为true，则会返回空映射。
  */
-fun <K, V> Pair<K, V>.toSingletonMap(): Map<K, V> {
-	return Collections.singletonMap(first, second)
+fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
+	return if(orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
 }
 
 

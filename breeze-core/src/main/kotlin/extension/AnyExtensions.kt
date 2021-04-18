@@ -122,7 +122,7 @@ fun <T : Any> hashCodeBy(target: T?, deepOp: Boolean = true, selector: T.() -> A
  */
 fun <T : Any> toStringBy(
 	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
-	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<Pair<String, *>>,
+	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<Pair<String, *>>
 ): String {
 	return when {
 		target == null -> "null"
@@ -150,7 +150,7 @@ fun <T : Any> toStringBy(
  */
 fun <T : Any> toStringByReference(
 	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
-	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<KProperty0<*>>,
+	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<KProperty0<*>>
 ): String {
 	return when {
 		target == null -> "null"

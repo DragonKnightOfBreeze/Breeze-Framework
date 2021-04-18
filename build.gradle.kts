@@ -42,7 +42,7 @@ allprojects {
 
 	//配置依赖
 	dependencies {
-		implementation(kotlin("stdlib"))
+		implementation(kotlin("stdlib-jdk8"))
 		testImplementation(kotlin("test-junit"))
 	}
 

@@ -472,8 +472,10 @@
 * [X] 实现并行迭代方法`parallelForEach`
 * [X] 完善`breeze-serialization`
 * [X] 重构组件相关代码
-* [ ] 补充组件
+* [ ] 补充组件`Converter`
+* [ ] 补充组件`RandomGenerator`
 * [ ] 可配置参数的组件，更加灵活的配置参数
+* [ ] 有条件的组件
 * [ ] 实现并发迭代的集合
 
 # 长期
