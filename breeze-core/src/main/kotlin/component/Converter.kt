@@ -26,6 +26,7 @@ import java.util.regex.*
  *
  * 同一兼容类型的转化器可以注册多个。
  */
+@Suppress("RemoveExplicitTypeArguments")
 interface Converter<T> : Component {
 	/**
 	 * 目标类型。
@@ -119,7 +120,6 @@ interface Converter<T> : Component {
 							}
 						} catch(e: Exception) {
 							e.printStackTrace()
-							continue
 						}
 					}
 					return if(targetType == String::class.java) {
@@ -164,7 +164,6 @@ interface Converter<T> : Component {
 							}
 						} catch(e: Exception) {
 							e.printStackTrace()
-							continue
 						}
 					}
 					return if(targetType == String::class.java) {
@@ -331,8 +330,7 @@ interface Converter<T> : Component {
 			return when {
 				value is BigInteger -> value
 				value is Long -> BigInteger.valueOf(value)
-				value is Number -> BigInteger.valueOf(value.toLong())
-				else -> BigInteger.valueOf(value.toString().toLong())
+				else ->  BigInteger.valueOf(value.convert<Long>())
 			}
 		}
 
@@ -340,8 +338,7 @@ interface Converter<T> : Component {
 			return when {
 				value is BigInteger -> value
 				value is Long -> BigInteger.valueOf(value)
-				value is Number -> BigInteger.valueOf(value.toLong())
-				else -> BigInteger.valueOf(value.toString().toLongOrNull() ?: return null)
+				else -> BigInteger.valueOf(value.convertOrNull<Long>()?:return null)
 			}
 		}
 	}
@@ -353,8 +350,7 @@ interface Converter<T> : Component {
 			return when {
 				value is BigDecimal -> value
 				value is Double -> BigDecimal.valueOf(value)
-				value is Number -> BigDecimal.valueOf(value.toDouble())
-				else -> BigDecimal.valueOf(value.toString().toDouble())
+				else -> BigDecimal.valueOf(value.convert<Double>())
 			}
 		}
 
@@ -362,8 +358,91 @@ interface Converter<T> : Component {
 			return when {
 				value is BigDecimal -> value
 				value is Double -> BigDecimal.valueOf(value)
-				value is Number -> BigDecimal.valueOf(value.toDouble())
-				else -> BigDecimal.valueOf(value.toString().toDoubleOrNull() ?: return null)
+				else -> BigDecimal.valueOf(value.convertOrNull<Double>() ?: return null)
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UByteConverter: Converter<UByte>{
+		override val targetType: Class<UByte> = UByte::class.java
+
+		override fun convert(value: Any): UByte {
+			return when{
+				value is UByte -> value
+				value is Byte -> value.toUByte()
+				else -> value.convert<Byte>().toUByte()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UByte? {
+			return when{
+				value is UByte -> value
+				value is Byte -> value.toUByte()
+				else -> value.convertOrNull<Byte>()?.toUByte()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UShortConverter: Converter<UShort>{
+		override val targetType: Class<UShort> = UShort::class.java
+
+		override fun convert(value: Any): UShort {
+			return when{
+				value is UShort -> value
+				value is Short -> value.toUShort()
+				else -> value.convert<Short>().toUShort()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UShort? {
+			return when{
+				value is UShort -> value
+				value is Short -> value.toUShort()
+				else -> value.convertOrNull<Short>()?.toUShort()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UIntConverter: Converter<UInt>{
+		override val targetType: Class<UInt> = UInt::class.java
+
+		override fun convert(value: Any): UInt {
+			return when{
+				value is UInt -> value
+				value is Int -> value.toUInt()
+				else -> value.convert<Int>().toUInt()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UInt? {
+			return when{
+				value is UInt -> value
+				value is Int -> value.toUInt()
+				else -> value.convertOrNull<Int>()?.toUInt()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object ULongConverter: Converter<ULong>{
+		override val targetType: Class<ULong> = ULong::class.java
+
+		override fun convert(value: Any): ULong {
+			return when{
+				value is ULong -> value
+				value is Long -> value.toULong()
+				else -> value.convert<Long>().toULong()
+			}
+		}
+
+		override fun convertOrNull(value: Any): ULong? {
+			return when{
+				value is ULong -> value
+				value is Long -> value.toULong()
+				else -> value.convertOrNull<Long>()?.toULong()
 			}
 		}
 	}
@@ -375,8 +454,7 @@ interface Converter<T> : Component {
 			return when {
 				value is AtomicInteger -> value
 				value is Int -> AtomicInteger(value)
-				value is Number -> AtomicInteger(value.toInt())
-				else -> AtomicInteger(value.toString().toInt())
+				else -> AtomicInteger(value.convert<Int>())
 			}
 		}
 
@@ -384,8 +462,7 @@ interface Converter<T> : Component {
 			return when {
 				value is AtomicInteger -> value
 				value is Int -> AtomicInteger(value)
-				value is Number -> AtomicInteger(value.toInt())
-				else -> AtomicInteger(value.toString().toIntOrNull() ?: return null)
+				else -> AtomicInteger(value.convertOrNull<Int>() ?: return null)
 			}
 		}
 	}
@@ -397,8 +474,7 @@ interface Converter<T> : Component {
 			return when {
 				value is AtomicLong -> value
 				value is Long -> AtomicLong(value)
-				value is Number -> AtomicLong(value.toLong())
-				else -> AtomicLong(value.toString().toLong())
+				else -> AtomicLong(value.convert<Long>())
 			}
 		}
 
@@ -407,7 +483,7 @@ interface Converter<T> : Component {
 				value is AtomicLong -> value
 				value is Long -> AtomicLong(value)
 				value is Number -> AtomicLong(value.toLong())
-				else -> AtomicLong(value.toString().toLongOrNull() ?: return null)
+				else -> AtomicLong(value.convertOrNull<Long>() ?: return null)
 			}
 		}
 	}
@@ -454,7 +530,7 @@ interface Converter<T> : Component {
 
 	@ConfigurableParams(
 		ConfigurableParam("raw", "Boolean", "false", comment = "Convert value to string by 'toString()' method"),
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -471,7 +547,7 @@ interface Converter<T> : Component {
 		var timeZone = defaultTimeZone
 		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			private set
+			protected set
 
 		fun setThreadLocalDateFormat() {
 			threadLocalDateFormat.set(SimpleDateFormat(format, locale).also { it.timeZone = timeZone })
@@ -642,7 +718,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -684,7 +760,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -699,7 +775,7 @@ interface Converter<T> : Component {
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
 		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			private set
+			protected set
 
 		fun setFormatter() {
 			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
@@ -728,7 +804,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'HH:mm:ss'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -743,7 +819,7 @@ interface Converter<T> : Component {
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
 		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			private set
+			protected set
 
 		fun setFormatter() {
 			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
@@ -772,7 +848,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'yyyy-MM-dd HH:mm:ss'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -787,7 +863,7 @@ interface Converter<T> : Component {
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
 		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			private set
+			protected set
 
 		fun setFormatter() {
 			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
@@ -848,7 +924,7 @@ interface Converter<T> : Component {
 	}
 
 	@ConfigurableParams(
-		ConfigurableParam("format", "String", "yyyy-MM-dd", comment = "Format pattern"),
+		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
 		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
 		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
 	)
@@ -863,7 +939,7 @@ interface Converter<T> : Component {
 		var locale = defaultLocale
 		var timeZone = defaultTimeZone
 		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			private set
+			protected set
 
 		fun setFormatter() {
 			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
@@ -954,9 +1030,8 @@ interface Converter<T> : Component {
 		}
 	}
 
-
 	@ConfigurableParams(
-		ConfigurableParam("className", "String", comment = "Ful class name of enum")
+		ConfigurableParam("className", "String", comment = "Full class name of enum")
 	)
 	open class EnumConverter : Converter<Enum<*>>, Configurable<EnumConverter> {
 		companion object Default : EnumConverter()
@@ -966,9 +1041,9 @@ interface Converter<T> : Component {
 		override val targetType: Class<Enum<*>> = Enum::class.java
 
 		var className: String? = null
-			private set
+			protected set
 		var enumClass: Class<*>? = null
-			private set
+			protected set
 		val enumValues :MutableList<Enum<*>> = mutableListOf()
 		val enumValueMap: MutableMap<String, Enum<*>> = mutableMapOf()
 
@@ -1030,124 +1105,104 @@ interface Converter<T> : Component {
 	//endregion
 
 	//region Collection Converters
-	open class ByteArrayConverter : Converter<ByteArray>, Configurable<ByteArrayConverter> {
-		companion object Default : ByteArrayConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<ByteArray> = ByteArray::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): ByteArrayConverter {
-			return ByteArrayConverter().apply { configure(params) }
-		}
-
-		override fun convert(value: Any): ByteArray {
-			TODO("Not yet implemented")
-		}
-	}
-
-	open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
-		companion object Default : StringArrayConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Array<String>> = Array<String>::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): StringArrayConverter {
-			TODO("Not yet implemented")
-		}
-
-		override fun convert(value: Any): Array<String> {
-			TODO("Not yet implemented")
-		}
-	}
-
-	open class StringListConverter : Converter<List<*>>, Configurable<StringListConverter> {
-		companion object Default : StringListConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<List<*>> = List::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): StringListConverter {
-			TODO("Not yet implemented")
-		}
-
-		override fun convert(value: Any): List<String> {
-			TODO("Not yet implemented")
-		}
-	}
-
-	open class StringSetConverter : Converter<Set<*>>, Configurable<StringSetConverter> {
-		companion object Default : StringSetConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Set<*>> = Set::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): StringSetConverter {
-			TODO("Not yet implemented")
-		}
-
-		override fun convert(value: Any): Set<String> {
-			TODO("Not yet implemented")
-		}
-	}
-
-	open class StringSequenceConverter : Converter<Sequence<*>>, Configurable<StringSequenceConverter> {
-		companion object Default : StringSequenceConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Sequence<*>> = Sequence::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): StringSequenceConverter {
-			TODO("Not yet implemented")
-		}
-
-		override fun convert(value: Any): Sequence<String> {
-			TODO("Not yet implemented")
-		}
-	}
-
-	open class StringMapConverter : Converter<Map<*, *>>, Configurable<StringMapConverter> {
-		companion object Default : StringMapConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Map<*, *>> = Map::class.java
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-		}
-
-		override fun copy(params: Map<String, Any?>): StringMapConverter {
-			TODO("Not yet implemented")
-		}
-
-		override fun convert(value: Any): Map<String, String> {
-			TODO("Not yet implemented")
-		}
-	}
+	//open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
+	//	companion object Default : StringArrayConverter()
+	//
+	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+	//
+	//	override val targetType: Class<Array<String>> = Array<String>::class.java
+	//
+	//	override fun configure(params: Map<String, Any?>) {
+	//		super.configure(params)
+	//	}
+	//
+	//	override fun copy(params: Map<String, Any?>): StringArrayConverter {
+	//		TODO("Not yet implemented")
+	//	}
+	//
+	//	override fun convert(value: Any): Array<String> {
+	//		TODO("Not yet implemented")
+	//	}
+	//}
+	//
+	//open class StringListConverter : Converter<List<*>>, Configurable<StringListConverter> {
+	//	companion object Default : StringListConverter()
+	//
+	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+	//
+	//	override val targetType: Class<List<*>> = List::class.java
+	//
+	//	override fun configure(params: Map<String, Any?>) {
+	//		super.configure(params)
+	//	}
+	//
+	//	override fun copy(params: Map<String, Any?>): StringListConverter {
+	//		TODO("Not yet implemented")
+	//	}
+	//
+	//	override fun convert(value: Any): List<String> {
+	//		TODO("Not yet implemented")
+	//	}
+	//}
+	//
+	//open class StringSetConverter : Converter<Set<*>>, Configurable<StringSetConverter> {
+	//	companion object Default : StringSetConverter()
+	//
+	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+	//
+	//	override val targetType: Class<Set<*>> = Set::class.java
+	//
+	//	override fun configure(params: Map<String, Any?>) {
+	//		super.configure(params)
+	//	}
+	//
+	//	override fun copy(params: Map<String, Any?>): StringSetConverter {
+	//		TODO("Not yet implemented")
+	//	}
+	//
+	//	override fun convert(value: Any): Set<String> {
+	//		TODO("Not yet implemented")
+	//	}
+	//}
+	//
+	//open class StringSequenceConverter : Converter<Sequence<*>>, Configurable<StringSequenceConverter> {
+	//	companion object Default : StringSequenceConverter()
+	//
+	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+	//
+	//	override val targetType: Class<Sequence<*>> = Sequence::class.java
+	//
+	//	override fun configure(params: Map<String, Any?>) {
+	//		super.configure(params)
+	//	}
+	//
+	//	override fun copy(params: Map<String, Any?>): StringSequenceConverter {
+	//		TODO("Not yet implemented")
+	//	}
+	//
+	//	override fun convert(value: Any): Sequence<String> {
+	//		TODO("Not yet implemented")
+	//	}
+	//}
+	//
+	//open class StringMapConverter : Converter<Map<*, *>>, Configurable<StringMapConverter> {
+	//	companion object Default : StringMapConverter()
+	//
+	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+	//
+	//	override val targetType: Class<Map<*, *>> = Map::class.java
+	//
+	//	override fun configure(params: Map<String, Any?>) {
+	//		super.configure(params)
+	//	}
+	//
+	//	override fun copy(params: Map<String, Any?>): StringMapConverter {
+	//		TODO("Not yet implemented")
+	//	}
+	//
+	//	override fun convert(value: Any): Map<String, String> {
+	//		TODO("Not yet implemented")
+	//	}
+	//}
 	//endregion
 }

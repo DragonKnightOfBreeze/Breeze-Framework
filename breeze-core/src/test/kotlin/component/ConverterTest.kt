@@ -17,5 +17,8 @@ class ConverterTest {
 		println(Date().convert<String>())
 		println(Date().convert<String>(mapOf("format" to "yyyy-MM-dd")))
 		println(Date().convert<String>(mapOf("format" to "yyyy MM dd")))
+
+		println(123.convert<String>())
+		println("java.lang.Object".convert<Class<*>>())
 	}
 }

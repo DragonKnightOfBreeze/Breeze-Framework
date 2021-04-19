@@ -130,6 +130,31 @@ fun Random.nextChar(from: Char, until: Char): Char {
 
 
 /**
+ * 得到随机的字符。
+ */
+fun Random.nextElement(string: String):Char{
+	val size = string.size
+	return when(size) {
+		0 -> throw IllegalArgumentException("Elements cannot be empty.")
+		1 -> string[0]
+		else -> string[nextInt(size)]
+	}
+}
+
+/**
+ * 得到随机的元素。
+ */
+fun Random.nextElement(elements: CharArray):Char{
+	val size = elements.size
+	return when(size) {
+		0 -> throw IllegalArgumentException("Elements cannot be empty.")
+		1 -> elements[0]
+		else -> elements[nextInt(size)]
+	}
+}
+
+
+/**
  * 得到随机的元素。
  */
 fun <T> Random.nextElement(elements: Array<out T>):T{
