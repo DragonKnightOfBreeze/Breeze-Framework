@@ -6,7 +6,6 @@
 package com.windea.breezeframework.core.extension
 
 import java.math.*
-import java.text.*
 import java.util.*
 import kotlin.math.*
 import kotlin.random.Random
@@ -133,11 +132,11 @@ fun Random.nextChar(from: Char, until: Char): Char {
  * 得到随机的字符。
  */
 fun Random.nextElement(string: String):Char{
-	val size = string.size
-	return when(size) {
+	val length = string.length
+	return when(length) {
 		0 -> throw IllegalArgumentException("Elements cannot be empty.")
 		1 -> string[0]
-		else -> string[nextInt(size)]
+		else -> string[nextInt(length)]
 	}
 }
 

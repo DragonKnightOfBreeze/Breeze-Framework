@@ -13,6 +13,8 @@ import kotlin.random.*
  * 随机值生成器。
  *
  * 随机值生成器用于基于给定的参数生成随机值。
+ *
+ * 同一目标类型可以配置多个随机数生成器。
  */
 interface RandomGenerator<T> : Component {
 	/**
@@ -30,6 +32,7 @@ interface RandomGenerator<T> : Component {
 			registerDefaultRandomGenerators()
 		}
 
+		@OptIn(ExperimentalUnsignedTypes::class)
 		private fun registerDefaultRandomGenerators() {
 			register(RandomByteGenerator)
 			register(RandomShortGenerator)
@@ -39,21 +42,14 @@ interface RandomGenerator<T> : Component {
 			register(RandomDoubleGenerator)
 			register(RandomBigIntegerGenerator)
 			register(RandomBigDecimalGenerator)
-			register(RandomSourceStringGenerator)
-			register(RandomLetterStringGenerator)
-			register(RandomDigitStringGenerator)
-			register(RandomWordStringGenerator)
-			register(RandomLengthSourceStringGenerator)
-			register(RandomLengthLetterStringGenerator)
-			register(RandomLengthDigitStringGenerator)
-			register(RandomLengthWordStringGenerator)
+			register(RandomUIntGenerator)
+			register(RandomULongGenerator)
+			register(RandomCharGenerator)
+			register(RandomBooleanGenerator)
+			register(RandomStringGenerator)
 		}
 
 		val random: Random get() = Random
-
-		init {
-			random.toSingletonList()
-		}
 
 		/**
 		 * 生成指定类型的随机值。
@@ -67,13 +63,14 @@ interface RandomGenerator<T> : Component {
 		 */
 		@Suppress("UNCHECKED_CAST")
 		fun <T> generate(targetType: Class<T>): T {
+			//遍历已注册的随机数生成器，如果匹配目标类型，则尝试用它生成随机值，如果生成失败，则继续遍历，不会因此报错
 			for(randomGenerator in components) {
 				try {
 					if(randomGenerator.targetType.isAssignableFrom(targetType)) {
 						return randomGenerator.generate() as T
 					}
 				} catch(e: Exception) {
-					continue
+					e.printStackTrace()
 				}
 			}
 			throw IllegalArgumentException("No suitable random generator found for target type '$targetType'.")
@@ -145,12 +142,52 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
+	@ExperimentalUnsignedTypes
+	object RandomUIntGenerator:RandomGenerator<UInt>{
+		override val targetType: Class<UInt> = UInt::class.java
+
+		override fun generate(): UInt {
+			return random.nextUInt()
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object RandomULongGenerator:RandomGenerator<ULong>{
+		override val targetType: Class<ULong> = ULong::class.java
+
+		override fun generate(): ULong {
+			return random.nextULong()
+		}
+	}
+
+	object RandomCharGenerator:RandomGenerator<Char>{
+		override val targetType: Class<Char> = Char::class.java
+
+		override fun generate(): Char {
+			return random.nextChar()
+		}
+	}
+
+	object RandomBooleanGenerator:RandomGenerator<Boolean>{
+		override val targetType: Class<Boolean> = Boolean::class.java
+
+		override fun generate(): Boolean {
+			return random.nextBoolean()
+		}
+	}
+
 	@ConfigurableParams(
 		ConfigurableParam("length","Int","0", comment= "Length of generated string"),
-		ConfigurableParam("source","String","''",comment = "Source string to generate chars")
+		ConfigurableParam("minLength","Int","0", comment= "Min length of generated string"),
+		ConfigurableParam("maxLength","Int","0", comment= "Max length of generated string"),
+		ConfigurableParam("source","String","''",comment = "Source string to generate chars"),
 	)
-	open class RandomSourceStringGenerator : RandomGenerator<String>, Configurable<RandomSourceStringGenerator> {
-		companion object Default: RandomSourceStringGenerator()
+	open class RandomStringGenerator : RandomGenerator<String>, Configurable<RandomStringGenerator> {
+		companion object Default: RandomStringGenerator(){
+			const val letterSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			const val numberSource = "0123456789"
+			const val wordSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		}
 
 		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
 
@@ -158,129 +195,42 @@ interface RandomGenerator<T> : Component {
 
 		var length: Int = 0
 			protected set
+		var minLength: Int = 0
+			protected set
+		var maxLength:Int = 0
+			protected set
 		var source: String = ""
 			protected set
 
 		override fun configure(params: Map<String, Any?>) {
 			params["length"]?.convertOrNull<Int>()?.let { length = it }
+			params["minLength"]?.convertOrNull<Int>()?.let { length = it }
+			params["maxLength"]?.convertOrNull<Int>()?.let { length = it }
 			params["source"]?.toString()?.let { source = it }
 		}
 
-		override fun copy(params: Map<String, Any?>): RandomSourceStringGenerator {
-			return RandomSourceStringGenerator().apply { configure(params) }
+		override fun copy(params: Map<String, Any?>): RandomStringGenerator {
+			return RandomStringGenerator().apply { configure(params) }
 		}
 
 		override fun generate(): String {
-			if(length <= 0) throw IllegalArgumentException("Param 'length' must be positive.")
+			if(length < 0) throw IllegalArgumentException("Param 'length' must not be negative.")
+			if(length == 0){
+				if(minLength < 0) throw IllegalArgumentException("Param 'minLength' must not be negative.");
+				if(maxLength < 0) throw IllegalArgumentException("Param 'maxLength' must not be negative.");
+			}
 			if(source.isEmpty()) throw IllegalArgumentException("Param 'source' must not be empty.")
+			val length = when{
+				length != 0 -> length
+				maxLength != 0 -> random.nextInt(minLength,maxLength)
+				else -> random.nextInt(minLength)
+			}
+			val source = source
 			return buildString {
-				val length = length
-				val source = source
 				repeat(length) {
 					append(random.nextElement(source))
 				}
 			}
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("length","Int","0", comment= "Length of generated string")
-	)
-	object RandomLetterStringGenerator : RandomSourceStringGenerator() {
-		init {
-			source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("length","Int","0", comment= "Length of generated string")
-	)
-	object RandomDigitStringGenerator : RandomSourceStringGenerator() {
-		init {
-			source = "0123456789"
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("length","Int","0", comment= "Length of generated string")
-	)
-	object RandomWordStringGenerator : RandomSourceStringGenerator() {
-		init {
-			source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("minLength","Int","0", comment= "Min length of generated string"),
-		ConfigurableParam("maxLength","Int","0", comment= "Max length of generated string"),
-		ConfigurableParam("source","String","''",comment = "Source string to generate chars")
-	)
-	open class RandomLengthSourceStringGenerator : RandomGenerator<String>, Configurable<RandomSourceStringGenerator> {
-		companion object Default: RandomLengthSourceStringGenerator()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<String> = String::class.java
-
-		var minLength: Int = 0
-			protected set
-		var maxLength: Int? = null
-			protected set
-		var source: String = ""
-			protected set
-
-		override fun configure(params: Map<String, Any?>) {
-			params["minLength"]?.convertOrNull<Int>()?.let { minLength = it }
-			params["maxLength"]?.convertOrNull<Int>()?.let { maxLength = it }
-			params["source"]?.toString()?.let { source = it }
-		}
-
-		override fun copy(params: Map<String, Any?>): RandomSourceStringGenerator {
-			return RandomSourceStringGenerator().apply { configure(params) }
-		}
-
-		override fun generate(): String {
-			if(minLength <= 0) throw IllegalArgumentException("Param 'minLength' must be positive.")
-			if(source.isEmpty()) throw IllegalArgumentException("Param 'source' must not be empty.")
-			return buildString {
-				val minLength = minLength
-				val maxLength = maxLength
-				val source = source
-				val count = if(maxLength == null) random.nextInt(minLength) else random.nextInt(minLength, maxLength)
-				repeat(count) {
-					append(random.nextElement(source))
-				}
-			}
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("minLength","Int","0", comment= "Min length of generated string"),
-		ConfigurableParam("maxLength","Int","0", comment= "Max length of generated string")
-	)
-	object RandomLengthLetterStringGenerator : RandomLengthSourceStringGenerator() {
-		init {
-			source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("minLength","Int","0", comment= "Min length of generated string"),
-		ConfigurableParam("maxLength","Int","0", comment= "Max length of generated string")
-	)
-	object RandomLengthDigitStringGenerator : RandomLengthSourceStringGenerator() {
-		init {
-			source = "0123456789"
-		}
-	}
-
-	@ConfigurableParams(
-		ConfigurableParam("minLength","Int","0", comment= "Min length of generated string"),
-		ConfigurableParam("maxLength","Int","0", comment= "Max length of generated string")
-	)
-	object RandomLengthWordStringGenerator : RandomLengthSourceStringGenerator() {
-		init {
-			source = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 		}
 	}
 	//endregion
