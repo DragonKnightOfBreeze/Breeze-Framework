@@ -15,11 +15,7 @@ interface StringPattern : Component {
 	fun matches(value: String): Boolean
 
 	companion object Registry : AbstractComponentRegistry<StringPattern>() {
-		init {
-			registerDefaultStringPatterns()
-		}
-
-		private fun registerDefaultStringPatterns() {
+		override fun registerDefault() {
 			register(BooleanPattern)
 			register(WildcardBooleanPattern)
 			register(IntegerPattern)

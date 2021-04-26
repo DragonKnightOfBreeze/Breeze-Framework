@@ -30,7 +30,8 @@ interface Converter<T> : Component {
 	/**
 	 * 目标类型。
 	 */
-	val targetType: Class<T>
+	//val targetType: Class<T>
+	val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
@@ -46,12 +47,8 @@ interface Converter<T> : Component {
 	}
 
 	companion object Registry : AbstractComponentRegistry<Converter<*>>() {
-		init {
-			registerDefaultConverters()
-		}
-
 		@OptIn(ExperimentalUnsignedTypes::class)
-		private fun registerDefaultConverters() {
+		override fun registerDefault() {
 			register(ByteConverter)
 			register(ShortConverter)
 			register(IntConverter)
@@ -101,6 +98,7 @@ interface Converter<T> : Component {
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
 		@Suppress("UNCHECKED_CAST")
+		@JvmStatic
 		fun <T> convert(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T {
 			when {
 				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
@@ -111,7 +109,7 @@ interface Converter<T> : Component {
 				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则抛出异常
 				else -> {
 					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
-					for((index, converter) in components.withIndex()) {
+					for((index, converter) in values().withIndex()) {
 						try {
 							if(converter.targetType.isAssignableFrom(targetType)) {
 								//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要新注册转化器
@@ -148,6 +146,7 @@ interface Converter<T> : Component {
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 		 */
 		@Suppress("UNCHECKED_CAST")
+		@JvmStatic
 		fun <T> convertOrNull(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T? {
 			when {
 				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
@@ -191,6 +190,7 @@ interface Converter<T> : Component {
 		/**
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
 		 */
+		@JvmStatic
 		fun <T> convertOrElse(value: Any?, targetType: Class<T>, defaultValue: T): T {
 			return convertOrNull(value, targetType) ?: defaultValue
 		}
@@ -198,7 +198,7 @@ interface Converter<T> : Component {
 
 	//region Default Converters
 	object ByteConverter : Converter<Byte> {
-		override val targetType: Class<Byte> = Byte::class.javaObjectType
+		//override val targetType: Class<Byte> = Byte::class.javaObjectType
 
 		override fun convert(value: Any): Byte {
 			return when {
@@ -220,7 +220,7 @@ interface Converter<T> : Component {
 	}
 
 	object ShortConverter : Converter<Short> {
-		override val targetType: Class<Short> = Short::class.javaObjectType
+		//override val targetType: Class<Short> = Short::class.javaObjectType
 
 		override fun convert(value: Any): Short {
 			return when {

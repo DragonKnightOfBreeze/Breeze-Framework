@@ -84,11 +84,7 @@ interface PathPattern:Component {
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
 	companion object Registry: AbstractComponentRegistry<PathPattern>(){
-		init {
-			registerDefaultPathPatterns()
-		}
-
-		private fun registerDefaultPathPatterns() {
+		override fun registerDefault() {
 			register(StandardPath)
 			register(JsonPointerPath)
 			register(AntPath)

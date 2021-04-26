@@ -5,6 +5,7 @@
 
 package com.windea.breezeframework.core.extension
 
+import java.lang.reflect.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
@@ -29,6 +30,7 @@ internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
 
+
 internal const val defaultDateFormat = "yyyy-MM-dd"
 internal const val defaultTimeFormat = "HH:mm:ss"
 internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
@@ -36,6 +38,7 @@ internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
 internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
 //internal val threadLocalDateFormatCache = ConcurrentHashMap<String,ThreadLocal<DateFormat>>()
+
 
 //internal fun Any.isNullLike():Boolean{
 //	return when(this){
@@ -64,3 +67,24 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 //		else -> false
 //	}
 //}
+
+internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
+
+@Suppress("UNCHECKED_CAST")
+internal fun <T> inferGenericType(target:Any,interfaceType:Class<*>):Class<T>{
+	val targetMap = genericTypesCache.getOrPut(interfaceType) { ConcurrentHashMap() }
+	val targetType = target::class.javaObjectType
+	return targetMap.getOrPut(targetType){
+		val genericInterfaces = targetType.genericInterfaces
+		//TODO 递归查找
+		val genericInterface = genericInterfaces.find {
+			it is ParameterizedType && it.rawType == interfaceType
+		} as? ParameterizedType ?: throw error("Framework internal error.")
+		val genericTypes = genericInterface.actualTypeArguments
+		if(genericTypes.isEmpty()) throw error("Framework internal error.")
+		val genericType = genericTypes[0]
+		if(genericType !is Class<*>) throw error("Framework internal error.")
+		genericType
+	} as Class<T>
+}
+

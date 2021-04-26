@@ -42,12 +42,7 @@ interface LetterCase:Component {
 	fun joinToString(value: Sequence<String>): String
 
 	companion object Registry: AbstractComponentRegistry<LetterCase>(){
-		init {
-			registerDefaultLetterCases()
-			registerPathLikeLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
+		override fun registerDefault() {
 			register(LowerCase)
 			register(UpperCase)
 			register(Capitalized)
@@ -56,7 +51,6 @@ interface LetterCase:Component {
 			register(FirstWordCapitalized)
 			register(CapitalizedWords)
 			register(Words)
-
 			register(CamelCase)
 			register(PascalCase)
 			register(SnakeCase)
@@ -65,9 +59,7 @@ interface LetterCase:Component {
 			register(KebabCase)
 			register(KebabUpperCase)
 			register(HyphenWords)
-		}
 
-		private fun registerPathLikeLetterCases() {
 			register(ReferencePath)
 			register(LinuxPath)
 			register(WindowsPath)
@@ -76,6 +68,7 @@ interface LetterCase:Component {
 		/**
 		 * 推断单词格式。
 		 */
+		@JvmStatic
 		fun infer(value: String): LetterCase? {
 			for(letterCase in components) {
 				if(letterCase.matches(value)) return letterCase

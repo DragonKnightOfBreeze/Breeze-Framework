@@ -24,12 +24,7 @@ interface Escaper:Component {
 	fun unescape(value: String): String
 
 	companion object :AbstractComponentRegistry<Escaper>(){
-		init {
-			registerDefaultEscapers()
-			registerLineBreakEscapers()
-		}
-
-		private fun registerDefaultEscapers() {
+		override fun registerDefault() {
 			register(KotlinEscaper)
 			register(JavaEscaper)
 			register(JavaScriptEscaper)
@@ -38,9 +33,7 @@ interface Escaper:Component {
 			register(XmlAttributeEscaper)
 			register(XmlContentEscaper)
 			register(HtmlEscaper)
-		}
 
-		private fun registerLineBreakEscapers() {
 			register(LineBreakEscaper)
 			register(HtmlLineBreakEscaper)
 		}

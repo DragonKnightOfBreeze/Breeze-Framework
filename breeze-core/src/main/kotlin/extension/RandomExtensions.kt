@@ -197,9 +197,18 @@ fun Random.nextString(source:String,length:Int):String{
 	}
 }
 
-/**得到随机的UUID字符串。*/
-fun Random.nextUUIDString(): String {
-	return UUID.randomUUID().toString()
+/**
+ * 得到随机的UUID。
+ */
+fun Random.nextUuid():UUID{
+	return UUID.randomUUID()
+}
+
+/**
+ * 得到随机的UUID字符串。
+ */
+fun Random.nextUuidString(): String {
+	return nextUuid().toString()
 }
 
 

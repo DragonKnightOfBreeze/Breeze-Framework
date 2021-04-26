@@ -7,14 +7,15 @@ import com.windea.breezeframework.core.annotation.*
 import com.windea.breezeframework.core.extension.*
 import com.windea.breezeframework.core.model.*
 import java.math.*
+import java.util.*
+import java.util.concurrent.*
 import kotlin.random.*
+import kotlin.random.Random
 
 /**
  * 随机值生成器。
  *
  * 随机值生成器用于基于给定的参数生成随机值。
- *
- * 同一目标类型可以配置多个随机数生成器。
  */
 interface RandomGenerator<T> : Component {
 	/**
@@ -28,12 +29,8 @@ interface RandomGenerator<T> : Component {
 	fun generate(): T
 
 	companion object Registry : AbstractComponentRegistry<RandomGenerator<*>>() {
-		init {
-			registerDefaultRandomGenerators()
-		}
-
 		@OptIn(ExperimentalUnsignedTypes::class)
-		private fun registerDefaultRandomGenerators() {
+		override fun registerDefault() {
 			register(RandomByteGenerator)
 			register(RandomShortGenerator)
 			register(RandomIntGenerator)
@@ -47,7 +44,10 @@ interface RandomGenerator<T> : Component {
 			register(RandomCharGenerator)
 			register(RandomBooleanGenerator)
 			register(RandomStringGenerator)
+			register(RandomUuidGenerator)
 		}
+
+		private val componentCache: MutableMap<Class<*>,RandomGenerator<*>> = ConcurrentHashMap()
 
 		val random: Random get() = Random
 
@@ -62,18 +62,19 @@ interface RandomGenerator<T> : Component {
 		 * 生成指定类型的随机值。
 		 */
 		@Suppress("UNCHECKED_CAST")
+		@JvmStatic
 		fun <T> generate(targetType: Class<T>): T {
-			//遍历已注册的随机数生成器，如果匹配目标类型，则尝试用它生成随机值，如果生成失败，则继续遍历，不会因此报错
-			for(randomGenerator in components) {
-				try {
+			//遍历已注册的随机数生成器，如果匹配目标类型，则尝试用它生成随机值
+			//如果成功则加入缓存，如果失败则抛出异常
+			val randomGenerator = componentCache.getOrPut(targetType){
+				for(randomGenerator in components) {
 					if(randomGenerator.targetType.isAssignableFrom(targetType)) {
-						return randomGenerator.generate() as T
+						return@getOrPut randomGenerator
 					}
-				} catch(e: Exception) {
-					e.printStackTrace()
 				}
+				throw IllegalArgumentException("No suitable random generator found for target type '$targetType'.")
 			}
-			throw IllegalArgumentException("No suitable random generator found for target type '$targetType'.")
+			return randomGenerator.generate() as T
 		}
 	}
 
@@ -231,6 +232,14 @@ interface RandomGenerator<T> : Component {
 					append(random.nextElement(source))
 				}
 			}
+		}
+	}
+
+	object RandomUuidGenerator:RandomGenerator<UUID>{
+		override val targetType: Class<UUID> = UUID::class.java
+
+		override fun generate(): UUID {
+			return Random.nextUuid()
 		}
 	}
 	//endregion

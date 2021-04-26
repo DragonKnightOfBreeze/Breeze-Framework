@@ -26,11 +26,7 @@ interface Encrypter:Component {
 	fun decrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
 
 	companion object Registry:AbstractComponentRegistry<Encrypter>(){
-		init {
-			registerDefaultEncrypters()
-		}
-
-		private fun registerDefaultEncrypters() {
+		override fun registerDefault() {
 			register(DesEncrypter)
 			register(AesEncrypter)
 			register(Md5Encrypter)

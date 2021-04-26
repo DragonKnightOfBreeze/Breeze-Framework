@@ -27,11 +27,7 @@ interface Encoder:Component {
 	fun decode(value: String, charset: Charset = Charsets.UTF_8): String
 
 	companion object Registry: AbstractComponentRegistry<Encoder>(){
-		init {
-			registerDefaultEncoders()
-		}
-
-		private fun registerDefaultEncoders() {
+		override fun registerDefault() {
 			register(Base64Encoder)
 			register(Base64UrlEncoder)
 			register(Base64MimeEncoder)

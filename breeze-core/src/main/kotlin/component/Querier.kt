@@ -40,12 +40,7 @@ interface Querier<T : Any, R> : Component {
 	}
 
 	companion object Registry: AbstractComponentRegistry<Querier<*,*>>(){
-		init {
-			registerDefaultQueriers()
-			registerReflectionQueriers()
-		}
-
-		private fun registerDefaultQueriers() {
+		override fun registerDefault() {
 			register(ResultsQuerier)
 			register(FilterableResultsQuerier)
 			register(FirstResultQuerier)
@@ -54,9 +49,7 @@ interface Querier<T : Any, R> : Component {
 			register(RegexQuerier)
 			register(IndexQuerier)
 			register(IndexRangeQuerier)
-		}
 
-		private fun registerReflectionQueriers() {
 			register(ReflectionQuerier)
 			register(ReflectionMemberQuerier)
 		}
