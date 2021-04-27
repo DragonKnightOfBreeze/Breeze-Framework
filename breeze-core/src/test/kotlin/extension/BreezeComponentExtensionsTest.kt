@@ -22,6 +22,8 @@ class BreezeComponentExtensionsTest {
 
 	@Test
 	fun unescapeByTest() {
+		println("\\\\t".escapeBy(Escaper.KotlinEscaper))
+		println("\\\\t".unescapeBy(Escaper.KotlinEscaper))
 		assertEquals("hello\tworld\n", "hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
 	}
 

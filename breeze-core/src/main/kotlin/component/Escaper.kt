@@ -44,20 +44,25 @@ interface Escaper : Component {
 		protected abstract val escapeChars: CharArray
 		protected abstract val escapedStrings: Array<String>
 
+		protected val escapeBackSlash = true
+
 		override fun escape(value: String): String {
 			//这里直接遍历字符数组以提高性能
-			return buildString {
+			var result = buildString {
 				val chars = value.toCharArray()
 				for(char in chars) {
 					val index = escapeChars.indexOf(char)
 					if(index == -1) append(char) else append(escapedStrings[index])
 				}
 			}
+			if(escapeBackSlash) result = result.replace("\\","\\\\")
+			return result
 		}
 
 		@NotOptimized
 		override fun unescape(value: String): String {
 			var result = value
+			if(escapeBackSlash) result = result.replace("\\\\","\\")
 			val size = escapeChars.size
 			for(i in 0 until size) {
 				result = result.replace(escapedStrings[i], escapeChars[i].toString())
