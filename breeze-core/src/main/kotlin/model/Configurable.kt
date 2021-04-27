@@ -26,3 +26,4 @@ interface Configurable<T:Configurable<T>>{
 	 */
 	fun copy(params:Map<String,Any?>): T
 }
+

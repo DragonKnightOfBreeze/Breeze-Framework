@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.extension.*
  */
 class Color {
 	constructor(hexValue: Int) {
-		val numbers = hexValue.toDigitNumberArray(256)
+		val numbers = hexValue.getDigitNumbers(256)
 		this.r = numbers.getOrElse(2) { 0 }
 		this.g = numbers.getOrElse(1) { 0 }
 		this.b = numbers.getOrElse(0) { 0 }

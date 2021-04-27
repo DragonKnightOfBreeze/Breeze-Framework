@@ -117,43 +117,6 @@ fun floor(x: Double, precision: Int): Double {
 }
 
 
-/**精确到基于位数的不小于0的精确度，返回舍去小数部分后的结果。用0表示个位，用较大数表示较高位。*/
-fun truncate(x: Int, precision: Int): Int {
-	return when {
-		precision == 0 -> x
-		precision > 0 -> 10.positivePow(precision).let { truncate(x / it.toFloat()).toInt() * it }
-		else -> throw IllegalArgumentException("Precision for int truncate operation must be non-negative, but was $precision.")
-	}
-}
-
-/**精确到基于位数的不小于0的精确度，返回舍去小数部分后的结果。用0表示个位，用较大数表示较高位。*/
-fun truncate(x: Long, precision: Int): Long {
-	return when {
-		precision == 0 -> x
-		precision > 0 -> 10.positivePow(precision).let { truncate(x / it.toFloat()).toLong() * it }
-		else -> throw IllegalArgumentException("Precision for long truncate operation must be non-negative, but was $precision.")
-	}
-}
-
-/**精确到基于位数的精确度，返回舍去小数部分后的结果。用0表示个位，用较大数表示较高位。*/
-fun truncate(x: Float, precision: Int): Float {
-	return when {
-		precision == 0 -> x
-		precision > 0 -> 10.positivePow(precision).let { truncate(x / it) * it }
-		else -> 10.positivePow(-precision).let { truncate(x * it) / it }
-	}
-}
-
-/**精确到基于位数的精确度，返回舍去小数部分后的结果。用0表示个位，用较大数表示较高位。*/
-fun truncate(x: Double, precision: Int): Double {
-	return when {
-		precision == 0 -> x
-		precision > 0 -> 10.positivePow(precision).let { truncate(x / it) * it }
-		else -> 10.positivePow(-precision).let { truncate(x * it) / it }
-	}
-}
-
-
 /**精确到基于位数的不小于0的精确度，返回四舍五入后的结果。用0表示个位，用较大数表示较高位。*/
 fun round(x: Int, precision: Int): Int {
 	return when {

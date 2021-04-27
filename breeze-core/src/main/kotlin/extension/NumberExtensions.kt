@@ -135,15 +135,40 @@ inline fun Double.exact(block: (Double) -> Number): Double {
 
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Int.getDigitNumber(index: Int): Int {
+fun Int.getDigitNumber(index: Int,radix:Int = 10): Int {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
-	return this / 10.positivePow(index) % 10
+	return this / radix.positivePow(index) % radix
 }
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Long.getDigitNumber(index: Int): Long {
+fun Long.getDigitNumber(index: Int,radix:Int = 10): Long {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
-	return this / 10.positivePow(index) % 10
+	return this / radix.positivePow(index) % radix
+}
+
+
+/**得到从最低位到最高位的每位数字组成的数组。*/
+fun Int.getDigitNumbers(radix: Int = 10): IntArray {
+	val size = this.toString().length
+	var temp = this
+	val result = IntArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % radix
+		temp /= radix
+	}
+	return result
+}
+
+/**得到从最低位到最高位的每位数字组成的数组。*/
+fun Long.getDigitNumbers(radix: Int = 10): LongArray {
+	val size = this.toString().length
+	var temp = this
+	val result = LongArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % radix
+		temp /= radix
+	}
+	return result
 }
 
 
@@ -199,30 +224,5 @@ inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
 inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 	return enumValues<T>().getOrNull(this)
-}
-
-
-/**将当前整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Int.toDigitNumberArray(radix: Int = 10): IntArray {
-	val size = this.toString().length
-	var temp = this
-	val result = IntArray(size)
-	for(i in 0 until size) {
-		result[i] = temp % radix
-		temp /= radix
-	}
-	return result
-}
-
-/**将当前长整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Long.toDigitNumberArray(radix: Int = 10): LongArray {
-	val size = this.toString().length
-	var temp = this
-	val result = LongArray(size)
-	for(i in 0 until size) {
-		result[i] = temp % radix
-		temp /= radix
-	}
-	return result
 }
 //endregion
