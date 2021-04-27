@@ -20,13 +20,13 @@ interface StringPattern : Component {
 			register(WildcardBooleanPattern)
 			register(IntegerPattern)
 			register(NumberPattern)
-			register(NumericPattern)
 			register(AlphaPattern)
+			register(NumericPattern)
 			register(AlphanumericPattern)
 		}
 	}
 
-	//region Default String Patterns
+	//region String Patterns
 	object BooleanPattern : StringPattern {
 		private val values = arrayOf("true", "false")
 
@@ -69,13 +69,13 @@ interface StringPattern : Component {
 		}
 	}
 
-	object NumericPattern : StringPattern {
+	object AlphaPattern : StringPattern {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetter() }
 		}
 	}
 
-	object AlphaPattern : StringPattern {
+	object NumericPattern : StringPattern {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isDigit() }
 		}

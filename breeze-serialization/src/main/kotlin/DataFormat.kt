@@ -15,7 +15,7 @@ import java.lang.reflect.*
  *
  * @see DataSerializer
  */
-interface DataFormat: Component {
+interface DataFormat : Component {
 	/**
 	 * 文件扩展名。
 	 */
@@ -62,12 +62,8 @@ interface DataFormat: Component {
 		return serializer.deserialize(value, type)
 	}
 
-	companion object Registry:AbstractComponentRegistry<DataFormat>(){
-		init {
-			registerStringDataFormats()
-		}
-
-		private fun registerStringDataFormats() {
+	companion object Registry : AbstractComponentRegistry<DataFormat>() {
+		override fun registerDefault() {
 			register(Json)
 			register(Yaml)
 			register(Xml)
@@ -76,7 +72,7 @@ interface DataFormat: Component {
 		}
 	}
 
-	//region Default Data Formats
+	//region Data Formats
 	/**
 	 * Json数据格式。
 	 */
@@ -100,8 +96,10 @@ interface DataFormat: Component {
 	 */
 	object Xml : DataFormat {
 		override val fileExtension: String = "xml"
-		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
-			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
+		override val fileExtensions: Array<String> = arrayOf(
+			"xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
+			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul"
+		)
 		override var serializer: XmlSerializer = defaultXmlSerializer
 	}
 

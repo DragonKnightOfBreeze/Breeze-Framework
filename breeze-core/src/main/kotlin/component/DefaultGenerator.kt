@@ -86,7 +86,7 @@ interface DefaultGenerator<T>:Component {
 		}
 	}
 
-	//region Default Default Generators
+	//region Default Generators
 	object DefaultByteGenerator: DefaultGenerator<Byte>{
 		override val targetType: Class<Byte> = Byte::class.javaObjectType
 		private const val value: Byte = 0

@@ -78,7 +78,7 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	//region Default Generators
+	//region Random Generators
 	object RandomByteGenerator : RandomGenerator<Byte> {
 		override val targetType: Class<Byte> = Byte::class.javaObjectType
 

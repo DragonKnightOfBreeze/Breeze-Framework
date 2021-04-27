@@ -36,7 +36,7 @@ interface Encoder:Component {
 		}
 	}
 
-	//region Default Encoders
+	//region Encoders
 	/**
 	 * Base64编码器。
 	 */

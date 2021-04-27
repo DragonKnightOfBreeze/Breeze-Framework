@@ -77,7 +77,7 @@ interface LetterCase:Component {
 		}
 	}
 
-	//region Default Letter Cases
+	//region Letter Cases
 	/**
 	 * 全小写。
 	 *
@@ -317,15 +317,19 @@ interface LetterCase:Component {
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-")
 		override fun joinToString(value: Sequence<String>) = value.joinToString("-")
 	}
-	//endregion
 
-	//region Path Like Letter Cases
+
+	/**
+	 * 类路径的字母格式。
+	 */
+	interface PathLikeLetterCase
+
 	/**
 	 * 以单个点分隔的路径。
 	 *
 	 * 示例：`doc.path`
 	 */
-	object ReferencePath : LetterCase {
+	object ReferencePath : LetterCase,PathLikeLetterCase {
 		private val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('.')
@@ -340,7 +344,7 @@ interface LetterCase:Component {
 	 *
 	 * 示例：`linux/path`
 	 */
-	object LinuxPath : LetterCase {
+	object LinuxPath : LetterCase,PathLikeLetterCase {
 		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
@@ -355,7 +359,7 @@ interface LetterCase:Component {
 	 *
 	 * 示例：`windows\path`
 	 */
-	object WindowsPath : LetterCase {
+	object WindowsPath : LetterCase,PathLikeLetterCase {
 		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')

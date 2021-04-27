@@ -7,6 +7,7 @@ abstract class AbstractComponentRegistry<T : Component> : ComponentRegistry<T> {
 	@Volatile private var shouldRegisterDefault = true
 	@Volatile private var startRegisterDefault = false
 	private val _components  = mutableListOf<T>()
+
 	protected val components by lazy { _components.apply {
 		startRegisterDefault = true
 		registerDefault()
@@ -14,7 +15,7 @@ abstract class AbstractComponentRegistry<T : Component> : ComponentRegistry<T> {
 	} }
 
 	override fun values(): List<T> {
-		return components
+		return if(shouldRegisterDefault && startRegisterDefault) _components else components
 	}
 
 	override fun register(component: T) {

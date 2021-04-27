@@ -109,7 +109,7 @@ interface Converter<T> : Component {
 				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则抛出异常
 				else -> {
 					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
-					for((index, converter) in values().withIndex()) {
+					for((index, converter) in components.withIndex()) {
 						try {
 							if(converter.targetType.isAssignableFrom(targetType)) {
 								//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要新注册转化器
@@ -196,7 +196,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	//region Default Converters
+	//region Converters
 	object ByteConverter : Converter<Byte> {
 		//override val targetType: Class<Byte> = Byte::class.javaObjectType
 
@@ -1108,9 +1108,8 @@ interface Converter<T> : Component {
 			}
 		}
 	}
-	//endregion
 
-	//region Collection Converters
+
 	//open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
 	//	companion object Default : StringArrayConverter()
 	//

@@ -55,7 +55,7 @@ interface Querier<T : Any, R> : Component {
 		}
 	}
 
-	//region Default Queriers
+	//region Queriers
 	/**
 	 * 查询所有结果的查询器。
 	 *
@@ -259,9 +259,7 @@ interface Querier<T : Any, R> : Component {
 			}
 		}
 	}
-	//endregion
 
-	//region Reflection Queriers
 	/**
 	 * 基于字符串，通过反射查询查询对象的字段和属性的值的查询器。
 	 */

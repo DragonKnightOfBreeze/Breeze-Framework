@@ -92,7 +92,7 @@ interface PathPattern:Component {
 		}
 	}
 
-	//region Default Path Patterns
+	//region Path Patterns
 	abstract class AbstractPathPattern(
 		protected val delimiter: Char = '/',
 		protected val prefix: String = "/",

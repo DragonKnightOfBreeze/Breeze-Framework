@@ -38,7 +38,7 @@ interface Encrypter:Component {
 		}
 	}
 
-	//region Default Encrypters
+	//region Encrypters
 	/**
 	 * 基于密码器的加密器。支持解密。需要指定密钥。
 	 */

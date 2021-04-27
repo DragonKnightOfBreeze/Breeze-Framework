@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.annotation.*
  *
  * 注意：不考虑转义特殊的Unicode字符。
  */
-interface Escaper:Component {
+interface Escaper : Component {
 	/**
 	 * 转义指定的字符串。
 	 */
@@ -23,7 +23,7 @@ interface Escaper:Component {
 	 */
 	fun unescape(value: String): String
 
-	companion object :AbstractComponentRegistry<Escaper>(){
+	companion object Registry : AbstractComponentRegistry<Escaper>() {
 		override fun registerDefault() {
 			register(KotlinEscaper)
 			register(JavaEscaper)
@@ -34,12 +34,12 @@ interface Escaper:Component {
 			register(XmlContentEscaper)
 			register(HtmlEscaper)
 
-			register(LineBreakEscaper)
+			register(DefaultLineBreakEscaper)
 			register(HtmlLineBreakEscaper)
 		}
 	}
 
-	//region Default Escapers
+	//region Escapers
 	abstract class AbstractEscaper : Escaper {
 		protected abstract val escapeChars: CharArray
 		protected abstract val escapedStrings: Array<String>
@@ -67,9 +67,14 @@ interface Escaper:Component {
 	}
 
 	/**
+	 * 特定语言的转义器。
+	 */
+	interface LanguageEscaper : Escaper
+
+	/**
 	 * Kotlin字符串的转义器。
 	 */
-	object KotlinEscaper : AbstractEscaper() {
+	object KotlinEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"", "\\\$")
 	}
@@ -77,7 +82,7 @@ interface Escaper:Component {
 	/**
 	 * Java的转义器。
 	 */
-	object JavaEscaper : AbstractEscaper() {
+	object JavaEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
 	}
@@ -85,7 +90,7 @@ interface Escaper:Component {
 	/**
 	 * JavaScript的转义器。
 	 */
-	object JavaScriptEscaper : AbstractEscaper() {
+	object JavaScriptEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\b", "\\'", "\\\"")
 	}
@@ -93,7 +98,7 @@ interface Escaper:Component {
 	/**
 	 * Json的转义器。
 	 */
-	object JsonEscaper : AbstractEscaper() {
+	object JsonEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\t', '\b', '\n', '\r', '\"')
 		override val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\\"")
 	}
@@ -101,7 +106,7 @@ interface Escaper:Component {
 	/**
 	 * Xml的转义器。
 	 */
-	object XmlEscaper : AbstractEscaper() {
+	object XmlEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
@@ -109,7 +114,7 @@ interface Escaper:Component {
 	/**
 	 * Xml属性的转义器。
 	 */
-	object XmlAttributeEscaper : AbstractEscaper() {
+	object XmlAttributeEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"', '\n', '\r', '\t')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#xA;", "&#xD", "&#x9")
 	}
@@ -117,7 +122,7 @@ interface Escaper:Component {
 	/**
 	 * Xml内容的转义器。
 	 */
-	object XmlContentEscaper : AbstractEscaper() {
+	object XmlContentEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "amp;")
 	}
@@ -125,19 +130,22 @@ interface Escaper:Component {
 	/**
 	 * Html的转义器。
 	 */
-	object HtmlEscaper : AbstractEscaper() {
+	object HtmlEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
-	//endregion
 
-	//region Line Break Escapers
 	/**
 	 * 换行转义器。
+	 */
+	interface LineBreakEscaper
+
+	/**
+	 * 默认换行转义器。
 	 *
 	 * 转义换行符`\n`为`\\n`。
 	 */
-	object LineBreakEscaper : Escaper {
+	object DefaultLineBreakEscaper : Escaper, LineBreakEscaper {
 		override fun escape(value: String) = value.replace("\n", "\\n")
 		override fun unescape(value: String) = value.replace("\\n", "\n")
 	}
@@ -147,7 +155,7 @@ interface Escaper:Component {
 	 *
 	 * 转义换行符`\n`为`<br>`。
 	 */
-	object HtmlLineBreakEscaper : Escaper {
+	object HtmlLineBreakEscaper : Escaper, LineBreakEscaper {
 		private const val escapedTag = "<br>"
 		override fun escape(value: String) = value.replace("\n", escapedTag)
 		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
