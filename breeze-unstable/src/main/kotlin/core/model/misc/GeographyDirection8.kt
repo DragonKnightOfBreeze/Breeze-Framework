@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model.misc
+package icu.windea.breezeframework.core.model.misc
 
 /**
  * 包含斜向方向的地理方向。

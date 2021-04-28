@@ -1,9 +1,9 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 import java.text.*
 import java.util.*
 

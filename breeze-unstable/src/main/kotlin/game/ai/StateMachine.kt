@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.game.ai
+package icu.windea.breezeframework.game.ai
 
 import java.util.*
 import java.util.concurrent.*

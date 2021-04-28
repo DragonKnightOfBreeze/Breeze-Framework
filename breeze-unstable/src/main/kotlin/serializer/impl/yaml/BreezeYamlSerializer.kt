@@ -1,16 +1,16 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.yaml
+package icu.windea.breezeframework.serializer.impl.yaml
 
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.impl.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
 /**
  * 由BreezeYaml实现的Yaml的序列化器。
- * @see com.windea.breezeframework.mapper.impl.YamlMapper
+ * @see icu.windea.breezeframework.mapper.impl.YamlMapper
  */
 internal object BreezeYamlSerializer : YamlSerializer, BreezeSerializer<YamlMapper> {
 	internal val configBuilder = YamlMapper.Config.Builder()

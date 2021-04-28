@@ -3,7 +3,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.linq
+package icu.windea.breezeframework.linq
 
 /**
  * Linq（语言集成查询）。

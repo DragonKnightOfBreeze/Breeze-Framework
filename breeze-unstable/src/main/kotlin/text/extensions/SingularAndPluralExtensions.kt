@@ -3,7 +3,7 @@
 
 @file:JvmName("SingularAndPluralExtensions")
 
-package com.windea.breezeframework.text.extension
+package icu.windea.breezeframework.text.extension
 
 //https://github.com/cesarferreira/kotlin-pluralizer
 

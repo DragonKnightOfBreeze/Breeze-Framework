@@ -3,12 +3,12 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.generator.specific
+package icu.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.component.*
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.generator.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.generator.*
+import icu.windea.breezeframework.serializer.*
 import java.io.*
 
 /**Intellij IDEA配置文件文本的生成器。*/

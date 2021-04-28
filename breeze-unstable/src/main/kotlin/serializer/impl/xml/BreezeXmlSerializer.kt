@@ -1,16 +1,16 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.xml
+package icu.windea.breezeframework.serializer.impl.xml
 
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.impl.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
 /**
  * 由BreezeXml实现的Xml的序列化器。
- * @see com.windea.breezeframework.mapper.impl.XmlMapper
+ * @see icu.windea.breezeframework.mapper.impl.XmlMapper
  */
 internal object BreezeXmlSerializer : XmlSerializer, BreezeSerializer<XmlMapper> {
 	internal val configBuilder = XmlMapper.Config.Builder()

@@ -3,7 +3,7 @@
 
 @file:JvmName("NumberAndOrdinalExtensions")
 
-package com.windea.breezeframework.text.extension
+package icu.windea.breezeframework.text.extension
 
 //https://github.com/MehdiK/Humanizer.jvm/blob/master/src/main/kotlin/org/humanizer/jvm/Ordinalize.kt
 

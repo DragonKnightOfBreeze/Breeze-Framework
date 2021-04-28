@@ -1,16 +1,16 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.json
+package icu.windea.breezeframework.serializer.impl.json
 
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.impl.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 
 /**
  * 由BreezeJson实现的Json的序列化器。
- * @see com.windea.breezeframework.mapper.impl.JsonMapper
+ * @see icu.windea.breezeframework.mapper.impl.JsonMapper
  */
 internal object BreezeJsonSerializer : JsonSerializer, BreezeSerializer<JsonMapper> {
 	internal val configBuilder = JsonMapper.Config.Builder()

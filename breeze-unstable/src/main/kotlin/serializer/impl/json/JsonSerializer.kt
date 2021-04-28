@@ -1,13 +1,13 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.json
+package icu.windea.breezeframework.serializer.impl.json
 
 import com.google.gson.*
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.*
 import com.fasterxml.jackson.databind.json.JsonMapper as JacksonJsonMapper
 
 /**

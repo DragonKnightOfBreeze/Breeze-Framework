@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.expression
+package icu.windea.breezeframework.core.expression
 
 interface Expression:CharSequence {
 	val expression:String

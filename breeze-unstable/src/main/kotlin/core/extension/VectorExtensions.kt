@@ -4,9 +4,9 @@
 @file:JvmName("VectorExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 
 /**将二维向量转化为三位向量。*/
 inline fun Vector2.toVector3(): Vector3 = Vector3(this.x, this.y, 0f)

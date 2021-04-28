@@ -3,11 +3,11 @@
 
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.generator.specific
+package icu.windea.breezeframework.generator.specific
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.generator.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.generator.*
+import icu.windea.breezeframework.serializer.*
 import java.io.*
 import java.util.concurrent.*
 

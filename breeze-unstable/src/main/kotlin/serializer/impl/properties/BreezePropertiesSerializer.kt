@@ -1,17 +1,17 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.properties
+package icu.windea.breezeframework.serializer.impl.properties
 
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.impl.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.impl.*
 import java.io.*
 import java.lang.reflect.*
 import java.util.*
 
 /**
  * 由BreezeProperties实现的Properties的序列化器。
- * @see com.windea.breezeframework.mapper.impl.PropertiesMapper
+ * @see icu.windea.breezeframework.mapper.impl.PropertiesMapper
  */
 internal object BreezePropertiesSerializer : PropertiesSerializer, BreezeSerializer<PropertiesMapper> {
 	internal val configBuilder = PropertiesMapper.Config.Builder()

@@ -1,10 +1,10 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.mapper.impl
+package icu.windea.breezeframework.mapper.impl
 
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.mapper.*
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.mapper.*
 import java.lang.reflect.*
 
 //TODO
@@ -45,7 +45,7 @@ class XmlMapper(
 			@JvmStatic val PrettyFormat = Config(prettyFormat = true)
 		}
 
-		class Builder : com.windea.breezeframework.core.model.Builder<Config> {
+		class Builder : icu.windea.breezeframework.core.model.Builder<Config> {
 			var indent: String = "  "
 			var lineSeparator: String = "\n"
 			var doubleQuoted: Boolean = true

@@ -3,9 +3,9 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.serializer
+package icu.windea.breezeframework.serializer
 
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 import java.io.*
 
 //如果使用KotlinxSerialization，则需要委托给特定的方法
