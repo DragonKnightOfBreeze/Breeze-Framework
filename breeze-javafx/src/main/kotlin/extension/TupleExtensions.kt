@@ -3,9 +3,9 @@
 
 @file:JvmName("TupleExtensions")
 
-package com.windea.breezeframework.javafx.extension
+package icu.windea.breezeframework.javafx.extension
 
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.type.*
 import javafx.geometry.*
 
 /**将浮点类型的二元素元组转化为二维点。*/

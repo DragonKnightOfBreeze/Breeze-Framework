@@ -4,7 +4,7 @@
 @file:JvmName("MathExtensions")
 @file:Suppress("DuplicatedCode")
 
-package com.windea.breezeframework.javafx.extension
+package icu.windea.breezeframework.javafx.extension
 
 import javafx.animation.*
 import javafx.geometry.*

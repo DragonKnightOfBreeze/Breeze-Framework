@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.logger
+package icu.windea.breezeframework.logger
 
 /**日志器。*/
 interface Logger {

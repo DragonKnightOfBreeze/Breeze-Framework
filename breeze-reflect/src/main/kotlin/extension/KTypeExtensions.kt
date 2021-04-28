@@ -3,7 +3,7 @@
 
 @file:JvmName("KTypeExtensions")
 
-package com.windea.breezeframework.reflect.extension
+package icu.windea.breezeframework.reflect.extension
 
 import kotlin.reflect.*
 import kotlin.reflect.jvm.*

@@ -3,4 +3,4 @@
 
 @file:JvmName("KClassExtensions")
 
-package com.windea.breezeframework.reflect.extension
+package icu.windea.breezeframework.reflect.extension

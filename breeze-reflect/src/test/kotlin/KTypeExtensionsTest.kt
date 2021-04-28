@@ -1,4 +1,4 @@
-package com.windea.breezeframework.game
+package icu.windea.breezeframework.game
 
 import kotlin.reflect.*
 import kotlin.test.*

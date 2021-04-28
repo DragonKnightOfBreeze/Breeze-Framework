@@ -3,7 +3,7 @@
 
 @file:JvmName("ExecutableExtensions")
 
-package com.windea.breezeframework.reflect.extension
+package icu.windea.breezeframework.reflect.extension
 
 import java.lang.reflect.*
 

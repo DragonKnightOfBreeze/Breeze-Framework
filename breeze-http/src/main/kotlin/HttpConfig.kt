@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.http
+package icu.windea.breezeframework.http
 
 import java.net.*
 import java.net.http.*

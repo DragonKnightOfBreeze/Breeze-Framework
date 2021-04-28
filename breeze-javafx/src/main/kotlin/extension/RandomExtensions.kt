@@ -4,9 +4,9 @@
 @file:JvmName("RandomExtensions")
 @file:Suppress("unused")
 
-package com.windea.breezeframework.javafx.extension
+package icu.windea.breezeframework.javafx.extension
 
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.type.*
 import javafx.geometry.*
 import javafx.scene.paint.*
 import kotlin.random.*

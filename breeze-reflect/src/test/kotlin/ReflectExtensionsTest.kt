@@ -1,6 +1,6 @@
-package com.windea.breezeframework.game
+package icu.windea.breezeframework.game
 
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 import kotlin.system.*
 import kotlin.test.*
 

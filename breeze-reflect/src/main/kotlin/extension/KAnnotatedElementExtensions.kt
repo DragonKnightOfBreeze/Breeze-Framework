@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.reflect.extension
+package icu.windea.breezeframework.reflect.extension
 
 import kotlin.reflect.*
 import kotlin.reflect.full.*
