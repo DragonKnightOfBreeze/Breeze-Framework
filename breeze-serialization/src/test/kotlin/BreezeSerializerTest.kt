@@ -22,7 +22,6 @@ class BreezeSerializerTest {
 			)
 		)
 		println(a.serializeBy(BreezeJsonSerializer()))
-		println(a.serializeBy(BreezeJsonSerializer { prettyPrint = true }))
 	}
 
 	//3~10倍 性能差距到底是怎么来的？

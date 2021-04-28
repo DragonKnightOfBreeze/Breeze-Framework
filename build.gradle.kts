@@ -6,7 +6,7 @@ plugins {
 }
 
 val groupName = "com.windea.breezeframework"
-val versionName = "2.0.1"
+val versionName = "2.0.2"
 val packageRootPrefix = "com.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",
@@ -182,8 +182,8 @@ allprojects {
 			//创建maven的jar
 			register<MavenPublication>("maven") {
 				from(components["java"])
-				//artifact(dokkaJavadocJar)
-				//artifact(dokkaHtmlJar)
+				artifact(dokkaJavadocJar)
+				artifact(dokkaHtmlJar)
 				artifact(sourcesJar)
 				pom {
 					name.set(projectName)

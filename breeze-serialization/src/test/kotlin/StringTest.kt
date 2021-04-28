@@ -152,9 +152,6 @@ class StringTest {
 	fun joinToStringTest(){
 		val array = Array(1000){it*10}
 		println(measureNanoTime {
-			array.joinToAsync(StringBuilder(),", ") { (it * 3 / 5 + 2).toString().repeat(2) }
-		})
-		println(measureNanoTime {
 			array.joinToString(", ") { (it * 3 / 5 + 2).toString().repeat(2) }
 		})
 	}
