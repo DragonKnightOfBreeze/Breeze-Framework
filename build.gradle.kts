@@ -169,11 +169,11 @@ allprojects {
 		archiveClassifier.set("html-doc")
 	}
 
-	//val sourcesJar by tasks.creating(org.gradle.jvm.tasks.Jar::class) {
-	//	archiveClassifier.set("sources")
-	//	from(sourceSets.main.get().allSource)
-	//	from("$rootDir/LICENSE") //添加LICENSE
-	//}
+	val sourcesJar by tasks.register<Jar>("sourcesJar") {
+		from(sourceSets.main.get().allSource)
+		from("$rootDir/LICENSE") //添加LICENSE
+		archiveClassifier.set("sources")
+	}
 
 	//上传的配置
 	publishing {
@@ -184,6 +184,7 @@ allprojects {
 				from(components["java"])
 				//artifact(dokkaJavadocJar)
 				//artifact(dokkaHtmlJar)
+				artifact(sourcesJar)
 				pom {
 					name.set(projectName)
 					description.set("Integrated code framework written by Kotlin.")
