@@ -1,4 +1,4 @@
-# 版本
+更新README文档# 版本
 
 ## 1.x.x
 
@@ -472,6 +472,7 @@
 * [X] 实现并行迭代方法`parallelForEach`
 * [X] 完善`breeze-serialization`
 * [X] 重构组件相关代码
+* [X] 更新README文档
 * [ ] 补充组件`Converter`
 * [ ] 补充组件`RandomGenerator`
 * [ ] 可配置参数的组件，更加灵活的配置参数
@@ -481,10 +482,8 @@
 
 # 长期
 
-* [X] 移除对非框架类的第三方库的依赖
+* [X] 尽量移除对非框架类的第三方库的依赖
 * [X] 上传到Github
-* [X] 同步项目到Bintray
-* [X] 发布项目到JCenter
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
 
