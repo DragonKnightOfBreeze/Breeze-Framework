@@ -2,10 +2,9 @@ import org.gradle.jvm.tasks.Jar
 
 //配置要用到的插件
 plugins {
+	id("org.gradle.maven-publish")
 	id("org.jetbrains.kotlin.jvm") version "1.4.30"
 	id("org.jetbrains.dokka") version "0.10.1"
-	id("org.gradle.maven-publish")
-	id("com.jfrog.bintray") version "1.8.5"
 }
 
 allprojects {
@@ -28,7 +27,6 @@ allprojects {
 			maven("https://dl.bintray.com/kotlin/kotlin-eap")
 			maven("https://maven.aliyun.com/nexus/content/groups/public")
 			mavenCentral()
-			jcenter()
 		}
 	}
 
@@ -37,7 +35,6 @@ allprojects {
 		maven("https://dl.bintray.com/kotlin/kotlin-eap")
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
-		jcenter()
 	}
 
 	//配置依赖
@@ -158,34 +155,13 @@ allprojects {
 		//配置上传到的仓库
 		repositories {
 			maven {
-				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/Breeze-Framework")
+				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")
 					password = System.getenv("GITHUB_TOKEN")
 				}
 			}
 		}
-	}
-
-	//bintray远程仓库，可间接上传到jcenter
-	//建议将publish和override设为true，否则会报各种让人服气的错误
-	bintray {
-		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
-		user = System.getenv("BINTRAY_USER")
-		key = System.getenv("BINTRAY_API_KEY")
-		setPublications("maven")
-		pkg.repo = rootProject.name
-		pkg.name = project.name
-		pkg.desc = "Integrated code framework written by Kotlin."
-		pkg.githubRepo = "DragonKnightOfBreeze/Breeze-Framework"
-		pkg.githubReleaseNotesFile = "CHANGELOG.md"
-		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework"
-		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework.git"
-		pkg.setLicenses("MIT")
-		pkg.version.name = version.toString()
-		pkg.version.vcsTag = version.toString()
-		publish = true
-		override = true
 	}
 }
 

@@ -101,28 +101,110 @@ Provide utilities and extensions for Java's time api.
 
 # Usage
 
-This project has been published on JCenter.
+This project has been published on **Github Packages**.
 
 ## Maven
 
+In `server.xml`:
+
 ```xml
-<dependency>
-  <groupId>com.windea.breezeframework</groupId>
-  <artifactId>${module}</artifactId>
-  <version>${version}</version>
-</dependency>
+<servers>
+  <!--breeze-framework github packages server-->
+  <server>
+    <!--server id, matches repositories id-->
+    <id>breeze-framework-github-packages</id>
+    <!--github username, use your own github username-->
+    <username>${github-username}</username>
+    <!--github token, use: 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-->
+    <password>${github-token}</password>
+  </server>
+</servers>
+```
+
+In `pom.xml`:
+
+```xml
+<repositories>
+  <!--breeze framework github packages repository-->
+  <repository>
+    <id>breeze-framework-github-packages</id>
+    <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
+  </repository>
+  <!--other repositories-->
+  <!--...-->
+</repositories>
+```
+  
+```xml
+<dependencies>
+  <!--breeze framework modules-->
+  <dependency>
+    <groupId>com.windea.breezeframework</groupId>
+    <artifactId>${module}</artifactId>
+    <version>${version}</version>
+  </dependency>
+  <!--other modules-->
+  <!--...-->
+</dependencies>
 ```
 
 ## Gradle
 
+In `build.gradle`:
+
 ```groovy
-implementation "com.windea.breezeframework:$module:$version"
+repositories {
+    //maven central
+    mavenCentral()
+    //breeze framework github packages repository
+    maven {
+        url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+        credentials { 
+            //github username, use your own github username
+			username = githubUsername
+			//github token, use: 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
+			password = githubToken
+    	}
+    }
+    //other repositories
+    //...
+}
+
+dependencies {
+    //breeze framework modules
+    implementation "com.windea.breezeframework:$module:$version"
+    //other dependencies
+    //...
+}
 ```
 
 ## Gradle Kts
 
+In `build.gradle.kts`:
+
 ```kotlin
-implementation("com.windea.breezeframework:$module:$version")
+repositories {
+    //maven central
+    mavenCentral()
+    //breeze framework github packages repository
+    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
+    	credentials { 
+            //github username, use your own github username
+			username = githubUsername
+			//github token, use: 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
+			password = githubToken
+    	}
+    }
+    //other repositories
+    //...
+}
+
+dependencies {
+    //breeze framework modules
+    implementation("com.windea.breezeframework:$module:$version")
+    //other dependencies
+    //...
+}
 ```
 
 # Example

@@ -100,28 +100,110 @@
 
 ## 用法
 
-项目已发布到JCenter。
+项目已发布到**Github Packages**。
 
 ## Maven
 
+在`server.xml`中：
+
 ```xml
-<dependency>
-  <groupId>com.windea.breezeframework</groupId>
-  <artifactId>${module}</artifactId>
-  <version>${version}</version>
-</dependency>
+<servers>
+  <!--breeze-framework github packages服务器-->
+  <server>
+    <!--server的id，与repository的id相匹配-->
+    <id>breeze-framework-github-packages</id>
+    <!--github用户名，使用你自己的github用户名-->
+    <username>${github-username}</username>
+    <!--github令牌，使用：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-->
+    <password>${github-token}</password>
+  </server>
+</servers>
+```
+
+在`pom.xml`中：
+
+```xml
+<repositories>
+  <!--breeze framework github packages仓库-->
+  <repository>
+    <id>breeze-framework-github-packages</id>
+    <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
+  </repository>
+  <!--其他仓库-->
+  <!--...-->
+</repositories>
+```
+  
+```xml
+<dependencies>
+  <!--breeze framework模块-->
+  <dependency>
+    <groupId>com.windea.breezeframework</groupId>
+    <artifactId>${module}</artifactId>
+    <version>${version}</version>
+  </dependency>
+  <!--其他依赖-->
+  <!--...-->
+</dependencies>
 ```
 
 ## Gradle
 
+In `build.gradle`:
+
 ```groovy
-implementation "com.windea.breezeframework:$module:$version"
+repositories {
+    //maven central
+    mavenCentral()
+    //breeze framework github packages仓库
+    maven {
+        url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
+        credentials { 
+            //github用户名，使用你自己的github用户名
+			username = githubUsername
+			//github令牌，使用：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
+			password = githubToken
+    	}
+    }
+    //其他仓库
+    //...
+}
+
+dependencies {
+    //breeze framework模块
+    implementation "com.windea.breezeframework:$module:$version"
+    //其他依赖
+    //...
+}
 ```
 
 ## Gradle Kts
 
+In `build.gradle.kts`:
+
 ```kotlin
-implementation("com.windea.breezeframework:$module:$version")
+repositories {
+    //maven central
+    mavenCentral()
+    //breeze framework github packages仓库
+    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
+    	credentials { 
+            //github用户名，使用你自己的github用户名
+			username = githubUsername
+			//github令牌，使用：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
+			password = githubToken
+    	}
+    }
+    //其他仓库
+    //...
+}
+
+dependencies {
+    //breeze framework模块
+    implementation("com.windea.breezeframework:$module:$version")
+    //其他依赖
+    //...
+}
 ```
 
 # 示例
