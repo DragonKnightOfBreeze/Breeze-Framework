@@ -35,11 +35,11 @@ interface Querier<T : Any, R> : Component {
 	/**
 	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则返回默认值。
 	 */
-	fun queryOrElse(value: Any, queryObject: T, defaultValue: (Any,T)->R): R? {
-		return queryOrNull(value, queryObject) ?: defaultValue(value,queryObject)
+	fun queryOrElse(value: Any, queryObject: T, defaultValue: (Any, T) -> R): R? {
+		return queryOrNull(value, queryObject) ?: defaultValue(value, queryObject)
 	}
 
-	companion object Registry: AbstractComponentRegistry<Querier<*,*>>(){
+	companion object Registry : AbstractComponentRegistry<Querier<*, *>>() {
 		override fun registerDefault() {
 			register(ResultsQuerier)
 			register(FilterableResultsQuerier)
@@ -95,7 +95,10 @@ interface Querier<T : Any, R> : Component {
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query filterable results.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query filterable results.", e)
+				throw IllegalArgumentException(
+					"Cannot query '${value.javaClass.simpleName}' by query filterable results.",
+					e
+				)
 			}
 		}
 	}
@@ -209,7 +212,8 @@ interface Querier<T : Any, R> : Component {
 			return try {
 				when(value) {
 					//忽略数组、列表、序列等类型的查询对象
-					is Map<*, *> -> value.cast<Map<String, Any?>>().filterKeys { it.matches(queryObject) }.values.toList()
+					is Map<*, *> -> value.cast<Map<String, Any?>>()
+						.filterKeys { it.matches(queryObject) }.values.toList()
 					else -> throw UnsupportedOperationException("Invalid regex '$queryObject' for query ${value.javaClass.simpleName}.")
 				}
 			} catch(e: Exception) {
@@ -268,9 +272,9 @@ interface Querier<T : Any, R> : Component {
 			try {
 				val targetType = value.javaClass
 				val field: Field? = runCatching { targetType.getDeclaredField(queryObject) }.getOrNull()
-				if(field != null) return field.apply { trySetAccessible() }.get(value)
+				if(field != null) return field.apply { runCatching { isAccessible = true } }.get(value)
 				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(queryObject)) }.getOrNull()
-				if(getter != null) return getter.apply { trySetAccessible() }.invoke(value)
+				if(getter != null) return getter.apply { runCatching { isAccessible = true } }.invoke(value)
 				throw UnsupportedOperationException("Invalid string '$queryObject' for query ${value.javaClass.simpleName} by reflection.")
 			} catch(e: Exception) {
 				throw IllegalArgumentException("Cannot query by string '$queryObject' by reflection.", e)

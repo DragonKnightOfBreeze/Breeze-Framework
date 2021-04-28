@@ -1069,7 +1069,7 @@ fun String.toFile(): File {
  * 将当前字符串转化为路径。
  */
 fun String.toPath(): Path {
-	return Path.of(this)
+	return File(this).toPath()
 }
 
 /**

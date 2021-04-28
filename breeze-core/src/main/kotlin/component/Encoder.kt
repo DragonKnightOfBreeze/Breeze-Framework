@@ -81,11 +81,11 @@ interface Encoder:Component {
 	 */
 	object UrlEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
-			return URLEncoder.encode(value, charset)
+			return URLEncoder.encode(value, charset.name())
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return URLDecoder.decode(value, charset)
+			return URLDecoder.decode(value, charset.name())
 		}
 	}
 

@@ -41,7 +41,7 @@ interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 				val result = type.getConstructor().newInstance()
 				//然后尝试根据名字对所有非final的字段赋值
 				for((n, v) in value) {
-					type.getDeclaredField(n).apply { trySetAccessible() }.set(result, v)
+					type.getDeclaredField(n).apply { runCatching { isAccessible = true } }.set(result, v)
 				}
 				result
 			}.getOrElse {
@@ -53,7 +53,7 @@ interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 				}
 				//然后再尝试对剩下的所有非final的字段赋值
 				for((n, v) in filteredMap) {
-					type.getDeclaredField(n).apply { trySetAccessible() }.set(result, v)
+					type.getDeclaredField(n).apply { runCatching { isAccessible = true } }.set(result, v)
 				}
 				return result as T
 			}

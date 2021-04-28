@@ -112,9 +112,9 @@
   <server>
     <!--server的id，与repository的id相匹配-->
     <id>breeze-framework-github-packages</id>
-    <!--github用户名，使用你自己的github用户名-->
+    <!--github用户名，使用：dragonknightofbreeze-->
     <username>${github-username}</username>
-    <!--github令牌，使用：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-->
+    <!--github令牌，使用：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-->
     <password>${github-token}</password>
   </server>
 </servers>
@@ -159,9 +159,9 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
         credentials { 
-            //github用户名，使用你自己的github用户名
+            //github用户名，使用：dragonknightofbreeze
 			username = githubUsername
-			//github令牌，使用：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
+			//github令牌，使用：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
 			password = githubToken
     	}
     }
@@ -188,9 +188,9 @@ repositories {
     //breeze framework github packages仓库
     maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
     	credentials { 
-            //github用户名，使用你自己的github用户名
+            //github用户名，使用：dragonknightofbreeze
 			username = githubUsername
-			//github令牌，使用：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
+			//github令牌，使用：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
 			password = githubToken
     	}
     }

@@ -17,6 +17,7 @@ class BreezeComponentExtensionsTest {
 
 	@Test
 	fun escapeByTest() {
+		println("hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
 		assertEquals("hello\\tworld\\n", "hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
 	}
 

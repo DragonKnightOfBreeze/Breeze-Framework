@@ -48,15 +48,17 @@ interface Escaper : Component {
 
 		override fun escape(value: String): String {
 			//这里直接遍历字符数组以提高性能
-			var result = buildString {
+			return buildString {
 				val chars = value.toCharArray()
 				for(char in chars) {
 					val index = escapeChars.indexOf(char)
-					if(index == -1) append(char) else append(escapedStrings[index])
+					when {
+						index != -1 -> append(escapedStrings[index])
+						escapeBackSlash && char == '\\' -> append("\\\\")
+						else -> append(char)
+					}
 				}
 			}
-			if(escapeBackSlash) result = result.replace("\\","\\\\")
-			return result
 		}
 
 		@NotOptimized
@@ -64,6 +66,7 @@ interface Escaper : Component {
 			var result = value
 			if(escapeBackSlash) result = result.replace("\\\\","\\")
 			val size = escapeChars.size
+			//TODO 需要顺序替换
 			for(i in 0 until size) {
 				result = result.replace(escapedStrings[i], escapeChars[i].toString())
 			}

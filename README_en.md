@@ -113,9 +113,9 @@ In `server.xml`:
   <server>
     <!--server id, matches repositories id-->
     <id>breeze-framework-github-packages</id>
-    <!--github username, use your own github username-->
+    <!--github username, use: dragonknightofbreeze-->
     <username>${github-username}</username>
-    <!--github token, use: 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-->
+    <!--github token, use: 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-->
     <password>${github-token}</password>
   </server>
 </servers>
@@ -160,9 +160,9 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
         credentials { 
-            //github username, use your own github username
+            //github username, use: dragonknightofbreeze
 			username = githubUsername
-			//github token, use: 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
+			//github token, use: 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
 			password = githubToken
     	}
     }
@@ -189,9 +189,9 @@ repositories {
     //breeze framework github packages repository
     maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
     	credentials { 
-            //github username, use your own github username
+            //github username, use: dragonknightofbreeze
 			username = githubUsername
-			//github token, use: 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
+			//github token, use: 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
 			password = githubToken
     	}
     }
