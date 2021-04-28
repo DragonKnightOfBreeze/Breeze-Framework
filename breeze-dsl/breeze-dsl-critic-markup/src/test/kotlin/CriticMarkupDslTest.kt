@@ -1,4 +1,4 @@
-package com.windea.breezeframework.dsl.criticmarkup
+package icu.windea.breezeframework.dsl.criticmarkup
 
 import org.junit.*
 import kotlin.system.*

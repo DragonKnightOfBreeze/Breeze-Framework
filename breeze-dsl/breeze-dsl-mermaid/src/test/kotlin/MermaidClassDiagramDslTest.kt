@@ -1,7 +1,7 @@
-package com.windea.breezeframework.dsl.mermaid
+package icu.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.dsl.mermaid.classdiagram.*
-import com.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDsl.*
+import icu.windea.breezeframework.dsl.mermaid.classdiagram.*
+import icu.windea.breezeframework.dsl.mermaid.classdiagram.MermaidClassDiagramDsl.*
 import kotlin.test.*
 
 class MermaidClassDiagramDslTest {

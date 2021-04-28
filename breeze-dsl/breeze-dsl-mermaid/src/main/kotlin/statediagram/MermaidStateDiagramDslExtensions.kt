@@ -3,10 +3,10 @@
 
 @file:JvmName("MermaidStateDiagramDslExtensions")
 
-package com.windea.breezeframework.dsl.mermaid.statediagram
+package icu.windea.breezeframework.dsl.mermaid.statediagram
 
-import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.statediagram.MermaidStateDiagramDsl.*
+import icu.windea.breezeframework.dsl.mermaid.*
+import icu.windea.breezeframework.dsl.mermaid.statediagram.MermaidStateDiagramDsl.*
 
 /**
  * 开始构建[MermaidStateDiagramDsl]。

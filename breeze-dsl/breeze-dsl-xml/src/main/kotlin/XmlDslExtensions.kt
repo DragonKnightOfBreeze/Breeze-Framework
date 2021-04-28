@@ -3,9 +3,9 @@
 
 @file:JvmName("XmlDslExtensions")
 
-package com.windea.breezeframework.dsl.xml
+package icu.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.dsl.xml.XmlDsl.*
+import icu.windea.breezeframework.dsl.xml.XmlDsl.*
 
 /**
  * 开始构建[XmlDsl]。

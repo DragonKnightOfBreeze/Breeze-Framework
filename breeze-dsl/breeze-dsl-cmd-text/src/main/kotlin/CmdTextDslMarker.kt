@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.cmdtext
+package icu.windea.breezeframework.dsl.cmdtext
 
 //https://github.com/ziggy42/kolor
 //https://msd.misuland.com/pd/3643782633961293732

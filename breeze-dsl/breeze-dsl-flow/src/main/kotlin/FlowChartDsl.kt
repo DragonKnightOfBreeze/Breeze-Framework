@@ -1,14 +1,14 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.flow
+package icu.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.dsl.api.*
 import java.util.*
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslElement as IDslElement
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import icu.windea.breezeframework.dsl.DslDocument as IDslDocument
+import icu.windea.breezeframework.dsl.DslElement as IDslElement
+import icu.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 @FlowChartDslMarker
 interface FlowChartDsl {

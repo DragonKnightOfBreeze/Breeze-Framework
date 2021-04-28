@@ -1,9 +1,9 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl
+package icu.windea.breezeframework.dsl
 
-import com.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.api.*
 
 /**
  * DSL元素。DSL定义结构的成员节点。

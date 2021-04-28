@@ -1,11 +1,11 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.mermaid.piechart
+package icu.windea.breezeframework.dsl.mermaid.piechart
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.dsl.api.*
-import com.windea.breezeframework.dsl.mermaid.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.mermaid.*
 
 @MermaidPieChartDslMarker
 interface MermaidPieChartDsl {

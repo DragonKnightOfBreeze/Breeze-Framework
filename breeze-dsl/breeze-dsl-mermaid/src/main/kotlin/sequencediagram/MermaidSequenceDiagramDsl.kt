@@ -1,13 +1,13 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.mermaid.sequencediagram
+package icu.windea.breezeframework.dsl.mermaid.sequencediagram
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.dsl.api.*
-import com.windea.breezeframework.dsl.mermaid.*
-import com.windea.breezeframework.dsl.mermaid.MermaidDsl.Companion.htmlWrap
-import com.windea.breezeframework.dsl.mermaid.MermaidDsl.DslConfig.indent
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.mermaid.*
+import icu.windea.breezeframework.dsl.mermaid.MermaidDsl.Companion.htmlWrap
+import icu.windea.breezeframework.dsl.mermaid.MermaidDsl.DslConfig.indent
 
 //can have a title by `title: inlineText`, but it is not introduced in official api
 

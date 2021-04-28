@@ -3,10 +3,10 @@
 
 @file:JvmName("MarkdownDslExtensions")
 
-package com.windea.breezeframework.dsl.markdown
+package icu.windea.breezeframework.dsl.markdown
 
-import com.windea.breezeframework.dsl.markdown.MarkdownDsl.*
-import com.windea.breezeframework.dsl.markdown.MarkdownDsl.List
+import icu.windea.breezeframework.dsl.markdown.MarkdownDsl.*
+import icu.windea.breezeframework.dsl.markdown.MarkdownDsl.List
 
 /**
  * 开始构建[MarkdownDsl]。

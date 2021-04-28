@@ -3,7 +3,7 @@
 
 @file:JvmName("MermaidDslExtensions")
 
-package com.windea.breezeframework.dsl.mermaid
+package icu.windea.breezeframework.dsl.mermaid
 
 /**
  * 配置[MermaidDsl]。

@@ -3,9 +3,9 @@
 
 @file:JvmName("FunctionalExtensions")
 
-package com.windea.breezeframework.functional.extension
+package icu.windea.breezeframework.functional.extension
 
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.type.*
 
 //https://github.com/MarioAriasC/funKTionale
 

@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.api
+package icu.windea.breezeframework.dsl.api
 
 /**
  * 配置是否缩进内容。

@@ -1,8 +1,8 @@
-package com.windea.breezeframework.dsl.commandline
+package icu.windea.breezeframework.dsl.commandline
 
 
-import com.windea.breezeframework.dsl.cmdtext.*
-import com.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
+import icu.windea.breezeframework.dsl.cmdtext.*
+import icu.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
 import kotlin.test.*
 
 class CommandLineTextDslTest {

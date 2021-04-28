@@ -3,9 +3,9 @@
 
 @file:JvmName("SequenceDiagramDslExtensions")
 
-package com.windea.breezeframework.dsl.sequence
+package icu.windea.breezeframework.dsl.sequence
 
-import com.windea.breezeframework.dsl.sequence.SequenceDiagramDsl.*
+import icu.windea.breezeframework.dsl.sequence.SequenceDiagramDsl.*
 
 /**
  * 开始构建[SequenceDiagramDsl]。

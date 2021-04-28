@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.api
+package icu.windea.breezeframework.dsl.api
 
 /**
  * 包含一对可被视为节点的子元素。
