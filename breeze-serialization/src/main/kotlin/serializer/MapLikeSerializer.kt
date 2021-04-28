@@ -1,10 +1,10 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.reflect.extension.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.reflect.extension.*
 import java.lang.reflect.*
 import kotlin.jvm.internal.*
 import kotlin.reflect.*

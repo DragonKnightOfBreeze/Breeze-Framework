@@ -1,9 +1,9 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.io
+package icu.windea.breezeframework.serialization.io
 
-import com.windea.breezeframework.serialization.config.*
+import icu.windea.breezeframework.serialization.config.*
 
 /**
  * Properties数据的写入器。

@@ -447,7 +447,7 @@
 * [X] 添加`Iterable.select()`
 * [X] 添加`Validated`，`Ordered`，`Named`
 * [X] 为所有`BreezeComponent`提供静态方法`values`和`register`
-* [X] 实现`com.windea.breezeframework.core.component.Encoder.HexEncoder`
+* [X] 实现`icu.windea.breezeframework.core.component.Encoder.HexEncoder`
 * [X] 添加更多的运算符重载扩展方法
 * [X] breeze-serialization 重构代码
   * [X] 委托实现的serializer
@@ -480,7 +480,11 @@
 
 * [X] 重新发布
 
-#### 2.0.3
+#### 3.0.0
+
+* [X] 更改groupId
+
+#### TODO
 
 * [ ] 补充组件`Converter`
 * [ ] 补充组件`RandomGenerator`

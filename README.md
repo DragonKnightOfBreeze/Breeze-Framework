@@ -138,7 +138,7 @@
 <dependencies>
   <!--breeze framework模块-->
   <dependency>
-    <groupId>com.windea.breezeframework</groupId>
+    <groupId>icu.windea.breezeframework</groupId>
     <artifactId>${module}</artifactId>
     <version>${version}</version>
   </dependency>
@@ -171,7 +171,7 @@ repositories {
 
 dependencies {
     //breeze framework模块
-    implementation "com.windea.breezeframework:$module:$version"
+    implementation "icu.windea.breezeframework:$module:$version"
     //其他依赖
     //...
 }
@@ -200,7 +200,7 @@ repositories {
 
 dependencies {
     //breeze framework模块
-    implementation("com.windea.breezeframework:$module:$version")
+    implementation("icu.windea.breezeframework:$module:$version")
     //其他依赖
     //...
 }

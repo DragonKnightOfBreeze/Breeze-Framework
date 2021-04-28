@@ -5,24 +5,39 @@ plugins {
 	id("org.jetbrains.dokka") version "1.4.30"
 }
 
-val groupName = "com.windea.breezeframework"
-val versionName = "2.0.2"
-val packageRootPrefix = "com.windea.breezeframework"
+val groupName = "icu.windea.breezeframework"
+val versionName = "3.0.0"
+val packageRootPrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",
 	"-Xjvm-default=all",
 	"-Xopt-in=kotlin.RequiresOptIn",
 	"-Xopt-in=kotlin.ExperimentalStdlibApi",
 	"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-	"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
-	"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
-	"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.InternalApi",
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi",
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
 val flatModuleNames = arrayOf("breeze-unstable")
 val noPublishModuleNames = arrayOf("breeze-unstable")
 val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
 
 allprojects {
+	val projectName = project.name
+	val projectTitle = projectName.split("-").joinToString(" ") { it.capitalize() }
+	val projectJavaVersion = when(projectName) {
+		in java11ModuleNames -> "11"
+		else -> "1.8"
+	}
+	val projectPackageName = when {
+		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
+		else -> project.name.removePrefix("breeze-").replace("-", "")
+	}
+	val projectPackagePrefix = when {
+		project != rootProject && project.name !in flatModuleNames -> "$packageRootPrefix.$projectPackageName"
+		else -> packageRootPrefix
+	}
+
 	group = groupName
 	version = versionName
 
@@ -68,8 +83,6 @@ allprojects {
 	}
 
 	//java{
-	//	//sourceCompatibility = JavaVersion.VERSION_11
-	//	//targetCompatibility = JavaVersion.VERSION_11
 	//	when(project.name){
 	//		in java11ModuleNames ->{
 	//			sourceCompatibility = JavaVersion.VERSION_11
@@ -82,72 +95,46 @@ allprojects {
 	//	}
 	//}
 
-	val version = when(project.name) {
-		in java11ModuleNames -> "11"
-		else -> "1.8"
-	}
-	val compiler = javaToolchains.compilerFor {
+	val projectCompiler = javaToolchains.compilerFor {
 		when(project.name) {
 			in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
 			else -> languageVersion.set(JavaLanguageVersion.of(8))
 		}
 	}
-	//从模块名获取包名并设置为包的前缀
-	val packageModulePrefix = when {
-		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
-		else -> project.name.removePrefix("breeze-").replace("-", "")
-	}
-	//得到最终的前缀
-	val prefix = when {
-		project != rootProject && project.name !in flatModuleNames -> "$packageRootPrefix.$packageModulePrefix"
-		else -> packageRootPrefix
-	}
-	//得到模块的名字
-	val projectName = project.name.split("-").joinToString(" ") { it.capitalize() }
 
 	tasks {
 		compileJava {
-			javaCompiler.set(compiler)
+			javaCompiler.set(projectCompiler)
 		}
 		compileTestJava {
-			javaCompiler.set(compiler)
+			javaCompiler.set(projectCompiler)
 		}
 		compileKotlin {
-			javaPackagePrefix = prefix
+			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
-				jvmTarget = version
-				jdkHome = compiler.get().metadata.installationPath.asFile.absolutePath
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
 		compileTestKotlin {
-			javaPackagePrefix = prefix
+			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
-				jvmTarget = version
-				jdkHome = compiler.get().metadata.installationPath.asFile.absolutePath
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
 
-		withType<org.jetbrains.dokka.gradle.DokkaTaskPartial> {
+		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
 				named("main") {
-					moduleName.set(projectName)
-					runCatching{ includes.from("README.md") }
+					moduleName.set(projectTitle)
+					//includes.from("README.md")
 				}
 			}
+
 		}
-		//dokkaHtml {
-		//	dokkaSourceSets {
-		//		named("main") {
-		//			moduleName.set(projectName)
-		//			includes.from("README.md")
-		//			sourceLink {
-		//				localDirectory.set(file("src/main/kotlin"))
-		//			}
-		//		}
-		//	}
-		//}
 	}
 
 	//配置需要发布的模块
@@ -186,7 +173,7 @@ allprojects {
 				artifact(dokkaHtmlJar)
 				artifact(sourcesJar)
 				pom {
-					name.set(projectName)
+					name.set(projectTitle)
 					description.set("Integrated code framework written by Kotlin.")
 					url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
 					licenses {
@@ -212,7 +199,9 @@ allprojects {
 		}
 		//配置上传到的仓库
 		repositories {
+			//github pages
 			maven {
+				name = "github-pages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")

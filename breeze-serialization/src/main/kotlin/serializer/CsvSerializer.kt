@@ -1,10 +1,10 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.serialization.*
-import com.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.*
+import icu.windea.breezeframework.serialization.extension.*
 
 /**
  * Csv数据的序列化器。

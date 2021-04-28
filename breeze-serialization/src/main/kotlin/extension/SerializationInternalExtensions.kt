@@ -4,10 +4,10 @@
 @file:JvmName("SerializationInternalExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.serialization.extension
+package icu.windea.breezeframework.serialization.extension
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.serialization.serializer.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.serialization.serializer.*
 import java.util.concurrent.*
 
 //internal extensions

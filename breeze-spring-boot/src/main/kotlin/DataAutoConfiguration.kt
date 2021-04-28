@@ -1,9 +1,9 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.springboot
+package icu.windea.breezeframework.springboot
 
-import com.windea.breezeframework.springboot.converter.*
+import icu.windea.breezeframework.springboot.converter.*
 import org.springframework.boot.autoconfigure.condition.*
 import org.springframework.context.annotation.*
 import org.springframework.data.domain.*

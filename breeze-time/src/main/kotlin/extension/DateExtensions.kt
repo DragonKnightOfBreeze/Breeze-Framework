@@ -3,9 +3,9 @@
 
 @file:JvmName("DateExtensions")
 
-package com.windea.breezeframework.time.extension
+package icu.windea.breezeframework.time.extension
 
-import com.windea.breezeframework.time.*
+import icu.windea.breezeframework.time.*
 import java.text.*
 import java.util.*
 

@@ -139,7 +139,7 @@ In `pom.xml`:
 <dependencies>
   <!--breeze framework modules-->
   <dependency>
-    <groupId>com.windea.breezeframework</groupId>
+    <groupId>icu.windea.breezeframework</groupId>
     <artifactId>${module}</artifactId>
     <version>${version}</version>
   </dependency>
@@ -172,7 +172,7 @@ repositories {
 
 dependencies {
     //breeze framework modules
-    implementation "com.windea.breezeframework:$module:$version"
+    implementation "icu.windea.breezeframework:$module:$version"
     //other dependencies
     //...
 }
@@ -201,7 +201,7 @@ repositories {
 
 dependencies {
     //breeze framework modules
-    implementation("com.windea.breezeframework:$module:$version")
+    implementation("icu.windea.breezeframework:$module:$version")
     //other dependencies
     //...
 }

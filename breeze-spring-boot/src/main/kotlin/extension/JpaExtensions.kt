@@ -3,7 +3,7 @@
 
 @file:JvmName("JpaExtensions")
 
-package com.windea.breezeframework.springboot.extension
+package icu.windea.breezeframework.springboot.extension
 
 import com.querydsl.core.types.*
 import org.springframework.data.jpa.domain.*

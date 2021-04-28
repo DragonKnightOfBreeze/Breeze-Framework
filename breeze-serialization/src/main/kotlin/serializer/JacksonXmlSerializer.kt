@@ -1,10 +1,10 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
 import com.fasterxml.jackson.dataformat.xml.*
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**

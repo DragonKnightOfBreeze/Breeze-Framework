@@ -4,7 +4,7 @@
 @file:JvmName("TemporalAmountExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.time.extension
+package icu.windea.breezeframework.time.extension
 
 import java.time.*
 import java.time.temporal.*
