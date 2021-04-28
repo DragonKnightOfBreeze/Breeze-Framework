@@ -1,3 +1,3 @@
-package com.windea.breezeframework.core.deprecated
+package icu.windea.breezeframework.core.deprecated
 
 object Singleton1

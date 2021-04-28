@@ -4,9 +4,9 @@
 @file:JvmName("AnyExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 import kotlin.reflect.*
 
 /**

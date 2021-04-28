@@ -4,9 +4,9 @@
 @file:JvmName("CollectionExtensions")
 @file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.*
@@ -90,7 +90,7 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> {
 //region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun <T> List<T>.times(n: Int): List<T> {
 	return this.repeat(n)

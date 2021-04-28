@@ -3,10 +3,10 @@
 
 @file:JvmName("ComponentExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.component.*
 import java.nio.charset.*
 
 //region Converter Extensions

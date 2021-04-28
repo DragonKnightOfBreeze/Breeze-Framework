@@ -4,12 +4,12 @@
 @file:JvmName("StringExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.*
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.type.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -28,7 +28,7 @@ import kotlin.contracts.*
 //region Operator Override Extensions
 /**
  * 移除当前字符串中的指定子字符串。
- * @see com.windea.breezeframework.core.extension.remove
+ * @see icu.windea.breezeframework.core.extension.remove
  */
 operator fun String.minus(other: Any?): String {
 	return if(other == null) this else this.remove(other.toString())
@@ -227,7 +227,7 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated("Use String.matches(StringPattern.NumericPattern)", ReplaceWith("this.matches(StringPattern.NumericPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isNumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetter() }
 }
@@ -237,7 +237,7 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated("Use String.matches(StringPattern.AlphaPattern)", ReplaceWith("this.matches(StringPattern.AlphaPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlpha(): Boolean {
 	return this.isNotEmpty() && this.all { it.isDigit() }
 }
@@ -247,7 +247,7 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated("Use String.matches(StringPattern.AlphanumericPattern)", ReplaceWith("this.matches(StringPattern.AlphanumericPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
 }
@@ -1252,7 +1252,7 @@ internal fun String.toQueryParams(): Map<String, List<String>> {
  * 将当前字符串解码为base64格式的字节数组。
  */
 @Deprecated("Use String.decodeBy(Encoder.Base64Encoder)",ReplaceWith("this.decodeBy(Encoder.Base64Encoder)",
-	"com.windea.breezeframework.core.component.Encoder"))
+	"icu.windea.breezeframework.core.component.Encoder"))
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
@@ -1262,7 +1262,7 @@ fun String.decodeToBase64ByteArray(): ByteArray {
 /**
  * 将当前字符串转为内联文本。
  *
- * @see com.windea.breezeframework.core.extension.trimWrap
+ * @see icu.windea.breezeframework.core.extension.trimWrap
  */
 inline fun String.inline(): String = trimWrap()
 

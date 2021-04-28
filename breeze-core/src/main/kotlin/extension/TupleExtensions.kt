@@ -4,9 +4,9 @@
 @file:JvmName("TupleExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.type.*
 
 //对于元组的需求：
 //元组的元素类型可以不同，并且元素个数应当是有限的（这里最多提供五元素元组）

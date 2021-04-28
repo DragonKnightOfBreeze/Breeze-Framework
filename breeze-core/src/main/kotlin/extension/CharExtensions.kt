@@ -4,11 +4,11 @@
 @file:JvmName("CharExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 /**
  * 重复当前字符到指定次数。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun Char.times(n: Int): String {
 	return this.repeat(n)

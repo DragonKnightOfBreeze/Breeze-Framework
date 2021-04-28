@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.type
+package icu.windea.breezeframework.core.type
 
 /**
  * 代表了一个字节范围。

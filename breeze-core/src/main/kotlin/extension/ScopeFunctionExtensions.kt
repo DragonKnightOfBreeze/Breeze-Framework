@@ -3,9 +3,9 @@
 
 @file:JvmName("ScopeFunctionExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import kotlin.contracts.*
 
 /**

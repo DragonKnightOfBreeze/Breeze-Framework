@@ -4,7 +4,7 @@
 @file:JvmName("RangeExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 //region Build Extensions
 infix fun Long.downUntil(until: Byte): LongProgression {

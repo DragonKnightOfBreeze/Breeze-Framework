@@ -3,7 +3,7 @@
 
 @file:JvmName("RegexExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 /**
  * 精简正则表达式字符串。

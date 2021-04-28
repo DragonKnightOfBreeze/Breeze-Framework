@@ -4,7 +4,7 @@
 @file:JvmName("UrlExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.io.*
 import java.net.*

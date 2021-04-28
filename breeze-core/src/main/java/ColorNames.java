@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core;
+package icu.windea.breezeframework.core;
 
 //language=css prefix=*{color: suffix=;}
 

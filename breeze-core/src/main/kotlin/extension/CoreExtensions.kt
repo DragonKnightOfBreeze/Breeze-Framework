@@ -4,10 +4,10 @@
 @file:JvmName("CoreExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 import java.math.*
 import kotlin.random.*

@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.annotation
+package icu.windea.breezeframework.core.annotation
 
 /**
  * 可配置对象的参数信息。

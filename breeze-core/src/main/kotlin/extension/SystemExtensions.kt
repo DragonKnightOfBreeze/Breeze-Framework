@@ -3,7 +3,7 @@
 
 @file:JvmName("SystemExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.io.*
 import java.util.*

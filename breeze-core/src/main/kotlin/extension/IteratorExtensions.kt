@@ -3,9 +3,9 @@
 
 @file:JvmName("IteratorExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 
 /**
  * 遍历迭代器中的元素到指定条件处，或者返回null。

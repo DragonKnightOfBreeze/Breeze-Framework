@@ -3,7 +3,7 @@
 
 @file:JvmName("TemporalExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.time.*
 
