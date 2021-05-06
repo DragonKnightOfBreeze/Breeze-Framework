@@ -148,7 +148,7 @@ inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 //endregion
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**
  * 判断当前数组是否不为null，且不为空。
  */
@@ -253,9 +253,8 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, 
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R {
 	return if(this.isEmpty()) this else transform(this)
 }
-//endregion
 
-//region Operation Extensions
+
 //注意：某些具体的实现类的equals方法与这个方法是等效的
 /**
  * 判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。

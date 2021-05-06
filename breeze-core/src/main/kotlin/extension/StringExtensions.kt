@@ -67,7 +67,7 @@ operator fun String.get(startIndex: Int, endIndex: Int): String {
 }
 //endregion
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**
  * 如果当前字符串不为空，则返回本身，否则返回null。
  */
@@ -139,9 +139,8 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 	}
 	return this != null && !this.isBlank()
 }
-//endregion
 
-//region Operation Extensions
+
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
@@ -1152,14 +1151,11 @@ fun String.toTimeZoneOrNull(): TimeZone? {
 	return timeZone
 }
 
-
-private val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
-
 /**
  * 将当前字符串转化为日期。
  */
 @JvmOverloads
-fun String.toDate(format: String = defaultDateFormat, locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
+fun String.toDate(format: String,locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
 	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
 		ThreadLocal.withInitial {
 			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }

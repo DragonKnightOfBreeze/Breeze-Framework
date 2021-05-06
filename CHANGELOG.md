@@ -472,7 +472,6 @@
 * [X] 实现并行迭代方法`parallelForEach`
 * [X] 完善`breeze-serialization`
 * [X] 重构组件相关代码
-* [ ] 补充组件
 * [X] 更新README文档
 
 #### 2.0.2
@@ -482,9 +481,11 @@
 #### 3.0.0
 
 * [X] 更改groupId
+* [X] 应用jmh
 
 #### TODO
 
+* [ ] 补充组件
 * [ ] 补充组件`Converter`
 * [ ] 补充组件`RandomGenerator`
 * [ ] 可配置参数的组件，更加灵活的配置参数

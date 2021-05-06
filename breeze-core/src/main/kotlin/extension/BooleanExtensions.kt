@@ -9,7 +9,7 @@ package icu.windea.breezeframework.core.extension
 import icu.windea.breezeframework.core.annotation.*
 import kotlin.contracts.*
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**如果为null，则返回true，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic

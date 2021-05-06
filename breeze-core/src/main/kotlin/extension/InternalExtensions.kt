@@ -37,7 +37,8 @@ internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeForma
 internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
 internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
-//internal val threadLocalDateFormatCache = ConcurrentHashMap<String,ThreadLocal<DateFormat>>()
+internal val calendar: Calendar by lazy { Calendar.getInstance() }
+internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 
 
 //internal fun Any.isNullLike():Boolean{
@@ -67,6 +68,7 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 //		else -> false
 //	}
 //}
+
 
 internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
 

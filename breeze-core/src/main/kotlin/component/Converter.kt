@@ -30,8 +30,8 @@ interface Converter<T> : Component {
 	/**
 	 * 目标类型。
 	 */
-	//val targetType: Class<T>
-	val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
+	val targetType: Class<T>
+	//val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
@@ -113,7 +113,6 @@ interface Converter<T> : Component {
 				//如果value的类型兼容targetType，则直接返回
 				targetType.isInstance(value) -> return value as T
 				//否则，尝试使用第一个匹配且可用的转化器进行转化
-				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则抛出异常
 				else -> {
 					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
 					for((index, converter) in components.withIndex()) {
@@ -163,7 +162,6 @@ interface Converter<T> : Component {
 				//如果value的类型兼容targetType，则直接返回
 				targetType.isInstance(value) -> return value as T?
 				//否则，尝试使用第一个匹配且可用的转化器进行转化
-				//如果没有匹配且可用的转化器，先判断targetType是否是String，如果是，则直接调用toString()，否则返回null
 				else -> {
 					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
 					for((index, converter) in components.withIndex()) {
@@ -236,7 +234,7 @@ interface Converter<T> : Component {
 
 	//region Converters
 	object ByteConverter : Converter<Byte> {
-		//override val targetType: Class<Byte> = Byte::class.javaObjectType
+		override val targetType: Class<Byte> = Byte::class.javaObjectType
 
 		override fun convert(value: Any): Byte {
 			return when {
@@ -258,7 +256,7 @@ interface Converter<T> : Component {
 	}
 
 	object ShortConverter : Converter<Short> {
-		//override val targetType: Class<Short> = Short::class.javaObjectType
+		override val targetType: Class<Short> = Short::class.javaObjectType
 
 		override fun convert(value: Any): Short {
 			return when {

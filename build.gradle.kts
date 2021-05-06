@@ -3,6 +3,9 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.jetbrains.kotlin.jvm") version "1.4.30"
 	id("org.jetbrains.dokka") version "1.4.30"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.4.30"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.4.30"
+	id("me.champeau.jmh") version "0.6.4"
 }
 
 val groupName = "icu.windea.breezeframework"
@@ -45,10 +48,18 @@ allprojects {
 	apply {
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
+		plugin("org.jetbrains.kotlin.plugin.noarg")
+		plugin("org.jetbrains.kotlin.plugin.allopen")
+		plugin("me.champeau.jmh")
 	}
 
 	kotlin {
 		explicitApi()
+	}
+
+	allOpen {
+		//jmh压测类需要开放
+		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
 	}
 
 	buildscript {
@@ -71,6 +82,7 @@ allprojects {
 	dependencies {
 		implementation(kotlin("stdlib-jdk8"))
 		testImplementation(kotlin("test-junit"))
+		//testImplementation("org.openjdk.jmh:jmh-core:1.29")
 	}
 
 	java {
@@ -109,6 +121,9 @@ allprojects {
 		compileTestJava {
 			javaCompiler.set(projectCompiler)
 		}
+		compileJmhJava {
+			javaCompiler.set(projectCompiler)
+		}
 		compileKotlin {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
@@ -118,6 +133,14 @@ allprojects {
 			}
 		}
 		compileTestKotlin {
+			javaPackagePrefix = projectPackagePrefix
+			kotlinOptions {
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
+				freeCompilerArgs = compilerArgs
+			}
+		}
+		compileJmhKotlin {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
@@ -138,7 +161,7 @@ allprojects {
 	}
 
 	//配置需要发布的模块
-	if(project == rootProject || project.name in flatModuleNames) return@allprojects
+	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
 
 	apply {
 		plugin("org.gradle.maven-publish")

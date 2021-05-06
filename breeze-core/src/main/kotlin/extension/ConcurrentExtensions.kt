@@ -10,7 +10,7 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import java.util.concurrent.locks.*
 
-//region Operation Extensions
+//region Common Extensions
 @JvmSynthetic
 inline fun <T> Condition.withAwait(signalAll: Boolean = true, action: () -> T): T {
 	this.await()

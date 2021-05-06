@@ -9,7 +9,7 @@ package icu.windea.breezeframework.core.extension
 import icu.windea.breezeframework.core.annotation.*
 import kotlin.math.*
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -100,9 +100,8 @@ inline fun Float.orNull(): Float? {
 inline fun Double.orNull(): Double? {
 	return if(this == 0.0) null else this
 }
-//endregion
 
-//region Operation Extensions
+
 /**进行一次计算并将结果转化为字节型。*/
 inline fun Byte.exact(block: (Byte) -> Number): Byte {
 	return block(this).toByte()

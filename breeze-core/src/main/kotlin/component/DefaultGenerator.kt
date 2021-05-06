@@ -18,6 +18,7 @@ interface DefaultGenerator<T>:Component {
 	 * 目标类型。
 	 */
 	val targetType: Class<T>
+	//val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
 
 	/**
 	 * 生成默认值。
