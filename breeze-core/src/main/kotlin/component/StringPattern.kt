@@ -10,7 +10,7 @@ package icu.windea.breezeframework.core.component
  */
 interface StringPattern : Component {
 	/**
-	 * 判断指定的字符串是否匹配指定的字符串模式。
+	 * 判断指定的字符串是否匹配。
 	 */
 	fun matches(value: String): Boolean
 
@@ -18,7 +18,7 @@ interface StringPattern : Component {
 		override fun registerDefault() {
 			register(BooleanPattern)
 			register(WildcardBooleanPattern)
-			register(IntegerPattern)
+			register(IntPattern)
 			register(NumberPattern)
 			register(AlphaPattern)
 			register(NumericPattern)
@@ -43,7 +43,7 @@ interface StringPattern : Component {
 		}
 	}
 
-	object IntegerPattern : StringPattern {
+	object IntPattern : StringPattern {
 		private val signs = charArrayOf('+', '-')
 
 		override fun matches(value: String): Boolean {
@@ -84,6 +84,12 @@ interface StringPattern : Component {
 	object AlphanumericPattern : StringPattern {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetterOrDigit() }
+		}
+	}
+
+	object BlankPattern:StringPattern{
+		override fun matches(value: String): Boolean {
+			return value.isBlank()
 		}
 	}
 	//endregion

@@ -226,8 +226,8 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `true` if this char sequence contains only Unicode digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.NumericPattern)", ReplaceWith("this.matches(StringPattern.NumericPattern)",
-	"icu.windea.breezeframework.core.component.StringPattern"))
+@Deprecated("Use String.matchesBy(StringPattern.NumericPattern)", ReplaceWith("this.matchesBy(StringPattern.NumericPattern)",
+		"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isNumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetter() }
 }
@@ -236,7 +236,7 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.AlphaPattern)", ReplaceWith("this.matches(StringPattern.AlphaPattern)",
+@Deprecated("Use String.matchesBy(StringPattern.AlphaPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphaPattern)",
 	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlpha(): Boolean {
 	return this.isNotEmpty() && this.all { it.isDigit() }
@@ -246,7 +246,7 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters or digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.AlphanumericPattern)", ReplaceWith("this.matches(StringPattern.AlphanumericPattern)",
+@Deprecated("Use String.matchesBy(StringPattern.AlphanumericPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphanumericPattern)",
 	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
