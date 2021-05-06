@@ -87,6 +87,13 @@ interface Converter<T> : Component {
 		}
 
 		/**
+		 * 是否使用回退策略。默认不使用。
+		 *
+		 * * 当找不到匹配的默认值生成器时，尝试调用目标类型的无参构造方法生成默认值。
+		 */
+		var useFallbackStrategy = false
+
+		/**
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
 		@Suppress("UNCHECKED_CAST")
@@ -125,11 +132,13 @@ interface Converter<T> : Component {
 							e.printStackTrace()
 						}
 					}
-					return if(targetType == String::class.java) {
-						value.toString() as T
-					} else {
-						throw IllegalArgumentException("No suitable converter found for target type '$targetType'.")
+					//如果目标类型是字符串，则尝试转化为字符串
+					if(targetType == String::class.java) return value.toString() as T
+					if(useFallbackStrategy) {
+						val fallback = fallbackConvert(value,targetType)
+						if(fallback != null) return fallback
 					}
+					throw IllegalArgumentException("No suitable converter found for target type '$targetType'.")
 				}
 			}
 		}
@@ -171,11 +180,13 @@ interface Converter<T> : Component {
 							e.printStackTrace()
 						}
 					}
-					return if(targetType == String::class.java) {
-						value.toString() as T?
-					} else {
-						null
+					//如果目标类型是字符串，则尝试转化为字符串
+					if(targetType == String::class.java) return value.toString() as T?
+					if(useFallbackStrategy) {
+						val fallback = fallbackConvert(value,targetType)
+						if(fallback != null) return fallback
 					}
+					return null
 				}
 			}
 		}
@@ -193,6 +204,33 @@ interface Converter<T> : Component {
 		@JvmStatic
 		fun <T> convertOrElse(value: Any?, targetType: Class<T>, defaultValue: T): T {
 			return convertOrNull(value, targetType) ?: defaultValue
+		}
+
+		@Suppress("UNCHECKED_CAST")
+		private fun <T> fallbackConvert(value:Any,targetType:Class<T>):T?{
+			try {
+				//尝试调用目标类型的第一个拥有匹配的唯一参数的构造方法生成转化后的值
+				for(constructor in targetType.declaredConstructors) {
+					if(constructor.parameterCount == 1){
+						try {
+							constructor.isAccessible = true
+							return constructor.newInstance(value) as T
+						} catch(e: Exception) {}
+					}
+				}
+				//尝试调用目标类型的第一个拥有匹配的唯一参数的方法生成转化后的值
+				for(method in targetType.declaredMethods){
+					if(method.parameterCount == 1){
+						try{
+							method.isAccessible = true
+							return method.invoke(value) as T
+						}catch(e:Exception){}
+					}
+				}
+				return null
+			} catch(e: Exception) {
+				return null
+			}
 		}
 	}
 

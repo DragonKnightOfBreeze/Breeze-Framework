@@ -55,6 +55,13 @@ interface DefaultGenerator<T>:Component {
 		private val componentCache: MutableMap<Class<*>,DefaultGenerator<*>> = ConcurrentHashMap()
 
 		/**
+		 * 是否使用回退策略。默认不使用。
+		 *
+		 * * 当找不到匹配的默认值生成器时，尝试调用目标类型的无参构造方法生成默认值。
+		 */
+		var useFallbackStrategy = false
+
+		/**
 		 * 生成指定类型的默认值。
 		 */
 		inline fun <reified T> generate():T{
@@ -75,14 +82,24 @@ interface DefaultGenerator<T>:Component {
 						return@getOrPut defaultGenerator
 					}
 				}
-				//尝试使用无参构造实例化
-				try{
-					return targetType.getConstructor().newInstance()
-				}catch(e:Exception){
-					throw IllegalArgumentException("No suitable default generator found for target type '$targetType'.")
+				if(useFallbackStrategy) {
+					val fallback = fallbackGenerate(targetType)
+					if(fallback != null) return fallback
 				}
+				throw IllegalArgumentException("No suitable default generator found for target type '$targetType'.")
 			}
 			return defaultGenerator.generate() as T
+		}
+
+		private fun <T> fallbackGenerate(targetType:Class<T>):T?{
+			try {
+				//尝试调用目标类型的无参构造方法生成默认值
+				val constructor = targetType.getConstructor()
+				constructor.isAccessible = true
+				return constructor.newInstance()
+			} catch(e: Exception) {
+				return null
+			}
 		}
 	}
 
@@ -107,19 +124,19 @@ interface DefaultGenerator<T>:Component {
 
 	object DefaultLongGenerator:DefaultGenerator<Long>{
 		override val targetType: Class<Long> = Long::class.javaObjectType
-		private val value: Long = 0
+		private const val value: Long = 0
 		override fun generate(): Long = value
 	}
 
 	object DefaultFloatGenerator:DefaultGenerator<Float>{
 		override val targetType: Class<Float> = Float::class.javaObjectType
-		private val value: Float = 0f
+		private const val value: Float = 0f
 		override fun generate(): Float = value
 	}
 
 	object DefaultDoubleGenerator:DefaultGenerator<Double>{
 		override val targetType: Class<Double> = Double::class.javaObjectType
-		private val value: Double = 0.0
+		private const val value: Double = 0.0
 		override fun generate():Double = value
 	}
 
@@ -158,19 +175,19 @@ interface DefaultGenerator<T>:Component {
 
 	object DefaultCharGenerator:DefaultGenerator<Char>{
 		override val targetType: Class<Char> = Char::class.java
-		private val value: Char = '\u0000'
+		private const val value: Char = '\u0000'
 		override fun generate(): Char = value
 	}
 
 	object DefaultBooleanGenerator:DefaultGenerator<Boolean>{
 		override val targetType: Class<Boolean> = Boolean::class.java
-		private val value: Boolean = false
+		private const val value: Boolean = false
 		override fun generate(): Boolean = value
 	}
 
 	object DefaultStringGenerator:DefaultGenerator<String>{
 		override val targetType: Class<String> = String::class.java
-		private val value: String = ""
+		private const val value: String = ""
 		override fun generate(): String = value
 	}
 

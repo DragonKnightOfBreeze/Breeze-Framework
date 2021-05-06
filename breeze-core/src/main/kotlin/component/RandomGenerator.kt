@@ -49,7 +49,14 @@ interface RandomGenerator<T> : Component {
 
 		private val componentCache: MutableMap<Class<*>,RandomGenerator<*>> = ConcurrentHashMap()
 
-		val random: Random get() = Random
+		private val random: Random get() = Random
+
+		/**
+		 * 是否使用回退策略。默认不使用。
+		 *
+		 * * 当找不到匹配的默认值生成器时，尝试调用目标类型的无参构造方法生成默认值。
+		 */
+		var useFallbackStrategy = false
 
 		/**
 		 * 生成指定类型的随机值。
@@ -72,9 +79,24 @@ interface RandomGenerator<T> : Component {
 						return@getOrPut randomGenerator
 					}
 				}
+				if(useFallbackStrategy) {
+					val fallback = fallbackGenerate(targetType)
+					if(fallback != null) return fallback
+				}
 				throw IllegalArgumentException("No suitable random generator found for target type '$targetType'.")
 			}
 			return randomGenerator.generate() as T
+		}
+
+		private fun <T> fallbackGenerate(targetType:Class<T>):T?{
+			try {
+				//尝试调用目标类型的无参构造方法生成默认值
+				val constructor = targetType.getDeclaredConstructor()
+				constructor.isAccessible = true
+				return constructor.newInstance()
+			} catch(e: Exception) {
+				return null
+			}
 		}
 	}
 

@@ -6,6 +6,8 @@ package icu.windea.breezeframework.core.component
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.extension.*
 
+//pathMatcher *.kt https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
+
 /**
  * 路径模式。
  *
