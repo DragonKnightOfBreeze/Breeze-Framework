@@ -435,7 +435,11 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
  * 去除指定字符。
  */
 fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
-	return this.replace(oldChar.toString(), "", ignoreCase)
+	return buildString {
+		for(c in this){
+			if(!c.equals(oldChar,ignoreCase)) append(c)
+		}
+	}
 }
 
 /**
@@ -445,12 +449,12 @@ fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 	return this.replace(oldValue, "", ignoreCase)
 }
 
-/**
- * 去除指定正则表达式的字符串。
- */
-fun String.remove(regex: Regex): String {
-	return this.replace(regex, "")
-}
+///**
+// * 去除指定正则表达式的字符串。
+// */
+//fun String.remove(regex: Regex): String {
+//	return this.replace(regex, "")
+//}
 
 
 /**
@@ -829,28 +833,33 @@ fun String.alignCenter(padChar: Char = ' '): String {
 
 
 /**
- * 根据指定的限定长度和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
+ * 根据指定的限定长度、偏移和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
+ * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateStart(limit: Int, truncated: CharSequence = "..."): String {
-	return if(length <= limit) this else "$truncated${this.takeLast(limit)}"
+fun String.truncateStart(limit: Int,offset:Int=0, truncated: CharSequence = "..."): String {
+	require(limit > 0) {"Limit must be non-negative."}
+	require(offset > 0) {"Limit must be non-negative."}
+	return when{
+		limit == 0 -> ""
+		limit >= length -> this
+		offset == 0 -> "$truncated${this.takeLast(limit)}"
+		else -> "${this.take(offset)}$truncated${this.takeLast(limit-offset)}"
+	}
 }
 
 /**
- * 根据指定的限定长度和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
+ * 根据指定的限定长度、偏移和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
+ * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateEnd(limit: Int, truncated: CharSequence = "..."): String {
-	return if(length <= limit) this else "${this.take(limit)}$truncated"
-}
-
-/**
- * 根据指定的限定长度、偏移和截断符，截断当前字符串的中间部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
- */
-fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "..."): String {
-	require(limit > offset) { "Limit must be greater than offset." }
-	return if(length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
+fun String.truncateEnd(limit: Int,offset:Int = 0, truncated: CharSequence = "..."): String {
+	require(limit > 0) {"Limit must be non-negative."}
+	require(offset > 0) {"Limit must be non-negative."}
+	return when{
+		limit == 0 -> ""
+		limit >= length -> this
+		offset == 0 -> "${this.take(limit)}$truncated"
+		else -> "${this.take(limit-offset)}$truncated${this.takeLast(offset)}"
+	}
 }
 
 
@@ -1269,13 +1278,15 @@ inline fun String.inline(): String = trimWrap()
  */
 inline fun String.multiline(): String = trimIndent()
 
-private val trimWrapRegex = """\s*\R\s*""".toRegex()
-
 /**
- * 去除当前字符串中的所有换行符以及换行符周围的空白。
+ * 去除当前字符串中的所有换行符。
  */
 fun String.trimWrap(): String {
-	return this.remove(trimWrapRegex)
+	return buildString {
+		for(c in this) {
+			if(c != '\r' && c != '\n') append(c)
+		}
+	}
 }
 
 /**

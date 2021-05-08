@@ -1,6 +1,8 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
+@file:JvmName("DateExtensions")
+
 package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.model.*

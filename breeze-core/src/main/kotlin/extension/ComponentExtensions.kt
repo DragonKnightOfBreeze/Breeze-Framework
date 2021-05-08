@@ -29,36 +29,6 @@ inline fun <reified T> Any?.convertOrNull(params: Map<String, Any?> = emptyMap()
 }
 //endregion
 
-//region Random Generator Extensions
-/**
- * 生成指定类型的随机值。
- */
-@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-inline fun <reified T : Any> randomValue(): T {
-	return RandomGenerator.generate()
-}
-//endregion
-
-//region Escaper Extensions
-/**
- * 根据指定的转义器，转义当前字符串。
- *
- * @see Escaper
- */
-fun String.escapeBy(escaper: Escaper): String {
-	return escaper.escape(this)
-}
-
-/**
- * 根据指定的转义器，反转义当前字符串。
- *
- * @see Escaper
- */
-fun String.unescapeBy(escaper: Escaper): String {
-	return escaper.unescape(this)
-}
-//endregion
-
 //region Encoder Extensions
 /**
  * 根据指定的编码器，编码当前字符串，以指定的字符集显示。
@@ -104,87 +74,38 @@ fun ByteArray.decryptBy(encrypter: Encrypter, secret: ByteArray? = null): ByteAr
 }
 //endregion
 
-//region LetterCase Extensions
+//region Escaper Extensions
 /**
- * 尝试推断当前字符串的字母格式。
+ * 根据指定的转义器，转义当前字符串。
  *
- * @see LetterCase
+ * @see Escaper
  */
-fun String.inferCase(): LetterCase? {
-	return LetterCase.infer(this)
+fun String.escapeBy(escaper: Escaper): String {
+	return escaper.escape(this)
 }
 
 /**
- * 判断当前字符串是否匹配指定的字母格式。
+ * 根据指定的转义器，反转义当前字符串。
  *
- * @see LetterCase
+ * @see Escaper
  */
-fun String.matchesBy(letterCase: LetterCase): Boolean {
-	return letterCase.matches(this)
+fun String.unescapeBy(escaper: Escaper): String {
+	return escaper.unescape(this)
+}
+//endregion
+/**
+ * 生成指定类型的默认值。
+ */
+inline fun <reified T:Any> defaultValue(params: Map<String, Any?> = emptyMap()):T{
+	return DefaultGenerator.generate(params)
 }
 
+//region Random Generator Extensions
 /**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
- *
- * @see LetterCase
+ * 生成指定类型的随机值。
  */
-fun String.splitBy(letterCase: LetterCase): List<String> {
-	return letterCase.split(this)
-}
-
-/**
- * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
- *
- * @see LetterCase
- */
-fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
-	return letterCase.splitToSequence(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
- *
- * @see LetterCase
- */
-fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
- *
- * @see LetterCase
- */
-fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
- *
- * @see LetterCase
- */
-fun Sequence<String>.joinToStringBy(letterCase: LetterCase): String {
-	return letterCase.joinToString(this)
-}
-
-/**
- * 根据指定的字母格式，切换当前字符串的格式。
- *
- * @see LetterCase
- */
-fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
-}
-
-/**
- * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
- *
- * @see LetterCase
- */
-fun String.switchCaseBy(targetLetterCase: LetterCase): String {
-	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
-	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+inline fun <reified T : Any> randomValue(params: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(params)
 }
 //endregion
 
@@ -383,5 +304,89 @@ fun <T> List<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern
  */
 fun <T> Map<*, *>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
 	return pathPattern.getOrElse(this, path, defaultValue)
+}
+//endregion
+
+//region LetterCase Extensions
+/**
+ * 尝试推断当前字符串的字母格式。
+ *
+ * @see LetterCase
+ */
+fun String.inferCase(): LetterCase? {
+	return LetterCase.infer(this)
+}
+
+/**
+ * 判断当前字符串是否匹配指定的字母格式。
+ *
+ * @see LetterCase
+ */
+fun String.matchesBy(letterCase: LetterCase): Boolean {
+	return letterCase.matches(this)
+}
+
+/**
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串列表。
+ *
+ * @see LetterCase
+ */
+fun String.splitBy(letterCase: LetterCase): List<String> {
+	return letterCase.split(this)
+}
+
+/**
+ * 根据指定的字母格式，分割当前字符串，返回对应的字符串序列。
+ *
+ * @see LetterCase
+ */
+fun String.splitToSequenceBy(letterCase: LetterCase): Sequence<String> {
+	return letterCase.splitToSequence(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串数组中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Array<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串集合中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Iterable<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，将当前字符串序列中的元素加入到字符串。
+ *
+ * @see LetterCase
+ */
+fun Sequence<String>.joinToStringBy(letterCase: LetterCase): String {
+	return letterCase.joinToString(this)
+}
+
+/**
+ * 根据指定的字母格式，切换当前字符串的格式。
+ *
+ * @see LetterCase
+ */
+fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCase): String {
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
+}
+
+/**
+ * 根据指定的字母格式，切换当前字符串的格式。如果不指定字母格式，则尝试推断或者抛出异常。
+ *
+ * @see LetterCase
+ */
+fun String.switchCaseBy(targetLetterCase: LetterCase): String {
+	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
+	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
 }
 //endregion

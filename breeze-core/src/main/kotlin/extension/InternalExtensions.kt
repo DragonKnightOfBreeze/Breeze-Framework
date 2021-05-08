@@ -37,7 +37,7 @@ internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeForma
 internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
 internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
-internal val calendar: Calendar by lazy { Calendar.getInstance() }
+internal val calendar: Calendar = Calendar.getInstance()
 internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 
 
@@ -70,23 +70,23 @@ internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<Da
 //}
 
 
-internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
-
-@Suppress("UNCHECKED_CAST")
-internal fun <T> inferGenericType(target:Any,interfaceType:Class<*>):Class<T>{
-	val targetMap = genericTypesCache.getOrPut(interfaceType) { ConcurrentHashMap() }
-	val targetType = target::class.javaObjectType
-	return targetMap.getOrPut(targetType){
-		val genericInterfaces = targetType.genericInterfaces
-		//TODO 递归查找
-		val genericInterface = genericInterfaces.find {
-			it is ParameterizedType && it.rawType == interfaceType
-		} as? ParameterizedType ?: throw error("Framework internal error.")
-		val genericTypes = genericInterface.actualTypeArguments
-		if(genericTypes.isEmpty()) throw error("Framework internal error.")
-		val genericType = genericTypes[0]
-		if(genericType !is Class<*>) throw error("Framework internal error.")
-		genericType
-	} as Class<T>
-}
+//internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
+//
+//@Suppress("UNCHECKED_CAST")
+//internal fun <T> inferGenericType(target:Any,interfaceType:Class<*>):Class<T>{
+//	val targetMap = genericTypesCache.getOrPut(interfaceType) { ConcurrentHashMap() }
+//	val targetType = target::class.javaObjectType
+//	return targetMap.getOrPut(targetType){
+//		val genericInterfaces = targetType.genericInterfaces
+//		//TODO 递归查找
+//		val genericInterface = genericInterfaces.find {
+//			it is ParameterizedType && it.rawType == interfaceType
+//		} as? ParameterizedType ?: throw error("Framework internal error.")
+//		val genericTypes = genericInterface.actualTypeArguments
+//		if(genericTypes.isEmpty()) throw error("Framework internal error.")
+//		val genericType = genericTypes[0]
+//		if(genericType !is Class<*>) throw error("Framework internal error.")
+//		genericType
+//	} as Class<T>
+//}
 

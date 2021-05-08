@@ -17,8 +17,8 @@ import java.util.concurrent.*
 @BenchmarkMode(Mode.AverageTime)
 @State(value = Scope.Benchmark)
 @Fork(1)
-@Warmup(iterations = 3, time = 1)
-@Measurement(iterations = 3, time = 1)
+@Warmup(iterations = 5, time = 1)
+@Measurement(iterations = 5, time = 1)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class ConverterBenchmark {
 	@Benchmark

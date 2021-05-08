@@ -81,3 +81,24 @@ annotation class TodoMarker
 //@MustBeDocumented
 //@Target(CLASS)
 //annotation class BreezeComponent
+
+/**
+ * 可配置对象的参数信息。
+ */
+@MustBeDocumented
+@Target()
+annotation class ConfigurableParam(
+	val name: String,
+	val type: String,
+	val defaultValue: String = "",
+	val comment: String = ""
+)
+
+/**
+ * 可配置对象的一组参数信息。
+ */
+@MustBeDocumented
+@Target(CLASS)
+annotation class ConfigurableParams(
+	vararg val value: ConfigurableParam
+)

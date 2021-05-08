@@ -62,8 +62,8 @@ interface RandomGenerator<T> : Component {
 		/**
 		 * 生成指定类型的随机值。
 		 */
-		inline fun <reified T> generate(): T {
-			return generate(T::class.java)
+		inline fun <reified T> generate(params: Map<String, Any?> = emptyMap()): T {
+			return generate(T::class.java,params)
 		}
 
 		/**
@@ -71,7 +71,7 @@ interface RandomGenerator<T> : Component {
 		 */
 		@Suppress("UNCHECKED_CAST")
 		@JvmStatic
-		fun <T> generate(targetType: Class<T>): T {
+		fun <T> generate(targetType: Class<T>,params: Map<String, Any?> = emptyMap()): T {
 			//遍历已注册的随机数生成器，如果匹配目标类型，则尝试用它生成随机值
 			//如果成功则加入缓存，如果失败则抛出异常
 			val randomGenerator = componentCache.getOrPut(targetType){
@@ -80,6 +80,7 @@ interface RandomGenerator<T> : Component {
 						return@getOrPut randomGenerator
 					}
 				}
+				//如果找不到匹配的随机值生成器
 				if(useFallbackStrategy) {
 					val fallback = fallbackGenerate(targetType)
 					if(fallback != null) return fallback

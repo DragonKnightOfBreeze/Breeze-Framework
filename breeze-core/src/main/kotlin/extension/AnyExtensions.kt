@@ -6,13 +6,15 @@
 
 package icu.windea.breezeframework.core.extension
 
+import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.model.*
+import java.lang.reflect.*
 import kotlin.reflect.*
 
-/**
- * 得到当前对象的带有泛型参数信息的Java类型对象。
- */
-inline val <reified T> T.javaType get() = object : TypeReference<T>() {}.type
+///**
+// * 得到当前对象的带有泛型参数信息的Java类型对象。
+// */
+//inline val <reified T> T.javaType get() = object : TypeReference<T>() {}.type
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
@@ -161,5 +163,53 @@ fun <T : Any> toStringByReference(
 				else -> joinToString(delimiter, "$className$prefix", postfix) { "${it.name}=${it.get().toStringSmartly(deepOp)}" }
 			}
 		}
+	}
+}
+
+//得到带有泛型信息的类型
+
+/**
+ * 得到指定类型的带有泛型参数信息的Java类型对象。
+ */
+inline fun <reified T> javaTypeOf(): Type {
+	return object : TypeReference<T>() {}.type
+}
+
+/**
+ * 得到当前对象的带有泛型参数信息的Java类型对象。
+ */
+@Suppress("UNUSED_PARAMETER")
+inline fun <reified T> javaTypeOf(target: T): Type {
+	return object : TypeReference<T>() {}.type
+}
+
+//得到类型、方法、属性、参数等的名字
+//无法直接通过方法的引用得到参数，也无法得到局部变量的任何信息
+
+/**
+ * 得到指定类型的名字。
+ */
+@TrickApi
+inline fun <reified T> nameOf(): String? {
+	return T::class.java.simpleName
+}
+
+/**
+ * 得到指定项的名字。
+ *
+ * 适用于：类引用、属性引用、方法引用、实例。
+ *
+ * 不适用于：类型参数，参数，局部变量。
+ */
+@TrickApi
+@JvmSynthetic
+inline fun nameOf(target: Any?): String? {
+	return when(target) {
+		null -> null
+		is Class<*> -> target.simpleName
+		is KClass<*> -> target.simpleName
+		is KCallable<*> -> target.name
+		is KParameter -> target.name
+		else -> target::class.java.simpleName
 	}
 }
