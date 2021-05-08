@@ -62,13 +62,8 @@ allprojects {
 		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
 	}
 
-	buildscript {
-		//配置插件仓库
-		repositories {
-			maven("https://dl.bintray.com/kotlin/kotlin-eap")
-			maven("https://maven.aliyun.com/nexus/content/groups/public")
-			mavenCentral()
-		}
+	jmh{
+
 	}
 
 	//配置依赖仓库

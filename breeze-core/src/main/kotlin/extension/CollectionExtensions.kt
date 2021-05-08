@@ -915,21 +915,27 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 
 
 /**
- * 将当前对象转化为单例列表。如果当前对象为null且参数`orEmpty`为true，则会返回空列表。
+ * 将当前对象转化为单例列表。
+ *
+ * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空列表。
  */
 fun <T> T.toSingletonList(orEmpty: Boolean = false): List<T> {
 	return if(orEmpty && this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
 /**
- * 将当前对象转化为单例集。如果当前对象为null且参数`orEmpty`为true，则会返回空集。
+ * 将当前对象转化为单例集。
+ *
+ * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空集。
  */
 fun <T> T.toSingletonSet(orEmpty: Boolean = false): Set<T> {
 	return if(orEmpty && this == null) Collections.emptySet() else Collections.singleton(this)
 }
 
 /**
- * 将当前二元素元组转化为单例映射。如果当前二元素元组其中对应的键或值为null且参数`orEmpty`为true，则会返回空映射。
+ * 将当前二元素元组转化为单例映射。
+ *
+ * 如果当前二元素元组其中对应的键或值为`null`且参数[orEmpty]为`true`，则会返回空映射。
  */
 fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
 	return if(orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
