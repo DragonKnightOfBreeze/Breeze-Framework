@@ -1,7 +1,7 @@
-package com.windea.breezeframework.core
+package icu.windea.breezeframework.core
 
-import com.windea.breezeframework.core.component.LetterCase.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.component.LetterCase.*
+import icu.windea.breezeframework.core.extension.*
 import kotlin.test.*
 
 class ExampleTest {

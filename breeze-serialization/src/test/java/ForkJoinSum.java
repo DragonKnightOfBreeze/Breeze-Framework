@@ -1,6 +1,8 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
+package icu.windea.breezeframework.serialization;
+
 import java.util.concurrent.RecursiveTask;
 
 public class ForkJoinSum extends RecursiveTask<Long> {
@@ -31,10 +33,10 @@ public class ForkJoinSum extends RecursiveTask<Long> {
         } else {
             //否则拆分成两个相同区间的任务
             long middle = (start + end) / 2;
-            var left = new ForkJoinSum(start, middle);
+            ForkJoinSum left = new ForkJoinSum(start, middle);
             //加入线程队列
             left.fork();
-            var right = new ForkJoinSum(middle + 1, end);
+	        ForkJoinSum right = new ForkJoinSum(middle + 1, end);
             right.fork();
             //得到整合后的结果
             return left.join() + right.join();

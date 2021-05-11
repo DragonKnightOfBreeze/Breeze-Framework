@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
 /**
  * 由第三方库委托实现的序列化器。

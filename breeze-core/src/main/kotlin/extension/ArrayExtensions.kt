@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("ArrayExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.util.*
 import java.util.stream.*
@@ -11,55 +11,55 @@ import java.util.stream.*
 //region Operator extensions
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun <T> Array<out T>.times(n: Int): List<T> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun ByteArray.times(n: Int): List<Byte> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun ShortArray.times(n: Int): List<Short> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun IntArray.times(n: Int): List<Int> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun LongArray.times(n: Int): List<Long> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun FloatArray.times(n: Int): List<Float> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun DoubleArray.times(n: Int): List<Double> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun BooleanArray.times(n: Int): List<Boolean> = this.toList().repeat(n)
 
 /**
  * 重复当前数组中的元素到指定次数，并转化为列表。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun CharArray.times(n: Int): List<Char> = this.toList().repeat(n)
 

@@ -1,13 +1,13 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.serialization.*
-import com.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.*
+import icu.windea.breezeframework.serialization.extension.*
 
 /**
- * Yaml的序列化器。
+ * Yaml数据的序列化器。
  *
  * @see JacksonYamlSerializer
  * @see SnakeYamlSerializer
@@ -28,7 +28,7 @@ interface YamlSerializer : DataSerializer {
 	/**
 	 * 默认的Yaml的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的序列化器。
 	 */
 	companion object: YamlSerializer by defaultYamlSerializer
 }

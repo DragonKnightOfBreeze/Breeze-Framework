@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.linq
+package icu.windea.breezeframework.linq
 
-import com.windea.breezeframework.linq.impl.*
+import icu.windea.breezeframework.linq.impl.*
 
 /**创建Linq语句。可选Linq的实现类型，默认为委托给Kotlin集合框架实现。*/
 @JvmOverloads

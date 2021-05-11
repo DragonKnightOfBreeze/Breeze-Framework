@@ -1,15 +1,13 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("DateExtensions")
 
-package com.windea.breezeframework.time.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.time.*
+import icu.windea.breezeframework.core.model.*
 import java.text.*
 import java.util.*
-
-internal val calendar: Calendar by lazy { Calendar.getInstance() }
 
 //region Operator Extensions
 /** @see java.util.Calendar.add*/
@@ -66,7 +64,9 @@ val Date.isSaturday: Boolean get() = this.assign().let { calendar.get(Calendar.D
 private fun Date.assign(): Date = this.also { calendar.time = this }
 
 
-/**更改日期。*/
+/**
+ * 更改日期。
+ */
 fun Date.modify(
 	year: Int = -1, month: Int = -1, day: Int = -1, hour: Int = -1, minute: Int = -1, second: Int = -1,
 	weekday: Int = -1,
@@ -81,9 +81,25 @@ fun Date.modify(
 	if(weekday > -1) calendar.set(Calendar.WEEK_OF_MONTH, weekday)
 	return calendar.time
 }
-
-
-/**将当前日期转化为格式化的字符串。*/
-fun Date.toString(format: String): String = SimpleDateFormat(format).format(this)
 //endregion
 
+//region Convert Extensions
+/**
+ * 将当前日期转化为字符串。
+ */
+fun Date.toString(format: String, locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): String {
+	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
+		ThreadLocal.withInitial {
+			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
+		}
+	}.get()
+	return dateFormat.format(this)
+}
+
+/**
+ * 将当前日期转化为字符串。
+ */
+fun Date.toString(dateFormat:DateFormat):String{
+	return dateFormat.format(this)
+}
+//endregion

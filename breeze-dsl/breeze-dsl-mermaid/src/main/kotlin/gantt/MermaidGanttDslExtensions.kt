@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MermaidGanttDslExtensions")
 
-package com.windea.breezeframework.dsl.mermaid.gantt
+package icu.windea.breezeframework.dsl.mermaid.gantt
 
-import com.windea.breezeframework.dsl.mermaid.gantt.MermaidGanttDsl.*
+import icu.windea.breezeframework.dsl.mermaid.gantt.MermaidGanttDsl.*
 import java.time.*
 
 /**

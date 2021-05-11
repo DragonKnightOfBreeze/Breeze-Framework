@@ -1,9 +1,9 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization
+package icu.windea.breezeframework.serialization
 
-import com.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.extension.*
 import java.io.*
 import java.util.*
 import java.util.concurrent.*
@@ -151,9 +151,6 @@ class StringTest {
 	@Test
 	fun joinToStringTest(){
 		val array = Array(1000){it*10}
-		println(measureNanoTime {
-			array.joinToAsync(StringBuilder(),", ") { (it * 3 / 5 + 2).toString().repeat(2) }
-		})
 		println(measureNanoTime {
 			array.joinToString(", ") { (it * 3 / 5 + 2).toString().repeat(2) }
 		})

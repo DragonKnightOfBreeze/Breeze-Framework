@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization
+package icu.windea.breezeframework.serialization
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.serialization.extension.*
-import com.windea.breezeframework.serialization.serializer.*
+import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.serializer.*
 import java.lang.reflect.*
 
 /**
@@ -15,8 +15,7 @@ import java.lang.reflect.*
  *
  * @see DataSerializer
  */
-@BreezeComponent
-interface DataFormat {
+interface DataFormat : Component {
 	/**
 	 * 文件扩展名。
 	 */
@@ -30,7 +29,7 @@ interface DataFormat {
 	/**
 	 * 对应的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的轻量的序列化器。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的序列化器。
 	 *
 	 * 可以进行自定义。
 	 */
@@ -63,7 +62,17 @@ interface DataFormat {
 		return serializer.deserialize(value, type)
 	}
 
-	//region String Data Formats
+	companion object Registry : AbstractComponentRegistry<DataFormat>() {
+		override fun registerDefault() {
+			register(Json)
+			register(Yaml)
+			register(Xml)
+			register(Properties)
+			register(Csv)
+		}
+	}
+
+	//region Data Formats
 	/**
 	 * Json数据格式。
 	 */
@@ -87,8 +96,10 @@ interface DataFormat {
 	 */
 	object Xml : DataFormat {
 		override val fileExtension: String = "xml"
-		override val fileExtensions: Array<String> = arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
-			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul")
+		override val fileExtensions: Array<String> = arrayOf(
+			"xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
+			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul"
+		)
 		override var serializer: XmlSerializer = defaultXmlSerializer
 	}
 
@@ -110,34 +121,4 @@ interface DataFormat {
 		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 	//endregion
-
-	companion object{
-		private val dataFormats = mutableListOf<DataFormat>()
-
-		/**
-		 * 得到已注册的数据格式列表。
-		 */
-		@JvmStatic fun values():List<DataFormat>{
-			return dataFormats
-		}
-
-		/**
-		 * 注册指定的数据格式。
-		 */
-		@JvmStatic fun register(dataFormat: DataFormat){
-			dataFormats.add(dataFormat)
-		}
-
-		init {
-			registerStringDataFormats()
-		}
-
-		private fun registerStringDataFormats() {
-			register(Json)
-			register(Yaml)
-			register(Xml)
-			register(Properties)
-			register(Csv)
-		}
-	}
 }

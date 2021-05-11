@@ -1,9 +1,9 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization
+package icu.windea.breezeframework.serialization
 
-import com.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.extension.*
 import kotlin.test.*
 
 class SerializerTest {

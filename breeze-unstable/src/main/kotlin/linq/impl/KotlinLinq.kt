@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.linq.impl
+package icu.windea.breezeframework.linq.impl
 
-import com.windea.breezeframework.linq.*
+import icu.windea.breezeframework.linq.*
 
 /**基于Kotlin的集合框架的Linq实现。*/
 class KotlinLinq<S, T>(

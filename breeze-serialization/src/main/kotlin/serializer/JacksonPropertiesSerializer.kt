@@ -1,27 +1,23 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
 import com.fasterxml.jackson.dataformat.javaprop.*
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 import java.util.*
 
 /**
- * 由Jackson实现的Properties的序列化器。
+ * 由Jackson委托实现的Properties数据的序列化器。
  *
  * @see com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
  */
- class JacksonPropertiesSerializer : PropertiesSerializer, JacksonSerializer, Configurable<JavaPropsMapper> {
-	val mapper by lazy { JavaPropsMapper() }
-
+ class JacksonPropertiesSerializer(
+	val mapper:JavaPropsMapper = JavaPropsMapper()
+ ) : PropertiesSerializer, JacksonSerializer{
 	init {
 		mapper.findAndRegisterModules()
-	}
-
-	override fun configure(block: JavaPropsMapper.() -> Unit) {
-		mapper.block()
 	}
 
 	override fun <T> serialize(target: T): String {

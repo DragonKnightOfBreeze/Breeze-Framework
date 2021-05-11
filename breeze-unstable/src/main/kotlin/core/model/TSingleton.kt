@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:NotTested
 
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.extension.*
 
 /**泛型单例接口。*/
 @UnstableApi

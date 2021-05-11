@@ -1,16 +1,16 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.bbcode
+package icu.windea.breezeframework.dsl.bbcode
 
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.api.*
-import com.windea.breezeframework.dsl.bbcode.BBCodeDsl.DslConfig.indent
-import com.windea.breezeframework.dsl.DslConfig as IDslConfig
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslElement as IDslElement
-import com.windea.breezeframework.dsl.DslEntry as IDslEntry
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.bbcode.BBCodeDsl.DslConfig.indent
+import icu.windea.breezeframework.dsl.DslConfig as IDslConfig
+import icu.windea.breezeframework.dsl.DslDocument as IDslDocument
+import icu.windea.breezeframework.dsl.DslElement as IDslElement
+import icu.windea.breezeframework.dsl.DslEntry as IDslEntry
 
 interface BBCodeDsl {
 	class DslDocument @PublishedApi internal constructor() : IDslDocument, InlineDslEntry {

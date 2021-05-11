@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("CmdTextDslExtensions")
 
-package com.windea.breezeframework.dsl.cmdtext
+package icu.windea.breezeframework.dsl.cmdtext
 
-import com.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
+import icu.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
 
 /**
  * 开始构建[CmdTextDsl]。

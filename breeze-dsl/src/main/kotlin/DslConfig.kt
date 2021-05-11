@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl
+package icu.windea.breezeframework.dsl
 
 /**
  * DSl配置。

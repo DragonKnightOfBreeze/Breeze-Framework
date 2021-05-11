@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer
+package icu.windea.breezeframework.serializer
 
-import com.windea.breezeframework.serializer.impl.json.*
-import com.windea.breezeframework.serializer.impl.properties.*
-import com.windea.breezeframework.serializer.impl.xml.*
-import com.windea.breezeframework.serializer.impl.yaml.*
+import icu.windea.breezeframework.serializer.impl.json.*
+import icu.windea.breezeframework.serializer.impl.properties.*
+import icu.windea.breezeframework.serializer.impl.xml.*
+import icu.windea.breezeframework.serializer.impl.yaml.*
 
 /**数据格式。*/
 enum class DataFormat(

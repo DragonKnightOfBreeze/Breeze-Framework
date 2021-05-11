@@ -1,23 +1,32 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
-
-import com.windea.breezeframework.core.annotation.*
+package icu.windea.breezeframework.core.component
 
 /**
  * 字符串模式。
  *
  * 字符串模式用于表示字符串符合某种格式或规则。
  */
-@BreezeComponent
-interface StringPattern {
+interface StringPattern : Component {
 	/**
-	 * 判断指定的字符串是否匹配指定的字符串模式。
+	 * 判断指定的字符串是否匹配。
 	 */
 	fun matches(value: String): Boolean
 
-	// Default String Patterns
+	companion object Registry : AbstractComponentRegistry<StringPattern>() {
+		override fun registerDefault() {
+			register(BooleanPattern)
+			register(WildcardBooleanPattern)
+			register(IntPattern)
+			register(NumberPattern)
+			register(AlphaPattern)
+			register(NumericPattern)
+			register(AlphanumericPattern)
+		}
+	}
+
+	//region String Patterns
 	object BooleanPattern : StringPattern {
 		private val values = arrayOf("true", "false")
 
@@ -34,7 +43,7 @@ interface StringPattern {
 		}
 	}
 
-	object IntegerPattern : StringPattern {
+	object IntPattern : StringPattern {
 		private val signs = charArrayOf('+', '-')
 
 		override fun matches(value: String): Boolean {
@@ -60,54 +69,29 @@ interface StringPattern {
 		}
 	}
 
-	object NumericPattern: StringPattern{
-		override fun matches(value : String): Boolean{
+	object AlphaPattern : StringPattern {
+		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetter() }
 		}
 	}
 
-	object AlphaPattern:StringPattern{
+	object NumericPattern : StringPattern {
 		override fun matches(value: String): Boolean {
-			return value.isNotEmpty() &&value.all {it.isDigit()}
+			return value.isNotEmpty() && value.all { it.isDigit() }
 		}
 	}
 
-	object AlphanumericPattern:StringPattern{
+	object AlphanumericPattern : StringPattern {
 		override fun matches(value: String): Boolean {
-			return value.isNotEmpty() && value.all{ it.isLetterOrDigit()}
+			return value.isNotEmpty() && value.all { it.isLetterOrDigit() }
+		}
+	}
+
+	object BlankPattern:StringPattern{
+		override fun matches(value: String): Boolean {
+			return value.isBlank()
 		}
 	}
 	//endregion
-
-	companion object {
-		private val stringPatterns = mutableListOf<StringPattern>()
-
-		/**
-		 * 得到已注册的字符串模式列表。
-		 */
-		@JvmStatic fun values(): List<StringPattern> {
-			return stringPatterns
-		}
-
-		/**
-		 * 注册指定的字符串模式。
-		 */
-		@JvmStatic fun register(letterCase: StringPattern) {
-			stringPatterns += letterCase
-		}
-
-		init {
-			registerDefaultLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
-			register(BooleanPattern)
-			register(WildcardBooleanPattern)
-			register(IntegerPattern)
-			register(NumberPattern)
-			register(NumericPattern)
-			register(AlphaPattern)
-			register(AlphanumericPattern)
-		}
-	}
 }
+

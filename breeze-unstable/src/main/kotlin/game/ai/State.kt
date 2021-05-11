@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.game.ai
+package icu.windea.breezeframework.game.ai
 
 /**状态。*/
 interface State<S> {

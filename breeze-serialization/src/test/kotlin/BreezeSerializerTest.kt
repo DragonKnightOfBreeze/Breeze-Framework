@@ -1,10 +1,10 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization
+package icu.windea.breezeframework.serialization
 
-import com.windea.breezeframework.serialization.serializer.*
-import com.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.serializer.*
+import icu.windea.breezeframework.serialization.extension.*
 import kotlin.system.*
 import kotlin.test.*
 
@@ -22,7 +22,6 @@ class BreezeSerializerTest {
 			)
 		)
 		println(a.serializeBy(BreezeJsonSerializer()))
-		println(a.serializeBy(BreezeJsonSerializer { prettyPrint = true }))
 	}
 
 	//3~10倍 性能差距到底是怎么来的？

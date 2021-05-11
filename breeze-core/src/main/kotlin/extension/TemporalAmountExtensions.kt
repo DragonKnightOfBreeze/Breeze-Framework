@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("TemporalAmountExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.time.*
 

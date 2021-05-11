@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("BBCodeDslExtensions")
 
-package com.windea.breezeframework.dsl.bbcode
+package icu.windea.breezeframework.dsl.bbcode
 
-import com.windea.breezeframework.dsl.bbcode.BBCodeDsl.*
-import com.windea.breezeframework.dsl.bbcode.BBCodeDsl.List
+import icu.windea.breezeframework.dsl.bbcode.BBCodeDsl.*
+import icu.windea.breezeframework.dsl.bbcode.BBCodeDsl.List
 
 /**
  * 开始构建[BBCodeDsl]。

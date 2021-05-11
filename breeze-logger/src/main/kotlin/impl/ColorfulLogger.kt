@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:Suppress("DuplicatedCode")
 
-package com.windea.breezeframework.logger.impl
+package icu.windea.breezeframework.logger.impl
 
-import com.windea.breezeframework.logger.*
+import icu.windea.breezeframework.logger.*
 import java.io.*
 import java.text.*
 import java.util.*

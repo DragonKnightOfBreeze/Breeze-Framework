@@ -1,3 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
-  com.windea.breezeframework.springboot.DataAutoConfiguration,\
-  com.windea.breezeframework.springboot.CoreAutoConfiguration
+  icu.windea.breezeframework.springboot.DataAutoConfiguration,\
+  icu.windea.breezeframework.springboot.CoreAutoConfiguration

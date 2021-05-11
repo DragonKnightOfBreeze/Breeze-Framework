@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.linq
+package icu.windea.breezeframework.linq
 
 /**Linq实现类型。*/
 enum class LinqType {

@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:NotTested
 
-package com.windea.breezeframework.core.model.math
+package icu.windea.breezeframework.core.model.math
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 
 /**包含当前值和总计值的数量。*/
 data class Count @PublishedApi internal constructor(

@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.type
+package icu.windea.breezeframework.core.type
 
 /**
  * 代表有一个没有接收者的代码块。

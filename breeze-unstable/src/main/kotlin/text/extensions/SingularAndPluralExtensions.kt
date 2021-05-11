@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("SingularAndPluralExtensions")
 
-package com.windea.breezeframework.text.extension
+package icu.windea.breezeframework.text.extension
 
 //https://github.com/cesarferreira/kotlin-pluralizer
 

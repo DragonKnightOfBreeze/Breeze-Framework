@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("CollectionExtensions")
 @file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.*
@@ -90,7 +90,7 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> {
 //region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
- * @see com.windea.breezeframework.core.extension.repeat
+ * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun <T> List<T>.times(n: Int): List<T> {
 	return this.repeat(n)
@@ -122,8 +122,6 @@ operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
 //endregion
 
 //region Element Type Extensions
-//虽然不知道为什么，但是的确可以这样做 ヾ(*´▽‘*)ﾉ
-
 /**
  * 得到当前数组的最为适配的元素类型。
  */
@@ -135,14 +133,14 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
 inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
 /**
- * 得到当前映射的最为适配的键类型。
- */
-inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
-
-/**
  * 得到当前序列的最为适配的键类型。
  */
 inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
+
+/**
+ * 得到当前映射的最为适配的键类型。
+ */
+inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
 /**
  * 得到当前映射的最为适配的值类型。
@@ -150,7 +148,7 @@ inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 //endregion
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**
  * 判断当前数组是否不为null，且不为空。
  */
@@ -255,9 +253,8 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, 
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R {
 	return if(this.isEmpty()) this else transform(this)
 }
-//endregion
 
-//region Operation Extensions
+
 //注意：某些具体的实现类的equals方法与这个方法是等效的
 /**
  * 判断两个列表的结构是否相等。即，判断长度、元素、元素顺序是否相等。
@@ -283,52 +280,72 @@ infix fun <T> List<T>.contentDeepEquals(other: List<T>): Boolean {
 /**
  * 判断当前数组中的所有元素是否被另一数组包含。
  */
-infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Array<out T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前数组中的所有元素是否被另一集合包含。
  */
-infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Array<out T>.allIn(other: Iterable<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前集合中的所有元素是否被另一数组包含。
  */
-infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Array<out T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前集合中的所有元素是否被另一集合包含。
  */
-infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean = this.all { it in other }
+infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前序列中的所有元素是否被另一序列包含。
  */
-infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean = this.all { it in other }
+infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean {
+	return this.all { it in other }
+}
 
 /**
  * 判断当前数组中的任意元素是否被另一数组包含。
  */
-infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前数组中的任意元素是否被另一集合包含。
  */
-infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Array<out T>.anyIn(other: Iterable<T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前集合中的任意元素是否被另一数组包含。
  */
-infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Array<out T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前集合中的任意元素是否被另一集合包含。
  */
-infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean = this.any { it in other }
+infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean {
+	return this.any { it in other }
+}
 
 /**
  * 判断当前序列中的任意元素是否被另一序列包含。
  */
-infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean = this.any { it in other }
+infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean {
+	return this.any { it in other }
+}
 
 
 /**
@@ -412,7 +429,9 @@ fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 /**
  * 将指定的键值对放入当前映射中。
  */
-fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) = this.put(pair.first, pair.second)
+fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>): V? {
+	return this.put(pair.first, pair.second)
+}
 
 
 /**
@@ -440,7 +459,6 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
  */
 fun <T> List<T>.repeat(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-
 	return ArrayList<T>(this.size * n).also { list -> repeat(n) { list += this } }
 }
 
@@ -520,7 +538,7 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
  */
 fun <K, V, A : Appendable> Map<K, V>.joinTo(
 	buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null
 ): A {
 	return this.entries.joinTo(buffer, separator, prefix, postfix, limit, truncated, transform)
 }
@@ -535,7 +553,7 @@ fun <K, V, A : Appendable> Map<K, V>.joinTo(
  */
 fun <K, V> Map<K, V>.joinToString(
 	separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null,
+	limit: Int = -1, truncated: CharSequence = "...", transform: ((Map.Entry<K, V>) -> CharSequence)? = null
 ): String {
 	return this.joinTo(StringBuilder(), separator, prefix, postfix, limit, truncated, transform).toString()
 }
@@ -562,14 +580,14 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
  * 映射当前映射中的值，并过滤转化后为null的值。
  */
 inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?): Map<K, R> {
-	return this.mapValuesNotNullTo(LinkedHashMap(), transform)
+	return mapValuesNotNullTo(LinkedHashMap(), transform)
 }
 
 /**
  * 映射当前映射中的值，并过滤转化后为null的值，然后加入指定的映射。
  */
-inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: C, transform: (V) -> R?): C {
-	for((key, value) in this) transform(value)?.let { destination.put(key, it) }
+inline fun <K, V, R : Any, M : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: M, transform: (V) -> R?): M {
+	for((key, value) in this) transform(value)?.let { destination[key] = it }
 	return destination
 }
 
@@ -578,9 +596,15 @@ inline fun <K, V, R : Any, C : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNul
  * 过滤当前映射中值为null的键值对。
  */
 fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
-	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value != null) result[key] = value
-	return result
+	return filterValuesNotNullTo(LinkedHashMap())
+}
+
+/**
+ * 过滤当前映射中值为null的键值对，然后加入指定的映射。
+ */
+fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
+	for((key, value) in this) if(value != null) destination[key] = value
+	return destination
 }
 
 
@@ -758,6 +782,119 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 	}
 	return values as List<T>
 }
+
+
+@PublishedApi
+internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
+	crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get(timeout, timeUnit)
+	}
+	countDownLatch.await(awaitTimeout, timeUnit)
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.submit {
+			action(element)
+			countDownLatch.countDown()
+		}.get(timeout, timeUnit)
+	}
+	countDownLatch.await(awaitTimeout, timeUnit)
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作。
+ *
+ * Performs the given [action] on each entry in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.submit {
+			action(entry)
+			countDownLatch.countDown()
+		}.get()
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each entry in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.submit {
+			action(entry)
+			countDownLatch.countDown()
+		}.get(timeout, timeUnit)
+	}
+	countDownLatch.await(awaitTimeout, timeUnit)
+}
 //endregion
 
 //region Convert Extensions
@@ -779,23 +916,29 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(thi
 
 /**
  * 将当前对象转化为单例列表。
+ *
+ * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空列表。
  */
-fun <T> T.toSingletonList(): List<T> {
-	return Collections.singletonList(this)
+fun <T> T.toSingletonList(orEmpty: Boolean = false): List<T> {
+	return if(orEmpty && this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
 /**
- * 将当前对象转化为单例列表。
+ * 将当前对象转化为单例集。
+ *
+ * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空集。
  */
-fun <T> T.toSingletonSet(): Set<T> {
-	return Collections.singleton(this)
+fun <T> T.toSingletonSet(orEmpty: Boolean = false): Set<T> {
+	return if(orEmpty && this == null) Collections.emptySet() else Collections.singleton(this)
 }
 
 /**
  * 将当前二元素元组转化为单例映射。
+ *
+ * 如果当前二元素元组其中对应的键或值为`null`且参数[orEmpty]为`true`，则会返回空映射。
  */
-fun <K, V> Pair<K, V>.toSingletonMap(): Map<K, V> {
-	return Collections.singletonMap(first, second)
+fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
+	return if(orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
 }
 
 

@@ -1,16 +1,16 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.io
+package icu.windea.breezeframework.serialization.io
 
-import com.windea.breezeframework.serialization.serializer.*
+import icu.windea.breezeframework.serialization.config.*
 import java.lang.reflect.*
 
 /**
  * Json数据的读取器。
  */
-class JsonReader @PublishedApi internal constructor(
-	private val config: BreezeJsonSerializer.Config = BreezeJsonSerializer.Config()
+internal class JsonReader @PublishedApi internal constructor(
+	override val config: JsonConfig = JsonConfig()
 ): DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
@@ -20,3 +20,4 @@ class JsonReader @PublishedApi internal constructor(
 		TODO()
 	}
 }
+

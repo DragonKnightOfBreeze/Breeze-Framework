@@ -1,15 +1,15 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("NumberExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import kotlin.math.*
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -100,9 +100,8 @@ inline fun Float.orNull(): Float? {
 inline fun Double.orNull(): Double? {
 	return if(this == 0.0) null else this
 }
-//endregion
 
-//region Operation Extensions
+
 /**进行一次计算并将结果转化为字节型。*/
 inline fun Byte.exact(block: (Byte) -> Number): Byte {
 	return block(this).toByte()
@@ -135,20 +134,45 @@ inline fun Double.exact(block: (Double) -> Number): Double {
 
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Int.getDigitNumber(index: Int): Int {
+fun Int.getDigitNumber(index: Int,radix:Int = 10): Int {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
-	return this / 10.positivePow(index) % 10
+	return this / radix.positivePow(index) % radix
 }
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Long.getDigitNumber(index: Int): Long {
+fun Long.getDigitNumber(index: Int,radix:Int = 10): Long {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
-	return this / 10.positivePow(index) % 10
+	return this / radix.positivePow(index) % radix
+}
+
+
+/**得到从最低位到最高位的每位数字组成的数组。*/
+fun Int.getDigitNumbers(radix: Int = 10): IntArray {
+	val size = this.toString().length
+	var temp = this
+	val result = IntArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % radix
+		temp /= radix
+	}
+	return result
+}
+
+/**得到从最低位到最高位的每位数字组成的数组。*/
+fun Long.getDigitNumbers(radix: Int = 10): LongArray {
+	val size = this.toString().length
+	var temp = this
+	val result = LongArray(size)
+	for(i in 0 until size) {
+		result[i] = temp % radix
+		temp /= radix
+	}
+	return result
 }
 
 
 /**判断两个数是否近似相等。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
-fun Number?.equalsNearly(other: Number?, precision: Float): Boolean {
+fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 	return when {
 		this == null && other == null -> true
 		this == null || other == null -> false
@@ -199,30 +223,5 @@ inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
 /**将当前整数转化为对应的枚举值。如果转化失败，则转化为null。*/
 inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 	return enumValues<T>().getOrNull(this)
-}
-
-
-/**将当前整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Int.toDigitNumberArray(radix: Int = 10): IntArray {
-	val size = this.toString().length
-	var temp = this
-	val result = IntArray(size)
-	for(i in 0 until size) {
-		result[i] = temp % radix
-		temp /= radix
-	}
-	return result
-}
-
-/**将当前长整数转化为从最低位到最高位的每位数字组成的数组。*/
-fun Long.toDigitNumberArray(radix: Int = 10): LongArray {
-	val size = this.toString().length
-	var temp = this
-	val result = LongArray(size)
-	for(i in 0 until size) {
-		result[i] = temp % radix
-		temp /= radix
-	}
-	return result
 }
 //endregion

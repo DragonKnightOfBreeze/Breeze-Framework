@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MailExtensions")
 
-package com.windea.breezeframework.springboot.extension
+package icu.windea.breezeframework.springboot.extension
 
 import org.springframework.mail.javamail.*
 

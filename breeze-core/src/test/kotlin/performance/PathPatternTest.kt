@@ -1,10 +1,10 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.performance
+package icu.windea.breezeframework.core.performance
 
-import com.windea.breezeframework.core.component.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.extension.*
 import java.util.concurrent.*
 import kotlin.system.*
 import kotlin.test.*

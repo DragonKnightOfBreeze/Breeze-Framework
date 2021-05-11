@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("FlowChartDslExtensions")
 
-package com.windea.breezeframework.dsl.flow
+package icu.windea.breezeframework.dsl.flow
 
-import com.windea.breezeframework.dsl.flow.FlowChartDsl.*
+import icu.windea.breezeframework.dsl.flow.FlowChartDsl.*
 
 /**
  * 开始构建[FlowChartDsl]。

@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.properties
+package icu.windea.breezeframework.serializer.impl.properties
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.mapper.impl.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.mapper.impl.*
+import icu.windea.breezeframework.serializer.*
 import java.lang.reflect.*
 import java.util.*
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper as JacksonPropertiesMapper

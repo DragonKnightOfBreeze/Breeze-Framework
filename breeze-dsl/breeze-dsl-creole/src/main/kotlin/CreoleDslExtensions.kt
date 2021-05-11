@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("CreoleDslExtensions")
 
-package com.windea.breezeframework.dsl.creole
+package icu.windea.breezeframework.dsl.creole
 
-import com.windea.breezeframework.dsl.creole.CreoleDsl.*
-import com.windea.breezeframework.dsl.creole.CreoleDsl.List
+import icu.windea.breezeframework.dsl.creole.CreoleDsl.*
+import icu.windea.breezeframework.dsl.creole.CreoleDsl.List
 
 /**
  * 开始构建[CreoleDsl]。

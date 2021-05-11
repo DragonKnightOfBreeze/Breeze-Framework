@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model.collections
+package icu.windea.breezeframework.core.model.collections
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 
 /**
  * 可修改的树。

@@ -1,10 +1,10 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.extension.*
 import java.net.*
 import java.nio.charset.*
 import java.util.*
@@ -15,8 +15,7 @@ import java.util.*
  * 编码器用于对字符串进行编码和解码，
  */
 @UnstableApi
-@BreezeComponent
-interface Encoder {
+interface Encoder:Component {
 	/**
 	 * 编码指定的字符串，以指定的字符集显示。
 	 */
@@ -27,7 +26,17 @@ interface Encoder {
 	 */
 	fun decode(value: String, charset: Charset = Charsets.UTF_8): String
 
-	//region Default Encoders
+	companion object Registry: AbstractComponentRegistry<Encoder>(){
+		override fun registerDefault() {
+			register(Base64Encoder)
+			register(Base64UrlEncoder)
+			register(Base64MimeEncoder)
+			register(UrlEncoder)
+			register(HexEncoder)
+		}
+	}
+
+	//region Encoders
 	/**
 	 * Base64编码器。
 	 */
@@ -72,11 +81,11 @@ interface Encoder {
 	 */
 	object UrlEncoder : Encoder {
 		override fun encode(value: String, charset: Charset): String {
-			return URLEncoder.encode(value, charset)
+			return URLEncoder.encode(value, charset.name())
 		}
 
 		override fun decode(value: String, charset: Charset): String {
-			return URLDecoder.decode(value, charset)
+			return URLDecoder.decode(value, charset.name())
 		}
 	}
 
@@ -93,34 +102,4 @@ interface Encoder {
 		}
 	}
 	//endregion
-
-	companion object {
-		private val encoders = mutableListOf<Encoder>()
-
-		/**
-		 * 得到已注册的编码器列表。
-		 */
-		@JvmStatic fun values(): List<Encoder> {
-			return encoders
-		}
-
-		/**
-		 *  注册指定的编码器。
-		 */
-		@JvmStatic fun register(encoder: Encoder) {
-			encoders.add(encoder)
-		}
-
-		init {
-			registerDefaultEncoders()
-		}
-
-		private fun registerDefaultEncoders() {
-			register(Base64Encoder)
-			register(Base64UrlEncoder)
-			register(Base64MimeEncoder)
-			register(UrlEncoder)
-			register(HexEncoder)
-		}
-	}
 }

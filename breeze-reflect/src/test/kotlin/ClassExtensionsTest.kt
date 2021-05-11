@@ -1,6 +1,6 @@
-package com.windea.breezeframework.game
+package icu.windea.breezeframework.game
 
-import com.windea.breezeframework.reflect.extension.*
+import icu.windea.breezeframework.reflect.extension.*
 import org.junit.*
 import org.junit.Assert.*
 import java.io.*

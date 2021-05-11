@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("ClassExtensions")
 
-package com.windea.breezeframework.reflect.extension
+package icu.windea.breezeframework.reflect.extension
 
 import java.io.*
 import java.lang.reflect.*

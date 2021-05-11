@@ -1,6 +1,6 @@
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
-import com.windea.breezeframework.core.model.Identifiable.Companion.delegate
+import icu.windea.breezeframework.core.model.Identifiable.Companion.delegate
 import org.junit.*
 
 class IdentifiableTest {

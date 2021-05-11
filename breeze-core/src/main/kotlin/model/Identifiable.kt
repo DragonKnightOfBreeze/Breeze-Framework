@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
 import java.io.*
 
@@ -27,6 +27,10 @@ interface Identifiable<T : Serializable> : Serializable {
 		return id.hashCode()
 	}
 
+	override fun toString(): String{
+		return "${javaClass.name}@${id}"
+	}
+
 	class Delegate<T : Serializable> @PublishedApi internal constructor(
 		override val id: T,
 	) : Identifiable<T> {
@@ -36,6 +40,9 @@ interface Identifiable<T : Serializable> : Serializable {
 	}
 
 	companion object {
-		fun <T : Serializable> delegate(id: T): Delegate<T> = Delegate(id)
+		/**
+		 * 委托实现一个可识别的对象。
+		 */
+		fun <T : Serializable> delegate(id: T): Identifiable<T> = Delegate(id)
 	}
 }

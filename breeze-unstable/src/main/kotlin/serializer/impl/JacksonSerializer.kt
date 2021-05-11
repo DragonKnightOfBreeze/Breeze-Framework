@@ -1,10 +1,10 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl
+package icu.windea.breezeframework.serializer.impl
 
 import com.fasterxml.jackson.databind.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.serializer.*
 
 /**
  * 由Jackson实现的序列化器。

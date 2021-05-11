@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("JpaExtensions")
 
-package com.windea.breezeframework.springboot.extension
+package icu.windea.breezeframework.springboot.extension
 
 import com.querydsl.core.types.*
 import org.springframework.data.jpa.domain.*

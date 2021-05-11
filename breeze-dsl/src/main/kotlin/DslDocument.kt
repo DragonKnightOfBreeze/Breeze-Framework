@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl
+package icu.windea.breezeframework.dsl
 
-import com.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.api.*
 
 /**
  * DSL文档。DSL定义结构的顶级节点。

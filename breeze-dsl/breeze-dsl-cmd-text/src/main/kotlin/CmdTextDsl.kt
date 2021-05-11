@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.cmdtext
+package icu.windea.breezeframework.dsl.cmdtext
 
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.dsl.DslDocument as IDslDocument
-import com.windea.breezeframework.dsl.DslElement as IDslElement
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.dsl.DslDocument as IDslDocument
+import icu.windea.breezeframework.dsl.DslElement as IDslElement
 
 @CmdTextDslMarker
 interface CmdTextDsl {

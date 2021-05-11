@@ -1,10 +1,10 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("ResultExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 //需要在每个内联方法上抑制这个编译错误
 

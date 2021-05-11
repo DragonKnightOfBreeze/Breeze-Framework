@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("CloneableExtensions")
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 
 //由于java.lang.Object的clone方法默认是受保护的，不能直接在扩展方法中访问

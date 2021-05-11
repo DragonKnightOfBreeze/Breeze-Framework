@@ -1,15 +1,15 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("StringExtensions")
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.*
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.type.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -19,6 +19,7 @@ import java.time.*
 import java.time.format.*
 import java.time.format.DateTimeFormatter.*
 import java.util.*
+import java.util.concurrent.*
 import kotlin.contracts.*
 
 //org.apache.commons.lang3.StringUtils
@@ -27,7 +28,7 @@ import kotlin.contracts.*
 //region Operator Override Extensions
 /**
  * 移除当前字符串中的指定子字符串。
- * @see com.windea.breezeframework.core.extension.remove
+ * @see icu.windea.breezeframework.core.extension.remove
  */
 operator fun String.minus(other: Any?): String {
 	return if(other == null) this else this.remove(other.toString())
@@ -66,7 +67,7 @@ operator fun String.get(startIndex: Int, endIndex: Int): String {
 }
 //endregion
 
-//region Optional Operation Extensions
+//region Common Extensions
 /**
  * 如果当前字符串不为空，则返回本身，否则返回null。
  */
@@ -138,9 +139,8 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 	}
 	return this != null && !this.isBlank()
 }
-//endregion
 
-//region Operation Extensions
+
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
@@ -225,8 +225,8 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `true` if this char sequence contains only Unicode digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.NumericPattern)", ReplaceWith("this.matches(StringPattern.NumericPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+@Deprecated("Use String.matchesBy(StringPattern.NumericPattern)", ReplaceWith("this.matchesBy(StringPattern.NumericPattern)",
+		"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isNumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetter() }
 }
@@ -235,8 +235,8 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.AlphaPattern)", ReplaceWith("this.matches(StringPattern.AlphaPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+@Deprecated("Use String.matchesBy(StringPattern.AlphaPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphaPattern)",
+	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlpha(): Boolean {
 	return this.isNotEmpty() && this.all { it.isDigit() }
 }
@@ -245,8 +245,8 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters or digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matches(StringPattern.AlphanumericPattern)", ReplaceWith("this.matches(StringPattern.AlphanumericPattern)",
-	"com.windea.breezeframework.core.component.StringPattern"))
+@Deprecated("Use String.matchesBy(StringPattern.AlphanumericPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphanumericPattern)",
+	"icu.windea.breezeframework.core.component.StringPattern"))
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
 }
@@ -435,7 +435,11 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
  * 去除指定字符。
  */
 fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
-	return this.replace(oldChar.toString(), "", ignoreCase)
+	return buildString {
+		for(c in this){
+			if(!c.equals(oldChar,ignoreCase)) append(c)
+		}
+	}
 }
 
 /**
@@ -445,12 +449,12 @@ fun String.remove(oldValue: String, ignoreCase: Boolean = false): String {
 	return this.replace(oldValue, "", ignoreCase)
 }
 
-/**
- * 去除指定正则表达式的字符串。
- */
-fun String.remove(regex: Regex): String {
-	return this.replace(regex, "")
-}
+///**
+// * 去除指定正则表达式的字符串。
+// */
+//fun String.remove(regex: Regex): String {
+//	return this.replace(regex, "")
+//}
 
 
 /**
@@ -829,28 +833,33 @@ fun String.alignCenter(padChar: Char = ' '): String {
 
 
 /**
- * 根据指定的限定长度和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
+ * 根据指定的限定长度、偏移和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
+ * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateStart(limit: Int, truncated: CharSequence = "..."): String {
-	return if(length <= limit) this else "$truncated${this.takeLast(limit)}"
+fun String.truncateStart(limit: Int,offset:Int=0, truncated: CharSequence = "..."): String {
+	require(limit > 0) {"Limit must be non-negative."}
+	require(offset > 0) {"Limit must be non-negative."}
+	return when{
+		limit == 0 -> ""
+		limit >= length -> this
+		offset == 0 -> "$truncated${this.takeLast(limit)}"
+		else -> "${this.take(offset)}$truncated${this.takeLast(limit-offset)}"
+	}
 }
 
 /**
- * 根据指定的限定长度和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
+ * 根据指定的限定长度、偏移和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
+ * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateEnd(limit: Int, truncated: CharSequence = "..."): String {
-	return if(length <= limit) this else "${this.take(limit)}$truncated"
-}
-
-/**
- * 根据指定的限定长度、偏移和截断符，截断当前字符串的中间部分。如果未到限定长度，则返回自身。
- * 截断符默认为`"..."`。
- */
-fun String.truncateEnd(limit: Int, offset: Int, truncated: CharSequence = "..."): String {
-	require(limit > offset) { "Limit must be greater than offset." }
-	return if(length <= limit) this else "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
+fun String.truncateEnd(limit: Int,offset:Int = 0, truncated: CharSequence = "..."): String {
+	require(limit > 0) {"Limit must be non-negative."}
+	require(offset > 0) {"Limit must be non-negative."}
+	return when{
+		limit == 0 -> ""
+		limit >= length -> this
+		offset == 0 -> "${this.take(limit)}$truncated"
+		else -> "${this.take(limit-offset)}$truncated${this.takeLast(offset)}"
+	}
 }
 
 
@@ -1068,7 +1077,7 @@ fun String.toFile(): File {
  * 将当前字符串转化为路径。
  */
 fun String.toPath(): Path {
-	return Path.of(this)
+	return File(this).toPath()
 }
 
 /**
@@ -1103,7 +1112,34 @@ fun String.toCharsetOrNull(): Charset? {
 
 
 /**
- * 将当前字符串转化为时区。如果转化失败， 则抛出异常。
+ * 将当前字符串转化为类型。如果转化失败，则抛出异常。
+ */
+fun String.toClass(): Class<*> {
+	return Class.forName(this)
+}
+
+/**
+ * 将当前字符串转化为类型。如果转化失败，则返回null。
+ */
+fun String.toClassOrNull(): Class<*>? {
+	return runCatching { Class.forName(this) }.getOrNull()
+}
+
+
+/**
+ * 将当前字符串转化为语言区域。如果转化失败，则抛出异常。
+ */
+fun String.toLocale():Locale{
+	val strings = this.split('_')
+	val language = strings.getOrNull(0)?:""
+	val region = strings.getOrNull(1)?:""
+	val variant = strings.getOrNull(2)?:""
+	return Locale(language,region,variant)
+}
+
+
+/**
+ * 将当前字符串转化为时区。如果转化失败，则抛出异常。
  */
 fun String.toTimeZone(): TimeZone {
 	val timeZone = TimeZone.getTimeZone(this)
@@ -1124,35 +1160,31 @@ fun String.toTimeZoneOrNull(): TimeZone? {
 	return timeZone
 }
 
-
-/**
- * 将当前字符串转化为类型。如果转化失败，则抛出异常。
- */
-fun String.toClass(): Class<*> {
-	return Class.forName(this)
-}
-
-/**
- * 将当前字符串转化为类型。如果转化失败，则返回null。
- */
-fun String.toClassOrNull(): Class<*>? {
-	return runCatching { Class.forName(this) }.getOrNull()
-}
-
-
 /**
  * 将当前字符串转化为日期。
  */
 @JvmOverloads
-inline fun String.toDate(format: String = "yyyy-MM-dd HH:mm:ss"): Date {
-	return SimpleDateFormat(format).parse(this)
+fun String.toDate(format: String,locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
+	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
+		ThreadLocal.withInitial {
+			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
+		}
+	}.get()
+	return dateFormat.parse(this)
+}
+
+/**
+ * 将当前字符串转化为日期。
+ */
+fun String.toDate(dateFormat:DateFormat):Date{
+	return dateFormat.parse(this)
 }
 
 /**
  * 将当前字符串转化为本地日期。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate {
+fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate {
 	return LocalDate.parse(this, formatter)
 }
 
@@ -1160,7 +1192,7 @@ inline fun CharSequence.toLocalDate(formatter: DateTimeFormatter = ISO_LOCAL_DAT
  * 将当前字符串转化为本地日期时间。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime {
+fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime {
 	return LocalDateTime.parse(this, formatter)
 }
 
@@ -1168,28 +1200,28 @@ inline fun CharSequence.toLocalDateTime(formatter: DateTimeFormatter = ISO_LOCAL
  * 将当前字符串转化为本地时间。
  */
 @JvmOverloads
-inline fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
+fun CharSequence.toLocalTime(formatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalDateTime {
 	return LocalDateTime.parse(this, formatter)
 }
 
 /**
  * 将当前字符串转化为时长。
  */
-inline fun CharSequence.toDuration(): Duration {
+fun CharSequence.toDuration(): Duration {
 	return Duration.parse(this)
 }
 
 /**
  * 将当前字符串转化为时期。
  */
-inline fun CharSequence.toPeriod(): Period {
+fun CharSequence.toPeriod(): Period {
 	return Period.parse(this)
 }
 
 /**
  * 将当前字符串转化为瞬时。
  */
-inline fun CharSequence.toInstant(): Instant {
+fun CharSequence.toInstant(): Instant {
 	return Instant.parse(this)
 }
 
@@ -1199,7 +1231,7 @@ inline fun CharSequence.toInstant(): Instant {
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColor(): Color {
+fun String.toColor(): Color {
 	return Color.parse(this)
 }
 
@@ -1208,7 +1240,7 @@ inline fun String.toColor(): Color {
  *
  * 允许的格式：`red`，`#ffffff`，`rgb(0,0,0)`，`rgba(0,0,0,255)`
  */
-inline fun String.toColorOrNull(): Color? {
+fun String.toColorOrNull(): Color? {
 	return Color.parseOrNull(this)
 }
 
@@ -1225,7 +1257,7 @@ internal fun String.toQueryParams(): Map<String, List<String>> {
  * 将当前字符串解码为base64格式的字节数组。
  */
 @Deprecated("Use String.decodeBy(Encoder.Base64Encoder)",ReplaceWith("this.decodeBy(Encoder.Base64Encoder)",
-	"com.windea.breezeframework.core.component.Encoder"))
+	"icu.windea.breezeframework.core.component.Encoder"))
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
@@ -1235,7 +1267,7 @@ fun String.decodeToBase64ByteArray(): ByteArray {
 /**
  * 将当前字符串转为内联文本。
  *
- * @see com.windea.breezeframework.core.extension.trimWrap
+ * @see icu.windea.breezeframework.core.extension.trimWrap
  */
 inline fun String.inline(): String = trimWrap()
 
@@ -1246,13 +1278,15 @@ inline fun String.inline(): String = trimWrap()
  */
 inline fun String.multiline(): String = trimIndent()
 
-private val trimWrapRegex = """\s*\R\s*""".toRegex()
-
 /**
- * 去除当前字符串中的所有换行符以及换行符周围的空白。
+ * 去除当前字符串中的所有换行符。
  */
 fun String.trimWrap(): String {
-	return this.remove(trimWrapRegex)
+	return buildString {
+		for(c in this) {
+			if(c != '\r' && c != '\n') append(c)
+		}
+	}
 }
 
 /**

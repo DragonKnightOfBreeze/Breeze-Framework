@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MermaidPieChartDslExtensions")
 
-package com.windea.breezeframework.dsl.mermaid.piechart
+package icu.windea.breezeframework.dsl.mermaid.piechart
 
-import com.windea.breezeframework.dsl.mermaid.piechart.MermaidPieChartDsl.*
+import icu.windea.breezeframework.dsl.mermaid.piechart.MermaidPieChartDsl.*
 
 /**
  * 开始构建[MermaidPieChartDsl]。

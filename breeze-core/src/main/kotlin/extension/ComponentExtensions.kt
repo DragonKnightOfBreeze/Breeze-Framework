@@ -1,51 +1,31 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("ComponentExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.component.*
 import java.nio.charset.*
 
 //region Converter Extensions
 /**
- * 将当前对象转化为指定类型。如果转换失败，则抛出异常。转化后的对象是基于一般转化逻辑得到的新对象。
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则抛出异常。
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convert(): T {
-	return if(this is T) this else Converter.convert(this)
+inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
+	return Converter.convert(this, params)
 }
 
 /**
- * 将当前对象转化为指定类型。如果转换失败，则返回null。转化后的对象是基于一般转化逻辑得到的新对象。
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则返回null。
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convertOrNull(): T? {
-	return if(this is T) this else Converter.convertOrNull(this)
-}
-//endregion
-
-//region Escaper Extensions
-/**
- * 根据指定的转义器，转义当前字符串。
- *
- * @see Escaper
- */
-fun String.escapeBy(escaper: Escaper): String {
-	return escaper.escape(this)
-}
-
-/**
- * 根据指定的转义器，反转义当前字符串。
- *
- * @see Escaper
- */
-fun String.unescapeBy(escaper: Escaper): String {
-	return escaper.unescape(this)
+inline fun <reified T> Any?.convertOrNull(params: Map<String, Any?> = emptyMap()): T? {
+	return Converter.convertOrNull(this, params)
 }
 //endregion
 
@@ -91,6 +71,239 @@ fun ByteArray.encryptBy(encrypter: Encrypter, secret: ByteArray? = null): ByteAr
 @UnstableApi
 fun ByteArray.decryptBy(encrypter: Encrypter, secret: ByteArray? = null): ByteArray {
 	return encrypter.decrypt(this, secret)
+}
+//endregion
+
+//region Escaper Extensions
+/**
+ * 根据指定的转义器，转义当前字符串。
+ *
+ * @see Escaper
+ */
+fun String.escapeBy(escaper: Escaper): String {
+	return escaper.escape(this)
+}
+
+/**
+ * 根据指定的转义器，反转义当前字符串。
+ *
+ * @see Escaper
+ */
+fun String.unescapeBy(escaper: Escaper): String {
+	return escaper.unescape(this)
+}
+//endregion
+/**
+ * 生成指定类型的默认值。
+ */
+inline fun <reified T:Any> defaultValue(params: Map<String, Any?> = emptyMap()):T{
+	return DefaultGenerator.generate(params)
+}
+
+//region Random Generator Extensions
+/**
+ * 生成指定类型的随机值。
+ */
+inline fun <reified T : Any> randomValue(params: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(params)
+}
+//endregion
+
+//region StringPattern Extensions
+/**
+ * 判断指定的字符串是否匹配指定的字符串模式。
+ *
+ * @see StringPattern
+ */
+fun String.matchesBy(stringPattern: StringPattern): Boolean {
+	return stringPattern.matches(this)
+}
+//endregion
+
+//region PathPattern Extensions
+/**
+ * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun String.matchesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Boolean {
+	return pathPattern.matches(this, path)
+}
+
+/**
+ * 根据指定的路径类型，解析路径变量。如果路径不匹配，则返回空结果。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun String.resolveVariablesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Map<String, String> {
+	return pathPattern.resolveVariables(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，返回查询结果列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
+ * 如果指定路径为空路径，则目标返回查询对象的单例列表。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
+	return pathPattern.query(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者抛出异常。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者抛出异常。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者抛出异常。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
+	return pathPattern.get(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
+	return pathPattern.getOrNull(this, path)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.getOrDefaultBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: T): T {
+	return pathPattern.getOrDefault(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Array<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> List<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
+}
+
+/**
+ * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回默认值。
+ * 如果指定路径为空路径，则目标返回查询对象本身。
+ * 默认使用标准路径[PathPattern.StandardPath]。
+ *
+ * @see PathPattern
+ */
+fun <T> Map<*, *>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
+	return pathPattern.getOrElse(this, path, defaultValue)
 }
 //endregion
 
@@ -175,174 +388,5 @@ fun String.switchCaseBy(sourceLetterCase: LetterCase, targetLetterCase: LetterCa
 fun String.switchCaseBy(targetLetterCase: LetterCase): String {
 	val sourceLetterCase = inferCase() ?: throw IllegalArgumentException("Cannot infer letter case for string '$this'.")
 	return splitBy(sourceLetterCase).joinToStringBy(targetLetterCase)
-}
-//endregion
-
-//region StringPattern Extensions
-/**
- * 判断指定的字符串是否匹配指定的字符串模式。
- *
- * @see StringPattern
- */
-fun String.matchesBy(stringPattern:StringPattern):Boolean{
-	return stringPattern.matches(this)
-}
-//endregion
-
-//region PathPattern Extensions
-/**
- * 根据指定的路径类型，判断当前字符串是否匹配指定的路径。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun String.matchesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Boolean {
-	return pathPattern.matches(this, path)
-}
-
-/**
- * 根据指定的路径类型，解析路径变量。如果路径不匹配，则返回空结果。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun String.resolveVariablesBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): Map<String, String> {
-	return pathPattern.resolveVariables(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Array<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
-	return pathPattern.query(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> List<*>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
-	return pathPattern.query(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，返回查询结果列表。
- * 如果指定路径为空路径，则目标返回查询对象的单例列表。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Map<*, *>.queryBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): List<T> {
-	return pathPattern.query(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Array<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
-	return pathPattern.get(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> List<*>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
-	return pathPattern.get(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者抛出异常。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Map<*, *>.getBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T {
-	return pathPattern.get(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Array<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
-	return pathPattern.getOrNull(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> List<*>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
-	return pathPattern.getOrNull(this, path)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Map<*, *>.getOrNullBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath): T? {
-	return pathPattern.getOrNull(this, path)
-}
-
-
-/**
- * 根据指定路径和指定路径类型查询当前数组，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Array<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
-	return pathPattern.getOrElse(this, path, defaultValue)
-}
-
-/**
- * 根据指定路径和指定路径类型查询当前列表，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> List<*>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
-	return pathPattern.getOrElse(this, path, defaultValue)
-}
-
-/**
- * 根据指定路径和指定路径类型递归查询当前映射，得到首个匹配的值，或者返回null。
- * 如果指定路径为空路径，则目标返回查询对象本身。
- * 默认使用标准路径[PathPattern.StandardPath]。
- *
- * @see PathPattern
- */
-fun <T> Map<*, *>.getOrElseBy(path: String, pathPattern: PathPattern = PathPattern.StandardPath, defaultValue: () -> T): T {
-	return pathPattern.getOrElse(this, path, defaultValue)
 }
 //endregion

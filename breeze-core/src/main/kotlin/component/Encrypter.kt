@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 import java.security.*
 import javax.crypto.*
 import javax.crypto.spec.*
@@ -14,8 +14,7 @@ import javax.crypto.spec.*
  * 加密器用于根据指定的加密算法，对字符串进行加密和解密，某些加密算法可能不支持解密。
  */
 @UnstableApi
-@BreezeComponent
-interface Encrypter {
+interface Encrypter:Component {
 	/**
 	 * 加密指定的字节数组。
 	 */
@@ -26,7 +25,20 @@ interface Encrypter {
 	 */
 	fun decrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
 
-	//region Default Encrypters
+	companion object Registry:AbstractComponentRegistry<Encrypter>(){
+		override fun registerDefault() {
+			register(DesEncrypter)
+			register(AesEncrypter)
+			register(Md5Encrypter)
+			register(Sha1Encrypter)
+			register(Sha256Encrypter)
+			register(Sha512Encrypter)
+			register(Sha3256Encrypter)
+			register(Sha3512Encrypter)
+		}
+	}
+
+	//region Encrypters
 	/**
 	 * 基于密码器的加密器。支持解密。需要指定密钥。
 	 */
@@ -137,37 +149,4 @@ interface Encrypter {
 
 	//TODO 数字签名
 	//endregion
-
-	companion object {
-		private val encrypters = mutableListOf<Encrypter>()
-
-		/**
-		 * 得到已注册的加密器列表。
-		 */
-		@JvmStatic fun values(): MutableList<Encrypter> {
-			return encrypters
-		}
-
-		/**
-		 * 注册指定的加密器。
-		 */
-		@JvmStatic fun register(encrypter: Encrypter) {
-			encrypters.add(encrypter)
-		}
-
-		init {
-			registerDefaultEncrypters()
-		}
-
-		private fun registerDefaultEncrypters() {
-			register(DesEncrypter)
-			register(AesEncrypter)
-			register(Md5Encrypter)
-			register(Sha1Encrypter)
-			register(Sha256Encrypter)
-			register(Sha512Encrypter)
-			register(Sha3256Encrypter)
-			register(Sha3512Encrypter)
-		}
-	}
 }

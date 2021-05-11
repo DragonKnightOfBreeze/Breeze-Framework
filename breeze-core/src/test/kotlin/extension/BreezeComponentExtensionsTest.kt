@@ -1,9 +1,9 @@
 // Copyright (c) 2019-2020 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.component.*
 import kotlin.test.*
 
 class BreezeComponentExtensionsTest {
@@ -17,11 +17,14 @@ class BreezeComponentExtensionsTest {
 
 	@Test
 	fun escapeByTest() {
+		println("hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
 		assertEquals("hello\\tworld\\n", "hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
 	}
 
 	@Test
 	fun unescapeByTest() {
+		println("\\\\t".escapeBy(Escaper.KotlinEscaper))
+		println("\\\\t".unescapeBy(Escaper.KotlinEscaper))
 		assertEquals("hello\tworld\n", "hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
 	}
 

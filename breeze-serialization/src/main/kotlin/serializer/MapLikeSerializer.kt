@@ -1,10 +1,10 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.reflect.extension.*
+import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.reflect.extension.*
 import java.lang.reflect.*
 import kotlin.jvm.internal.*
 import kotlin.reflect.*
@@ -14,7 +14,6 @@ import kotlin.reflect.*
  *
  * 用于类映射对象和映射之间的相互转化。
  */
-@BreezeComponent
 interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 	/**
 	 * 默认的类映射对象的序列化器。
@@ -42,7 +41,7 @@ interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 				val result = type.getConstructor().newInstance()
 				//然后尝试根据名字对所有非final的字段赋值
 				for((n, v) in value) {
-					type.getDeclaredField(n).apply { trySetAccessible() }.set(result, v)
+					type.getDeclaredField(n).apply { runCatching { isAccessible = true } }.set(result, v)
 				}
 				result
 			}.getOrElse {
@@ -54,7 +53,7 @@ interface MapLikeSerializer : Serializer<Map<String, Any?>> {
 				}
 				//然后再尝试对剩下的所有非final的字段赋值
 				for((n, v) in filteredMap) {
-					type.getDeclaredField(n).apply { trySetAccessible() }.set(result, v)
+					type.getDeclaredField(n).apply { runCatching { isAccessible = true } }.set(result, v)
 				}
 				return result as T
 			}

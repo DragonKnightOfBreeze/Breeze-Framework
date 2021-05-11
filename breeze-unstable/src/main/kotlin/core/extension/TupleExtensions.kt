@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.model.*
-import com.windea.breezeframework.core.type.*
+import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.type.*
 
 /**将浮点数二元素元组转化为二维向量。*/
 inline fun TypedTuple2<Float>.toVector2(): Vector2 = Vector2(first, second)

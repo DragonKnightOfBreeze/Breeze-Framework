@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 
 //注意：这里不要使用String.replace(regex, replacement)方法，因为replacement中的"\Q"会变成"Q"
 

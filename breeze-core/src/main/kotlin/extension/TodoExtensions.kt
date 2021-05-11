@@ -1,12 +1,12 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("TodoExtensions")
 @file:Suppress("NOTHING_TO_INLINE", "FunctionName")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 
 /**
  * 方法推迟实现时使用到的错误。这个错误不会在对应的TODO方法中被抛出。

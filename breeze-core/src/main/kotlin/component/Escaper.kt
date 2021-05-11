@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.*
 
 /**
  * 转义器。
@@ -12,8 +12,7 @@ import com.windea.breezeframework.core.annotation.*
  *
  * 注意：不考虑转义特殊的Unicode字符。
  */
-@BreezeComponent
-interface Escaper {
+interface Escaper : Component {
 	/**
 	 * 转义指定的字符串。
 	 */
@@ -24,10 +23,28 @@ interface Escaper {
 	 */
 	fun unescape(value: String): String
 
-	//region Default Escapers
+	companion object Registry : AbstractComponentRegistry<Escaper>() {
+		override fun registerDefault() {
+			register(KotlinEscaper)
+			register(JavaEscaper)
+			register(JavaScriptEscaper)
+			register(JsonEscaper)
+			register(XmlEscaper)
+			register(XmlAttributeEscaper)
+			register(XmlContentEscaper)
+			register(HtmlEscaper)
+
+			register(DefaultLineBreakEscaper)
+			register(HtmlLineBreakEscaper)
+		}
+	}
+
+	//region Escapers
 	abstract class AbstractEscaper : Escaper {
 		protected abstract val escapeChars: CharArray
 		protected abstract val escapedStrings: Array<String>
+
+		protected val escapeBackSlash = true
 
 		override fun escape(value: String): String {
 			//这里直接遍历字符数组以提高性能
@@ -35,7 +52,11 @@ interface Escaper {
 				val chars = value.toCharArray()
 				for(char in chars) {
 					val index = escapeChars.indexOf(char)
-					if(index == -1) append(char) else append(escapedStrings[index])
+					when {
+						index != -1 -> append(escapedStrings[index])
+						escapeBackSlash && char == '\\' -> append("\\\\")
+						else -> append(char)
+					}
 				}
 			}
 		}
@@ -43,7 +64,9 @@ interface Escaper {
 		@NotOptimized
 		override fun unescape(value: String): String {
 			var result = value
+			if(escapeBackSlash) result = result.replace("\\\\","\\")
 			val size = escapeChars.size
+			//TODO 需要顺序替换
 			for(i in 0 until size) {
 				result = result.replace(escapedStrings[i], escapeChars[i].toString())
 			}
@@ -52,9 +75,14 @@ interface Escaper {
 	}
 
 	/**
+	 * 特定语言的转义器。
+	 */
+	interface LanguageEscaper : Escaper
+
+	/**
 	 * Kotlin字符串的转义器。
 	 */
-	object KotlinEscaper : AbstractEscaper() {
+	object KotlinEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"', '\$')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"", "\\\$")
 	}
@@ -62,7 +90,7 @@ interface Escaper {
 	/**
 	 * Java的转义器。
 	 */
-	object JavaEscaper : AbstractEscaper() {
+	object JavaEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\\b", "\\'", "\\\"")
 	}
@@ -70,7 +98,7 @@ interface Escaper {
 	/**
 	 * JavaScript的转义器。
 	 */
-	object JavaScriptEscaper : AbstractEscaper() {
+	object JavaScriptEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\n', '\r', '\t', '\b', '\'', '\"')
 		override val escapedStrings = arrayOf("\\n", "\\r", "\\t", "\b", "\\'", "\\\"")
 	}
@@ -78,7 +106,7 @@ interface Escaper {
 	/**
 	 * Json的转义器。
 	 */
-	object JsonEscaper : AbstractEscaper() {
+	object JsonEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('\t', '\b', '\n', '\r', '\"')
 		override val escapedStrings = arrayOf("\\t", "\\b", "\\n", "\\r", "\\\"")
 	}
@@ -86,7 +114,7 @@ interface Escaper {
 	/**
 	 * Xml的转义器。
 	 */
-	object XmlEscaper : AbstractEscaper() {
+	object XmlEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
@@ -94,7 +122,7 @@ interface Escaper {
 	/**
 	 * Xml属性的转义器。
 	 */
-	object XmlAttributeEscaper : AbstractEscaper() {
+	object XmlAttributeEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"', '\n', '\r', '\t')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;", "&#xA;", "&#xD", "&#x9")
 	}
@@ -102,7 +130,7 @@ interface Escaper {
 	/**
 	 * Xml内容的转义器。
 	 */
-	object XmlContentEscaper : AbstractEscaper() {
+	object XmlContentEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "amp;")
 	}
@@ -110,19 +138,22 @@ interface Escaper {
 	/**
 	 * Html的转义器。
 	 */
-	object HtmlEscaper : AbstractEscaper() {
+	object HtmlEscaper : AbstractEscaper(), LanguageEscaper {
 		override val escapeChars = charArrayOf('<', '>', '&', '\'', '\"')
 		override val escapedStrings = arrayOf("&lt;", "&gt;", "&amp;", "&apos;", "&quot;")
 	}
-	//endregion
 
-	//region Line Break Escapers
 	/**
 	 * 换行转义器。
+	 */
+	interface LineBreakEscaper
+
+	/**
+	 * 默认换行转义器。
 	 *
 	 * 转义换行符`\n`为`\\n`。
 	 */
-	object LineBreakEscaper : Escaper {
+	object DefaultLineBreakEscaper : Escaper, LineBreakEscaper {
 		override fun escape(value: String) = value.replace("\n", "\\n")
 		override fun unescape(value: String) = value.replace("\\n", "\n")
 	}
@@ -132,49 +163,10 @@ interface Escaper {
 	 *
 	 * 转义换行符`\n`为`<br>`。
 	 */
-	object HtmlLineBreakEscaper : Escaper {
+	object HtmlLineBreakEscaper : Escaper, LineBreakEscaper {
 		private const val escapedTag = "<br>"
 		override fun escape(value: String) = value.replace("\n", escapedTag)
 		override fun unescape(value: String) = value.replace(escapedTag, "\n", true)
 	}
 	//endregion
-
-	companion object {
-		private val escapers = mutableListOf<Escaper>()
-
-		/**
-		 * 得到已注册的转义器列表。
-		 */
-		@JvmStatic fun values(): List<Escaper> {
-			return escapers
-		}
-
-		/**
-		 * 注册指定的转义器。
-		 */
-		@JvmStatic fun register(escaper: Escaper) {
-			escapers.add(escaper)
-		}
-
-		init {
-			registerDefaultEscapers()
-			registerLineBreakEscapers()
-		}
-
-		private fun registerDefaultEscapers() {
-			register(KotlinEscaper)
-			register(JavaEscaper)
-			register(JavaScriptEscaper)
-			register(JsonEscaper)
-			register(XmlEscaper)
-			register(XmlAttributeEscaper)
-			register(XmlContentEscaper)
-			register(HtmlEscaper)
-		}
-
-		private fun registerLineBreakEscapers() {
-			register(LineBreakEscaper)
-			register(HtmlLineBreakEscaper)
-		}
-	}
 }

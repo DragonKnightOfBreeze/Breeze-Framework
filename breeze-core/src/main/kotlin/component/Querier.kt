@@ -1,10 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 import java.lang.reflect.*
 
 /**
@@ -13,8 +12,7 @@ import java.lang.reflect.*
  * 查询器用于根据指定类型的查询对象，查询目标对象。
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
-@BreezeComponent
-interface Querier<T : Any, R> {
+interface Querier<T : Any, R> : Component {
 	/**
 	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则抛出异常。
 	 */
@@ -27,7 +25,37 @@ interface Querier<T : Any, R> {
 		return runCatching { query(value, queryObject) }.getOrNull()
 	}
 
-	//region Default Queriers
+	/**
+	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则返回默认值。
+	 */
+	fun queryOrDefault(value: Any, queryObject: T, defaultValue: R): R? {
+		return queryOrNull(value, queryObject) ?: defaultValue
+	}
+
+	/**
+	 * 根据指定类型的查询对象，查询查询对象。如果查询失败，则返回默认值。
+	 */
+	fun queryOrElse(value: Any, queryObject: T, defaultValue: (Any, T) -> R): R? {
+		return queryOrNull(value, queryObject) ?: defaultValue(value, queryObject)
+	}
+
+	companion object Registry : AbstractComponentRegistry<Querier<*, *>>() {
+		override fun registerDefault() {
+			register(ResultsQuerier)
+			register(FilterableResultsQuerier)
+			register(FirstResultQuerier)
+			register(LastResultQuerier)
+			register(StringQuerier)
+			register(RegexQuerier)
+			register(IndexQuerier)
+			register(IndexRangeQuerier)
+
+			register(ReflectionQuerier)
+			register(ReflectionMemberQuerier)
+		}
+	}
+
+	//region Queriers
 	/**
 	 * 查询所有结果的查询器。
 	 *
@@ -67,7 +95,10 @@ interface Querier<T : Any, R> {
 					else -> throw UnsupportedOperationException("Invalid for query ${value.javaClass.simpleName} by query filterable results.")
 				}
 			} catch(e: Exception) {
-				throw IllegalArgumentException("Cannot query '${value.javaClass.simpleName}' by query filterable results.", e)
+				throw IllegalArgumentException(
+					"Cannot query '${value.javaClass.simpleName}' by query filterable results.",
+					e
+				)
 			}
 		}
 	}
@@ -181,7 +212,8 @@ interface Querier<T : Any, R> {
 			return try {
 				when(value) {
 					//忽略数组、列表、序列等类型的查询对象
-					is Map<*, *> -> value.cast<Map<String, Any?>>().filterKeys { it.matches(queryObject) }.values.toList()
+					is Map<*, *> -> value.cast<Map<String, Any?>>()
+						.filterKeys { it.matches(queryObject) }.values.toList()
 					else -> throw UnsupportedOperationException("Invalid regex '$queryObject' for query ${value.javaClass.simpleName}.")
 				}
 			} catch(e: Exception) {
@@ -231,9 +263,7 @@ interface Querier<T : Any, R> {
 			}
 		}
 	}
-	//endregion
 
-	//region Reflection Queriers
 	/**
 	 * 基于字符串，通过反射查询查询对象的字段和属性的值的查询器。
 	 */
@@ -242,9 +272,9 @@ interface Querier<T : Any, R> {
 			try {
 				val targetType = value.javaClass
 				val field: Field? = runCatching { targetType.getDeclaredField(queryObject) }.getOrNull()
-				if(field != null) return field.apply { trySetAccessible() }.get(value)
+				if(field != null) return field.apply { runCatching { isAccessible = true } }.get(value)
 				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(queryObject)) }.getOrNull()
-				if(getter != null) return getter.apply { trySetAccessible() }.invoke(value)
+				if(getter != null) return getter.apply { runCatching { isAccessible = true } }.invoke(value)
 				throw UnsupportedOperationException("Invalid string '$queryObject' for query ${value.javaClass.simpleName} by reflection.")
 			} catch(e: Exception) {
 				throw IllegalArgumentException("Cannot query by string '$queryObject' by reflection.", e)
@@ -292,43 +322,4 @@ interface Querier<T : Any, R> {
 		}
 	}
 	//endregion
-
-	companion object {
-		private val queriers = mutableListOf<Querier<*, *>>()
-
-		/**
-		 * 得到已注册的查询器。
-		 */
-		@JvmStatic fun values(): List<Querier<*, *>> {
-			return queriers
-		}
-
-		/**
-		 * 注册指定的查询器。
-		 */
-		@JvmStatic fun register(querier: Querier<*, *>) {
-			queriers.add(querier)
-		}
-
-		init {
-			registerDefaultQueriers()
-			registerReflectionQueriers()
-		}
-
-		private fun registerDefaultQueriers() {
-			register(ResultsQuerier)
-			register(FilterableResultsQuerier)
-			register(FirstResultQuerier)
-			register(LastResultQuerier)
-			register(StringQuerier)
-			register(RegexQuerier)
-			register(IndexQuerier)
-			register(IndexRangeQuerier)
-		}
-
-		private fun registerReflectionQueriers() {
-			register(ReflectionQuerier)
-			register(ReflectionMemberQuerier)
-		}
-	}
 }

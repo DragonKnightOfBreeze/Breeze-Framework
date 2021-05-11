@@ -1,10 +1,10 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MathExtensions")
 @file:Suppress("DuplicatedCode")
 
-package com.windea.breezeframework.javafx.extension
+package icu.windea.breezeframework.javafx.extension
 
 import javafx.animation.*
 import javafx.geometry.*

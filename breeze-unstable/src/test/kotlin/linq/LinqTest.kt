@@ -1,6 +1,6 @@
-package com.windea.breezeframework.linq
+package icu.windea.breezeframework.linq
 
-import com.windea.breezeframework.linq.LinqType.*
+import icu.windea.breezeframework.linq.LinqType.*
 import org.junit.*
 import java.util.stream.*
 

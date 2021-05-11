@@ -1,6 +1,6 @@
-package com.windea.breezeframework.dsl.mermaid
+package icu.windea.breezeframework.dsl.mermaid
 
-import com.windea.breezeframework.dsl.mermaid.piechart.*
+import icu.windea.breezeframework.dsl.mermaid.piechart.*
 import org.junit.*
 
 class MermaidPieChartDslTest {

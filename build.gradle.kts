@@ -1,35 +1,69 @@
-import org.gradle.jvm.tasks.Jar
-
 //配置要用到的插件
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.4.30"
-	id("org.jetbrains.dokka") version "0.10.1"
 	id("org.gradle.maven-publish")
-	id("com.jfrog.bintray") version "1.8.5"
+	id("org.jetbrains.kotlin.jvm") version "1.4.30"
+	id("org.jetbrains.dokka") version "1.4.30"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.4.30"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.4.30"
+	id("me.champeau.jmh") version "0.6.4"
 }
 
+val groupName = "icu.windea.breezeframework"
+val versionName = "3.0.0"
+val packageRootPrefix = "icu.windea.breezeframework"
+val compilerArgs = listOf(
+	"-Xinline-classes",
+	"-Xjvm-default=all",
+	"-Xopt-in=kotlin.RequiresOptIn",
+	"-Xopt-in=kotlin.ExperimentalStdlibApi",
+	"-Xopt-in=kotlin.contracts.ExperimentalContracts",
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.InternalApi",
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi",
+	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
+)
+val flatModuleNames = arrayOf("breeze-unstable")
+val noPublishModuleNames = arrayOf("breeze-unstable")
+val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
+
 allprojects {
-	group = "com.windea.breezeframework"
-	version = "2.0.0"
+	val projectName = project.name
+	val projectTitle = projectName.split("-").joinToString(" ") { it.capitalize() }
+	val projectJavaVersion = when(projectName) {
+		in java11ModuleNames -> "11"
+		else -> "1.8"
+	}
+	val projectPackageName = when {
+		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
+		else -> project.name.removePrefix("breeze-").replace("-", "")
+	}
+	val projectPackagePrefix = when {
+		project != rootProject && project.name !in flatModuleNames -> "$packageRootPrefix.$projectPackageName"
+		else -> packageRootPrefix
+	}
+
+	group = groupName
+	version = versionName
 
 	//应用插件
 	apply {
 		plugin("org.jetbrains.kotlin.jvm")
 		plugin("org.jetbrains.dokka")
+		plugin("org.jetbrains.kotlin.plugin.noarg")
+		plugin("org.jetbrains.kotlin.plugin.allopen")
+		plugin("me.champeau.jmh")
 	}
 
 	kotlin {
 		explicitApi()
 	}
 
-	buildscript {
-		//配置插件仓库
-		repositories {
-			maven("https://dl.bintray.com/kotlin/kotlin-eap")
-			maven("https://maven.aliyun.com/nexus/content/groups/public")
-			mavenCentral()
-			jcenter()
-		}
+	allOpen {
+		//jmh压测类需要开放
+		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
+	}
+
+	jmh{
+
 	}
 
 	//配置依赖仓库
@@ -37,88 +71,113 @@ allprojects {
 		maven("https://dl.bintray.com/kotlin/kotlin-eap")
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
-		jcenter()
 	}
 
 	//配置依赖
 	dependencies {
-		implementation(kotlin("stdlib"))
+		implementation(kotlin("stdlib-jdk8"))
 		testImplementation(kotlin("test-junit"))
+		//testImplementation("org.openjdk.jmh:jmh-core:1.29")
 	}
 
-	//从模块名获取包名并设置为包的前缀
-	val modulePrefix = when {
-		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
-		else -> project.name.removePrefix("breeze-").replace("-", "")
+	java {
+		toolchain {
+			when(project.name) {
+				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+				else -> languageVersion.set(JavaLanguageVersion.of(8))
+			}
+		}
 	}
-	val prefix = when {
-		project == rootProject -> "com.windea.breezeframework"
-		project.name == "breeze-unstable" -> "com.windea.breezeframework"
-		else -> "com.windea.breezeframework.$modulePrefix"
+
+	//java{
+	//	when(project.name){
+	//		in java11ModuleNames ->{
+	//			sourceCompatibility = JavaVersion.VERSION_11
+	//			targetCompatibility = JavaVersion.VERSION_11
+	//		}
+	//		else ->{
+	//			sourceCompatibility = JavaVersion.VERSION_1_8
+	//			targetCompatibility = JavaVersion.VERSION_1_8
+	//		}
+	//	}
+	//}
+
+	val projectCompiler = javaToolchains.compilerFor {
+		when(project.name) {
+			in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+			else -> languageVersion.set(JavaLanguageVersion.of(8))
+		}
 	}
 
 	tasks {
+		compileJava {
+			javaCompiler.set(projectCompiler)
+		}
+		compileTestJava {
+			javaCompiler.set(projectCompiler)
+		}
+		compileJmhJava {
+			javaCompiler.set(projectCompiler)
+		}
 		compileKotlin {
-			javaPackagePrefix = prefix
-			incremental = true
+			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
-				jvmTarget = "11"
-				freeCompilerArgs = listOf(
-					"-Xinline-classes",
-					"-Xjvm-default=all",
-					"-Xopt-in=kotlin.RequiresOptIn",
-					"-Xopt-in=kotlin.ExperimentalStdlibApi",
-					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
-				)
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
+				freeCompilerArgs = compilerArgs
 			}
 		}
 		compileTestKotlin {
-			javaPackagePrefix = prefix
-			incremental = true
+			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
-				jvmTarget = "11"
-				freeCompilerArgs = listOf(
-					"-Xinline-classes",
-					"-Xjvm-default=all",
-					"-Xopt-in=kotlin.RequiresOptIn",
-					"-Xopt-in=kotlin.ExperimentalStdlibApi",
-					"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.InternalApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.UnstableApi",
-					"-Xopt-in=com.windea.breezeframework.core.annotation.TrickApi"
-				)
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
+				freeCompilerArgs = compilerArgs
 			}
 		}
-	}
-}
+		compileJmhKotlin {
+			javaPackagePrefix = projectPackagePrefix
+			kotlinOptions {
+				jvmTarget = projectJavaVersion
+				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
+				freeCompilerArgs = compilerArgs
+			}
+		}
 
-val ignoredModuleNames = arrayOf("breeze-unstable")
+		withType<org.jetbrains.dokka.gradle.DokkaTask> {
+			dokkaSourceSets {
+				named("main") {
+					moduleName.set(projectTitle)
+					//includes.from("README.md")
+				}
+			}
 
-allprojects {
-	when {
-		project == rootProject -> return@allprojects
-		project.name in ignoredModuleNames -> return@allprojects
+		}
 	}
+
+	//配置需要发布的模块
+	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
+
 	apply {
 		plugin("org.gradle.maven-publish")
-		plugin("com.jfrog.bintray")
 	}
 
-	//构建source jar
-	val sourcesJar by tasks.creating(Jar::class) {
-		archiveClassifier.set("sources")
+	val dokkaJavadocJar by tasks.register<Jar>("dokkaJavadocJar") {
+		dependsOn(tasks.dokkaJavadoc)
+		from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+		archiveClassifier.set("javadoc")
+	}
+
+	val dokkaHtmlJar by tasks.register<Jar>("dokkaHtmlJar") {
+		dependsOn(tasks.dokkaHtml)
+		from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+		archiveClassifier.set("html-doc")
+	}
+
+	val sourcesJar by tasks.register<Jar>("sourcesJar") {
 		from(sourceSets.main.get().allSource)
 		from("$rootDir/LICENSE") //添加LICENSE
-	}
-
-	//构建javadoc jar
-	val javadocJar by tasks.creating(Jar::class) {
-		archiveClassifier.set("javadoc")
-		from(tasks.dokka)
-		from("$rootDir/LICENSE") //添加LICENSE
+		archiveClassifier.set("sources")
 	}
 
 	//上传的配置
@@ -128,10 +187,11 @@ allprojects {
 			//创建maven的jar
 			register<MavenPublication>("maven") {
 				from(components["java"])
+				artifact(dokkaJavadocJar)
+				artifact(dokkaHtmlJar)
 				artifact(sourcesJar)
-				artifact(javadocJar)
 				pom {
-					name.set(project.name.formatModuleName())
+					name.set(projectTitle)
 					description.set("Integrated code framework written by Kotlin.")
 					url.set("https://github.com/DragonKnightOfBreeze/Breeze-Framework")
 					licenses {
@@ -157,8 +217,10 @@ allprojects {
 		}
 		//配置上传到的仓库
 		repositories {
+			//github pages
 			maven {
-				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/Breeze-Framework")
+				name = "github-pages"
+				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = System.getenv("GITHUB_USERNAME")
 					password = System.getenv("GITHUB_TOKEN")
@@ -166,29 +228,4 @@ allprojects {
 			}
 		}
 	}
-
-	//bintray远程仓库，可间接上传到jcenter
-	//建议将publish和override设为true，否则会报各种让人服气的错误
-	bintray {
-		//从系统环境变量得到bintray的user和api key，可能需要重启电脑生效
-		user = System.getenv("BINTRAY_USER")
-		key = System.getenv("BINTRAY_API_KEY")
-		setPublications("maven")
-		pkg.repo = rootProject.name
-		pkg.name = project.name
-		pkg.desc = "Integrated code framework written by Kotlin."
-		pkg.githubRepo = "DragonKnightOfBreeze/Breeze-Framework"
-		pkg.githubReleaseNotesFile = "CHANGELOG.md"
-		pkg.websiteUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework"
-		pkg.vcsUrl = "https://github.com/DragonKnightOfBreeze/Breeze-Framework.git"
-		pkg.setLicenses("MIT")
-		pkg.version.name = version.toString()
-		pkg.version.vcsTag = version.toString()
-		publish = true
-		override = true
-	}
-}
-
-fun String.formatModuleName(): String {
-	return this.split("-").joinToString(" ") { it.capitalize() }
 }

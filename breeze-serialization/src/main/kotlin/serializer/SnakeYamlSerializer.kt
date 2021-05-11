@@ -1,31 +1,21 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.representer.*
 import java.lang.reflect.*
 
 /**
- * 由SnakeYaml实现的Yaml的序列化器。
+ * 由SnakeYaml委托实现的Yaml数据的序列化器。
  * @see org.yaml.snakeyaml.Yaml
  */
-class SnakeYamlSerializer : YamlSerializer, DelegateSerializer, Configurable<Pair<LoaderOptions, DumperOptions>> {
-	private val loaderOptions = LoaderOptions()
-	private val dumperOptions = DumperOptions()
-	val yaml by lazy { Yaml(Constructor(), Representer(), dumperOptions, loaderOptions) }
-
-	init {
-		dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-	}
-
-	override fun configure(block: Pair<LoaderOptions, DumperOptions>.() -> Unit) {
-		(loaderOptions to dumperOptions).block()
-	}
-
+class SnakeYamlSerializer(
+	val yaml:Yaml = Yaml()
+) : YamlSerializer, DelegateSerializer{
 	override fun <T> serialize(target: T): String {
 		return yaml.dump(target)
 	}

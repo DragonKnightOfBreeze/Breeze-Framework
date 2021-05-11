@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("SystemExtensions")
 
-package com.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.extension
 
 import java.io.*
 import java.util.*
@@ -42,10 +42,10 @@ inline fun <reified T> eval(language: String, context: ScriptContext, lazyScript
 
 @PublishedApi
 internal fun getEngine(language: String): ScriptEngine {
-	val fixedLanguage = language.toLowerCase()
-	return scriptEngines.getOrPut(fixedLanguage) {
-		engineManager.getEngineByName(fixedLanguage) ?: engineManager.getEngineByExtension(fixedLanguage)
-		?: throw UnsupportedOperationException("No script engine library found for value script language.")
+	val languageName = language.toLowerCase()
+	return scriptEngines.getOrPut(languageName) {
+		engineManager.getEngineByName(languageName) ?: engineManager.getEngineByExtension(languageName)
+		?: throw UnsupportedOperationException("No script engine library found for script language '$language'.")
 	}
 }
 

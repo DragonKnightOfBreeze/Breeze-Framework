@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.game.ai
+package icu.windea.breezeframework.game.ai
 
 import java.util.*
 import java.util.concurrent.*
@@ -22,7 +22,7 @@ open class StateMachine<S : State<S>>(
 
 	/**当前的父状态。*/
 	var currentParentState: S = initialState
-		private set(value) {
+		protected set(value) {
 			require(!value.isSubState) { "Parent state '$value' cannot be a subState." }
 			field = value
 		}

@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.linq.impl
+package icu.windea.breezeframework.linq.impl
 
-import com.windea.breezeframework.linq.*
+import icu.windea.breezeframework.linq.*
 import java.util.stream.*
 
 /**基于Java8的[Stream]的Linq实现。*/

@@ -1,9 +1,9 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model
 
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 
 /**
  * 颜色。
@@ -12,7 +12,7 @@ import com.windea.breezeframework.core.extension.*
  */
 class Color {
 	constructor(hexValue: Int) {
-		val numbers = hexValue.toDigitNumberArray(256)
+		val numbers = hexValue.getDigitNumbers(256)
 		this.r = numbers.getOrElse(2) { 0 }
 		this.g = numbers.getOrElse(1) { 0 }
 		this.b = numbers.getOrElse(0) { 0 }

@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.dsl.api
+package icu.windea.breezeframework.dsl.api
 
 /**
  * [Breeze Dsl Api](https://github.com/DragonKnightOfBreeze/Breeze-Framework/tree/master/breeze-dsl)的标记注解。

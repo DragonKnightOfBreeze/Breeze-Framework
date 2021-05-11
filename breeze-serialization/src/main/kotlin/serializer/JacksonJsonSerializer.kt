@@ -1,26 +1,22 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serialization.serializer
+package icu.windea.breezeframework.serialization.serializer
 
 import com.fasterxml.jackson.databind.json.*
-import com.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 
 /**
- * 由Jackson实现的Json的序列化器。
+ * 由Jackson委托实现的Json数据的序列化器。
  *
  * @see com.fasterxml.jackson.databind.json.JsonMapper
  */
-class JacksonJsonSerializer : JsonSerializer, JacksonSerializer, Configurable<JsonMapper> {
-	val mapper by lazy { JsonMapper() }
-
+class JacksonJsonSerializer(
+	val mapper:JsonMapper = JsonMapper()
+) : JsonSerializer, JacksonSerializer{
 	init {
 		mapper.findAndRegisterModules()
-	}
-
-	override fun configure(block: JsonMapper.() -> Unit) {
-		mapper.block()
 	}
 
 	override fun <T> serialize(target: T): String {

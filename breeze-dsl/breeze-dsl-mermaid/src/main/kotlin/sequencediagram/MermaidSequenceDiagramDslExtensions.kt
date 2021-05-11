@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("MermaidSequenceDiagramDslExtensions")
 
-package com.windea.breezeframework.dsl.mermaid.sequencediagram
+package icu.windea.breezeframework.dsl.mermaid.sequencediagram
 
-import com.windea.breezeframework.dsl.mermaid.sequencediagram.MermaidSequenceDiagramDsl.*
+import icu.windea.breezeframework.dsl.mermaid.sequencediagram.MermaidSequenceDiagramDsl.*
 
 /**
  * 开始构建[MermaidSequenceDiagramDsl]。

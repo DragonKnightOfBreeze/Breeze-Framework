@@ -1,7 +1,7 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.serializer.impl.yaml
+package icu.windea.breezeframework.serializer.impl.yaml
 
 import org.yaml.snakeyaml.*
 import org.yaml.snakeyaml.constructor.Constructor

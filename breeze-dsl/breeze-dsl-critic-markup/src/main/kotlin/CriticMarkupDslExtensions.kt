@@ -1,11 +1,11 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:JvmName("CriticMarkupDslExtensions")
 
-package com.windea.breezeframework.dsl.criticmarkup
+package icu.windea.breezeframework.dsl.criticmarkup
 
-import com.windea.breezeframework.dsl.criticmarkup.CriticMarkupDsl.*
+import icu.windea.breezeframework.dsl.criticmarkup.CriticMarkupDsl.*
 
 /**
  * 开始构建[CriticMarkupDsl]。

@@ -1,6 +1,6 @@
-package com.windea.breezeframework.dsl.xml
+package icu.windea.breezeframework.dsl.xml
 
-import com.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.dsl.api.*
 import kotlin.test.*
 
 //TESTED VERY NICE!

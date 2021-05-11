@@ -1,18 +1,16 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package com.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.component
 
-import com.windea.breezeframework.core.annotation.*
-import com.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.extension.*
 
 /**
  * 字母格式。
  *
  * 字母格式用于表示单词组的显示格式，基于某种大小写和单词的分割方式。
  */
-@BreezeComponent
-interface LetterCase {
+interface LetterCase:Component {
 	/**
 	 * 判断指定的字符串是否匹配指定的单词格式。
 	 */
@@ -43,7 +41,43 @@ interface LetterCase {
 	 */
 	fun joinToString(value: Sequence<String>): String
 
-	//region Default Letter Cases
+	companion object Registry: AbstractComponentRegistry<LetterCase>(){
+		override fun registerDefault() {
+			register(LowerCase)
+			register(UpperCase)
+			register(Capitalized)
+			register(LowerCaseWords)
+			register(UpperCaseWords)
+			register(FirstWordCapitalized)
+			register(CapitalizedWords)
+			register(Words)
+			register(CamelCase)
+			register(PascalCase)
+			register(SnakeCase)
+			register(ScreamingSnakeCase)
+			register(UnderscoreWords)
+			register(KebabCase)
+			register(KebabUpperCase)
+			register(HyphenWords)
+
+			register(ReferencePath)
+			register(LinuxPath)
+			register(WindowsPath)
+		}
+
+		/**
+		 * 推断单词格式。
+		 */
+		@JvmStatic
+		fun infer(value: String): LetterCase? {
+			for(letterCase in components) {
+				if(letterCase.matches(value)) return letterCase
+			}
+			return null
+		}
+	}
+
+	//region Letter Cases
 	/**
 	 * 全小写。
 	 *
@@ -283,15 +317,19 @@ interface LetterCase {
 		override fun joinToString(value: Iterable<String>) = value.joinToString("-")
 		override fun joinToString(value: Sequence<String>) = value.joinToString("-")
 	}
-	//endregion
 
-	//region Path-like Letter Cases
+
+	/**
+	 * 类路径的字母格式。
+	 */
+	interface PathLikeLetterCase
+
 	/**
 	 * 以单个点分隔的路径。
 	 *
 	 * 示例：`doc.path`
 	 */
-	object ReferencePath : LetterCase {
+	object ReferencePath : LetterCase,PathLikeLetterCase {
 		private val regex = """[a-zA-Z_\-$]+(?:\.[a-zA-Z_\-$]+)+""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.split('.')
@@ -306,7 +344,7 @@ interface LetterCase {
 	 *
 	 * 示例：`linux/path`
 	 */
-	object LinuxPath : LetterCase {
+	object LinuxPath : LetterCase,PathLikeLetterCase {
 		private val regex = """/?[^/\\\s]+(?:/[^/\\\s]+]+)+/?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('/').split('/')
@@ -321,7 +359,7 @@ interface LetterCase {
 	 *
 	 * 示例：`windows\path`
 	 */
-	object WindowsPath : LetterCase {
+	object WindowsPath : LetterCase,PathLikeLetterCase {
 		private val regex = """\\?[^/\\\s]+(?:\\[^/\\\s]+]+)+\\?""".toRegex()
 		override fun matches(value: String): Boolean = regex.matches(value)
 		override fun split(value: String) = value.trim('\\').split('\\')
@@ -331,83 +369,4 @@ interface LetterCase {
 		override fun joinToString(value: Sequence<String>) = value.joinToString("\\")
 	}
 	//endregion
-
-	companion object {
-		private val letterCases = mutableListOf<LetterCase>()
-
-		/**
-		 * 得到已注册的单词格式列表。
-		 */
-		@JvmStatic fun values(): List<LetterCase> {
-			return letterCases
-		}
-
-		/**
-		 * 注册指定的单词格式。
-		 */
-		@JvmStatic fun register(letterCase: LetterCase) {
-			letterCases += letterCase
-		}
-
-		/**
-		 * 推断单词格式。
-		 */
-		@JvmStatic fun infer(value: String): LetterCase? {
-			for(letterCase in letterCases) {
-				if(letterCase.matches(value)) return letterCase
-			}
-			return null
-		}
-
-		private fun CharSequence.firstCharToUpperCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toUpperCase() + this.substring(1)
-			}
-		}
-
-		private fun CharSequence.firstCharToLowerCase(): String {
-			return when {
-				isEmpty() -> this.toString()
-				else -> this[0].toLowerCase() + this.substring(1)
-			}
-		}
-
-		private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
-
-		private fun CharSequence.splitWords(): String {
-			return this.replace(splitWordsRegex, " $1")
-		}
-
-		init {
-			registerDefaultLetterCases()
-			registerPathLikeLetterCases()
-		}
-
-		private fun registerDefaultLetterCases() {
-			register(LowerCase)
-			register(UpperCase)
-			register(Capitalized)
-			register(LowerCaseWords)
-			register(UpperCaseWords)
-			register(FirstWordCapitalized)
-			register(CapitalizedWords)
-			register(Words)
-
-			register(CamelCase)
-			register(PascalCase)
-			register(SnakeCase)
-			register(ScreamingSnakeCase)
-			register(UnderscoreWords)
-			register(KebabCase)
-			register(KebabUpperCase)
-			register(HyphenWords)
-		}
-
-		private fun registerPathLikeLetterCases() {
-			register(ReferencePath)
-			register(LinuxPath)
-			register(WindowsPath)
-		}
-	}
 }

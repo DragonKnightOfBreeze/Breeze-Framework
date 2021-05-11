@@ -1,14 +1,14 @@
-// Copyright (c) 2019-2021 DragonKnightOfBreeze Windea
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
 @file:Suppress("UNCHECKED_CAST")
 
-package com.windea.breezeframework.generator.code
+package icu.windea.breezeframework.generator.code
 
-import com.windea.breezeframework.core.component.*
-import com.windea.breezeframework.core.extension.*
-import com.windea.breezeframework.generator.*
-import com.windea.breezeframework.serializer.*
+import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.generator.*
+import icu.windea.breezeframework.serializer.*
 import java.io.*
 
 /**Sql语句的生成器。*/

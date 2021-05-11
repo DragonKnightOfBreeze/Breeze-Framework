@@ -1,4 +1,4 @@
-# 版本
+更新README文档# 版本
 
 ## 1.x.x
 
@@ -447,7 +447,7 @@
 * [X] 添加`Iterable.select()`
 * [X] 添加`Validated`，`Ordered`，`Named`
 * [X] 为所有`BreezeComponent`提供静态方法`values`和`register`
-* [X] 实现`com.windea.breezeframework.core.component.Encoder.HexEncoder`
+* [X] 实现`icu.windea.breezeframework.core.component.Encoder.HexEncoder`
 * [X] 添加更多的运算符重载扩展方法
 * [X] breeze-serialization 重构代码
   * [X] 委托实现的serializer
@@ -465,15 +465,41 @@
 
 #### 2.0.1
 
-* 修正Expression的BUG
-* 实现StringPattern
+* [X] 修正Expression的BUG
+* [X] 实现StringPattern
+* [X] 添加`tupleOf()`方法用于构造元组
+* [X] 公开`xxxSmartly()`方法
+* [X] 实现并行迭代方法`parallelForEach`
+* [X] 完善`breeze-serialization`
+* [X] 重构组件相关代码
+* [X] 更新README文档
+
+#### 2.0.2
+
+* [X] 重新发布
+
+#### 3.0.0
+
+* [X] 更改groupId
+* [X] 应用jmh
+* [X] 数组相关的一些扩展完善
+
+#### TODO
+
+* [ ] 补充组件
+* [ ] 补充组件`Converter`
+* [ ] 补充组件`RandomGenerator`
+* [ ] 可配置参数的组件，更加灵活的配置参数
+* [ ] 有条件的组件
+* [ ] 可配置组件的快速命中缓存（ConcurrentHashMap），而不是总是迭代List
+* [ ] 实现并发迭代的集合
+* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
 # 长期
 
-* [X] 移除对非框架类的第三方库的依赖
+* [X] 尽量移除对非框架类的第三方库的依赖
 * [X] 上传到Github
-* [X] 同步项目到Bintray
-* [X] 发布项目到JCenter。
+* [X] 将项目的目标java版本从11改为1.8，部分模块的java版本仍然保持在11
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
 
