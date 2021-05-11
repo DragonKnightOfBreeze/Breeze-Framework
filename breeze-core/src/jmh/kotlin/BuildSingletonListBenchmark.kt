@@ -18,12 +18,12 @@ import kotlin.collections.ArrayList
 @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
 class BuildSingletonListBenchmark {
 	//Benchmark                          Mode  Cnt   Score   Error  Units
-	//BuildSingletonListBenchmark.test1  avgt    5   6.374 ± 0.981  ns/op    Collections.singletonList(...)
-	//BuildSingletonListBenchmark.test2  avgt    5   8.360 ± 0.631  ns/op    Arrays.asList(...)
-	//BuildSingletonListBenchmark.test3  avgt    5  14.861 ± 3.252  ns/op    ArrayList<String>().apply {...}
-	//BuildSingletonListBenchmark.test4  avgt    5   9.874 ± 0.328  ns/op    LinkedList<String>().apply {...}
-	//BuildSingletonListBenchmark.test5  avgt    5   5.737 ± 0.219  ns/op    ImmutableList.of(...)
-	//BuildSingletonListBenchmark.test6  avgt    5   5.737 ± 0.219  ns/op    listOf(...)
+	//BuildSingletonListBenchmark.test1  avgt    5   6.168 ± 0.340  ns/op    Collections.singletonList(...)
+	//BuildSingletonListBenchmark.test2  avgt    5   8.469 ± 0.915  ns/op    Arrays.asList(...)
+	//BuildSingletonListBenchmark.test3  avgt    5  14.132 ± 2.883  ns/op    ArrayList<String>().apply {...}
+	//BuildSingletonListBenchmark.test4  avgt    5  10.551 ± 2.930  ns/op    LinkedList<String>().apply {...}
+	//BuildSingletonListBenchmark.test5  avgt    5   6.030 ± 1.991  ns/op    ImmutableList.of(...)
+	//BuildSingletonListBenchmark.test6  avgt    5   6.289 ± 0.526  ns/op    listOf(...)
 
 	@Benchmark fun test1() = Collections.singletonList("1")
 

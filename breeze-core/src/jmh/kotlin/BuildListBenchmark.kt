@@ -14,7 +14,6 @@ import java.util.concurrent.*
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 5, time = 1)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
 class BuildListBenchmark {
 	//Benchmark                  Mode  Cnt   Score   Error  Units
 	//BuildListBenchmark.test1   avgt    5   9.979 ±  0.569  ns/op    Arrays.asList(...)
@@ -66,4 +65,6 @@ class BuildListBenchmark {
 	@Benchmark fun test10() = listOf("1", "2", "3","4","5")
 
 	@Benchmark fun test11() = mutableListOf("1", "2", "3","4","5")
+
+	@Benchmark fun test12() = ImmutableList.copyOf(arrayOf("1","2","3","4","5"))
 }

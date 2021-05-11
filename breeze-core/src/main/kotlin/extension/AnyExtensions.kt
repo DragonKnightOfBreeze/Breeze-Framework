@@ -19,49 +19,88 @@ import kotlin.reflect.*
 /**
  * 将当前对象转换为指定类型。如果转换失败，则抛出异常。
  */
-inline fun <reified T> Any?.cast(): T = this as T
+inline fun <reified T> Any?.cast(): T {
+	return this as T
+}
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则返回null。
  */
-inline fun <reified T> Any?.castOrNull(): T? = this as? T
+inline fun <reified T> Any?.castOrNull(): T? {
+	return this as? T
+}
 
 /**
- * 智能地判断两个对象是否值相等。
- *
- * 特殊对待数组类型。
+ * 智能判断当前对象与另一个对象是否值相等。特殊对待null值和数组类型。
  */
-fun Any?.equalsSmartly(other: Any?, deepOp: Boolean = true): Boolean {
+@OptIn(ExperimentalUnsignedTypes::class)
+infix fun Any?.smartEquals(other: Any?): Boolean {
 	return when {
-		this !is Array<*> || other !is Array<*> -> this == other
-		!deepOp -> this.contentEquals(other)
-		else -> this.contentDeepEquals(other)
+		this == null && other == null -> true
+		this == null || other == null -> false
+		this === other -> true
+		this is Array<*> && other is Array<*> -> this contentDeepEquals other
+		this is ByteArray && other is ByteArray -> this contentEquals other
+		this is ShortArray && other is ShortArray -> this contentEquals other
+		this is IntArray && other is IntArray -> this contentEquals other
+		this is LongArray && other is LongArray -> this contentEquals other
+		this is FloatArray && other is FloatArray -> this contentEquals other
+		this is DoubleArray && other is DoubleArray -> this contentEquals other
+		this is UByteArray && other is UByteArray -> this contentEquals other
+		this is UShortArray && other is UShortArray -> this contentEquals other
+		this is UIntArray && other is UIntArray -> this contentEquals other
+		this is ULongArray && other is ULongArray -> this contentEquals other
+		this is CharArray && other is CharArray -> this contentEquals other
+		this is BooleanArray && other is BooleanArray -> this contentEquals other
+		else -> this == other
 	}
 }
 
 /**
- * 智能地得到指定对象的哈希码。
- *
- * 特殊对待数组类型。
+ * 智能得到当前对象的哈希码。特殊对待null值和数组类型。
  */
-fun Any?.hashCodeSmartly(deepOp: Boolean = true): Int {
+@OptIn(ExperimentalUnsignedTypes::class)
+fun Any?.smartHashcode(): Int {
 	return when {
-		this !is Array<*> -> this.hashCode()
-		!deepOp -> this.contentHashCode()
-		else -> this.contentDeepHashCode()
+		this == null -> 0
+		this is Array<*> -> contentDeepHashCode()
+		this is ByteArray -> contentHashCode()
+		this is ShortArray -> contentHashCode()
+		this is IntArray -> contentHashCode()
+		this is LongArray -> contentHashCode()
+		this is FloatArray -> contentHashCode()
+		this is DoubleArray -> contentHashCode()
+		this is UByteArray -> contentHashCode()
+		this is UShortArray -> contentHashCode()
+		this is UIntArray -> contentHashCode()
+		this is ULongArray -> contentHashCode()
+		this is CharArray -> contentHashCode()
+		this is BooleanArray -> contentHashCode()
+		else -> hashCode()
 	}
 }
 
 /**
- * 智能地将指定对象转化为字符串。
- *
- * 特殊对待数组类型。
+ * 智能将当前对象转化为字符串。特殊对待null值和数组类型。
  */
-fun Any?.toStringSmartly(deepOp: Boolean = true): String {
+@OptIn(ExperimentalUnsignedTypes::class)
+fun Any?.smartToString(): String {
 	return when {
-		this !is Array<*> -> this.toString()
-		!deepOp -> this.contentToString()
-		else -> this.contentDeepToString()
+		this == null -> "null"
+		this is Array<*> -> contentDeepToString()
+		this is ByteArray -> contentToString()
+		this is ShortArray -> contentToString()
+		this is IntArray -> contentToString()
+		this is LongArray -> contentToString()
+		this is FloatArray -> contentToString()
+		this is DoubleArray -> contentToString()
+		this is UByteArray -> contentToString()
+		this is UShortArray -> contentToString()
+		this is UIntArray -> contentToString()
+		this is ULongArray -> contentToString()
+		this is CharArray -> contentToString()
+		this is BooleanArray -> contentToString()
+		else -> toString()
 	}
 }
 
@@ -69,7 +108,7 @@ fun Any?.toStringSmartly(deepOp: Boolean = true): String {
 //可以使用Kotlin委托为接口委托实现这些方法，但是结合Kotlin反射使用可能出现问题
 
 /**
- * 基于指定的属性，判断两个对象是否值相等。默认对数组类型递归执行操作。
+ * 基于指定的属性判断两个对象是否值相等。特殊对待null值和数组类型。
  *
  * * 如果引用相等，则值相等。
  * * 如果类型不相等，则值不相等。
@@ -77,41 +116,47 @@ fun Any?.toStringSmartly(deepOp: Boolean = true): String {
  * * 如果类型相等且已指定属性，则参照其属性。
  * * 对于数组类型的属性，参照其内容。
  */
-fun <T : Any> equalsBy(target: T?, other: Any?, deepOp: Boolean = true, selector: T.() -> Array<*>): Boolean {
+fun <T : Any> equalsBy(target: T?, other: Any?, selector: T.() -> Array<*>): Boolean {
 	return when {
+		target == null && other == null -> true
+		target == null || other == null -> false
 		target === other -> true
-		target == null || target.javaClass != other?.javaClass -> false
-		else -> with(target.selector()) {
+		target.javaClass != other.javaClass -> false
+		else -> {
+			val targetSelector = target.selector()
+			val otherSelector = (other as T).selector()
 			when {
-				isEmpty() -> true
-				else -> zip((other as T).selector()).all { (a, b) -> a.equalsSmartly(b, deepOp) }
+				targetSelector.isEmpty() && otherSelector.isEmpty() -> true
+				targetSelector.size != otherSelector.size -> false
+				else -> targetSelector.zip(otherSelector).all { (a, b) -> a.smartEquals(b) }
 			}
 		}
 	}
 }
 
 /**
- * 基于指定的属性，得到指定对象的哈希码。默认对数组类型递归执行操作。
+ * 基于指定的属性得到指定对象的哈希码。特殊对待null值和数组类型。
  *
  * * 如果目标为`null`，则返回`0`.
  * * 如果未指定属性，则参照其类型。
  * * 如果已指定属性，则参照其属性。
  * * 对于数组类型的属性，参照其内容。
  * */
-fun <T : Any> hashCodeBy(target: T?, deepOp: Boolean = true, selector: T.() -> Array<*>): Int {
+fun <T : Any> hashCodeBy(target: T?, selector: T.() -> Array<*>): Int {
 	return when {
 		target == null -> 0
-		else -> with(target.selector()) {
+		else -> {
+			val targetSelector = target.selector()
 			when {
-				isEmpty() -> target.javaClass.hashCode()
-				else -> map { it.hashCodeSmartly(deepOp) }.reduce { a, b -> a * 31 + b }
+				targetSelector.isEmpty() -> target.javaClass.hashCode()
+				else -> targetSelector.map { it.smartHashcode() }.reduce { a, b -> a * 31 + b }
 			}
 		}
 	}
 }
 
 /**
- * 基于指定的属性的名字-值元组，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
+ * 基于指定的属性的名字-值元组，将指定对象转化为字符串。特殊对待null值和数组类型。
  *
  * * 如果目标为`null`，则返回`"null"`。
  * * 如果未指定属性，则忽略属性的输出。
@@ -124,22 +169,31 @@ fun <T : Any> hashCodeBy(target: T?, deepOp: Boolean = true, selector: T.() -> A
  */
 fun <T : Any> toStringBy(
 	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
-	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<Pair<String, *>>
+	simplifyClassName: Boolean = true, selector: T.() -> Array<Pair<String, *>>
 ): String {
 	return when {
 		target == null -> "null"
-		else -> with(target.selector()) {
+		else -> {
+			val targetSelector = target.selector()
 			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
 			when {
-				isEmpty() -> "$className$prefix$postfix"
-				else -> joinToString(delimiter, "$className$prefix", postfix) { (n, v) -> "$n=${v.toStringSmartly(deepOp)}" }
+				targetSelector.isEmpty() -> "$className$prefix$postfix"
+				else -> buildString {
+					var appendDelimiter = false
+					append(className).append(prefix)
+					for((k, v) in targetSelector) {
+						if(appendDelimiter) append(delimiter) else appendDelimiter = true
+						append(k).append("=").append(v.smartToString())
+					}
+					append(postfix)
+				}
 			}
 		}
 	}
 }
 
 /**
- * 基于指定的属性的引用，将指定对象转化为字符串。默认使用Kotlin数据类风格的输出，输出简单类名，并对数组类型递归执行操作。
+ * 基于指定的属性的引用，将指定对象转化为字符串。特殊对待null值和数组类型。
  *
  * * 如果目标为`null`，则返回`"null"`。
  * * 如果未指定属性，则忽略属性的输出。
@@ -152,15 +206,24 @@ fun <T : Any> toStringBy(
  */
 fun <T : Any> toStringByReference(
 	target: T?, delimiter: String = ", ", prefix: String = "(", postfix: String = ")",
-	simplifyClassName: Boolean = true, deepOp: Boolean = true, selector: T.() -> Array<KProperty0<*>>
+	simplifyClassName: Boolean = true, selector: T.() -> Array<KProperty0<*>>
 ): String {
 	return when {
 		target == null -> "null"
-		else -> with(target.selector()) {
+		else -> {
+			val targetSelector = target.selector()
 			val className = if(simplifyClassName) target.javaClass.simpleName else target.javaClass.name
 			when {
-				isEmpty() -> "$className$prefix$postfix"
-				else -> joinToString(delimiter, "$className$prefix", postfix) { "${it.name}=${it.get().toStringSmartly(deepOp)}" }
+				targetSelector.isEmpty() -> "$className$prefix$postfix"
+				else -> buildString {
+					var appendDelimiter = false
+					append(className).append(prefix)
+					for(p in targetSelector) {
+						if(appendDelimiter) append(delimiter) else appendDelimiter = true
+						append(p.name).append("=").append(p.get().smartToString())
+					}
+					append(postfix)
+				}
 			}
 		}
 	}

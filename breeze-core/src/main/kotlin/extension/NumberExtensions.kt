@@ -172,7 +172,7 @@ fun Long.getDigitNumbers(radix: Int = 10): LongArray {
 
 
 /**判断两个数是否近似相等。需要指定对应小数部分的精确度。当差值的绝对值小于此精确度时，认为两数近似相等。*/
-fun Number?.equalsNearly(other: Number?, precision: Float): Boolean {
+fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 	return when {
 		this == null && other == null -> true
 		this == null || other == null -> false
