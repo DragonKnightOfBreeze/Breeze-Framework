@@ -106,7 +106,7 @@ interface MermaidClassDiagramDsl {
 
 		/**(No document.)*/
 		@MermaidClassDiagramDslMarker
-		operator fun String.invoke(vararg params: String) = "$this(${params.joinToString()})"
+		operator fun String.invoke(vararg configParams: String) = "$this(${configParams.joinToString()})"
 
 		/**(No document.)*/
 		@MermaidClassDiagramDslMarker

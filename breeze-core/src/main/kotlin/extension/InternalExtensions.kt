@@ -70,23 +70,32 @@ internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<Da
 //}
 
 
-//internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
-//
-//@Suppress("UNCHECKED_CAST")
-//internal fun <T> inferGenericType(target:Any,interfaceType:Class<*>):Class<T>{
-//	val targetMap = genericTypesCache.getOrPut(interfaceType) { ConcurrentHashMap() }
-//	val targetType = target::class.javaObjectType
-//	return targetMap.getOrPut(targetType){
-//		val genericInterfaces = targetType.genericInterfaces
-//		//TODO 递归查找
-//		val genericInterface = genericInterfaces.find {
-//			it is ParameterizedType && it.rawType == interfaceType
-//		} as? ParameterizedType ?: throw error("Framework internal error.")
-//		val genericTypes = genericInterface.actualTypeArguments
-//		if(genericTypes.isEmpty()) throw error("Framework internal error.")
-//		val genericType = genericTypes[0]
-//		if(genericType !is Class<*>) throw error("Framework internal error.")
-//		genericType
-//	} as Class<T>
-//}
+private val targetTypeCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
 
+@Suppress("UNCHECKED_CAST")
+internal fun <T> inferTargetType(target:Any,componentType:Class<*>):Class<T>{
+	val targetMap = targetTypeCache.getOrPut(componentType) { ConcurrentHashMap() }
+	val targetType = target::class.javaObjectType
+	return targetMap.getOrPut(targetType){
+		val genericSuperclass = targetType.genericSuperclass //AbstractComponent<T>
+		if(genericSuperclass !is ParameterizedType) throw error("Cannot infer target type for target '$target'.")
+		val genericTypes = genericSuperclass.actualTypeArguments
+		if(genericTypes.isEmpty()) throw error("Cannot infer target type for target '$target'.")
+		val genericType = genericTypes[0]
+		if(genericType !is Class<*>) throw error("Cannot infer target type for target '$target'.")
+		genericType
+	} as Class<T>
+}
+//
+////public inline fun <T> Array<out T>.find(predicate: (T) -> Boolean): T?
+//@PublishedApi
+//internal fun <T> Array<out T>.recursiveFind(flatSelector:(T)->Array<out T>,predicate:(T)->Boolean):T?{
+//	val result = find(predicate)
+//	if(result != null) return result
+//	for(e in this){
+//		val flatThis = flatSelector(e)
+//		val flatResult = flatThis.recursiveFind(flatSelector, predicate)
+//		if(flatResult != null) return flatResult
+//	}
+//	return null
+//}

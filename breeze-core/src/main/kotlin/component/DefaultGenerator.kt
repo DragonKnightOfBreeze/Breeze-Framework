@@ -3,6 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.extension.inferTargetType
+import icu.windea.breezeframework.core.model.*
 import java.math.*
 import java.time.*
 import java.util.*
@@ -13,21 +15,18 @@ import java.util.concurrent.*
  *
  * 默认值生成器用于生成默认值。
  */
-interface DefaultGenerator<T>:Component {
-	/**
-	 * 目标类型。
-	 */
+interface DefaultGenerator<T> : Component {
+	/**目标类型。*/
 	val targetType: Class<T>
-	//val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
 
 	/**
 	 * 生成默认值。
 	 */
-	fun generate():T
+	fun generate(): T
 
-	companion object Registry: AbstractComponentRegistry<DefaultGenerator<*>>(){
+	companion object Registry : AbstractComponentRegistry<DefaultGenerator<*>>() {
 		@OptIn(ExperimentalUnsignedTypes::class)
-		override fun registerDefault(){
+		override fun registerDefault() {
 			register(DefaultByteGenerator)
 			register(DefaultShortGenerator)
 			register(DefaultIntGenerator)
@@ -53,47 +52,48 @@ interface DefaultGenerator<T>:Component {
 			register(DefaultMapGenerator)
 		}
 
-		private val componentCache: MutableMap<Class<*>,DefaultGenerator<*>> = ConcurrentHashMap()
+		private val componentMap: MutableMap<String, DefaultGenerator<*>> = ConcurrentHashMap()
 
 		/**
 		 * 是否使用回退策略。默认不使用。
-		 *
-		 * * 当找不到匹配的默认值生成器时，尝试调用目标类型的无参构造方法生成默认值。
+		 * 如果使用回退策略且找不到匹配的默认值生成器，则尝试调用目标类型的无参构造方法生成默认值。
 		 */
 		var useFallbackStrategy = false
 
 		/**
-		 * 生成指定类型的默认值。
+		 * 根据可选的配置参数，生成指定类型的默认值。
 		 */
-		inline fun <reified T> generate(params: Map<String, Any?> = emptyMap()):T{
-			return generate(T::class.java,params)
+		inline fun <reified T> generate(configParams: Map<String, Any?> = emptyMap()): T {
+			return generate(T::class.java, configParams)
 		}
 
 		/**
-		 * 生成指定类型的默认值。
+		 * 根据可选的配置参数，生成指定类型的默认值。
 		 */
 		@Suppress("UNCHECKED_CAST")
 		@JvmStatic
-		fun <T> generate(targetType:Class<T>,params: Map<String, Any?> = emptyMap()):T{
-			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值
-			//如果成功则加入缓存，如果失败则抛出异常
-			val defaultGenerator = componentCache.getOrPut(targetType){
-				for(defaultGenerator in components) {
-					if(defaultGenerator.targetType.isAssignableFrom(targetType)) {
-						return@getOrPut defaultGenerator
+		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
+			val paramsString = if(configParams.isNotEmpty()) configParams.toString() else ""
+			val key = if(configParams.isNotEmpty()) targetType.name + '@' + paramsString else targetType.name
+			val defaultGenerator = componentMap.getOrPut(key){
+				val result = components.find {
+					val sameConfig = if(it is Configurable<*> && it.configParams.isNotEmpty()) paramsString == it.configParams.toString() else true
+					it.targetType.isAssignableFrom(targetType) && sameConfig
+				}
+				if(result == null) {
+					if(useFallbackStrategy) {
+						val fallback = fallbackGenerate(targetType)
+						if(fallback != null) return fallback
 					}
+					throw IllegalArgumentException("No suitable default generator found for target type '$targetType'.")
 				}
-				//如果找不到匹配的默认值生成器
-				if(useFallbackStrategy) {
-					val fallback = fallbackGenerate(targetType)
-					if(fallback != null) return fallback
-				}
-				throw IllegalArgumentException("No suitable default generator found for target type '$targetType'.")
+				result
 			}
 			return defaultGenerator.generate() as T
 		}
 
-		private fun <T> fallbackGenerate(targetType:Class<T>):T?{
+		private fun <T> fallbackGenerate(targetType: Class<T>): T? {
 			try {
 				//尝试调用目标类型的无参构造方法生成默认值
 				val constructor = targetType.getConstructor()
@@ -106,136 +106,140 @@ interface DefaultGenerator<T>:Component {
 	}
 
 	//region Default Generators
-	object DefaultByteGenerator: DefaultGenerator<Byte>{
-		override val targetType: Class<Byte> = Byte::class.javaObjectType
+	abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
+		override val targetType: Class<T> get() = inferTargetType(this, DefaultGenerator::class.java)
+
+		override fun equals(other: Any?): Boolean {
+			if(this === other) return true
+			if(other == null || javaClass != other.javaClass) return false
+			return when{
+				this is Configurable<*> && other is Configurable<*> -> configParams.toString() == other.configParams.toString()
+				else -> true
+			}
+		}
+
+		override fun hashCode(): Int {
+			return when{
+				this is Configurable<*> -> configParams.toString().hashCode()
+				else -> 0
+			}
+		}
+
+		override fun toString(): String {
+			return when {
+				this is Configurable<*> -> targetType.name + '@' + configParams.toString()
+				else -> targetType.name
+			}
+		}
+	}
+
+	object DefaultByteGenerator : AbstractDefaultGenerator<Byte>() {
 		private const val value: Byte = 0
 		override fun generate(): Byte = value
 	}
 
-	object DefaultShortGenerator:DefaultGenerator<Short>{
-		override val targetType: Class<Short> = Short::class.javaObjectType
+	object DefaultShortGenerator : AbstractDefaultGenerator<Short>() {
 		private const val value: Short = 0
 		override fun generate(): Short = value
 	}
 
-	object DefaultIntGenerator:DefaultGenerator<Int>{
-		override val targetType: Class<Int> = Int::class.javaObjectType
+	object DefaultIntGenerator : AbstractDefaultGenerator<Int>() {
 		private const val value: Int = 0
 		override fun generate(): Int = value
 	}
 
-	object DefaultLongGenerator:DefaultGenerator<Long>{
-		override val targetType: Class<Long> = Long::class.javaObjectType
+	object DefaultLongGenerator : AbstractDefaultGenerator<Long>() {
 		private const val value: Long = 0
 		override fun generate(): Long = value
 	}
 
-	object DefaultFloatGenerator:DefaultGenerator<Float>{
-		override val targetType: Class<Float> = Float::class.javaObjectType
+	object DefaultFloatGenerator : AbstractDefaultGenerator<Float>() {
 		private const val value: Float = 0f
 		override fun generate(): Float = value
 	}
 
-	object DefaultDoubleGenerator:DefaultGenerator<Double>{
-		override val targetType: Class<Double> = Double::class.javaObjectType
+	object DefaultDoubleGenerator : AbstractDefaultGenerator<Double>() {
 		private const val value: Double = 0.0
-		override fun generate():Double = value
+		override fun generate(): Double = value
 	}
 
-	object DefaultBigIntegerGenerator:DefaultGenerator<BigInteger>{
-		override val targetType: Class<BigInteger> = BigInteger::class.java
+	object DefaultBigIntegerGenerator : AbstractDefaultGenerator<BigInteger>() {
 		private val value: BigInteger = BigInteger.ZERO
 		override fun generate(): BigInteger = value
 	}
 
-	object DefaultBigDecimalGenerator:DefaultGenerator<BigDecimal>{
-		override val targetType: Class<BigDecimal> = BigDecimal::class.java
+	object DefaultBigDecimalGenerator : AbstractDefaultGenerator<BigDecimal>() {
 		private val value: BigDecimal = BigDecimal.ZERO
 		override fun generate(): BigDecimal = value
 	}
 
 	@ExperimentalUnsignedTypes
-	object DefaultUByteGenerator:DefaultGenerator<UByte>{
-		override val targetType: Class<UByte> = UByte::class.java
+	object DefaultUByteGenerator : AbstractDefaultGenerator<UByte>() {
 		private val value: UByte = 0.toUByte()
 		override fun generate(): UByte = value
 	}
 
 	@ExperimentalUnsignedTypes
-	object DefaultUShortGenerator:DefaultGenerator<UShort>{
-		override val targetType: Class<UShort> = UShort::class.java
+	object DefaultUShortGenerator : AbstractDefaultGenerator<UShort>() {
 		private val value: UShort = 0.toUShort()
 		override fun generate(): UShort = value
 	}
 
 	@ExperimentalUnsignedTypes
-	object DefaultUIntGenerator:DefaultGenerator<UInt>{
-		override val targetType: Class<UInt> = UInt::class.java
+	object DefaultUIntGenerator : AbstractDefaultGenerator<UInt>() {
 		private val value: UInt = 0.toUInt()
 		override fun generate(): UInt = value
 	}
 
-	object DefaultCharGenerator:DefaultGenerator<Char>{
-		override val targetType: Class<Char> = Char::class.java
+	object DefaultCharGenerator : AbstractDefaultGenerator<Char>() {
 		private const val value: Char = '\u0000'
 		override fun generate(): Char = value
 	}
 
-	object DefaultBooleanGenerator:DefaultGenerator<Boolean>{
-		override val targetType: Class<Boolean> = Boolean::class.java
+	object DefaultBooleanGenerator : AbstractDefaultGenerator<Boolean>() {
 		private const val value: Boolean = false
 		override fun generate(): Boolean = value
 	}
 
-	object DefaultStringGenerator:DefaultGenerator<String>{
-		override val targetType: Class<String> = String::class.java
+	object DefaultStringGenerator : AbstractDefaultGenerator<String>() {
 		private const val value: String = ""
 		override fun generate(): String = value
 	}
 
-	object DefaultDateGenerator:DefaultGenerator<Date>{
-		override val targetType: Class<Date> = Date::class.java
+	object DefaultDateGenerator : AbstractDefaultGenerator<Date>() {
 		override fun generate(): Date = Date()
 	}
 
-	object DefaultLocalDateGenerator:DefaultGenerator<LocalDate>{
-		override val targetType: Class<LocalDate> = LocalDate::class.java
+	object DefaultLocalDateGenerator : AbstractDefaultGenerator<LocalDate>() {
 		override fun generate(): LocalDate = LocalDate.now()
 	}
 
-	object DefaultLocalTimeGenerator:DefaultGenerator<LocalTime>{
-		override val targetType: Class<LocalTime> = LocalTime::class.java
+	object DefaultLocalTimeGenerator : AbstractDefaultGenerator<LocalTime>() {
 		override fun generate(): LocalTime = LocalTime.now()
 	}
 
-	object DefaultLocalDateTimeGenerator:DefaultGenerator<LocalDateTime>{
-		override val targetType: Class<LocalDateTime> = LocalDateTime::class.java
+	object DefaultLocalDateTimeGenerator : AbstractDefaultGenerator<LocalDateTime>() {
 		override fun generate(): LocalDateTime = LocalDateTime.now()
 	}
 
-	object DefaultInstantGenerator:DefaultGenerator<Instant>{
-		override val targetType: Class<Instant> = Instant::class.java
+	object DefaultInstantGenerator : AbstractDefaultGenerator<Instant>() {
 		override fun generate(): Instant = Instant.now()
 	}
 
-	object DefaultListGenerator:DefaultGenerator<List<*>>{
-		override val targetType: Class<List<*>> = List::class.java
+	object DefaultListGenerator : AbstractDefaultGenerator<List<*>>() {
 		override fun generate(): List<*> = emptyList<Any?>()
 	}
 
-	object DefaultSetGenerator:DefaultGenerator<Set<*>>{
-		override val targetType: Class<Set<*>> = Set::class.java
+	object DefaultSetGenerator : AbstractDefaultGenerator<Set<*>>() {
 		override fun generate(): Set<*> = emptySet<Any?>()
 	}
 
-	object DefaultSequenceGenerator:DefaultGenerator<Sequence<*>>{
-		override val targetType: Class<Sequence<*>> = Sequence::class.java
+	object DefaultSequenceGenerator : AbstractDefaultGenerator<Sequence<*>>() {
 		override fun generate(): Sequence<*> = sequenceOf<Any?>()
 	}
 
-	object DefaultMapGenerator:DefaultGenerator<Map<*,*>>{
-		override val targetType: Class<Map<*, *>> = Map::class.java
-		override fun generate(): Map<*, *> = emptyMap<Any?,Any?>()
+	object DefaultMapGenerator : AbstractDefaultGenerator<Map<*, *>>() {
+		override fun generate(): Map<*, *> = emptyMap<Any?, Any?>()
 	}
 	//endregion
 }

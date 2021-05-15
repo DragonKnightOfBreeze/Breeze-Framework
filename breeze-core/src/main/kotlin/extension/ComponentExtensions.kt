@@ -15,8 +15,8 @@ import java.nio.charset.*
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
-	return Converter.convert(this, params)
+inline fun <reified T> Any.convert(configParams: Map<String, Any?> = emptyMap()): T {
+	return Converter.convert(this, configParams)
 }
 
 /**
@@ -24,8 +24,9 @@ inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convertOrNull(params: Map<String, Any?> = emptyMap()): T? {
-	return Converter.convertOrNull(this, params)
+inline fun <reified T> Any?.convertOrNull(configParams: Map<String, Any?> = emptyMap()): T? {
+	if(this == null) return this
+	return Converter.convertOrNull(this, configParams)
 }
 //endregion
 
@@ -94,18 +95,22 @@ fun String.unescapeBy(escaper: Escaper): String {
 }
 //endregion
 /**
- * 生成指定类型的默认值。
+ * 根据可选的配置参数，生成指定类型的默认值。
+ *
+ * @see DefaultGenerator
  */
-inline fun <reified T:Any> defaultValue(params: Map<String, Any?> = emptyMap()):T{
-	return DefaultGenerator.generate(params)
+inline fun <reified T:Any> defaultValue(configParams: Map<String, Any?> = emptyMap()):T{
+	return DefaultGenerator.generate(configParams)
 }
 
 //region Random Generator Extensions
 /**
- * 生成指定类型的随机值。
+ * 根据可选的配置参数，生成指定类型的随机值。
+ *
+ * @see RandomGenerator
  */
-inline fun <reified T : Any> randomValue(params: Map<String, Any?> = emptyMap()): T {
-	return RandomGenerator.generate(params)
+inline fun <reified T : Any> randomValue(configParams: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(configParams)
 }
 //endregion
 
