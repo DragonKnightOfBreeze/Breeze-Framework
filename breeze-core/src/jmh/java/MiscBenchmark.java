@@ -3,6 +3,7 @@
 
 package icu.windea.breezeframework.core;
 
+import kotlin.*;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.*;
@@ -84,6 +85,7 @@ public class MiscBenchmark {
 	//MiscBenchmark.buildMap2             avgt    5   71.137 ±   4.220  ns/op
 
 	//最优方案
+	@SuppressWarnings("unchecked")
 	@Benchmark
 	public Map<String,String> buildMap1(){
 		Pair<String,String>[] pairs = new Pair[]{Pair.of("1", "a"), Pair.of("2", "b"), Pair.of("3", "c")};

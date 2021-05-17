@@ -110,13 +110,12 @@ interface Converter<T> : Component {
 			if(targetType.isInstance(value)) return value as T
 			//否则，尝试使用第一个匹配且可用的转化器进行转化
 			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-			val paramsString = if(configParams.isNotEmpty()) configParams.toString() else ""
-			val key = if(configParams.isNotEmpty()) targetType.name + '@' + paramsString else targetType.name
-			val converter = componentMap.getOrPut(key) {
+			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
+			val converter = componentMap.getOrPut(key){
 				val result = components.find {
-					val sameConfig =
-						if(it is Configurable<*> && it.configParams.isNotEmpty()) paramsString == it.configParams.toString() else true
-					it.targetType.isAssignableFrom(targetType) && sameConfig
+					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
+					it.targetType.isAssignableFrom(targetType)  && sameConfig
 				}
 				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串

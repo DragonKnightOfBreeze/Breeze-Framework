@@ -74,12 +74,12 @@ interface DefaultGenerator<T> : Component {
 		@JvmStatic
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
-			val paramsString = if(configParams.isNotEmpty()) configParams.toString() else ""
-			val key = if(configParams.isNotEmpty()) targetType.name + '@' + paramsString else targetType.name
+			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
 			val defaultGenerator = componentMap.getOrPut(key){
 				val result = components.find {
-					val sameConfig = if(it is Configurable<*> && it.configParams.isNotEmpty()) paramsString == it.configParams.toString() else true
-					it.targetType.isAssignableFrom(targetType) && sameConfig
+					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
+					it.targetType.isAssignableFrom(targetType)  && sameConfig
 				}
 				if(result == null) {
 					if(useFallbackStrategy) {
