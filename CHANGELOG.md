@@ -483,16 +483,11 @@
 * [X] 更改groupId
 * [X] 应用jmh
 * [X] 数组相关的一些扩展完善
-
-#### TODO
-
-* [ ] 补充组件
 * [ ] 补充组件`Converter`
 * [ ] 补充组件`RandomGenerator`
-* [ ] 可配置参数的组件，更加灵活的配置参数
-* [ ] 有条件的组件
+* [ ] 补充组件`DefaultGenerator`
 * [ ] 可配置组件的快速命中缓存（ConcurrentHashMap），而不是总是迭代List
-* [ ] 实现并发迭代的集合
+* [ ] 并发迭代的集合（ParallelCollection）
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
 # 长期

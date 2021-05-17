@@ -112,7 +112,7 @@ interface Converter<T> : Component {
 			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
-			val converter = componentMap.getOrPut(key){
+			val converter = run{ //componentMap.getOrPut(key){
 				val result = components.find {
 					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
 					it.targetType.isAssignableFrom(targetType)  && sameConfig

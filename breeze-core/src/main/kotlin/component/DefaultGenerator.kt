@@ -5,10 +5,13 @@ package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.inferTargetType
 import icu.windea.breezeframework.core.model.*
+import org.w3c.dom.ranges.*
 import java.math.*
+import java.nio.charset.*
 import java.time.*
 import java.util.*
 import java.util.concurrent.*
+import java.util.stream.*
 
 /**
  * 默认值生成器。
@@ -41,15 +44,39 @@ interface DefaultGenerator<T> : Component {
 			register(DefaultCharGenerator)
 			register(DefaultBooleanGenerator)
 			register(DefaultStringGenerator)
+			register(DefaultCharsetGenerator)
+			register(DefaultLocaleGenerator)
+			register(DefaultTimeZoneGenerator)
+			register(DefaultZoneIdGenerator)
 			register(DefaultDateGenerator)
 			register(DefaultLocalDateGenerator)
 			register(DefaultLocalTimeGenerator)
 			register(DefaultLocalDateTimeGenerator)
 			register(DefaultInstantGenerator)
+			register(DefaultDurationGenerator)
+			register(DefaultPeriodGenerator)
+			register(DefaultArrayGenerator)
+			register(DefaultByteArrayGenerator)
+			register(DefaultShortArrayGenerator)
+			register(DefaultIntArrayGenerator)
+			register(DefaultLongArrayGenerator)
+			register(DefaultFloatArrayGenerator)
+			register(DefaultDoubleArrayGenerator)
+			register(DefaultCharArrayGenerator)
+			register(DefaultBooleanArrayGenerator)
+			register(DefaultIteratorGenerator)
+			register(DefaultIterableGenerator)
+			register(DefaultCollectionGenerator)
 			register(DefaultListGenerator)
 			register(DefaultSetGenerator)
 			register(DefaultSequenceGenerator)
 			register(DefaultMapGenerator)
+			register(DefaultStreamGenerator)
+			register(DefaultIntRangeGenerator)
+			register(DefaultLongRangeGenerator)
+			register(DefaultCharRangeGenerator)
+			register(DefaultUIntRangeGenerator)
+			register(DefaultULongRangeGenerator)
 		}
 
 		private val componentMap: MutableMap<String, DefaultGenerator<*>> = ConcurrentHashMap()
@@ -76,10 +103,11 @@ interface DefaultGenerator<T> : Component {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
 			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
-			val defaultGenerator = componentMap.getOrPut(key){
+			val defaultGenerator = componentMap.getOrPut(key) {
 				val result = components.find {
-					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
-					it.targetType.isAssignableFrom(targetType)  && sameConfig
+					val sameConfig =
+						it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
+					it.targetType.isAssignableFrom(targetType) && sameConfig
 				}
 				if(result == null) {
 					if(useFallbackStrategy) {
@@ -112,14 +140,14 @@ interface DefaultGenerator<T> : Component {
 		override fun equals(other: Any?): Boolean {
 			if(this === other) return true
 			if(other == null || javaClass != other.javaClass) return false
-			return when{
+			return when {
 				this is Configurable<*> && other is Configurable<*> -> configParams.toString() == other.configParams.toString()
 				else -> true
 			}
 		}
 
 		override fun hashCode(): Int {
-			return when{
+			return when {
 				this is Configurable<*> -> configParams.toString().hashCode()
 				else -> 0
 			}
@@ -206,6 +234,22 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): String = value
 	}
 
+	object DefaultCharsetGenerator : AbstractDefaultGenerator<Charset>() {
+		override fun generate(): Charset = Charset.defaultCharset()
+	}
+
+	object DefaultLocaleGenerator : AbstractDefaultGenerator<Locale>() {
+		override fun generate(): Locale = Locale.getDefault()
+	}
+
+	object DefaultTimeZoneGenerator : AbstractDefaultGenerator<TimeZone>() {
+		override fun generate(): TimeZone = TimeZone.getDefault()
+	}
+
+	object DefaultZoneIdGenerator : AbstractDefaultGenerator<ZoneId>() {
+		override fun generate(): ZoneId = TimeZone.getDefault().toZoneId()
+	}
+
 	object DefaultDateGenerator : AbstractDefaultGenerator<Date>() {
 		override fun generate(): Date = Date()
 	}
@@ -226,6 +270,72 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): Instant = Instant.now()
 	}
 
+	object DefaultDurationGenerator : AbstractDefaultGenerator<Duration>() {
+		override fun generate(): Duration = Duration.ZERO
+	}
+
+	object DefaultPeriodGenerator : AbstractDefaultGenerator<Period>() {
+		override fun generate(): Period = Period.ZERO
+	}
+
+	object DefaultArrayGenerator : AbstractDefaultGenerator<Array<*>>() {
+		override fun generate(): Array<*> = emptyArray<Any?>()
+	}
+
+	object DefaultByteArrayGenerator : AbstractDefaultGenerator<ByteArray>() {
+		private val value = byteArrayOf()
+		override fun generate(): ByteArray = value
+	}
+
+	object DefaultShortArrayGenerator : AbstractDefaultGenerator<ShortArray>() {
+		private val value = shortArrayOf()
+		override fun generate(): ShortArray = value
+	}
+
+	object DefaultIntArrayGenerator : AbstractDefaultGenerator<IntArray>() {
+		private val value = intArrayOf()
+		override fun generate(): IntArray = value
+	}
+
+	object DefaultLongArrayGenerator : AbstractDefaultGenerator<LongArray>() {
+		private val value = longArrayOf()
+		override fun generate(): LongArray = value
+	}
+
+	object DefaultFloatArrayGenerator : AbstractDefaultGenerator<FloatArray>() {
+		private val value = floatArrayOf()
+		override fun generate(): FloatArray = value
+	}
+
+	object DefaultDoubleArrayGenerator : AbstractDefaultGenerator<DoubleArray>() {
+		private val value = doubleArrayOf()
+		override fun generate(): DoubleArray = value
+	}
+
+	object DefaultCharArrayGenerator : AbstractDefaultGenerator<CharArray>() {
+		private val value = charArrayOf()
+		override fun generate(): CharArray = value
+	}
+
+	object DefaultBooleanArrayGenerator : AbstractDefaultGenerator<BooleanArray>() {
+		private val value = booleanArrayOf()
+		override fun generate(): BooleanArray = value
+	}
+
+	object DefaultIteratorGenerator : AbstractDefaultGenerator<Iterator<*>>() {
+		override fun generate(): Iterator<*> = EmptyIterator
+	}
+
+	object DefaultIterableGenerator : AbstractDefaultGenerator<Iterable<*>>() {
+		override fun generate(): Iterable<*> = EmptyIterable
+	}
+
+	object DefaultCollectionGenerator : AbstractDefaultGenerator<Collection<*>>() {
+		override fun generate(): Collection<*> {
+			return emptySet<Any?>()
+		}
+	}
+
 	object DefaultListGenerator : AbstractDefaultGenerator<List<*>>() {
 		override fun generate(): List<*> = emptyList<Any?>()
 	}
@@ -240,6 +350,32 @@ interface DefaultGenerator<T> : Component {
 
 	object DefaultMapGenerator : AbstractDefaultGenerator<Map<*, *>>() {
 		override fun generate(): Map<*, *> = emptyMap<Any?, Any?>()
+	}
+
+	object DefaultStreamGenerator : AbstractDefaultGenerator<Stream<*>>() {
+		override fun generate(): Stream<*> = Stream.empty<Any?>()
+	}
+
+	object DefaultIntRangeGenerator : AbstractDefaultGenerator<IntRange>() {
+		override fun generate(): IntRange = IntRange.EMPTY
+	}
+
+	object DefaultLongRangeGenerator : AbstractDefaultGenerator<LongRange>() {
+		override fun generate(): LongRange = LongRange.EMPTY
+	}
+
+	object DefaultCharRangeGenerator : AbstractDefaultGenerator<CharRange>() {
+		override fun generate(): CharRange = CharRange.EMPTY
+	}
+
+	@ExperimentalUnsignedTypes
+	object DefaultUIntRangeGenerator : AbstractDefaultGenerator<UIntRange>() {
+		override fun generate(): UIntRange = UIntRange.EMPTY
+	}
+
+	@ExperimentalUnsignedTypes
+	object DefaultULongRangeGenerator : AbstractDefaultGenerator<ULongRange>() {
+		override fun generate(): ULongRange = ULongRange.EMPTY
 	}
 	//endregion
 }
