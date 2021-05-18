@@ -101,13 +101,11 @@ interface DefaultGenerator<T> : Component {
 		@JvmStatic
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
-			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
-			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
-			val defaultGenerator = componentMap.getOrPut(key) {
-				val result = components.find {
-					val sameConfig =
-						it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
-					it.targetType.isAssignableFrom(targetType) && sameConfig
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
+			val defaultGenerator = componentMap.getOrPut(key){
+				var result = components.find { it.targetType.isAssignableFrom(targetType) }
+				if(result is Configurable<*> && configParams.isNotEmpty()){
+					result = result.configure(configParams) as DefaultGenerator<*>
 				}
 				if(result == null) {
 					if(useFallbackStrategy) {
@@ -135,7 +133,7 @@ interface DefaultGenerator<T> : Component {
 
 	//region Default Generators
 	abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
-		override val targetType: Class<T> get() = inferTargetType(this, DefaultGenerator::class.java)
+		override val targetType: Class<T> = inferTargetType(this::class.javaObjectType, DefaultGenerator::class.java)
 
 		override fun equals(other: Any?): Boolean {
 			if(this === other) return true

@@ -20,16 +20,6 @@ interface Serializer<V>{
 	fun <T> serialize(target:T):V
 
 	/**
-	 * 序列化指定对象。
-	 */
-	fun <T> serialize(target:T,type:Class<T>):V = serialize(target)
-
-	/**
-	 * 序列化指定对象。
-	 */
-	fun <T> serialize(target:T,type:Type):V = serialize(target)
-
-	/**
 	 * 反序列化指定的格式。
 	 */
 	fun <T> deserialize(value:V,type: Class<T>):T

@@ -68,12 +68,11 @@ interface RandomGenerator<T> : Component {
 		@JvmStatic
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它随机值，并加入缓存
-			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
-			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
 			val randomGenerator = componentMap.getOrPut(key){
-				val result = components.find {
-					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
-					it.targetType.isAssignableFrom(targetType)  && sameConfig
+				var result = components.find { it.targetType.isAssignableFrom(targetType) }
+				if(result is Configurable<*> && configParams.isNotEmpty()){
+					result = result.configure(configParams) as RandomGenerator<*>
 				}
 				if(result == null) {
 					if(useFallbackStrategy) {
@@ -101,7 +100,7 @@ interface RandomGenerator<T> : Component {
 
 	//region Random Generators
 	abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
-		override val targetType: Class<T> get() = inferTargetType(this, RandomGenerator::class.java)
+		override val targetType: Class<T> = inferTargetType(this::class.javaObjectType, RandomGenerator::class.java)
 
 		override fun equals(other: Any?): Boolean {
 			if(this === other) return true

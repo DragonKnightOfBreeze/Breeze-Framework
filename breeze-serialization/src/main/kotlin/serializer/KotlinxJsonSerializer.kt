@@ -23,6 +23,7 @@ class KotlinxJsonSerializer(
 	override fun <T> serialize(target: T): String {
 		if(target == null) return "null"
 		return json.encodeToString(json.serializersModule.serializer(target.javaClass), target)
+		//throw UnsupportedOperationException("Kotlinx serializer should specify serialize type.")
 	}
 
 	override fun <T> serialize(target: T, type: Class<T>): String {

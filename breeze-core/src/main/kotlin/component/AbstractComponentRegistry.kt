@@ -3,23 +3,23 @@
 
 package icu.windea.breezeframework.core.component
 
-abstract class AbstractComponentRegistry<T : Component> : ComponentRegistry<T> {
-	@Volatile private var shouldRegisterDefault = true
-	@Volatile private var startRegisterDefault = false
-	private val _components  = mutableListOf<T>()
+import java.util.concurrent.atomic.*
 
-	protected val components by lazy { _components.apply {
-		startRegisterDefault = true
+abstract class AbstractComponentRegistry<T : Component> : ComponentRegistry<T> {
+	private val backendComponents  = mutableListOf<T>()
+	private val registerDefaultFinished = AtomicBoolean(false)
+
+	protected val components by lazy { backendComponents.apply {
 		registerDefault()
-		shouldRegisterDefault = false
+		registerDefaultFinished.set(true)
 	} }
 
 	override fun values(): List<T> {
-		return if(shouldRegisterDefault && startRegisterDefault) _components else components
+		return if(registerDefaultFinished.get()) components else backendComponents
 	}
 
 	override fun register(component: T) {
-		val components = if(shouldRegisterDefault && startRegisterDefault) _components else components
+		val components = if(registerDefaultFinished.get()) components else backendComponents
 		components.add(component)
 	}
 

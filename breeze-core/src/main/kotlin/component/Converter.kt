@@ -35,12 +35,12 @@ interface Converter<T> : Component {
 	 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
 	@Suppress("UNCHECKED_CAST")
-	fun convert(value: Any, configParams: Map<String, Any?> = emptyMap()): T
+	fun convert(value: Any): T
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
-	fun convertOrNull(value: Any, configParams: Map<String, Any?> = emptyMap()): T? {
+	fun convertOrNull(value: Any): T? {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
@@ -82,6 +82,7 @@ interface Converter<T> : Component {
 			register(PathConverter)
 			register(UrlConverter)
 			register(UriConverter)
+			register(EnumConverter)
 		}
 
 		private val componentMap: MutableMap<String, Converter<*>> = ConcurrentHashMap()
@@ -108,14 +109,12 @@ interface Converter<T> : Component {
 		fun <T> convert(value: Any, targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 			//如果value的类型兼容targetType，则直接返回
 			if(targetType.isInstance(value)) return value as T
-			//否则，尝试使用第一个匹配且可用的转化器进行转化
 			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-			val paramsString = if(configParams.isEmpty()) "" else configParams.toString()
-			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + paramsString
-			val converter = run{ //componentMap.getOrPut(key){
-				val result = components.find {
-					val sameConfig = it !is Configurable<*> || it.configParams.isEmpty() || paramsString == it.configParams.toString()
-					it.targetType.isAssignableFrom(targetType)  && sameConfig
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
+			val converter = componentMap.getOrPut(key){
+				var result = components.find { it.targetType.isAssignableFrom(targetType) }
+				if(result is Configurable<*> && configParams.isNotEmpty()){
+					result = result.configure(configParams) as Converter<*>
 				}
 				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
@@ -128,7 +127,7 @@ interface Converter<T> : Component {
 				}
 				result
 			}
-			return converter.convert(value, configParams) as T
+			return converter.convert(value) as T
 		}
 
 		/**
@@ -149,13 +148,11 @@ interface Converter<T> : Component {
 			if(targetType.isInstance(value)) return value as T?
 			//否则，尝试使用第一个匹配且可用的转化器进行转化
 			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-			val paramsString = if(configParams.isNotEmpty()) configParams.toString() else ""
-			val key = if(configParams.isNotEmpty()) targetType.name + '@' + paramsString else targetType.name
-			val converter = componentMap.getOrPut(key) {
-				val result = components.find {
-					val sameConfig =
-						if(it is Configurable<*> && it.configParams.isNotEmpty()) paramsString == it.configParams.toString() else true
-					it.targetType.isAssignableFrom(targetType) && sameConfig
+			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
+			val converter = componentMap.getOrPut(key){
+				var result = components.find { it.targetType.isAssignableFrom(targetType) }
+				if(result is Configurable<*> && configParams.isNotEmpty()){
+					result = result.configure(configParams) as Converter<*>
 				}
 				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
@@ -168,7 +165,7 @@ interface Converter<T> : Component {
 				}
 				result
 			}
-			return converter.convertOrNull(value, configParams) as T?
+			return converter.convertOrNull(value) as T?
 		}
 
 		@Suppress("UNCHECKED_CAST")
@@ -203,7 +200,7 @@ interface Converter<T> : Component {
 
 	//region Converters
 	abstract class AbstractConverter<T> : Converter<T> {
-		override val targetType: Class<T> get() = inferTargetType(this, Converter::class.java)
+		override val targetType: Class<T> = inferTargetType(this::class.javaObjectType, Converter::class.java)
 
 		override fun equals(other: Any?): Boolean {
 			if(this === other) return true
@@ -230,7 +227,7 @@ interface Converter<T> : Component {
 	}
 
 	object ByteConverter : AbstractConverter<Byte>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Byte {
+		override fun convert(value: Any): Byte {
 			return when {
 				value is Byte -> value
 				value is Number -> value.toByte()
@@ -239,7 +236,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Byte? {
+		override fun convertOrNull(value: Any): Byte? {
 			return when {
 				value is Byte -> value
 				value is Number -> value.toByte()
@@ -250,7 +247,7 @@ interface Converter<T> : Component {
 	}
 
 	object ShortConverter : AbstractConverter<Short>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Short {
+		override fun convert(value: Any): Short {
 			return when {
 				value is Short -> value
 				value is Number -> value.toShort()
@@ -259,7 +256,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Short? {
+		override fun convertOrNull(value: Any): Short? {
 			return when {
 				value is Short -> value
 				value is Number -> value.toShort()
@@ -270,7 +267,7 @@ interface Converter<T> : Component {
 	}
 
 	object IntConverter : AbstractConverter<Int>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Int {
+		override fun convert(value: Any): Int {
 			return when {
 				value is Int -> value
 				value is Number -> value.toInt()
@@ -279,7 +276,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Int? {
+		override fun convertOrNull(value: Any): Int? {
 			return when {
 				value is Int -> value
 				value is Number -> value.toInt()
@@ -290,7 +287,7 @@ interface Converter<T> : Component {
 	}
 
 	object LongConverter : AbstractConverter<Long>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Long {
+		override fun convert(value: Any): Long {
 			return when {
 				value is Long -> value
 				value is Number -> value.toLong()
@@ -299,7 +296,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Long? {
+		override fun convertOrNull(value: Any): Long? {
 			return when {
 				value is Long -> value
 				value is Number -> value.toLong()
@@ -310,7 +307,7 @@ interface Converter<T> : Component {
 	}
 
 	object FloatConverter : AbstractConverter<Float>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Float {
+		override fun convert(value: Any): Float {
 			return when {
 				value is Float -> value
 				value is Number -> value.toFloat()
@@ -319,7 +316,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Float? {
+		override fun convertOrNull(value: Any): Float? {
 			return when {
 				value is Float -> value
 				value is Number -> value.toFloat()
@@ -330,7 +327,7 @@ interface Converter<T> : Component {
 	}
 
 	object DoubleConverter : AbstractConverter<Double>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Double {
+		override fun convert(value: Any): Double {
 			return when {
 				value is Double -> value
 				value is Number -> value.toDouble()
@@ -339,7 +336,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Double? {
+		override fun convertOrNull(value: Any): Double? {
 			return when {
 				value is Double -> value
 				value is Number -> value.toDouble()
@@ -350,7 +347,7 @@ interface Converter<T> : Component {
 	}
 
 	object BigIntegerConverter : AbstractConverter<BigInteger>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): BigInteger {
+		override fun convert(value: Any): BigInteger {
 			return when {
 				value is BigInteger -> value
 				value is Long -> BigInteger.valueOf(value)
@@ -358,7 +355,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): BigInteger? {
+		override fun convertOrNull(value: Any): BigInteger? {
 			return when {
 				value is BigInteger -> value
 				value is Long -> BigInteger.valueOf(value)
@@ -368,7 +365,7 @@ interface Converter<T> : Component {
 	}
 
 	object BigDecimalConverter : AbstractConverter<BigDecimal>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): BigDecimal {
+		override fun convert(value: Any): BigDecimal {
 			return when {
 				value is BigDecimal -> value
 				value is Double -> BigDecimal.valueOf(value)
@@ -376,7 +373,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): BigDecimal? {
+		override fun convertOrNull(value: Any): BigDecimal? {
 			return when {
 				value is BigDecimal -> value
 				value is Double -> BigDecimal.valueOf(value)
@@ -387,7 +384,7 @@ interface Converter<T> : Component {
 
 	@ExperimentalUnsignedTypes
 	object UByteConverter : AbstractConverter<UByte>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): UByte {
+		override fun convert(value: Any): UByte {
 			return when {
 				value is UByte -> value
 				value is Byte -> value.toUByte()
@@ -395,7 +392,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): UByte? {
+		override fun convertOrNull(value: Any): UByte? {
 			return when {
 				value is UByte -> value
 				value is Byte -> value.toUByte()
@@ -406,7 +403,7 @@ interface Converter<T> : Component {
 
 	@ExperimentalUnsignedTypes
 	object UShortConverter : AbstractConverter<UShort>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): UShort {
+		override fun convert(value: Any): UShort {
 			return when {
 				value is UShort -> value
 				value is Short -> value.toUShort()
@@ -414,7 +411,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): UShort? {
+		override fun convertOrNull(value: Any): UShort? {
 			return when {
 				value is UShort -> value
 				value is Short -> value.toUShort()
@@ -425,7 +422,7 @@ interface Converter<T> : Component {
 
 	@ExperimentalUnsignedTypes
 	object UIntConverter : AbstractConverter<UInt>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): UInt {
+		override fun convert(value: Any): UInt {
 			return when {
 				value is UInt -> value
 				value is Int -> value.toUInt()
@@ -433,7 +430,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): UInt? {
+		override fun convertOrNull(value: Any): UInt? {
 			return when {
 				value is UInt -> value
 				value is Int -> value.toUInt()
@@ -444,7 +441,7 @@ interface Converter<T> : Component {
 
 	@ExperimentalUnsignedTypes
 	object ULongConverter : AbstractConverter<ULong>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): ULong {
+		override fun convert(value: Any): ULong {
 			return when {
 				value is ULong -> value
 				value is Long -> value.toULong()
@@ -452,7 +449,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): ULong? {
+		override fun convertOrNull(value: Any): ULong? {
 			return when {
 				value is ULong -> value
 				value is Long -> value.toULong()
@@ -462,7 +459,7 @@ interface Converter<T> : Component {
 	}
 
 	object AtomicIntegerConverter : AbstractConverter<AtomicInteger>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): AtomicInteger {
+		override fun convert(value: Any): AtomicInteger {
 			return when {
 				value is AtomicInteger -> value
 				value is Int -> AtomicInteger(value)
@@ -470,7 +467,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): AtomicInteger? {
+		override fun convertOrNull(value: Any): AtomicInteger? {
 			return when {
 				value is AtomicInteger -> value
 				value is Int -> AtomicInteger(value)
@@ -480,7 +477,7 @@ interface Converter<T> : Component {
 	}
 
 	object AtomicLongConverter : AbstractConverter<AtomicLong>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): AtomicLong {
+		override fun convert(value: Any): AtomicLong {
 			return when {
 				value is AtomicLong -> value
 				value is Long -> AtomicLong(value)
@@ -488,7 +485,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): AtomicLong? {
+		override fun convertOrNull(value: Any): AtomicLong? {
 			return when {
 				value is AtomicLong -> value
 				value is Long -> AtomicLong(value)
@@ -499,7 +496,7 @@ interface Converter<T> : Component {
 	}
 
 	object BooleanConverter : AbstractConverter<Boolean>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Boolean {
+		override fun convert(value: Any): Boolean {
 			return when {
 				value is Boolean -> value
 				value is Number -> value.toString().let { it != "0" || it != "0.0" }
@@ -515,7 +512,7 @@ interface Converter<T> : Component {
 	}
 
 	object CharConverter : AbstractConverter<Char>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Char {
+		override fun convert(value: Any): Char {
 			return when {
 				value is Char -> value
 				value is Number -> value.toChar()
@@ -524,7 +521,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Char? {
+		override fun convertOrNull(value: Any): Char? {
 			return when {
 				value is Char -> value
 				value is Number -> value.toChar()
@@ -557,7 +554,7 @@ interface Converter<T> : Component {
 			return StringConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): String {
+		override fun convert(value: Any): String {
 			return when {
 				raw -> value.toString()
 				value is Date -> threadLocalDateFormat.get().format(value)
@@ -588,7 +585,7 @@ interface Converter<T> : Component {
 			return RegexConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): Regex {
+		override fun convert(value: Any): Regex {
 			return when {
 				value is Regex -> value
 				value is Pattern -> value.toRegex()
@@ -604,7 +601,7 @@ interface Converter<T> : Component {
 	}
 
 	object PatternConverter : AbstractConverter<Pattern>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Pattern {
+		override fun convert(value: Any): Pattern {
 			return when {
 				value is Regex -> value.toPattern()
 				value is Pattern -> value
@@ -614,14 +611,14 @@ interface Converter<T> : Component {
 	}
 
 	object CharsetConverter : AbstractConverter<Charset>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Charset {
+		override fun convert(value: Any): Charset {
 			return when {
 				value is Charset -> value
 				else -> value.toString().toCharset()
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Charset? {
+		override fun convertOrNull(value: Any): Charset? {
 			return when {
 				value is Charset -> value
 				else -> value.toString().toCharsetOrNull()
@@ -630,14 +627,14 @@ interface Converter<T> : Component {
 	}
 
 	object ClassConverter : AbstractConverter<Class<*>>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Class<*> {
+		override fun convert(value: Any): Class<*> {
 			return when {
 				value is Class<*> -> value
 				else -> value.toString().toClass()
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Class<*>? {
+		override fun convertOrNull(value: Any): Class<*>? {
 			return when {
 				value is Class<*> -> value
 				else -> value.toString().toClassOrNull()
@@ -646,7 +643,7 @@ interface Converter<T> : Component {
 	}
 
 	object LocaleConverter : AbstractConverter<Locale>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Locale {
+		override fun convert(value: Any): Locale {
 			return when {
 				value is Locale -> value
 				else -> value.toString().toLocale()
@@ -655,7 +652,7 @@ interface Converter<T> : Component {
 	}
 
 	object TimeZoneConverter : AbstractConverter<TimeZone>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): TimeZone {
+		override fun convert(value: Any): TimeZone {
 			return when {
 				value is TimeZone -> value
 				value is ZoneId -> TimeZone.getTimeZone(value)
@@ -663,7 +660,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): TimeZone? {
+		override fun convertOrNull(value: Any): TimeZone? {
 			return when {
 				value is TimeZone -> value
 				value is ZoneId -> TimeZone.getTimeZone(value)
@@ -673,7 +670,7 @@ interface Converter<T> : Component {
 	}
 
 	object ZoneIdConverter : AbstractConverter<ZoneId>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): ZoneId {
+		override fun convert(value: Any): ZoneId {
 			return when {
 				value is ZoneId -> value
 				value is TimeZone -> value.toZoneId()
@@ -703,7 +700,7 @@ interface Converter<T> : Component {
 			return DateConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): Date {
+		override fun convert(value: Any): Date {
 			return when {
 				value is Date -> value
 				value is Instant -> Date.from(value)
@@ -733,7 +730,7 @@ interface Converter<T> : Component {
 			return LocalDateConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): LocalDate {
+		override fun convert(value: Any): LocalDate {
 			return when {
 				value is LocalDate -> value
 				value is TemporalAccessor -> LocalDate.from(value)
@@ -764,7 +761,7 @@ interface Converter<T> : Component {
 			return LocalTimeConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): LocalTime {
+		override fun convert(value: Any): LocalTime {
 			return when {
 				value is LocalTime -> value
 				value is TemporalAccessor -> LocalTime.from(value)
@@ -795,7 +792,7 @@ interface Converter<T> : Component {
 			return LocalDateTimeConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): LocalDateTime {
+		override fun convert(value: Any): LocalDateTime {
 			return when {
 				value is LocalDateTime -> value
 				value is TemporalAccessor -> LocalDateTime.from(value)
@@ -807,7 +804,7 @@ interface Converter<T> : Component {
 	}
 
 	object InstantConverter : AbstractConverter<Instant>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Instant {
+		override fun convert(value: Any): Instant {
 			return when {
 				value is Instant -> value
 				value is TemporalAccessor -> Instant.from(value)
@@ -819,7 +816,7 @@ interface Converter<T> : Component {
 
 	//TODO
 	object DurationConverter : AbstractConverter<Duration>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Duration {
+		override fun convert(value: Any): Duration {
 			return when {
 				value is Duration -> value
 				value is TemporalAmount -> Duration.from(value)
@@ -846,7 +843,7 @@ interface Converter<T> : Component {
 			return PeriodConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): Period {
+		override fun convert(value: Any): Period {
 			return when {
 				value is Period -> value
 				value is TemporalAmount -> Period.from(value)
@@ -865,7 +862,7 @@ interface Converter<T> : Component {
 	}
 
 	object FileConverter : AbstractConverter<File>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): File {
+		override fun convert(value: Any): File {
 			return when {
 				value is File -> value
 				value is Path -> value.toFile()
@@ -877,7 +874,7 @@ interface Converter<T> : Component {
 	}
 
 	object PathConverter : AbstractConverter<Path>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): Path {
+		override fun convert(value: Any): Path {
 			return when {
 				value is File -> value.toPath()
 				value is Path -> value
@@ -889,7 +886,7 @@ interface Converter<T> : Component {
 	}
 
 	object UrlConverter : AbstractConverter<URL>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): URL {
+		override fun convert(value: Any): URL {
 			return when {
 				value is File -> value.toUrl()
 				value is Path -> value.toUrl()
@@ -901,7 +898,7 @@ interface Converter<T> : Component {
 	}
 
 	object UriConverter : AbstractConverter<URI>() {
-		override fun convert(value: Any,configParams:Map<String,Any?>): URI {
+		override fun convert(value: Any): URI {
 			return when {
 				value is File -> value.toUri()
 				value is Path -> value.toUri()
@@ -930,7 +927,7 @@ interface Converter<T> : Component {
 			return EnumConverter(configParams)
 		}
 
-		override fun convert(value: Any,configParams:Map<String,Any?>): Enum<*> {
+		override fun convert(value: Any): Enum<*> {
 			if(enumClass == null) throw IllegalArgumentException("Cannot get enum class. Param 'className' is empty or invalid.")
 			return when {
 				value is Number -> {
@@ -944,7 +941,7 @@ interface Converter<T> : Component {
 			}
 		}
 
-		override fun convertOrNull(value: Any,configParams:Map<String,Any?>): Enum<*>? {
+		override fun convertOrNull(value: Any): Enum<*>? {
 			if(enumClass == null) throw IllegalArgumentException("Cannot get enum class. Param 'className' is empty or invalid.")
 			return when {
 				value is Number -> {

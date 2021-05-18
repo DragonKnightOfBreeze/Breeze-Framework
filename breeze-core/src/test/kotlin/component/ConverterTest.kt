@@ -21,4 +21,17 @@ class ConverterTest {
 		println(123.convert<String>())
 		println("java.lang.Object".convert<Class<*>>())
 	}
+
+	@Test
+	fun test2(){
+		println("123".convert<Int>())
+		println(Date().convert<String>())
+		println(Date().convert<String>(mapOf("raw" to true)))
+		println(0.convert<NV>(mapOf("className" to "icu.windea.breezeframework.core.component.ConverterTest\$NV")))
+		println("Name".convert<NV>(mapOf("className" to "icu.windea.breezeframework.core.component.ConverterTest\$NV")))
+	}
+
+	enum class NV{
+		Name,Value
+	}
 }

@@ -5,6 +5,7 @@
 
 package icu.windea.breezeframework.core.extension
 
+import java.awt.*
 import java.lang.reflect.*
 import java.text.*
 import java.util.*
@@ -69,33 +70,42 @@ internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<Da
 //	}
 //}
 
+//IntConverter: Converter<Int> -> Int
 
 private val targetTypeCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T> inferTargetType(target:Any,componentType:Class<*>):Class<T>{
-	val targetMap = targetTypeCache.getOrPut(componentType) { ConcurrentHashMap() }
-	val targetType = target::class.javaObjectType
-	return targetMap.getOrPut(targetType){
-		val genericSuperclass = targetType.genericSuperclass //AbstractComponent<T>
-		if(genericSuperclass !is ParameterizedType) throw error("Cannot infer target type for target '$target'.")
-		val genericTypes = genericSuperclass.actualTypeArguments
-		if(genericTypes.isEmpty()) throw error("Cannot infer target type for target '$target'.")
-		val genericType = genericTypes[0]
-		if(genericType !is Class<*>) throw error("Cannot infer target type for target '$target'.")
-		genericType
+internal fun <T> inferTargetType(type:Class<*>,superType:Class<*>):Class<T>{
+	val targetMap = targetTypeCache.getOrPut(superType) { ConcurrentHashMap() }
+	return targetMap.getOrPut(type){
+		var currentType:Type = type
+		while(currentType != Any::class.java){
+			val currentClass = when {
+				currentType is Class<*> -> currentType
+				currentType is ParameterizedType -> currentType.rawType as? Class<*> ?: error("Cannot infer target type for type '$type'.")
+				else -> error("Cannot infer target type for type '$type'.")
+			}
+			val genericSuperClass = currentClass.genericSuperclass
+			if(genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()){
+				val genericType = genericSuperClass.actualTypeArguments[0]
+				if(genericType is Class<*>) return@getOrPut genericType
+				if(genericType is ParameterizedType){
+					val genericTypeRawType = genericType.rawType
+					if(genericTypeRawType is Class<*>) return@getOrPut genericTypeRawType
+				}
+			}
+			val genericInterfaces = currentClass.genericInterfaces
+			val genericInterface = genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == superType }
+			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()){
+				val genericType = genericInterface.actualTypeArguments[0]
+				if(genericType is Class<*>) return@getOrPut genericType
+				if(genericType is ParameterizedType){
+					val genericTypeRawType = genericType.rawType
+					if(genericTypeRawType is Class<*>) return@getOrPut genericTypeRawType
+				}
+			}
+			currentType = genericSuperClass
+		}
+		error("Cannot infer target type for type '$type'.")
 	} as Class<T>
 }
-//
-////public inline fun <T> Array<out T>.find(predicate: (T) -> Boolean): T?
-//@PublishedApi
-//internal fun <T> Array<out T>.recursiveFind(flatSelector:(T)->Array<out T>,predicate:(T)->Boolean):T?{
-//	val result = find(predicate)
-//	if(result != null) return result
-//	for(e in this){
-//		val flatThis = flatSelector(e)
-//		val flatResult = flatThis.recursiveFind(flatSelector, predicate)
-//		if(flatResult != null) return flatResult
-//	}
-//	return null
-//}
