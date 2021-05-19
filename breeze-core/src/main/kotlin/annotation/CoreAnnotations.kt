@@ -108,7 +108,6 @@ annotation class ConfigParam(
 	 * 配置参数的类型，对应Kotlin类型，可以传递任何可以转化为该类型的参数。
 	 *
 	 * @see icu.windea.breezeframework.core.component.Converter
-	 * @see icu.windea.breezeframework.core.extension.convertOrNull
 	 */
 	val type: String,
 	/**

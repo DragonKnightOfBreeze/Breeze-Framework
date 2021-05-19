@@ -9,6 +9,8 @@ import java.nio.charset.*
 import java.time.*
 import java.util.*
 import java.util.concurrent.*
+import java.util.concurrent.atomic.*
+import java.util.regex.*
 import java.util.stream.*
 
 /**
@@ -34,14 +36,20 @@ interface DefaultGenerator<T> : Component {
 			register(DefaultLongGenerator)
 			register(DefaultFloatGenerator)
 			register(DefaultDoubleGenerator)
+			register(DefaultCharGenerator)
+			register(DefaultBooleanGenerator)
 			register(DefaultBigIntegerGenerator)
 			register(DefaultBigDecimalGenerator)
 			register(DefaultUByteGenerator)
 			register(DefaultUShortGenerator)
 			register(DefaultUIntGenerator)
-			register(DefaultCharGenerator)
-			register(DefaultBooleanGenerator)
+			register(DefaultULongGenerator)
+			register(DefaultAtomicIntegerGenerator)
+			register(DefaultAtomicLongGenerator)
+			register(DefaultAtomicBooleanGenerator)
 			register(DefaultStringGenerator)
+			register(DefaultRegexGenerator)
+			register(DefaultPatternGenerator)
 			register(DefaultCharsetGenerator)
 			register(DefaultLocaleGenerator)
 			register(DefaultTimeZoneGenerator)
@@ -172,6 +180,16 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): Double = value
 	}
 
+	object DefaultCharGenerator : AbstractDefaultGenerator<Char>() {
+		private const val value: Char = '\u0000'
+		override fun generate(): Char = value
+	}
+
+	object DefaultBooleanGenerator : AbstractDefaultGenerator<Boolean>() {
+		private const val value: Boolean = false
+		override fun generate(): Boolean = value
+	}
+
 	object DefaultBigIntegerGenerator : AbstractDefaultGenerator<BigInteger>() {
 		private val value: BigInteger = BigInteger.ZERO
 		override fun generate(): BigInteger = value
@@ -200,19 +218,40 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): UInt = value
 	}
 
-	object DefaultCharGenerator : AbstractDefaultGenerator<Char>() {
-		private const val value: Char = '\u0000'
-		override fun generate(): Char = value
+	@ExperimentalUnsignedTypes
+	object DefaultULongGenerator : AbstractDefaultGenerator<ULong>() {
+		private val value: ULong = 0.toULong()
+		override fun generate(): ULong = value
 	}
 
-	object DefaultBooleanGenerator : AbstractDefaultGenerator<Boolean>() {
-		private const val value: Boolean = false
-		override fun generate(): Boolean = value
+	object DefaultAtomicIntegerGenerator : AbstractDefaultGenerator<AtomicInteger>() {
+		private val value: AtomicInteger = AtomicInteger(0)
+		override fun generate(): AtomicInteger = value
+	}
+
+	object DefaultAtomicLongGenerator : AbstractDefaultGenerator<AtomicLong>() {
+		private val value: AtomicLong = AtomicLong(0)
+		override fun generate(): AtomicLong = value
+	}
+
+	object DefaultAtomicBooleanGenerator : AbstractDefaultGenerator<AtomicBoolean>() {
+		private val value: AtomicBoolean = AtomicBoolean(false)
+		override fun generate(): AtomicBoolean = value
 	}
 
 	object DefaultStringGenerator : AbstractDefaultGenerator<String>() {
 		private const val value: String = ""
 		override fun generate(): String = value
+	}
+
+	object DefaultRegexGenerator : AbstractDefaultGenerator<Regex>() {
+		private val value: Regex = "".toRegex()
+		override fun generate(): Regex = value
+	}
+
+	object DefaultPatternGenerator : AbstractDefaultGenerator<Pattern>() {
+		private val value: Pattern = Pattern.compile("")
+		override fun generate(): Pattern = value
 	}
 
 	object DefaultCharsetGenerator : AbstractDefaultGenerator<Charset>() {

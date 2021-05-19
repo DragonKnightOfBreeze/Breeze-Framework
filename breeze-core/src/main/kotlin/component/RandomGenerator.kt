@@ -35,12 +35,14 @@ interface RandomGenerator<T> : Component {
 			register(RandomLongGenerator)
 			register(RandomFloatGenerator)
 			register(RandomDoubleGenerator)
+			register(RandomBooleanGenerator)
+			register(RandomCharGenerator)
 			register(RandomBigIntegerGenerator)
 			register(RandomBigDecimalGenerator)
+			register(RandomUByteGenerator)
+			register(RandomUShortGenerator)
 			register(RandomUIntGenerator)
 			register(RandomULongGenerator)
-			register(RandomCharGenerator)
-			register(RandomBooleanGenerator)
 			register(RandomStringGenerator)
 			register(RandomUuidGenerator)
 			register(RandomDateGenerator)
@@ -88,12 +90,15 @@ interface RandomGenerator<T> : Component {
 			return randomGenerator.generate() as T
 		}
 
-		private fun <T> inferRandomGenerator(targetType: Class<T>, configParams: Map<String, Any?>): RandomGenerator<*>? {
+		private fun <T> inferRandomGenerator(
+			targetType: Class<T>,
+			configParams: Map<String, Any?>
+		): RandomGenerator<*>? {
 			var result = components.find { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}
-			if(result is BoundRandomGenerator<*> && targetType != result.targetType){
+			if(result is BoundRandomGenerator<*> && targetType != result.targetType) {
 				result = result.bindingActualTargetType(targetType)
 			}
 			return result
@@ -112,50 +117,348 @@ interface RandomGenerator<T> : Component {
 	}
 
 	//region Random Generators
-	object RandomByteGenerator : AbstractRandomGenerator<Byte>() {
-		override fun generate(): Byte = Random.nextByte()
+	@ConfigParams(
+		ConfigParam("min", "Byte"),
+		ConfigParam("max", "Byte")
+	)
+	open class RandomByteGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Byte>(), ConfigurableRandomGenerator<Byte> {
+		companion object Default : RandomByteGenerator()
+
+		val min: Byte = configParams.get("min").convertOrNull() ?: 0
+		val max: Byte = configParams.get("max").convertOrNull() ?: 0
+
+		override fun configure(configParams: Map<String, Any?>): RandomByteGenerator {
+			return RandomByteGenerator(configParams)
+		}
+
+		override fun generate(): Byte {
+			return when {
+				min != 0.toByte() && max != 0.toByte() -> Random.nextByte(min, max)
+				min == 0.toByte() && max == 0.toByte() -> Random.nextByte()
+				max != 0.toByte() -> Random.nextByte(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomShortGenerator : AbstractRandomGenerator<Short>() {
-		override fun generate(): Short = Random.nextShort()
+	@ConfigParams(
+		ConfigParam("min", "Short"),
+		ConfigParam("max", "Short")
+	)
+	open class RandomShortGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Short>(), ConfigurableRandomGenerator<Short> {
+		companion object Default : RandomShortGenerator()
+
+		val min: Short = configParams.get("min").convertOrNull() ?: 0
+		val max: Short = configParams.get("max").convertOrNull() ?: 0
+
+		override fun configure(configParams: Map<String, Any?>): RandomShortGenerator {
+			return RandomShortGenerator(configParams)
+		}
+
+		override fun generate(): Short {
+			return when {
+				min != 0.toShort() && max != 0.toShort() -> Random.nextShort(min, max)
+				min == 0.toShort() && max == 0.toShort() -> Random.nextShort()
+				max != 0.toShort() -> Random.nextShort(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomIntGenerator : AbstractRandomGenerator<Int>() {
-		override fun generate(): Int = Random.nextInt()
+	@ConfigParams(
+		ConfigParam("min", "Int"),
+		ConfigParam("max", "Int")
+	)
+	open class RandomIntGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Int>(), ConfigurableRandomGenerator<Int> {
+		companion object Default : RandomIntGenerator()
+
+		val min: Int = configParams.get("min").convertOrNull() ?: 0
+		val max: Int = configParams.get("max").convertOrNull() ?: 0
+
+		override fun configure(configParams: Map<String, Any?>): RandomIntGenerator {
+			return RandomIntGenerator(configParams)
+		}
+
+		override fun generate(): Int {
+			return when {
+				min != 0 && max != 0 -> Random.nextInt(min, max)
+				min == 0 && max == 0 -> Random.nextInt()
+				max != 0 -> Random.nextInt(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomLongGenerator : AbstractRandomGenerator<Long>() {
-		override fun generate(): Long = Random.nextLong()
+	@ConfigParams(
+		ConfigParam("min", "Long"),
+		ConfigParam("max", "Long")
+	)
+	open class RandomLongGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Long>(), ConfigurableRandomGenerator<Long> {
+		companion object Default : RandomLongGenerator()
+
+		val min: Long = configParams.get("min").convertOrNull() ?: 0
+		val max: Long = configParams.get("max").convertOrNull() ?: 0
+
+		override fun configure(configParams: Map<String, Any?>): RandomLongGenerator {
+			return RandomLongGenerator(configParams)
+		}
+
+		override fun generate(): Long {
+			return when {
+				min != 0L && max != 0L -> Random.nextLong(min, max)
+				min == 0L && max == 0L -> Random.nextLong()
+				max != 0L -> Random.nextLong(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomFloatGenerator : AbstractRandomGenerator<Float>() {
-		override fun generate(): Float = Random.nextFloat()
+	@ConfigParams(
+		ConfigParam("min", "Float"),
+		ConfigParam("max", "Float")
+	)
+	open class RandomFloatGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Float>(), ConfigurableRandomGenerator<Float> {
+		companion object Default : RandomFloatGenerator()
+
+		val min: Float = configParams.get("min").convertOrNull() ?: 0F
+		val max: Float = configParams.get("max").convertOrNull() ?: 0F
+
+		override fun configure(configParams: Map<String, Any?>): RandomFloatGenerator {
+			return RandomFloatGenerator(configParams)
+		}
+
+		override fun generate(): Float {
+			return when {
+				min != 0F && max != 0F -> Random.nextFloat(min, max)
+				min == 0F && max == 0F -> Random.nextFloat()
+				max != 0F -> Random.nextFloat(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomDoubleGenerator : AbstractRandomGenerator<Double>() {
-		override fun generate(): Double = Random.nextDouble()
+	@ConfigParams(
+		ConfigParam("min", "Double"),
+		ConfigParam("max", "Double")
+	)
+	open class RandomDoubleGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Double>(), ConfigurableRandomGenerator<Double> {
+		companion object Default : RandomDoubleGenerator()
+
+		val min: Double = configParams.get("min").convertOrNull() ?: 0.0
+		val max: Double = configParams.get("max").convertOrNull() ?: 0.0
+
+		override fun configure(configParams: Map<String, Any?>): RandomDoubleGenerator {
+			return RandomDoubleGenerator(configParams)
+		}
+
+		override fun generate(): Double {
+			return when {
+				min != 0.0 && max != 0.0 -> Random.nextDouble(min, max)
+				min == 0.0 && max == 0.0 -> Random.nextDouble()
+				max != 0.0 -> Random.nextDouble(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomBigIntegerGenerator : AbstractRandomGenerator<BigInteger>() {
-		override fun generate(): BigInteger = Random.nextBigInteger()
+	@ConfigParams(
+		ConfigParam("min", "BigInteger"),
+		ConfigParam("max", "BigInteger")
+	)
+	@UnstableApi
+	open class RandomBigIntegerGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<BigInteger>(), ConfigurableRandomGenerator<BigInteger> {
+		companion object Default : RandomBigIntegerGenerator()
+
+		val min: BigInteger = configParams.get("min").convertOrNull() ?: BigInteger.ZERO
+		val max: BigInteger = configParams.get("max").convertOrNull() ?: BigInteger.ZERO
+
+		override fun configure(configParams: Map<String, Any?>): RandomBigIntegerGenerator {
+			return RandomBigIntegerGenerator(configParams)
+		}
+
+		override fun generate(): BigInteger {
+			return when {
+				min != BigInteger.ZERO && max != BigInteger.ZERO -> Random.nextBigInteger(min, max)
+				min == BigInteger.ZERO && max == BigInteger.ZERO -> Random.nextBigInteger()
+				max != BigInteger.ZERO -> Random.nextBigInteger(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomBigDecimalGenerator : AbstractRandomGenerator<BigDecimal>() {
-		override fun generate(): BigDecimal = Random.nextBigDecimal()
+	@ConfigParams(
+		ConfigParam("min", "BigDecimal"),
+		ConfigParam("max", "BigDecimal")
+	)
+	@UnstableApi
+	open class RandomBigDecimalGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<BigDecimal>(), ConfigurableRandomGenerator<BigDecimal> {
+		companion object Default : RandomBigDecimalGenerator()
+
+		val min: BigDecimal = configParams.get("min").convertOrNull() ?: BigDecimal.ZERO
+		val max: BigDecimal = configParams.get("max").convertOrNull() ?: BigDecimal.ZERO
+
+		override fun configure(configParams: Map<String, Any?>): RandomBigDecimalGenerator {
+			return RandomBigDecimalGenerator(configParams)
+		}
+
+		override fun generate(): BigDecimal {
+			return when {
+				min != BigDecimal.ZERO && max != BigDecimal.ZERO -> Random.nextBigDecimal(min, max)
+				min == BigDecimal.ZERO && max == BigDecimal.ZERO -> Random.nextBigDecimal()
+				max != BigDecimal.ZERO -> Random.nextBigDecimal(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
+	@ConfigParams(
+		ConfigParam("min", "UByte"),
+		ConfigParam("max", "UByte")
+	)
 	@ExperimentalUnsignedTypes
-	object RandomUIntGenerator : AbstractRandomGenerator<UInt>() {
-		override fun generate(): UInt = Random.nextUInt()
+	open class RandomUByteGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<UByte>(), ConfigurableRandomGenerator<UByte> {
+		companion object Default : RandomUByteGenerator()
+
+		val min: UByte = configParams.get("min").convertOrNull() ?: 0.toUByte()
+		val max: UByte = configParams.get("max").convertOrNull() ?: 0.toUByte()
+
+		override fun configure(configParams: Map<String, Any?>): RandomUByteGenerator {
+			return RandomUByteGenerator(configParams)
+		}
+
+		override fun generate(): UByte {
+			return when {
+				min != 0.toUByte() && max != 0.toUByte() -> Random.nextUByte(min, max)
+				min == 0.toUByte() && max == 0.toUByte() -> Random.nextUByte()
+				max != 0.toUByte() -> Random.nextUByte(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
+	@ConfigParams(
+		ConfigParam("min", "UShort"),
+		ConfigParam("max", "UShort")
+	)
 	@ExperimentalUnsignedTypes
-	object RandomULongGenerator : AbstractRandomGenerator<ULong>() {
-		override fun generate(): ULong = Random.nextULong()
+	open class RandomUShortGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<UShort>(), ConfigurableRandomGenerator<UShort> {
+		companion object Default : RandomUShortGenerator()
+
+		val min: UShort = configParams.get("min").convertOrNull() ?: 0.toUShort()
+		val max: UShort = configParams.get("max").convertOrNull() ?: 0.toUShort()
+
+		override fun configure(configParams: Map<String, Any?>): RandomUShortGenerator {
+			return RandomUShortGenerator(configParams)
+		}
+
+		override fun generate(): UShort {
+			return when {
+				min != 0.toUShort() && max != 0.toUShort() -> Random.nextUShort(min, max)
+				min == 0.toUShort() && max == 0.toUShort() -> Random.nextUShort()
+				max != 0.toUShort() -> Random.nextUShort(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
-	object RandomCharGenerator : AbstractRandomGenerator<Char>() {
-		override fun generate(): Char = Random.nextChar()
+	@ConfigParams(
+		ConfigParam("min", "UInt"),
+		ConfigParam("max", "UInt")
+	)
+	@ExperimentalUnsignedTypes
+	open class RandomUIntGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<UInt>(), ConfigurableRandomGenerator<UInt> {
+		companion object Default : RandomUIntGenerator()
+
+		val min: UInt = configParams.get("min").convertOrNull() ?: 0.toUInt()
+		val max: UInt = configParams.get("max").convertOrNull() ?: 0.toUInt()
+
+		override fun configure(configParams: Map<String, Any?>): RandomUIntGenerator {
+			return RandomUIntGenerator(configParams)
+		}
+
+		override fun generate(): UInt {
+			return when {
+				min != 0.toUInt() && max != 0.toUInt() -> Random.nextUInt(min, max)
+				min == 0.toUInt() && max == 0.toUInt() -> Random.nextUInt()
+				max != 0.toUInt() -> Random.nextUInt(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
+	}
+
+	@ConfigParams(
+		ConfigParam("min", "ULong"),
+		ConfigParam("max", "ULong")
+	)
+	@ExperimentalUnsignedTypes
+	open class RandomULongGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<ULong>(), ConfigurableRandomGenerator<ULong> {
+		companion object Default : RandomULongGenerator()
+
+		val min: ULong = configParams.get("min").convertOrNull() ?: 0.toULong()
+		val max: ULong = configParams.get("max").convertOrNull() ?: 0.toULong()
+
+		override fun configure(configParams: Map<String, Any?>): RandomULongGenerator {
+			return RandomULongGenerator(configParams)
+		}
+
+		override fun generate(): ULong {
+			return when {
+				min != 0.toULong() && max != 0.toULong() -> Random.nextULong(min, max)
+				min == 0.toULong() && max == 0.toULong() -> Random.nextULong()
+				max != 0.toULong() -> Random.nextULong(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
+	}
+
+	@ConfigParams(
+		ConfigParam("min", "Char"),
+		ConfigParam("max", "Char")
+	)
+	open class RandomCharGenerator(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractRandomGenerator<Char>(), ConfigurableRandomGenerator<Char> {
+		companion object Default : RandomCharGenerator()
+
+		val min: Char = configParams.get("min").convertOrNull() ?: Char.MIN_VALUE
+		val max: Char = configParams.get("max").convertOrNull() ?: Char.MIN_VALUE
+
+		override fun configure(configParams: Map<String, Any?>): RandomCharGenerator {
+			return RandomCharGenerator(configParams)
+		}
+
+		override fun generate(): Char {
+			return when {
+				min != Char.MIN_VALUE && max != Char.MIN_VALUE -> Random.nextChar(min, max)
+				min == Char.MIN_VALUE && max == Char.MIN_VALUE -> Random.nextChar()
+				max != Char.MIN_VALUE -> Random.nextChar(max)
+				else -> throw IllegalArgumentException("Config param 'max' cannot be null or zero where 'min' is not null or zero.")
+			}
+		}
 	}
 
 	object RandomBooleanGenerator : AbstractRandomGenerator<Boolean>() {
@@ -203,7 +506,7 @@ interface RandomGenerator<T> : Component {
 				if(maxLength == 0) throw java.lang.IllegalArgumentException("Config param 'maxLength cannot be null.'")
 			}
 			if(source.isEmpty()) throw IllegalArgumentException("Config param 'source' cannot be null or empty.")
-			val length = if(length != 0) length else Random.nextInt(minLength,maxLength)
+			val length = if(length != 0) length else Random.nextInt(minLength, maxLength)
 			return buildString {
 				repeat(length) {
 					append(Random.nextElement(source))

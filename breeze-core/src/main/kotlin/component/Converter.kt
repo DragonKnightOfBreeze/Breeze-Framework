@@ -53,6 +53,8 @@ interface Converter<T> : Component {
 			register(LongConverter)
 			register(FloatConverter)
 			register(DoubleConverter)
+			register(BooleanConverter)
+			register(CharConverter)
 			register(BigIntegerConverter)
 			register(BigDecimalConverter)
 			register(UByteConverter)
@@ -61,8 +63,7 @@ interface Converter<T> : Component {
 			register(ULongConverter)
 			register(AtomicIntegerConverter)
 			register(AtomicLongConverter)
-			register(BooleanConverter)
-			register(CharConverter)
+			register(AtomicBooleanConverter)
 			register(StringConverter)
 			register(RegexConverter)
 			register(PatternConverter)
@@ -340,6 +341,42 @@ interface Converter<T> : Component {
 		}
 	}
 
+	object BooleanConverter : AbstractConverter<Boolean>() {
+		override fun convert(value: Any): Boolean {
+			return when {
+				value is Boolean -> value
+				value is Number -> value.toString().let { it != "0" || it != "0.0" }
+				value is CharSequence -> value.isNotEmpty()
+				value is Array<*> -> value.isNotEmpty()
+				value is Collection<*> -> value.isNotEmpty()
+				value is Iterable<*> -> value.any()
+				value is Sequence<*> -> value.any()
+				value is Map<*, *> -> value.isNotEmpty()
+				else -> false
+			}
+		}
+	}
+
+	object CharConverter : AbstractConverter<Char>() {
+		override fun convert(value: Any): Char {
+			return when {
+				value is Char -> value
+				value is Number -> value.toChar()
+				value is CharSequence -> value.single()
+				else -> throw IllegalArgumentException("Cannot convert '$value' to Char.")
+			}
+		}
+
+		override fun convertOrNull(value: Any): Char? {
+			return when {
+				value is Char -> value
+				value is Number -> value.toChar()
+				value is CharSequence -> value.singleOrNull()
+				else -> null
+			}
+		}
+	}
+
 	object BigIntegerConverter : AbstractConverter<BigInteger>() {
 		override fun convert(value: Any): BigInteger {
 			return when {
@@ -489,38 +526,12 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object BooleanConverter : AbstractConverter<Boolean>() {
-		override fun convert(value: Any): Boolean {
+	object AtomicBooleanConverter : AbstractConverter<AtomicBoolean>() {
+		override fun convert(value: Any): AtomicBoolean {
 			return when {
-				value is Boolean -> value
-				value is Number -> value.toString().let { it != "0" || it != "0.0" }
-				value is CharSequence -> value.isNotEmpty()
-				value is Array<*> -> value.isNotEmpty()
-				value is Collection<*> -> value.isNotEmpty()
-				value is Iterable<*> -> value.any()
-				value is Sequence<*> -> value.any()
-				value is Map<*, *> -> value.isNotEmpty()
-				else -> false
-			}
-		}
-	}
-
-	object CharConverter : AbstractConverter<Char>() {
-		override fun convert(value: Any): Char {
-			return when {
-				value is Char -> value
-				value is Number -> value.toChar()
-				value is CharSequence -> value.single()
-				else -> throw IllegalArgumentException("Cannot convert '$value' to Char.")
-			}
-		}
-
-		override fun convertOrNull(value: Any): Char? {
-			return when {
-				value is Char -> value
-				value is Number -> value.toChar()
-				value is CharSequence -> value.singleOrNull()
-				else -> null
+				value is AtomicBoolean -> value
+				value is Boolean -> AtomicBoolean(value)
+				else -> AtomicBoolean(value.convert())
 			}
 		}
 	}

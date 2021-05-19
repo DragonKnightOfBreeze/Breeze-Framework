@@ -6,6 +6,7 @@
 package icu.windea.breezeframework.core.extension
 
 import java.lang.reflect.*
+import java.math.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
@@ -24,6 +25,16 @@ internal val calendar: Calendar = Calendar.getInstance()
 internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 //internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
 //internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
+
+//internal number extensions
+
+internal fun BigInteger.toLongOrMax():Long{
+	return if(this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
+}
+
+internal fun BigDecimal.toDoubleOrMax():Double{
+	return if(this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
+}
 
 //internal string extensions
 
