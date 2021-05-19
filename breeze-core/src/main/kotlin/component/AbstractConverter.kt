@@ -4,6 +4,7 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.inferComponentTargetType
+import java.util.*
 
 abstract class AbstractConverter<T> : Converter<T> {
 	override val targetType: Class<T> = inferComponentTargetType(this::class.javaObjectType, Converter::class.java)
@@ -11,26 +12,23 @@ abstract class AbstractConverter<T> : Converter<T> {
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true
 		if(other == null || javaClass != other.javaClass) return false
-		return when {
-			this is ConfigurableConverter<*> && other is ConfigurableConverter<*> -> configParams.toString() == other.configParams.toString()
-			this is BoundConverter<*> && other is BoundConverter<*> -> actualTargetType == other.actualTargetType
-			else -> true
-		}
+		if(this is ConfigurableConverter<*> && other is ConfigurableConverter<*> && configParams.toString() != other.configParams.toString()) return false
+		if(this is BoundConverter<*> && other is BoundConverter<*> && actualTargetType != other.actualTargetType) return false
+		return true
 	}
 
 	override fun hashCode(): Int {
-		return when {
-			this is ConfigurableConverter<*> -> configParams.toString().hashCode()
-			this is BoundConverter<*> -> actualTargetType.hashCode()
-			else -> 0
-		}
+		var hash = 1
+		if(this is ConfigurableConverter<*>) hash = 31 * hash + configParams.toString().hashCode()
+		if(this is BoundConverter<*>) hash = 31 * hash + actualTargetType.hashCode()
+		return hash
 	}
 
 	override fun toString(): String {
-		return when {
-			this is ConfigurableConverter<*> -> targetType.name + '@' + configParams.toString()
-			this is BoundConverter<*> -> targetType.name + '@' + actualTargetType.name
-			else -> targetType.name
+		return buildString {
+			append(targetType)
+			if(this@AbstractConverter is ConfigurableConverter<*>) append('@').append(configParams)
+			if(this@AbstractConverter is BoundConverter<*>) append('@').append(actualTargetType)
 		}
 	}
 }

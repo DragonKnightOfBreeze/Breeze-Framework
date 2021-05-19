@@ -12,14 +12,14 @@ import java.util.*
 class RandomGeneratorTest {
 	@Test
 	fun test(){
-		println(randomValue<Byte>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<Short>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<Int>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<Long>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<Float>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<Double>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<BigInteger>(mapOf("min" to 1,"max" to "100")))
-		println(randomValue<BigDecimal>(mapOf("min" to 1,"max" to "100")))
+		println(randomValue<Byte>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<Short>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<Int>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<Long>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<Float>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<Double>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<BigInteger>(mapOf("min" to 1,"max" to "10")))
+		println(randomValue<BigDecimal>(mapOf("min" to 1,"max" to "10")))
 		println(randomValue<Char>())
 		println(randomValue<Boolean>())
 		println(randomValue<String>(mapOf("length" to 3,"source" to "abc")))

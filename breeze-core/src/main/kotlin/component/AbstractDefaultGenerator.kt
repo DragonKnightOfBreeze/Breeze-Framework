@@ -11,23 +11,23 @@ abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true
 		if(other == null || javaClass != other.javaClass) return false
-		return when {
-			this is ConfigurableDefaultGenerator<*> && other is ConfigurableDefaultGenerator<*> -> configParams.toString() == other.configParams.toString()
-			else -> true
-		}
+		if(this is ConfigurableDefaultGenerator<*> && other is ConfigurableDefaultGenerator<*> && configParams.toString() != other.configParams.toString()) return false
+		if(this is BoundDefaultGenerator<*> && other is BoundDefaultGenerator<*> && actualTargetType != other.actualTargetType) return false
+		return true
 	}
 
 	override fun hashCode(): Int {
-		return when {
-			this is ConfigurableDefaultGenerator<*> -> configParams.toString().hashCode()
-			else -> 0
-		}
+		var hash = 1
+		if(this is ConfigurableDefaultGenerator<*>) hash = 31 * hash + configParams.toString().hashCode()
+		if(this is BoundDefaultGenerator<*>) hash = 31 * hash + actualTargetType.hashCode()
+		return hash
 	}
 
 	override fun toString(): String {
-		return when {
-			this is ConfigurableDefaultGenerator<*> -> targetType.name + '@' + configParams.toString()
-			else -> targetType.name
+		return buildString {
+			append(targetType)
+			if(this@AbstractDefaultGenerator is ConfigurableDefaultGenerator<*>) append('@').append(configParams)
+			if(this@AbstractDefaultGenerator is BoundDefaultGenerator<*>) append('@').append(actualTargetType)
 		}
 	}
 }

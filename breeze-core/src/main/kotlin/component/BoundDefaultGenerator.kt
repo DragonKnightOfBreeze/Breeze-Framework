@@ -3,6 +3,6 @@
 
 package icu.windea.breezeframework.core.component
 
-interface BoundDefaultGenerator<T> : RandomGenerator<T>, BoundComponent<T> {
+interface BoundDefaultGenerator<T> : DefaultGenerator<T>, BoundComponent<T> {
 	override fun bindingActualTargetType(actualTargetType: Class<*>): BoundDefaultGenerator<T>
 }

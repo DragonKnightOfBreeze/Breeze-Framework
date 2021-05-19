@@ -62,6 +62,7 @@ interface DefaultGenerator<T> : Component {
 			register(DefaultDoubleArrayGenerator)
 			register(DefaultCharArrayGenerator)
 			register(DefaultBooleanArrayGenerator)
+			register(DefaultEnumGenerator)
 			register(DefaultIteratorGenerator)
 			register(DefaultIterableGenerator)
 			register(DefaultCollectionGenerator)
@@ -101,10 +102,7 @@ interface DefaultGenerator<T> : Component {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
 			val defaultGenerator = componentMap.getOrPut(key) {
-				var result = components.find { it.targetType.isAssignableFrom(targetType) }
-				if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
-					result = result.configure(configParams)
-				}
+				val result = inferDefaultGenerator(targetType, configParams)
 				if(result == null) {
 					if(useFallbackStrategy) {
 						val fallback = fallbackGenerate(targetType)
@@ -115,6 +113,20 @@ interface DefaultGenerator<T> : Component {
 				result
 			}
 			return defaultGenerator.generate() as T
+		}
+
+		private fun <T> inferDefaultGenerator(
+			targetType: Class<T>,
+			configParams: Map<String, Any?>
+		): DefaultGenerator<*>? {
+			var result = components.find { it.targetType.isAssignableFrom(targetType) }
+			if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
+				result = result.configure(configParams)
+			}
+			if(result is BoundDefaultGenerator<*> && targetType != result.targetType) {
+				result = result.bindingActualTargetType(targetType)
+			}
+			return result
 		}
 
 		private fun <T> fallbackGenerate(targetType: Class<T>): T? {
@@ -311,59 +323,70 @@ interface DefaultGenerator<T> : Component {
 	}
 
 	object DefaultIteratorGenerator : AbstractDefaultGenerator<Iterator<*>>() {
-		override fun generate(): Iterator<*> = EmptyIterator
+		private val value = EmptyIterator
+		override fun generate(): Iterator<*> = value
 	}
 
 	object DefaultIterableGenerator : AbstractDefaultGenerator<Iterable<*>>() {
-		override fun generate(): Iterable<*> = EmptyIterable
+		private val value = EmptyIterable
+		override fun generate(): Iterable<*> = value
 	}
 
 	object DefaultCollectionGenerator : AbstractDefaultGenerator<Collection<*>>() {
-		override fun generate(): Collection<*> {
-			return emptySet<Any?>()
-		}
+		private val value = emptySet<Any?>()
+		override fun generate(): Collection<*> = value
 	}
 
 	object DefaultListGenerator : AbstractDefaultGenerator<List<*>>() {
-		override fun generate(): List<*> = emptyList<Any?>()
+		private val value = emptyList<Any?>()
+		override fun generate(): List<*> = value
 	}
 
 	object DefaultSetGenerator : AbstractDefaultGenerator<Set<*>>() {
-		override fun generate(): Set<*> = emptySet<Any?>()
+		private val value = emptySet<Any?>()
+		override fun generate(): Set<*> = value
 	}
 
 	object DefaultSequenceGenerator : AbstractDefaultGenerator<Sequence<*>>() {
-		override fun generate(): Sequence<*> = sequenceOf<Any?>()
+		private val value = sequenceOf<Any?>()
+		override fun generate(): Sequence<*> = value
 	}
 
 	object DefaultMapGenerator : AbstractDefaultGenerator<Map<*, *>>() {
-		override fun generate(): Map<*, *> = emptyMap<Any?, Any?>()
+		private val value = emptyMap<Any?, Any?>()
+		override fun generate(): Map<*, *> = value
 	}
 
 	object DefaultStreamGenerator : AbstractDefaultGenerator<Stream<*>>() {
-		override fun generate(): Stream<*> = Stream.empty<Any?>()
+		private val value = Stream.empty<Any?>()
+		override fun generate(): Stream<*> = value
 	}
 
 	object DefaultIntRangeGenerator : AbstractDefaultGenerator<IntRange>() {
-		override fun generate(): IntRange = IntRange.EMPTY
+		private val value = IntRange.EMPTY
+		override fun generate(): IntRange = value
 	}
 
 	object DefaultLongRangeGenerator : AbstractDefaultGenerator<LongRange>() {
-		override fun generate(): LongRange = LongRange.EMPTY
+		private val value = LongRange.EMPTY
+		override fun generate(): LongRange = value
 	}
 
 	object DefaultCharRangeGenerator : AbstractDefaultGenerator<CharRange>() {
-		override fun generate(): CharRange = CharRange.EMPTY
+		private val value = CharRange.EMPTY
+		override fun generate(): CharRange = value
 	}
 
 	@ExperimentalUnsignedTypes
 	object DefaultUIntRangeGenerator : AbstractDefaultGenerator<UIntRange>() {
-		override fun generate(): UIntRange = UIntRange.EMPTY
+		private val value = UIntRange.EMPTY
+		override fun generate(): UIntRange = value
 	}
 
 	@ExperimentalUnsignedTypes
 	object DefaultULongRangeGenerator : AbstractDefaultGenerator<ULongRange>() {
-		override fun generate(): ULongRange = ULongRange.EMPTY
+		private val value = ULongRange.EMPTY
+		override fun generate(): ULongRange = value
 	}
 	//endregion
 }

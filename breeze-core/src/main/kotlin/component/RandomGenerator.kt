@@ -48,6 +48,7 @@ interface RandomGenerator<T> : Component {
 			register(RandomLocalTimeGenerator)
 			register(RandomLocalDateTimeGenerator)
 			register(RandomInstantGenerator)
+			register(RandomEnumGenerator)
 		}
 
 		private val componentMap: MutableMap<String, RandomGenerator<*>> = ConcurrentHashMap()
@@ -74,10 +75,7 @@ interface RandomGenerator<T> : Component {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它随机值，并加入缓存
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
 			val randomGenerator = componentMap.getOrPut(key) {
-				var result = components.find { it.targetType.isAssignableFrom(targetType) }
-				if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
-					result = result.configure(configParams)
-				}
+				val result = inferRandomGenerator(targetType, configParams)
 				if(result == null) {
 					if(useFallbackStrategy) {
 						val fallback = fallbackGenerate(targetType)
@@ -88,6 +86,17 @@ interface RandomGenerator<T> : Component {
 				result
 			}
 			return randomGenerator.generate() as T
+		}
+
+		private fun <T> inferRandomGenerator(targetType: Class<T>, configParams: Map<String, Any?>): RandomGenerator<*>? {
+			var result = components.find { it.targetType.isAssignableFrom(targetType) }
+			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
+				result = result.configure(configParams)
+			}
+			if(result is BoundRandomGenerator<*> && targetType != result.targetType){
+				result = result.bindingActualTargetType(targetType)
+			}
+			return result
 		}
 
 		private fun <T> fallbackGenerate(targetType: Class<T>): T? {
@@ -163,7 +172,7 @@ interface RandomGenerator<T> : Component {
 	@ConfigParams(
 		ConfigParam("length", "Int", "0", override = "minLength, maxLength"),
 		ConfigParam("minLength", "Int", "0"),
-		ConfigParam("maxLength", "Int", "<null>"),
+		ConfigParam("maxLength", "Int"),
 		ConfigParam("source", "String", "")
 	)
 	open class RandomStringGenerator(
@@ -191,14 +200,11 @@ interface RandomGenerator<T> : Component {
 			if(length == 0) {
 				if(minLength < 0) throw IllegalArgumentException("Config param 'minLength' cannot be negative.")
 				if(maxLength < 0) throw IllegalArgumentException("Config param 'maxLength' cannot be negative.")
+				if(maxLength == 0) throw java.lang.IllegalArgumentException("Config param 'maxLength cannot be null.'")
 			}
 			if(source.isEmpty()) throw IllegalArgumentException("Config param 'source' cannot be null or empty.")
+			val length = if(length != 0) length else Random.nextInt(minLength,maxLength)
 			return buildString {
-				val length = when {
-					length != 0 -> length
-					maxLength != 0 -> Random.nextInt(minLength, maxLength)
-					else -> Random.nextInt(minLength)
-				}
 				repeat(length) {
 					append(Random.nextElement(source))
 				}
@@ -264,7 +270,6 @@ interface RandomGenerator<T> : Component {
 		private val maxEpochDay = max?.toEpochDay() ?: 0
 
 		override fun configure(configParams: Map<String, Any?>): RandomLocalDateGenerator {
-			if(min == null) throw IllegalArgumentException("Config param 'min' cannot be null.")
 			return RandomLocalDateGenerator(configParams)
 		}
 

@@ -224,4 +224,14 @@ inline fun <reified T : Enum<T>> Int.toEnumValue(): T {
 inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 	return enumValues<T>().getOrNull(this)
 }
+
+@ExperimentalUnsignedTypes
+inline fun UInt.toChar():Char{
+	return toInt().toChar()
+}
+
+@ExperimentalUnsignedTypes
+inline fun ULong.toChar():Char{
+	return toLong().toChar()
+}
 //endregion

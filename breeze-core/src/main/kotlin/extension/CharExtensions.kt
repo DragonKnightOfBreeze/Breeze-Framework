@@ -19,3 +19,13 @@ operator fun Char.times(n: Int): String {
 fun Char.repeat(n: Int): String {
 	return String(CharArray(n) { this })
 }
+
+@ExperimentalUnsignedTypes
+fun Char.toUInt():UInt{
+	return toInt().toUInt()
+}
+
+@ExperimentalUnsignedTypes
+fun Char.toULong():ULong{
+	return toLong().toULong()
+}

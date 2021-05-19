@@ -11,25 +11,23 @@ abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true
 		if(other == null || javaClass != other.javaClass) return false
-		return when {
-			this is ConfigurableRandomGenerator<*> && other is ConfigurableRandomGenerator<*> -> configParams.toString() == other.configParams.toString()
-			else -> true
-		}
+		if(this is ConfigurableRandomGenerator<*> && other is ConfigurableRandomGenerator<*> && configParams.toString() != other.configParams.toString()) return false
+		if(this is BoundRandomGenerator<*> && other is BoundRandomGenerator<*> && actualTargetType != other.actualTargetType) return false
+		return true
 	}
 
 	override fun hashCode(): Int {
-		return when {
-			this is ConfigurableRandomGenerator<*> -> configParams.toString().hashCode()
-			else -> 0
-		}
+		var hash = 1
+		if(this is ConfigurableRandomGenerator<*>) hash = 31 * hash + configParams.toString().hashCode()
+		if(this is BoundRandomGenerator<*>) hash = 31 * hash + actualTargetType.hashCode()
+		return hash
 	}
 
 	override fun toString(): String {
-		return when {
-			this is ConfigurableRandomGenerator<*> -> targetType.name + '@' + configParams.toString()
-			else -> targetType.name
+		return buildString {
+			append(targetType)
+			if(this@AbstractRandomGenerator is ConfigurableRandomGenerator<*>) append('@').append(configParams)
+			if(this@AbstractRandomGenerator is BoundRandomGenerator<*>) append('@').append(actualTargetType)
 		}
 	}
 }
-
-

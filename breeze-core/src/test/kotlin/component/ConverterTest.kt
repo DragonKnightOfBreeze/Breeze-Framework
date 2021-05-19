@@ -35,6 +35,9 @@ class ConverterTest {
 		println(Date().convert<String>(mapOf("raw" to true)))
 		println(0.convert<NV>())
 		println("Name".convert<NV>())
+		println("1..2".convert<IntRange>())
+		println("1..2".convert<LongRange>())
+		println("a..b".convert<CharRange>())
 	}
 
 	enum class NV{
