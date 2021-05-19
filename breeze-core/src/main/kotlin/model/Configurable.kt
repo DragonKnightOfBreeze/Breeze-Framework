@@ -6,7 +6,7 @@ package icu.windea.breezeframework.core.model
 /**
  * 可配置的对象。
  */
-interface Configurable<T : Configurable<T>> {
+interface Configurable {
 	/**
 	 * 配置参数。
 	 */
@@ -16,6 +16,6 @@ interface Configurable<T : Configurable<T>> {
 	 * 根据指定的配置复制当前对象，返回一个新对象。
 	 */
 	@Suppress("UNCHECKED_CAST")
-	fun configure(configParams: Map<String, Any?>): T
+	fun configure(configParams: Map<String, Any?>): Configurable
 }
 

@@ -5,11 +5,12 @@
 
 package icu.windea.breezeframework.core.extension
 
-import java.awt.*
 import java.lang.reflect.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
+
+//internal string extensions
 
 internal fun CharSequence.firstCharToUpperCase(): String {
 	return when {
@@ -31,6 +32,7 @@ internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
 
+//internal temporal default values && internal temporal caches
 
 internal const val defaultDateFormat = "yyyy-MM-dd"
 internal const val defaultTimeFormat = "HH:mm:ss"
@@ -41,42 +43,16 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 internal val calendar: Calendar = Calendar.getInstance()
 internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 
+//internal component extensions
 
-//internal fun Any.isNullLike():Boolean{
-//	return when(this){
-//		is Boolean -> !this
-//		is Number -> toString().let{ it=="0" || it=="0.0" }
-//		is CharSequence -> isEmpty()
-//		is Array<*> -> isEmpty()
-//		is Collection<*> -> isEmpty()
-//		is Iterable<*> -> none()
-//		is Sequence<*> -> none()
-//		is Map<*,*> -> isEmpty()
-//		else -> false
-//	}
-//}
-//
-//internal fun Any.isNotNullLike():Boolean{
-//	return when(this){
-//		is Boolean -> this
-//		is Number -> toString().let{ it!="0" || it!="0.0" }
-//		is CharSequence -> isNotEmpty()
-//		is Array<*> -> isNotEmpty()
-//		is Collection<*> -> isNotEmpty()
-//		is Iterable<*> -> any()
-//		is Sequence<*> -> any()
-//		is Map<*,*> -> isNotEmpty()
-//		else -> false
-//	}
-//}
+private val componentTargetTypeCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
 
-//IntConverter: Converter<Int> -> Int
-
-private val targetTypeCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
-
+/**
+ * 推断组件的目标类型。`IntConverter: Converter<Int> -> Int`
+ */
 @Suppress("UNCHECKED_CAST")
-internal fun <T> inferTargetType(type:Class<*>,superType:Class<*>):Class<T>{
-	val targetMap = targetTypeCache.getOrPut(superType) { ConcurrentHashMap() }
+internal fun <T> inferComponentTargetType(type:Class<*>,componentType:Class<*>):Class<T>{
+	val targetMap = componentTargetTypeCache.getOrPut(componentType) { ConcurrentHashMap() }
 	return targetMap.getOrPut(type){
 		var currentType:Type = type
 		while(currentType != Any::class.java){
@@ -95,7 +71,7 @@ internal fun <T> inferTargetType(type:Class<*>,superType:Class<*>):Class<T>{
 				}
 			}
 			val genericInterfaces = currentClass.genericInterfaces
-			val genericInterface = genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == superType }
+			val genericInterface = genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
 			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()){
 				val genericType = genericInterface.actualTypeArguments[0]
 				if(genericType is Class<*>) return@getOrPut genericType
@@ -108,4 +84,13 @@ internal fun <T> inferTargetType(type:Class<*>,superType:Class<*>):Class<T>{
 		}
 		error("Cannot infer target type for type '$type'.")
 	} as Class<T>
+}
+
+internal fun optimizeConfigParams(configParams:Map<String,Any?>,vararg names:String):Map<String,Any?>{
+	val result = mutableMapOf<String,Any?>()
+	for(name in names) {
+		val configParam = configParams.get(name)
+		if(configParam != null) result.put(name,configParam)
+	}
+	return result
 }

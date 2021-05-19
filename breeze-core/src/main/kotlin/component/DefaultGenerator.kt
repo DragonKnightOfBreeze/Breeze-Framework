@@ -3,9 +3,7 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.extension.inferTargetType
 import icu.windea.breezeframework.core.model.*
-import org.w3c.dom.ranges.*
 import java.math.*
 import java.nio.charset.*
 import java.time.*
@@ -102,10 +100,10 @@ interface DefaultGenerator<T> : Component {
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
-			val defaultGenerator = componentMap.getOrPut(key){
+			val defaultGenerator = componentMap.getOrPut(key) {
 				var result = components.find { it.targetType.isAssignableFrom(targetType) }
-				if(result is Configurable<*> && configParams.isNotEmpty()){
-					result = result.configure(configParams) as DefaultGenerator<*>
+				if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
+					result = result.configure(configParams)
 				}
 				if(result == null) {
 					if(useFallbackStrategy) {
@@ -132,33 +130,6 @@ interface DefaultGenerator<T> : Component {
 	}
 
 	//region Default Generators
-	abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
-		override val targetType: Class<T> = inferTargetType(this::class.javaObjectType, DefaultGenerator::class.java)
-
-		override fun equals(other: Any?): Boolean {
-			if(this === other) return true
-			if(other == null || javaClass != other.javaClass) return false
-			return when {
-				this is Configurable<*> && other is Configurable<*> -> configParams.toString() == other.configParams.toString()
-				else -> true
-			}
-		}
-
-		override fun hashCode(): Int {
-			return when {
-				this is Configurable<*> -> configParams.toString().hashCode()
-				else -> 0
-			}
-		}
-
-		override fun toString(): String {
-			return when {
-				this is Configurable<*> -> targetType.name + '@' + configParams.toString()
-				else -> targetType.name
-			}
-		}
-	}
-
 	object DefaultByteGenerator : AbstractDefaultGenerator<Byte>() {
 		private const val value: Byte = 0
 		override fun generate(): Byte = value

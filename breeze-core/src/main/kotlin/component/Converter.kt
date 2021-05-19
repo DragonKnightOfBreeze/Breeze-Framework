@@ -27,6 +27,7 @@ import java.util.regex.*
  *
  * 同一兼容类型的转化器可以注册多个。
  */
+@Suppress("RemoveExplicitTypeArguments")
 interface Converter<T> : Component {
 	/**目标类型。*/
 	val targetType: Class<T>
@@ -113,8 +114,10 @@ interface Converter<T> : Component {
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
 			val converter = componentMap.getOrPut(key){
 				var result = components.find { it.targetType.isAssignableFrom(targetType) }
-				if(result is Configurable<*> && configParams.isNotEmpty()){
-					result = result.configure(configParams) as Converter<*>
+				if(result is ConfigurableConverter<*> && configParams.isNotEmpty()) {
+					result = result.configure(configParams)
+				}else if(result is BindingTargetTypeConverter<*> && targetType != result.targetType){
+					result = result.bindingTargetType(targetType)
 				}
 				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
@@ -151,8 +154,8 @@ interface Converter<T> : Component {
 			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
 			val converter = componentMap.getOrPut(key){
 				var result = components.find { it.targetType.isAssignableFrom(targetType) }
-				if(result is Configurable<*> && configParams.isNotEmpty()){
-					result = result.configure(configParams) as Converter<*>
+				if(result is ConfigurableConverter<*> && configParams.isNotEmpty()){
+					result = result.configure(configParams)
 				}
 				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
@@ -199,39 +202,13 @@ interface Converter<T> : Component {
 	}
 
 	//region Converters
-	abstract class AbstractConverter<T> : Converter<T> {
-		override val targetType: Class<T> = inferTargetType(this::class.javaObjectType, Converter::class.java)
-
-		override fun equals(other: Any?): Boolean {
-			if(this === other) return true
-			if(other == null || javaClass != other.javaClass) return false
-			return when {
-				this is Configurable<*> && other is Configurable<*> -> configParams.toString() == other.configParams.toString()
-				else -> true
-			}
-		}
-
-		override fun hashCode(): Int {
-			return when {
-				this is Configurable<*> -> configParams.toString().hashCode()
-				else -> 0
-			}
-		}
-
-		override fun toString(): String {
-			return when {
-				this is Configurable<*> -> targetType.name + '@' + configParams.toString()
-				else -> targetType.name
-			}
-		}
-	}
-
 	object ByteConverter : AbstractConverter<Byte>() {
 		override fun convert(value: Any): Byte {
 			return when {
 				value is Byte -> value
 				value is Number -> value.toByte()
 				value is Char -> value.toByte()
+				value is Boolean -> value.toByte()
 				else -> value.toString().toByte()
 			}
 		}
@@ -241,6 +218,7 @@ interface Converter<T> : Component {
 				value is Byte -> value
 				value is Number -> value.toByte()
 				value is Char -> value.toByte()
+				value is Boolean -> value.toByte()
 				else -> value.toString().toByteOrNull()
 			}
 		}
@@ -252,6 +230,7 @@ interface Converter<T> : Component {
 				value is Short -> value
 				value is Number -> value.toShort()
 				value is Char -> value.toShort()
+				value is Boolean -> value.toShort()
 				else -> value.toString().toShort()
 			}
 		}
@@ -272,6 +251,7 @@ interface Converter<T> : Component {
 				value is Int -> value
 				value is Number -> value.toInt()
 				value is Char -> value.toInt()
+				value is Boolean -> value.toInt()
 				else -> value.toString().toInt()
 			}
 		}
@@ -281,6 +261,7 @@ interface Converter<T> : Component {
 				value is Int -> value
 				value is Number -> value.toInt()
 				value is Char -> value.toInt()
+				value is Boolean -> value.toInt()
 				else -> value.toString().toIntOrNull()
 			}
 		}
@@ -292,6 +273,7 @@ interface Converter<T> : Component {
 				value is Long -> value
 				value is Number -> value.toLong()
 				value is Char -> value.toLong()
+				value is Boolean -> value.toLong()
 				else -> value.toString().toLong()
 			}
 		}
@@ -301,6 +283,7 @@ interface Converter<T> : Component {
 				value is Long -> value
 				value is Number -> value.toLong()
 				value is Char -> value.toLong()
+				value is Boolean -> value.toLong()
 				else -> value.toString().toLongOrNull()
 			}
 		}
@@ -312,6 +295,7 @@ interface Converter<T> : Component {
 				value is Float -> value
 				value is Number -> value.toFloat()
 				value is Char -> value.toFloat()
+				value is Boolean -> value.toFloat()
 				else -> value.toString().toFloat()
 			}
 		}
@@ -321,6 +305,7 @@ interface Converter<T> : Component {
 				value is Float -> value
 				value is Number -> value.toFloat()
 				value is Char -> value.toFloat()
+				value is Boolean -> value.toFloat()
 				else -> value.toString().toFloatOrNull()
 			}
 		}
@@ -332,6 +317,7 @@ interface Converter<T> : Component {
 				value is Double -> value
 				value is Number -> value.toDouble()
 				value is Char -> value.toDouble()
+				value is Boolean -> value.toDouble()
 				else -> value.toString().toDouble()
 			}
 		}
@@ -341,6 +327,7 @@ interface Converter<T> : Component {
 				value is Double -> value
 				value is Number -> value.toDouble()
 				value is Char -> value.toDouble()
+				value is Boolean -> value.toDouble()
 				else -> value.toString().toDoubleOrNull()
 			}
 		}
@@ -351,7 +338,7 @@ interface Converter<T> : Component {
 			return when {
 				value is BigInteger -> value
 				value is Long -> BigInteger.valueOf(value)
-				else -> BigInteger.valueOf(value.convert())
+				else -> BigInteger.valueOf(value.convert<Long>())
 			}
 		}
 
@@ -539,7 +526,7 @@ interface Converter<T> : Component {
 	)
 	open class StringConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<String>(), Configurable<StringConverter> {
+	) : AbstractConverter<String>(), ConfigurableConverter<String> {
 		companion object Default : StringConverter()
 
 		val raw:Boolean = configParams.get("raw").convertOrNull()?: false
@@ -547,8 +534,8 @@ interface Converter<T> : Component {
 		val locale:Locale = configParams.get("locale").convertOrNull()?: defaultLocale
 		val timeZone:TimeZone =configParams.get("timeZone").convertOrNull()?: defaultTimeZone
 
-		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
-		val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
 		override fun configure(configParams: Map<String, Any?>): StringConverter {
 			return StringConverter(configParams)
@@ -569,7 +556,7 @@ interface Converter<T> : Component {
 	)
 	open class RegexConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Regex>(), Configurable<RegexConverter> {
+	) : AbstractConverter<Regex>(), ConfigurableConverter<Regex> {
 		companion object Default : RegexConverter()
 
 		val regexOptions:Set<RegexOption> = configParams.get("regexOptions")?.let {
@@ -687,14 +674,14 @@ interface Converter<T> : Component {
 	)
 	open class DateConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Date>(), Configurable<DateConverter> {
+	) : AbstractConverter<Date>(), ConfigurableConverter<Date> {
 		companion object Default : DateConverter()
 
 		val format:String = configParams.get("format").convertOrNull() ?:defaultDateFormat
 		val locale:Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
 		val timeZone:TimeZone = configParams.get("timeZone").convertOrNull() ?: defaultTimeZone
 
-		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+		private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 
 		override fun configure(configParams: Map<String, Any?>): DateConverter {
 			return DateConverter(configParams)
@@ -717,14 +704,14 @@ interface Converter<T> : Component {
 	)
 	open class LocalDateConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<LocalDate>(), Configurable<LocalDateConverter> {
+	) : AbstractConverter<LocalDate>(), ConfigurableConverter<LocalDate> {
 		companion object Default : LocalDateConverter()
 
 		val format:String = configParams.get("format").convertOrNull() ?:defaultDateFormat
 		val locale:Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
 		val timeZone:TimeZone =configParams.get("timeZone").convertOrNull()?: defaultTimeZone
 
-		val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
 		override fun configure(configParams: Map<String, Any?>): LocalDateConverter {
 			return LocalDateConverter(configParams)
@@ -748,14 +735,14 @@ interface Converter<T> : Component {
 	)
 	open class LocalTimeConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<LocalTime>(), Configurable<LocalTimeConverter> {
+	) : AbstractConverter<LocalTime>(), ConfigurableConverter<LocalTime> {
 		companion object Default : LocalTimeConverter()
 
 		val format:String = configParams.get("format")?.convertOrNull() ?:defaultTimeFormat
 		val locale:Locale = configParams.get("locale")?.convertOrNull()?: defaultLocale
 		val timeZone:TimeZone =configParams.get("timeZone")?.convertOrNull()?: defaultTimeZone
 
-		val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
 		override fun configure(configParams: Map<String, Any?>): LocalTimeConverter {
 			return LocalTimeConverter(configParams)
@@ -779,14 +766,14 @@ interface Converter<T> : Component {
 	)
 	open class LocalDateTimeConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<LocalDateTime>(), Configurable<LocalDateTimeConverter> {
+	) : AbstractConverter<LocalDateTime>(), ConfigurableConverter<LocalDateTime> {
 		companion object Default : LocalDateTimeConverter()
 
 		val format:String = configParams.get("format")?.convertOrNull() ?:defaultDateTimeFormat
 		val locale:Locale = configParams.get("locale")?.convertOrNull()?: defaultLocale
 		val timeZone:TimeZone =configParams.get("timeZone")?.convertOrNull()?: defaultTimeZone
 
-		val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
 		override fun configure(configParams: Map<String, Any?>): LocalDateTimeConverter {
 			return LocalDateTimeConverter(configParams)
@@ -836,7 +823,7 @@ interface Converter<T> : Component {
 	//TODO
 	open class PeriodConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Period>(), Configurable<PeriodConverter> {
+	) : AbstractConverter<Period>(), ConfigurableConverter<Period> {
 		companion object Default : PeriodConverter()
 
 		override fun configure(configParams: Map<String, Any?>): PeriodConverter {
@@ -909,26 +896,22 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("className", "String")
-	)
 	open class EnumConverter(
-		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Enum<*>>(), Configurable<EnumConverter> {
+		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
+	): AbstractConverter<Enum<*>>(), BindingTargetTypeConverter<Enum<*>> {
 		companion object Default : EnumConverter()
 
-		val className: String = configParams.get("className")?.toString()?:""
+		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
+		private val enumValues: List<Enum<*>> by lazy { enumClass.enumConstants?.toList()?: emptyList() }
+		private val enumValueMap: Map<String, Enum<*>> by lazy { enumValues.associateBy { it.name.toLowerCase() } }
 
-		val enumClass: Class<*>? = if(className.isNotEmpty()) className.toClassOrNull() else null
-		val enumValues: List<Enum<*>> = enumClass?.enumConstants?.filterIsInstance<Enum<*>>() ?: emptyList()
-		val enumValueMap: Map<String, Enum<*>> = enumValues.associateBy { it.name.toLowerCase() }
-
-		override fun configure(configParams: Map<String, Any?>): EnumConverter {
-			return EnumConverter(configParams)
+		@Suppress("UNCHECKED_CAST")
+		override fun bindingTargetType(actualTargetType: Class<*>): BindingTargetTypeConverter<Enum<*>> {
+			return EnumConverter(actualTargetType as Class<out Enum<*>>)
 		}
 
 		override fun convert(value: Any): Enum<*> {
-			if(enumClass == null) throw IllegalArgumentException("Cannot get enum class. Param 'className' is empty or invalid.")
+			if(enumClass == targetType) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
@@ -942,7 +925,7 @@ interface Converter<T> : Component {
 		}
 
 		override fun convertOrNull(value: Any): Enum<*>? {
-			if(enumClass == null) throw IllegalArgumentException("Cannot get enum class. Param 'className' is empty or invalid.")
+			if(enumClass == targetType) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
@@ -956,6 +939,11 @@ interface Converter<T> : Component {
 		}
 	}
 
+	class ArrayConverter:AbstractConverter<Array<*>>(){
+		override fun convert(value: Any): Array<*> {
+			TODO("Not yet implemented")
+		}
+	}
 
 	//open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
 	//	companion object Default : StringArrayConverter()

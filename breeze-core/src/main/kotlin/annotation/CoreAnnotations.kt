@@ -88,6 +88,9 @@ annotation class TodoMarker
 @MustBeDocumented
 @Target(CLASS)
 annotation class ConfigParams(
+	/**
+	 * 配置参数信息。
+	 */
 	vararg val value: ConfigParam
 )
 
@@ -97,8 +100,23 @@ annotation class ConfigParams(
 @MustBeDocumented
 @Target()
 annotation class ConfigParam(
+	/**
+	 * 配置参数的名字。
+	 */
 	val name: String,
+	/**
+	 * 配置参数的类型，对应Kotlin类型，可以传递任何可以转化为该类型的参数。
+	 *
+	 * @see icu.windea.breezeframework.core.component.Converter
+	 * @see icu.windea.breezeframework.core.extension.convertOrNull
+	 */
 	val type: String,
+	/**
+	 * 配置参数的默认值。
+	 */
 	val defaultValue: String = "",
+	/**
+	 * 被该配置参数重载的一组参数的名字。通过逗号隔开。
+	 */
 	val override: String = ""
 )

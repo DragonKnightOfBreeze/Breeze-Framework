@@ -11,10 +11,33 @@ import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 import kotlin.reflect.*
 
-///**
-// * 得到当前对象的带有泛型参数信息的Java类型对象。
-// */
-//inline val <reified T> T.javaType get() = object : TypeReference<T>() {}.type
+fun Any.isNullLike(): Boolean {
+	return when(this) {
+		is Boolean -> !this
+		is Number -> toString().let { it == "0" || it == "0.0" }
+		is CharSequence -> isEmpty()
+		is Array<*> -> isEmpty()
+		is Collection<*> -> isEmpty()
+		is Iterable<*> -> none()
+		is Sequence<*> -> none()
+		is Map<*, *> -> isEmpty()
+		else -> false
+	}
+}
+
+fun Any.isNotNullLike(): Boolean {
+	return when(this) {
+		is Boolean -> this
+		is Number -> toString().let { it != "0" && it != "0.0" }
+		is CharSequence -> isNotEmpty()
+		is Array<*> -> isNotEmpty()
+		is Collection<*> -> isNotEmpty()
+		is Iterable<*> -> any()
+		is Sequence<*> -> any()
+		is Map<*, *> -> isNotEmpty()
+		else -> false
+	}
+}
 
 /**
  * 将当前对象转换为指定类型。如果转换失败，则抛出异常。

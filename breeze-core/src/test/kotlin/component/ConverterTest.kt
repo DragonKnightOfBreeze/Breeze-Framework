@@ -5,7 +5,10 @@ package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.*
 import org.junit.*
+import java.nio.charset.*
+import java.sql.*
 import java.util.*
+import java.util.Date
 
 class ConverterTest {
 	@Test
@@ -25,10 +28,13 @@ class ConverterTest {
 	@Test
 	fun test2(){
 		println("123".convert<Int>())
+		println("123".convert<String>())
+		println(true.convert<Int>())
+		println("UTF-8".convert<Charset>())
 		println(Date().convert<String>())
 		println(Date().convert<String>(mapOf("raw" to true)))
-		println(0.convert<NV>(mapOf("className" to "icu.windea.breezeframework.core.component.ConverterTest\$NV")))
-		println("Name".convert<NV>(mapOf("className" to "icu.windea.breezeframework.core.component.ConverterTest\$NV")))
+		println(0.convert<NV>())
+		println("Name".convert<NV>())
 	}
 
 	enum class NV{
