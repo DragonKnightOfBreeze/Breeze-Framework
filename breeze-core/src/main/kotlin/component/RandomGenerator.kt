@@ -316,7 +316,7 @@ interface RandomGenerator<T> : Component {
 	open class RandomLocalDateTimeGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<LocalDateTime>(), ConfigurableRandomGenerator<LocalDateTime> {
-		companion object Default: RandomLocalDateTimeGenerator()
+		companion object Default : RandomLocalDateTimeGenerator()
 
 		private val temporalConfigParams = optimizeConfigParams(configParams, "format", "locale", "timeZone")
 
@@ -345,7 +345,7 @@ interface RandomGenerator<T> : Component {
 	open class RandomInstantGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Instant>(), ConfigurableRandomGenerator<Instant> {
-		companion object Default:RandomInstantGenerator()
+		companion object Default : RandomInstantGenerator()
 
 		val min: Instant? = configParams.get("min").convertOrNull()
 		val max: Instant? = configParams.get("max").convertOrNull()
@@ -361,6 +361,25 @@ interface RandomGenerator<T> : Component {
 			if(min == null || max == null) throw IllegalArgumentException("Config param 'min' or 'max' cannot be null.")
 			val epochSecond = Random.nextLong(minEpochSecond, maxEpochSecond)
 			return Instant.ofEpochSecond(epochSecond)
+		}
+	}
+
+	open class RandomEnumGenerator(
+		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
+	) : AbstractRandomGenerator<Enum<*>>(), BoundRandomGenerator<Enum<*>> {
+		companion object Default : RandomEnumGenerator()
+
+		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
+		private val enumValues: List<Enum<*>> by lazy { if(enumClass == Enum::class.java) emptyList() else enumClass.enumConstants.toList() }
+
+		@Suppress("UNCHECKED_CAST")
+		override fun bindingActualTargetType(actualTargetType: Class<*>): BoundRandomGenerator<Enum<*>> {
+			return RandomEnumGenerator(actualTargetType as Class<out Enum<*>>)
+		}
+
+		override fun generate(): Enum<*> {
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return Random.nextElement(enumValues)
 		}
 	}
 	//endregion

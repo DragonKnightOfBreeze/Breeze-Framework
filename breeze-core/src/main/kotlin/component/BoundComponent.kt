@@ -3,8 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
-interface BindingTargetTypeConverter<T>: Converter<T> {
+interface BoundComponent<T>: Component {
 	val actualTargetType:Class<out T>
 
-	fun bindingTargetType(actualTargetType:Class<*>) :BindingTargetTypeConverter<T>
+	fun bindingActualTargetType(actualTargetType:Class<*>) : BoundComponent<T>
 }

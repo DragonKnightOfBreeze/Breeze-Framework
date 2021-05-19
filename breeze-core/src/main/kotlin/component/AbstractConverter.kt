@@ -13,7 +13,7 @@ abstract class AbstractConverter<T> : Converter<T> {
 		if(other == null || javaClass != other.javaClass) return false
 		return when {
 			this is ConfigurableConverter<*> && other is ConfigurableConverter<*> -> configParams.toString() == other.configParams.toString()
-			this is BindingTargetTypeConverter<*> && other is BindingTargetTypeConverter<*> -> actualTargetType == other.actualTargetType
+			this is BoundConverter<*> && other is BoundConverter<*> -> actualTargetType == other.actualTargetType
 			else -> true
 		}
 	}
@@ -21,7 +21,7 @@ abstract class AbstractConverter<T> : Converter<T> {
 	override fun hashCode(): Int {
 		return when {
 			this is ConfigurableConverter<*> -> configParams.toString().hashCode()
-			this is BindingTargetTypeConverter<*> -> actualTargetType.hashCode()
+			this is BoundConverter<*> -> actualTargetType.hashCode()
 			else -> 0
 		}
 	}
@@ -29,7 +29,7 @@ abstract class AbstractConverter<T> : Converter<T> {
 	override fun toString(): String {
 		return when {
 			this is ConfigurableConverter<*> -> targetType.name + '@' + configParams.toString()
-			this is BindingTargetTypeConverter<*> -> targetType.name + '@' + actualTargetType.name
+			this is BoundConverter<*> -> targetType.name + '@' + actualTargetType.name
 			else -> targetType.name
 		}
 	}

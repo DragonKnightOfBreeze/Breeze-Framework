@@ -3,9 +3,7 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.model.*
-
-interface ConfigurableConverter<T>: Converter<T>, Configurable {
+interface ConfigurableConverter<T> : Converter<T>, ConfigurableComponent {
 	override fun configure(configParams: Map<String, Any?>): ConfigurableConverter<T>
 }
 

@@ -5,6 +5,6 @@ package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.model.*
 
-interface ConfigurableRandomGenerator<T> : RandomGenerator<T>, ConfigurableComponent {
-	override fun configure(configParams: Map<String, Any?>): ConfigurableRandomGenerator<T>
+interface ConfigurableComponent: Component, Configurable {
+	override fun configure(configParams: Map<String, Any?>): ConfigurableComponent
 }

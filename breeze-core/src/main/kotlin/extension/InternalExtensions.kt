@@ -10,6 +10,21 @@ import java.text.*
 import java.util.*
 import java.util.concurrent.*
 
+//internal default values
+
+internal const val defaultDateFormat = "yyyy-MM-dd"
+internal const val defaultTimeFormat = "HH:mm:ss"
+internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
+internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
+internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
+
+//internal caches
+
+internal val calendar: Calendar = Calendar.getInstance()
+internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
+//internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
+//internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
+
 //internal string extensions
 
 internal fun CharSequence.firstCharToUpperCase(): String {
@@ -32,27 +47,16 @@ internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
 
-//internal temporal default values && internal temporal caches
-
-internal const val defaultDateFormat = "yyyy-MM-dd"
-internal const val defaultTimeFormat = "HH:mm:ss"
-internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
-internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
-internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
-
-internal val calendar: Calendar = Calendar.getInstance()
-internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
-
 //internal component extensions
 
-private val componentTargetTypeCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
+private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
 
 /**
  * 推断组件的目标类型。`IntConverter: Converter<Int> -> Int`
  */
 @Suppress("UNCHECKED_CAST")
 internal fun <T> inferComponentTargetType(type:Class<*>,componentType:Class<*>):Class<T>{
-	val targetMap = componentTargetTypeCache.getOrPut(componentType) { ConcurrentHashMap() }
+	val targetMap = componentTargetTypeMapCache.getOrPut(componentType) { ConcurrentHashMap() }
 	return targetMap.getOrPut(type){
 		var currentType:Type = type
 		while(currentType != Any::class.java){

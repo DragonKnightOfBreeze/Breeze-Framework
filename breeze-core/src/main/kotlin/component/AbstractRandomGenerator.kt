@@ -3,7 +3,7 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.extension.inferComponentTargetType
+import icu.windea.breezeframework.core.extension.*
 
 abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
 	override val targetType: Class<T> = inferComponentTargetType(this::class.javaObjectType, RandomGenerator::class.java)
@@ -31,3 +31,5 @@ abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
 		}
 	}
 }
+
+

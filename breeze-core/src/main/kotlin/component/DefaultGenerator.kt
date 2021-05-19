@@ -291,6 +291,25 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): BooleanArray = value
 	}
 
+	open class DefaultEnumGenerator(
+		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
+	) : AbstractDefaultGenerator<Enum<*>>(), BoundDefaultGenerator<Enum<*>> {
+		companion object Default : DefaultEnumGenerator()
+
+		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
+		private val enumValue: Enum<*>? by lazy { if(enumClass == Enum::class.java) null else enumClass.enumConstants.firstOrNull() }
+
+		@Suppress("UNCHECKED_CAST")
+		override fun bindingActualTargetType(actualTargetType: Class<*>): DefaultEnumGenerator {
+			return DefaultEnumGenerator(actualTargetType as Class<out Enum<*>>)
+		}
+
+		override fun generate(): Enum<*> {
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return enumValue ?: throw IllegalArgumentException("Enum class '$actualTargetType' has no enum constants.")
+		}
+	}
+
 	object DefaultIteratorGenerator : AbstractDefaultGenerator<Iterator<*>>() {
 		override fun generate(): Iterator<*> = EmptyIterator
 	}

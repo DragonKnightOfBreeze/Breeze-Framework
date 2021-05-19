@@ -1165,10 +1165,8 @@ fun String.toTimeZoneOrNull(): TimeZone? {
  */
 @JvmOverloads
 fun String.toDate(format: String,locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
-	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
-		ThreadLocal.withInitial {
-			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
-		}
+	val dateFormat = threadLocalDateFormatMapCache.getOrPut(format){
+		ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 	}.get()
 	return dateFormat.parse(this)
 }

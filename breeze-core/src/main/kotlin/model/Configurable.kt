@@ -3,6 +3,8 @@
 
 package icu.windea.breezeframework.core.model
 
+import icu.windea.breezeframework.core.component.*
+
 /**
  * 可配置的对象。
  */
@@ -18,4 +20,3 @@ interface Configurable {
 	@Suppress("UNCHECKED_CAST")
 	fun configure(configParams: Map<String, Any?>): Configurable
 }
-
