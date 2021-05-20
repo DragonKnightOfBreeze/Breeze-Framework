@@ -44,6 +44,7 @@ class ConverterTest {
 		println("1,2,3".convert<List<Int>>())
 		println("1,2,3".convert<List<Long>>())
 		println("1,2,3".convert<List<String>>())
+
 		println(arrayOf(1, 2, 3).convert<List<Int>>())
 		println(arrayOf(1, 2, 3).convert<List<Long>>())
 		println(arrayOf(1, 2, 3).convert<List<String>>())
@@ -53,6 +54,26 @@ class ConverterTest {
 		println(setOf(1, 2, 3).convert<List<Int>>())
 		println(setOf(1, 2, 3).convert<List<Long>>())
 		println(setOf(1, 2, 3).convert<List<String>>())
+
+		println(arrayOf(1, 2, 3).convert<Set<Int>>())
+		println(arrayOf(1, 2, 3).convert<Set<Long>>())
+		println(arrayOf(1, 2, 3).convert<Set<String>>())
+		println(listOf(1, 2, 3).convert<Set<Int>>())
+		println(listOf(1, 2, 3).convert<Set<Long>>())
+		println(listOf(1, 2, 3).convert<Set<String>>())
+		println(setOf(1, 2, 3).convert<Set<Int>>())
+		println(setOf(1, 2, 3).convert<Set<Long>>())
+		println(setOf(1, 2, 3).convert<Set<String>>())
+
+		println(arrayOf(1, 2, 3).convert<Array<Int>>())
+		println(arrayOf(1, 2, 3).convert<Array<Long>>())
+		println(arrayOf(1, 2, 3).convert<Array<String>>())
+		println(listOf(1, 2, 3).convert<Array<Int>>())
+		println(listOf(1, 2, 3).convert<Array<Long>>())
+		println(listOf(1, 2, 3).convert<Array<String>>())
+		println(setOf(1, 2, 3).convert<Array<Int>>())
+		println(setOf(1, 2, 3).convert<Array<Long>>())
+		println(setOf(1, 2, 3).convert<Array<String>>())
 	}
 
 	@Test

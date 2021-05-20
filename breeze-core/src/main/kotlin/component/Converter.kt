@@ -613,7 +613,7 @@ interface Converter<T> : TypedComponent {
 				raw -> value.toString()
 				value is Date -> threadLocalDateFormat.get().format(value)
 				value is TemporalAccessor -> formatter.format(value)
-				else -> value.toString()
+				else -> value.smartToString()
 			}
 		}
 	}
@@ -1175,7 +1175,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1231,7 +1231,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Byte>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1287,7 +1287,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Short>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1343,7 +1343,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Int>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1399,7 +1399,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Long>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1455,7 +1455,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Float>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1511,7 +1511,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Double>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1567,7 +1567,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Boolean>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1623,7 +1623,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<Char>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1679,7 +1679,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<UByte>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1735,7 +1735,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<UShort>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1791,7 +1791,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<UInt>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1847,7 +1847,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?) = element.convert<ULong>(passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1904,7 +1904,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
 	/**
@@ -1961,7 +1961,7 @@ interface Converter<T> : TypedComponent {
 
 		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
 
-		private fun splitValue(value: String) = value.split(separator, prefix, suffix)
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 	//endregion
 }

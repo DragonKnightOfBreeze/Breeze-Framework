@@ -782,7 +782,7 @@ fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String)
  */
 @NotOptimized
 @JvmOverloads
-fun String.split(separator: CharSequence = ", ", prefix: CharSequence = "", suffix: CharSequence = "", ignoreCase: Boolean = false, limit: Int = -1): List<String> {
+fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence = "", suffix: CharSequence = "", ignoreCase: Boolean = false, limit: Int = -1): List<String> {
 	//前缀索引+前缀长度，或者为0
 	val prefixIndex = if(prefix.isEmpty()) 0 else indexOf(prefix.toString())
 	//后缀索引，或者为length

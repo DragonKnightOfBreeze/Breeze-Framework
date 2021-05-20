@@ -134,18 +134,25 @@ internal fun inferClass(targetType:Type):Class<*>{
 }
 
 internal fun inferTypeArgument(targetType: Type, targetClass: Class<*>): Type {
-	return doInferTypeArguments(targetType, targetClass)?.firstOrNull() ?: error("Cannot infer type argument of class '$targetClass'")
+	if(targetType is ParameterizedType) {
+		val rawType = targetType.rawType
+		val rawClass = inferClass(rawType)
+		if(rawClass == targetClass) return targetType.actualTypeArguments?.firstOrNull()
+			?: error("Target type should be a ParameterizedType of class '$targetClass'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return targetType.componentType
+	}
+	error("Target type should be a ParameterizedType of class '$targetClass'")
 }
 
 internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
-	return doInferTypeArguments(targetType, targetClass) ?: error("Cannot infer type arguments of class '$targetClass'")
-}
-
-private fun doInferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type>? {
 	if(targetType is ParameterizedType) {
 		val rawType = targetType.rawType
 		val rawClass = inferClass(rawType)
 		if(rawClass == targetClass) return targetType.actualTypeArguments
+			?: error("Target type should be a ParameterizedType of class '$targetClass'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return arrayOf(targetType.componentType)
 	}
 	error("Target type should be a ParameterizedType of class '$targetClass'")
 }
