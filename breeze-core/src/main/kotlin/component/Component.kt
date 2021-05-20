@@ -11,4 +11,3 @@ package icu.windea.breezeframework.core.component
  * Normally, it should be registered and provide a no-arg constructor to be enabled correctly.
  */
 interface Component
-

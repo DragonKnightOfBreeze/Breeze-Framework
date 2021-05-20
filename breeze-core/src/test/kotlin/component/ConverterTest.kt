@@ -11,8 +11,12 @@ import java.util.*
 import java.util.Date
 
 class ConverterTest {
+	private fun println(value: Any) {
+		kotlin.io.println(value.convert<String>())
+	}
+
 	@Test
-	fun test(){
+	fun test() {
 		println("2020-01-01".convert<Date>())
 		println("2020-01-01".convert<Date>(mapOf("format" to "yyyy-MM-dd")))
 		println("2020 01 01".convert<Date>(mapOf("format" to "yyyy MM dd")))
@@ -23,24 +27,77 @@ class ConverterTest {
 
 		println(123.convert<String>())
 		println("java.lang.Object".convert<Class<*>>())
-	}
 
-	@Test
-	fun test2(){
 		println("123".convert<Int>())
 		println("123".convert<String>())
 		println(true.convert<Int>())
 		println("UTF-8".convert<Charset>())
 		println(Date().convert<String>())
 		println(Date().convert<String>(mapOf("raw" to true)))
-		println(0.convert<NV>())
-		println("Name".convert<NV>())
 		println("1..2".convert<IntRange>())
 		println("1..2".convert<LongRange>())
 		println("a..b".convert<CharRange>())
+
+		println(0.convert<NV>())
+		println("Name".convert<NV>())
+
+		println("1,2,3".convert<List<Int>>())
+		println("1,2,3".convert<List<Long>>())
+		println("1,2,3".convert<List<String>>())
+		println(arrayOf(1, 2, 3).convert<List<Int>>())
+		println(arrayOf(1, 2, 3).convert<List<Long>>())
+		println(arrayOf(1, 2, 3).convert<List<String>>())
+		println(listOf(1, 2, 3).convert<List<Int>>())
+		println(listOf(1, 2, 3).convert<List<Long>>())
+		println(listOf(1, 2, 3).convert<List<String>>())
+		println(setOf(1, 2, 3).convert<List<Int>>())
+		println(setOf(1, 2, 3).convert<List<Long>>())
+		println(setOf(1, 2, 3).convert<List<String>>())
 	}
 
-	enum class NV{
-		Name,Value
+	@Test
+	fun testReturnNull() {
+		try {
+			null.convertAAA<String>()
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+		try {
+			null.convertAAA<String?>()
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+	}
+
+	inline fun <reified T> Any?.convertAAA(): T {
+		return this as T
+	}
+
+	@Test
+	fun testNull() {
+		try {
+			println(null.convert<String>())
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+		try {
+			println(null.convert<String?>())
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+		try {
+			println(null.convertOrNull<String>())
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+		try {
+			println(null.convertOrNull<String?>())
+		} catch(e: Exception) {
+			e.printStackTrace()
+		}
+	}
+
+	enum class NV {
+		Name, Value
 	}
 }

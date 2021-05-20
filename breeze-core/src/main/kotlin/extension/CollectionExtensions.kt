@@ -561,20 +561,20 @@ fun <K, V> Map<K, V>.joinToString(
 
 /**
  * Returns a array containing the results of applying the given [transform] function
- * to each element in the original array.
- */
-inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R> {
-	return Array(size) { transform(this[it]) }
-}
-
-/**
- * Returns a array containing the results of applying the given [transform] function
  * to each element in the original list.
  */
 inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
 	return Array(size) { transform(this[it]) }
 }
 
+/**
+ * Returns a array containing the results of applying the given [transform] function
+ * to each element in the original set.
+ */
+inline fun <T, reified R> Set<T>.mapToArray(transform: (T) -> R): Array<R> {
+	val list = this.toList()
+	return Array(size) { transform(list[it]) }
+}
 
 /**
  * 映射当前映射中的值，并过滤转化后为null的值。

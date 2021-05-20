@@ -22,17 +22,18 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 //internal caches
 
 internal val calendar: Calendar = Calendar.getInstance()
-internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
+internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> =
+	ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
 //internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
 //internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
 
 //internal number extensions
 
-internal fun BigInteger.toLongOrMax():Long{
+internal fun BigInteger.toLongOrMax(): Long {
 	return if(this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
 }
 
-internal fun BigDecimal.toDoubleOrMax():Double{
+internal fun BigDecimal.toDoubleOrMax(): Double {
 	return if(this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
 }
 
@@ -60,52 +61,91 @@ internal fun CharSequence.splitWords(): String {
 
 //internal component extensions
 
-private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
+private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
 
 /**
  * 推断组件的目标类型。`IntConverter: Converter<Int> -> Int`
  */
 @Suppress("UNCHECKED_CAST")
-internal fun <T> inferComponentTargetType(type:Class<*>,componentType:Class<*>):Class<T>{
+internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): Type {
 	val targetMap = componentTargetTypeMapCache.getOrPut(componentType) { ConcurrentHashMap() }
-	return targetMap.getOrPut(type){
-		var currentType:Type = type
-		while(currentType != Any::class.java){
+	return targetMap.getOrPut(type) {
+		var currentType: Type = type
+		while(currentType != Any::class.java) {
 			val currentClass = when {
 				currentType is Class<*> -> currentType
 				currentType is ParameterizedType -> currentType.rawType as? Class<*> ?: error("Cannot infer target type for type '$type'.")
 				else -> error("Cannot infer target type for type '$type'.")
 			}
 			val genericSuperClass = currentClass.genericSuperclass
-			if(genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()){
+			if(genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()) {
 				val genericType = genericSuperClass.actualTypeArguments[0]
 				if(genericType is Class<*>) return@getOrPut genericType
-				if(genericType is ParameterizedType){
-					val genericTypeRawType = genericType.rawType
-					if(genericTypeRawType is Class<*>) return@getOrPut genericTypeRawType
+				if(genericType is ParameterizedType) {
+					return genericType.rawType
 				}
 			}
 			val genericInterfaces = currentClass.genericInterfaces
-			val genericInterface = genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
-			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()){
+			val genericInterface =
+				genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
+			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()) {
 				val genericType = genericInterface.actualTypeArguments[0]
 				if(genericType is Class<*>) return@getOrPut genericType
-				if(genericType is ParameterizedType){
-					val genericTypeRawType = genericType.rawType
-					if(genericTypeRawType is Class<*>) return@getOrPut genericTypeRawType
+				if(genericType is ParameterizedType) {
+					return genericType.rawType
 				}
 			}
 			currentType = genericSuperClass
 		}
 		error("Cannot infer target type for type '$type'.")
-	} as Class<T>
+	}
 }
 
-internal fun optimizeConfigParams(configParams:Map<String,Any?>,vararg names:String):Map<String,Any?>{
-	val result = mutableMapOf<String,Any?>()
-	for(name in names) {
-		val configParam = configParams.get(name)
-		if(configParam != null) result.put(name,configParam)
+@Suppress("UNCHECKED_CAST")
+internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {
+	return inferComponentTargetType(type, componentType) as? Class<T> ?: error("Cannot infer target type for type '$type'.")
+}
+
+internal fun filterConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(configParams.isEmpty()) return emptyMap()
+	val result = mutableMapOf<String, Any?>()
+	for((name, configParam) in configParams) {
+		if(name in names) result.put(name,configParam)
 	}
 	return result
+}
+
+internal fun filterNotConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(configParams.isEmpty()) return emptyMap()
+	val result = mutableMapOf<String, Any?>()
+	for((name,configParam) in configParams){
+		if(name !in names) result.put(name,configParam)
+	}
+	return result
+}
+
+internal fun inferClass(targetType:Type):Class<*>{
+	return when{
+		targetType is Class<*> -> targetType
+		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		else -> error("Cannot infer class for target type '$targetType'")
+	}
+}
+
+internal fun inferTypeArgument(targetType: Type, targetClass: Class<*>): Type {
+	return doInferTypeArguments(targetType, targetClass)?.firstOrNull() ?: error("Cannot infer type argument of class '$targetClass'")
+}
+
+internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
+	return doInferTypeArguments(targetType, targetClass) ?: error("Cannot infer type arguments of class '$targetClass'")
+}
+
+private fun doInferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type>? {
+	if(targetType is ParameterizedType) {
+		val rawType = targetType.rawType
+		val rawClass = inferClass(rawType)
+		if(rawClass == targetClass) return targetType.actualTypeArguments
+	}
+	error("Target type should be a ParameterizedType of class '$targetClass'")
 }

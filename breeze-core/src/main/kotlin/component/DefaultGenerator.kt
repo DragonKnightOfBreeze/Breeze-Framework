@@ -4,6 +4,7 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.model.*
+import java.lang.reflect.*
 import java.math.*
 import java.nio.charset.*
 import java.time.*
@@ -18,9 +19,8 @@ import java.util.stream.*
  *
  * 默认值生成器用于生成默认值。
  */
-interface DefaultGenerator<T> : Component {
-	/**目标类型。*/
-	val targetType: Class<T>
+interface DefaultGenerator<T> : TypedComponent {
+	override val targetType: Class<T>
 
 	/**
 	 * 生成默认值。
@@ -104,11 +104,15 @@ interface DefaultGenerator<T> : Component {
 		/**
 		 * 根据可选的配置参数，生成指定类型的默认值。
 		 */
-		@Suppress("UNCHECKED_CAST")
 		@JvmStatic
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+			return doGenerate(targetType, configParams)
+		}
+
+		@Suppress("UNCHECKED_CAST")
+		private fun <T> doGenerate(targetType: Class<T>, configParams: Map<String, Any?>): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
-			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
+			val key = inferKey(targetType, configParams)
 			val defaultGenerator = componentMap.getOrPut(key) {
 				val result = inferDefaultGenerator(targetType, configParams)
 				if(result == null) {
@@ -123,10 +127,11 @@ interface DefaultGenerator<T> : Component {
 			return defaultGenerator.generate() as T
 		}
 
-		private fun <T> inferDefaultGenerator(
-			targetType: Class<T>,
-			configParams: Map<String, Any?>
-		): DefaultGenerator<*>? {
+		private fun inferKey(targetType: Type, configParams: Map<String, Any?>): String {
+			return if(configParams.isEmpty()) targetType.toString() else "$targetType@$configParams"
+		}
+
+		private fun <T> inferDefaultGenerator(targetType: Class<T>, configParams: Map<String, Any?>): DefaultGenerator<*>? {
 			var result = components.find { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
@@ -378,7 +383,8 @@ interface DefaultGenerator<T> : Component {
 		private val enumValue: Enum<*>? by lazy { if(enumClass == Enum::class.java) null else enumClass.enumConstants.firstOrNull() }
 
 		@Suppress("UNCHECKED_CAST")
-		override fun bindingActualTargetType(actualTargetType: Class<*>): DefaultEnumGenerator {
+		override fun bindingActualTargetType(actualTargetType: Type): DefaultEnumGenerator {
+			if(actualTargetType !is Class<*>) throw IllegalArgumentException("Actual target type should be an enum type.")
 			return DefaultEnumGenerator(actualTargetType as Class<out Enum<*>>)
 		}
 

@@ -5,7 +5,10 @@ package icu.windea.breezeframework.core.component
 
 import java.lang.reflect.*
 
-interface BoundConverter<T> : Converter<T>, BoundComponent {
-	override fun bindingActualTargetType(actualTargetType: Type): BoundConverter<T>
+/**
+ * 拥有目标类型的组件。
+ */
+interface TypedComponent : Component {
+	/**目标类型。*/
+	val targetType: Type
 }
-

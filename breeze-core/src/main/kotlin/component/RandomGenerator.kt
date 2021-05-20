@@ -5,6 +5,7 @@ package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.extension.*
+import java.lang.reflect.*
 import java.math.*
 import java.time.*
 import java.util.*
@@ -17,9 +18,9 @@ import kotlin.random.Random
  *
  * 随机值生成器用于基于给定的参数生成随机值。
  */
-interface RandomGenerator<T> : Component {
+interface RandomGenerator<T> : TypedComponent {
 	/**目标类型。*/
-	val targetType: Class<T>
+	override val targetType: Class<T>
 
 	/**
 	 * 生成随机值。
@@ -71,11 +72,15 @@ interface RandomGenerator<T> : Component {
 		/**
 		 * 生成指定类型的随机值。
 		 */
-		@Suppress("UNCHECKED_CAST")
 		@JvmStatic
 		fun <T> generate(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+			return doGenerate(configParams, targetType)
+		}
+
+		@Suppress("UNCHECKED_CAST")
+		private fun <T> doGenerate(configParams: Map<String, Any?>, targetType: Class<T>): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它随机值，并加入缓存
-			val key = if(configParams.isEmpty()) targetType.name else targetType.name + '@' + configParams.toString()
+			val key = inferKey(targetType, configParams)
 			val randomGenerator = componentMap.getOrPut(key) {
 				val result = inferRandomGenerator(targetType, configParams)
 				if(result == null) {
@@ -90,10 +95,11 @@ interface RandomGenerator<T> : Component {
 			return randomGenerator.generate() as T
 		}
 
-		private fun <T> inferRandomGenerator(
-			targetType: Class<T>,
-			configParams: Map<String, Any?>
-		): RandomGenerator<*>? {
+		private fun inferKey(targetType: Type, configParams: Map<String, Any?>): String {
+			return if(configParams.isEmpty()) targetType.toString() else "$targetType@$configParams"
+		}
+
+		private fun <T> inferRandomGenerator(targetType: Class<T>, configParams: Map<String, Any?>): RandomGenerator<*>? {
 			var result = components.find { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
@@ -505,10 +511,10 @@ interface RandomGenerator<T> : Component {
 	) : AbstractRandomGenerator<Date>(), ConfigurableRandomGenerator<Date> {
 		companion object Default : RandomDateGenerator()
 
-		private val temporalConfigParams = optimizeConfigParams(configParams, "format", "locale", "timeZone")
+		private val passingConfigParams = filterConfigParams(configParams, "format", "locale", "timeZone")
 
-		val min: Date? = configParams.get("min").convertOrNull(temporalConfigParams)
-		val max: Date? = configParams.get("max").convertOrNull(temporalConfigParams)
+		val min: Date? = configParams.get("min").convertOrNull(passingConfigParams)
+		val max: Date? = configParams.get("max").convertOrNull(passingConfigParams)
 
 		private val minEpochSecond = min?.toInstant()?.epochSecond ?: 0
 		private val maxEpochSecond = max?.toInstant()?.epochSecond ?: 0
@@ -535,10 +541,10 @@ interface RandomGenerator<T> : Component {
 	) : AbstractRandomGenerator<LocalDate>(), ConfigurableRandomGenerator<LocalDate> {
 		companion object Default : RandomLocalDateGenerator()
 
-		private val temporalConfigParams = optimizeConfigParams(configParams, "format", "locale", "timeZone")
+		private val passingConfigParams = filterConfigParams(configParams, "format", "locale", "timeZone")
 
-		val min: LocalDate? = configParams.get("min").convertOrNull(temporalConfigParams)
-		val max: LocalDate? = configParams.get("max").convertOrNull(temporalConfigParams)
+		val min: LocalDate? = configParams.get("min").convertOrNull(passingConfigParams)
+		val max: LocalDate? = configParams.get("max").convertOrNull(passingConfigParams)
 
 		private val minEpochDay = min?.toEpochDay() ?: 0
 		private val maxEpochDay = max?.toEpochDay() ?: 0
@@ -565,10 +571,10 @@ interface RandomGenerator<T> : Component {
 	) : AbstractRandomGenerator<LocalTime>(), ConfigurableRandomGenerator<LocalTime> {
 		companion object Default : RandomLocalTimeGenerator()
 
-		private val temporalConfigParams = optimizeConfigParams(configParams, "format", "locale", "timeZone")
+		private val passingConfigParams = filterConfigParams(configParams, "format", "locale", "timeZone")
 
-		val min: LocalTime? = configParams.get("min").convertOrNull(temporalConfigParams)
-		val max: LocalTime? = configParams.get("max").convertOrNull(temporalConfigParams)
+		val min: LocalTime? = configParams.get("min").convertOrNull(passingConfigParams)
+		val max: LocalTime? = configParams.get("max").convertOrNull(passingConfigParams)
 
 		private val minNanoOfDay = min?.toNanoOfDay() ?: 0
 		private val maxNanoOfDay = max?.toNanoOfDay() ?: 0
@@ -595,10 +601,10 @@ interface RandomGenerator<T> : Component {
 	) : AbstractRandomGenerator<LocalDateTime>(), ConfigurableRandomGenerator<LocalDateTime> {
 		companion object Default : RandomLocalDateTimeGenerator()
 
-		private val temporalConfigParams = optimizeConfigParams(configParams, "format", "locale", "timeZone")
+		private val passingConfigParams = filterConfigParams(configParams, "format", "locale", "timeZone")
 
-		val min: LocalDateTime? = configParams.get("min").convertOrNull(temporalConfigParams)
-		val max: LocalDateTime? = configParams.get("max").convertOrNull(temporalConfigParams)
+		val min: LocalDateTime? = configParams.get("min").convertOrNull(passingConfigParams)
+		val max: LocalDateTime? = configParams.get("max").convertOrNull(passingConfigParams)
 
 		private val minEpochSecond = min?.toEpochSecond(ZoneOffset.UTC) ?: 0
 		private val maxEpochSecond = max?.toEpochSecond(ZoneOffset.UTC) ?: 0
@@ -648,7 +654,8 @@ interface RandomGenerator<T> : Component {
 		private val enumValues: List<Enum<*>> by lazy { if(enumClass == Enum::class.java) emptyList() else enumClass.enumConstants.toList() }
 
 		@Suppress("UNCHECKED_CAST")
-		override fun bindingActualTargetType(actualTargetType: Class<*>): BoundRandomGenerator<Enum<*>> {
+		override fun bindingActualTargetType(actualTargetType: Type): BoundRandomGenerator<Enum<*>> {
+			if(actualTargetType !is Class<*>) throw IllegalArgumentException("Actual target type should be an enum type.")
 			return RandomEnumGenerator(actualTargetType as Class<out Enum<*>>)
 		}
 

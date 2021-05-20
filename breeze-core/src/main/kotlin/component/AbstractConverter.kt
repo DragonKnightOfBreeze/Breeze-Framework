@@ -3,11 +3,11 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.extension.inferComponentTargetType
-import java.util.*
+import icu.windea.breezeframework.core.extension.*
+import java.lang.reflect.*
 
 abstract class AbstractConverter<T> : Converter<T> {
-	override val targetType: Class<T> = inferComponentTargetType(this::class.javaObjectType, Converter::class.java)
+	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, Converter::class.java)
 
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true

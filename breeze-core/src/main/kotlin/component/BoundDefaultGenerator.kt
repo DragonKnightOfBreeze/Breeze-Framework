@@ -3,6 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
-interface BoundDefaultGenerator<T> : DefaultGenerator<T>, BoundComponent<T> {
-	override fun bindingActualTargetType(actualTargetType: Class<*>): BoundDefaultGenerator<T>
+import java.lang.reflect.*
+
+interface BoundDefaultGenerator<T> : DefaultGenerator<T>, BoundComponent {
+	override fun bindingActualTargetType(actualTargetType: Type): BoundDefaultGenerator<T>
 }

@@ -6,7 +6,7 @@ package icu.windea.breezeframework.core.component
 import icu.windea.breezeframework.core.extension.*
 
 abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
-	override val targetType: Class<T> = inferComponentTargetType(this::class.javaObjectType, RandomGenerator::class.java)
+	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, RandomGenerator::class.java)
 
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true
