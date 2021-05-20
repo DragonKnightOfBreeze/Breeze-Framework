@@ -83,12 +83,12 @@ interface Converter<T> : Component {
 			register(PathConverter)
 			register(UrlConverter)
 			register(UriConverter)
-			register(EnumConverter)
 			register(IntRangeConverter)
 			register(LongRangeConverter)
 			register(CharRangeConverter)
 			register(UIntRangeConverter)
 			register(ULongRangeConverter)
+			register(EnumConverter)
 		}
 
 		private val componentMap: MutableMap<String, Converter<*>> = ConcurrentHashMap()
@@ -536,12 +536,10 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("raw", "Boolean", "false"),
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("raw", "Boolean", "false")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class StringConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<String>(), ConfigurableConverter<String> {
@@ -570,9 +568,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", "<empty>")
-	)
+	@ConfigParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", "<empty>")
 	open class RegexConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<Regex>(), ConfigurableConverter<Regex> {
@@ -686,11 +682,9 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class DateConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<Date>(), ConfigurableConverter<Date> {
@@ -717,11 +711,9 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class LocalDateConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<LocalDate>(), ConfigurableConverter<LocalDate> {
@@ -748,11 +740,9 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("format", "String", "HH:mm:ss"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("format", "String", "HH:mm:ss")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class LocalTimeConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<LocalTime>(), ConfigurableConverter<LocalTime> {
@@ -779,11 +769,9 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("format", "String", "'yyyy-MM-dd HH:mm:ss'"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("format", "String", "yyyy-MM-dd HH:mm:ss")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class LocalDateTimeConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractConverter<LocalDateTime>(), ConfigurableConverter<LocalDateTime> {
@@ -822,7 +810,15 @@ interface Converter<T> : Component {
 	}
 
 	//TODO
-	object DurationConverter : AbstractConverter<Duration>() {
+	open class DurationConverter(
+		override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Duration>() , ConfigurableConverter<Duration>{
+		companion object Default:DurationConverter()
+
+		override fun configure(configParams: Map<String, Any?>): DurationConverter {
+			return DurationConverter(configParams)
+		}
+
 		override fun convert(value: Any): Duration {
 			return when {
 				value is Duration -> value
@@ -913,55 +909,6 @@ interface Converter<T> : Component {
 				value is URI -> value
 				else -> value.toString().toUri()
 			}
-		}
-	}
-
-	open class EnumConverter(
-		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
-	) : AbstractConverter<Enum<*>>(), BoundConverter<Enum<*>> {
-		companion object Default : EnumConverter()
-
-		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
-		private val enumValues: List<Enum<*>> by lazy { if(enumClass == Enum::class.java) emptyList() else enumClass.enumConstants.toList() }
-		private val enumValueMap: Map<String, Enum<*>> by lazy { enumValues.associateBy { it.name.toLowerCase() } }
-
-		@Suppress("UNCHECKED_CAST")
-		override fun bindingActualTargetType(actualTargetType: Class<*>): BoundConverter<Enum<*>> {
-			return EnumConverter(actualTargetType as Class<out Enum<*>>)
-		}
-
-		override fun convert(value: Any): Enum<*> {
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
-			return when {
-				value is Number -> {
-					val index = value.toInt()
-					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
-				}
-				else -> {
-					val name = value.toString().toLowerCase()
-					enumValueMap[name] ?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
-				}
-			}
-		}
-
-		override fun convertOrNull(value: Any): Enum<*>? {
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
-			return when {
-				value is Number -> {
-					val index = value.toInt()
-					enumValues.getOrNull(index)
-				}
-				else -> {
-					val name = value.toString()
-					enumValueMap[name]
-				}
-			}
-		}
-	}
-
-	class ArrayConverter : AbstractConverter<Array<*>>() {
-		override fun convert(value: Any): Array<*> {
-			TODO("Not yet implemented")
 		}
 	}
 
@@ -1057,7 +1004,6 @@ interface Converter<T> : Component {
 		}
 	}
 
-
 	@ExperimentalUnsignedTypes
 	object ULongRangeConverter : AbstractConverter<ULongRange>() {
 		override fun convert(value: Any): ULongRange {
@@ -1078,6 +1024,61 @@ interface Converter<T> : Component {
 
 		private fun doConvert(value: String): ULongRange {
 			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
+		}
+	}
+
+	open class EnumConverter(
+		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
+	) : AbstractConverter<Enum<*>>(), BoundConverter<Enum<*>> {
+		companion object Default : EnumConverter()
+
+		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
+		private val enumValues: List<Enum<*>> by lazy { if(enumClass == Enum::class.java) emptyList() else enumClass.enumConstants.toList() }
+		private val enumValueMap: Map<String, Enum<*>> by lazy { enumValues.associateBy { it.name.toLowerCase() } }
+
+		@Suppress("UNCHECKED_CAST")
+		override fun bindingActualTargetType(actualTargetType: Class<*>): BoundConverter<Enum<*>> {
+			return EnumConverter(actualTargetType as Class<out Enum<*>>)
+		}
+
+		override fun convert(value: Any): Enum<*> {
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return when {
+				value is Number -> {
+					val index = value.toInt()
+					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
+				}
+				else -> {
+					val name = value.toString().toLowerCase()
+					enumValueMap[name] ?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
+				}
+			}
+		}
+
+		override fun convertOrNull(value: Any): Enum<*>? {
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return when {
+				value is Number -> {
+					val index = value.toInt()
+					enumValues.getOrNull(index)
+				}
+				else -> {
+					val name = value.toString()
+					enumValueMap[name]
+				}
+			}
+		}
+	}
+
+	open class ArrayConverter : AbstractConverter<Array<*>>() {
+		override fun convert(value: Any): Array<*> {
+			TODO("Not yet implemented")
+		}
+	}
+
+	open class ListConverter : AbstractConverter<List<*>>() {
+		override fun convert(value: Any): List<*> {
+			TODO("Not yet implemented")
 		}
 	}
 

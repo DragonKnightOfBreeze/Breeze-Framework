@@ -117,10 +117,8 @@ interface RandomGenerator<T> : Component {
 	}
 
 	//region Random Generators
-	@ConfigParams(
-		ConfigParam("min", "Byte"),
-		ConfigParam("max", "Byte")
-	)
+	@ConfigParam("min", "Byte")
+	@ConfigParam("max", "Byte")
 	open class RandomByteGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Byte>(), ConfigurableRandomGenerator<Byte> {
@@ -143,10 +141,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Short"),
-		ConfigParam("max", "Short")
-	)
+	@ConfigParam("min", "Short")
+	@ConfigParam("max", "Short")
 	open class RandomShortGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Short>(), ConfigurableRandomGenerator<Short> {
@@ -169,10 +165,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Int"),
-		ConfigParam("max", "Int")
-	)
+	@ConfigParam("min", "Int")
+	@ConfigParam("max", "Int")
 	open class RandomIntGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Int>(), ConfigurableRandomGenerator<Int> {
@@ -195,10 +189,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Long"),
-		ConfigParam("max", "Long")
-	)
+	@ConfigParam("min", "Long")
+	@ConfigParam("max", "Long")
 	open class RandomLongGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Long>(), ConfigurableRandomGenerator<Long> {
@@ -221,10 +213,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Float"),
-		ConfigParam("max", "Float")
-	)
+	@ConfigParam("min", "Float")
+	@ConfigParam("max", "Float")
 	open class RandomFloatGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Float>(), ConfigurableRandomGenerator<Float> {
@@ -247,10 +237,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Double"),
-		ConfigParam("max", "Double")
-	)
+	@ConfigParam("min", "Double")
+	@ConfigParam("max", "Double")
 	open class RandomDoubleGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Double>(), ConfigurableRandomGenerator<Double> {
@@ -273,11 +261,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "BigInteger"),
-		ConfigParam("max", "BigInteger")
-	)
 	@UnstableApi
+	@ConfigParam("min", "BigInteger")
+	@ConfigParam("max", "BigInteger")
 	open class RandomBigIntegerGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<BigInteger>(), ConfigurableRandomGenerator<BigInteger> {
@@ -300,11 +286,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "BigDecimal"),
-		ConfigParam("max", "BigDecimal")
-	)
 	@UnstableApi
+	@ConfigParam("min", "BigDecimal")
+	@ConfigParam("max", "BigDecimal")
 	open class RandomBigDecimalGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<BigDecimal>(), ConfigurableRandomGenerator<BigDecimal> {
@@ -327,11 +311,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "UByte"),
-		ConfigParam("max", "UByte")
-	)
 	@ExperimentalUnsignedTypes
+	@ConfigParam("min", "UByte")
+	@ConfigParam("max", "UByte")
 	open class RandomUByteGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<UByte>(), ConfigurableRandomGenerator<UByte> {
@@ -354,11 +336,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "UShort"),
-		ConfigParam("max", "UShort")
-	)
 	@ExperimentalUnsignedTypes
+	@ConfigParam("min", "UShort")
+	@ConfigParam("max", "UShort")
 	open class RandomUShortGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<UShort>(), ConfigurableRandomGenerator<UShort> {
@@ -381,11 +361,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "UInt"),
-		ConfigParam("max", "UInt")
-	)
 	@ExperimentalUnsignedTypes
+	@ConfigParam("min", "UInt")
+	@ConfigParam("max", "UInt")
 	open class RandomUIntGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<UInt>(), ConfigurableRandomGenerator<UInt> {
@@ -408,11 +386,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "ULong"),
-		ConfigParam("max", "ULong")
-	)
 	@ExperimentalUnsignedTypes
+	@ConfigParam("min", "ULong")
+	@ConfigParam("max", "ULong")
 	open class RandomULongGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<ULong>(), ConfigurableRandomGenerator<ULong> {
@@ -435,10 +411,9 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Char"),
-		ConfigParam("max", "Char")
-	)
+
+	@ConfigParam("min", "Char")
+	@ConfigParam("max", "Char")
 	open class RandomCharGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Char>(), ConfigurableRandomGenerator<Char> {
@@ -472,12 +447,10 @@ interface RandomGenerator<T> : Component {
 	 * * maxLength - 最大长度。
 	 * * source - 源字符串，生成的字符串的字符会从中随机选取。
 	 */
-	@ConfigParams(
-		ConfigParam("length", "Int", "0", override = "minLength, maxLength"),
-		ConfigParam("minLength", "Int", "0"),
-		ConfigParam("maxLength", "Int"),
-		ConfigParam("source", "String", "")
-	)
+	@ConfigParam("length", "Int", "0", override = "minLength, maxLength")
+	@ConfigParam("minLength", "Int", "0")
+	@ConfigParam("maxLength", "Int")
+	@ConfigParam("source", "String", "")
 	open class RandomStringGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<String>(), ConfigurableRandomGenerator<String> {
@@ -521,13 +494,12 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "Date", "<null>"),
-		ConfigParam("max", "Date", "<null>"),
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("min", "Date", "<null>")
+	@ConfigParam("max", "Date", "<null>")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	@ConfigParamsPassing(Converter.DateConverter::class, "format, locale, timeZone")
 	open class RandomDateGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Date>(), ConfigurableRandomGenerator<Date> {
@@ -552,13 +524,12 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "LocalDate"),
-		ConfigParam("max", "LocalDate"),
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("min", "LocalDate")
+	@ConfigParam("max", "LocalDate")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	@ConfigParamsPassing(Converter.LocalDateConverter::class, "format, locale, timeZone")
 	open class RandomLocalDateGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<LocalDate>(), ConfigurableRandomGenerator<LocalDate> {
@@ -583,13 +554,12 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "LocalTime"),
-		ConfigParam("max", "LocalTime"),
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("min", "LocalTime")
+	@ConfigParam("max", "LocalTime")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	@ConfigParamsPassing(Converter.LocalTimeConverter::class, "format, locale, timeZone")
 	open class RandomLocalTimeGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<LocalTime>(), ConfigurableRandomGenerator<LocalTime> {
@@ -614,13 +584,12 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "LocalDateTime"),
-		ConfigParam("max", "LocalDateTime"),
-		ConfigParam("format", "String", "yyyy-MM-dd"),
-		ConfigParam("locale", "String | Locale", "<default>"),
-		ConfigParam("timeZone", "String | TimeZone", "<utc>")
-	)
+	@ConfigParam("min", "LocalDateTime")
+	@ConfigParam("max", "LocalDateTime")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	@ConfigParamsPassing(Converter.LocalDateTimeConverter::class, "format, locale, timeZone")
 	open class RandomLocalDateTimeGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<LocalDateTime>(), ConfigurableRandomGenerator<LocalDateTime> {
@@ -646,10 +615,8 @@ interface RandomGenerator<T> : Component {
 		}
 	}
 
-	@ConfigParams(
-		ConfigParam("min", "LocalDateTime"),
-		ConfigParam("max", "LocalDateTime")
-	)
+	@ConfigParam("min", "LocalDateTime")
+	@ConfigParam("max", "LocalDateTime")
 	open class RandomInstantGenerator(
 		final override val configParams: Map<String, Any?> = emptyMap()
 	) : AbstractRandomGenerator<Instant>(), ConfigurableRandomGenerator<Instant> {

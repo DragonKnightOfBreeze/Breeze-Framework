@@ -70,6 +70,11 @@ interface DefaultGenerator<T> : Component {
 			register(DefaultDoubleArrayGenerator)
 			register(DefaultCharArrayGenerator)
 			register(DefaultBooleanArrayGenerator)
+			register(DefaultIntRangeGenerator)
+			register(DefaultLongRangeGenerator)
+			register(DefaultCharRangeGenerator)
+			register(DefaultUIntRangeGenerator)
+			register(DefaultULongRangeGenerator)
 			register(DefaultEnumGenerator)
 			register(DefaultIteratorGenerator)
 			register(DefaultIterableGenerator)
@@ -79,11 +84,6 @@ interface DefaultGenerator<T> : Component {
 			register(DefaultSequenceGenerator)
 			register(DefaultMapGenerator)
 			register(DefaultStreamGenerator)
-			register(DefaultIntRangeGenerator)
-			register(DefaultLongRangeGenerator)
-			register(DefaultCharRangeGenerator)
-			register(DefaultUIntRangeGenerator)
-			register(DefaultULongRangeGenerator)
 		}
 
 		private val componentMap: MutableMap<String, DefaultGenerator<*>> = ConcurrentHashMap()
@@ -342,6 +342,33 @@ interface DefaultGenerator<T> : Component {
 		override fun generate(): BooleanArray = value
 	}
 
+	object DefaultIntRangeGenerator : AbstractDefaultGenerator<IntRange>() {
+		private val value = IntRange.EMPTY
+		override fun generate(): IntRange = value
+	}
+
+	object DefaultLongRangeGenerator : AbstractDefaultGenerator<LongRange>() {
+		private val value = LongRange.EMPTY
+		override fun generate(): LongRange = value
+	}
+
+	object DefaultCharRangeGenerator : AbstractDefaultGenerator<CharRange>() {
+		private val value = CharRange.EMPTY
+		override fun generate(): CharRange = value
+	}
+
+	@ExperimentalUnsignedTypes
+	object DefaultUIntRangeGenerator : AbstractDefaultGenerator<UIntRange>() {
+		private val value = UIntRange.EMPTY
+		override fun generate(): UIntRange = value
+	}
+
+	@ExperimentalUnsignedTypes
+	object DefaultULongRangeGenerator : AbstractDefaultGenerator<ULongRange>() {
+		private val value = ULongRange.EMPTY
+		override fun generate(): ULongRange = value
+	}
+
 	open class DefaultEnumGenerator(
 		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
 	) : AbstractDefaultGenerator<Enum<*>>(), BoundDefaultGenerator<Enum<*>> {
@@ -399,33 +426,6 @@ interface DefaultGenerator<T> : Component {
 	object DefaultStreamGenerator : AbstractDefaultGenerator<Stream<*>>() {
 		private val value = Stream.empty<Any?>()
 		override fun generate(): Stream<*> = value
-	}
-
-	object DefaultIntRangeGenerator : AbstractDefaultGenerator<IntRange>() {
-		private val value = IntRange.EMPTY
-		override fun generate(): IntRange = value
-	}
-
-	object DefaultLongRangeGenerator : AbstractDefaultGenerator<LongRange>() {
-		private val value = LongRange.EMPTY
-		override fun generate(): LongRange = value
-	}
-
-	object DefaultCharRangeGenerator : AbstractDefaultGenerator<CharRange>() {
-		private val value = CharRange.EMPTY
-		override fun generate(): CharRange = value
-	}
-
-	@ExperimentalUnsignedTypes
-	object DefaultUIntRangeGenerator : AbstractDefaultGenerator<UIntRange>() {
-		private val value = UIntRange.EMPTY
-		override fun generate(): UIntRange = value
-	}
-
-	@ExperimentalUnsignedTypes
-	object DefaultULongRangeGenerator : AbstractDefaultGenerator<ULongRange>() {
-		private val value = ULongRange.EMPTY
-		override fun generate(): ULongRange = value
 	}
 	//endregion
 }
