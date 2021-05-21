@@ -3,6 +3,7 @@
 
 package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.extension.*
 import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 import java.math.*
@@ -13,6 +14,7 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import java.util.regex.*
 import java.util.stream.*
+import kotlin.random.Random
 
 //TODO GenericDefaultGenerator
 
@@ -107,7 +109,7 @@ interface DefaultGenerator<T> : TypedComponent {
 		 * 根据可选的配置参数，生成指定类型的默认值。
 		 */
 		inline fun <reified T> generate(configParams: Map<String, Any?> = emptyMap()): T {
-			return generate(T::class.java, configParams)
+			return generate(javaTypeOf<T>(), configParams)
 		}
 
 		/**
@@ -118,21 +120,34 @@ interface DefaultGenerator<T> : TypedComponent {
 			return doGenerate(targetType, configParams)
 		}
 
-		private fun <T> doGenerate(targetType: Class<T>, configParams: Map<String, Any?>): T {
+		/**
+		 * 根据可选的配置参数，生成指定类型的默认值。
+		 */
+		@JvmStatic
+		fun <T> generate(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+			return doGenerate(targetType, configParams)
+		}
+
+
+		private fun <T> doGenerate(targetType:Type, configParams: Map<String, Any?>): T {
+			val targetClass = inferClass(targetType)
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
-			val key = inferKey(targetType, configParams)
+			val key = inferKey(targetClass, configParams)
 			val defaultGenerator = componentMap.getOrPut(key) {
-				val result = inferDefaultGenerator(targetType, configParams)
+				val result = inferDefaultGenerator(targetClass, configParams)
 				if(result == null) {
 					if(useFallbackStrategy) {
-						val fallback = fallbackGenerate(targetType)
-						if(fallback != null) return fallback
+						val fallback = fallbackGenerate(targetClass)
+						if(fallback != null) return fallback as T
 					}
 					throw IllegalArgumentException("No suitable default generator found for target type '$targetType'.")
 				}
 				result
 			}
-			return defaultGenerator.generate() as T
+			return when(defaultGenerator){
+				is GenericDefaultGenerator<*> -> defaultGenerator.generate(targetType) as T
+				else -> defaultGenerator.generate() as T
+			}
 		}
 
 		private fun inferKey(targetType: Class<*>, configParams: Map<String, Any?>): String {
@@ -165,7 +180,7 @@ interface DefaultGenerator<T> : TypedComponent {
 		 * 根据指定的目标类型和配置参数，从缓存中得到默认值生成器。如果没有，则创建并放入。
 		 */
 		@JvmStatic
-		fun <T,C:DefaultGenerator<T>> getDefaultGenerator(targetType: Class<T>, configParams: Map<String, Any?>, defaultValue: () -> C): C {
+		fun <T, C : DefaultGenerator<T>> getDefaultGenerator(targetType: Class<T>, configParams: Map<String, Any?>, defaultValue: () -> C): C {
 			return componentMap.getOrPut(inferKey(targetType, configParams), defaultValue) as C
 		}
 	}
@@ -363,23 +378,14 @@ interface DefaultGenerator<T> : TypedComponent {
 		override fun generate(): BooleanArray = value
 	}
 
-	open class DefaultEnumGenerator(
-		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
-	) : AbstractDefaultGenerator<Enum<*>>(), BoundDefaultGenerator<Enum<*>> {
-		companion object Default : DefaultEnumGenerator()
-
-		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
-		private val enumValue: Enum<*>? by lazy { if(enumClass == Enum::class.java) null else enumClass.enumConstants.firstOrNull() }
-
-		@Suppress("UNCHECKED_CAST")
-		override fun bindingActualTargetType(actualTargetType: Type): DefaultEnumGenerator {
-			if(actualTargetType !is Class<*>) throw IllegalArgumentException("Actual target type should be an enum type.")
-			return DefaultEnumGenerator(actualTargetType as Class<out Enum<*>>)
-		}
-
-		override fun generate(): Enum<*> {
+	object DefaultEnumGenerator : AbstractDefaultGenerator<Enum<*>>(), GenericDefaultGenerator<Enum<*>> {
+		override fun generate(targetType: Type): Enum<*> {
+			val enumClass = inferEnumClass(targetType)
 			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
-			return enumValue ?: throw IllegalArgumentException("Enum class '$actualTargetType' has no enum constants.")
+			val enumValues = enumValuesCache.getOrPut(enumClass) {
+				enumClass.enumConstants?.toList() ?: emptyList()
+			}
+			return enumValues.firstOrNull() ?: throw IllegalArgumentException("Enum class '$targetType' has no enum constants.")
 		}
 	}
 

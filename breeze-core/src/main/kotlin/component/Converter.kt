@@ -100,8 +100,11 @@ interface Converter<T> : TypedComponent {
 			register(UIntArrayConverter)
 			register(ULongArrayConverter)
 			register(IteratorConverter)
+			register(MutableIteratorConverter)
 			register(IterableConverter)
+			register(MutableIterableConverter)
 			register(CollectionConverter)
+			register(MutableCollectionConverter)
 			register(ListConverter)
 			register(MutableListConverter)
 			register(SetConverter)
@@ -193,10 +196,10 @@ interface Converter<T> : TypedComponent {
 		}
 
 		private fun <T, V : Any> doConvertOrNull(value: V, targetType: Type, configParams: Map<String, Any?>): T? {
-			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-			//如果value的类型不是泛型类型，且兼容targetType，则直接返回
 			val targetClass = inferClass(targetType)
+			//如果value的类型不是泛型类型，且兼容targetType，则直接返回
 			if(targetClass == targetType && targetClass.isInstance(value)) return value as? T?
+			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 			val key = inferKey(targetClass, configParams)
 			val converter = componentMap.getOrPut(key) {
 				val result = inferConverter(targetClass, configParams)
@@ -211,9 +214,9 @@ interface Converter<T> : TypedComponent {
 				}
 				result
 			}
-			when(converter) {
-				is GenericConverter<*> -> return converter.convertOrNull(value, targetType) as? T?
-				else -> return converter.convertOrNull(value) as? T?
+			return when(converter) {
+				is GenericConverter<*> -> converter.convertOrNull(value, targetType) as? T?
+				else -> converter.convertOrNull(value) as? T?
 			}
 		}
 
@@ -1088,9 +1091,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1144,9 +1147,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1200,9 +1203,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1256,9 +1259,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1312,9 +1315,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1368,9 +1371,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1424,9 +1427,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1480,9 +1483,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1536,9 +1539,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@ExperimentalUnsignedTypes
 	@ConfigParam("separator", "String", ",")
@@ -1592,9 +1595,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@ExperimentalUnsignedTypes
 	@ConfigParam("separator", "String", ",")
@@ -1648,9 +1651,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@ExperimentalUnsignedTypes
 	@ConfigParam("separator", "String", ",")
@@ -1704,9 +1707,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为数组时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为数组时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为数组时使用的后缀。
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
 	 */
 	@ExperimentalUnsignedTypes
 	@ConfigParam("separator", "String", ",")
@@ -1760,9 +1763,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为列表时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为列表时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为列表时使用的后缀。
+	 * * separator - 从字符串转化为迭代器时使用的分隔符。
+	 * * prefix - 从字符串转化为迭代器时使用的前缀。
+	 * * suffix - 从字符串转化为迭代器时使用的后缀。
 	 * * delegate - 委托的转化器（列表转化器/集转化器）。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
@@ -1797,9 +1800,47 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为列表时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为列表时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为列表时使用的后缀。
+	 * * separator - 从字符串转化为可变迭代器时使用的分隔符。
+	 * * prefix - 从字符串转化为可变迭代器时使用的前缀。
+	 * * suffix - 从字符串转化为可变迭代器时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableIterableConverter::class)
+	open class MutableIteratorConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableIterator<*>>(), ConfigurableConverter<MutableIterator<*>>,
+		GenericConverter<MutableIterator<*>> {
+		companion object Default : MutableIteratorConverter()
+
+		private val mutableIterableConverter by lazy {
+			getConverter(MutableIterable::class.java, passingConfigParams) { MutableIterableConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): MutableIteratorConverter {
+			return MutableIteratorConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableIterator<*> {
+			return mutableIterableConverter.convert(value, targetType).iterator()
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableIterator<*>? {
+			return mutableIterableConverter.convertOrNull(value, targetType)?.iterator()
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为集合时使用的分隔符。
+	 * * prefix - 从字符串转化为集合时使用的前缀。
+	 * * suffix - 从字符串转化为集合时使用的后缀。
 	 * * delegate - 委托的转化器（列表转化器/集转化器）。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
@@ -1824,19 +1865,57 @@ interface Converter<T> : TypedComponent {
 		}
 
 		override fun convert(value: Any, targetType: Type): Iterable<*> {
-			return collectionConverter.convert(value, targetType).asIterable()
+			return collectionConverter.convert(value, targetType)
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): Iterable<*>? {
-			return collectionConverter.convertOrNull(value, targetType)?.asIterable()
+			return collectionConverter.convertOrNull(value, targetType)
 		}
 	}
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为列表时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为列表时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为列表时使用的后缀。
+	 * * separator - 从字符串转化为可变集合时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集合时使用的前缀。
+	 * * suffix - 从字符串转化为可变集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableCollectionConverter::class)
+	open class MutableIterableConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableIterable<*>>(), ConfigurableConverter<MutableIterable<*>>,
+		GenericConverter<MutableIterable<*>> {
+		companion object Default : MutableIterableConverter()
+
+		private val mutableCollectionConverter by lazy {
+			getConverter(MutableCollection::class.java, passingConfigParams) { MutableCollectionConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): MutableIterableConverter {
+			return MutableIterableConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableIterable<*> {
+			return mutableCollectionConverter.convert(value, targetType)
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableIterable<*>? {
+			return mutableCollectionConverter.convertOrNull(value, targetType)
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为集合时使用的分隔符。
+	 * * prefix - 从字符串转化为集合时使用的前缀。
+	 * * suffix - 从字符串转化为集合时使用的后缀。
 	 * * delegate - 委托的转化器（列表转化器/集转化器）。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
@@ -1885,9 +1964,61 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为列表时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为列表时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为列表时使用的后缀。
+	 * * separator - 从字符串转化为可变集合时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集合时使用的前缀。
+	 * * suffix - 从字符串转化为可变集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableListConverter::class, "!delegate")
+	@ConfigParamsPassing(MutableSetConverter::class, "!delegate")
+	open class MutableCollectionConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableCollection<*>>(), ConfigurableConverter<MutableCollection<*>>,
+		GenericConverter<MutableCollection<*>> {
+		companion object Default : MutableCollectionConverter()
+
+		private val mutableListConverter by lazy {
+			getConverter(MutableList::class.java, passingConfigParams) { MutableListConverter(passingConfigParams) }
+		}
+		private val mutableSetConverter by lazy {
+			getConverter(MutableSet::class.java, passingConfigParams) { MutableSetConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "delegate")
+
+		val delegate: String = configParams.get("delegate")?.toString() ?: "list"
+
+		override fun configure(configParams: Map<String, Any?>): MutableCollectionConverter {
+			return MutableCollectionConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableCollection<*> {
+			return when(delegate) {
+				"list" -> mutableListConverter.convert(value, targetType)
+				"set" -> mutableSetConverter.convert(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableCollection<*>? {
+			return when(delegate) {
+				"list" -> mutableListConverter.convertOrNull(value, targetType)
+				"set" -> mutableSetConverter.convertOrNull(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为列表时使用的分隔符。
+	 * * prefix - 从字符串转化为列表时使用的前缀。
+	 * * suffix - 从字符串转化为列表时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1942,9 +2073,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为可变列表时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为可变列表时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为可变列表时使用的后缀。
+	 * * separator - 从字符串转化为可变列表时使用的分隔符。
+	 * * prefix - 从字符串转化为可变列表时使用的前缀。
+	 * * suffix - 从字符串转化为可变列表时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -1999,9 +2130,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为集时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为集时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为集时使用的后缀。
+	 * * separator - 从字符串转化为集时使用的分隔符。
+	 * * prefix - 从字符串转化为集时使用的前缀。
+	 * * suffix - 从字符串转化为集时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -2056,9 +2187,9 @@ interface Converter<T> : TypedComponent {
 
 	/**
 	 * 配置参数说明：
-	 * * separator - 从字符串（字符序列）转化为可变集时使用的分隔符。
-	 * * prefix - 从字符串（字符序列）转化为可变集时使用的前缀。
-	 * * suffix - 从字符串（字符序列）转化为可变集时使用的后缀。
+	 * * separator - 从字符串转化为可变集时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集时使用的前缀。
+	 * * suffix - 从字符串转化为可变集时使用的后缀。
 	 */
 	@OptIn(ExperimentalUnsignedTypes::class)
 	@ConfigParam("separator", "String", ",")
@@ -2223,6 +2354,94 @@ interface Converter<T> : TypedComponent {
 
 		private fun doConvert(value: String): ULongRange {
 			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为序列时使用的分隔符。
+	 * * prefix - 从字符串转化为序列时使用的前缀。
+	 * * suffix - 从字符串转化为序列时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(IterableConverter::class)
+	open class SequenceConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Sequence<*>>(), ConfigurableConverter<Sequence<*>>, GenericConverter<Sequence<*>> {
+		companion object Default : SequenceConverter()
+
+		private val iterableConverter by lazy {
+			getConverter(Iterable::class.java, passingConfigParams) { IterableConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): SequenceConverter {
+			return SequenceConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Sequence<*> {
+			return iterableConverter.convert(value, targetType).asSequence()
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Sequence<*>? {
+			return iterableConverter.convertOrNull(value, targetType)?.asSequence()
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为流时使用的分隔符。
+	 * * prefix - 从字符串转化为流时使用的前缀。
+	 * * suffix - 从字符串转化为流时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(ListConverter::class)
+	@ConfigParamsPassing(SetConverter::class)
+	open class StreamConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Stream<*>>(), ConfigurableConverter<Stream<*>>, GenericConverter<Stream<*>> {
+		companion object Default : StreamConverter()
+
+		private val listConverter by lazy {
+			getConverter(List::class.java, passingConfigParams) { ListConverter(passingConfigParams) }
+		}
+		private val setConverter by lazy {
+			getConverter(Set::class.java, passingConfigParams) { SetConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "delegate")
+
+		val delegate: String = configParams.get("delegate").convertToStringOrNull() ?: "list"
+
+		override fun configure(configParams: Map<String, Any?>): StreamConverter {
+			return StreamConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Stream<*> {
+			return when(delegate) {
+				"list" -> listConverter.convert(value, targetType).stream()
+				"set" -> setConverter.convert(value, targetType).stream()
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Stream<*>? {
+			return when(delegate) {
+				"list" -> listConverter.convertOrNull(value, targetType)?.stream()
+				"set" -> setConverter.convertOrNull(value, targetType)?.stream()
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
 		}
 	}
 	//endregion

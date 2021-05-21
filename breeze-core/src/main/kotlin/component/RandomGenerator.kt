@@ -67,7 +67,7 @@ interface RandomGenerator<T> : TypedComponent {
 		 * 生成指定类型的随机值。
 		 */
 		inline fun <reified T> generate(configParams: Map<String, Any?> = emptyMap()): T {
-			return generate(T::class.java, configParams)
+			return generate(javaTypeOf<T>(), configParams)
 		}
 
 		/**
@@ -78,21 +78,33 @@ interface RandomGenerator<T> : TypedComponent {
 			return doGenerate(configParams, targetType)
 		}
 
-		private fun <T> doGenerate(configParams: Map<String, Any?>, targetType: Class<T>): T {
+		/**
+		 * 生成指定类型的随机值。
+		 */
+		@JvmStatic
+		fun <T> generate(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+			return doGenerate(configParams, targetType)
+		}
+
+		private fun <T> doGenerate(configParams: Map<String, Any?>, targetType: Type): T {
+			val targetClass = inferClass(targetType)
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它随机值，并加入缓存
-			val key = inferKey(targetType, configParams)
+			val key = inferKey(targetClass, configParams)
 			val randomGenerator = componentMap.getOrPut(key) {
-				val result = inferRandomGenerator(targetType, configParams)
+				val result = inferRandomGenerator(targetClass, configParams)
 				if(result == null) {
 					if(useFallbackStrategy) {
-						val fallback = fallbackGenerate(targetType)
-						if(fallback != null) return fallback
+						val fallback = fallbackGenerate(targetClass)
+						if(fallback != null) return fallback as T
 					}
 					throw IllegalArgumentException("No suitable random generator found for target type '$targetType'.")
 				}
 				result
 			}
-			return randomGenerator.generate() as T
+			return when(randomGenerator){
+				is GenericRandomGenerator<*> -> randomGenerator.generate(targetType) as T
+				else -> randomGenerator.generate() as T
+			}
 		}
 
 		private fun inferKey(targetType: Class<*>, configParams: Map<String, Any?>): String {
@@ -653,22 +665,13 @@ interface RandomGenerator<T> : TypedComponent {
 		}
 	}
 
-	open class RandomEnumGenerator(
-		override val actualTargetType: Class<out Enum<*>> = Enum::class.java
-	) : AbstractRandomGenerator<Enum<*>>(), BoundRandomGenerator<Enum<*>> {
-		companion object Default : RandomEnumGenerator()
-
-		private val enumClass: Class<out Enum<*>> by lazy { actualTargetType }
-		private val enumValues: List<Enum<*>> by lazy { if(enumClass == Enum::class.java) emptyList() else enumClass.enumConstants.toList() }
-
-		@Suppress("UNCHECKED_CAST")
-		override fun bindingActualTargetType(actualTargetType: Type): BoundRandomGenerator<Enum<*>> {
-			if(actualTargetType !is Class<*>) throw IllegalArgumentException("Actual target type should be an enum type.")
-			return RandomEnumGenerator(actualTargetType as Class<out Enum<*>>)
-		}
-
-		override fun generate(): Enum<*> {
+	object RandomEnumGenerator: AbstractRandomGenerator<Enum<*>>(), GenericRandomGenerator<Enum<*>> {
+		override fun generate(targetType: Type): Enum<*> {
+			val enumClass = inferEnumClass(targetType)
 			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			val enumValues = enumValuesCache.getOrPut(enumClass) {
+				enumClass.enumConstants?.toList() ?: emptyList()
+			}
 			return Random.nextElement(enumValues)
 		}
 	}

@@ -159,6 +159,15 @@ inline fun <reified T : Any> defaultValue(configParams: Map<String, Any?> = empt
 fun <T : Any> defaultValue(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
 	return DefaultGenerator.generate(targetType, configParams)
 }
+
+/**
+ * 根据可选的配置参数，生成指定类型的默认值。
+ *
+ * @see DefaultGenerator
+ */
+fun <T : Any> defaultValue(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+	return DefaultGenerator.generate(targetType, configParams)
+}
 //endregion
 
 //region Random Generator Extensions
@@ -177,6 +186,15 @@ inline fun <reified T : Any> randomValue(configParams: Map<String, Any?> = empty
  * @see RandomGenerator
  */
 fun <T : Any> randomValue(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(targetType, configParams)
+}
+
+/**
+ * 根据可选的配置参数，生成指定类型的随机值。
+ *
+ * @see RandomGenerator
+ */
+fun <T : Any> randomValue(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
 	return RandomGenerator.generate(targetType, configParams)
 }
 //endregion

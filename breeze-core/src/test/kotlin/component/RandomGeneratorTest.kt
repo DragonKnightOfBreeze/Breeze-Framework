@@ -12,22 +12,22 @@ import java.util.*
 class RandomGeneratorTest {
 	@Test
 	fun test(){
-		println(randomValue<Byte>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Short>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Int>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Long>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Float>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Double>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<BigInteger>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<BigDecimal>(mapOf("min" to 1,"max" to "10")))
-		println(randomValue<Char>())
-		println(randomValue<Boolean>())
-		println(randomValue<String>(mapOf("length" to 3,"source" to "abc")))
-		println(randomValue<Date>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
-		println(randomValue<LocalDate>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
-		println(randomValue<LocalTime>(mapOf("min" to "12:00:00","max" to "13:00:00")))
-		println(randomValue<LocalDateTime>(mapOf("min" to "2020-01-01 12:00:00","max" to "2022-01-01 13:00:00")))
-		println(randomValue<Gender>())
+		prettyPrintln(randomValue<Byte>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Short>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Int>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Long>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Float>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Double>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<BigInteger>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<BigDecimal>(mapOf("min" to 1,"max" to "10")))
+		prettyPrintln(randomValue<Char>())
+		prettyPrintln(randomValue<Boolean>())
+		prettyPrintln(randomValue<String>(mapOf("length" to 3,"source" to "abc")))
+		prettyPrintln(randomValue<Date>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
+		prettyPrintln(randomValue<LocalDate>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
+		prettyPrintln(randomValue<LocalTime>(mapOf("min" to "12:00:00","max" to "13:00:00")))
+		prettyPrintln(randomValue<LocalDateTime>(mapOf("min" to "2020-01-01 12:00:00","max" to "2022-01-01 13:00:00")))
+		prettyPrintln(randomValue<Gender>())
 	}
 
 	enum class Gender{
