@@ -116,9 +116,6 @@ interface RandomGenerator<T> : TypedComponent {
 			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}
-			if(result is BoundRandomGenerator<*> && targetType != result.targetType) {
-				result = result.bindingActualTargetType(targetType)
-			}
 			return result
 		}
 

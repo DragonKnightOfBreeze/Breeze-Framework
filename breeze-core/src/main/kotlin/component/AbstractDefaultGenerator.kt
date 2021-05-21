@@ -12,14 +12,12 @@ abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 		if(this === other) return true
 		if(other == null || javaClass != other.javaClass) return false
 		if(this is ConfigurableDefaultGenerator<*> && other is ConfigurableDefaultGenerator<*> && configParams.toString() != other.configParams.toString()) return false
-		if(this is BoundDefaultGenerator<*> && other is BoundDefaultGenerator<*> && actualTargetType != other.actualTargetType) return false
 		return true
 	}
 
 	override fun hashCode(): Int {
 		var hash = 1
 		if(this is ConfigurableDefaultGenerator<*>) hash = 31 * hash + configParams.toString().hashCode()
-		if(this is BoundDefaultGenerator<*>) hash = 31 * hash + actualTargetType.hashCode()
 		return hash
 	}
 
@@ -27,7 +25,6 @@ abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 		return buildString {
 			append(targetType)
 			if(this@AbstractDefaultGenerator is ConfigurableDefaultGenerator<*>) append('@').append(configParams)
-			if(this@AbstractDefaultGenerator is BoundDefaultGenerator<*>) append('@').append(actualTargetType)
 		}
 	}
 }

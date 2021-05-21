@@ -159,9 +159,6 @@ interface DefaultGenerator<T> : TypedComponent {
 			if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}
-			if(result is BoundDefaultGenerator<*> && targetType != result.targetType) {
-				result = result.bindingActualTargetType(targetType)
-			}
 			return result
 		}
 
