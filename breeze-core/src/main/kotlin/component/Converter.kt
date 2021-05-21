@@ -103,7 +103,9 @@ interface Converter<T> : TypedComponent {
 			register(IterableConverter)
 			register(CollectionConverter)
 			register(ListConverter)
+			register(MutableListConverter)
 			register(SetConverter)
+			register(MutableSetConverter)
 			register(IntRangeConverter)
 			register(LongRangeConverter)
 			register(CharRangeConverter)
@@ -400,13 +402,13 @@ interface Converter<T> : TypedComponent {
 	 * 配置参数说明：
 	 * * relaxConvert - 是否使用条件更为宽松的转化。如果是，则0、空数组、空集合等将会被转化为`false`。
 	 */
-	@ConfigParam("relaxConvert","Boolean","false")
+	@ConfigParam("relaxConvert", "Boolean", "false")
 	open class BooleanConverter(
 		final override val configParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Boolean>(),ConfigurableConverter<Boolean> {
-		companion object Default: BooleanConverter()
+	) : AbstractConverter<Boolean>(), ConfigurableConverter<Boolean> {
+		companion object Default : BooleanConverter()
 
-		val relaxConvert:Boolean = configParams.get("relaxConvert").convertToBooleanOrFalse()
+		val relaxConvert: Boolean = configParams.get("relaxConvert").convertToBooleanOrFalse()
 
 		override fun configure(configParams: Map<String, Any?>): BooleanConverter {
 			return BooleanConverter(configParams)
@@ -416,7 +418,7 @@ interface Converter<T> : TypedComponent {
 			return if(relaxConvert) doRelaxConvert(value) else doConvert(value)
 		}
 
-		private fun doConvert(value:Any):Boolean{
+		private fun doConvert(value: Any): Boolean {
 			return value == true || value.toString() == "true"
 		}
 
@@ -652,14 +654,7 @@ interface Converter<T> : TypedComponent {
 	) : AbstractConverter<Regex>(), ConfigurableConverter<Regex> {
 		companion object Default : RegexConverter()
 
-		val regexOptions: Set<RegexOption> = configParams.get("regexOptions")?.let {
-			when {
-				it is Array<*> -> it.filterIsInstanceTo(mutableSetOf())
-				it is Iterable<*> -> it.filterIsInstanceTo(mutableSetOf())
-				it is Sequence<*> -> it.filterIsInstanceTo(mutableSetOf())
-				else -> emptySet()
-			}
-		} ?: emptySet()
+		val regexOptions: Set<RegexOption> = configParams.get("regexOptions").convertOrNull() ?: emptySet()
 
 		override fun configure(configParams: Map<String, Any?>): RegexConverter {
 			return RegexConverter(configParams)
@@ -990,22 +985,22 @@ interface Converter<T> : TypedComponent {
 		}
 	}
 
-	object EnumConverter: AbstractConverter<Enum<*>>(),GenericConverter<Enum<*>>{
+	object EnumConverter : AbstractConverter<Enum<*>>(), GenericConverter<Enum<*>> {
 		override fun convert(value: Any, targetType: Type): Enum<*> {
 			val enumClass = inferEnumClass(targetType)
 			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
-					val enumValues = enumValuesCache.getOrPut(enumClass){
-						enumClass.enumConstants?.toList()?: emptyList()
+					val enumValues = enumValuesCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList() ?: emptyList()
 					}
 					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
 				}
 				else -> {
 					val name = value.toString()
-					val enumValueMap = enumValueMapCache.getOrPut(enumClass){
-						enumClass.enumConstants?.toList()?.associateBy { it.name }?: emptyMap()
+					val enumValueMap = enumValueMapCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList()?.associateBy { it.name } ?: emptyMap()
 					}
 					enumValueMap[name] ?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
 				}
@@ -1018,15 +1013,15 @@ interface Converter<T> : TypedComponent {
 			return when {
 				value is Number -> {
 					val index = value.toInt()
-					val enumValues = enumValuesCache.getOrPut(enumClass){
-						enumClass.enumConstants?.toList()?: emptyList()
+					val enumValues = enumValuesCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList() ?: emptyList()
 					}
 					enumValues.getOrNull(index)
 				}
 				else -> {
 					val name = value.toString().toLowerCase()
-					val enumValueMap = enumValueMapCache.getOrPut(enumClass){
-						enumClass.enumConstants?.toList()?.associateBy { it.name }?: emptyMap()
+					val enumValueMap = enumValueMapCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList()?.associateBy { it.name } ?: emptyMap()
 					}
 					enumValueMap[name]
 				}
@@ -1061,7 +1056,7 @@ interface Converter<T> : TypedComponent {
 		}
 
 		override fun convert(value: Any, targetType: Type): Array<*> {
-			val elementType = inferTypeArgument(targetType, this.targetType)
+			val elementType = inferTypeArgument(targetType)
 			return when {
 				value is Array<*> -> Array(value.size) { convertElement(value[it], elementType) }
 				value is ByteArray -> Array(value.size) { convertElement(value[it], elementType) }
@@ -1915,28 +1910,85 @@ interface Converter<T> : TypedComponent {
 		}
 
 		override fun convert(value: Any, targetType: Type): List<*> {
-			val elementType = inferTypeArgument(targetType, this.targetType)
+			val elementType = inferTypeArgument(targetType)
 			return when {
-				value is Array<*> -> value.map { convertElement(it, elementType) }
-				value is ByteArray -> value.map { convertElement(it, elementType) }
-				value is ShortArray -> value.map { convertElement(it, elementType) }
-				value is IntArray -> value.map { convertElement(it, elementType) }
-				value is LongArray -> value.map { convertElement(it, elementType) }
-				value is FloatArray -> value.map { convertElement(it, elementType) }
-				value is DoubleArray -> value.map { convertElement(it, elementType) }
-				value is BooleanArray -> value.map { convertElement(it, elementType) }
-				value is CharArray -> value.map { convertElement(it, elementType) }
-				value is UByteArray -> value.map { convertElement(it, elementType) }
-				value is UShortArray -> value.map { convertElement(it, elementType) }
-				value is UIntArray -> value.map { convertElement(it, elementType) }
-				value is ULongArray -> value.map { convertElement(it, elementType) }
-				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }
-				value is Iterable<*> -> value.map { convertElement(it, elementType) }
-				value is Sequence<*> -> value.mapTo(mutableListOf()) { convertElement(it, elementType) }
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToList()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToList()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toList()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toList()
-				value is String -> splitValue(value).map { convertElement(it, elementType) }
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToList()
 				else -> listOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串（字符序列）转化为可变列表时使用的分隔符。
+	 * * prefix - 从字符串（字符序列）转化为可变列表时使用的前缀。
+	 * * suffix - 从字符串（字符序列）转化为可变列表时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class MutableListConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableList<*>>(), ConfigurableConverter<MutableList<*>>, GenericConverter<MutableList<*>> {
+		companion object Default : MutableListConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): MutableListConverter {
+			return MutableListConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableList<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableList()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableList()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableList()
+				else -> mutableListOf(value.convert(elementType, passingConfigParams))
 			}
 		}
 
@@ -1972,28 +2024,85 @@ interface Converter<T> : TypedComponent {
 		}
 
 		override fun convert(value: Any, targetType: Type): Set<*> {
-			val elementType = inferTypeArgument(targetType, this.targetType)
+			val elementType = inferTypeArgument(targetType)
 			return when {
-				value is Array<*> -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is ByteArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is ShortArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is IntArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is LongArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is FloatArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is DoubleArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is BooleanArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is CharArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is UByteArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is UShortArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is UIntArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is ULongArray -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is Iterator<*> -> Iterable { value }.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is Iterable<*> -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is Sequence<*> -> value.mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is Stream<*> -> value.map { convertElement(it, elementType) }.toLinkedSet()
-				value is String -> splitValue(value).mapTo(mutableSetOf()) { convertElement(it, elementType) }
-				value is CharSequence -> splitValue(value.toString()).mapTo(mutableSetOf()) { convertElement(it, elementType) }
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToSet()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toSet()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toSet()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToSet()
 				else -> setOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串（字符序列）转化为可变集时使用的分隔符。
+	 * * prefix - 从字符串（字符序列）转化为可变集时使用的前缀。
+	 * * suffix - 从字符串（字符序列）转化为可变集时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class MutableSetConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableSet<*>>(), ConfigurableConverter<MutableSet<*>>, GenericConverter<MutableSet<*>> {
+		companion object Default : MutableSetConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): MutableSetConverter {
+			return MutableSetConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableSet<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableSet()
+				else -> mutableSetOf(value.convert(elementType, passingConfigParams))
 			}
 		}
 

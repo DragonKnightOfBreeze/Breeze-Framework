@@ -8,7 +8,7 @@ internal object EmptyMutableIterator : MutableIterator<Nothing> {
 
 	override fun next(): Nothing = throw NoSuchElementException()
 
-	override fun remove() {}
+	override fun remove() = throw IllegalStateException()
 
 	override fun equals(other: Any?): Boolean = other is MutableIterator<*> && !other.hasNext()
 

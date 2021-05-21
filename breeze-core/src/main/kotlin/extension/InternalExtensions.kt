@@ -72,6 +72,38 @@ internal fun Any?.convertToStringOrNull():String?{
 	return this?.toString()
 }
 
+internal fun <T> Collection<T>.convertToList():List<T>{
+	return when {
+		size == 0 -> emptyList()
+		size == 1 -> listOf(if (this is List) get(0) else iterator().next())
+		this is List -> this
+		else -> this.toMutableList()
+	}
+}
+
+internal fun <T> Collection<T>.convertToMutableList():MutableList<T>{
+	return when {
+		this is MutableList -> this as MutableList<T>
+		else -> this.toMutableList()
+	}
+}
+
+internal fun <T> Collection<T>.convertToSet():Set<T>{
+	return when {
+		size == 0 -> emptySet()
+		size == 1 -> setOf(if (this is List) get(0) else iterator().next())
+		this is Set -> this
+		else -> this.toMutableSet()
+	}
+}
+
+internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
+	return when {
+		this is MutableSet -> this as MutableSet<T>
+		else -> this.toMutableSet()
+	}
+}
+
 //internal component extensions
 
 private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
@@ -154,16 +186,15 @@ internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
 	}
 }
 
-internal fun inferTypeArgument(targetType: Type, targetClass: Class<*>): Type {
+internal fun inferTypeArgument(targetType: Type): Type {
 	if(targetType is ParameterizedType) {
 		val rawType = targetType.rawType
-		val rawClass = inferClass(rawType)
-		if(rawClass == targetClass) return targetType.actualTypeArguments?.firstOrNull()
-			?: error("Target type should be a ParameterizedType of class '$targetClass'")
+		return targetType.actualTypeArguments?.firstOrNull()
+			?:  error("Cannot infer class for target type '$targetType'")
 	}else if(targetType is Class<*> && targetType.isArray){
 		return targetType.componentType
 	}
-	error("Target type should be a ParameterizedType of class '$targetClass'")
+	error("Cannot infer class for target type '$targetType'")
 }
 
 internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
@@ -171,9 +202,9 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 		val rawType = targetType.rawType
 		val rawClass = inferClass(rawType)
 		if(rawClass == targetClass) return targetType.actualTypeArguments
-			?: error("Target type should be a ParameterizedType of class '$targetClass'")
+			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
 	}else if(targetType is Class<*> && targetType.isArray){
 		return arrayOf(targetType.componentType)
 	}
-	error("Target type should be a ParameterizedType of class '$targetClass'")
+	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
 }

@@ -142,7 +142,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 

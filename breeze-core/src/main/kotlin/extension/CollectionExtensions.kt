@@ -188,7 +188,7 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 /**
  * 判断当前序列是否为空。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline fun <T> Sequence<T>.isEmpty(): Boolean {
 	return !this.iterator().hasNext()
 }
@@ -196,7 +196,7 @@ inline fun <T> Sequence<T>.isEmpty(): Boolean {
 /**
  * 判断当前序列是否不为空。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
 	return this.iterator().hasNext()
 }
@@ -351,68 +351,68 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean {
 /**
  * 判断当前数组是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前序列是否以指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前序列是否以任意指定元素开始。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前数组是否以指定元素结束。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素结束。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素结束。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素结束。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -420,7 +420,7 @@ fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -901,17 +901,69 @@ inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, awaitTimeout: Lon
 /**
  * 将当前列表转化为新的并发列表。
  */
-fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> = CopyOnWriteArrayList(this)
+fun <T> List<T>.asConcurrent(): CopyOnWriteArrayList<T> {
+	return CopyOnWriteArrayList(this)
+}
 
 /**
  * 将当前集转化为新的并发集。
  */
-fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> = CopyOnWriteArraySet(this)
+fun <T> Set<T>.asConcurrent(): CopyOnWriteArraySet<T> {
+	return CopyOnWriteArraySet(this)
+}
 
 /**
  * 将当前映射转化为新的并发映射。
  */
-fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> = ConcurrentHashMap(this)
+fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> {
+	return ConcurrentHashMap(this)
+}
+
+/**
+ * 将当前列表转化为可变列表。如果当前列表本身就是可变列表，则直接返回。
+ */
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+fun <T> List<T>.asMutable():MutableList<T>{
+	return when{
+		this is MutableList<*> -> this as MutableList<T>
+		else -> this.toMutableList()
+	}
+}
+
+/**
+ * 将当前列表转化为不可变列表。如果当前列表的元素数量大于1，则直接返回。
+ */
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+fun <T> MutableList<T>.asImmutable():List<T>{
+	return when(size){
+		0 -> emptyList()
+		1 -> listOf(this.get(0))
+		else -> this
+	}
+}
+
+/**
+ * 将当前集转化为可变集。如果当前集本身就是可变集，则直接返回。
+ */
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+fun <T> Set<T>.asMutable():MutableSet<T>{
+	return when{
+		this is MutableSet<*> -> this as MutableSet<T>
+		else -> this.toMutableSet()
+	}
+}
+
+/**
+ * 将当前集转化为不可变集。如果当前集的元素数量大于1，则直接返回。
+ */
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+fun <T> MutableSet<T>.asImmutable():Set<T>{
+	return when(size){
+		0 -> emptySet()
+		1 -> setOf(iterator().next())
+		else -> this
+	}
+}
 
 
 /**
