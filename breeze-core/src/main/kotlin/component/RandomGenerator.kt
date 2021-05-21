@@ -100,7 +100,7 @@ interface RandomGenerator<T> : TypedComponent {
 		}
 
 		private fun inferRandomGenerator(targetType: Class<*>, configParams: Map<String, Any?>): RandomGenerator<*>? {
-			var result = components.find { it.targetType.isAssignableFrom(targetType) }
+			var result = components.findLast { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}

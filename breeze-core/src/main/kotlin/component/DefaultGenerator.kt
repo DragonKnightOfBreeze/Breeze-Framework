@@ -140,7 +140,7 @@ interface DefaultGenerator<T> : TypedComponent {
 		}
 
 		private fun inferDefaultGenerator(targetType: Class<*>, configParams: Map<String, Any?>): DefaultGenerator<*>? {
-			var result = components.find { it.targetType.isAssignableFrom(targetType) }
+			var result = components.findLast { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}

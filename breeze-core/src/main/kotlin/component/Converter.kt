@@ -220,7 +220,7 @@ interface Converter<T> : TypedComponent {
 		}
 
 		private fun inferConverter(targetType: Class<*>, configParams: Map<String, Any?>): Converter<*>? {
-			var result = components.find { it.targetType.isAssignableFrom(targetType) }
+			var result = components.findLast { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableConverter<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
 			}
