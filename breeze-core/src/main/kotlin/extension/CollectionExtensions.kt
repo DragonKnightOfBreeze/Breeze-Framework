@@ -133,11 +133,6 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
 inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
 /**
- * 得到当前序列的最为适配的键类型。
- */
-inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
-
-/**
  * 得到当前映射的最为适配的键类型。
  */
 inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
@@ -146,6 +141,11 @@ inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
  * 得到当前映射的最为适配的值类型。
  */
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
+
+/**
+ * 得到当前序列的最为适配的键类型。
+ */
+inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
 //endregion
 
 //region Common Extensions
@@ -979,17 +979,17 @@ fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
 }
 
 /**
- * 将当前序列转化为新的以键为值的映射。
- */
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
-}
-
-/**
  * 将当前映射转化为新的以字符串为键的映射。
  */
 fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
+}
+
+/**
+ * 将当前序列转化为新的以键为值的映射。
+ */
+fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
+	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 //endregion
 

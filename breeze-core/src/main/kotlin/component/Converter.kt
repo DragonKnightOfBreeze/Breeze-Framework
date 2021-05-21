@@ -99,16 +99,16 @@ interface Converter<T> : TypedComponent {
 			register(UShortArrayConverter)
 			register(UIntArrayConverter)
 			register(ULongArrayConverter)
-			register(IntRangeConverter)
-			register(LongRangeConverter)
-			register(CharRangeConverter)
-			register(UIntRangeConverter)
-			register(ULongRangeConverter)
 			register(IteratorConverter)
 			register(IterableConverter)
 			register(CollectionConverter)
 			register(ListConverter)
 			register(SetConverter)
+			register(IntRangeConverter)
+			register(LongRangeConverter)
+			register(CharRangeConverter)
+			register(UIntRangeConverter)
+			register(ULongRangeConverter)
 		}
 
 		private val componentMap: MutableMap<String, Converter<*>> = ConcurrentHashMap()
@@ -1763,121 +1763,6 @@ interface Converter<T> : TypedComponent {
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
 
-	@OptIn(ExperimentalUnsignedTypes::class)
-	object IntRangeConverter : AbstractConverter<IntRange>() {
-		override fun convert(value: Any): IntRange {
-			return when {
-				value is IntRange -> value
-				value is IntProgression -> value.first..value.last
-				value is LongProgression -> value.first.toInt()..value.last.toInt()
-				value is CharProgression -> value.first.toInt()..value.last.toInt()
-				value is UIntProgression -> value.first.toInt()..value.last.toInt()
-				value is ULongProgression -> value.first.toInt()..value.last.toInt()
-				value is Pair<*, *> -> value.first!!.convert<Int>()..value.second!!.convert<Int>()
-				value is List<*> -> value[0]!!.convert<Int>()..value[1]!!.convert<Int>()
-				value is ClosedRange<*> -> value.start.convert<Int>()..value.endInclusive.convert<Int>()
-				value is String -> doConvert(value)
-				else -> doConvert(value.toString())
-			}
-		}
-
-		private fun doConvert(value: String): IntRange {
-			return value.split("..", limit = 2).let { it[0].convert<Int>()..it[1].convert<Int>() }
-		}
-	}
-
-	@OptIn(ExperimentalUnsignedTypes::class)
-	object LongRangeConverter : AbstractConverter<LongRange>() {
-		override fun convert(value: Any): LongRange {
-			return when {
-				value is LongRange -> value
-				value is IntProgression -> value.first.toLong()..value.last.toLong()
-				value is LongProgression -> value.first..value.last
-				value is CharProgression -> value.first.toLong()..value.last.toLong()
-				value is UIntProgression -> value.first.toLong()..value.last.toLong()
-				value is ULongProgression -> value.first.toLong()..value.last.toLong()
-				value is Pair<*, *> -> value.first!!.convert<Long>()..value.second!!.convert<Long>()
-				value is List<*> -> value[0]!!.convert<Long>()..value[1]!!.convert<Long>()
-				value is ClosedRange<*> -> value.start.convert<Long>()..value.endInclusive.convert<Long>()
-				value is String -> doConvert(value)
-				else -> doConvert(value.toString())
-			}
-		}
-
-		private fun doConvert(value: String): LongRange {
-			return value.split("..", limit = 2).let { it[0].convert<Long>()..it[1].convert<Long>() }
-		}
-	}
-
-	@OptIn(ExperimentalUnsignedTypes::class)
-	object CharRangeConverter : AbstractConverter<CharRange>() {
-		override fun convert(value: Any): CharRange {
-			return when {
-				value is CharRange -> value
-				value is IntProgression -> value.first.toChar()..value.last.toChar()
-				value is LongProgression -> value.first.toChar()..value.last.toChar()
-				value is CharProgression -> value.first..value.last
-				value is UIntProgression -> value.first.toChar()..value.last.toChar()
-				value is ULongProgression -> value.first.toChar()..value.last.toChar()
-				value is Pair<*, *> -> value.first!!.convert<Char>()..value.second!!.convert<Char>()
-				value is List<*> -> value[0]!!.convert<Char>()..value[1]!!.convert<Char>()
-				value is ClosedRange<*> -> value.start.convert<Char>()..value.endInclusive.convert<Char>()
-				value is String -> doConvert(value)
-				else -> doConvert(value.toString())
-			}
-		}
-
-		private fun doConvert(value: String): CharRange {
-			return value.split("..", limit = 2).let { it[0].convert<Char>()..it[1].convert<Char>() }
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object UIntRangeConverter : AbstractConverter<UIntRange>() {
-		override fun convert(value: Any): UIntRange {
-			return when {
-				value is UIntRange -> value
-				value is IntProgression -> value.first.toUInt()..value.last.toUInt()
-				value is LongProgression -> value.first.toUInt()..value.last.toUInt()
-				value is CharProgression -> value.first.toUInt()..value.last.toUInt()
-				value is UIntProgression -> value.first..value.last
-				value is ULongProgression -> value.first.toUInt()..value.last.toUInt()
-				value is Pair<*, *> -> value.first!!.convert<UInt>()..value.second!!.convert<UInt>()
-				value is List<*> -> value[0]!!.convert<UInt>()..value[1]!!.convert<UInt>()
-				value is ClosedRange<*> -> value.start.convert<UInt>()..value.endInclusive.convert<UInt>()
-				value is String -> doConvert(value)
-				else -> doConvert(value.toString())
-			}
-		}
-
-		private fun doConvert(value: String): UIntRange {
-			return value.split("..", limit = 2).let { it[0].convert<UInt>()..it[1].convert<UInt>() }
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object ULongRangeConverter : AbstractConverter<ULongRange>() {
-		override fun convert(value: Any): ULongRange {
-			return when {
-				value is ULongRange -> value
-				value is IntProgression -> value.first.toULong()..value.last.toULong()
-				value is LongProgression -> value.first.toULong()..value.last.toULong()
-				value is CharProgression -> value.first.toULong()..value.last.toULong()
-				value is UIntProgression -> value.first.toULong()..value.last.toULong()
-				value is ULongProgression -> value.first..value.last
-				value is Pair<*, *> -> value.first!!.convert<ULong>()..value.second!!.convert<ULong>()
-				value is List<*> -> value[0]!!.convert<ULong>()..value[1]!!.convert<ULong>()
-				value is ClosedRange<*> -> value.start.convert<ULong>()..value.endInclusive.convert<ULong>()
-				value is String -> doConvert(value)
-				else -> doConvert(value.toString())
-			}
-		}
-
-		private fun doConvert(value: String): ULongRange {
-			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
-		}
-	}
-
 	/**
 	 * 配置参数说明：
 	 * * separator - 从字符串（字符序列）转化为列表时使用的分隔符。
@@ -2115,6 +2000,121 @@ interface Converter<T> : TypedComponent {
 		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object IntRangeConverter : AbstractConverter<IntRange>() {
+		override fun convert(value: Any): IntRange {
+			return when {
+				value is IntRange -> value
+				value is IntProgression -> value.first..value.last
+				value is LongProgression -> value.first.toInt()..value.last.toInt()
+				value is CharProgression -> value.first.toInt()..value.last.toInt()
+				value is UIntProgression -> value.first.toInt()..value.last.toInt()
+				value is ULongProgression -> value.first.toInt()..value.last.toInt()
+				value is Pair<*, *> -> value.first!!.convert<Int>()..value.second!!.convert<Int>()
+				value is List<*> -> value[0]!!.convert<Int>()..value[1]!!.convert<Int>()
+				value is ClosedRange<*> -> value.start.convert<Int>()..value.endInclusive.convert<Int>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): IntRange {
+			return value.split("..", limit = 2).let { it[0].convert<Int>()..it[1].convert<Int>() }
+		}
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object LongRangeConverter : AbstractConverter<LongRange>() {
+		override fun convert(value: Any): LongRange {
+			return when {
+				value is LongRange -> value
+				value is IntProgression -> value.first.toLong()..value.last.toLong()
+				value is LongProgression -> value.first..value.last
+				value is CharProgression -> value.first.toLong()..value.last.toLong()
+				value is UIntProgression -> value.first.toLong()..value.last.toLong()
+				value is ULongProgression -> value.first.toLong()..value.last.toLong()
+				value is Pair<*, *> -> value.first!!.convert<Long>()..value.second!!.convert<Long>()
+				value is List<*> -> value[0]!!.convert<Long>()..value[1]!!.convert<Long>()
+				value is ClosedRange<*> -> value.start.convert<Long>()..value.endInclusive.convert<Long>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): LongRange {
+			return value.split("..", limit = 2).let { it[0].convert<Long>()..it[1].convert<Long>() }
+		}
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object CharRangeConverter : AbstractConverter<CharRange>() {
+		override fun convert(value: Any): CharRange {
+			return when {
+				value is CharRange -> value
+				value is IntProgression -> value.first.toChar()..value.last.toChar()
+				value is LongProgression -> value.first.toChar()..value.last.toChar()
+				value is CharProgression -> value.first..value.last
+				value is UIntProgression -> value.first.toChar()..value.last.toChar()
+				value is ULongProgression -> value.first.toChar()..value.last.toChar()
+				value is Pair<*, *> -> value.first!!.convert<Char>()..value.second!!.convert<Char>()
+				value is List<*> -> value[0]!!.convert<Char>()..value[1]!!.convert<Char>()
+				value is ClosedRange<*> -> value.start.convert<Char>()..value.endInclusive.convert<Char>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): CharRange {
+			return value.split("..", limit = 2).let { it[0].convert<Char>()..it[1].convert<Char>() }
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UIntRangeConverter : AbstractConverter<UIntRange>() {
+		override fun convert(value: Any): UIntRange {
+			return when {
+				value is UIntRange -> value
+				value is IntProgression -> value.first.toUInt()..value.last.toUInt()
+				value is LongProgression -> value.first.toUInt()..value.last.toUInt()
+				value is CharProgression -> value.first.toUInt()..value.last.toUInt()
+				value is UIntProgression -> value.first..value.last
+				value is ULongProgression -> value.first.toUInt()..value.last.toUInt()
+				value is Pair<*, *> -> value.first!!.convert<UInt>()..value.second!!.convert<UInt>()
+				value is List<*> -> value[0]!!.convert<UInt>()..value[1]!!.convert<UInt>()
+				value is ClosedRange<*> -> value.start.convert<UInt>()..value.endInclusive.convert<UInt>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): UIntRange {
+			return value.split("..", limit = 2).let { it[0].convert<UInt>()..it[1].convert<UInt>() }
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object ULongRangeConverter : AbstractConverter<ULongRange>() {
+		override fun convert(value: Any): ULongRange {
+			return when {
+				value is ULongRange -> value
+				value is IntProgression -> value.first.toULong()..value.last.toULong()
+				value is LongProgression -> value.first.toULong()..value.last.toULong()
+				value is CharProgression -> value.first.toULong()..value.last.toULong()
+				value is UIntProgression -> value.first.toULong()..value.last.toULong()
+				value is ULongProgression -> value.first..value.last
+				value is Pair<*, *> -> value.first!!.convert<ULong>()..value.second!!.convert<ULong>()
+				value is List<*> -> value[0]!!.convert<ULong>()..value[1]!!.convert<ULong>()
+				value is ClosedRange<*> -> value.start.convert<ULong>()..value.endInclusive.convert<ULong>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): ULongRange {
+			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
+		}
 	}
 	//endregion
 }
