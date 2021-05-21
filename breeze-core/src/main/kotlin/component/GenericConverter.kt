@@ -20,3 +20,4 @@ interface GenericConverter<T> : Converter<T> {
 		throw UnsupportedOperationException("Redirect to 'fun convertOrNull(value: Any, sourceType: Type, targetType: Type): T'.")
 	}
 }
+

@@ -3,14 +3,14 @@
 
 package icu.windea.breezeframework.core.model
 
-internal object EmptyIterator : Iterator<Nothing> {
+internal object EmptyMutableIterator : MutableIterator<Nothing> {
 	override fun hasNext(): Boolean = false
 
 	override fun next(): Nothing = throw NoSuchElementException()
 
-	override fun equals(other: Any?): Boolean = other is Iterator<*> && !other.hasNext()
+	override fun remove() {}
+
+	override fun equals(other: Any?): Boolean = other is MutableIterator<*> && !other.hasNext()
 
 	override fun hashCode(): Int = 1
 }
-
-

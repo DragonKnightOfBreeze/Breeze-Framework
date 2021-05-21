@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.*
 import java.util.regex.*
 import java.util.stream.*
 
+//TODO GenericDefaultGenerator
+
 /**
  * 默认值生成器。
  *
@@ -27,6 +29,7 @@ interface DefaultGenerator<T> : TypedComponent {
 	 */
 	fun generate(): T
 
+	@Suppress("UNCHECKED_CAST")
 	companion object Registry : AbstractComponentRegistry<DefaultGenerator<*>>() {
 		@OptIn(ExperimentalUnsignedTypes::class)
 		override fun registerDefault() {
@@ -77,12 +80,18 @@ interface DefaultGenerator<T> : TypedComponent {
 			register(DefaultULongRangeGenerator)
 			register(DefaultEnumGenerator)
 			register(DefaultIteratorGenerator)
+			register(DefaultMutableIteratorGenerator)
 			register(DefaultIterableGenerator)
+			register(DefaultMutableIterableGenerator)
 			register(DefaultCollectionGenerator)
+			register(DefaultMutableCollectionGenerator)
 			register(DefaultListGenerator)
+			register(DefaultMutableListGenerator)
 			register(DefaultSetGenerator)
+			register(DefaultMutableSetGenerator)
 			register(DefaultSequenceGenerator)
 			register(DefaultMapGenerator)
+			register(DefaultMutableMapGenerator)
 			register(DefaultStreamGenerator)
 		}
 
@@ -109,7 +118,6 @@ interface DefaultGenerator<T> : TypedComponent {
 			return doGenerate(targetType, configParams)
 		}
 
-		@Suppress("UNCHECKED_CAST")
 		private fun <T> doGenerate(targetType: Class<T>, configParams: Map<String, Any?>): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它生成默认值，并加入缓存
 			val key = inferKey(targetType, configParams)
@@ -127,11 +135,11 @@ interface DefaultGenerator<T> : TypedComponent {
 			return defaultGenerator.generate() as T
 		}
 
-		private fun inferKey(targetType: Type, configParams: Map<String, Any?>): String {
-			return if(configParams.isEmpty()) targetType.toString() else "$targetType@$configParams"
+		private fun inferKey(targetType: Class<*>, configParams: Map<String, Any?>): String {
+			return if(configParams.isEmpty()) targetType.name else "${targetType.name}@$configParams"
 		}
 
-		private fun <T> inferDefaultGenerator(targetType: Class<T>, configParams: Map<String, Any?>): DefaultGenerator<*>? {
+		private fun inferDefaultGenerator(targetType: Class<*>, configParams: Map<String, Any?>): DefaultGenerator<*>? {
 			var result = components.find { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableDefaultGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
@@ -151,6 +159,14 @@ interface DefaultGenerator<T> : TypedComponent {
 			} catch(e: Exception) {
 				return null
 			}
+		}
+
+		/**
+		 * 根据指定的目标类型和配置参数，从缓存中得到默认值生成器。如果没有，则创建并放入。
+		 */
+		@JvmStatic
+		fun <T,C:DefaultGenerator<T>> getDefaultGenerator(targetType: Class<T>, configParams: Map<String, Any?>, defaultValue: () -> C): C {
+			return componentMap.getOrPut(inferKey(targetType, configParams), defaultValue) as C
 		}
 	}
 
@@ -399,9 +415,19 @@ interface DefaultGenerator<T> : TypedComponent {
 		override fun generate(): Iterator<*> = value
 	}
 
+	object DefaultMutableIteratorGenerator : AbstractDefaultGenerator<MutableIterator<*>>() {
+		private val value = EmptyMutableIterator
+		override fun generate(): MutableIterator<*> = value
+	}
+
 	object DefaultIterableGenerator : AbstractDefaultGenerator<Iterable<*>>() {
 		private val value = EmptyIterable
 		override fun generate(): Iterable<*> = value
+	}
+
+	object DefaultMutableIterableGenerator : AbstractDefaultGenerator<MutableIterable<*>>() {
+		private val value = EmptyMutableIterable
+		override fun generate(): MutableIterable<*> = value
 	}
 
 	object DefaultCollectionGenerator : AbstractDefaultGenerator<Collection<*>>() {
@@ -409,14 +435,26 @@ interface DefaultGenerator<T> : TypedComponent {
 		override fun generate(): Collection<*> = value
 	}
 
+	object DefaultMutableCollectionGenerator : AbstractDefaultGenerator<MutableCollection<*>>() {
+		override fun generate(): MutableCollection<*> = mutableSetOf<Any?>()
+	}
+
 	object DefaultListGenerator : AbstractDefaultGenerator<List<*>>() {
 		private val value = emptyList<Any?>()
 		override fun generate(): List<*> = value
 	}
 
+	object DefaultMutableListGenerator : AbstractDefaultGenerator<MutableList<*>>() {
+		override fun generate(): MutableList<*> = mutableListOf<Any?>()
+	}
+
 	object DefaultSetGenerator : AbstractDefaultGenerator<Set<*>>() {
 		private val value = emptySet<Any?>()
 		override fun generate(): Set<*> = value
+	}
+
+	object DefaultMutableSetGenerator : AbstractDefaultGenerator<MutableSet<*>>() {
+		override fun generate(): MutableSet<*> = mutableSetOf<Any?>()
 	}
 
 	object DefaultSequenceGenerator : AbstractDefaultGenerator<Sequence<*>>() {
@@ -427,6 +465,10 @@ interface DefaultGenerator<T> : TypedComponent {
 	object DefaultMapGenerator : AbstractDefaultGenerator<Map<*, *>>() {
 		private val value = emptyMap<Any?, Any?>()
 		override fun generate(): Map<*, *> = value
+	}
+
+	object DefaultMutableMapGenerator : AbstractDefaultGenerator<MutableMap<*, *>>() {
+		override fun generate(): MutableMap<*, *> = mutableMapOf<Any?, Any?>()
 	}
 
 	object DefaultStreamGenerator : AbstractDefaultGenerator<Stream<*>>() {

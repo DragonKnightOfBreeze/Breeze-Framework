@@ -27,6 +27,7 @@ interface RandomGenerator<T> : TypedComponent {
 	 */
 	fun generate(): T
 
+	@Suppress("UNCHECKED_CAST")
 	companion object Registry : AbstractComponentRegistry<RandomGenerator<*>>() {
 		@OptIn(ExperimentalUnsignedTypes::class)
 		override fun registerDefault() {
@@ -77,7 +78,6 @@ interface RandomGenerator<T> : TypedComponent {
 			return doGenerate(configParams, targetType)
 		}
 
-		@Suppress("UNCHECKED_CAST")
 		private fun <T> doGenerate(configParams: Map<String, Any?>, targetType: Class<T>): T {
 			//遍历已注册的默认值生成器，如果匹配目标类型，则尝试用它随机值，并加入缓存
 			val key = inferKey(targetType, configParams)
@@ -95,11 +95,11 @@ interface RandomGenerator<T> : TypedComponent {
 			return randomGenerator.generate() as T
 		}
 
-		private fun inferKey(targetType: Type, configParams: Map<String, Any?>): String {
-			return if(configParams.isEmpty()) targetType.toString() else "$targetType@$configParams"
+		private fun inferKey(targetType: Class<*>, configParams: Map<String, Any?>): String {
+			return if(configParams.isEmpty()) targetType.name else "${targetType.name}@$configParams"
 		}
 
-		private fun <T> inferRandomGenerator(targetType: Class<T>, configParams: Map<String, Any?>): RandomGenerator<*>? {
+		private fun inferRandomGenerator(targetType: Class<*>, configParams: Map<String, Any?>): RandomGenerator<*>? {
 			var result = components.find { it.targetType.isAssignableFrom(targetType) }
 			if(result is ConfigurableRandomGenerator<*> && configParams.isNotEmpty()) {
 				result = result.configure(configParams)
@@ -119,6 +119,14 @@ interface RandomGenerator<T> : TypedComponent {
 			} catch(e: Exception) {
 				return null
 			}
+		}
+
+		/**
+		 * 根据指定的目标类型和配置参数，从缓存中得到随机值生成器。如果没有，则创建并放入。
+		 */
+		@JvmStatic
+		fun <T, C : RandomGenerator<T>> getRandomGenerator(targetType: Class<T>, configParams: Map<String, Any?>, defaultValue: () -> C): C {
+			return componentMap.getOrPut(inferKey(targetType, configParams), defaultValue) as C
 		}
 	}
 
@@ -447,7 +455,7 @@ interface RandomGenerator<T> : TypedComponent {
 	}
 
 	/**
-	 * 参数说明：
+	 * 配置参数说明：
 	 * * length - 长度。（覆盖最小长度和最大长度）
 	 * * minLength - 最小长度。
 	 * * maxLength - 最大长度。

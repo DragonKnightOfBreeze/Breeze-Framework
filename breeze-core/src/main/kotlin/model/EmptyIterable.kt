@@ -3,7 +3,7 @@
 
 package icu.windea.breezeframework.core.model
 
-import java.io.Serializable
+import java.io.*
 
 internal object EmptyIterable : Iterable<Nothing>, Serializable {
 	override fun iterator(): Iterator<Nothing> = EmptyIterator
@@ -14,3 +14,5 @@ internal object EmptyIterable : Iterable<Nothing>, Serializable {
 
 	override fun toString(): String = "[]"
 }
+
+

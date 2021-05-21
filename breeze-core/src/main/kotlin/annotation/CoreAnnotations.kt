@@ -135,11 +135,11 @@ annotation class ConfigParam(
 @Repeatable
 annotation class ConfigParamsPassing(
 	/**
-	 * 要传递配置参数的可配置对象。
+	 * 目标可配置对象。
 	 */
 	val target: KClass<out Configurable>,
 	/**
-	 * 要传递配置参数。
+	 * 要传递的配置参数。
 	 */
-	val configParams: String
+	val configParams: String = ""
 )

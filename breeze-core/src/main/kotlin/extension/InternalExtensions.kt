@@ -22,10 +22,9 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 //internal caches
 
 internal val calendar: Calendar = Calendar.getInstance()
-internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> =
-	ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
-//internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
-//internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
+internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap()
+internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
+internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
 
 //internal number extensions
 
@@ -57,6 +56,20 @@ private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
 
 internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
+}
+
+//internal convert extensions
+
+internal fun Any?.convertToBooleanOrTrue():Boolean{
+	return this == null || (this == true || this.toString() == "true")
+}
+
+internal fun Any?.convertToBooleanOrFalse():Boolean{
+	return this != null && (this == true || this.toString() == "true")
+}
+
+internal fun Any?.convertToStringOrNull():String?{
+	return this?.toString()
 }
 
 //internal component extensions
@@ -130,6 +143,14 @@ internal fun inferClass(targetType:Type):Class<*>{
 		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
 		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
 		else -> error("Cannot infer class for target type '$targetType'")
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
+	return when{
+		targetType is Class<*> && targetType.isEnum -> targetType as Class<out Enum<*>>
+		else -> error("Cannot infer enum class for target type '$targetType'")
 	}
 }
 

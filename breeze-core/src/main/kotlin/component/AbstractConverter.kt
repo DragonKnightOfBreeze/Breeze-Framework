@@ -13,22 +13,19 @@ abstract class AbstractConverter<T> : Converter<T> {
 		if(this === other) return true
 		if(other == null || javaClass != other.javaClass) return false
 		if(this is ConfigurableConverter<*> && other is ConfigurableConverter<*> && configParams.toString() != other.configParams.toString()) return false
-		if(this is BoundConverter<*> && other is BoundConverter<*> && actualTargetType != other.actualTargetType) return false
 		return true
 	}
 
 	override fun hashCode(): Int {
 		var hash = 1
 		if(this is ConfigurableConverter<*>) hash = 31 * hash + configParams.toString().hashCode()
-		if(this is BoundConverter<*>) hash = 31 * hash + actualTargetType.hashCode()
 		return hash
 	}
 
 	override fun toString(): String {
 		return buildString {
-			append(targetType)
+			append(targetType.name)
 			if(this@AbstractConverter is ConfigurableConverter<*>) append('@').append(configParams)
-			if(this@AbstractConverter is BoundConverter<*>) append('@').append(actualTargetType)
 		}
 	}
 }
