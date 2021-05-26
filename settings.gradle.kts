@@ -19,5 +19,6 @@ include(
 	"breeze-serialization",
 	"breeze-spring-boot",
 	"breeze-time",
-	"breeze-unstable"
+	"breeze-unstable",
+	"breeze-tool"
 )
