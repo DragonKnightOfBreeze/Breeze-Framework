@@ -6,7 +6,6 @@
 
 package icu.windea.breezeframework.core.extension
 
-import icu.windea.breezeframework.core.*
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.model.*
 import icu.windea.breezeframework.core.type.*
@@ -19,7 +18,6 @@ import java.time.*
 import java.time.format.*
 import java.time.format.DateTimeFormatter.*
 import java.util.*
-import java.util.concurrent.*
 import kotlin.contracts.*
 
 //org.apache.commons.lang3.StringUtils
@@ -144,7 +142,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
-@Deprecated("Duplicate implementation.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
@@ -225,8 +223,12 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `true` if this char sequence contains only Unicode digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matchesBy(StringPattern.NumericPattern)", ReplaceWith("this.matchesBy(StringPattern.NumericPattern)",
-		"icu.windea.breezeframework.core.component.StringPattern"))
+@Deprecated(
+	"Use String.matchesBy(StringPattern.NumericPattern)", ReplaceWith(
+		"this.matchesBy(StringPattern.NumericPattern)",
+		"icu.windea.breezeframework.core.component.StringPattern"
+	)
+)
 fun CharSequence.isNumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetter() }
 }
@@ -235,8 +237,12 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matchesBy(StringPattern.AlphaPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphaPattern)",
-	"icu.windea.breezeframework.core.component.StringPattern"))
+@Deprecated(
+	"Use String.matchesBy(StringPattern.AlphaPattern)", ReplaceWith(
+		"this.matchesBy(StringPattern.AlphaPattern)",
+		"icu.windea.breezeframework.core.component.StringPattern"
+	)
+)
 fun CharSequence.isAlpha(): Boolean {
 	return this.isNotEmpty() && this.all { it.isDigit() }
 }
@@ -245,8 +251,12 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `true` if this char sequence contains only Unicode letters or digits.
  * Returns `false` if it is an empty char sequence.
  */
-@Deprecated("Use String.matchesBy(StringPattern.AlphanumericPattern)", ReplaceWith("this.matchesBy(StringPattern.AlphanumericPattern)",
-	"icu.windea.breezeframework.core.component.StringPattern"))
+@Deprecated(
+	"Use String.matchesBy(StringPattern.AlphanumericPattern)", ReplaceWith(
+		"this.matchesBy(StringPattern.AlphanumericPattern)",
+		"icu.windea.breezeframework.core.component.StringPattern"
+	)
+)
 fun CharSequence.isAlphanumeric(): Boolean {
 	return this.isNotEmpty() && this.all { it.isLetterOrDigit() }
 }
@@ -436,8 +446,8 @@ fun String.setSurrounding(prefix: CharSequence, suffix: CharSequence): String {
  */
 fun String.remove(oldChar: Char, ignoreCase: Boolean = false): String {
 	return buildString {
-		for(c in this){
-			if(!c.equals(oldChar,ignoreCase)) append(c)
+		for(c in this) {
+			if(!c.equals(oldChar, ignoreCase)) append(c)
 		}
 	}
 }
@@ -767,25 +777,24 @@ fun String.splitMatched(vararg delimiters: String?, defaultValue: ((Int, String)
 
 /**
  * 根据指定的分隔符、前缀、后缀，分割当前字符串。
- * 可以另外指定是否忽略大小写、限定数量和省略字符串。
+ * 可以另外指定是否忽略大小写、限定数量。
  * 取最先的前缀以及最后的后缀。
  */
 @NotOptimized
 @JvmOverloads
-fun String.splitToStrings(
-	separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
-	ignoreCase: Boolean = false, limit: Int = -1, truncated: CharSequence = "...",
-): List<String> {
+fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence = "", suffix: CharSequence = "", ignoreCase: Boolean = false, limit: Int = -1): List<String> {
 	//前缀索引+前缀长度，或者为0
-	val prefixIndex = indexOf(prefix.toString()).let { if(it == -1) 0 else it + prefix.length }
+	val prefixIndex = if(prefix.isEmpty()) 0 else indexOf(prefix.toString())
 	//后缀索引，或者为length
-	val suffixIndex = lastIndexOf(postfix.toString()).let { if(it == -1) length else it }
+	val suffixIndex = if(suffix.isEmpty()) length else lastIndexOf(suffix.toString())
+	//前缀和后缀必须匹配，否则返回空列表
+	if(prefixIndex == -1 || suffixIndex == -1) return emptyList()
 	//内容，需要继续分割和转换
-	val content = substring(prefixIndex, suffixIndex)
+	val content = substring(prefixIndex + prefix.length, suffixIndex)
 	return when(limit) {
 		-1 -> content.split(separator.toString(), ignoreCase = ignoreCase)
 		0 -> listOf()
-		else -> content.split(separator.toString(), ignoreCase = ignoreCase, limit = limit + 1).dropLast(1) + truncated.toString()
+		else -> content.split(separator.toString(), ignoreCase = ignoreCase, limit = limit)
 	}
 }
 
@@ -836,14 +845,14 @@ fun String.alignCenter(padChar: Char = ' '): String {
  * 根据指定的限定长度、偏移和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
  * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateStart(limit: Int,offset:Int=0, truncated: CharSequence = "..."): String {
-	require(limit > 0) {"Limit must be non-negative."}
-	require(offset > 0) {"Limit must be non-negative."}
-	return when{
+fun String.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
+	require(limit > 0) { "Limit must be non-negative." }
+	require(offset > 0) { "Limit must be non-negative." }
+	return when {
 		limit == 0 -> ""
 		limit >= length -> this
 		offset == 0 -> "$truncated${this.takeLast(limit)}"
-		else -> "${this.take(offset)}$truncated${this.takeLast(limit-offset)}"
+		else -> "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
 	}
 }
 
@@ -851,14 +860,14 @@ fun String.truncateStart(limit: Int,offset:Int=0, truncated: CharSequence = "...
  * 根据指定的限定长度、偏移和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
  * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateEnd(limit: Int,offset:Int = 0, truncated: CharSequence = "..."): String {
-	require(limit > 0) {"Limit must be non-negative."}
-	require(offset > 0) {"Limit must be non-negative."}
-	return when{
+fun String.truncateEnd(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
+	require(limit > 0) { "Limit must be non-negative." }
+	require(offset > 0) { "Limit must be non-negative." }
+	return when {
 		limit == 0 -> ""
 		limit >= length -> this
 		offset == 0 -> "${this.take(limit)}$truncated"
-		else -> "${this.take(limit-offset)}$truncated${this.takeLast(offset)}"
+		else -> "${this.take(limit - offset)}$truncated${this.takeLast(offset)}"
 	}
 }
 
@@ -1013,21 +1022,12 @@ fun <T> String.toEnumValueOrNull(type: Class<T>): T? {
 	return type.enumConstants.firstOrNull { it.toString() == this }
 }
 
-
-/**
- * 将当前字符串转化为字符范围。如果转化失败，则抛出异常。
- *
- * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
- */
-fun String.toCharRange(): CharRange {
-	return toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
-}
-
 /**
  * 将当前字符串转化为整数范围。如果转化失败，则抛出异常。
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
+@UnstableApi
 fun String.toIntRange(): IntRange {
 	return toRangePair().let { (a, b, l, r) -> (a.toInt() + l)..(b.toInt() + r) }
 }
@@ -1037,8 +1037,19 @@ fun String.toIntRange(): IntRange {
  *
  * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
  */
+@UnstableApi
 fun String.toLongRange(): LongRange {
 	return toRangePair().let { (a, b, l, r) -> (a.toLong() + l)..(b.toLong() + r) }
+}
+
+/**
+ * 将当前字符串转化为字符范围。如果转化失败，则抛出异常。
+ *
+ * 支持的格式：`m..n`，`m-n`，`m~n`，`[m, n]`，`[m, n)`。
+ */
+@UnstableApi
+fun String.toCharRange(): CharRange {
+	return toRangePair().let { (a, b, l, r) -> (a.toChar() + l)..(b.toChar() + r) }
 }
 
 private val rangeDelimiters = arrayOf("..", "-", "~")
@@ -1129,12 +1140,12 @@ fun String.toClassOrNull(): Class<*>? {
 /**
  * 将当前字符串转化为语言区域。如果转化失败，则抛出异常。
  */
-fun String.toLocale():Locale{
+fun String.toLocale(): Locale {
 	val strings = this.split('_')
-	val language = strings.getOrNull(0)?:""
-	val region = strings.getOrNull(1)?:""
-	val variant = strings.getOrNull(2)?:""
-	return Locale(language,region,variant)
+	val language = strings.getOrNull(0) ?: ""
+	val region = strings.getOrNull(1) ?: ""
+	val variant = strings.getOrNull(2) ?: ""
+	return Locale(language, region, variant)
 }
 
 
@@ -1164,11 +1175,9 @@ fun String.toTimeZoneOrNull(): TimeZone? {
  * 将当前字符串转化为日期。
  */
 @JvmOverloads
-fun String.toDate(format: String,locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): Date {
-	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
-		ThreadLocal.withInitial {
-			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
-		}
+fun String.toDate(format: String, locale: Locale = defaultLocale, timeZone: TimeZone = defaultTimeZone): Date {
+	val dateFormat = threadLocalDateFormatMapCache.getOrPut(format) {
+		ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 	}.get()
 	return dateFormat.parse(this)
 }
@@ -1176,7 +1185,7 @@ fun String.toDate(format: String,locale:Locale = defaultLocale, timeZone:TimeZon
 /**
  * 将当前字符串转化为日期。
  */
-fun String.toDate(dateFormat:DateFormat):Date{
+fun String.toDate(dateFormat: DateFormat): Date {
 	return dateFormat.parse(this)
 }
 
@@ -1256,8 +1265,12 @@ internal fun String.toQueryParams(): Map<String, List<String>> {
 /**
  * 将当前字符串解码为base64格式的字节数组。
  */
-@Deprecated("Use String.decodeBy(Encoder.Base64Encoder)",ReplaceWith("this.decodeBy(Encoder.Base64Encoder)",
-	"icu.windea.breezeframework.core.component.Encoder"))
+@Deprecated(
+	"Use String.decodeBy(Encoder.Base64Encoder)", ReplaceWith(
+		"this.decodeBy(Encoder.Base64Encoder)",
+		"icu.windea.breezeframework.core.component.Encoder"
+	)
+)
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }

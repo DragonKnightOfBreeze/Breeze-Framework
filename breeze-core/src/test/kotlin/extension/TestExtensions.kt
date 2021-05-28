@@ -26,3 +26,7 @@ internal fun comparePerformance(repeatTimes: Int, block1: () -> Unit, block2: ()
 	println(result2)
 	return result1 >= result2
 }
+
+internal fun prettyPrintln(value: Any?) {
+	println(value.convert<String>())
+}

@@ -4,6 +4,12 @@ import kotlin.test.*
 
 class StringExtensionsTest {
 	@Test
+	fun splitToStringsTest(){
+		println("a,b,c".splitToStrings(","))
+		println("[a,b,c]".splitToStrings(",","[","]"))
+	}
+
+	@Test
 	fun repeatExtensionTest() {
 		println("abc".repeat(3))
 		println("abc".repeatOrdinal(3))
@@ -41,22 +47,6 @@ class StringExtensionsTest {
 		val result = "https://localhost:8080/www.test.com?name=Windea"
 			.splitMatched("://", ":", "/", null, "?") { i, s -> arrayOf("", "", "", s, "")[i] }
 		assertEquals(expectedResult, result)
-	}
-
-	@Test
-	fun splitToStringsTest() {
-		//val expectedResult = listOf("name" to "Windea", "age" to "4000",
-		//	"weapon" to listOf("L" to "Breeze'sBreath", "R" to "Breeze'sLanding}"), "gender" to "Female")
-		//val result = "{name=Windea,age=4000,weapon={L=Breeze'sBreath,R=Breeze'sLanding},gender=Female}"
-		//	.splitToStrings(",", "{", "}").map {
-		//		it.split("=", limit = 2).let { (a, b) ->
-		//			a to when {
-		//				"," in b -> b.splitToStrings(",", "{", "}").map { e -> e.split("=", limit = 2).let { (a1, b1) -> a1 to b1 } }
-		//				else -> b.split("=", limit = 2).let { (a1, b1) -> a1 to b1 }
-		//			}
-		//		}
-		//	}
-		//assertEquals(expectedResult, result)
 	}
 
 	@Test

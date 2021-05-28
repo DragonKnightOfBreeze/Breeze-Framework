@@ -13,10 +13,10 @@ import java.lang.reflect.*
  * * 示例："/findAll", "/findByName?name=Windea"
  **/
 class MethodNameArgsKeyGenerator : KeyGenerator {
-	override fun generate(target: Any, method: Method, vararg params: Any?): Any {
+	override fun generate(target: Any, method: Method, vararg configParams: Any?): Any {
 		val path = "/${method.name}"
-		if(params.isEmpty()) return path
-		val query = (method.parameters zip params).joinToString("&") { (k, v) -> "${k.name}=$v" }
+		if(configParams.isEmpty()) return path
+		val query = (method.parameters zip configParams).joinToString("&") { (k, v) -> "${k.name}=$v" }
 		return "$path?$query"
 	}
 }

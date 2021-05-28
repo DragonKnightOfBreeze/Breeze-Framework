@@ -5,8 +5,8 @@ package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.extension.*
-import icu.windea.breezeframework.core.model.*
 import java.io.*
+import java.lang.reflect.*
 import java.math.*
 import java.net.*
 import java.nio.charset.*
@@ -16,8 +16,10 @@ import java.time.*
 import java.time.format.*
 import java.time.temporal.*
 import java.util.*
+import java.util.concurrent.*
 import java.util.concurrent.atomic.*
 import java.util.regex.*
+import java.util.stream.*
 
 /**
  * 转化器。
@@ -26,12 +28,9 @@ import java.util.regex.*
  *
  * 同一兼容类型的转化器可以注册多个。
  */
-interface Converter<T> : Component {
-	/**
-	 * 目标类型。
-	 */
-	val targetType: Class<T>
-	//val targetType: Class<T> get() = inferGenericType(this,Converter::class.java)
+@Suppress("RemoveExplicitTypeArguments")
+interface Converter<T> : TypedComponent {
+	override val targetType: Class<T>
 
 	/**
 	 * 将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
@@ -46,6 +45,7 @@ interface Converter<T> : Component {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	companion object Registry : AbstractComponentRegistry<Converter<*>>() {
 		@OptIn(ExperimentalUnsignedTypes::class)
 		override fun registerDefault() {
@@ -55,6 +55,8 @@ interface Converter<T> : Component {
 			register(LongConverter)
 			register(FloatConverter)
 			register(DoubleConverter)
+			register(BooleanConverter)
+			register(CharConverter)
 			register(BigIntegerConverter)
 			register(BigDecimalConverter)
 			register(UByteConverter)
@@ -63,8 +65,7 @@ interface Converter<T> : Component {
 			register(ULongConverter)
 			register(AtomicIntegerConverter)
 			register(AtomicLongConverter)
-			register(BooleanConverter)
-			register(CharConverter)
+			register(AtomicBooleanConverter)
 			register(StringConverter)
 			register(RegexConverter)
 			register(PatternConverter)
@@ -84,145 +85,173 @@ interface Converter<T> : Component {
 			register(PathConverter)
 			register(UrlConverter)
 			register(UriConverter)
+			register(EnumConverter)
+			register(ArrayConverter)
+			register(ByteArrayConverter)
+			register(ShortArrayConverter)
+			register(IntArrayConverter)
+			register(LongArrayConverter)
+			register(FloatArrayConverter)
+			register(DoubleArrayConverter)
+			register(BooleanArrayConverter)
+			register(CharArrayConverter)
+			register(UByteArrayConverter)
+			register(UShortArrayConverter)
+			register(UIntArrayConverter)
+			register(ULongArrayConverter)
+			register(IteratorConverter)
+			register(MutableIteratorConverter)
+			register(IterableConverter)
+			register(MutableIterableConverter)
+			register(CollectionConverter)
+			register(MutableCollectionConverter)
+			register(ListConverter)
+			register(MutableListConverter)
+			register(SetConverter)
+			register(MutableSetConverter)
+			register(IntRangeConverter)
+			register(LongRangeConverter)
+			register(CharRangeConverter)
+			register(UIntRangeConverter)
+			register(ULongRangeConverter)
 		}
+
+		private val componentMap: MutableMap<String, Converter<*>> = ConcurrentHashMap()
 
 		/**
 		 * 是否使用回退策略。默认不使用。
-		 *
-		 * * 当找不到匹配的默认值生成器时，尝试调用目标类型的无参构造方法生成默认值。
+		 * 如果使用回退策略且找不到匹配的转化器，则尝试调用目标类型的无参构造方法生成默认值。
 		 */
 		var useFallbackStrategy = false
 
 		/**
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
-		@Suppress("UNCHECKED_CAST")
-		inline fun <reified T> convert(value: Any?, params: Map<String, Any?> = emptyMap()): T {
-			return convert(value, T::class.java, params)
+		inline fun <reified T> convert(value: Any, configParams: Map<String, Any?> = emptyMap()): T {
+			return convert(value, javaTypeOf<T>(), configParams)
 		}
 
 		/**
 		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 		 */
-		@Suppress("UNCHECKED_CAST")
 		@JvmStatic
-		fun <T> convert(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T {
-			when {
-				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
-				value == null -> return (if(targetType == String::class.java) "null" else null) as T
-				//如果value的类型兼容targetType，则直接返回
-				targetType.isInstance(value) -> return value as T
-				//否则，尝试使用第一个匹配且可用的转化器进行转化
-				else -> {
-					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
-					for((index, converter) in components.withIndex()) {
-						try {
-							if(converter.targetType.isAssignableFrom(targetType)) {
-								//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要新注册转化器
-								if(converter is Configurable<*> && converter.configurableInfo.params != params) {
-									val newConverter = converter.copy(params) as Converter<*>
-									components.add(index, newConverter)
-									return (newConverter as Converter<Any?>).convert(value) as T
-								} else {
-									return (converter as Converter<Any?>).convert(value) as T
-								}
-							}
-						} catch(e: Exception) {
-							e.printStackTrace()
-						}
-					}
+		fun <T> convert(value: Any, targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+			return doConvert(value, targetType, configParams)
+		}
+
+		/**
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+		 */
+		@JvmStatic
+		fun <T> convert(value: Any, targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+			return doConvert(value, targetType, configParams)
+		}
+
+		/**
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+		 */
+		inline fun <reified T> convertOrNull(value: Any, configParams: Map<String, Any?> = emptyMap()): T? {
+			return convertOrNull(value, javaTypeOf<T>(), configParams)
+		}
+
+		/**
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+		 */
+		@JvmStatic
+		fun <T> convertOrNull(value: Any, targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T? {
+			return doConvertOrNull(value, targetType, configParams)
+		}
+
+		/**
+		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+		 */
+		@JvmStatic
+		fun <T> convertOrNull(value: Any, targetType: Type, configParams: Map<String, Any?> = emptyMap()): T? {
+			return doConvertOrNull(value, targetType, configParams)
+		}
+
+		private fun <T> doConvert(value: Any, targetType: Type, configParams: Map<String, Any?>): T {
+			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
+			//如果value的类型不是泛型类型，且兼容targetType，则直接返回
+			val targetClass = inferClass(targetType)
+			if(targetClass == targetType && targetClass.isInstance(value)) return value as T
+			val key = inferKey(targetClass, configParams)
+			val converter = componentMap.getOrPut(key) {
+				val result = inferConverter(targetClass, configParams)
+				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
 					if(targetType == String::class.java) return value.toString() as T
 					if(useFallbackStrategy) {
-						val fallback = fallbackConvert(value,targetType)
-						if(fallback != null) return fallback
+						val fallback = fallbackConvert(value, targetClass)
+						if(fallback != null) return fallback as T
 					}
-					throw IllegalArgumentException("No suitable converter found for target type '$targetType'.")
+					throw IllegalArgumentException("No matched converter found for target type '$targetType'.")
 				}
+				result
+			}
+			when(converter) {
+				is GenericConverter<*> -> return converter.convert(value, targetType) as T
+				else -> return converter.convert(value) as T
 			}
 		}
 
-		/**
-		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
-		 */
-		@Suppress("UNCHECKED_CAST")
-		inline fun <reified T> convertOrNull(value: Any?, params: Map<String, Any?> = emptyMap()): T? {
-			return convertOrNull(value, T::class.java, params)
-		}
-
-		/**
-		 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
-		 */
-		@Suppress("UNCHECKED_CAST")
-		@JvmStatic
-		fun <T> convertOrNull(value: Any?, targetType: Class<T>, params: Map<String, Any?> = emptyMap()): T? {
-			when {
-				//value为null时，如果可以，转化为字符串，否则尝试转化为T，可能会出错
-				value == null -> return (if(targetType == String::class.java) "null" else null) as T?
-				//如果value的类型兼容targetType，则直接返回
-				targetType.isInstance(value) -> return value as T?
-				//否则，尝试使用第一个匹配且可用的转化器进行转化
-				else -> {
-					//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，如果转化失败，则继续遍历，不会因此报错
-					for((index, converter) in components.withIndex()) {
-						try {
-							//如果是可配置的转化器，需要确认参数是否一致，如果不一致，则要在后面新注册转化器
-							if(converter is Configurable<*> && converter.configurableInfo.params != params) {
-								val newConverter = converter.copy(params) as Converter<*>
-								components.add(index+1, newConverter)
-								return (newConverter as Converter<Any?>).convert(value) as T
-							} else {
-								return (converter as Converter<Any?>).convert(value) as T
-							}
-						} catch(e: Exception) {
-							e.printStackTrace()
-						}
-					}
+		private fun <T, V : Any> doConvertOrNull(value: V, targetType: Type, configParams: Map<String, Any?>): T? {
+			val targetClass = inferClass(targetType)
+			//如果value的类型不是泛型类型，且兼容targetType，则直接返回
+			if(targetClass == targetType && targetClass.isInstance(value)) return value as? T?
+			//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
+			val key = inferKey(targetClass, configParams)
+			val converter = componentMap.getOrPut(key) {
+				val result = inferConverter(targetClass, configParams)
+				if(result == null) {
 					//如果目标类型是字符串，则尝试转化为字符串
-					if(targetType == String::class.java) return value.toString() as T?
+					if(targetType == String::class.java) return value.toString() as T
 					if(useFallbackStrategy) {
-						val fallback = fallbackConvert(value,targetType)
-						if(fallback != null) return fallback
+						val fallback = fallbackConvert(value, targetClass)
+						if(fallback != null) return fallback as? T?
 					}
 					return null
 				}
+				result
+			}
+			return when(converter) {
+				is GenericConverter<*> -> converter.convertOrNull(value, targetType) as? T?
+				else -> converter.convertOrNull(value) as? T?
 			}
 		}
 
-		/**
-		 * 根据可选的配置参数，将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-		 */
-		inline fun <reified T> convertOrElse(value: Any?, defaultValue: T): T {
-			return convertOrElse(value, T::class.java, defaultValue)
+		private fun inferKey(targetType: Class<*>, configParams: Map<String, Any?>): String {
+			return if(configParams.isEmpty()) targetType.name else "${targetType.name}@$configParams"
 		}
 
-		/**
-		 * 根据可选的配置参数，将指定的对象转化为另一个类型，如果转化失败，则返回默认值。
-		 */
-		@JvmStatic
-		fun <T> convertOrElse(value: Any?, targetType: Class<T>, defaultValue: T): T {
-			return convertOrNull(value, targetType) ?: defaultValue
+		private fun inferConverter(targetType: Class<*>, configParams: Map<String, Any?>): Converter<*>? {
+			var result = components.findLast { it.targetType.isAssignableFrom(targetType) }
+			if(result is ConfigurableConverter<*> && configParams.isNotEmpty()) {
+				result = result.configure(configParams)
+			}
+			return result
 		}
 
-		@Suppress("UNCHECKED_CAST")
-		private fun <T> fallbackConvert(value:Any,targetType:Class<T>):T?{
+		private fun <T> fallbackConvert(value: Any, targetType: Class<T>): T? {
 			try {
 				//尝试调用目标类型的第一个拥有匹配的唯一参数的构造方法生成转化后的值
 				for(constructor in targetType.declaredConstructors) {
-					if(constructor.parameterCount == 1){
+					if(constructor.parameterCount == 1) {
 						try {
 							constructor.isAccessible = true
 							return constructor.newInstance(value) as T
-						} catch(e: Exception) {}
+						} catch(e: Exception) {
+						}
 					}
 				}
 				//尝试调用目标类型的第一个拥有匹配的唯一参数的方法生成转化后的值
-				for(method in targetType.declaredMethods){
-					if(method.parameterCount == 1){
-						try{
+				for(method in targetType.declaredMethods) {
+					if(method.parameterCount == 1) {
+						try {
 							method.isAccessible = true
 							return method.invoke(value) as T
-						}catch(e:Exception){}
+						} catch(e: Exception) {
+						}
 					}
 				}
 				return null
@@ -230,17 +259,24 @@ interface Converter<T> : Component {
 				return null
 			}
 		}
+
+		/**
+		 * 根据指定的目标类型和配置参数，从缓存中得到转化器。如果没有，则创建并放入。
+		 */
+		@JvmStatic
+		fun <T, C : Converter<T>> getConverter(targetType: Class<T>, configParams: Map<String, Any?>, defaultValue: () -> C): C {
+			return componentMap.getOrPut(inferKey(targetType, configParams), defaultValue) as C
+		}
 	}
 
 	//region Converters
-	object ByteConverter : Converter<Byte> {
-		override val targetType: Class<Byte> = Byte::class.javaObjectType
-
+	object ByteConverter : AbstractConverter<Byte>() {
 		override fun convert(value: Any): Byte {
 			return when {
 				value is Byte -> value
 				value is Number -> value.toByte()
 				value is Char -> value.toByte()
+				value is Boolean -> value.toByte()
 				else -> value.toString().toByte()
 			}
 		}
@@ -250,19 +286,19 @@ interface Converter<T> : Component {
 				value is Byte -> value
 				value is Number -> value.toByte()
 				value is Char -> value.toByte()
+				value is Boolean -> value.toByte()
 				else -> value.toString().toByteOrNull()
 			}
 		}
 	}
 
-	object ShortConverter : Converter<Short> {
-		override val targetType: Class<Short> = Short::class.javaObjectType
-
+	object ShortConverter : AbstractConverter<Short>() {
 		override fun convert(value: Any): Short {
 			return when {
 				value is Short -> value
 				value is Number -> value.toShort()
 				value is Char -> value.toShort()
+				value is Boolean -> value.toShort()
 				else -> value.toString().toShort()
 			}
 		}
@@ -277,14 +313,13 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object IntConverter : Converter<Int> {
-		override val targetType: Class<Int> = Int::class.javaObjectType
-
+	object IntConverter : AbstractConverter<Int>() {
 		override fun convert(value: Any): Int {
 			return when {
 				value is Int -> value
 				value is Number -> value.toInt()
 				value is Char -> value.toInt()
+				value is Boolean -> value.toInt()
 				else -> value.toString().toInt()
 			}
 		}
@@ -294,19 +329,19 @@ interface Converter<T> : Component {
 				value is Int -> value
 				value is Number -> value.toInt()
 				value is Char -> value.toInt()
+				value is Boolean -> value.toInt()
 				else -> value.toString().toIntOrNull()
 			}
 		}
 	}
 
-	object LongConverter : Converter<Long> {
-		override val targetType: Class<Long> = Long::class.javaObjectType
-
+	object LongConverter : AbstractConverter<Long>() {
 		override fun convert(value: Any): Long {
 			return when {
 				value is Long -> value
 				value is Number -> value.toLong()
 				value is Char -> value.toLong()
+				value is Boolean -> value.toLong()
 				else -> value.toString().toLong()
 			}
 		}
@@ -316,19 +351,19 @@ interface Converter<T> : Component {
 				value is Long -> value
 				value is Number -> value.toLong()
 				value is Char -> value.toLong()
+				value is Boolean -> value.toLong()
 				else -> value.toString().toLongOrNull()
 			}
 		}
 	}
 
-	object FloatConverter : Converter<Float> {
-		override val targetType: Class<Float> = Float::class.javaObjectType
-
+	object FloatConverter : AbstractConverter<Float>() {
 		override fun convert(value: Any): Float {
 			return when {
 				value is Float -> value
 				value is Number -> value.toFloat()
 				value is Char -> value.toFloat()
+				value is Boolean -> value.toFloat()
 				else -> value.toString().toFloat()
 			}
 		}
@@ -338,19 +373,19 @@ interface Converter<T> : Component {
 				value is Float -> value
 				value is Number -> value.toFloat()
 				value is Char -> value.toFloat()
+				value is Boolean -> value.toFloat()
 				else -> value.toString().toFloatOrNull()
 			}
 		}
 	}
 
-	object DoubleConverter : Converter<Double> {
-		override val targetType: Class<Double> = Double::class.javaObjectType
-
+	object DoubleConverter : AbstractConverter<Double>() {
 		override fun convert(value: Any): Double {
 			return when {
 				value is Double -> value
 				value is Number -> value.toDouble()
 				value is Char -> value.toDouble()
+				value is Boolean -> value.toDouble()
 				else -> value.toString().toDouble()
 			}
 		}
@@ -360,180 +395,37 @@ interface Converter<T> : Component {
 				value is Double -> value
 				value is Number -> value.toDouble()
 				value is Char -> value.toDouble()
+				value is Boolean -> value.toDouble()
 				else -> value.toString().toDoubleOrNull()
 			}
 		}
 	}
 
-	object BigIntegerConverter : Converter<BigInteger> {
-		override val targetType: Class<BigInteger> = BigInteger::class.java
+	/**
+	 * 配置参数说明：
+	 * * relaxConvert - 是否使用条件更为宽松的转化。如果是，则0、空数组、空集合等将会被转化为`false`。
+	 */
+	@ConfigParam("relaxConvert", "Boolean", "false")
+	open class BooleanConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Boolean>(), ConfigurableConverter<Boolean> {
+		companion object Default : BooleanConverter()
 
-		override fun convert(value: Any): BigInteger {
-			return when {
-				value is BigInteger -> value
-				value is Long -> BigInteger.valueOf(value)
-				else ->  BigInteger.valueOf(value.convert<Long>())
-			}
+		val relaxConvert: Boolean = configParams.get("relaxConvert").convertToBooleanOrFalse()
+
+		override fun configure(configParams: Map<String, Any?>): BooleanConverter {
+			return BooleanConverter(configParams)
 		}
-
-		override fun convertOrNull(value: Any): BigInteger? {
-			return when {
-				value is BigInteger -> value
-				value is Long -> BigInteger.valueOf(value)
-				else -> BigInteger.valueOf(value.convertOrNull<Long>()?:return null)
-			}
-		}
-	}
-
-	object BigDecimalConverter : Converter<BigDecimal> {
-		override val targetType: Class<BigDecimal> = BigDecimal::class.java
-
-		override fun convert(value: Any): BigDecimal {
-			return when {
-				value is BigDecimal -> value
-				value is Double -> BigDecimal.valueOf(value)
-				else -> BigDecimal.valueOf(value.convert<Double>())
-			}
-		}
-
-		override fun convertOrNull(value: Any): BigDecimal? {
-			return when {
-				value is BigDecimal -> value
-				value is Double -> BigDecimal.valueOf(value)
-				else -> BigDecimal.valueOf(value.convertOrNull<Double>() ?: return null)
-			}
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object UByteConverter: Converter<UByte>{
-		override val targetType: Class<UByte> = UByte::class.java
-
-		override fun convert(value: Any): UByte {
-			return when{
-				value is UByte -> value
-				value is Byte -> value.toUByte()
-				else -> value.convert<Byte>().toUByte()
-			}
-		}
-
-		override fun convertOrNull(value: Any): UByte? {
-			return when{
-				value is UByte -> value
-				value is Byte -> value.toUByte()
-				else -> value.convertOrNull<Byte>()?.toUByte()
-			}
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object UShortConverter: Converter<UShort>{
-		override val targetType: Class<UShort> = UShort::class.java
-
-		override fun convert(value: Any): UShort {
-			return when{
-				value is UShort -> value
-				value is Short -> value.toUShort()
-				else -> value.convert<Short>().toUShort()
-			}
-		}
-
-		override fun convertOrNull(value: Any): UShort? {
-			return when{
-				value is UShort -> value
-				value is Short -> value.toUShort()
-				else -> value.convertOrNull<Short>()?.toUShort()
-			}
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object UIntConverter: Converter<UInt>{
-		override val targetType: Class<UInt> = UInt::class.java
-
-		override fun convert(value: Any): UInt {
-			return when{
-				value is UInt -> value
-				value is Int -> value.toUInt()
-				else -> value.convert<Int>().toUInt()
-			}
-		}
-
-		override fun convertOrNull(value: Any): UInt? {
-			return when{
-				value is UInt -> value
-				value is Int -> value.toUInt()
-				else -> value.convertOrNull<Int>()?.toUInt()
-			}
-		}
-	}
-
-	@ExperimentalUnsignedTypes
-	object ULongConverter: Converter<ULong>{
-		override val targetType: Class<ULong> = ULong::class.java
-
-		override fun convert(value: Any): ULong {
-			return when{
-				value is ULong -> value
-				value is Long -> value.toULong()
-				else -> value.convert<Long>().toULong()
-			}
-		}
-
-		override fun convertOrNull(value: Any): ULong? {
-			return when{
-				value is ULong -> value
-				value is Long -> value.toULong()
-				else -> value.convertOrNull<Long>()?.toULong()
-			}
-		}
-	}
-
-	object AtomicIntegerConverter : Converter<AtomicInteger> {
-		override val targetType: Class<AtomicInteger> = AtomicInteger::class.java
-
-		override fun convert(value: Any): AtomicInteger {
-			return when {
-				value is AtomicInteger -> value
-				value is Int -> AtomicInteger(value)
-				else -> AtomicInteger(value.convert<Int>())
-			}
-		}
-
-		override fun convertOrNull(value: Any): AtomicInteger? {
-			return when {
-				value is AtomicInteger -> value
-				value is Int -> AtomicInteger(value)
-				else -> AtomicInteger(value.convertOrNull<Int>() ?: return null)
-			}
-		}
-	}
-
-	object AtomicLongConverter : Converter<AtomicLong> {
-		override val targetType: Class<AtomicLong> = AtomicLong::class.java
-
-		override fun convert(value: Any): AtomicLong {
-			return when {
-				value is AtomicLong -> value
-				value is Long -> AtomicLong(value)
-				else -> AtomicLong(value.convert<Long>())
-			}
-		}
-
-		override fun convertOrNull(value: Any): AtomicLong? {
-			return when {
-				value is AtomicLong -> value
-				value is Long -> AtomicLong(value)
-				value is Number -> AtomicLong(value.toLong())
-				else -> AtomicLong(value.convertOrNull<Long>() ?: return null)
-			}
-		}
-	}
-
-	object BooleanConverter : Converter<Boolean> {
-		override val targetType: Class<Boolean> = Boolean::class.javaObjectType
 
 		override fun convert(value: Any): Boolean {
+			return if(relaxConvert) doRelaxConvert(value) else doConvert(value)
+		}
+
+		private fun doConvert(value: Any): Boolean {
+			return value == true || value.toString() == "true"
+		}
+
+		private fun doRelaxConvert(value: Any): Boolean {
 			return when {
 				value is Boolean -> value
 				value is Number -> value.toString().let { it != "0" || it != "0.0" }
@@ -548,9 +440,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object CharConverter : Converter<Char> {
-		override val targetType: Class<Char> = Char::class.javaObjectType
-
+	object CharConverter : AbstractConverter<Char>() {
 		override fun convert(value: Any): Char {
 			return when {
 				value is Char -> value
@@ -570,86 +460,207 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("raw", "Boolean", "false", comment = "Convert value to string by 'toString()' method"),
-		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class StringConverter : Converter<String>, Configurable<StringConverter> {
-		companion object Default : StringConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<String> = String::class.java
-
-		var raw = false
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
-		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			protected set
-
-		fun setThreadLocalDateFormat() {
-			threadLocalDateFormat.set(SimpleDateFormat(format, locale).also { it.timeZone = timeZone })
-		}
-
-		fun setFormatter() {
-			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["raw"]?.convertOrNull<Boolean>()?.let { raw = it }
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setThreadLocalDateFormat()
-			setFormatter()
-		}
-
-		override fun copy(params: Map<String, Any?>): StringConverter {
-			return StringConverter().apply { configure(params) }
-		}
-
-		override fun convert(value: Any): String {
-			if(raw) return value.toString()
+	object BigIntegerConverter : AbstractConverter<BigInteger>() {
+		override fun convert(value: Any): BigInteger {
 			return when {
-				value is Date -> threadLocalDateFormat.get().format(value)
-				value is TemporalAccessor -> formatter.format(value)
-				else -> value.toString()
+				value is BigInteger -> value
+				value is Long -> BigInteger.valueOf(value)
+				else -> BigInteger.valueOf(value.convert<Long>())
+			}
+		}
+
+		override fun convertOrNull(value: Any): BigInteger? {
+			return when {
+				value is BigInteger -> value
+				value is Long -> BigInteger.valueOf(value)
+				else -> BigInteger.valueOf(value.convertOrNull<Long>() ?: return null)
 			}
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", comment = "Regex options")
-	)
-	open class RegexConverter : Converter<Regex>, Configurable<RegexConverter> {
-		companion object Default : RegexConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Regex> = Regex::class.java
-
-		val regexOptions = mutableSetOf<RegexOption>()
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["regexOptions"]?.let {
-				when {
-					it is Array<*> -> it.filterIsInstanceTo(regexOptions)
-					it is Iterable<*> -> it.filterIsInstanceTo(regexOptions)
-					it is Sequence<*> -> it.filterIsInstanceTo(regexOptions)
-					else -> {
-					}
-				}
+	object BigDecimalConverter : AbstractConverter<BigDecimal>() {
+		override fun convert(value: Any): BigDecimal {
+			return when {
+				value is BigDecimal -> value
+				value is Double -> BigDecimal.valueOf(value)
+				else -> BigDecimal.valueOf(value.convert<Double>())
 			}
 		}
 
-		override fun copy(params: Map<String, Any?>): RegexConverter {
-			return RegexConverter().apply { configure(params) }
+		override fun convertOrNull(value: Any): BigDecimal? {
+			return when {
+				value is BigDecimal -> value
+				value is Double -> BigDecimal.valueOf(value)
+				else -> BigDecimal.valueOf(value.convertOrNull<Double>() ?: return null)
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UByteConverter : AbstractConverter<UByte>() {
+		override fun convert(value: Any): UByte {
+			return when {
+				value is UByte -> value
+				value is Byte -> value.toUByte()
+				else -> value.convert<Byte>().toUByte()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UByte? {
+			return when {
+				value is UByte -> value
+				value is Byte -> value.toUByte()
+				else -> value.convertOrNull<Byte>()?.toUByte()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UShortConverter : AbstractConverter<UShort>() {
+		override fun convert(value: Any): UShort {
+			return when {
+				value is UShort -> value
+				value is Short -> value.toUShort()
+				else -> value.convert<Short>().toUShort()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UShort? {
+			return when {
+				value is UShort -> value
+				value is Short -> value.toUShort()
+				else -> value.convertOrNull<Short>()?.toUShort()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UIntConverter : AbstractConverter<UInt>() {
+		override fun convert(value: Any): UInt {
+			return when {
+				value is UInt -> value
+				value is Int -> value.toUInt()
+				else -> value.convert<Int>().toUInt()
+			}
+		}
+
+		override fun convertOrNull(value: Any): UInt? {
+			return when {
+				value is UInt -> value
+				value is Int -> value.toUInt()
+				else -> value.convertOrNull<Int>()?.toUInt()
+			}
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object ULongConverter : AbstractConverter<ULong>() {
+		override fun convert(value: Any): ULong {
+			return when {
+				value is ULong -> value
+				value is Long -> value.toULong()
+				else -> value.convert<Long>().toULong()
+			}
+		}
+
+		override fun convertOrNull(value: Any): ULong? {
+			return when {
+				value is ULong -> value
+				value is Long -> value.toULong()
+				else -> value.convertOrNull<Long>()?.toULong()
+			}
+		}
+	}
+
+	object AtomicIntegerConverter : AbstractConverter<AtomicInteger>() {
+		override fun convert(value: Any): AtomicInteger {
+			return when {
+				value is AtomicInteger -> value
+				value is Int -> AtomicInteger(value)
+				else -> AtomicInteger(value.convert())
+			}
+		}
+
+		override fun convertOrNull(value: Any): AtomicInteger? {
+			return when {
+				value is AtomicInteger -> value
+				value is Int -> AtomicInteger(value)
+				else -> AtomicInteger(value.convertOrNull<Int>() ?: return null)
+			}
+		}
+	}
+
+	object AtomicLongConverter : AbstractConverter<AtomicLong>() {
+		override fun convert(value: Any): AtomicLong {
+			return when {
+				value is AtomicLong -> value
+				value is Long -> AtomicLong(value)
+				else -> AtomicLong(value.convert())
+			}
+		}
+
+		override fun convertOrNull(value: Any): AtomicLong? {
+			return when {
+				value is AtomicLong -> value
+				value is Long -> AtomicLong(value)
+				value is Number -> AtomicLong(value.toLong())
+				else -> AtomicLong(value.convertOrNull<Long>() ?: return null)
+			}
+		}
+	}
+
+	object AtomicBooleanConverter : AbstractConverter<AtomicBoolean>() {
+		override fun convert(value: Any): AtomicBoolean {
+			return when {
+				value is AtomicBoolean -> value
+				value is Boolean -> AtomicBoolean(value)
+				else -> AtomicBoolean(value.convert())
+			}
+		}
+	}
+
+	@ConfigParam("raw", "Boolean", "false")
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	open class StringConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<String>(), ConfigurableConverter<String> {
+		companion object Default : StringConverter()
+
+		val raw: Boolean = configParams.get("raw").convertToBooleanOrFalse()
+		val format: String = configParams.get("format").convertToStringOrNull() ?: defaultDateFormat
+		val locale: Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
+		val timeZone: TimeZone = configParams.get("timeZone").convertOrNull() ?: defaultTimeZone
+
+		private val threadLocalDateFormat =
+			ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+
+		override fun configure(configParams: Map<String, Any?>): StringConverter {
+			return StringConverter(configParams)
+		}
+
+		override fun convert(value: Any): String {
+			return when {
+				raw -> value.toString()
+				value is Date -> threadLocalDateFormat.get().format(value)
+				value is TemporalAccessor -> formatter.format(value)
+				else -> value.smartToString()
+			}
+		}
+	}
+
+	@ConfigParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", "<empty>")
+	open class RegexConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Regex>(), ConfigurableConverter<Regex> {
+		companion object Default : RegexConverter()
+
+		val regexOptions: Set<RegexOption> = configParams.get("regexOptions").convertOrNull() ?: emptySet()
+
+		override fun configure(configParams: Map<String, Any?>): RegexConverter {
+			return RegexConverter(configParams)
 		}
 
 		override fun convert(value: Any): Regex {
@@ -667,9 +678,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object PatternConverter : Converter<Pattern> {
-		override val targetType: Class<Pattern> = Pattern::class.java
-
+	object PatternConverter : AbstractConverter<Pattern>() {
 		override fun convert(value: Any): Pattern {
 			return when {
 				value is Regex -> value.toPattern()
@@ -679,9 +688,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object CharsetConverter : Converter<Charset> {
-		override val targetType: Class<Charset> = Charset::class.java
-
+	object CharsetConverter : AbstractConverter<Charset>() {
 		override fun convert(value: Any): Charset {
 			return when {
 				value is Charset -> value
@@ -697,9 +704,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object ClassConverter : Converter<Class<*>> {
-		override val targetType: Class<Class<*>> = Class::class.java
-
+	object ClassConverter : AbstractConverter<Class<*>>() {
 		override fun convert(value: Any): Class<*> {
 			return when {
 				value is Class<*> -> value
@@ -715,9 +720,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object LocaleConverter : Converter<Locale> {
-		override val targetType: Class<Locale> = Locale::class.java
-
+	object LocaleConverter : AbstractConverter<Locale>() {
 		override fun convert(value: Any): Locale {
 			return when {
 				value is Locale -> value
@@ -726,9 +729,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object TimeZoneConverter : Converter<TimeZone> {
-		override val targetType: Class<TimeZone> = TimeZone::class.java
-
+	object TimeZoneConverter : AbstractConverter<TimeZone>() {
 		override fun convert(value: Any): TimeZone {
 			return when {
 				value is TimeZone -> value
@@ -746,9 +747,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object ZoneIdConverter : Converter<ZoneId> {
-		override val targetType: Class<ZoneId> = ZoneId::class.java
-
+	object ZoneIdConverter : AbstractConverter<ZoneId>() {
 		override fun convert(value: Any): ZoneId {
 			return when {
 				value is ZoneId -> value
@@ -759,80 +758,51 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class DateConverter : Converter<Date>, Configurable<DateConverter> {
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	open class DateConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Date>(), ConfigurableConverter<Date> {
 		companion object Default : DateConverter()
 
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+		val format: String = configParams.get("format").convertToStringOrNull() ?: defaultDateFormat
+		val locale: Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
+		val timeZone: TimeZone = configParams.get("timeZone").convertOrNull() ?: defaultTimeZone
 
-		override val targetType: Class<Date> = Date::class.java
+		private val threadLocalDateFormat =
+			ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
-
-		fun setThreadLocalDateFormat() {
-			threadLocalDateFormat.set(SimpleDateFormat(format, locale).also { it.timeZone = timeZone })
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setThreadLocalDateFormat()
-		}
-
-		override fun copy(params: Map<String, Any?>): DateConverter {
-			return DateConverter().apply { configure(params) }
+		override fun configure(configParams: Map<String, Any?>): DateConverter {
+			return DateConverter(configParams)
 		}
 
 		override fun convert(value: Any): Date {
 			return when {
 				value is Date -> value
 				value is Instant -> Date.from(value)
+				value is String -> threadLocalDateFormat.get().parse(value)
 				else -> threadLocalDateFormat.get().parse(value.toString())
 			}
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class LocalDateConverter : Converter<LocalDate>, Configurable<LocalDateConverter> {
+	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	open class LocalDateConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<LocalDate>(), ConfigurableConverter<LocalDate> {
 		companion object Default : LocalDateConverter()
 
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+		val format: String = configParams.get("format").convertToStringOrNull() ?: defaultDateFormat
+		val locale: Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
+		val timeZone: TimeZone = configParams.get("timeZone").convertOrNull() ?: defaultTimeZone
 
-		override val targetType: Class<LocalDate> = LocalDate::class.java
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		var format = defaultDateFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			protected set
-
-		fun setFormatter() {
-			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setFormatter()
-		}
-
-		override fun copy(params: Map<String, Any?>): LocalDateConverter {
-			return LocalDateConverter().apply { configure(params) }
+		override fun configure(configParams: Map<String, Any?>): LocalDateConverter {
+			return LocalDateConverter(configParams)
 		}
 
 		override fun convert(value: Any): LocalDate {
@@ -840,43 +810,28 @@ interface Converter<T> : Component {
 				value is LocalDate -> value
 				value is TemporalAccessor -> LocalDate.from(value)
 				value is Date -> LocalDate.from(value.toInstant())
-				else -> LocalDate.parse(value.toString())
+				value is String -> LocalDate.parse(value, formatter)
+				else -> LocalDate.parse(value.toString(), formatter)
 			}
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("format", "String", "'HH:mm:ss'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class LocalTimeConverter : Converter<LocalTime>, Configurable<LocalTimeConverter> {
+	@ConfigParam("format", "String", "HH:mm:ss")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	open class LocalTimeConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<LocalTime>(), ConfigurableConverter<LocalTime> {
 		companion object Default : LocalTimeConverter()
 
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+		val format: String = configParams.get("format")?.convertToStringOrNull() ?: defaultTimeFormat
+		val locale: Locale = configParams.get("locale")?.convertOrNull() ?: defaultLocale
+		val timeZone: TimeZone = configParams.get("timeZone")?.convertOrNull() ?: defaultTimeZone
 
-		override val targetType: Class<LocalTime> = LocalTime::class.java
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		var format = defaultTimeFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			protected set
-
-		fun setFormatter() {
-			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setFormatter()
-		}
-
-		override fun copy(params: Map<String, Any?>): LocalTimeConverter {
-			return LocalTimeConverter().apply { configure(params) }
+		override fun configure(configParams: Map<String, Any?>): LocalTimeConverter {
+			return LocalTimeConverter(configParams)
 		}
 
 		override fun convert(value: Any): LocalTime {
@@ -884,43 +839,28 @@ interface Converter<T> : Component {
 				value is LocalTime -> value
 				value is TemporalAccessor -> LocalTime.from(value)
 				value is Date -> LocalTime.from(value.toInstant())
-				else -> LocalTime.parse(value.toString())
+				value is String -> LocalTime.parse(value, formatter)
+				else -> LocalTime.parse(value.toString(), formatter)
 			}
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("format", "String", "'yyyy-MM-dd HH:mm:ss'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class LocalDateTimeConverter : Converter<LocalDateTime>, Configurable<LocalDateTimeConverter> {
+	@ConfigParam("format", "String", "yyyy-MM-dd HH:mm:ss")
+	@ConfigParam("locale", "String | Locale", "<default>")
+	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
+	open class LocalDateTimeConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<LocalDateTime>(), ConfigurableConverter<LocalDateTime> {
 		companion object Default : LocalDateTimeConverter()
 
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
+		val format: String = configParams.get("format")?.convertToStringOrNull() ?: defaultDateTimeFormat
+		val locale: Locale = configParams.get("locale")?.convertOrNull() ?: defaultLocale
+		val timeZone: TimeZone = configParams.get("timeZone")?.convertOrNull() ?: defaultTimeZone
 
-		override val targetType: Class<LocalDateTime> = LocalDateTime::class.java
+		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		var format = defaultDateTimeFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			protected set
-
-		fun setFormatter() {
-			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setFormatter()
-		}
-
-		override fun copy(params: Map<String, Any?>): LocalDateTimeConverter {
-			return LocalDateTimeConverter().apply { configure(params) }
+		override fun configure(configParams: Map<String, Any?>): LocalDateTimeConverter {
+			return LocalDateTimeConverter(configParams)
 		}
 
 		override fun convert(value: Any): LocalDateTime {
@@ -928,25 +868,32 @@ interface Converter<T> : Component {
 				value is LocalDateTime -> value
 				value is TemporalAccessor -> LocalDateTime.from(value)
 				value is Date -> LocalDateTime.from(value.toInstant())
-				else -> LocalDateTime.parse(value.toString())
+				value is String -> LocalDateTime.parse(value, formatter)
+				else -> LocalDateTime.parse(value.toString(), formatter)
 			}
 		}
 	}
 
-	object InstantConverter : Converter<Instant> {
-		override val targetType: Class<Instant> = Instant::class.java
-
+	object InstantConverter : AbstractConverter<Instant>() {
 		override fun convert(value: Any): Instant {
 			return when {
 				value is Instant -> value
 				value is TemporalAccessor -> Instant.from(value)
+				value is String -> Instant.parse(value)
 				else -> Instant.parse(value.toString())
 			}
 		}
 	}
 
-	object DurationConverter : Converter<Duration> {
-		override val targetType: Class<Duration> = Duration::class.java
+	//TODO
+	open class DurationConverter(
+		override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Duration>(), ConfigurableConverter<Duration> {
+		companion object Default : DurationConverter()
+
+		override fun configure(configParams: Map<String, Any?>): DurationConverter {
+			return DurationConverter(configParams)
+		}
 
 		override fun convert(value: Any): Duration {
 			return when {
@@ -965,38 +912,14 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("format", "String", "'yyyy-MM-dd'", comment = "Format pattern"),
-		ConfigurableParam("locale", "String | Locale", "<default>", comment = "Format locale"),
-		ConfigurableParam("timeZone", "String | TimeZone", "<utc>", comment = "Format time zone")
-	)
-	open class PeriodConverter : Converter<Period>, Configurable<PeriodConverter> {
+	//TODO
+	open class PeriodConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Period>(), ConfigurableConverter<Period> {
 		companion object Default : PeriodConverter()
 
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Period> = Period::class.java
-
-		var format = defaultDateTimeFormat
-		var locale = defaultLocale
-		var timeZone = defaultTimeZone
-		var formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-			protected set
-
-		fun setFormatter() {
-			formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["format"]?.convertOrNull<String>()?.let { format = it }
-			params["locale"]?.convertOrNull<Locale>()?.let { locale = it }
-			params["timeZone"]?.convertOrNull<TimeZone>()?.let { timeZone = it }
-			setFormatter()
-		}
-
-		override fun copy(params: Map<String, Any?>): PeriodConverter {
-			return PeriodConverter().apply { configure(params) }
+		override fun configure(configParams: Map<String, Any?>): PeriodConverter {
+			return PeriodConverter(configParams)
 		}
 
 		override fun convert(value: Any): Period {
@@ -1011,14 +934,13 @@ interface Converter<T> : Component {
 						throw IllegalArgumentException("Cannot convert '$value' to Period.")
 					}
 				}
+				value is String -> Period.parse(value)
 				else -> Period.parse(value.toString())
 			}
 		}
 	}
 
-	object FileConverter : Converter<File> {
-		override val targetType: Class<File> = File::class.java
-
+	object FileConverter : AbstractConverter<File>() {
 		override fun convert(value: Any): File {
 			return when {
 				value is File -> value
@@ -1030,9 +952,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object PathConverter : Converter<Path> {
-		override val targetType: Class<Path> = Path::class.java
-
+	object PathConverter : AbstractConverter<Path>() {
 		override fun convert(value: Any): Path {
 			return when {
 				value is File -> value.toPath()
@@ -1044,9 +964,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object UrlConverter : Converter<URL> {
-		override val targetType: Class<URL> = URL::class.java
-
+	object UrlConverter : AbstractConverter<URL>() {
 		override fun convert(value: Any): URL {
 			return when {
 				value is File -> value.toUrl()
@@ -1058,9 +976,7 @@ interface Converter<T> : Component {
 		}
 	}
 
-	object UriConverter : Converter<URI> {
-		override val targetType: Class<URI> = URI::class.java
-
+	object UriConverter : AbstractConverter<URI>() {
 		override fun convert(value: Any): URI {
 			return when {
 				value is File -> value.toUri()
@@ -1072,178 +988,1461 @@ interface Converter<T> : Component {
 		}
 	}
 
-	@ConfigurableParams(
-		ConfigurableParam("className", "String", comment = "Full class name of enum")
-	)
-	open class EnumConverter : Converter<Enum<*>>, Configurable<EnumConverter> {
-		companion object Default : EnumConverter()
-
-		override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-
-		override val targetType: Class<Enum<*>> = Enum::class.java
-
-		var className: String? = null
-			protected set
-		var enumClass: Class<*>? = null
-			protected set
-		val enumValues :MutableList<Enum<*>> = mutableListOf()
-		val enumValueMap: MutableMap<String, Enum<*>> = mutableMapOf()
-
-		fun setEnumClassAndValues() {
-			if(className == null) throw IllegalArgumentException("Param 'className' must not be null.")
-			val enumClass = className?.toClassOrNull()
-			if(enumClass == null ||!enumClass.isEnum) throw IllegalArgumentException("Param 'className' does not represent an enum class.")
-			this.enumClass = enumClass
-			val enumConstants = enumClass.enumConstants
-			for(enumConstant in enumConstants) {
-				enumConstant as Enum<*>
-				enumValues += enumConstant
-				enumValueMap[enumConstant.name.toLowerCase()] = enumConstant
-			}
-		}
-
-		override fun configure(params: Map<String, Any?>) {
-			super.configure(params)
-			params["className"]?.toString()?.let { className = it }
-			setEnumClassAndValues()
-		}
-
-		override fun copy(params: Map<String, Any?>): EnumConverter {
-			return EnumConverter().apply { configure(params) }
-		}
-
-		override fun convert(value: Any): Enum<*> {
-			if(className == null || enumClass == null){
-				throw IllegalArgumentException("Cannot get enum class. Param 'className' is not valid.")
-			}
-			return when{
+	object EnumConverter : AbstractConverter<Enum<*>>(), GenericConverter<Enum<*>> {
+		override fun convert(value: Any, targetType: Type): Enum<*> {
+			val enumClass = inferEnumClass(targetType)
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return when {
 				value is Number -> {
 					val index = value.toInt()
+					val enumValues = enumValuesCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList() ?: emptyList()
+					}
 					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
 				}
 				else -> {
-					val name = value.toString().toLowerCase()
-					enumValueMap[name]?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
+					val name = value.toString()
+					val enumValueMap = enumValueMapCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList()?.associateBy { it.name } ?: emptyMap()
+					}
+					enumValueMap[name] ?: throw IllegalArgumentException("Cannot find enum constant by name '$name'.")
 				}
 			}
 		}
 
-		override fun convertOrNull(value: Any): Enum<*>? {
-			if(className == null || enumClass == null){
-				throw IllegalArgumentException("Cannot get enum class. Param 'className' is not valid.")
-			}
-			return when{
+		override fun convertOrNull(value: Any, targetType: Type): Enum<*>? {
+			val enumClass = inferEnumClass(targetType)
+			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			return when {
 				value is Number -> {
 					val index = value.toInt()
+					val enumValues = enumValuesCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList() ?: emptyList()
+					}
 					enumValues.getOrNull(index)
 				}
 				else -> {
-					val name = value.toString()
+					val name = value.toString().toLowerCase()
+					val enumValueMap = enumValueMapCache.getOrPut(enumClass) {
+						enumClass.enumConstants?.toList()?.associateBy { it.name } ?: emptyMap()
+					}
 					enumValueMap[name]
 				}
 			}
 		}
 	}
 
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串（转化为数组时使用的前缀。
+	 * * suffix - 从字符串（转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class ArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Array<*>>(), ConfigurableConverter<Array<*>>, GenericConverter<Array<*>> {
+		companion object Default : ArrayConverter()
 
-	//open class StringArrayConverter : Converter<Array<String>>, Configurable<StringArrayConverter> {
-	//	companion object Default : StringArrayConverter()
-	//
-	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-	//
-	//	override val targetType: Class<Array<String>> = Array<String>::class.java
-	//
-	//	override fun configure(params: Map<String, Any?>) {
-	//		super.configure(params)
-	//	}
-	//
-	//	override fun copy(params: Map<String, Any?>): StringArrayConverter {
-	//		TODO("Not yet implemented")
-	//	}
-	//
-	//	override fun convert(value: Any): Array<String> {
-	//		TODO("Not yet implemented")
-	//	}
-	//}
-	//
-	//open class StringListConverter : Converter<List<*>>, Configurable<StringListConverter> {
-	//	companion object Default : StringListConverter()
-	//
-	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-	//
-	//	override val targetType: Class<List<*>> = List::class.java
-	//
-	//	override fun configure(params: Map<String, Any?>) {
-	//		super.configure(params)
-	//	}
-	//
-	//	override fun copy(params: Map<String, Any?>): StringListConverter {
-	//		TODO("Not yet implemented")
-	//	}
-	//
-	//	override fun convert(value: Any): List<String> {
-	//		TODO("Not yet implemented")
-	//	}
-	//}
-	//
-	//open class StringSetConverter : Converter<Set<*>>, Configurable<StringSetConverter> {
-	//	companion object Default : StringSetConverter()
-	//
-	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-	//
-	//	override val targetType: Class<Set<*>> = Set::class.java
-	//
-	//	override fun configure(params: Map<String, Any?>) {
-	//		super.configure(params)
-	//	}
-	//
-	//	override fun copy(params: Map<String, Any?>): StringSetConverter {
-	//		TODO("Not yet implemented")
-	//	}
-	//
-	//	override fun convert(value: Any): Set<String> {
-	//		TODO("Not yet implemented")
-	//	}
-	//}
-	//
-	//open class StringSequenceConverter : Converter<Sequence<*>>, Configurable<StringSequenceConverter> {
-	//	companion object Default : StringSequenceConverter()
-	//
-	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-	//
-	//	override val targetType: Class<Sequence<*>> = Sequence::class.java
-	//
-	//	override fun configure(params: Map<String, Any?>) {
-	//		super.configure(params)
-	//	}
-	//
-	//	override fun copy(params: Map<String, Any?>): StringSequenceConverter {
-	//		TODO("Not yet implemented")
-	//	}
-	//
-	//	override fun convert(value: Any): Sequence<String> {
-	//		TODO("Not yet implemented")
-	//	}
-	//}
-	//
-	//open class StringMapConverter : Converter<Map<*, *>>, Configurable<StringMapConverter> {
-	//	companion object Default : StringMapConverter()
-	//
-	//	override val configurableInfo: ConfigurableInfo = ConfigurableInfo()
-	//
-	//	override val targetType: Class<Map<*, *>> = Map::class.java
-	//
-	//	override fun configure(params: Map<String, Any?>) {
-	//		super.configure(params)
-	//	}
-	//
-	//	override fun copy(params: Map<String, Any?>): StringMapConverter {
-	//		TODO("Not yet implemented")
-	//	}
-	//
-	//	override fun convert(value: Any): Map<String, String> {
-	//		TODO("Not yet implemented")
-	//	}
-	//}
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): ArrayConverter {
+			return ArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Array<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> Array(value.size) { convertElement(value[it], elementType) }
+				value is ByteArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is ShortArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is IntArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is LongArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is FloatArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is DoubleArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is BooleanArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is CharArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is UByteArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is UShortArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is UIntArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is ULongArray -> Array(value.size) { convertElement(value[it], elementType) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Iterable<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Sequence<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Stream<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is String -> splitValue(value).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				else -> arrayOf(convertElement(value, elementType))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class ByteArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<ByteArray>(), ConfigurableConverter<ByteArray> {
+		companion object Default : ByteArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): ByteArrayConverter {
+			return ByteArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): ByteArray {
+			return when {
+				value is Array<*> -> ByteArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> ByteArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				else -> byteArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Byte>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class ShortArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<ShortArray>(), ConfigurableConverter<ShortArray> {
+		companion object Default : ShortArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): ShortArrayConverter {
+			return ShortArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): ShortArray {
+			return when {
+				value is Array<*> -> ShortArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> ShortArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				else -> shortArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Short>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class IntArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<IntArray>(), ConfigurableConverter<IntArray> {
+		companion object Default : IntArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): IntArrayConverter {
+			return IntArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): IntArray {
+			return when {
+				value is Array<*> -> IntArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> IntArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				else -> intArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Int>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class LongArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<LongArray>(), ConfigurableConverter<LongArray> {
+		companion object Default : LongArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): LongArrayConverter {
+			return LongArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): LongArray {
+			return when {
+				value is Array<*> -> LongArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> LongArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				else -> longArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Long>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class FloatArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<FloatArray>(), ConfigurableConverter<FloatArray> {
+		companion object Default : FloatArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): FloatArrayConverter {
+			return FloatArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): FloatArray {
+			return when {
+				value is Array<*> -> FloatArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> FloatArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				else -> floatArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Float>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class DoubleArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<DoubleArray>(), ConfigurableConverter<DoubleArray> {
+		companion object Default : DoubleArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): DoubleArrayConverter {
+			return DoubleArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): DoubleArray {
+			return when {
+				value is Array<*> -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> DoubleArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				else -> doubleArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Double>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class BooleanArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<BooleanArray>(), ConfigurableConverter<BooleanArray> {
+		companion object Default : BooleanArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): BooleanArrayConverter {
+			return BooleanArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): BooleanArray {
+			return when {
+				value is Array<*> -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> BooleanArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				else -> booleanArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Boolean>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class CharArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<CharArray>(), ConfigurableConverter<CharArray> {
+		companion object Default : CharArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): CharArrayConverter {
+			return CharArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): CharArray {
+			return when {
+				value is Array<*> -> CharArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> CharArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				else -> charArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<Char>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@ExperimentalUnsignedTypes
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class UByteArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<UByteArray>(), ConfigurableConverter<UByteArray> {
+		companion object Default : UByteArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): UByteArrayConverter {
+			return UByteArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): UByteArray {
+			return when {
+				value is Array<*> -> UByteArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> UByteArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				else -> ubyteArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<UByte>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@ExperimentalUnsignedTypes
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class UShortArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<UShortArray>(), ConfigurableConverter<UShortArray> {
+		companion object Default : UShortArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): UShortArrayConverter {
+			return UShortArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): UShortArray {
+			return when {
+				value is Array<*> -> UShortArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> UShortArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				else -> ushortArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<UShort>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@ExperimentalUnsignedTypes
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class UIntArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<UIntArray>(), ConfigurableConverter<UIntArray> {
+		companion object Default : UIntArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): UIntArrayConverter {
+			return UIntArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): UIntArray {
+			return when {
+				value is Array<*> -> UIntArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> UIntArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				else -> uintArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<UInt>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为数组时使用的分隔符。
+	 * * prefix - 从字符串转化为数组时使用的前缀。
+	 * * suffix - 从字符串转化为数组时使用的后缀。
+	 */
+	@ExperimentalUnsignedTypes
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class ULongArrayConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<ULongArray>(), ConfigurableConverter<ULongArray> {
+		companion object Default : ULongArrayConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): ULongArrayConverter {
+			return ULongArrayConverter(configParams)
+		}
+
+		override fun convert(value: Any): ULongArray {
+			return when {
+				value is Array<*> -> ULongArray(value.size) { convertElement(value[it]) }
+				value is ByteArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is ShortArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is IntArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is LongArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is FloatArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is DoubleArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is BooleanArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is CharArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is UByteArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is UShortArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is UIntArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is ULongArray -> ULongArray(value.size) { convertElement(value[it]) }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is Iterable<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is Sequence<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is Stream<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is String -> splitValue(value).let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is CharSequence -> splitValue(value.toString()).let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				else -> ulongArrayOf(convertElement(value))
+			}
+		}
+
+		private fun convertElement(element: Any?) = element.convert<ULong>(passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为迭代器时使用的分隔符。
+	 * * prefix - 从字符串转化为迭代器时使用的前缀。
+	 * * suffix - 从字符串转化为迭代器时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(IterableConverter::class)
+	open class IteratorConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Iterator<*>>(), ConfigurableConverter<Iterator<*>>, GenericConverter<Iterator<*>> {
+		companion object Default : IteratorConverter()
+
+		private val iterableConverter by lazy {
+			getConverter(Iterable::class.java, passingConfigParams) { IterableConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): IteratorConverter {
+			return IteratorConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Iterator<*> {
+			return iterableConverter.convert(value, targetType).iterator()
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Iterator<*>? {
+			return iterableConverter.convertOrNull(value, targetType)?.iterator()
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为可变迭代器时使用的分隔符。
+	 * * prefix - 从字符串转化为可变迭代器时使用的前缀。
+	 * * suffix - 从字符串转化为可变迭代器时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableIterableConverter::class)
+	open class MutableIteratorConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableIterator<*>>(), ConfigurableConverter<MutableIterator<*>>,
+		GenericConverter<MutableIterator<*>> {
+		companion object Default : MutableIteratorConverter()
+
+		private val mutableIterableConverter by lazy {
+			getConverter(MutableIterable::class.java, passingConfigParams) { MutableIterableConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): MutableIteratorConverter {
+			return MutableIteratorConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableIterator<*> {
+			return mutableIterableConverter.convert(value, targetType).iterator()
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableIterator<*>? {
+			return mutableIterableConverter.convertOrNull(value, targetType)?.iterator()
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为集合时使用的分隔符。
+	 * * prefix - 从字符串转化为集合时使用的前缀。
+	 * * suffix - 从字符串转化为集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(CollectionConverter::class)
+	open class IterableConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Iterable<*>>(), ConfigurableConverter<Iterable<*>>, GenericConverter<Iterable<*>> {
+		companion object Default : IterableConverter()
+
+		private val collectionConverter by lazy {
+			getConverter(Collection::class.java, passingConfigParams) { CollectionConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): IterableConverter {
+			return IterableConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Iterable<*> {
+			return collectionConverter.convert(value, targetType)
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Iterable<*>? {
+			return collectionConverter.convertOrNull(value, targetType)
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为可变集合时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集合时使用的前缀。
+	 * * suffix - 从字符串转化为可变集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableCollectionConverter::class)
+	open class MutableIterableConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableIterable<*>>(), ConfigurableConverter<MutableIterable<*>>,
+		GenericConverter<MutableIterable<*>> {
+		companion object Default : MutableIterableConverter()
+
+		private val mutableCollectionConverter by lazy {
+			getConverter(MutableCollection::class.java, passingConfigParams) { MutableCollectionConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): MutableIterableConverter {
+			return MutableIterableConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableIterable<*> {
+			return mutableCollectionConverter.convert(value, targetType)
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableIterable<*>? {
+			return mutableCollectionConverter.convertOrNull(value, targetType)
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为集合时使用的分隔符。
+	 * * prefix - 从字符串转化为集合时使用的前缀。
+	 * * suffix - 从字符串转化为集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(ListConverter::class, "!delegate")
+	@ConfigParamsPassing(SetConverter::class, "!delegate")
+	open class CollectionConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Collection<*>>(), ConfigurableConverter<Collection<*>>, GenericConverter<Collection<*>> {
+		companion object Default : CollectionConverter()
+
+		private val listConverter by lazy {
+			getConverter(List::class.java, passingConfigParams) { ListConverter(passingConfigParams) }
+		}
+		private val setConverter by lazy {
+			getConverter(Set::class.java, passingConfigParams) { SetConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "delegate")
+
+		val delegate: String = configParams.get("delegate")?.toString() ?: "list"
+
+		override fun configure(configParams: Map<String, Any?>): CollectionConverter {
+			return CollectionConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Collection<*> {
+			return when(delegate) {
+				"list" -> listConverter.convert(value, targetType)
+				"set" -> setConverter.convert(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Collection<*>? {
+			return when(delegate) {
+				"list" -> listConverter.convertOrNull(value, targetType)
+				"set" -> setConverter.convertOrNull(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为可变集合时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集合时使用的前缀。
+	 * * suffix - 从字符串转化为可变集合时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(MutableListConverter::class, "!delegate")
+	@ConfigParamsPassing(MutableSetConverter::class, "!delegate")
+	open class MutableCollectionConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableCollection<*>>(), ConfigurableConverter<MutableCollection<*>>,
+		GenericConverter<MutableCollection<*>> {
+		companion object Default : MutableCollectionConverter()
+
+		private val mutableListConverter by lazy {
+			getConverter(MutableList::class.java, passingConfigParams) { MutableListConverter(passingConfigParams) }
+		}
+		private val mutableSetConverter by lazy {
+			getConverter(MutableSet::class.java, passingConfigParams) { MutableSetConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "delegate")
+
+		val delegate: String = configParams.get("delegate")?.toString() ?: "list"
+
+		override fun configure(configParams: Map<String, Any?>): MutableCollectionConverter {
+			return MutableCollectionConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableCollection<*> {
+			return when(delegate) {
+				"list" -> mutableListConverter.convert(value, targetType)
+				"set" -> mutableSetConverter.convert(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): MutableCollection<*>? {
+			return when(delegate) {
+				"list" -> mutableListConverter.convertOrNull(value, targetType)
+				"set" -> mutableSetConverter.convertOrNull(value, targetType)
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为列表时使用的分隔符。
+	 * * prefix - 从字符串转化为列表时使用的前缀。
+	 * * suffix - 从字符串转化为列表时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class ListConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<List<*>>(), ConfigurableConverter<List<*>>, GenericConverter<List<*>> {
+		companion object Default : ListConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): ListConverter {
+			return ListConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): List<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToList()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToList()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toList()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toList()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToList()
+				else -> listOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为可变列表时使用的分隔符。
+	 * * prefix - 从字符串转化为可变列表时使用的前缀。
+	 * * suffix - 从字符串转化为可变列表时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class MutableListConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableList<*>>(), ConfigurableConverter<MutableList<*>>, GenericConverter<MutableList<*>> {
+		companion object Default : MutableListConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): MutableListConverter {
+			return MutableListConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableList<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableList()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableList()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableList()
+				else -> mutableListOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为集时使用的分隔符。
+	 * * prefix - 从字符串转化为集时使用的前缀。
+	 * * suffix - 从字符串转化为集时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class SetConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Set<*>>(), ConfigurableConverter<Set<*>>, GenericConverter<Set<*>> {
+		companion object Default : SetConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): SetConverter {
+			return SetConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Set<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToSet()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToSet()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toSet()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toSet()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToSet()
+				else -> setOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为可变集时使用的分隔符。
+	 * * prefix - 从字符串转化为可变集时使用的前缀。
+	 * * suffix - 从字符串转化为可变集时使用的后缀。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParamsPassing(ConfigurableConverter::class, "!separator,!prefix,!suffix")
+	open class MutableSetConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<MutableSet<*>>(), ConfigurableConverter<MutableSet<*>>, GenericConverter<MutableSet<*>> {
+		companion object Default : MutableSetConverter()
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "separator", "prefix", "suffix")
+
+		val separator = configParams.get("separator")?.toString() ?: ","
+		val prefix = configParams.get("prefix")?.toString() ?: ""
+		val suffix = configParams.get("suffix")?.toString() ?: ""
+
+		override fun configure(configParams: Map<String, Any?>): MutableSetConverter {
+			return MutableSetConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): MutableSet<*> {
+			val elementType = inferTypeArgument(targetType)
+			return when {
+				value is Array<*> -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ByteArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ShortArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is IntArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is LongArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is FloatArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is DoubleArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is BooleanArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is CharArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UByteArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableSet()
+				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
+				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
+				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableSet()
+				else -> mutableSetOf(value.convert(elementType, passingConfigParams))
+			}
+		}
+
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingConfigParams)
+
+		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object IntRangeConverter : AbstractConverter<IntRange>() {
+		override fun convert(value: Any): IntRange {
+			return when {
+				value is IntRange -> value
+				value is IntProgression -> value.first..value.last
+				value is LongProgression -> value.first.toInt()..value.last.toInt()
+				value is CharProgression -> value.first.toInt()..value.last.toInt()
+				value is UIntProgression -> value.first.toInt()..value.last.toInt()
+				value is ULongProgression -> value.first.toInt()..value.last.toInt()
+				value is Pair<*, *> -> value.first!!.convert<Int>()..value.second!!.convert<Int>()
+				value is List<*> -> value[0]!!.convert<Int>()..value[1]!!.convert<Int>()
+				value is ClosedRange<*> -> value.start.convert<Int>()..value.endInclusive.convert<Int>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): IntRange {
+			return value.split("..", limit = 2).let { it[0].convert<Int>()..it[1].convert<Int>() }
+		}
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object LongRangeConverter : AbstractConverter<LongRange>() {
+		override fun convert(value: Any): LongRange {
+			return when {
+				value is LongRange -> value
+				value is IntProgression -> value.first.toLong()..value.last.toLong()
+				value is LongProgression -> value.first..value.last
+				value is CharProgression -> value.first.toLong()..value.last.toLong()
+				value is UIntProgression -> value.first.toLong()..value.last.toLong()
+				value is ULongProgression -> value.first.toLong()..value.last.toLong()
+				value is Pair<*, *> -> value.first!!.convert<Long>()..value.second!!.convert<Long>()
+				value is List<*> -> value[0]!!.convert<Long>()..value[1]!!.convert<Long>()
+				value is ClosedRange<*> -> value.start.convert<Long>()..value.endInclusive.convert<Long>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): LongRange {
+			return value.split("..", limit = 2).let { it[0].convert<Long>()..it[1].convert<Long>() }
+		}
+	}
+
+	@OptIn(ExperimentalUnsignedTypes::class)
+	object CharRangeConverter : AbstractConverter<CharRange>() {
+		override fun convert(value: Any): CharRange {
+			return when {
+				value is CharRange -> value
+				value is IntProgression -> value.first.toChar()..value.last.toChar()
+				value is LongProgression -> value.first.toChar()..value.last.toChar()
+				value is CharProgression -> value.first..value.last
+				value is UIntProgression -> value.first.toChar()..value.last.toChar()
+				value is ULongProgression -> value.first.toChar()..value.last.toChar()
+				value is Pair<*, *> -> value.first!!.convert<Char>()..value.second!!.convert<Char>()
+				value is List<*> -> value[0]!!.convert<Char>()..value[1]!!.convert<Char>()
+				value is ClosedRange<*> -> value.start.convert<Char>()..value.endInclusive.convert<Char>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): CharRange {
+			return value.split("..", limit = 2).let { it[0].convert<Char>()..it[1].convert<Char>() }
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object UIntRangeConverter : AbstractConverter<UIntRange>() {
+		override fun convert(value: Any): UIntRange {
+			return when {
+				value is UIntRange -> value
+				value is IntProgression -> value.first.toUInt()..value.last.toUInt()
+				value is LongProgression -> value.first.toUInt()..value.last.toUInt()
+				value is CharProgression -> value.first.toUInt()..value.last.toUInt()
+				value is UIntProgression -> value.first..value.last
+				value is ULongProgression -> value.first.toUInt()..value.last.toUInt()
+				value is Pair<*, *> -> value.first!!.convert<UInt>()..value.second!!.convert<UInt>()
+				value is List<*> -> value[0]!!.convert<UInt>()..value[1]!!.convert<UInt>()
+				value is ClosedRange<*> -> value.start.convert<UInt>()..value.endInclusive.convert<UInt>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): UIntRange {
+			return value.split("..", limit = 2).let { it[0].convert<UInt>()..it[1].convert<UInt>() }
+		}
+	}
+
+	@ExperimentalUnsignedTypes
+	object ULongRangeConverter : AbstractConverter<ULongRange>() {
+		override fun convert(value: Any): ULongRange {
+			return when {
+				value is ULongRange -> value
+				value is IntProgression -> value.first.toULong()..value.last.toULong()
+				value is LongProgression -> value.first.toULong()..value.last.toULong()
+				value is CharProgression -> value.first.toULong()..value.last.toULong()
+				value is UIntProgression -> value.first.toULong()..value.last.toULong()
+				value is ULongProgression -> value.first..value.last
+				value is Pair<*, *> -> value.first!!.convert<ULong>()..value.second!!.convert<ULong>()
+				value is List<*> -> value[0]!!.convert<ULong>()..value[1]!!.convert<ULong>()
+				value is ClosedRange<*> -> value.start.convert<ULong>()..value.endInclusive.convert<ULong>()
+				value is String -> doConvert(value)
+				else -> doConvert(value.toString())
+			}
+		}
+
+		private fun doConvert(value: String): ULongRange {
+			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为序列时使用的分隔符。
+	 * * prefix - 从字符串转化为序列时使用的前缀。
+	 * * suffix - 从字符串转化为序列时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(IterableConverter::class)
+	open class SequenceConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Sequence<*>>(), ConfigurableConverter<Sequence<*>>, GenericConverter<Sequence<*>> {
+		companion object Default : SequenceConverter()
+
+		private val iterableConverter by lazy {
+			getConverter(Iterable::class.java, passingConfigParams) { IterableConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = configParams
+
+		override fun configure(configParams: Map<String, Any?>): SequenceConverter {
+			return SequenceConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Sequence<*> {
+			return iterableConverter.convert(value, targetType).asSequence()
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Sequence<*>? {
+			return iterableConverter.convertOrNull(value, targetType)?.asSequence()
+		}
+	}
+
+	/**
+	 * 配置参数说明：
+	 * * separator - 从字符串转化为流时使用的分隔符。
+	 * * prefix - 从字符串转化为流时使用的前缀。
+	 * * suffix - 从字符串转化为流时使用的后缀。
+	 * * delegate - 委托的转化器（列表转化器/集转化器）。
+	 */
+	@OptIn(ExperimentalUnsignedTypes::class)
+	@ConfigParam("separator", "String", ",")
+	@ConfigParam("prefix", "String", "")
+	@ConfigParam("suffix", "String", "")
+	@ConfigParam("delegate", "list | set", "list")
+	@ConfigParamsPassing(ListConverter::class)
+	@ConfigParamsPassing(SetConverter::class)
+	open class StreamConverter(
+		final override val configParams: Map<String, Any?> = emptyMap()
+	) : AbstractConverter<Stream<*>>(), ConfigurableConverter<Stream<*>>, GenericConverter<Stream<*>> {
+		companion object Default : StreamConverter()
+
+		private val listConverter by lazy {
+			getConverter(List::class.java, passingConfigParams) { ListConverter(passingConfigParams) }
+		}
+		private val setConverter by lazy {
+			getConverter(Set::class.java, passingConfigParams) { SetConverter(passingConfigParams) }
+		}
+
+		private val passingConfigParams = filterNotConfigParams(configParams, "delegate")
+
+		val delegate: String = configParams.get("delegate").convertToStringOrNull() ?: "list"
+
+		override fun configure(configParams: Map<String, Any?>): StreamConverter {
+			return StreamConverter(configParams)
+		}
+
+		override fun convert(value: Any, targetType: Type): Stream<*> {
+			return when(delegate) {
+				"list" -> listConverter.convert(value, targetType).stream()
+				"set" -> setConverter.convert(value, targetType).stream()
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+
+		override fun convertOrNull(value: Any, targetType: Type): Stream<*>? {
+			return when(delegate) {
+				"list" -> listConverter.convertOrNull(value, targetType)?.stream()
+				"set" -> setConverter.convertOrNull(value, targetType)?.stream()
+				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
+			}
+		}
+	}
 	//endregion
 }

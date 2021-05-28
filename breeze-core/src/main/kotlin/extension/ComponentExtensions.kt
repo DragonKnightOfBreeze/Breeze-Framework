@@ -7,6 +7,7 @@ package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.component.*
+import java.lang.reflect.*
 import java.nio.charset.*
 
 //region Converter Extensions
@@ -15,8 +16,33 @@ import java.nio.charset.*
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
-	return Converter.convert(this, params)
+inline fun <reified T> Any?.convert(configParams: Map<String, Any?> = emptyMap()): T {
+	if(this == null) return runCatching { this as T }.getOrElse {
+		throw IllegalArgumentException("Cannot convert null value to a non-null type.")
+	}
+	return Converter.convert(this, configParams)
+}
+
+/**
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则抛出异常。
+ *
+ * @see Converter
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> Any?.convert(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+	if(this == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
+	return Converter.convert(this, targetType, configParams)
+}
+
+/**
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则抛出异常。
+ *
+ * @see Converter
+ */
+@Suppress("UNCHECKED_CAST")
+fun Any?.convert(targetType: Type, configParams: Map<String, Any?> = emptyMap()): Any {
+	if(this == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
+	return Converter.convert(this, targetType, configParams)
 }
 
 /**
@@ -24,8 +50,29 @@ inline fun <reified T> Any?.convert(params: Map<String, Any?> = emptyMap()): T {
  *
  * @see Converter
  */
-inline fun <reified T> Any?.convertOrNull(params: Map<String, Any?> = emptyMap()): T? {
-	return Converter.convertOrNull(this, params)
+inline fun <reified T> Any?.convertOrNull(configParams: Map<String, Any?> = emptyMap()): T? {
+	if(this == null) return this
+	return Converter.convertOrNull(this, configParams)
+}
+
+/**
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则返回null。
+ *
+ * @see Converter
+ */
+fun <T> Any?.convertOrNull(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T? {
+	if(this == null) return this
+	return Converter.convertOrNull(this, targetType, configParams)
+}
+
+/**
+ * 根据可选的配置参数，将当前对象转化为指定类型。如果转换失败，则返回null。
+ *
+ * @see Converter
+ */
+fun Any?.convertOrNull(targetType: Type, configParams: Map<String, Any?> = emptyMap()): Any? {
+	if(this == null) return this
+	return Converter.convertOrNull(this, targetType, configParams)
 }
 //endregion
 
@@ -93,19 +140,62 @@ fun String.unescapeBy(escaper: Escaper): String {
 	return escaper.unescape(this)
 }
 //endregion
+
+//region Default Generator Extensions
 /**
- * 生成指定类型的默认值。
+ * 根据可选的配置参数，生成指定类型的默认值。
+ *
+ * @see DefaultGenerator
  */
-inline fun <reified T:Any> defaultValue(params: Map<String, Any?> = emptyMap()):T{
-	return DefaultGenerator.generate(params)
+inline fun <reified T : Any> defaultValue(configParams: Map<String, Any?> = emptyMap()): T {
+	return DefaultGenerator.generate(configParams)
 }
+
+/**
+ * 根据可选的配置参数，生成指定类型的默认值。
+ *
+ * @see DefaultGenerator
+ */
+fun <T : Any> defaultValue(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+	return DefaultGenerator.generate(targetType, configParams)
+}
+
+/**
+ * 根据可选的配置参数，生成指定类型的默认值。
+ *
+ * @see DefaultGenerator
+ */
+fun <T : Any> defaultValue(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+	return DefaultGenerator.generate(targetType, configParams)
+}
+//endregion
 
 //region Random Generator Extensions
 /**
- * 生成指定类型的随机值。
+ * 根据可选的配置参数，生成指定类型的随机值。
+ *
+ * @see RandomGenerator
  */
-inline fun <reified T : Any> randomValue(params: Map<String, Any?> = emptyMap()): T {
-	return RandomGenerator.generate(params)
+inline fun <reified T : Any> randomValue(configParams: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(configParams)
+}
+
+/**
+ * 根据可选的配置参数，生成指定类型的随机值。
+ *
+ * @see RandomGenerator
+ */
+fun <T : Any> randomValue(targetType: Class<T>, configParams: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(targetType, configParams)
+}
+
+/**
+ * 根据可选的配置参数，生成指定类型的随机值。
+ *
+ * @see RandomGenerator
+ */
+fun <T : Any> randomValue(targetType: Type, configParams: Map<String, Any?> = emptyMap()): T {
+	return RandomGenerator.generate(targetType, configParams)
 }
 //endregion
 

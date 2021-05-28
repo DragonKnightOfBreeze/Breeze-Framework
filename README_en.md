@@ -1,8 +1,10 @@
 # Summary
 
-[中文文档](README.md) | [English Document](README_en.md)
+[中文文档](README.md) | [English Documentation](README_en.md)
 
-[Github](https://github.com/DragonKnightOfBreeze/breeze-framework)
+[中文参考文档](https://windea.icu/Breeze-Framework/#/zh/) | [English Reference Documentation](https://windea.icu/Breeze-Framework/#/en/)
+
+[Github](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
 
 Integrated code framework based on Kotlin.
 
@@ -206,9 +208,3 @@ dependencies {
     //...
 }
 ```
-
-# Example
-
-See:
-
-* [ExampleTest.kt](breeze-core/src/test/kotlin/ExampleTest.kt)

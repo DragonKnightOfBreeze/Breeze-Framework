@@ -6,9 +6,37 @@
 package icu.windea.breezeframework.core.extension
 
 import java.lang.reflect.*
+import java.math.*
 import java.text.*
 import java.util.*
 import java.util.concurrent.*
+
+//internal default values
+
+internal const val defaultDateFormat = "yyyy-MM-dd"
+internal const val defaultTimeFormat = "HH:mm:ss"
+internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
+internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
+internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
+
+//internal caches
+
+internal val calendar: Calendar = Calendar.getInstance()
+internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap()
+internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
+internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
+
+//internal number extensions
+
+internal fun BigInteger.toLongOrMax(): Long {
+	return if(this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
+}
+
+internal fun BigDecimal.toDoubleOrMax(): Double {
+	return if(this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
+}
+
+//internal string extensions
 
 internal fun CharSequence.firstCharToUpperCase(): String {
 	return when {
@@ -30,63 +58,153 @@ internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
 
+//internal convert extensions
 
-internal const val defaultDateFormat = "yyyy-MM-dd"
-internal const val defaultTimeFormat = "HH:mm:ss"
-internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
-internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
-internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
+internal fun Any?.convertToBooleanOrTrue():Boolean{
+	return this == null || (this == true || this.toString() == "true")
+}
 
-internal val calendar: Calendar = Calendar.getInstance()
-internal val threadLocalDateFormatMap = ConcurrentHashMap<String, ThreadLocal<DateFormat>>()
+internal fun Any?.convertToBooleanOrFalse():Boolean{
+	return this != null && (this == true || this.toString() == "true")
+}
 
+internal fun Any?.convertToStringOrNull():String?{
+	return this?.toString()
+}
 
-//internal fun Any.isNullLike():Boolean{
-//	return when(this){
-//		is Boolean -> !this
-//		is Number -> toString().let{ it=="0" || it=="0.0" }
-//		is CharSequence -> isEmpty()
-//		is Array<*> -> isEmpty()
-//		is Collection<*> -> isEmpty()
-//		is Iterable<*> -> none()
-//		is Sequence<*> -> none()
-//		is Map<*,*> -> isEmpty()
-//		else -> false
-//	}
-//}
-//
-//internal fun Any.isNotNullLike():Boolean{
-//	return when(this){
-//		is Boolean -> this
-//		is Number -> toString().let{ it!="0" || it!="0.0" }
-//		is CharSequence -> isNotEmpty()
-//		is Array<*> -> isNotEmpty()
-//		is Collection<*> -> isNotEmpty()
-//		is Iterable<*> -> any()
-//		is Sequence<*> -> any()
-//		is Map<*,*> -> isNotEmpty()
-//		else -> false
-//	}
-//}
+internal fun <T> Collection<T>.convertToList():List<T>{
+	return when {
+		size == 0 -> emptyList()
+		size == 1 -> listOf(if (this is List) get(0) else iterator().next())
+		this is List -> this
+		else -> this.toMutableList()
+	}
+}
 
+internal fun <T> Collection<T>.convertToMutableList():MutableList<T>{
+	return when {
+		this is MutableList -> this as MutableList<T>
+		else -> this.toMutableList()
+	}
+}
 
-//internal val genericTypesCache = ConcurrentHashMap<Class<*>,ConcurrentHashMap<Class<*>,Class<*>>>()
-//
-//@Suppress("UNCHECKED_CAST")
-//internal fun <T> inferGenericType(target:Any,interfaceType:Class<*>):Class<T>{
-//	val targetMap = genericTypesCache.getOrPut(interfaceType) { ConcurrentHashMap() }
-//	val targetType = target::class.javaObjectType
-//	return targetMap.getOrPut(targetType){
-//		val genericInterfaces = targetType.genericInterfaces
-//		//TODO 递归查找
-//		val genericInterface = genericInterfaces.find {
-//			it is ParameterizedType && it.rawType == interfaceType
-//		} as? ParameterizedType ?: throw error("Framework internal error.")
-//		val genericTypes = genericInterface.actualTypeArguments
-//		if(genericTypes.isEmpty()) throw error("Framework internal error.")
-//		val genericType = genericTypes[0]
-//		if(genericType !is Class<*>) throw error("Framework internal error.")
-//		genericType
-//	} as Class<T>
-//}
+internal fun <T> Collection<T>.convertToSet():Set<T>{
+	return when {
+		size == 0 -> emptySet()
+		size == 1 -> setOf(if (this is List) get(0) else iterator().next())
+		this is Set -> this
+		else -> this.toMutableSet()
+	}
+}
 
+internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
+	return when {
+		this is MutableSet -> this as MutableSet<T>
+		else -> this.toMutableSet()
+	}
+}
+
+//internal component extensions
+
+private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
+
+/**
+ * 推断组件的目标类型。`IntConverter: Converter<Int> -> Int`
+ */
+@Suppress("UNCHECKED_CAST")
+internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): Type {
+	val targetMap = componentTargetTypeMapCache.getOrPut(componentType) { ConcurrentHashMap() }
+	return targetMap.getOrPut(type) {
+		var currentType: Type = type
+		while(currentType != Any::class.java) {
+			val currentClass = when {
+				currentType is Class<*> -> currentType
+				currentType is ParameterizedType -> currentType.rawType as? Class<*> ?: error("Cannot infer target type for type '$type'.")
+				else -> error("Cannot infer target type for type '$type'.")
+			}
+			val genericSuperClass = currentClass.genericSuperclass
+			if(genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()) {
+				val genericType = genericSuperClass.actualTypeArguments[0]
+				if(genericType is Class<*>) return@getOrPut genericType
+				if(genericType is ParameterizedType) {
+					return genericType.rawType
+				}
+			}
+			val genericInterfaces = currentClass.genericInterfaces
+			val genericInterface =
+				genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
+			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()) {
+				val genericType = genericInterface.actualTypeArguments[0]
+				if(genericType is Class<*>) return@getOrPut genericType
+				if(genericType is ParameterizedType) {
+					return genericType.rawType
+				}
+			}
+			currentType = genericSuperClass
+		}
+		error("Cannot infer target type for type '$type'.")
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {
+	return inferComponentTargetType(type, componentType) as? Class<T> ?: error("Cannot infer target type for type '$type'.")
+}
+
+internal fun filterConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(configParams.isEmpty()) return emptyMap()
+	val result = mutableMapOf<String, Any?>()
+	for((name, configParam) in configParams) {
+		if(name in names) result.put(name,configParam)
+	}
+	return result
+}
+
+internal fun filterNotConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(configParams.isEmpty()) return emptyMap()
+	val result = mutableMapOf<String, Any?>()
+	for((name,configParam) in configParams){
+		if(name !in names) result.put(name,configParam)
+	}
+	return result
+}
+
+internal fun inferClass(targetType:Type):Class<*>{
+	return when{
+		targetType is Class<*> -> targetType
+		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		else -> error("Cannot infer class for target type '$targetType'")
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
+	return when{
+		targetType is Class<*> && targetType.isEnum -> targetType as Class<out Enum<*>>
+		else -> error("Cannot infer enum class for target type '$targetType'")
+	}
+}
+
+internal fun inferTypeArgument(targetType: Type): Type {
+	if(targetType is ParameterizedType) {
+		val rawType = targetType.rawType
+		return targetType.actualTypeArguments?.firstOrNull()
+			?:  error("Cannot infer class for target type '$targetType'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return targetType.componentType
+	}
+	error("Cannot infer class for target type '$targetType'")
+}
+
+internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
+	if(targetType is ParameterizedType) {
+		val rawType = targetType.rawType
+		val rawClass = inferClass(rawType)
+		if(rawClass == targetClass) return targetType.actualTypeArguments
+			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return arrayOf(targetType.componentType)
+	}
+	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
+}

@@ -88,10 +88,8 @@ fun Date.modify(
  * 将当前日期转化为字符串。
  */
 fun Date.toString(format: String, locale:Locale = defaultLocale, timeZone:TimeZone = defaultTimeZone): String {
-	val dateFormat = threadLocalDateFormatMap.getOrPut(format){
-		ThreadLocal.withInitial {
-			SimpleDateFormat(format, locale).apply { this.timeZone = timeZone }
-		}
+	val dateFormat = threadLocalDateFormatMapCache.getOrPut(format){
+		ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 	}.get()
 	return dateFormat.format(this)
 }

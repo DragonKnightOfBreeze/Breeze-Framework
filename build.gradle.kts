@@ -22,8 +22,8 @@ val compilerArgs = listOf(
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
 val flatModuleNames = arrayOf("breeze-unstable")
-val noPublishModuleNames = arrayOf("breeze-unstable")
-val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
+val noPublishModuleNames = arrayOf("breeze-unstable","breeze-tool")
+val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable","breeze-tool")
 
 allprojects {
 	val projectName = project.name

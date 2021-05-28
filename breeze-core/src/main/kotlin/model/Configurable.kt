@@ -3,27 +3,20 @@
 
 package icu.windea.breezeframework.core.model
 
+import icu.windea.breezeframework.core.component.*
+
 /**
  * 可配置的对象。
  */
-interface Configurable<T:Configurable<T>>{
+interface Configurable {
 	/**
-	 * 配置信息。
+	 * 配置参数。
 	 */
-	val configurableInfo: ConfigurableInfo
+	val configParams: Map<String, Any?>
 
 	/**
-	 * 使用指定的配置配置当前对象。
-	 *
-	 * 注意：继承此方法时需要先调用`super.configure(params)`。
+	 * 根据指定的配置复制当前对象，返回一个新对象。
 	 */
-	fun configure(params: Map<String, Any?>) {
-		configurableInfo.setConfig(params)
-	}
-
-	/**
-	 * 根据指定的配置复制当前对象。
-	 */
-	fun copy(params:Map<String,Any?>): T
+	@Suppress("UNCHECKED_CAST")
+	fun configure(configParams: Map<String, Any?>): Configurable
 }
-

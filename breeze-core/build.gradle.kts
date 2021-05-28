@@ -1,5 +1,5 @@
 jmh {
-	this.includes.add("BuildMapBenchmark")
+	this.includes.add("DefaultGeneratorBenchmark")
 }
 
 dependencies {

@@ -30,11 +30,11 @@ interface Encrypter:Component {
 			register(DesEncrypter)
 			register(AesEncrypter)
 			register(Md5Encrypter)
-			register(Sha1Encrypter)
-			register(Sha256Encrypter)
-			register(Sha512Encrypter)
-			register(Sha3256Encrypter)
-			register(Sha3512Encrypter)
+			register(Sha_1Encrypter)
+			register(Sha_256Encrypter)
+			register(Sha_512Encrypter)
+			register(Sha3_256Encrypter)
+			register(Sha3_512Encrypter)
 		}
 	}
 
@@ -117,35 +117,35 @@ interface Encrypter:Component {
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha1Encrypter : MessageDigestEncrypter("SHA-1")
+	object Sha_1Encrypter : MessageDigestEncrypter("SHA-1")
 
 	/**
 	 * 基于SHA-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha256Encrypter : MessageDigestEncrypter("SHA-256")
+	object Sha_256Encrypter : MessageDigestEncrypter("SHA-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha512Encrypter : MessageDigestEncrypter("SHA3-512")
+	object Sha_512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	/**
 	 * 基于SHA3-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3256Encrypter : MessageDigestEncrypter("SHA3-256")
+	object Sha3_256Encrypter : MessageDigestEncrypter("SHA3-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3512Encrypter : MessageDigestEncrypter("SHA3-512")
+	object Sha3_512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	//TODO 数字签名
 	//endregion

@@ -3,8 +3,11 @@
 
 package icu.windea.breezeframework.core.annotation
 
+import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.model.*
 import kotlin.annotation.AnnotationRetention.*
 import kotlin.annotation.AnnotationTarget.*
+import kotlin.reflect.*
 
 /**
  * 适用于Kotlin的allOpen编译器插件的标准注解。
@@ -82,23 +85,61 @@ annotation class TodoMarker
 //@Target(CLASS)
 //annotation class BreezeComponent
 
-/**
- * 可配置对象的参数信息。
- */
-@MustBeDocumented
-@Target()
-annotation class ConfigurableParam(
-	val name: String,
-	val type: String,
-	val defaultValue: String = "",
-	val comment: String = ""
-)
+///**
+// * 可配置对象的一组参数信息。
+// */
+//@MustBeDocumented
+//@Target(CLASS)
+//@Retention(SOURCE)
+//annotation class ConfigParams(
+//	/**
+//	 * 配置参数信息。
+//	 */
+//	vararg val value: ConfigParam
+//)
 
 /**
- * 可配置对象的一组参数信息。
+ * 可配置对象的配置参数信息。
  */
 @MustBeDocumented
 @Target(CLASS)
-annotation class ConfigurableParams(
-	vararg val value: ConfigurableParam
+@Retention(SOURCE)
+@Repeatable
+annotation class ConfigParam(
+	/**
+	 * 配置参数的名字。
+	 */
+	val name: String,
+	/**
+	 * 配置参数的类型，对应Kotlin类型，可以传递任何可以转化为该类型的参数。
+	 *
+	 * @see icu.windea.breezeframework.core.component.Converter
+	 */
+	val type: String,
+	/**
+	 * 配置参数的默认值。
+	 */
+	val defaultValue: String = "",
+	/**
+	 * 被该配置参数重载的一组参数的名字。通过逗号隔开。
+	 */
+	val override: String = ""
+)
+
+/**
+ * 可配置对象的配置参数信息的参数传递方式。
+ */
+@MustBeDocumented
+@Target(CLASS)
+@Retention(SOURCE)
+@Repeatable
+annotation class ConfigParamsPassing(
+	/**
+	 * 目标可配置对象。
+	 */
+	val target: KClass<out Configurable>,
+	/**
+	 * 要传递的配置参数。
+	 */
+	val configParams: String = ""
 )
