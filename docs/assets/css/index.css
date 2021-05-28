@@ -57,6 +57,7 @@ pre > code {
 }
 
 /*作为文档标题的侧边栏TOC调小*/
+
 .app-sub-sidebar > li {
   /*font-size: 12px !important;*/
   line-height: 24px !important;
@@ -72,30 +73,7 @@ pre > code {
   padding: 0.4em 0.6em !important;
 }
 
-/*readme-toc*/
-
-.readme-toc {
-  line-height: 1.75 !important;
-}
-.readme-toc-col {
-  line-height: 1.75 !important;
-  padding: 0.75rem !important;
-}
-.readme-toc-col-title {
-  line-height: 1.75 !important;
-  margin-top: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
-  font-size: 1rem !important;
-  font-weight: 800 !important;
-}
-.readme-toc ul {
-  line-height: 1.75 !important;
-  list-style: none !important;
-  padding: 0 0 !important;
-  margin: 0 0 !important;
-}
-
-/*alert*/
+/*调整alert格式*/
 
 .alert.callout.info {
   border-left-color: #17a2b8 !important
