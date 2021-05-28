@@ -1,5 +1,6 @@
 window.$docsify = {
-  repo: "https://github.com/DragonKnightOfBreeze/dragonknightofbreeze.github.io",
+  name: "Breeze-Framework",
+  repo: "https://github.com/DragonKnightOfBreeze/Breeze-Framework",
   routeMode: "history",
   relativePath: true,
   auto2top: true,
