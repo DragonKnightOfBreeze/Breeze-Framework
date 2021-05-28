@@ -14,5 +14,11 @@ interface Page<T> {
 interface PageParam {
 	val pageNumber:Int
 	val pageSize:Int
-	val sort:Int
+	val sort:String
 }
+
+data class PageRequest(
+	override val pageNumber: Int = 0,
+	override val pageSize: Int = 10,
+	override val sort: String = ""
+):PageParam

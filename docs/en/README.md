@@ -1,74 +1,68 @@
-# 概述
+# Summary
 
-[中文文档](README.md) | [English Documentation](README_en.md)
+Integrated code framework based on Kotlin.
 
-[中文参考文档](https://windea.icu/Breeze-Framework/#/zh/) | [English Reference Documentation](https://windea.icu/Breeze-Framework/#/en/)
+Provides many useful extensions for standard library and some frameworks.
 
-[Github](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
+NOTE：
 
-基于Kotlin的整合代码框架。
+* This framework is not fully implemented, but you can instantly use some of it's useful features.
+* This framework is designed to be used by Kotlin Jvm, but you can obviously use it in Java.
+* This framework is updating, and will provide more modules and functions in future.
 
-为标准库和部分框架提供各种有用的扩展。
-
-注意：
-
-* 这个框架仍然有待完善，但是你现在就可以使用它的一些有用的功能。
-* 这个框架是为Kotlin Jvm设计的，但是你自然可以在Java中使用它的一部分功能。
-* 这个框架仍在更新中，未来会提供更多的模块和功能。
-
-# 模块
+# Modules
 
 ## breeze-core
 
-为Kotlin标准库和常见功能需求提供工具和扩展。
+Provide utilities and extensions for the Kotlin standard library and common functional requirements.
 
 ## breeze-dsl
 
-提供简洁而灵活的dsl api，用于通过代码生成标记语言的文本。
+Provides a concise and flexible dsl api, used to generate text of markup languages by code.
 
-可以进行充分的配置。
+Can be sufficient configured.
 
 ## breeze-functional
 
-为函数式编程中提供工具和扩展。
+Provide utilities and extensions for functional programming.
 
-支持0到11个参数的函数。
+Support functions with 0 to 11 parameters.
 
 ## breeze-http
 
-提供简洁而直观的http api，基于Java原生的http api，用于发起http请求。
+Provide a concise and intuitive http api, based on the Java native http api, used to send http requests.
 
-可以进行充分的配置。
+Can be sufficient configured.
 
 ## breeze-javafx
 
-为JavaFX提供工具和扩展。
+Provide tools and extensions for Java FX.
 
 ## breeze-logger
 
-提供简单的日志器的api。
+Provide a simple logger api.
 
 ## breeze-reflect
 
-为Java反射和Kotlin反射提供工具和扩展。
+Provide utilities and extensions for Java reflection and Kotlin reflection.
 
 ## breeze-serialization
 
-提供简洁而统一的序列化器api，基于第三方库，用于进行数据的序列化与反序列化。
+Provides a concise and unified serializer api, based on third-party libraries, for serialize and deserialize data.
 
-可以进行充分的配置。
+Can be sufficient configured.
 
 ## breeze-spring-boot
 
-为Spring Boot框架提供工具和扩展。
+Provide utilities and extensions for the Spring Boot Framework.
 
 ## breeze-time
 
-为Java的时间api提供工具和扩展。
+Provide utilities and extensions for Java's time api.
 
-# 参考
+# Reference
 
-## 依赖 & 可选依赖
+## Dependencies & Optional dependencies
 
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
 * [Spring Cloud](https://github.com/spring-cloud)
@@ -83,7 +77,7 @@
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
 
-## 实现参考
+## Implementation References
 
 * [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
@@ -98,53 +92,54 @@
 * [vanshg/KrazyKotlin](https://github.com/vanshg/KrazyKotlin)
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
+* [Json Pointer](https://tools.ietf.org/html/rfc6901)
 * [Json Path](https://github.com/json-path/JsonPath)
 
-# 用法
+# Usage
 
-项目已发布到**Github Packages**。
+This project has been published on **Github Packages**.
 
 ## Maven
 
-在`server.xml`中：
+In `server.xml`:
 
 ```xml
 <servers>
-  <!--breeze-framework github packages服务器-->
+  <!--breeze-framework github packages server-->
   <server>
-    <!--server的id，与repository的id相匹配-->
+    <!--server id, matches repositories id-->
     <id>breeze-framework-github-packages</id>
-    <!--github用户名-->
+    <!--github username-->
     <username>${github-username}</username>
-    <!--github令牌-->
+    <!--github token-->
     <password>${github-token}</password>
   </server>
 </servers>
 ```
 
-在`pom.xml`中：
+In `pom.xml`:
 
 ```xml
 <repositories>
-  <!--breeze framework github packages仓库-->
+  <!--breeze framework github packages repository-->
   <repository>
     <id>breeze-framework-github-packages</id>
     <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
   </repository>
-  <!--其他仓库-->
+  <!--other repositories-->
   <!--...-->
 </repositories>
 ```
   
 ```xml
 <dependencies>
-  <!--breeze framework模块-->
+  <!--breeze framework modules-->
   <dependency>
     <groupId>icu.windea.breezeframework</groupId>
     <artifactId>${module}</artifactId>
     <version>${version}</version>
   </dependency>
-  <!--其他依赖-->
+  <!--other modules-->
   <!--...-->
 </dependencies>
 ```
@@ -157,24 +152,24 @@ In `build.gradle`:
 repositories {
     //maven central
     mavenCentral()
-    //breeze framework github packages仓库
+    //breeze framework github packages repository
     maven {
         url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
         credentials { 
-            //github用户名
+            //github username
 			username = githubUsername
-			//github令牌
+			//github token
 			password = githubToken
     	}
     }
-    //其他仓库
+    //other repositories
     //...
 }
 
 dependencies {
-    //breeze framework模块
+    //breeze framework modules
     implementation "icu.windea.breezeframework:$module:$version"
-    //其他依赖
+    //other dependencies
     //...
 }
 ```
@@ -187,24 +182,23 @@ In `build.gradle.kts`:
 repositories {
     //maven central
     mavenCentral()
-    //breeze framework github packages仓库
+    //breeze framework github packages repository
     maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
     	credentials { 
-            //github用户名
+            //github username
 			username = githubUsername
-			//github令牌
+			//github token
 			password = githubToken
     	}
     }
-    //其他仓库
+    //other repositories
     //...
 }
 
 dependencies {
-    //breeze framework模块
+    //breeze framework modules
     implementation("icu.windea.breezeframework:$module:$version")
-    //其他依赖
+    //other dependencies
     //...
 }
 ```
-

@@ -1,11 +1,5 @@
 # 概述
 
-[中文文档](README.md) | [English Documentation](README_en.md)
-
-[中文参考文档](https://windea.icu/Breeze-Framework/#/zh/) | [English Reference Documentation](https://windea.icu/Breeze-Framework/#/en/)
-
-[Github](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
-
 基于Kotlin的整合代码框架。
 
 为标准库和部分框架提供各种有用的扩展。
