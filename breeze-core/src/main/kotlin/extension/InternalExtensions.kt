@@ -83,7 +83,7 @@ internal fun <T> Collection<T>.convertToList():List<T>{
 
 internal fun <T> Collection<T>.convertToMutableList():MutableList<T>{
 	return when {
-		this is MutableList -> this as MutableList<T>
+		this is MutableList -> this
 		else -> this.toMutableList()
 	}
 }
@@ -99,7 +99,7 @@ internal fun <T> Collection<T>.convertToSet():Set<T>{
 
 internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
 	return when {
-		this is MutableSet -> this as MutableSet<T>
+		this is MutableSet -> this
 		else -> this.toMutableSet()
 	}
 }
@@ -188,7 +188,6 @@ internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
 
 internal fun inferTypeArgument(targetType: Type): Type {
 	if(targetType is ParameterizedType) {
-		val rawType = targetType.rawType
 		return targetType.actualTypeArguments?.firstOrNull()
 			?:  error("Cannot infer class for target type '$targetType'")
 	}else if(targetType is Class<*> && targetType.isArray){

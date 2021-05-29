@@ -1,6 +1,7 @@
 //配置要用到的插件
 plugins {
 	id("org.gradle.maven-publish")
+	id("org.gradle.signing")
 	id("org.jetbrains.kotlin.jvm") version "1.4.30"
 	id("org.jetbrains.dokka") version "1.4.30"
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.4.30"
@@ -22,7 +23,7 @@ val compilerArgs = listOf(
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
 val flatModuleNames = arrayOf("breeze-unstable")
-val noPublishModuleNames = arrayOf("breeze-unstable","breeze-tool")
+val noPublishModuleNames = arrayOf("breeze-unstable","breeze-tool","breeze-expression")
 val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable","breeze-tool")
 
 allprojects {
@@ -62,6 +63,7 @@ allprojects {
 		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
 	}
 
+	//配置jmh
 	jmh{
 
 	}
@@ -158,8 +160,17 @@ allprojects {
 	//配置需要发布的模块
 	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
 
+	//准备发布模块
+
 	apply {
 		plugin("org.gradle.maven-publish")
+		plugin("org.gradle.signing")
+	}
+
+	val sourcesJar by tasks.register<Jar>("sourcesJar") {
+		from(sourceSets.main.get().allSource)
+		from("$rootDir/LICENSE") //添加LICENSE
+		archiveClassifier.set("sources")
 	}
 
 	val dokkaJavadocJar by tasks.register<Jar>("dokkaJavadocJar") {
@@ -168,16 +179,16 @@ allprojects {
 		archiveClassifier.set("javadoc")
 	}
 
-	val dokkaHtmlJar by tasks.register<Jar>("dokkaHtmlJar") {
-		dependsOn(tasks.dokkaHtml)
-		from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-		archiveClassifier.set("html-doc")
-	}
+	//val dokkaHtmlJar by tasks.register<Jar>("dokkaHtmlJar") {
+	//	dependsOn(tasks.dokkaHtml)
+	//	from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+	//	archiveClassifier.set("html-doc")
+	//}
 
-	val sourcesJar by tasks.register<Jar>("sourcesJar") {
-		from(sourceSets.main.get().allSource)
-		from("$rootDir/LICENSE") //添加LICENSE
-		archiveClassifier.set("sources")
+	artifacts {
+		archives(sourcesJar)
+		archives(dokkaJavadocJar)
+		//archives(dokkaHtmlJar)
 	}
 
 	//上传的配置
@@ -187,9 +198,9 @@ allprojects {
 			//创建maven的jar
 			register<MavenPublication>("maven") {
 				from(components["java"])
-				artifact(dokkaJavadocJar)
-				artifact(dokkaHtmlJar)
 				artifact(sourcesJar)
+				artifact(dokkaJavadocJar)
+				//artifact(dokkaHtmlJar)
 				pom {
 					name.set(projectTitle)
 					description.set("Integrated code framework written by Kotlin.")
@@ -219,13 +230,38 @@ allprojects {
 		repositories {
 			//github pages
 			maven {
-				name = "github-pages"
+				name = "githubPages"
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
-					username = System.getenv("GITHUB_USERNAME")
-					password = System.getenv("GITHUB_TOKEN")
+					username = property("GITHUB_USERNAME").toString()
+					password =  property("GITHUB_PASSWORD").toString()
+				}
+			}
+			//sonatype repository
+			maven {
+
+				name = "sonatypeRepository"
+				url = uri("https://s01.oss.sonatype.org//service/local/staging/deploy/maven2")
+				credentials {
+					username = property("OSSRH_USERNAME").toString()
+					password =  property("OSSRH_PASSWORD").toString()
+				}
+			}
+			//sonatype snapshot repository
+			maven {
+				name = "sonatypeSnapshotRepository"
+				url = uri("https://s01.oss.sonatype.org//content/repositories/snapshots/")
+				credentials {
+					username = property("OSSRH_USERNAME").toString()
+					password =  property("OSSRH_PASSWORD").toString()
 				}
 			}
 		}
+	}
+
+	//签名
+	signing {
+		//sign(configurations.archives.get())
+		sign(publishing.publications.getByName("maven"))
 	}
 }
