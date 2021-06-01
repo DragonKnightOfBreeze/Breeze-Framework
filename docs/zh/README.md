@@ -96,109 +96,41 @@
 
 # 用法
 
-项目已发布到**Github Packages**。
+项目已发布到[Maven Central](https://repo1.maven.org/maven2)。
 
 ## Maven
 
-在`server.xml`中：
-
-```xml
-<servers>
-  <!--breeze-framework github packages服务器-->
-  <server>
-    <!--server的id，与repository的id相匹配-->
-    <id>breeze-framework-github-packages</id>
-    <!--github用户名-->
-    <username>${github-username}</username>
-    <!--github令牌-->
-    <password>${github-token}</password>
-  </server>
-</servers>
-```
-
 在`pom.xml`中：
-
-```xml
-<repositories>
-  <!--breeze framework github packages仓库-->
-  <repository>
-    <id>breeze-framework-github-packages</id>
-    <url>https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework</url>
-  </repository>
-  <!--其他仓库-->
-  <!--...-->
-</repositories>
-```
   
 ```xml
 <dependencies>
-  <!--breeze framework模块-->
   <dependency>
     <groupId>icu.windea.breezeframework</groupId>
     <artifactId>${module}</artifactId>
     <version>${version}</version>
   </dependency>
-  <!--其他依赖-->
   <!--...-->
 </dependencies>
 ```
 
 ## Gradle
 
-In `build.gradle`:
+在`build.gradle`中:
 
 ```groovy
-repositories {
-    //maven central
-    mavenCentral()
-    //breeze framework github packages仓库
-    maven {
-        url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
-        credentials { 
-            //github用户名
-			username = githubUsername
-			//github令牌
-			password = githubToken
-    	}
-    }
-    //其他仓库
-    //...
-}
-
 dependencies {
-    //breeze framework模块
     implementation "icu.windea.breezeframework:$module:$version"
-    //其他依赖
     //...
 }
 ```
 
 ## Gradle Kts
 
-In `build.gradle.kts`:
+在`build.gradle.kts`中:
 
 ```kotlin
-repositories {
-    //maven central
-    mavenCentral()
-    //breeze framework github packages仓库
-    maven("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework"){
-    	credentials { 
-            //github用户名
-			username = githubUsername
-			//github令牌
-			password = githubToken
-    	}
-    }
-    //其他仓库
-    //...
-}
-
 dependencies {
-    //breeze framework模块
     implementation("icu.windea.breezeframework:$module:$version")
-    //其他依赖
     //...
 }
 ```
-
