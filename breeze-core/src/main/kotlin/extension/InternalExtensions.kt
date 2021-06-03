@@ -104,6 +104,48 @@ internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
 	}
 }
 
+//internal reflect extensions
+
+
+internal fun inferClass(targetType:Type):Class<*>{
+	return when{
+		targetType is Class<*> -> targetType
+		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
+		else -> error("Cannot infer class for target type '$targetType'")
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
+	return when{
+		targetType is Class<*> && targetType.isEnum -> targetType as Class<out Enum<*>>
+		else -> error("Cannot infer enum class for target type '$targetType'")
+	}
+}
+
+internal fun inferTypeArgument(targetType: Type): Type {
+	if(targetType is ParameterizedType) {
+		return targetType.actualTypeArguments?.firstOrNull()
+			?:  error("Cannot infer class for target type '$targetType'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return targetType.componentType
+	}
+	error("Cannot infer class for target type '$targetType'")
+}
+
+internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
+	if(targetType is ParameterizedType) {
+		val rawType = targetType.rawType
+		val rawClass = inferClass(rawType)
+		if(rawClass == targetClass) return targetType.actualTypeArguments
+			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
+	}else if(targetType is Class<*> && targetType.isArray){
+		return arrayOf(targetType.componentType)
+	}
+	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
+}
+
 //internal component extensions
 
 private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
@@ -167,43 +209,4 @@ internal fun filterNotConfigParams(configParams: Map<String, Any?>, vararg names
 		if(name !in names) result.put(name,configParam)
 	}
 	return result
-}
-
-internal fun inferClass(targetType:Type):Class<*>{
-	return when{
-		targetType is Class<*> -> targetType
-		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
-		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
-		else -> error("Cannot infer class for target type '$targetType'")
-	}
-}
-
-@Suppress("UNCHECKED_CAST")
-internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
-	return when{
-		targetType is Class<*> && targetType.isEnum -> targetType as Class<out Enum<*>>
-		else -> error("Cannot infer enum class for target type '$targetType'")
-	}
-}
-
-internal fun inferTypeArgument(targetType: Type): Type {
-	if(targetType is ParameterizedType) {
-		return targetType.actualTypeArguments?.firstOrNull()
-			?:  error("Cannot infer class for target type '$targetType'")
-	}else if(targetType is Class<*> && targetType.isArray){
-		return targetType.componentType
-	}
-	error("Cannot infer class for target type '$targetType'")
-}
-
-internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
-	if(targetType is ParameterizedType) {
-		val rawType = targetType.rawType
-		val rawClass = inferClass(rawType)
-		if(rawClass == targetClass) return targetType.actualTypeArguments
-			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
-	}else if(targetType is Class<*> && targetType.isArray){
-		return arrayOf(targetType.componentType)
-	}
-	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
 }

@@ -8,6 +8,14 @@ package icu.windea.breezeframework.core.extension
 import java.util.*
 import java.util.stream.*
 
+fun <T> Stream<T>.toCollection():Collection<T>{
+	return toSet()
+}
+
+fun <T> Stream<T>.toMutableCollection(): MutableCollection<T> {
+	return toMutableSet()
+}
+
 fun <T> Stream<T>.toList(): List<T> {
 	val result = collect(Collectors.toList())
 	return when(result.size){
