@@ -21,4 +21,13 @@ class ReifiedTest {
 		val c = javaTypeOf<List<Int>>()
 		println()
 	}
+
+	inline fun <reified T> javaClassOf(): Class<T> {
+		return T::class.java
+	}
+
+	@Test
+	fun test2(){
+		val clz:Class<Int> = javaClassOf()
+	}
 }

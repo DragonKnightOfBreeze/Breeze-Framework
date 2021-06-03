@@ -490,6 +490,10 @@
 * [ ] 并发迭代的集合（ParallelCollection）
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
+#### 3.0.1
+
+* [X] Boolean类型的属性的getter的特殊处理
+
 # 长期
 
 * [X] 尽量移除对非框架类的第三方库的依赖

@@ -1452,4 +1452,11 @@ fun <T : Any> Sequence<T?>.joinToText(
 	if(omitEmpty && result.isNotEmpty()) result = "$prefix$result$postfix"
 	return result
 }
+
+/**
+ * 构建文本。
+ */
+fun buildText():BreezeStringBuilder{
+	return BreezeStringBuilder()
+}
 //endregion

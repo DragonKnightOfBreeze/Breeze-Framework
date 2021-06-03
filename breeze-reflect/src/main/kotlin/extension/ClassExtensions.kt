@@ -34,10 +34,15 @@ val <T> Class<T>.isMap: Boolean get() = Map::class.java.isAssignableFrom(this)
 val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java.isAssignableFrom(this)
 
 
-/**得到当前类型的所有公开的取值方法。忽略`getClass()`。*/
+/**得到当前类型的公开取值方法列表。忽略`getClass()`。*/
 val <T> Class<T>.getters: List<Method>
-	get() = this.methods.filter { it.name.startsWith("get") && it.name != "getClass" && it.parameterCount == 0 }
+	get() = this.methods.filter {
+		((it.returnType == Boolean::class.java && it.name.startsWith("is")) || it.name.startsWith("get"))
+		&& it.name != "getClass" && it.parameterCount == 0
+	}
 
-/**得到当前类型的所有公开的赋值方法。*/
+/**得到当前类型的公开赋值方法列表。*/
 val <T> Class<T>.setters: List<Method>
-	get() = this.methods.filter { it.name.startsWith("set") && it.parameterCount == 1 }
+	get() = this.methods.filter {
+		it.name.startsWith("set") && it.parameterCount == 1
+	}

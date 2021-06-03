@@ -272,9 +272,23 @@ interface Querier<T : Any, R> : Component {
 			try {
 				val targetType = value.javaClass
 				val field: Field? = runCatching { targetType.getDeclaredField(queryObject) }.getOrNull()
-				if(field != null) return field.apply { runCatching { isAccessible = true } }.get(value)
+				if(field != null) {
+					val returnValue = runCatching { field.apply {  isAccessible = true }.get(value) }.getOrNull()
+					if(returnValue!= null) return returnValue
+				}
+				//特殊处理boolean类型的属性
+				if(targetType == Boolean::class.java){
+					val getter: Method? = runCatching { targetType.getDeclaredMethod(getBooleanGetterName(queryObject)) }.getOrNull()
+					if(getter != null) {
+						val returnValue = runCatching { getter.apply {  isAccessible = true }.invoke(value) }.getOrNull()
+						if(returnValue != null) return returnValue
+					}
+				}
 				val getter: Method? = runCatching { targetType.getDeclaredMethod(getGetterName(queryObject)) }.getOrNull()
-				if(getter != null) return getter.apply { runCatching { isAccessible = true } }.invoke(value)
+				if(getter != null) {
+					val returnValue = runCatching { getter.apply {  isAccessible = true }.invoke(value) }.getOrNull()
+					if(returnValue != null) return returnValue
+				}
 				throw UnsupportedOperationException("Invalid string '$queryObject' for query ${value.javaClass.simpleName} by reflection.")
 			} catch(e: Exception) {
 				throw IllegalArgumentException("Cannot query by string '$queryObject' by reflection.", e)
@@ -282,7 +296,11 @@ interface Querier<T : Any, R> : Component {
 		}
 
 		private fun getGetterName(value: String): String {
-			return "get" + value[0].toUpperCase() + value.drop(1)
+			return "get" + value.firstCharToUpperCase()
+		}
+
+		private fun getBooleanGetterName(value: String): String {
+			return "is" + value.firstCharToUpperCase()
 		}
 	}
 
