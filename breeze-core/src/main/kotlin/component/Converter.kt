@@ -621,6 +621,9 @@ interface Converter<T> : TypedComponent {
 
 	@ConfigParam("raw", "Boolean", "false")
 	@ConfigParam("format", "String", "yyyy-MM-dd")
+	@ConfigParam("dateFormat", "String", "yyyy-MM-dd")
+	@ConfigParam("timeFormat", "String", "HH:mm:ss")
+	@ConfigParam("dateTimeFormat", "String", "yyyy-MM-dd HH:mm:ss")
 	@ConfigParam("locale", "String | Locale", "<default>")
 	@ConfigParam("timeZone", "String | TimeZone", "<utc>")
 	open class StringConverter(
@@ -630,12 +633,17 @@ interface Converter<T> : TypedComponent {
 
 		val raw: Boolean = configParams.get("raw").convertToBooleanOrFalse()
 		val format: String = configParams.get("format").convertToStringOrNull() ?: defaultDateFormat
+		val dateFormat: String = configParams.get("dateFormat").convertToStringOrNull() ?: defaultDateFormat
+		val timeFormat: String = configParams.get("timeFormat").convertToStringOrNull() ?: defaultTimeFormat
+		val dateTimeFormat: String = configParams.get("dateTimeFormat").convertToStringOrNull() ?: defaultDateTimeFormat
 		val locale: Locale = configParams.get("locale").convertOrNull() ?: defaultLocale
 		val timeZone: TimeZone = configParams.get("timeZone").convertOrNull() ?: defaultTimeZone
 
-		private val threadLocalDateFormat =
-			ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
+		private val threadLocalDateFormat = ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
+		private val dateFormatter = DateTimeFormatter.ofPattern(dateFormat, locale).withZone(timeZone.toZoneId())
+		private val timeFormatter = DateTimeFormatter.ofPattern(timeFormat, locale).withZone(timeZone.toZoneId())
+		private val dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat, locale).withZone(timeZone.toZoneId())
 
 		override fun configure(configParams: Map<String, Any?>): StringConverter {
 			return StringConverter(configParams)
@@ -645,6 +653,9 @@ interface Converter<T> : TypedComponent {
 			return when {
 				raw -> value.toString()
 				value is Date -> threadLocalDateFormat.get().format(value)
+				value is LocalDate -> dateFormatter.format(value)
+				value is LocalTime -> timeFormatter.format(value)
+				value is LocalDateTime -> dateTimeFormatter.format(value)
 				value is TemporalAccessor -> formatter.format(value)
 				else -> value.smartToString()
 			}

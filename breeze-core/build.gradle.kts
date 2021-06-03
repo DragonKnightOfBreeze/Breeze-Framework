@@ -12,4 +12,7 @@ dependencies {
 	testImplementation("com.google.code.gson:gson:2.8.6")
 	testImplementation("com.alibaba:fastjson:1.2.62")
 	testImplementation("org.yaml:snakeyaml:1.25")
+	testImplementation("org.apache.commons:commons-lang3:3.12.0")
+	testImplementation("commons-beanutils:commons-beanutils:1.9.4")
+	testImplementation("com.github.fangjinuo.langx:langx:3.5.3")
 }

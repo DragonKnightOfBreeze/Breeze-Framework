@@ -58,8 +58,13 @@ allprojects {
 		explicitApi()
 	}
 
+	noArg{
+		annotation("icu.windea.breezeframework.core.annotation.NoArg")
+	}
+
 	allOpen {
 		//jmh压测类需要开放
+		annotation("icu.windea.breezeframework.core.annotation.AllOpen")
 		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
 	}
 

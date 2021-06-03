@@ -25,8 +25,8 @@ class RandomGeneratorTest {
 		prettyPrintln(randomValue<String>(mapOf("length" to 3,"source" to "abc")))
 		prettyPrintln(randomValue<Date>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
 		prettyPrintln(randomValue<LocalDate>(mapOf("min" to "2020-01-01","max" to "2022-01-01")))
-		prettyPrintln(randomValue<LocalTime>(mapOf("min" to "12:00:00","max" to "13:00:00")))
-		prettyPrintln(randomValue<LocalDateTime>(mapOf("min" to "2020-01-01 12:00:00","max" to "2022-01-01 13:00:00")))
+		prettyPrintln(randomValue<LocalTime>(mapOf("min" to "12:00:00","max" to "13:00:00","format" to "HH:mm:ss")))
+		prettyPrintln(randomValue<LocalDateTime>(mapOf("min" to "2020-01-01 12:00:00","max" to "2022-01-01 13:00:00","format" to "yyyy-MM-dd HH:mm:ss")))
 		prettyPrintln(randomValue<Gender>())
 	}
 

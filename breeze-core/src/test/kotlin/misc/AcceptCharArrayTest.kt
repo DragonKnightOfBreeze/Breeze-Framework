@@ -15,22 +15,22 @@ class AcceptCharArrayTest {
 
 	@Test
 	fun test(){
-		val string = "1+2++"
-		val tc = '+';
-		val ts = "++";
-
-		val chars = string.toCharArray()
-		var index = 0;
-		while(true){
-			run{
-				val char = chars[index]
-				//when{
-				//	matches(chars,index,char,tc) -> println(1)
-				//	matches(chars,index,char,ts) -> println(2)
-				//}
-			}
-			index ++;
-		}
+		//val string = "1+2++"
+		//val tc = '+';
+		//val ts = "++";
+		//
+		//val chars = string.toCharArray()
+		//var index = 0;
+		//while(true){
+		//	run{
+		//		val char = chars[index]
+		//		//when{
+		//		//	matches(chars,index,char,tc) -> println(1)
+		//		//	matches(chars,index,char,ts) -> println(2)
+		//		//}
+		//	}
+		//	index ++;
+		//}
 	}
 }
 
