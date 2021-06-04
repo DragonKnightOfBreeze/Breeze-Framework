@@ -487,12 +487,13 @@
 * [X] 补充组件`RandomGenerator`
 * [X] 补充组件`DefaultGenerator`
 * [X] 可配置组件的快速命中缓存（ConcurrentHashMap），而不是总是迭代List
-* [ ] 并发迭代的集合（ParallelCollection）
-* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
 #### 3.0.1
 
 * [X] Boolean类型的属性的getter的特殊处理
+* [X] 完善元组扩展
+* [ ] 并发迭代的集合（ParallelCollection）
+* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
 # 长期
 

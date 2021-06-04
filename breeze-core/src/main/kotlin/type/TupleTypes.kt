@@ -13,54 +13,46 @@ import icu.windea.breezeframework.core.model.*
 typealias Tuple2<A, B> = Pair<A, B>
 
 /**
- * 代表了一个三元素元组。
+ * 代表了一个二元素元组。
  *
- * Represents a tuple of three values.
+ * Represents a tuple of two values.
  */
 typealias Tuple3<A, B, C> = Triple<A, B, C>
-
-/**
- * 代表了一个四元素元组。
- *
- * Represents a tuple of four values.
- */
-typealias Tuple4<A, B, C, D> = Quadruple<A, B, C, D>
-
-/**
- * 代表了一个五元素元组。
- *
- * Represents a tuple of five values.
- */
-typealias Tuple5<A, B, C, D, E> = Quintuple<A, B, C, D, E>
-
 
 /**
  * 代表了一个单一类型的二元素元组。
  *
  * Represents a typed tuple of two values.
  */
-typealias TypedTuple2<T> = Pair<T, T>
+typealias TypedTuple2<T> = Tuple2<T, T>
 
 /**
  * 代表了一个单一类型的三元素元组。
  *
  * Represents a typed tuple of three values.
  */
-typealias TypedTuple3<T> = Triple<T, T, T>
+typealias TypedTuple3<T> = Tuple3<T, T, T>
 
 /**
  * 代表了一个单一类型的四元素元组。
  *
  * Represents a typed tuple of four values.
  */
-typealias TypedTuple4<T> = Quadruple<T, T, T, T>
+typealias TypedTuple4<T> = Tuple4<T, T, T, T>
 
 /**
  * 代表了一个单一类型的五元素元组。
  *
  * Represents a typed tuple of five values.
  */
-typealias TypedTuple5<T> = Quintuple<T, T, T, T, T>
+typealias TypedTuple5<T> = Tuple5<T, T, T, T, T>
+
+/**
+ * 代表了一个单一类型的六元素元组。
+ *
+ * Represents a typed tuple of six values.
+ */
+typealias TypedTuple6<T> = Tuple6<T, T, T, T, T, T>
 
 
 

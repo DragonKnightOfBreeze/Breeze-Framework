@@ -6,18 +6,15 @@ package icu.windea.breezeframework.core.model
 import java.io.*
 
 /**
- * Represents a tuple of four values.
+ * 代表了一个四元素元组。
  *
- * @see Pair
- * @see Triple
- * @see Quadruple
- * @see Quintuple
+ * Represents a tuple of four values.
  */
-data class Quadruple<out A, out B, out C, out D>(
+data class Tuple4<out A, out B, out C, out D>(
 	val first: A,
 	val second: B,
 	val third: C,
-	val fourth: D,
+	val fourth: D
 ) : Serializable {
 	override fun toString(): String = "($first, $second, $third, $fourth)"
 }

@@ -3,11 +3,14 @@
 
 package icu.windea.breezeframework.core.type
 
+import icu.windea.breezeframework.core.annotation.*
+
 /**
  * 代表有一个没有接收者的代码块。
  *
  * Represents a code block with no receivers.
  */
+@UnstableApi
 typealias Block0 = () -> Unit
 
 /**
@@ -15,6 +18,7 @@ typealias Block0 = () -> Unit
  *
  * Represents a code block with one receiver.
  */
+@UnstableApi
 typealias Block<T> = T.() -> Unit
 
 /**
@@ -22,6 +26,7 @@ typealias Block<T> = T.() -> Unit
  *
  * Represents a action with no arguments.
  */
+@UnstableApi
 typealias Action0 = () -> Unit
 
 /**
@@ -29,4 +34,5 @@ typealias Action0 = () -> Unit
  *
  * Represents a action with one argument.
  */
+@UnstableApi
 typealias Action<T> = (T) -> Unit
