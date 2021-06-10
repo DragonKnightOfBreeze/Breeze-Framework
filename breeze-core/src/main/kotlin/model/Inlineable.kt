@@ -22,3 +22,4 @@ interface Inlineable : CharSequence {
 
 	override fun toString(): String
 }
+

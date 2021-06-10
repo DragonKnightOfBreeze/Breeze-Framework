@@ -3,8 +3,6 @@
 
 package icu.windea.breezeframework.core.model
 
-import icu.windea.breezeframework.core.component.*
-
 /**
  * 可配置的对象。
  */

@@ -59,9 +59,8 @@ inline fun <reified T> Any?.castOrNull(): T? {
 @OptIn(ExperimentalUnsignedTypes::class)
 infix fun Any?.smartEquals(other: Any?): Boolean {
 	return when {
-		this == null && other == null -> true
-		this == null || other == null -> false
 		this === other -> true
+		this == null || other == null -> false
 		this is Array<*> && other is Array<*> -> this contentDeepEquals other
 		this is ByteArray && other is ByteArray -> this contentEquals other
 		this is ShortArray && other is ShortArray -> this contentEquals other
@@ -141,9 +140,8 @@ fun Any?.smartToString(): String {
  */
 fun <T : Any> equalsBy(target: T?, other: Any?, selector: T.() -> Array<*>): Boolean {
 	return when {
-		target == null && other == null -> true
-		target == null || other == null -> false
 		target === other -> true
+		target == null || other == null -> false
 		target.javaClass != other.javaClass -> false
 		else -> {
 			val targetSelector = target.selector()
@@ -265,7 +263,7 @@ inline fun <reified T> javaTypeOf(): Type {
  * 得到当前对象的带有泛型参数信息的Java类型对象。
  */
 @Suppress("UNUSED_PARAMETER")
-inline fun <reified T> javaTypeOf(target: T): Type {
+inline fun <T> javaTypeOf(target: T): Type {
 	return object : TypeReference<T>() {}.type
 }
 

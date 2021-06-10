@@ -492,6 +492,7 @@
 
 * [X] Boolean类型的属性的getter的特殊处理
 * [X] 完善元组扩展
+* [X] 实现Renderable
 * [ ] 并发迭代的集合（ParallelCollection）
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 

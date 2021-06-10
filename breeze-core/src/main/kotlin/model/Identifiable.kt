@@ -15,7 +15,7 @@ import java.io.*
  *
  * @property id 主键。
  */
-@Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE", "UNCHECKED_CAST")
+@Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 interface Identifiable<T : Serializable> : Serializable {
 	val id: T
 
@@ -34,15 +34,21 @@ interface Identifiable<T : Serializable> : Serializable {
 	class Delegate<T : Serializable> @PublishedApi internal constructor(
 		override val id: T,
 	) : Identifiable<T> {
-		override fun equals(other: Any?) = javaClass == other?.javaClass && id == (other as Identifiable<T>).id
+		override fun equals(other: Any?): Boolean {
+			return javaClass == other?.javaClass && other is Identifiable<*> && id == other.id
+		}
 
-		override fun hashCode(): Int = id.hashCode()
+		override fun hashCode(): Int {
+			return id.hashCode()
+		}
 	}
 
 	companion object {
 		/**
 		 * 委托实现一个可识别的对象。
 		 */
-		fun <T : Serializable> delegate(id: T): Identifiable<T> = Delegate(id)
+		fun <T : Serializable> delegate(id: T): Identifiable<T> {
+			return Delegate(id)
+		}
 	}
 }
