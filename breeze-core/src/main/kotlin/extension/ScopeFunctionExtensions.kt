@@ -2,11 +2,24 @@
 // Breeze is blowing...
 
 @file:JvmName("ScopeFunctionExtensions")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
 import kotlin.contracts.*
+
+@InlineOnly
+@JvmSynthetic
+inline fun pass() {
+
+}
+
+@InlineOnly
+@JvmSynthetic
+inline fun <T> T.pass(): T {
+	return this
+}
 
 /**
  * Calls the specified function [block] with the given [arg1] and [arg2] as its arguments and returns its result.
