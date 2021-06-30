@@ -10,6 +10,8 @@ NOTE：
 * This framework is designed to be used by Kotlin Jvm, but you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
+Kotlin Version: Kotlin Jvm 1.5.0
+
 # Modules
 
 ## breeze-core

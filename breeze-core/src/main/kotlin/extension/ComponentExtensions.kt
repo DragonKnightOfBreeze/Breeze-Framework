@@ -199,14 +199,25 @@ fun <T : Any> randomValue(targetType: Type, configParams: Map<String, Any?> = em
 }
 //endregion
 
-//region StringPattern Extensions
+//region Char Matcher Extensions
 /**
- * 判断指定的字符串是否匹配指定的字符串模式。
+ * 判断指定的字符是否匹配指定的字符匹配器。
  *
- * @see StringPattern
+ * @see StringMatcher
  */
-fun String.matchesBy(stringPattern: StringPattern): Boolean {
-	return stringPattern.matches(this)
+fun Char.matchesBy(charMatcher: CharMatcher): Boolean {
+	return charMatcher.matches(this)
+}
+//endregion
+
+//region String Matcher Extensions
+/**
+ * 判断指定的字符串是否匹配指定的字符串匹配器。
+ *
+ * @see StringMatcher
+ */
+fun String.matchesBy(stringMatcher: StringMatcher): Boolean {
+	return stringMatcher.matches(this)
 }
 //endregion
 

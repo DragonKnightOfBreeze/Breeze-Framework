@@ -10,7 +10,6 @@ include(
 	"breeze-dsl:breeze-dsl-mermaid",
 	"breeze-dsl:breeze-dsl-sequence",
 	"breeze-dsl:breeze-dsl-xml",
-	"breeze-expression",
 	"breeze-functional",
 	"breeze-http",
 	"breeze-javafx",
@@ -18,6 +17,7 @@ include(
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-spring-boot",
+	"breeze-sql",
 	"breeze-time",
 	"breeze-unstable",
 	"breeze-tool"

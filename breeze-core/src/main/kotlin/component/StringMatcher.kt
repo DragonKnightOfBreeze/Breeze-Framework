@@ -4,30 +4,40 @@
 package icu.windea.breezeframework.core.component
 
 /**
- * 字符串模式。
+ * 字符串匹配器。
  *
- * 字符串模式用于表示字符串符合某种格式或规则。
+ * 字符串匹配器用于表示字符串是否匹配某种格式。
  */
-interface StringPattern : Component {
-	/**
-	 * 判断指定的字符串是否匹配。
-	 */
-	fun matches(value: String): Boolean
-
-	companion object Registry : AbstractComponentRegistry<StringPattern>() {
+interface StringMatcher : Matcher<String> {
+	companion object Registry : AbstractComponentRegistry<StringMatcher>() {
 		override fun registerDefault() {
-			register(BooleanPattern)
-			register(WildcardBooleanPattern)
-			register(IntPattern)
-			register(NumberPattern)
-			register(AlphaPattern)
-			register(NumericPattern)
-			register(AlphanumericPattern)
+			register(AnyMatcher)
+			register(NoneMatcher)
+			register(BooleanMatcher)
+			register(WildcardBooleanMatcher)
+			register(IntMatcher)
+			register(NumberMatcher)
+			register(AlphaMatcher)
+			register(NumericMatcher)
+			register(AlphanumericMatcher)
+			register(BlankMatcher)
 		}
 	}
 
 	//region String Patterns
-	object BooleanPattern : StringPattern {
+	object AnyMatcher:StringMatcher{
+		override fun matches(value: String): Boolean {
+			return true
+		}
+	}
+
+	object NoneMatcher:StringMatcher{
+		override fun matches(value: String): Boolean {
+			return false
+		}
+	}
+
+	object BooleanMatcher : StringMatcher {
 		private val values = arrayOf("true", "false")
 
 		override fun matches(value: String): Boolean {
@@ -35,15 +45,15 @@ interface StringPattern : Component {
 		}
 	}
 
-	object WildcardBooleanPattern : StringPattern {
+	object WildcardBooleanMatcher : StringMatcher {
 		private val values = arrayOf("true", "false", "yes", "no", "on", "off")
 
 		override fun matches(value: String): Boolean {
-			return value in values
+			return value.lowercase() in values
 		}
 	}
 
-	object IntPattern : StringPattern {
+	object IntMatcher : StringMatcher {
 		private val signs = charArrayOf('+', '-')
 
 		override fun matches(value: String): Boolean {
@@ -53,7 +63,7 @@ interface StringPattern : Component {
 		}
 	}
 
-	object NumberPattern : StringPattern {
+	object NumberMatcher : StringMatcher {
 		private val signs = charArrayOf('+', '-')
 
 		override fun matches(value: String): Boolean {
@@ -69,25 +79,25 @@ interface StringPattern : Component {
 		}
 	}
 
-	object AlphaPattern : StringPattern {
+	object AlphaMatcher : StringMatcher {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetter() }
 		}
 	}
 
-	object NumericPattern : StringPattern {
+	object NumericMatcher : StringMatcher {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isDigit() }
 		}
 	}
 
-	object AlphanumericPattern : StringPattern {
+	object AlphanumericMatcher : StringMatcher {
 		override fun matches(value: String): Boolean {
 			return value.isNotEmpty() && value.all { it.isLetterOrDigit() }
 		}
 	}
 
-	object BlankPattern:StringPattern{
+	object BlankMatcher:StringMatcher{
 		override fun matches(value: String): Boolean {
 			return value.isBlank()
 		}

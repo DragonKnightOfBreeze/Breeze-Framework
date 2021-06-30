@@ -30,18 +30,20 @@ fun <T> coalesceOrNull(vararg values: T?): T? {
 }
 
 /**
- * 得到字符序列的字节长度。
+ * 判断指定的关键字是否模糊匹配当前字符串。
+ *
+ * * 指定的关键字中的字符是否被当前字符串按顺序全部包含。
+ * * 如果指定的一组分隔符不为空，则被跳过的子字符串需要以分隔符结束。
  */
 @UnstableApi
-val CharSequence.byteLength: Int
-	get() = TODO()
-
-/**
- * 判断指定的关键字是否模糊匹配当前字符串。（指定的关键字中的字符是否被当前字符串按顺序全部包含）
- */
-@UnstableApi
-fun String.fuzzyMatches(keyword: String, ignoreCase: Boolean = false): Boolean {
-	TODO()
+fun String.fuzzyMatches(keyword: String,vararg delimiters:Char, ignoreCase: Boolean = false): Boolean {
+	var index = -1
+	for(c in keyword) {
+		index = indexOf(c,index+1,ignoreCase)
+		if(index == -1) return false
+		else if(delimiters.isNotEmpty() && this[index-1] !in delimiters) return false
+	}
+	return true
 }
 
 /**

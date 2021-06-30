@@ -16,6 +16,8 @@
 * 这个框架是为Kotlin Jvm设计的，但是你自然可以在Java中使用它的一部分功能。
 * 这个框架仍在更新中，未来会提供更多的模块和功能。
 
+Kotlin版本：Kotlin Jvm 1.5.0
+
 # 模块
 
 ## breeze-core

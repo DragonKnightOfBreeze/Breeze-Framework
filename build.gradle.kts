@@ -2,10 +2,10 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.4.30"
+	id("org.jetbrains.kotlin.jvm") version "1.5.0"
 	id("org.jetbrains.dokka") version "1.4.30"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.4.30"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.4.30"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.0"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.0"
 	id("me.champeau.jmh") version "0.6.4"
 }
 

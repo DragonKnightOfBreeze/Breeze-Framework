@@ -224,9 +224,9 @@ fun CharSequence.isMultiline(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated(
-	"Use String.matchesBy(StringPattern.NumericPattern)", ReplaceWith(
-		"this.matchesBy(StringPattern.NumericPattern)",
-		"icu.windea.breezeframework.core.component.StringPattern"
+	"Use String.matchesBy(StringMatcher.NumericMatcher)", ReplaceWith(
+		"this.matchesBy(StringMatcher.NumericMatcher)",
+		"icu.windea.breezeframework.core.component.StringMatcher"
 	)
 )
 fun CharSequence.isNumeric(): Boolean {
@@ -238,9 +238,9 @@ fun CharSequence.isNumeric(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated(
-	"Use String.matchesBy(StringPattern.AlphaPattern)", ReplaceWith(
-		"this.matchesBy(StringPattern.AlphaPattern)",
-		"icu.windea.breezeframework.core.component.StringPattern"
+	"Use String.matchesBy(StringMatcher.AlphaMatcher)", ReplaceWith(
+		"this.matchesBy(StringMatcher.AlphaMatcher)",
+		"icu.windea.breezeframework.core.component.StringMatcher"
 	)
 )
 fun CharSequence.isAlpha(): Boolean {
@@ -252,9 +252,9 @@ fun CharSequence.isAlpha(): Boolean {
  * Returns `false` if it is an empty char sequence.
  */
 @Deprecated(
-	"Use String.matchesBy(StringPattern.AlphanumericPattern)", ReplaceWith(
-		"this.matchesBy(StringPattern.AlphanumericPattern)",
-		"icu.windea.breezeframework.core.component.StringPattern"
+	"Use String.matchesBy(StringMatcher.AlphanumericMatcher)", ReplaceWith(
+		"this.matchesBy(StringMatcher.AlphanumericMatcher)",
+		"icu.windea.breezeframework.core.component.StringMatcher"
 	)
 )
 fun CharSequence.isAlphanumeric(): Boolean {
@@ -1022,6 +1022,7 @@ fun <T> String.toEnumValueOrNull(type: Class<T>): T? {
 	return type.enumConstants.firstOrNull { it.toString() == this }
 }
 
+
 /**
  * 将当前字符串转化为整数范围。如果转化失败，则抛出异常。
  *
@@ -1265,12 +1266,10 @@ internal fun String.toQueryParams(): Map<String, List<String>> {
 /**
  * 将当前字符串解码为base64格式的字节数组。
  */
-@Deprecated(
-	"Use String.decodeBy(Encoder.Base64Encoder)", ReplaceWith(
-		"this.decodeBy(Encoder.Base64Encoder)",
-		"icu.windea.breezeframework.core.component.Encoder"
-	)
-)
+@Deprecated("Use String.decodeBy(Encoder.Base64Encoder)", ReplaceWith(
+	"this.decodeBy(Encoder.Base64Encoder)",
+	"icu.windea.breezeframework.core.component.Encoder"
+))
 fun String.decodeToBase64ByteArray(): ByteArray {
 	return Base64.getDecoder().decode(this)
 }
