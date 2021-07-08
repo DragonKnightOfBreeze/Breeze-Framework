@@ -38,10 +38,15 @@ fun <T> coalesceOrNull(vararg values: T?): T? {
 @UnstableApi
 fun String.fuzzyMatches(keyword: String,vararg delimiters:Char, ignoreCase: Boolean = false): Boolean {
 	var index = -1
+	var lastIndex = -2
 	for(c in keyword) {
 		index = indexOf(c,index+1,ignoreCase)
-		if(index == -1) return false
-		else if(delimiters.isNotEmpty() && this[index-1] !in delimiters) return false
+		println(index)
+		when {
+			index == -1 -> return false
+			c !in delimiters && index != 0 && lastIndex != index-1 && this[index-1] !in delimiters -> return false
+		}
+		lastIndex = index
 	}
 	return true
 }
