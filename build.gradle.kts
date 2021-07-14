@@ -82,7 +82,7 @@ allprojects {
 
 	//配置依赖
 	dependencies {
-		implementation(kotlin("stdlib-jdk8"))
+		implementation(kotlin("stdlib"))
 		testImplementation(kotlin("test-junit"))
 		//testImplementation("org.openjdk.jmh:jmh-core:1.29")
 	}
