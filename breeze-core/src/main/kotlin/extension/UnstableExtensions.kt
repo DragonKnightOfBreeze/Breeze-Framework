@@ -7,6 +7,8 @@ package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
 import java.util.concurrent.*
+import javax.naming.*
+import kotlin.jvm.Throws
 
 /**
  * 得到指定的一组值中第一个不为null的值，或者抛出异常。
@@ -85,6 +87,7 @@ internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -103,6 +106,7 @@ inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
 	crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
@@ -122,6 +126,7 @@ inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, t
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -140,6 +145,7 @@ inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -158,6 +164,7 @@ inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossi
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
@@ -176,6 +183,7 @@ inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K
  *
  * @see kotlin.collections.forEach
  */
+@UnstableApi
 inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long,  timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
@@ -185,4 +193,28 @@ inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long,  timeUnit: TimeUn
 		}
 	}
 	countDownLatch.await(timeout, timeUnit)
+}
+
+@UnstableApi
+@Throws(InterruptedException::class)
+inline fun retry(interval: Long,timeout: Long,timeUnit: TimeUnit,action: () -> Boolean):Boolean{
+	val timeoutMillis = timeUnit.convert(timeout,TimeUnit.MILLISECONDS)
+	val startTime = System.currentTimeMillis()
+	while(true){
+		if(action()) return true
+		val endTime = System.currentTimeMillis()
+		if(endTime - startTime >= timeoutMillis) return false
+		timeUnit.sleep(interval)
+	}
+}
+
+@UnstableApi
+@Throws(InterruptedException::class)
+inline fun retry(interval:Long,timeUnit: TimeUnit,times:Int, action:()->Boolean):Boolean{
+	var t = 1
+	while(true){
+		if(action()) return true
+		if(t++ >= times) return false
+		timeUnit.sleep(interval)
+	}
 }
