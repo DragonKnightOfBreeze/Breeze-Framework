@@ -121,7 +121,7 @@ operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
 }
 //endregion
 
-//region Element Type Extensions
+//region Common Extensions
 /**
  * 得到当前数组的最为适配的元素类型。
  */
@@ -130,25 +130,32 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
 /**
  * 得到当前集合的最为适配的元素类型。
  */
+@TrickApi
+@Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
 /**
  * 得到当前映射的最为适配的键类型。
  */
+@TrickApi
+@Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
 /**
  * 得到当前映射的最为适配的值类型。
  */
+@TrickApi
+@Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 
 /**
  * 得到当前序列的最为适配的键类型。
  */
+@TrickApi
+@Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
-//endregion
 
-//region Common Extensions
+
 /**
  * 判断当前数组是否不为null，且不为空。
  */
@@ -781,119 +788,6 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 		currentDepth--
 	}
 	return values as List<T>
-}
-
-
-@PublishedApi
-internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
-
-/**
- * 并行遍历数组中的每个元素，执行指定的操作。
- *
- * Performs the given [action] on each element in parallel.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(element in this) {
-		parallelExecutor.submit {
-			action(element)
-			countDownLatch.countDown()
-		}.get()
-	}
-	countDownLatch.await()
-}
-
-/**
- * 并行遍历数组中的每个元素，执行指定的操作，带有超时时间。
- *
- * Performs the given [action] on each element in parallel with timeout.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
-	crossinline action: (T) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(element in this) {
-		parallelExecutor.submit {
-			action(element)
-			countDownLatch.countDown()
-		}.get(timeout, timeUnit)
-	}
-	countDownLatch.await(awaitTimeout, timeUnit)
-}
-
-/**
- * 并行遍历列表中的每个元素，执行指定的操作。
- *
- * Performs the given [action] on each element in parallel.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(element in this) {
-		parallelExecutor.submit {
-			action(element)
-			countDownLatch.countDown()
-		}.get()
-	}
-	countDownLatch.await()
-}
-
-/**
- * 并行遍历列表中的每个元素，执行指定的操作，带有超时时间。
- *
- * Performs the given [action] on each element in parallel with timeout.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <T> List<T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(element in this) {
-		parallelExecutor.submit {
-			action(element)
-			countDownLatch.countDown()
-		}.get(timeout, timeUnit)
-	}
-	countDownLatch.await(awaitTimeout, timeUnit)
-}
-
-/**
- * 并行遍历映射中的每个键值对，执行指定的操作。
- *
- * Performs the given [action] on each entry in parallel.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(entry in this) {
-		parallelExecutor.submit {
-			action(entry)
-			countDownLatch.countDown()
-		}.get()
-	}
-	countDownLatch.await()
-}
-
-/**
- * 并行遍历映射中的每个键值对，执行指定的操作，带有超时时间。
- *
- * Performs the given [action] on each entry in parallel with timeout.
- *
- * @see kotlin.collections.forEach
- */
-inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
-	val countDownLatch = CountDownLatch(size)
-	for(entry in this) {
-		parallelExecutor.submit {
-			action(entry)
-			countDownLatch.countDown()
-		}.get(timeout, timeUnit)
-	}
-	countDownLatch.await(awaitTimeout, timeUnit)
 }
 //endregion
 

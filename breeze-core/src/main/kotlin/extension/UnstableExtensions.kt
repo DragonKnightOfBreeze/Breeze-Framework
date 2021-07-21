@@ -6,6 +6,7 @@
 package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
+import java.util.concurrent.*
 
 /**
  * 得到指定的一组值中第一个不为null的值，或者抛出异常。
@@ -71,4 +72,117 @@ fun <T, E> List<T>.sortedByListDescending(list: List<E>, unsortedAtLast: Boolean
 		val index = list.indexOf(selector(it))
 		if(!unsortedAtLast && index == -1) size else index
 	}
+}
+
+
+@PublishedApi
+internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
+	crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作。
+ *
+ * Performs the given [action] on each entry in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.execute {
+			action(entry)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each entry in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long,  timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for(entry in this) {
+		parallelExecutor.execute {
+			action(entry)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
 }
