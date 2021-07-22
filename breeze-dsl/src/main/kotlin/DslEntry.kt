@@ -4,7 +4,6 @@
 package icu.windea.breezeframework.dsl
 
 import icu.windea.breezeframework.core.model.*
-import icu.windea.breezeframework.dsl.api.*
 
 /**
  * DSL入口。DSL定义结构的入口节点。
@@ -13,3 +12,4 @@ import icu.windea.breezeframework.dsl.api.*
  */
 @DslApiMarker
 interface DslEntry : Renderable
+
