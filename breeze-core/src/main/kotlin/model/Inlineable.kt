@@ -5,21 +5,17 @@ package icu.windea.breezeframework.core.model
 
 /**
  * 可内联的对象。
- *
- * 此接口的实例可以直接作为字符序列使用，其抽象方法由它的[inlineText]属性委托实现。
- * 但在转化成字符串时，可能需要进行额外的处理，例如使用特定的标记字符串包围原始文本。
- *
- * @property inlineText 内联文本。
  */
+@Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 interface Inlineable : CharSequence {
-	val inlineText: CharSequence
+	fun inline(): CharSequence
 
-	override val length get() = inlineText.length
+	override val length get() = inline().length
 
-	override fun get(index: Int) = inlineText[index]
+	override fun get(index: Int) = inline()[index]
 
-	override fun subSequence(startIndex: Int, endIndex: Int) = inlineText.subSequence(startIndex, endIndex)
+	override fun subSequence(startIndex: Int, endIndex: Int) = inline().subSequence(startIndex, endIndex)
 
-	override fun toString(): String
+	override fun toString(): String = inline().toString()
 }
 

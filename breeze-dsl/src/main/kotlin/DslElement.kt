@@ -3,7 +3,7 @@
 
 package icu.windea.breezeframework.dsl
 
-import icu.windea.breezeframework.dsl.api.*
+import icu.windea.breezeframework.core.model.*
 
 /**
  * DSL元素。DSL定义结构的成员节点。
@@ -11,7 +11,5 @@ import icu.windea.breezeframework.dsl.api.*
  * DSL element. Member node of dsl definition structure.
  */
 @DslApiMarker
-interface DslElement {
-	override fun toString(): String
-}
+interface DslElement : Renderable
 

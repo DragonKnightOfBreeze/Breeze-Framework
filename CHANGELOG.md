@@ -498,6 +498,7 @@
 * [X] `CharMatcher`和`StringMatcher`
 * [X] 并发迭代方法`parallelForEach`和循环重试方法`retry`放到`UnstableExtensions`中
 * [X] `breeze-serialization`整理目录
+* [X] `breeze-dsl`整理目录与重构代码
 * [ ] 并发迭代的集合（ParallelCollection）
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 

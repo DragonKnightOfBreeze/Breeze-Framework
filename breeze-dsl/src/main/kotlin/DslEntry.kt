@@ -3,6 +3,7 @@
 
 package icu.windea.breezeframework.dsl
 
+import icu.windea.breezeframework.core.model.*
 import icu.windea.breezeframework.dsl.api.*
 
 /**
@@ -11,6 +12,4 @@ import icu.windea.breezeframework.dsl.api.*
  * DSL entry. entry node of dsl definition structure.
  */
 @DslApiMarker
-interface DslEntry {
-	fun toContentString(): String = ""
-}
+interface DslEntry : Renderable

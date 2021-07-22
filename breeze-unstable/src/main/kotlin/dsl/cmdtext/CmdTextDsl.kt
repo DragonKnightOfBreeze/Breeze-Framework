@@ -36,7 +36,7 @@ interface CmdTextDsl {
 		override fun toString(): String {
 			return when {
 				isWindowsOsType -> "\u001B[${code}m${text}\u001B[0m"
-				else -> "\u001B[${code}m${text}\u001B[0m"
+				else -> "\e[${code}m${text}\e[0m"
 			}
 		}
 	}

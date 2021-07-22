@@ -96,12 +96,6 @@ fun <T> String.deserializeDataBy(dataFormat: DataFormat,type: Type):T{
 	return dataFormat.deserialize(this,type)
 }
 
-//internal extensions
-
-internal fun Char.appendTo(buffer: Appendable) = buffer.append(this)
-
-internal fun String.appendTo(buffer: Appendable) = buffer.append(this)
-
 //default serializers
 
 internal val defaultJsonSerializer: JsonSerializer = when {
