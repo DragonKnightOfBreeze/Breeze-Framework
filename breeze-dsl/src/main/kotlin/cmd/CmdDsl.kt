@@ -16,9 +16,11 @@ interface CmdDsl {
 	class DslDocument @PublishedApi internal constructor() : IDslDocument, DslInlineEntry {
 		var text: CharSequence = ""
 
-		override fun render(builder: StringBuilder) {
-			builder.append(text)
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
+			append(text)
 		}
+
+		override fun toString() = render()
 	}
 
 	@CmdDslMarker
@@ -36,11 +38,13 @@ interface CmdDsl {
 		//linux: "\e[${code}m${text}\e[0m"
 		//windows: "\u001B[${code}m${text}\u001B[0m"
 
-		override fun render(builder: StringBuilder) = renderText(builder) {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("\u001B[").append(code).append("m")
 			append(text)
 			append("\u001B[0m")
 		}
+
+		override fun toString(): String = render()
 	}
 
 	@CmdDslMarker

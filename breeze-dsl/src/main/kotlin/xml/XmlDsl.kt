@@ -15,16 +15,16 @@ interface XmlDsl {
 		val statements: MutableList<Statement> = mutableListOf()
 		override val nodes: MutableList<Node> = mutableListOf()
 
-		override fun render(builder: StringBuilder) = renderText(builder) {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			if(DslConfig.validateDocument && nodes.count { it is Tag } != 1) {
 				throw IllegalArgumentException("There must be one root tag in Xml document.")
 			}
 
 			if(statements.isNotEmpty()) {
-				appendJoinWith(statements, "\n") { it.render(this) }
+				appendJoinWith(statements, "\n") { it.renderTo(this) }
 			}
 			if(nodes.isNotEmpty()) {
-				appendJoinWith(nodes, "\n") { it.render(this) }
+				appendJoinWith(nodes, "\n") { it.renderTo(this) }
 			}
 		}
 	}
@@ -52,10 +52,6 @@ interface XmlDsl {
 	interface DslEntry : IDslEntry {
 		val nodes: MutableList<Node>
 
-		override fun render(builder: StringBuilder) = renderText(builder) {
-			appendJoinWith(nodes, "\n") { it.render(this) }
-		}
-
 		@XmlDslMarker
 		operator fun String.unaryPlus() = text(this)
 
@@ -73,28 +69,32 @@ interface XmlDsl {
 	class Statement @PublishedApi internal constructor(
 		val attributes: Map<String, Any?> = mapOf(),
 	) : DslElement {
-		override fun render(builder: StringBuilder) = renderText(builder) {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("<?xml")
 			appendJoinWith(attributes, " ", " ") { (k, v) ->
 				append(k).append(v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(DslConfig.quote))
 			}
 			append("?>")
 		}
+
+		override fun toString() = super.toString()
 	}
 
 	@XmlDslMarker
-	interface Node : DslElement
+	abstract class Node: DslElement{
+
+	}
 
 	@XmlDslMarker
-	class Text @PublishedApi internal constructor(val text: String) : Node {
-		override fun render(builder: StringBuilder) = renderText(builder) {
+	class Text @PublishedApi internal constructor(val text: String) : Node() {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append(text.escapeBy(Escaper.XmlContentEscaper))
 		}
 	}
 
 	@XmlDslMarker
-	class CData @PublishedApi internal constructor(val text: String) : Node {
-		override fun render(builder: StringBuilder) = renderText(builder) {
+	class CData @PublishedApi internal constructor(val text: String) : Node() {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("![CDATA[")
 			if(text.isNotEmpty()) {
 				appendLineIf(DslConfig.wrapCData)
@@ -106,8 +106,8 @@ interface XmlDsl {
 	}
 
 	@XmlDslMarker
-	class Comment @PublishedApi internal constructor(val text: String) : Node {
-		override fun render(builder: StringBuilder) = renderText(builder) {
+	class Comment @PublishedApi internal constructor(val text: String) : Node() {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("<!--")
 			if(text.isNotEmpty()) {
 				appendLineIf(DslConfig.wrapComment)
@@ -123,10 +123,10 @@ interface XmlDsl {
 	class Tag @PublishedApi internal constructor(
 		val name: String,
 		val attributes: Map<String, Any?> = mapOf()
-	) : Node, DslEntry {
+	) : Node(), DslEntry {
 		override val nodes: MutableList<Node> = mutableListOf()
 
-		override fun render(builder: StringBuilder) = renderText(builder) {
+		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("<").append(name)
 			if(attributes.isNotEmpty()) {
 				appendJoinWith(attributes, " ", " ") { (k, v) ->
@@ -137,9 +137,9 @@ interface XmlDsl {
 			if(nodes.isNotEmpty()) {
 				appendLineIf(DslConfig.wrapTag)
 				if(DslConfig.indentTag) {
-					append(buildString { appendJoinWith(nodes, "\n") { it.render(this) } }.prependIndent(DslConfig.indent))
+					append(buildString { appendJoinWith(nodes, "\n") { it.renderTo(this) } }.prependIndent(DslConfig.indent))
 				} else {
-					appendJoinWith(nodes, "\n") { it.render(this) }
+					appendJoinWith(nodes, "\n") { it.renderTo(this) }
 				}
 				appendLineIf(DslConfig.wrapTag)
 			}

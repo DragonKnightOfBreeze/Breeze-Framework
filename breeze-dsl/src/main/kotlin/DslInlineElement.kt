@@ -12,11 +12,7 @@ import icu.windea.breezeframework.core.model.*
  */
 @Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 interface DslInlineElement : DslElement, Inlineable {
-	override fun inline(): CharSequence {
-		return buildString { render(this) }
-	}
+	override fun inline(): CharSequence = render()
 
-	override fun toString(): String {
-		return inline().toString()
-	}
+	override fun toString() = render()
 }

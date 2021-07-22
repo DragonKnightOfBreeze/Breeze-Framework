@@ -3,13 +3,11 @@
 
 package icu.windea.breezeframework.dsl
 
-import icu.windea.breezeframework.core.model.*
-
 /**
  * DSL入口。DSL定义结构的入口节点。
  *
  * DSL entry. entry node of dsl definition structure.
  */
 @DslApiMarker
-interface DslEntry : Renderable
+interface DslEntry
 
