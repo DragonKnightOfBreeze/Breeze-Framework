@@ -3,8 +3,8 @@
 
 package icu.windea.breezeframework.serialization;
 
-import java.util.List;
-import java.util.concurrent.RecursiveTask;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class ForkJoinStringJoiner extends RecursiveTask<String> {
     List<String> strings;

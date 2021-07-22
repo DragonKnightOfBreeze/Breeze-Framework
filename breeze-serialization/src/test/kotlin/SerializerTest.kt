@@ -3,7 +3,6 @@
 
 package icu.windea.breezeframework.serialization
 
-import icu.windea.breezeframework.serialization.extension.*
 import kotlin.test.*
 
 class SerializerTest {

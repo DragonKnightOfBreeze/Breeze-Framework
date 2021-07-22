@@ -19,30 +19,30 @@ enum class DataFormat(
 ) {
 	/**Json。*/
 	Json(
-		"json",
-		arrayOf("json", "jsb2", "jsb3"),
+		"data/json",
+		arrayOf("data/json", "jsb2", "jsb3"),
 		JsonSerializer.instance
 	),
 
 	/**Properties。*/
 	Properties(
-		"properties",
-		arrayOf("properties", "scriptenginefactory"),
+		"data/properties",
+		arrayOf("data/properties", "scriptenginefactory"),
 		PropertiesSerializer.instance
 	),
 
 	/**Xml。*/
 	Xml(
-		"xml",
-		arrayOf("xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan", "pom", "rng", "tld", "wadl", "wsdd", "wsdl",
+		"data/xml",
+		arrayOf("data/xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan", "pom", "rng", "tld", "wadl", "wsdd", "wsdl",
 			"xjb", "xsd", "xsl", "xslt", "xul"),
 		XmlSerializer.instance
 	),
 
 	/**Yaml。*/
 	Yaml(
-		"yaml",
-		arrayOf("yml", "yaml"),
+		"data/yaml",
+		arrayOf("yml", "data/yaml"),
 		YamlSerializer.instance
 	)
 }

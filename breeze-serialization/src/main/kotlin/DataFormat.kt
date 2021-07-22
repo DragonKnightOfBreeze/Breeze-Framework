@@ -4,8 +4,11 @@
 package icu.windea.breezeframework.serialization
 
 import icu.windea.breezeframework.core.component.*
-import icu.windea.breezeframework.serialization.extension.*
-import icu.windea.breezeframework.serialization.serializer.*
+import icu.windea.breezeframework.serialization.csv.*
+import icu.windea.breezeframework.serialization.json.*
+import icu.windea.breezeframework.serialization.properties.*
+import icu.windea.breezeframework.serialization.xml.*
+import icu.windea.breezeframework.serialization.yaml.*
 import java.lang.reflect.*
 
 /**
@@ -29,9 +32,7 @@ interface DataFormat : Component {
 	/**
 	 * 对应的序列化器。
 	 *
-	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用由Breeze Framework实现的序列化器。
-	 *
-	 * 可以进行自定义。
+	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
 	 */
 	val serializer: DataSerializer
 
@@ -77,8 +78,8 @@ interface DataFormat : Component {
 	 * Json数据格式。
 	 */
 	object Json : DataFormat {
-		override val fileExtension: String = "json"
-		override val fileExtensions: Array<String> = arrayOf("json", "jsb2", "jsb3", "patch")
+		override val fileExtension: String = "data/json"
+		override val fileExtensions: Array<String> = arrayOf("data/json", "jsb2", "jsb3", "patch")
 		override var serializer: JsonSerializer = defaultJsonSerializer
 	}
 
@@ -87,7 +88,7 @@ interface DataFormat : Component {
 	 */
 	object Yaml : DataFormat {
 		override val fileExtension: String = "yml"
-		override val fileExtensions: Array<String> = arrayOf("yml", "yaml")
+		override val fileExtensions: Array<String> = arrayOf("yml", "data/yaml")
 		override var serializer: YamlSerializer = defaultYamlSerializer
 	}
 
@@ -95,9 +96,9 @@ interface DataFormat : Component {
 	 * Xml数据格式。
 	 */
 	object Xml : DataFormat {
-		override val fileExtension: String = "xml"
+		override val fileExtension: String = "data/xml"
 		override val fileExtensions: Array<String> = arrayOf(
-			"xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
+			"data/xml", "ant", "fxml", "jhm", "jnlp", "jrxml", "plan",
 			"pom", "rng", "tld", "wadl", "wsdd", "wsdl", "xjb", "xsd", "xsl", "xslt", "xul"
 		)
 		override var serializer: XmlSerializer = defaultXmlSerializer
@@ -107,8 +108,8 @@ interface DataFormat : Component {
 	 * Properties数据格式。
 	 */
 	object Properties : DataFormat {
-		override val fileExtension: String = "properties"
-		override val fileExtensions: Array<String> = arrayOf("properties")
+		override val fileExtension: String = "data/properties"
+		override val fileExtensions: Array<String> = arrayOf("data/properties")
 		override var serializer: PropertiesSerializer = defaultPropertiesSerializer
 	}
 
@@ -116,8 +117,8 @@ interface DataFormat : Component {
 	 * Csv数据格式。
 	 */
 	object Csv : DataFormat {
-		override val fileExtension: String = "csv"
-		override val fileExtensions: Array<String> = arrayOf("csv")
+		override val fileExtension: String = "data/csv"
+		override val fileExtensions: Array<String> = arrayOf("data/csv")
 		override var serializer: CsvSerializer = defaultCsvSerializer
 	}
 	//endregion

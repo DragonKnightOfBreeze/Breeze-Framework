@@ -40,7 +40,7 @@ object IdeaConfigGenerator : Generator {
 		${
 			definitions.joinToString("\n\n") { (templateName, template) ->
 				val description = (template.getOrDefault("description", "") as String).escapeBy(Escaper.JavaEscaper)
-				val configParams = if("properties" in template) template["properties"] as Map<String, Map<String, Any?>> else mapOf()
+				val configParams = if("data/properties" in template) template["data/properties"] as Map<String, Map<String, Any?>> else mapOf()
 				val paramSnippet = if(configParams.isEmpty()) "" else ": {${configParams.keys.joinToString(", ") { "$it: $$it$" }}}"
 
 				"""

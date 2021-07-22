@@ -3,8 +3,7 @@
 
 package icu.windea.breezeframework.serialization
 
-import icu.windea.breezeframework.serialization.serializer.*
-import icu.windea.breezeframework.serialization.extension.*
+import icu.windea.breezeframework.serialization.json.*
 import kotlin.system.*
 import kotlin.test.*
 

@@ -7,8 +7,6 @@ package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
 import java.util.concurrent.*
-import javax.naming.*
-import kotlin.jvm.Throws
 
 /**
  * 得到指定的一组值中第一个不为null的值，或者抛出异常。
@@ -27,7 +25,7 @@ fun <T> coalesce(vararg values: T?): T {
 @UnstableApi
 fun <T> coalesceOrNull(vararg values: T?): T? {
 	for(value in values) {
-		if(value != null ) return value
+		if(value != null) return value
 	}
 	return null
 }
@@ -39,15 +37,15 @@ fun <T> coalesceOrNull(vararg values: T?): T? {
  * * 如果指定的一组分隔符不为空，则被跳过的子字符串需要以分隔符结束。
  */
 @UnstableApi
-fun String.fuzzyMatches(keyword: String,vararg delimiters:Char, ignoreCase: Boolean = false): Boolean {
+fun String.fuzzyMatches(keyword: String, vararg delimiters: Char, ignoreCase: Boolean = false): Boolean {
 	var index = -1
 	var lastIndex = -2
 	for(c in keyword) {
-		index = indexOf(c,index+1,ignoreCase)
+		index = indexOf(c, index + 1, ignoreCase)
 		println(index)
 		when {
 			index == -1 -> return false
-			c !in delimiters && index != 0 && lastIndex != index-1 && this[index-1] !in delimiters -> return false
+			c !in delimiters && index != 0 && lastIndex != index - 1 && this[index - 1] !in delimiters -> return false
 		}
 		lastIndex = index
 	}
@@ -88,6 +86,7 @@ internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
  * @see kotlin.collections.forEach
  */
 @UnstableApi
+@Throws(InterruptedException::class)
 inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -107,8 +106,8 @@ inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
  * @see kotlin.collections.forEach
  */
 @UnstableApi
-inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, timeUnit: TimeUnit,
-	crossinline action: (T) -> Unit) {
+@Throws(InterruptedException::class)
+inline fun <T> Array<out T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
 		parallelExecutor.execute {
@@ -127,6 +126,7 @@ inline fun <T> Array<out T>.parallelForEach(timeout: Long, awaitTimeout: Long, t
  * @see kotlin.collections.forEach
  */
 @UnstableApi
+@Throws(InterruptedException::class)
 inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -146,6 +146,7 @@ inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
  * @see kotlin.collections.forEach
  */
 @UnstableApi
+@Throws(InterruptedException::class)
 inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(element in this) {
@@ -165,6 +166,7 @@ inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossi
  * @see kotlin.collections.forEach
  */
 @UnstableApi
+@Throws(InterruptedException::class)
 inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
@@ -184,7 +186,8 @@ inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K
  * @see kotlin.collections.forEach
  */
 @UnstableApi
-inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long,  timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
+@Throws(InterruptedException::class)
+inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
 	val countDownLatch = CountDownLatch(size)
 	for(entry in this) {
 		parallelExecutor.execute {
@@ -197,10 +200,10 @@ inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long,  timeUnit: TimeUn
 
 @UnstableApi
 @Throws(InterruptedException::class)
-inline fun retry(interval: Long,timeout: Long,timeUnit: TimeUnit,action: () -> Boolean):Boolean{
-	val timeoutMillis = timeUnit.convert(timeout,TimeUnit.MILLISECONDS)
+inline fun retry(interval: Long, timeout: Long, timeUnit: TimeUnit, action: () -> Boolean): Boolean {
+	val timeoutMillis = timeUnit.convert(timeout, TimeUnit.MILLISECONDS)
 	val startTime = System.currentTimeMillis()
-	while(true){
+	while(true) {
 		if(action()) return true
 		val endTime = System.currentTimeMillis()
 		if(endTime - startTime >= timeoutMillis) return false
@@ -210,9 +213,9 @@ inline fun retry(interval: Long,timeout: Long,timeUnit: TimeUnit,action: () -> B
 
 @UnstableApi
 @Throws(InterruptedException::class)
-inline fun retry(interval:Long,timeUnit: TimeUnit,times:Int, action:()->Boolean):Boolean{
+inline fun retry(interval: Long, timeUnit: TimeUnit, times: Int, action: () -> Boolean): Boolean {
 	var t = 1
-	while(true){
+	while(true) {
 		if(action()) return true
 		if(t++ >= times) return false
 		timeUnit.sleep(interval)

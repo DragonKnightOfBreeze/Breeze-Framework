@@ -18,3 +18,4 @@ data class Tuple4<out A, out B, out C, out D>(
 ) : Serializable {
 	override fun toString(): String = "($first, $second, $third, $fourth)"
 }
+
