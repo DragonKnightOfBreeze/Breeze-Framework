@@ -8,7 +8,7 @@ import java.lang.reflect.*
 /**
  * 数据的读取器。
  */
-internal interface DataReader{
+internal interface DataReader {
 	/**
 	 * 数据的配置。
 	 */
@@ -17,10 +17,10 @@ internal interface DataReader{
 	/**
 	 * 读取数据。
 	 */
-	fun <T> read(value:String,type:Class<T>):T
+	fun <T> read(value: String, type: Class<T>): T
 
 	/**
 	 * 读取数据。
 	 */
-	fun <T> read(value:String,type: Type):T
+	fun <T> read(value: String, type: Type): T
 }

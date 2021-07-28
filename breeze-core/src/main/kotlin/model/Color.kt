@@ -150,7 +150,7 @@ class Color {
 		}
 
 		private fun optimizeName(expression: String): String {
-			return expression.split(' ', '-', '_').filterNotEmpty().joinToString("").toLowerCase()
+			return expression.split(' ', '-', '_').filterNotEmpty().joinToString("").lowercase()
 		}
 
 		//148种

@@ -8,6 +8,7 @@ package icu.windea.breezeframework.core.extension
 
 /**
  * 重复当前字符到指定次数。
+ *
  * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun Char.times(n: Int): String {
@@ -21,11 +22,11 @@ fun Char.repeat(n: Int): String {
 }
 
 @ExperimentalUnsignedTypes
-fun Char.toUInt():UInt{
-	return toInt().toUInt()
+fun Char.toUInt(): UInt {
+	return code.toUInt()
 }
 
 @ExperimentalUnsignedTypes
-fun Char.toULong():ULong{
-	return toLong().toULong()
+fun Char.toULong(): ULong {
+	return code.toLong().toULong()
 }

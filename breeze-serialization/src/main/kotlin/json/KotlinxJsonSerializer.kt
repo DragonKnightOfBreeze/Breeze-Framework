@@ -16,7 +16,7 @@ import java.lang.reflect.*
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalSerializationApi::class)
 class KotlinxJsonSerializer(
-	val json:Json = Json.Default
+	val json: Json = Json.Default
 ) : JsonSerializer, KotlinxSerializer {
 	//NOTE 这里必须要指定类型，否则无法序列化泛型类型的对象
 	override fun <T> serialize(target: T): String {

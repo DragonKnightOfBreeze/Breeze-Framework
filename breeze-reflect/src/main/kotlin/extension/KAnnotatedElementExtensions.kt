@@ -15,7 +15,7 @@ import kotlin.reflect.jvm.*
 inline fun <reified T : Annotation> KAnnotatedElement.findExtraAnnotation(): T? {
 	return findAnnotation<T>() ?: when(this) {
 		is KProperty<*> -> javaField?.getAnnotation(T::class.java)
-		                   ?: javaGetter?.getAnnotation(T::class.java)
+			?: javaGetter?.getAnnotation(T::class.java)
 		else -> null
 	}
 }
@@ -28,7 +28,7 @@ inline fun <reified T : Annotation> KAnnotatedElement.findExtraAnnotation(): T? 
 inline fun <reified T : Annotation> KAnnotatedElement.hasExtraAnnotation(): Boolean {
 	return hasAnnotation<T>() || when(this) {
 		is KProperty<*> -> javaField?.isAnnotationPresent(T::class.java) ?: false
-		                   || javaGetter?.isAnnotationPresent(T::class.java) ?: false
+			|| javaGetter?.isAnnotationPresent(T::class.java) ?: false
 		else -> false
 	}
 }

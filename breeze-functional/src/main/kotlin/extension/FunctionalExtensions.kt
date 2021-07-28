@@ -5,6 +5,7 @@
 
 package icu.windea.breezeframework.functional.extension
 
+import icu.windea.breezeframework.core.model.*
 import icu.windea.breezeframework.core.type.*
 
 //https://github.com/MarioAriasC/funKTionale

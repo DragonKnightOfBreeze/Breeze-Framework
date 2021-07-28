@@ -7,6 +7,8 @@ package icu.windea.breezeframework.core.model
 
 /**
  * 可内联的对象。
+ *
+ * 注意：这个接口重载的[toString]方法不一定生效。
  */
 @Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 interface Inlineable : CharSequence {
@@ -19,14 +21,4 @@ interface Inlineable : CharSequence {
 	override fun subSequence(startIndex: Int, endIndex: Int) = inline().subSequence(startIndex, endIndex)
 
 	override fun toString(): String = inline().toString()
-}
-
-class A:Inlineable{
-	override fun inline(): CharSequence {
-		return "1"
-	}
-}
-
-fun main() {
-	println(A())
 }

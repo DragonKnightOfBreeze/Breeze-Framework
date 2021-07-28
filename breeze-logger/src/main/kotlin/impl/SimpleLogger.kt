@@ -67,5 +67,5 @@ class SimpleLogger(
 
 	private val currentClassNameAbbreviation
 		get() = currentClassName.split(".").joinToString(".") { it.substring(0, 1) } +
-		        currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
+			currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
 }

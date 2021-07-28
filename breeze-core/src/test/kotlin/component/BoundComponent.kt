@@ -3,10 +3,10 @@
 
 package icu.windea.breezeframework.core.component
 
-import java.lang.reflect.*
-
-interface BoundComponent : Component {
-	val actualTargetType: Type
-
-	fun bindingActualTargetType(actualTargetType: Type): BoundComponent
-}
+//import java.lang.reflect.*
+//
+//interface BoundComponent : Component {
+//	val actualTargetType: Type
+//
+//	fun bindingActualTargetType(actualTargetType: Type): BoundComponent
+//}

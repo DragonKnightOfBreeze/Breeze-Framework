@@ -9,7 +9,7 @@ import org.springframework.context.annotation.*
 @Configuration
 class CoreAutoConfiguration {
 	@Bean
-	fun stringToDoubleRangeConverter() = StringToRangeConverters()
+	fun stringToDoubleRangeConverter() = StringToRangeConverter()
 
 	@Bean
 	fun stringToFloatRangeConverter() = StringToFloatRangeConverter()

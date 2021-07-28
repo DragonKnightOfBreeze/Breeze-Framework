@@ -39,7 +39,7 @@ class DefaultGeneratorBenchmark {
 	@Benchmark
 	fun test4() = getDefaultValue<String>()
 
-	final inline fun <reified T> getDefaultValue() = when(T::class.java){
+	final inline fun <reified T> getDefaultValue() = when(T::class.java) {
 		Int::class.java -> 0
 		String::class.java -> ""
 		else -> null

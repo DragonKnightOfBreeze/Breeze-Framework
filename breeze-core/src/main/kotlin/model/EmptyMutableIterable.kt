@@ -3,7 +3,7 @@
 
 package icu.windea.breezeframework.core.model
 
-import java.io.Serializable
+import java.io.*
 
 internal object EmptyMutableIterable : MutableIterable<Nothing>, Serializable {
 	override fun iterator(): MutableIterator<Nothing> = EmptyMutableIterator

@@ -22,42 +22,42 @@ class StringTest {
 			repeat(10) {
 				buffer.append(uuid)
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 
 		measureNanoTime {
 			val buffer = StringWriter()
 			repeat(10) {
 				buffer.append(uuid)
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 
 		measureNanoTime {
 			var str = ""
 			repeat(10) {
 				str += uuid
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 
 		measureNanoTime {
 			val buffer = StringBuilder()
 			repeat(10000) {
 				buffer.append(uuid)
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 
 		measureNanoTime {
 			val buffer = StringWriter()
 			repeat(10000) {
 				buffer.append(uuid)
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 
 		measureNanoTime {
 			var str = ""
 			repeat(10000) {
 				str += uuid
 			}
-		}.also{println(it)}
+		}.also { println(it) }
 	}
 
 	//1: 1901668300
@@ -134,8 +134,8 @@ class StringTest {
 			}.also { println("5: $it") }
 		}
 		run {
-			val a = ThreadLocal.withInitial {  arrayOfNulls<String>(n)}
-			val array =  a.get()
+			val a = ThreadLocal.withInitial { arrayOfNulls<String>(n) }
+			val array = a.get()
 			val executor = Executors.newWorkStealingPool(256)
 			measureNanoTime {
 				repeat(n) {
@@ -148,8 +148,8 @@ class StringTest {
 	}
 
 	@Test
-	fun joinToStringTest(){
-		val array = Array(1000){it*10}
+	fun joinToStringTest() {
+		val array = Array(1000) { it * 10 }
 		println(measureNanoTime {
 			array.joinToString(", ") { (it * 3 / 5 + 2).toString().repeat(2) }
 		})

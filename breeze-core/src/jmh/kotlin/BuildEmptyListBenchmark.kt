@@ -4,11 +4,9 @@
 package icu.windea.breezeframework.core
 
 import com.google.common.collect.*
-import icu.windea.breezeframework.core.extension.*
 import org.openjdk.jmh.annotations.*
 import java.util.*
 import java.util.concurrent.*
-import kotlin.collections.ArrayList
 
 @BenchmarkMode(Mode.AverageTime)
 @State(value = Scope.Benchmark)

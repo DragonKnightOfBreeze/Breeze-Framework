@@ -11,7 +11,7 @@ import java.lang.reflect.*
  */
 internal class XmlReader @PublishedApi internal constructor(
 	override val config: XmlConfig = XmlConfig()
-): DataReader {
+) : DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
 	}

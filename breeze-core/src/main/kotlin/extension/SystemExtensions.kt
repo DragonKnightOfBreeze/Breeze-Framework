@@ -13,12 +13,14 @@ import kotlin.system.*
 
 /**
  * 访问环境变量。
+ *
  * @see java.lang.System.getenv
  */
 val environmentVariables: Map<String, String> = System.getenv()
 
 /**
  * 访问系统属性。
+ *
  * @see java.lang.System.getProperties
  */
 @Suppress("UNCHECKED_CAST")
@@ -42,7 +44,7 @@ inline fun <reified T> eval(language: String, context: ScriptContext, lazyScript
 
 @PublishedApi
 internal fun getEngine(language: String): ScriptEngine {
-	val languageName = language.toLowerCase()
+	val languageName = language.lowercase()
 	return scriptEngines.getOrPut(languageName) {
 		engineManager.getEngineByName(languageName) ?: engineManager.getEngineByExtension(languageName)
 		?: throw UnsupportedOperationException("No script engine library found for script language '$language'.")

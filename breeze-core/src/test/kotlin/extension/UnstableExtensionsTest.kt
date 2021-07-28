@@ -7,7 +7,7 @@ import org.junit.*
 
 class UnstableExtensionsTest {
 	@Test
-	fun fuzzyMatchesTest(){
+	fun fuzzyMatchesTest() {
 		"name_abc".fuzzyMatches("name") //true
 		"name_abc".fuzzyMatches("name_abc") //true
 		"name_abc".fuzzyMatches("n_c") //false

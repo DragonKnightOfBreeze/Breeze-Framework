@@ -8,4 +8,4 @@ import java.io.*
 /**
  * 数据的配置。
  */
-interface DataConfig:Serializable
+interface DataConfig : Serializable

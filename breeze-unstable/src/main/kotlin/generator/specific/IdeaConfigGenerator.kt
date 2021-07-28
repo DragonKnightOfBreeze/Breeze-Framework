@@ -18,7 +18,7 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+	fun generateYamlAnnotation(inputText: String, inputFormat: DataFormat = DataFormats.Yaml): String {
 		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputText)
 		return getYamlAnnotationString(inputMap)
 	}
@@ -28,7 +28,7 @@ object IdeaConfigGenerator : Generator {
 	 *
 	 * 输入文本的格式：Json Schema。
 	 */
-	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+	fun generateYamlAnnotation(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormats.Yaml) {
 		val inputMap = inputFormat.serializer.read<SchemaDefinitionMap>(inputFile)
 		outputFile.writeText(getYamlAnnotationString(inputMap))
 	}
@@ -39,16 +39,18 @@ object IdeaConfigGenerator : Generator {
 		<templateSet group="YamlAnnotation">
 		${
 			definitions.joinToString("\n\n") { (templateName, template) ->
-				val description = (template.getOrDefault("description", "") as String).escapeBy(Escaper.JavaEscaper)
-				val configParams = if("data/properties" in template) template["data/properties"] as Map<String, Map<String, Any?>> else mapOf()
-				val paramSnippet = if(configParams.isEmpty()) "" else ": {${configParams.keys.joinToString(", ") { "$it: $$it$" }}}"
+				val description = (template.getOrDefault("description", "") as String).escapeBy(Escapers.JavaEscaper)
+				val configParams =
+					if("data/properties" in template) template["data/properties"] as Map<String, Map<String, Any?>> else mapOf()
+				val paramSnippet =
+					if(configParams.isEmpty()) "" else ": {${configParams.keys.joinToString(", ") { "$it: $$it$" }}}"
 
 				"""
 			  <template name="@$templateName" value="@$templateName$paramSnippet"
 		                description="$description"
 		                toReformat="true" toShortenFQNames="true" useStaticImport="true">${
 					configParams.joinToString("\n") { (paramName, param) ->
-						val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(Escaper.JavaEscaper)
+						val defaultValue = (param.getOrDefault("default", "") as String).escapeBy(Escapers.JavaEscaper)
 
 						"""    <variable name="$paramName" expression="" defaultValue="&quot;$defaultValue&quot;" alwaysStopAt="true"/>"""
 					}.ifNotEmpty { "\n$it" }

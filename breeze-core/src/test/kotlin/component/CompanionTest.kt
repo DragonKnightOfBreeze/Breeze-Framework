@@ -7,17 +7,17 @@ import org.junit.*
 
 open class CompanionTest {
 	@Test
-	fun testInit(){
+	fun testInit() {
 		println(AAA.A.a)
 	}
 }
 
-interface C<T:AAA> {
+interface C<T : AAA> {
 
 }
 
 interface AAA {
-	companion object Foo:C<AAA> {
+	companion object Foo : C<AAA> {
 		private val list = mutableListOf<Any>()
 
 		init {

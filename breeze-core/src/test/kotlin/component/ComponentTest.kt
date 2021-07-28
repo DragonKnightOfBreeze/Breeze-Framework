@@ -8,27 +8,27 @@ import org.junit.*
 
 class ComponentTest {
 	@Test
-	fun inferTargetTypeTest(){
+	fun inferTargetTypeTest() {
 		println(111.convert<String>())
 		println("111".convert<Int>())
 
 		try {
-			println(Converter.ByteConverter.targetType)
+			println(Converters.ByteConverter.targetType)
 		} catch(e: Throwable) {
 			e.printStackTrace()
 		}
 		try {
-			println(Converter.ShortConverter.targetType)
+			println(Converters.ShortConverter.targetType)
 		} catch(e: Throwable) {
 			e.printStackTrace()
 		}
 		try {
-			println(Converter.IntConverter.targetType)
+			println(Converters.IntConverter.targetType)
 		} catch(e: Throwable) {
 			e.printStackTrace()
 		}
 		try {
-			println(Converter.LongConverter.targetType)
+			println(Converters.LongConverter.targetType)
 		} catch(e: Throwable) {
 			e.printStackTrace()
 		}

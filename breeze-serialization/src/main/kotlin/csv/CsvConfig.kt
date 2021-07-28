@@ -10,4 +10,4 @@ import icu.windea.breezeframework.serialization.*
  */
 data class CsvConfig(
 	val lineSeparator: String = "\n"
-): DataConfig
+) : DataConfig

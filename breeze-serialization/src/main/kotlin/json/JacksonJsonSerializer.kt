@@ -13,7 +13,7 @@ import java.lang.reflect.*
  * @see com.fasterxml.jackson.databind.json.JsonMapper
  */
 class JacksonJsonSerializer(
-	val mapper:JsonMapper = JsonMapper()
+	val mapper: JsonMapper = JsonMapper()
 ) : JsonSerializer, JacksonSerializer {
 	init {
 		mapper.findAndRegisterModules()

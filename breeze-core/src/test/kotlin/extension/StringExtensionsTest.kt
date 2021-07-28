@@ -4,9 +4,9 @@ import kotlin.test.*
 
 class StringExtensionsTest {
 	@Test
-	fun splitToStringsTest(){
+	fun splitToStringsTest() {
 		println("a,b,c".splitToStrings(","))
-		println("[a,b,c]".splitToStrings(",","[","]"))
+		println("[a,b,c]".splitToStrings(",", "[", "]"))
 	}
 
 	@Test

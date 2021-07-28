@@ -13,7 +13,7 @@ object ObjectMapper {
 	fun <T : Any> map(data: T): Map<String, Any?> {
 		//使用Java反射，映射第一层属性，不进行递归映射
 		return data::class.java.getters.associateBy(
-			{ it.name[3].toLowerCase() + it.name.substring(4) },
+			{ it.name[3].lowercaseChar() + it.name.substring(4) },
 			{ it.invoke(data) }
 		)
 	}

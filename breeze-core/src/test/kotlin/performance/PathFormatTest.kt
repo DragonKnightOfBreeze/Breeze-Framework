@@ -19,11 +19,16 @@ class PathFormatTest {
 	fun matchesTest() {
 		val n = 1000000
 		val executor = Executors.newFixedThreadPool(3)
-		val f1 = executor.submit(Callable { measureNanoTime { repeat(n) { matches1("/foo/bar/far", "/foo/{bar}/far") } } })
-		val f2 = executor.submit(Callable { measureNanoTime { repeat(n) { matches2("/foo/bar/far", "/foo/{bar}/far") } } })
-		val f3 = executor.submit(Callable { measureNanoTime { repeat(n) { matches3("/foo/bar/far", "/foo/{bar}/far") } } })
-		val f4 = executor.submit(Callable { measureNanoTime { repeat(n) { matches4("/foo/bar/far", "/foo/{bar}/far") } } })
-		val f5 = executor.submit(Callable { measureNanoTime { repeat(n) { matches5("/foo/bar/far", "/foo/{bar}/far") } } })
+		val f1 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { matches1("/foo/bar/far", "/foo/{bar}/far") } } })
+		val f2 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { matches2("/foo/bar/far", "/foo/{bar}/far") } } })
+		val f3 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { matches3("/foo/bar/far", "/foo/{bar}/far") } } })
+		val f4 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { matches4("/foo/bar/far", "/foo/{bar}/far") } } })
+		val f5 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { matches5("/foo/bar/far", "/foo/{bar}/far") } } })
 
 		println(matches1("/foo/bar/far", "/foo/{bar}/far"))
 		println(matches2("/foo/bar/far", "/foo/{bar}/far"))
@@ -134,10 +139,12 @@ class PathFormatTest {
 	fun matchesByVsMatchesTest() {
 		val n = 1000000
 		val executor = Executors.newFixedThreadPool(3)
-		val f1 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormat.AntPath) } } })
-		val f2 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()) } } })
+		val f1 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormats.AntPath) } } })
+		val f2 =
+			executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()) } } })
 
-		println("/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormat.AntPath))
+		println("/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormats.AntPath))
 		println("/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()))
 
 		println(f1.get())

@@ -15,12 +15,12 @@ import icu.windea.breezeframework.serialization.*
  * @see FastJsonSerializer
  */
 interface JsonSerializer : DataSerializer {
-	override val dataFormat: DataFormat get() = DataFormat.Json
+	override val dataFormat: DataFormat get() = DataFormats.Json
 
 	/**
 	 * 默认的Json数据的序列化器。
 	 *
 	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
 	 */
-	companion object Default: JsonSerializer by defaultJsonSerializer
+	companion object Default : JsonSerializer by defaultJsonSerializer
 }

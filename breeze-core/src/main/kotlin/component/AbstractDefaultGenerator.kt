@@ -8,23 +8,9 @@ import icu.windea.breezeframework.core.extension.*
 abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, DefaultGenerator::class.java)
 
-	override fun equals(other: Any?): Boolean {
-		if(this === other) return true
-		if(other == null || javaClass != other.javaClass) return false
-		if(this is ConfigurableDefaultGenerator<*> && other is ConfigurableDefaultGenerator<*> && configParams.toString() != other.configParams.toString()) return false
-		return true
-	}
+	override fun equals(other: Any?) = componentEquals(this, other)
 
-	override fun hashCode(): Int {
-		var hash = 1
-		if(this is ConfigurableDefaultGenerator<*>) hash = 31 * hash + configParams.toString().hashCode()
-		return hash
-	}
+	override fun hashCode() = componentHashcode(this)
 
-	override fun toString(): String {
-		return buildString {
-			append(targetType)
-			if(this@AbstractDefaultGenerator is ConfigurableDefaultGenerator<*>) append('@').append(configParams)
-		}
-	}
+	override fun toString() = componentToString(this)
 }

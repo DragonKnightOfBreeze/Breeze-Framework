@@ -14,10 +14,10 @@ interface KotlinxSerializer : DataSerializer, DelegateSerializer {
 	/**
 	 * 序列化指定对象。
 	 */
-	fun <T> serialize(target:T,type:Class<T>):String
+	fun <T> serialize(target: T, type: Class<T>): String
 
 	/**
 	 * 序列化指定对象。
 	 */
-	fun <T> serialize(target:T,type: Type):String
+	fun <T> serialize(target: T, type: Type): String
 }

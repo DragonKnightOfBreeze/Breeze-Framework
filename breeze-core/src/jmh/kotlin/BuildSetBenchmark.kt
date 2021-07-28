@@ -50,15 +50,17 @@ class BuildSetBenchmark {
 		}
 	}
 
-	@Benchmark fun test5() = Collections.unmodifiableSet(HashSet<String>().apply { add("1");add("2");add("3");add("4");add("5") })
+	@Benchmark fun test5() =
+		Collections.unmodifiableSet(HashSet<String>().apply { add("1");add("2");add("3");add("4");add("5") })
 
-	@Benchmark fun test6() = Collections.unmodifiableSet(LinkedHashSet<String>().apply { add("1");add("2");add("3");add("4");add("5") })
+	@Benchmark fun test6() =
+		Collections.unmodifiableSet(LinkedHashSet<String>().apply { add("1");add("2");add("3");add("4");add("5") })
 
-	@Benchmark fun test7() = ImmutableSet.of("1", "2", "3","4","5")
+	@Benchmark fun test7() = ImmutableSet.of("1", "2", "3", "4", "5")
 
-	@Benchmark fun test8() = setOf("1", "2", "3","4","5")
+	@Benchmark fun test8() = setOf("1", "2", "3", "4", "5")
 
-	@Benchmark fun test9() = mutableSetOf("1", "2", "3","4","5")
+	@Benchmark fun test9() = mutableSetOf("1", "2", "3", "4", "5")
 
-	@Benchmark fun test10() = ImmutableSet.copyOf(arrayOf("1", "2", "3","4","5"))
+	@Benchmark fun test10() = ImmutableSet.copyOf(arrayOf("1", "2", "3", "4", "5"))
 }

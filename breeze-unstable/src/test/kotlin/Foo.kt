@@ -4,7 +4,7 @@
 package icu.windea.breezeframework
 
 class Foo {
-	companion object{
+	companion object {
 		private const val a = 1
 	}
 }

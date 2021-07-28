@@ -91,7 +91,8 @@ interface BBCodeDsl {
 		override val inlineText: CharSequence,
 	) : MultiArgElement("style", mapOf("size" to size, "color" to color)), InlineDslElement
 
-	class YoutubeVideo @PublishedApi internal constructor(override val inlineText: CharSequence) : Element("youtube"), InlineDslElement
+	class YoutubeVideo @PublishedApi internal constructor(override val inlineText: CharSequence) : Element("youtube"),
+		InlineDslElement
 
 	class Link @PublishedApi internal constructor(
 		val url: String?,
@@ -123,7 +124,8 @@ interface BBCodeDsl {
 		override var indentContent: Boolean = true
 	}
 
-	abstract class ListNode @PublishedApi internal constructor(tag: String, override val inlineText: CharSequence) : Element(tag)
+	abstract class ListNode @PublishedApi internal constructor(tag: String, override val inlineText: CharSequence) :
+		Element(tag)
 
 	class UnorderedListNode @PublishedApi internal constructor(text: CharSequence) : ListNode("ul", text)
 

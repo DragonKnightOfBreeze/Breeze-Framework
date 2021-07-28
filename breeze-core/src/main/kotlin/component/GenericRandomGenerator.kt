@@ -6,9 +6,9 @@ package icu.windea.breezeframework.core.component
 import java.lang.reflect.*
 
 interface GenericRandomGenerator<T> : RandomGenerator<T> {
-	fun generate(targetType: Type): T
-
 	override fun generate(): T {
 		throw UnsupportedOperationException("Redirect to 'fun generate(targetType: Type): T'.")
 	}
+
+	fun generate(targetType: Type): T
 }

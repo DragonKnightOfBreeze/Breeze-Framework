@@ -1,6 +1,6 @@
 package icu.windea.breezeframework.core.deprecated;
 
-import org.junit.Test;
+import org.junit.*;
 
 public class JavaTest {
 	@Test

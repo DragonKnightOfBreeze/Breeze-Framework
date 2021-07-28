@@ -20,10 +20,10 @@ class BreezeXmlSerializer(
 	}
 
 	override fun <T> deserialize(value: String, type: Class<T>): T {
-		return reader.read(value,type)
+		return reader.read(value, type)
 	}
 
 	override fun <T> deserialize(value: String, type: Type): T {
-		return reader.read(value,type)
+		return reader.read(value, type)
 	}
 }

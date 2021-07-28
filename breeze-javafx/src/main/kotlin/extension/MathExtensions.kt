@@ -40,7 +40,9 @@ fun bezier(p1: Point2D, p2: Point2D, p3: Point2D, t: Double): Point2D {
 
 /**得到指定参数的贝塞尔曲线。*/
 fun bezier(p1: Point2D, p2: Point2D, p3: Point2D, p4: Point2D, t: Double): Point2D {
-	val x = (1 - t).pow(3.0) * p1.x + 3.0 * t * (1 - t).pow(2.0) * p2.x + 3.0 * t * t * (1 - t) * p3.x + t * t * t * p4.x
-	val y = (1 - t).pow(3.0) * p1.y + 3.0 * t * (1 - t).pow(2.0) * p2.y + 3.0 * t * t * (1 - t) * p3.y + t * t * t * p4.y
+	val x =
+		(1 - t).pow(3.0) * p1.x + 3.0 * t * (1 - t).pow(2.0) * p2.x + 3.0 * t * t * (1 - t) * p3.x + t * t * t * p4.x
+	val y =
+		(1 - t).pow(3.0) * p1.y + 3.0 * t * (1 - t).pow(2.0) * p2.y + 3.0 * t * t * (1 - t) * p3.y + t * t * t * p4.y
 	return Point2D(x, y)
 }

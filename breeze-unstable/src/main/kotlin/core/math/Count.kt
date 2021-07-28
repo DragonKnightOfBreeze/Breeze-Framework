@@ -16,7 +16,9 @@ data class Count @PublishedApi internal constructor(
 
 	operator fun minus(other: Int): Count = Count((value - other).coerceIn(0, totalValue), totalValue)
 
-	infix fun totalPlus(other: Int): Count = Count(value.coerceIn(0, totalValue + other), (totalValue + other).coerceAtLeast(0))
+	infix fun totalPlus(other: Int): Count =
+		Count(value.coerceIn(0, totalValue + other), (totalValue + other).coerceAtLeast(0))
 
-	infix fun totalMinus(other: Int): Count = Count(value.coerceIn(0, totalValue - other), (totalValue - other).coerceAtLeast(0))
+	infix fun totalMinus(other: Int): Count =
+		Count(value.coerceIn(0, totalValue - other), (totalValue - other).coerceAtLeast(0))
 }

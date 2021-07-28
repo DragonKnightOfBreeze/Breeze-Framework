@@ -3,7 +3,7 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
 	id("org.jetbrains.kotlin.jvm") version "1.5.0"
-	id("org.jetbrains.dokka") version "1.4.30"
+	id("org.jetbrains.dokka") version "1.5.0"
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.0"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.0"
 	id("me.champeau.jmh") version "0.6.4"
@@ -23,8 +23,8 @@ val compilerArgs = listOf(
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
 val flatModuleNames = arrayOf("breeze-unstable")
-val noPublishModuleNames = arrayOf("breeze-unstable","breeze-tool","breeze-expression")
-val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable","breeze-tool")
+val noPublishModuleNames = arrayOf("breeze-unstable")
+val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
 
 allprojects {
 	val projectName = project.name
@@ -58,7 +58,7 @@ allprojects {
 		explicitApi()
 	}
 
-	noArg{
+	noArg {
 		annotation("icu.windea.breezeframework.core.annotation.NoArg")
 	}
 
@@ -69,7 +69,7 @@ allprojects {
 	}
 
 	//配置jmh
-	jmh{
+	jmh {
 
 	}
 
@@ -239,7 +239,7 @@ allprojects {
 				url = uri("https://maven.pkg.github.com/dragonknightofbreeze/breeze-framework")
 				credentials {
 					username = property("GITHUB_USERNAME").toString()
-					password =  property("GITHUB_PASSWORD").toString()
+					password = property("GITHUB_PASSWORD").toString()
 				}
 			}
 			//sonatype repository
@@ -249,7 +249,7 @@ allprojects {
 				url = uri("https://s01.oss.sonatype.org//service/local/staging/deploy/maven2")
 				credentials {
 					username = property("OSSRH_USERNAME").toString()
-					password =  property("OSSRH_PASSWORD").toString()
+					password = property("OSSRH_PASSWORD").toString()
 				}
 			}
 			//sonatype snapshot repository
@@ -258,7 +258,7 @@ allprojects {
 				url = uri("https://s01.oss.sonatype.org//content/repositories/snapshots/")
 				credentials {
 					username = property("OSSRH_USERNAME").toString()
-					password =  property("OSSRH_PASSWORD").toString()
+					password = property("OSSRH_PASSWORD").toString()
 				}
 			}
 		}

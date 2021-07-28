@@ -3,8 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
-import java.lang.reflect.*
-
-interface BoundRandomGenerator<T> : RandomGenerator<T>, BoundComponent {
-	override fun bindingActualTargetType(actualTargetType: Type): BoundRandomGenerator<T>
-}
+//import java.lang.reflect.*
+//
+//interface BoundRandomGenerator<T> : RandomGenerator<T>, BoundComponent {
+//	override fun bindingActualTargetType(actualTargetType: Type): BoundRandomGenerator<T>
+//}

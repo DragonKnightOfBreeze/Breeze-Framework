@@ -6,6 +6,6 @@ package icu.windea.breezeframework.core.model
 /**
  * 有条件的对象。
  */
-interface Conditional{
-	fun matches():Boolean
+interface Conditional {
+	fun matches(): Boolean
 }

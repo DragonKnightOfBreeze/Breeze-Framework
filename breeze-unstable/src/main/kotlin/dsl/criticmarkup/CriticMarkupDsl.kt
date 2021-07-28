@@ -35,7 +35,8 @@ interface CriticMarkupDsl {
 		override fun toString() = "{--$text--}"
 	}
 
-	class Substitution @PublishedApi internal constructor(override val text: CharSequence, val newText: CharSequence) : Mark() {
+	class Substitution @PublishedApi internal constructor(override val text: CharSequence, val newText: CharSequence) :
+		Mark() {
 		override fun toString() = "{~~$text~>$newText~~}"
 	}
 

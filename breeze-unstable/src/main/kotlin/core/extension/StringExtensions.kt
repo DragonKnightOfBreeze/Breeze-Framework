@@ -46,7 +46,6 @@ private val defaultPlaceholder = "{" to "}"
 
 /**
  * 根据指定的格式化类型，格式化当前字符串。可以指定可选的语言环境和占位符。
- *
  * @see FormatType
  */
 @UnstableApi

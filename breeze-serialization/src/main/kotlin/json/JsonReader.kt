@@ -11,7 +11,7 @@ import java.lang.reflect.*
  */
 internal class JsonReader @PublishedApi internal constructor(
 	override val config: JsonConfig = JsonConfig()
-): DataReader {
+) : DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
 	}

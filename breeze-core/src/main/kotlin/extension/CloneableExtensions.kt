@@ -43,7 +43,7 @@ fun <T : Cloneable> T.deepClone(): T {
 		this::class.java.declaredFields.filterNot { prop ->
 			//需要排除的情况：基本类型，基本类型数组，枚举，不可变字段，静态字段
 			prop.type.isPrimitive || prop.type.componentType?.isPrimitive.orFalse() || prop.type.isEnum ||
-			Modifier.isFinal(prop.modifiers) || Modifier.isStatic(prop.modifiers)
+				Modifier.isFinal(prop.modifiers) || Modifier.isStatic(prop.modifiers)
 		}.forEach { prop ->
 			prop.isAccessible = true
 

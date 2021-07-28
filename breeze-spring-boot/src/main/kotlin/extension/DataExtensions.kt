@@ -6,7 +6,6 @@
 package icu.windea.breezeframework.springboot.extension
 
 import org.springframework.data.domain.*
-import org.springframework.data.repository.query.*
 
 /**将当前列表转化为分页。*/
 fun <T> List<T>.toPage(): Page<T> = PageImpl<T>(this)

@@ -11,9 +11,9 @@ import java.lang.reflect.*
 /**判断当前类型是否是基本类型的包装类型。*/
 val <T> Class<T>.isBoxed: Boolean
 	get() = java.lang.Byte::class.java == this || java.lang.Short::class.java == this ||
-	        java.lang.Integer::class.java == this || java.lang.Long::class.java == this ||
-	        java.lang.Float::class.java == this || java.lang.Double::class.java == this ||
-	        java.lang.Character::class.java == this || java.lang.Boolean::class.java == this
+		java.lang.Integer::class.java == this || java.lang.Long::class.java == this ||
+		java.lang.Float::class.java == this || java.lang.Double::class.java == this ||
+		java.lang.Character::class.java == this || java.lang.Boolean::class.java == this
 
 /**判断当前类型是否是字符序列类型。*/
 val <T> Class<T>.isCharSequence: Boolean get() = CharSequence::class.java.isAssignableFrom(this)
@@ -38,7 +38,7 @@ val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java.isAssi
 val <T> Class<T>.getters: List<Method>
 	get() = this.methods.filter {
 		((it.returnType == Boolean::class.java && it.name.startsWith("is")) || it.name.startsWith("get"))
-		&& it.name != "getClass" && it.parameterCount == 0
+			&& it.name != "getClass" && it.parameterCount == 0
 	}
 
 /**得到当前类型的公开赋值方法列表。*/

@@ -8,7 +8,6 @@ package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
 import icu.windea.breezeframework.core.model.*
-import icu.windea.breezeframework.core.type.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -26,6 +25,7 @@ import kotlin.contracts.*
 //region Operator Override Extensions
 /**
  * 移除当前字符串中的指定子字符串。
+ *
  * @see icu.windea.breezeframework.core.extension.remove
  */
 operator fun String.minus(other: Any?): String {
@@ -34,6 +34,7 @@ operator fun String.minus(other: Any?): String {
 
 /**
  * 重复当前字符串到指定次数。
+ *
  * @see kotlin.text.repeat
  */
 operator fun String.times(n: Int): String {
@@ -42,6 +43,7 @@ operator fun String.times(n: Int): String {
 
 /**
  * 切分当前字符串到指定个数。
+ *
  * @see kotlin.text.chunked
  */
 operator fun String.div(n: Int): List<String> {
@@ -50,6 +52,7 @@ operator fun String.div(n: Int): List<String> {
 
 /**
  * 得到索引指定范围内的子字符串。
+ *
  * @see kotlin.text.slice
  */
 operator fun String.get(indices: IntRange): String {
@@ -58,6 +61,7 @@ operator fun String.get(indices: IntRange): String {
 
 /**
  * 得到指定索引范围内的子字符串。
+ *
  * @see kotlin.text.substring
  */
 operator fun String.get(startIndex: Int, endIndex: Int): String {

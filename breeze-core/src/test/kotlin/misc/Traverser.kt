@@ -3,21 +3,20 @@
 
 package icu.windea.breezeframework.core.misc
 
-import icu.windea.breezeframework.core.extension.*
-
-interface Traverser<T,ET> {
+interface Traverser<T, ET> {
 
 }
 
 class StringTraverser(
-	private val value:String
-):Traverser<String,Char> {
-	var index :Int= 0
+	private val value: String
+) : Traverser<String, Char> {
+	var index: Int = 0
+
 	//private set
 	var element: Char = value[index]
 	//private set
 
-	fun traverse(block:()->Unit){
+	fun traverse(block: () -> Unit) {
 		for(c in value) {
 			block()
 		}

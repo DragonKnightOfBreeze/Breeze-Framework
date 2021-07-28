@@ -10,6 +10,7 @@ import java.lang.reflect.*
 
 /**
  * 由BreezeJson实现的Json的序列化器。
+ *
  * @see icu.windea.breezeframework.mapper.impl.JsonMapper
  */
 internal object BreezeJsonSerializer : JsonSerializer, BreezeSerializer<JsonMapper> {

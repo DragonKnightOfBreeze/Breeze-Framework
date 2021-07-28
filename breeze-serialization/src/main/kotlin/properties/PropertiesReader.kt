@@ -11,7 +11,7 @@ import java.lang.reflect.*
  */
 internal class PropertiesReader @PublishedApi internal constructor(
 	override val config: PropertiesConfig = PropertiesConfig()
-): DataReader {
+) : DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
 	}

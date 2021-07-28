@@ -65,17 +65,17 @@ internal fun boundsErrorMessage(from: Any, until: Any) = "Random range is empty:
 
 /**得到随机的字符。*/
 fun Random.nextChar(): Char {
-	return nextInt(Char.MIN_VALUE.toInt(), Char.MAX_VALUE.toInt()).toChar()
+	return nextInt(Char.MIN_VALUE.code, Char.MAX_VALUE.code).toChar()
 }
 
 /**得到随机的字符。*/
 fun Random.nextChar(until: Char): Char {
-	return nextInt(until.toInt()).toChar()
+	return nextInt(until.code).toChar()
 }
 
 /**得到随机的字符。*/
 fun Random.nextChar(from: Char, until: Char): Char {
-	return nextInt(from.toInt(), until.toInt()).toChar()
+	return nextInt(from.code, until.code).toChar()
 }
 
 /**得到随机的大整数。*/

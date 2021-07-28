@@ -7,6 +7,8 @@ package icu.windea.breezeframework.core.model
 
 /**
  * 可渲染文本的对象。
+ *
+ * 注意：这个接口重载的[toString]方法不一定生效。
  */
 @Suppress("METHOD_OF_ANY_IMPLEMENTED_IN_INTERFACE")
 interface Renderable {

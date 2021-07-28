@@ -10,4 +10,18 @@ package icu.windea.breezeframework.core.component
  * Component can be used to implement some specific function, and is extensible.
  * Normally, it should be registered and provide a no-arg constructor to be enabled correctly.
  */
-interface Component
+interface Component {
+	/**
+	 * 组件参数。
+	 *
+	 * 组件参数默认会向下传递。
+	 */
+	val componentParams: Map<String, Any?> get() = emptyMap()
+
+	/**
+	 * 根据指定的组件参数复制当前组件，返回一个新组件。
+	 */
+	fun copy(componentParams: Map<String, Any?>): Component {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
+}

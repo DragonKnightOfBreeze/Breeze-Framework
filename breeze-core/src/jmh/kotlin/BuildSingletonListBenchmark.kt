@@ -7,7 +7,6 @@ import com.google.common.collect.*
 import org.openjdk.jmh.annotations.*
 import java.util.*
 import java.util.concurrent.*
-import kotlin.collections.ArrayList
 
 @BenchmarkMode(Mode.AverageTime)
 @State(value = Scope.Benchmark)

@@ -13,9 +13,9 @@ import java.util.*
  *
  * @see com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper
  */
- class JacksonPropertiesSerializer(
-	val mapper:JavaPropsMapper = JavaPropsMapper()
- ) : PropertiesSerializer, JacksonSerializer {
+class JacksonPropertiesSerializer(
+	val mapper: JavaPropsMapper = JavaPropsMapper()
+) : PropertiesSerializer, JacksonSerializer {
 	init {
 		mapper.findAndRegisterModules()
 	}

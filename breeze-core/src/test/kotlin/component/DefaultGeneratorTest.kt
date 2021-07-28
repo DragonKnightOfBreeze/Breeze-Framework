@@ -13,7 +13,7 @@ import java.util.stream.*
 
 class DefaultGeneratorTest {
 	@Test
-	fun test(){
+	fun test() {
 		prettyPrintln(defaultValue<Byte>())
 		prettyPrintln(defaultValue<Short>())
 		prettyPrintln(defaultValue<Int>())
@@ -47,8 +47,8 @@ class DefaultGeneratorTest {
 		prettyPrintln(defaultValue<MutableList<*>>())
 		prettyPrintln(defaultValue<Set<*>>())
 		prettyPrintln(defaultValue<MutableSet<*>>())
-		prettyPrintln(defaultValue<Map<*,*>>())
-		prettyPrintln(defaultValue<MutableMap<*,*>>())
+		prettyPrintln(defaultValue<Map<*, *>>())
+		prettyPrintln(defaultValue<MutableMap<*, *>>())
 		prettyPrintln(defaultValue<Stream<*>>())
 		prettyPrintln(defaultValue<Sequence<*>>())
 		prettyPrintln(defaultValue<IntRange>())
@@ -56,7 +56,7 @@ class DefaultGeneratorTest {
 		prettyPrintln(defaultValue<CharRange>())
 	}
 
-	enum class Weapon{
-		Sword,Katana
+	enum class Weapon {
+		Sword, Katana
 	}
 }

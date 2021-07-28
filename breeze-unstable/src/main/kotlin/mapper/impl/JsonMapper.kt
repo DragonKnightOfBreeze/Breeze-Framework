@@ -133,8 +133,9 @@ class JsonMapper(
 	private fun Sequence<*>.mapArray() = this.joinToString(valueSeparator) { it.map0() }.doIndent()
 		.let { "$arrayPrefix$it$arraySuffix" }
 
-	private fun Map<*, *>.mapObject() = this.joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }.doIndent()
-		.let { "$objectPrefix$it$objectSuffix" }
+	private fun Map<*, *>.mapObject() =
+		this.joinToString(valueSeparator) { (k, v) -> "${k.mapKey()}$separator${v.mapValue()}" }.doIndent()
+			.let { "$objectPrefix$it$objectSuffix" }
 
 	private fun Any.mapObject() =
 		ObjectMapper.map(this).mapObject()

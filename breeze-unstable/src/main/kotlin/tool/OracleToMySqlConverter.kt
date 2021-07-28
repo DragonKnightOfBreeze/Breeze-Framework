@@ -6,10 +6,10 @@ package icu.windea.breezeframework.tool
 //DEPRECATED
 
 class OracleToMySqlConverter {
-	var removeCreateType:Boolean = true
-	var remoteCreateFunction:Boolean = true
+	var removeCreateType: Boolean = true
+	var remoteCreateFunction: Boolean = true
 
-	fun convert(){
+	fun convert() {
 
 	}
 }

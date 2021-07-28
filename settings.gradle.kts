@@ -10,6 +10,5 @@ include(
 	"breeze-spring-boot",
 	"breeze-sql",
 	"breeze-time",
-	"breeze-unstable",
-	"breeze-tool"
+	"breeze-unstable"
 )

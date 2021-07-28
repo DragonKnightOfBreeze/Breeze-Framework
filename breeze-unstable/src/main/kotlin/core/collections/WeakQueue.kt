@@ -9,6 +9,7 @@ import icu.windea.breezeframework.core.annotation.*
  * 简化的队列。
  *
  * 这个集合是线程不安全的。
+ *
  * @see java.util.Queue
  */
 @UnstableApi

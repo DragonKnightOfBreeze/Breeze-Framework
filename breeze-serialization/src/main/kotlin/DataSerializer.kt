@@ -13,7 +13,7 @@ import java.lang.reflect.*
  *
  * @see DataFormat
  */
-interface DataSerializer: Serializer<String> {
+interface DataSerializer : Serializer<String> {
 	/**
 	 * 对应的数据类型。
 	 */

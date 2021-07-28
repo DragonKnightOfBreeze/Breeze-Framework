@@ -134,13 +134,13 @@ inline fun Double.exact(block: (Double) -> Number): Double {
 
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Int.getDigitNumber(index: Int,radix:Int = 10): Int {
+fun Int.getDigitNumber(index: Int, radix: Int = 10): Int {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
 	return this / radix.positivePow(index) % radix
 }
 
 /**得到指定位数的数字。用0表示个位，用较大数表示较高位。*/
-fun Long.getDigitNumber(index: Int,radix:Int = 10): Long {
+fun Long.getDigitNumber(index: Int, radix: Int = 10): Long {
 	require(index >= 0) { "Index must be non-negative, but was $index." }
 	return this / radix.positivePow(index) % radix
 }
@@ -226,12 +226,12 @@ inline fun <reified T : Enum<T>> Int.toEnumValueOrNull(): T? {
 }
 
 @ExperimentalUnsignedTypes
-inline fun UInt.toChar():Char{
+inline fun UInt.toChar(): Char {
 	return toInt().toChar()
 }
 
 @ExperimentalUnsignedTypes
-inline fun ULong.toChar():Char{
-	return toLong().toChar()
+inline fun ULong.toChar(): Char {
+	return toLong().toInt().toChar()
 }
 //endregion

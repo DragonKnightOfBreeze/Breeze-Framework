@@ -11,6 +11,7 @@ import java.util.*
 
 /**
  * 由BreezeProperties实现的Properties的序列化器。
+ *
  * @see icu.windea.breezeframework.mapper.impl.PropertiesMapper
  */
 internal object BreezePropertiesSerializer : PropertiesSerializer, BreezeSerializer<PropertiesMapper> {

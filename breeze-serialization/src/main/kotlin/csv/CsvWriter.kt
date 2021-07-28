@@ -10,7 +10,7 @@ import icu.windea.breezeframework.serialization.*
  */
 internal class CsvWriter @PublishedApi internal constructor(
 	override val config: CsvConfig = CsvConfig()
-): DataWriter {
+) : DataWriter {
 	override fun <T> write(value: T): String {
 		TODO()
 	}

@@ -10,19 +10,19 @@ import java.lang.reflect.*
  *
  * 序列化器用于基于特定的格式，对数据进行序列化和反序列化。
  */
-interface Serializer<V>{
+interface Serializer<V> {
 	/**
 	 * 序列化指定对象。
 	 */
-	fun <T> serialize(target:T):V
+	fun <T> serialize(target: T): V
 
 	/**
 	 * 反序列化指定的格式。
 	 */
-	fun <T> deserialize(value:V,type: Class<T>):T
+	fun <T> deserialize(value: V, type: Class<T>): T
 
 	/**
 	 * 反序列化指定的格式。
 	 */
-	fun <T> deserialize(value:V,type: Type):T
+	fun <T> deserialize(value: V, type: Type): T
 }

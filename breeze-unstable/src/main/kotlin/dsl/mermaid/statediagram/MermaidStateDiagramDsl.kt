@@ -105,7 +105,8 @@ interface MermaidStateDiagramDsl {
 		override var indentContent: Boolean = true
 
 		override fun toString(): String {
-			val sectionsSnippet = sections.joinToText("\n---\n").let { if(indentContent) it.prependIndent(indent) else it }
+			val sectionsSnippet =
+				sections.joinToText("\n---\n").let { if(indentContent) it.prependIndent(indent) else it }
 			return "state $name{\n$sectionsSnippet\n}"
 		}
 	}

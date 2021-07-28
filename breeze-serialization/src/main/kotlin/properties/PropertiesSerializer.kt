@@ -14,7 +14,7 @@ import java.util.*
  * @see JacksonPropertiesSerializer
  */
 interface PropertiesSerializer : DataSerializer {
-	override val dataFormat: DataFormat get() = DataFormat.Properties
+	override val dataFormat: DataFormat get() = DataFormats.Properties
 
 	/**
 	 * 序列化指定属性对象。
@@ -36,5 +36,5 @@ interface PropertiesSerializer : DataSerializer {
 	 *
 	 * 可以由第三方库委托实现，基于classpath进行推断，或者使用框架本身实现的序列化器。
 	 */
-	companion object Default: PropertiesSerializer by defaultPropertiesSerializer
+	companion object Default : PropertiesSerializer by defaultPropertiesSerializer
 }

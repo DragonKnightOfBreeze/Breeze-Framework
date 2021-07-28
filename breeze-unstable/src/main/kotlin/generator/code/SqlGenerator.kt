@@ -18,7 +18,7 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputText: String, inputFormat: DataFormat = DataFormat.Yaml): String {
+	fun generateSqlData(inputText: String, inputFormat: DataFormat = DataFormats.Yaml): String {
 		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputText)
 		return getSqlDataString(inputMap)
 	}
@@ -28,7 +28,7 @@ object SqlGenerator : Generator {
 	 *
 	 * 输入文本的格式：`#/{database}/{table}/[]/{columns}/{column}`。
 	 */
-	fun generateSqlData(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml) {
+	fun generateSqlData(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormats.Yaml) {
 		val inputMap = inputFormat.serializer.read<SqlDataMap>(inputFile)
 		outputFile.writeText(getSqlDataString(inputMap))
 	}
@@ -49,7 +49,7 @@ object SqlGenerator : Generator {
 			${
 					table.joinToString(",\n", "", ";\n") { data ->
 						val columnsSnippet = data.values.joinToString {
-							it.toString().quote('\'').escapeBy(Escaper.JavaEscaper)
+							it.toString().quote('\'').escapeBy(Escapers.JavaEscaper)
 						}
 
 						"""  ($columnsSnippet)"""

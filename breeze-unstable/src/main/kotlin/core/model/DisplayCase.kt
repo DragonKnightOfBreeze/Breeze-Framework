@@ -7,7 +7,7 @@ import icu.windea.breezeframework.core.annotation.*
 
 /**
  * 显示格式。
- * @see CaseType
+ * @see CaseTYpe
  * @see ReferenceCase
  */
 interface DisplayCase {

@@ -18,7 +18,7 @@ inline fun <reified T : Any> Serializer.read(string: String): T {
 
 /**从指定文件读取指定类型的数据。*/
 inline fun <reified T : Any> Serializer.read(file: File): T {
-	return  read(file, javaTypeOf<T>())
+	return read(file, javaTypeOf<T>())
 }
 
 //这些方法是为了便于进行序列化和反序列化而定义的，但是可能会在一定程度上污染代码提示

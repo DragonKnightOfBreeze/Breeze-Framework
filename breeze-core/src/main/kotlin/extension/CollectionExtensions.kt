@@ -10,8 +10,6 @@ import icu.windea.breezeframework.core.annotation.*
 import java.lang.reflect.*
 import java.util.*
 import java.util.concurrent.*
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 import kotlin.contracts.*
 
 //注意：可以通过添加注解 @Suppress("CANNOT_CHECK_FOR_ERASED") 检查数组的泛型如 array is Array<String>
@@ -90,6 +88,7 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> {
 //region Operator Extensions
 /**
  * 重复当前列表中的元素到指定次数。
+ *
  * @see icu.windea.breezeframework.core.extension.repeat
  */
 operator fun <T> List<T>.times(n: Int): List<T> {
@@ -98,6 +97,7 @@ operator fun <T> List<T>.times(n: Int): List<T> {
 
 /**
  * 切分当前集合中的元素到指定个数。
+ *
  * @see kotlin.collections.chunked
  **/
 operator fun <T> Iterable<T>.div(n: Int): List<List<T>> {
@@ -106,6 +106,7 @@ operator fun <T> Iterable<T>.div(n: Int): List<List<T>> {
 
 /**
  * 得到索引指定范围内的子列表。
+ *
  * @see kotlin.collections.slice
  */
 operator fun <T> List<T>.get(indices: IntRange): List<T> {
@@ -114,6 +115,7 @@ operator fun <T> List<T>.get(indices: IntRange): List<T> {
 
 /**
  * 得到索引指定范围内的子列表。
+ *
  * @see kotlin.collections.List.subList
  */
 operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
@@ -132,28 +134,32 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
  */
 @TrickApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
+inline val <reified T> Iterable<T>.elementType: Type
+	get() = javaTypeOf<T>()
 
 /**
  * 得到当前映射的最为适配的键类型。
  */
 @TrickApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
+inline val <reified K> Map<K, *>.keyType: Type
+	get() = javaTypeOf<K>()
 
 /**
  * 得到当前映射的最为适配的值类型。
  */
 @TrickApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
+inline val <reified V> Map<*, V>.valueType: Type
+	get() = javaTypeOf<V>()
 
 /**
  * 得到当前序列的最为适配的键类型。
  */
 @TrickApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified T> Sequence<T>.elementType: Type get() = javaTypeOf<T>()
+inline val <reified T> Sequence<T>.elementType: Type
+	get() = javaTypeOf<T>()
 
 
 /**
@@ -817,8 +823,8 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> {
  * 将当前列表转化为可变列表。如果当前列表本身就是可变列表，则直接返回。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
-fun <T> List<T>.asMutable():MutableList<T>{
-	return when{
+fun <T> List<T>.asMutable(): MutableList<T> {
+	return when {
 		this is MutableList<*> -> this as MutableList<T>
 		else -> this.toMutableList()
 	}
@@ -828,8 +834,8 @@ fun <T> List<T>.asMutable():MutableList<T>{
  * 将当前列表转化为不可变列表。如果当前列表的元素数量大于1，则直接返回。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
-fun <T> MutableList<T>.asImmutable():List<T>{
-	return when(size){
+fun <T> MutableList<T>.asImmutable(): List<T> {
+	return when(size) {
 		0 -> emptyList()
 		1 -> listOf(this.get(0))
 		else -> this
@@ -840,8 +846,8 @@ fun <T> MutableList<T>.asImmutable():List<T>{
  * 将当前集转化为可变集。如果当前集本身就是可变集，则直接返回。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
-fun <T> Set<T>.asMutable():MutableSet<T>{
-	return when{
+fun <T> Set<T>.asMutable(): MutableSet<T> {
+	return when {
 		this is MutableSet<*> -> this as MutableSet<T>
 		else -> this.toMutableSet()
 	}
@@ -851,8 +857,8 @@ fun <T> Set<T>.asMutable():MutableSet<T>{
  * 将当前集转化为不可变集。如果当前集的元素数量大于1，则直接返回。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
-fun <T> MutableSet<T>.asImmutable():Set<T>{
-	return when(size){
+fun <T> MutableSet<T>.asImmutable(): Set<T> {
+	return when(size) {
 		0 -> emptySet()
 		1 -> setOf(iterator().next())
 		else -> this

@@ -72,7 +72,7 @@ interface XmlDsl {
 		override fun renderTo(builder: StringBuilder) = renderText(builder) {
 			append("<?xml")
 			appendJoinWith(attributes, " ", " ") { (k, v) ->
-				append(k).append(v.toString().escapeBy(Escaper.XmlAttributeEscaper).quote(DslConfig.quote))
+				append(k).append(v.toString().escapeBy(Escapers.XmlAttributeEscaper).quote(DslConfig.quote))
 			}
 			append("?>")
 		}
@@ -81,14 +81,14 @@ interface XmlDsl {
 	}
 
 	@XmlDslMarker
-	abstract class Node: DslElement{
+	abstract class Node : DslElement {
 
 	}
 
 	@XmlDslMarker
 	class Text @PublishedApi internal constructor(val text: String) : Node() {
 		override fun renderTo(builder: StringBuilder) = renderText(builder) {
-			append(text.escapeBy(Escaper.XmlContentEscaper))
+			append(text.escapeBy(Escapers.XmlContentEscaper))
 		}
 	}
 
@@ -111,7 +111,7 @@ interface XmlDsl {
 			append("<!--")
 			if(text.isNotEmpty()) {
 				appendLineIf(DslConfig.wrapComment)
-				append(text.escapeBy(Escaper.XmlContentEscaper)
+				append(text.escapeBy(Escapers.XmlContentEscaper)
 					.prependIndentIf(DslConfig.indentComment, DslConfig.wrapComment, DslConfig.indent))
 				appendLineIf(DslConfig.wrapComment)
 			}
@@ -130,7 +130,7 @@ interface XmlDsl {
 			append("<").append(name)
 			if(attributes.isNotEmpty()) {
 				appendJoinWith(attributes, " ", " ") { (k, v) ->
-					append(k).append("=").append(v.toString().escapeBy(Escaper.XmlAttributeEscaper))
+					append(k).append("=").append(v.toString().escapeBy(Escapers.XmlAttributeEscaper))
 				}
 			}
 			append(">")

@@ -6,7 +6,7 @@ package icu.windea.breezeframework.serialization
 /**
  * 数据的写入器。
  */
-internal interface DataWriter{
+internal interface DataWriter {
 	/**
 	 * 数据的配置。
 	 */
@@ -15,6 +15,6 @@ internal interface DataWriter{
 	/**
 	 * 写入数据。
 	 */
-	fun <T> write(value:T):String
+	fun <T> write(value: T): String
 }
 

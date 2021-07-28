@@ -87,5 +87,5 @@ infix fun Task.duration(duration: String): Task {
 
 @MermaidGanttDslMarker
 infix fun Task.duration(duration: Duration): Task {
-	return apply { finishTime = duration.toString().drop(2).toLowerCase() }
+	return apply { finishTime = duration.toString().drop(2).lowercase() }
 }

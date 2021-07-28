@@ -28,11 +28,11 @@ class BuildListBenchmark {
 	//BuildListBenchmark.test10  avgt    5  10.194 ±  0.491  ns/op    listOf(...) -> Arrays.asList(...)
 	//BuildListBenchmark.test11  avgt    5  16.358 ±  4.001  ns/op    mutableListOf(...) -> ArrayList(ArrayAsCollection(...))
 
-	@Benchmark fun test1() = Arrays.asList("1", "2", "3","4","5")
+	@Benchmark fun test1() = Arrays.asList("1", "2", "3", "4", "5")
 
-	@Benchmark fun test2() = Collections.unmodifiableList(Arrays.asList("1", "2", "3","4","5"))
+	@Benchmark fun test2() = Collections.unmodifiableList(Arrays.asList("1", "2", "3", "4", "5"))
 
-	@Benchmark fun test3() = ArrayList(Arrays.asList("1", "2", "3","4","5"))
+	@Benchmark fun test3() = ArrayList(Arrays.asList("1", "2", "3", "4", "5"))
 
 	@Benchmark fun test4() = ArrayList<String>().apply { add("1");add("2");add("3");add("4");add("5") }
 
@@ -46,7 +46,7 @@ class BuildListBenchmark {
 		}
 	}
 
-	@Benchmark fun test6() = LinkedList(Arrays.asList("1", "2", "3","4","5"))
+	@Benchmark fun test6() = LinkedList(Arrays.asList("1", "2", "3", "4", "5"))
 
 	@Benchmark fun test7() = LinkedList<String>().apply { add("1");add("2");add("3");add("4");add("5") }
 
@@ -60,11 +60,11 @@ class BuildListBenchmark {
 		}
 	}
 
-	@Benchmark fun test9() = ImmutableList.of("1", "2", "3","4","5")
+	@Benchmark fun test9() = ImmutableList.of("1", "2", "3", "4", "5")
 
-	@Benchmark fun test10() = listOf("1", "2", "3","4","5")
+	@Benchmark fun test10() = listOf("1", "2", "3", "4", "5")
 
-	@Benchmark fun test11() = mutableListOf("1", "2", "3","4","5")
+	@Benchmark fun test11() = mutableListOf("1", "2", "3", "4", "5")
 
-	@Benchmark fun test12() = ImmutableList.copyOf(arrayOf("1","2","3","4","5"))
+	@Benchmark fun test12() = ImmutableList.copyOf(arrayOf("1", "2", "3", "4", "5"))
 }

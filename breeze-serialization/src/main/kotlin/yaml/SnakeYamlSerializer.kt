@@ -9,10 +9,11 @@ import java.lang.reflect.*
 
 /**
  * 由SnakeYaml委托实现的Yaml数据的序列化器。
+ *
  * @see org.yaml.snakeyaml.Yaml
  */
 class SnakeYamlSerializer(
-	val yaml:Yaml = Yaml()
+	val yaml: Yaml = Yaml()
 ) : YamlSerializer, DelegateSerializer {
 	override fun <T> serialize(target: T): String {
 		return yaml.dump(target)

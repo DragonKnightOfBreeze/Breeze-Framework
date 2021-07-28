@@ -17,15 +17,15 @@ class BreezeComponentExtensionsTest {
 
 	@Test
 	fun escapeByTest() {
-		println("hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
-		assertEquals("hello\\tworld\\n", "hello\tworld\n".escapeBy(Escaper.KotlinEscaper))
+		println("hello\tworld\n".escapeBy(Escapers.KotlinEscaper))
+		assertEquals("hello\\tworld\\n", "hello\tworld\n".escapeBy(Escapers.KotlinEscaper))
 	}
 
 	@Test
 	fun unescapeByTest() {
-		println("\\\\t".escapeBy(Escaper.KotlinEscaper))
-		println("\\\\t".unescapeBy(Escaper.KotlinEscaper))
-		assertEquals("hello\tworld\n", "hello\\tworld\\n".unescapeBy(Escaper.KotlinEscaper))
+		println("\\\\t".escapeBy(Escapers.KotlinEscaper))
+		println("\\\\t".unescapeBy(Escapers.KotlinEscaper))
+		assertEquals("hello\tworld\n", "hello\\tworld\\n".unescapeBy(Escapers.KotlinEscaper))
 	}
 
 	@Test
@@ -35,22 +35,22 @@ class BreezeComponentExtensionsTest {
 
 	@Test
 	fun encrypterTest() {
-		val a = "hello".encodeToByteArray().encryptBy(Encrypter.DesEncrypter, "12345678".encodeToByteArray())
-		val b = a.decryptBy(Encrypter.DesEncrypter, "12345678".encodeToByteArray()).decodeToString()
+		val a = "hello".encodeToByteArray().encryptBy(Encrypters.DesEncrypter, "12345678".encodeToByteArray())
+		val b = a.decryptBy(Encrypters.DesEncrypter, "12345678".encodeToByteArray()).decodeToString()
 		assertEquals("hello", b)
 	}
 
 	@Test
 	fun caseTypeTest() {
-		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(CaseFormat.CamelCaseFormat))
-		assertEquals("AbcAbcAbc", "abcAbcAbc".switchCaseBy(CaseFormat.PascalCaseFormat))
-		assertEquals("abc-abc-abc", "ABC_ABC_ABC".switchCaseBy(CaseFormat.KebabCaseFormat))
-		assertEquals("ABC_ABC_ABC", "abc-abc-abc".switchCaseBy(CaseFormat.ScreamingSnakeCaseFormat))
-		assertEquals("abc abc", "AbcAbc".switchCaseBy(CaseFormat.LowerCaseFormatWords))
-		assertEquals("Abc Abc", "abcAbc".switchCaseBy(CaseFormat.CapitalizedWords))
-		assertEquals("abcAbc", "Abc Abc".switchCaseBy(CaseFormat.CamelCaseFormat))
-		assertEquals("abcabc", "AbcAbc".switchCaseBy(CaseFormat.LowerCaseFormat))
-		assertEquals("ABCABC", "ABcABc".switchCaseBy(CaseFormat.UpperCaseFormat))
+		assertEquals("abcAbcAbc", "AbcAbcAbc".switchCaseBy(CaseFormats.CamelCaseFormat))
+		assertEquals("AbcAbcAbc", "abcAbcAbc".switchCaseBy(CaseFormats.PascalCaseFormat))
+		assertEquals("abc-abc-abc", "ABC_ABC_ABC".switchCaseBy(CaseFormats.KebabCaseFormat))
+		assertEquals("ABC_ABC_ABC", "abc-abc-abc".switchCaseBy(CaseFormats.ScreamingSnakeCaseFormat))
+		assertEquals("abc abc", "AbcAbc".switchCaseBy(CaseFormats.LowerCaseFormatWords))
+		assertEquals("Abc Abc", "abcAbc".switchCaseBy(CaseFormats.CapitalizedWords))
+		assertEquals("abcAbc", "Abc Abc".switchCaseBy(CaseFormats.CamelCaseFormat))
+		assertEquals("abcabc", "AbcAbc".switchCaseBy(CaseFormats.LowerCaseFormat))
+		assertEquals("ABCABC", "ABcABc".switchCaseBy(CaseFormats.UpperCaseFormat))
 	}
 
 	@Test
@@ -65,40 +65,40 @@ class BreezeComponentExtensionsTest {
 		assertFalse { "/foo/bar".matchesBy("/foo/bar/123") }
 		assertFalse { "/foo/bar".matchesBy("/{a}/bar/123") }
 
-		assertTrue { "".matchesBy("", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b?r", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b*r", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/b*", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar*", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/**", PathFormat.AntPath) }
-		assertTrue { "/foo/bar".matchesBy("/foo/bar**", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f**o/aaa", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f*/aaa", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f**/aaa", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/*/var", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/**/var", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/*r/var", PathFormat.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/*/va", PathFormat.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/**/va", PathFormat.AntPath) }
-		assertFalse { "/foo/bar/var".matchesBy("/foo/*r/va", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}", PathFormat.AntPath) }
-		assertTrue { "/foo/bar/var".matchesBy("/foo/{bar}/var", PathFormat.AntPath) }
-		assertTrue { "".matchesBy("", PathFormat.AntPath) }
-		assertTrue { "/foo".matchesBy("/foo", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/foo/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f?o/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f*o/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f**o/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f*/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa".matchesBy("/f**/{a}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/bar/{b}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*/{b}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/**/{b}", PathFormat.AntPath) }
-		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*ar/{b}", PathFormat.AntPath) }
+		assertTrue { "".matchesBy("", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b?r", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*r", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/b*", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar*", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/**", PathFormats.AntPath) }
+		assertTrue { "/foo/bar".matchesBy("/foo/bar**", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f**o/aaa", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f*/aaa", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f**/aaa", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/**", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/*/var", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/**/var", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/*r/var", PathFormats.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/*/va", PathFormats.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/**/va", PathFormats.AntPath) }
+		assertFalse { "/foo/bar/var".matchesBy("/foo/*r/va", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/bar/{var}", PathFormats.AntPath) }
+		assertTrue { "/foo/bar/var".matchesBy("/foo/{bar}/var", PathFormats.AntPath) }
+		assertTrue { "".matchesBy("", PathFormats.AntPath) }
+		assertTrue { "/foo".matchesBy("/foo", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/foo/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f?o/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f*o/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f**o/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f*/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa".matchesBy("/f**/{a}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/bar/{b}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*/{b}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/**/{b}", PathFormats.AntPath) }
+		assertTrue { "/foo/aaa/bar/bbb".matchesBy("/foo/{a}/*ar/{b}", PathFormats.AntPath) }
 
-		"/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormat.AntPath)
+		"/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormats.AntPath)
 	}
 
 	@Test
@@ -109,20 +109,20 @@ class BreezeComponentExtensionsTest {
 		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}"))
 		assertEquals(mapOf(), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}/far"))
 
-		assertEquals(mapOf(), "".resolveVariablesBy("", PathFormat.AntPath))
-		assertEquals(mapOf(), "/foo".resolveVariablesBy("/foo", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/foo/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f?o/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f*o/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f**o/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f*/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f**/{a}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*/{b}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**/{b}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*ar/{b}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/?ar/{b}", PathFormat.AntPath))
-		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**ar/{b}", PathFormat.AntPath))
+		assertEquals(mapOf(), "".resolveVariablesBy("", PathFormats.AntPath))
+		assertEquals(mapOf(), "/foo".resolveVariablesBy("/foo", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/foo/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f?o/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f*o/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f**o/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f*/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa"), "/foo/aaa".resolveVariablesBy("/f**/{a}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/bar/{b}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*/{b}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**/{b}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/*ar/{b}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/?ar/{b}", PathFormats.AntPath))
+		assertEquals(mapOf("a" to "aaa", "b" to "bbb"), "/foo/aaa/bar/bbb".resolveVariablesBy("/foo/{a}/**ar/{b}", PathFormats.AntPath))
 	}
 
 	@Test
@@ -141,15 +141,15 @@ class BreezeComponentExtensionsTest {
 		assertEquals(list, list.queryBy("/{name}"))
 		assertEquals(listOf(2, 3, 4), list.queryBy("/1/{name}"))
 
-		assertEquals(listOf(list), list.queryBy("", PathFormat.ReferencePath))
-		assertEquals(listOf(1), list.queryBy("[0]", PathFormat.ReferencePath))
-		assertEquals(listOf(3), list.queryBy("[1][1]", PathFormat.ReferencePath))
-		assertEquals(list, list.getBy("", PathFormat.ReferencePath))
-		assertEquals(1, list.getBy("[0]", PathFormat.ReferencePath))
-		assertEquals(3, list.getBy("[1][1]", PathFormat.ReferencePath))
-		assertEquals<Any?>(1, list.getOrNullBy("[0]", PathFormat.ReferencePath))
-		assertEquals(1, list.getOrElseBy("[0]", PathFormat.ReferencePath) { 111 })
-		assertEquals(null, list.getOrNullBy("[111]", PathFormat.ReferencePath))
-		assertEquals(111, list.getOrElseBy("[111]", PathFormat.ReferencePath) { 111 })
+		assertEquals(listOf(list), list.queryBy("", PathFormats.ReferencePath))
+		assertEquals(listOf(1), list.queryBy("[0]", PathFormats.ReferencePath))
+		assertEquals(listOf(3), list.queryBy("[1][1]", PathFormats.ReferencePath))
+		assertEquals(list, list.getBy("", PathFormats.ReferencePath))
+		assertEquals(1, list.getBy("[0]", PathFormats.ReferencePath))
+		assertEquals(3, list.getBy("[1][1]", PathFormats.ReferencePath))
+		assertEquals<Any?>(1, list.getOrNullBy("[0]", PathFormats.ReferencePath))
+		assertEquals(1, list.getOrElseBy("[0]", PathFormats.ReferencePath) { 111 })
+		assertEquals(null, list.getOrNullBy("[111]", PathFormats.ReferencePath))
+		assertEquals(111, list.getOrElseBy("[111]", PathFormats.ReferencePath) { 111 })
 	}
 }

@@ -3,18 +3,17 @@
 
 package icu.windea.breezeframework.core.misc
 
-import icu.windea.breezeframework.core.extension.*
 import org.junit.*
 
 class AcceptCharArrayTest {
 	@Test
-	fun regionMatchTest(){
-		println("hello world".regionMatches(3,"llo",0,"llo".length))
-		println("hello world".regionMatches(2,"llo",0,"llo".length))
+	fun regionMatchTest() {
+		println("hello world".regionMatches(3, "llo", 0, "llo".length))
+		println("hello world".regionMatches(2, "llo", 0, "llo".length))
 	}
 
 	@Test
-	fun test(){
+	fun test() {
 		//val string = "1+2++"
 		//val tc = '+';
 		//val ts = "++";
@@ -35,9 +34,9 @@ class AcceptCharArrayTest {
 }
 
 class CharArrayMatcher(
-	val chars:CharArray,
-	var index:Int,
-	var char:Char
+	val chars: CharArray,
+	var index: Int,
+	var char: Char
 ) {
 	//regionMatches
 

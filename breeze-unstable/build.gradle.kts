@@ -2,7 +2,7 @@ dependencies {
 	api(project(":breeze-core"))
 	api(project(":breeze-serialization"))
 	api(project(":breeze-reflect"))
-	implementation(kotlin("reflect:1.4.0"))
+	implementation(kotlin("reflect:1.5.0"))
 
 	implementation("org.apache.commons:commons-lang3:3.10")
 	implementation("com.google.guava:guava:29.0-jre")

@@ -20,7 +20,7 @@ import java.lang.reflect.*
  *
  * @see Serializer
  */
-fun <T,V> T.serializeBy(serializer: Serializer<V>): V {
+fun <T, V> T.serializeBy(serializer: Serializer<V>): V {
 	return serializer.serialize(this)
 }
 
@@ -29,8 +29,8 @@ fun <T,V> T.serializeBy(serializer: Serializer<V>): V {
  *
  * @see Serializer
  */
-inline fun <reified T,V> V.deserializeBy(serializer: Serializer<V>):T{
-	return serializer.deserialize(this,javaTypeOf<T>())
+inline fun <reified T, V> V.deserializeBy(serializer: Serializer<V>): T {
+	return serializer.deserialize(this, javaTypeOf<T>())
 }
 
 /**
@@ -38,8 +38,8 @@ inline fun <reified T,V> V.deserializeBy(serializer: Serializer<V>):T{
  *
  * @see Serializer
  */
-fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Class<T>):T{
-	return serializer.deserialize(this,type)
+fun <T, V> V.deserializeBy(serializer: Serializer<V>, type: Class<T>): T {
+	return serializer.deserialize(this, type)
 }
 
 /**
@@ -47,8 +47,8 @@ fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Class<T>):T{
  *
  * @see Serializer
  */
-fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Type):T{
-	return serializer.deserialize(this,type)
+fun <T, V> V.deserializeBy(serializer: Serializer<V>, type: Type): T {
+	return serializer.deserialize(this, type)
 }
 
 
@@ -59,7 +59,7 @@ fun <T,V> V.deserializeBy(serializer: Serializer<V>,type:Type):T{
  *
  * @see DataFormat
  */
-fun <T> T.serializeDataBy(dataFormat: DataFormat):String{
+fun <T> T.serializeDataBy(dataFormat: DataFormat): String {
 	return dataFormat.serialize(this)
 }
 
@@ -70,7 +70,7 @@ fun <T> T.serializeDataBy(dataFormat: DataFormat):String{
  *
  * @see DataFormat
  */
-inline fun <reified T> String.deserializeDataBy(dataFormat: DataFormat):T{
+inline fun <reified T> String.deserializeDataBy(dataFormat: DataFormat): T {
 	return dataFormat.deserialize(this, javaTypeOf<T>())
 }
 
@@ -81,8 +81,8 @@ inline fun <reified T> String.deserializeDataBy(dataFormat: DataFormat):T{
  *
  * @see DataFormat
  */
-fun <T> String.deserializeDataBy(dataFormat: DataFormat,type:Class<T>):T{
-	return dataFormat.deserialize(this,type)
+fun <T> String.deserializeDataBy(dataFormat: DataFormat, type: Class<T>): T {
+	return dataFormat.deserialize(this, type)
 }
 
 /**
@@ -92,8 +92,8 @@ fun <T> String.deserializeDataBy(dataFormat: DataFormat,type:Class<T>):T{
  *
  * @see DataFormat
  */
-fun <T> String.deserializeDataBy(dataFormat: DataFormat,type: Type):T{
-	return dataFormat.deserialize(this,type)
+fun <T> String.deserializeDataBy(dataFormat: DataFormat, type: Type): T {
+	return dataFormat.deserialize(this, type)
 }
 
 //default serializers

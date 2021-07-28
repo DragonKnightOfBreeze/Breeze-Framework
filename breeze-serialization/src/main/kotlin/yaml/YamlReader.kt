@@ -11,7 +11,7 @@ import java.lang.reflect.*
  */
 internal class YamlReader @PublishedApi internal constructor(
 	override val config: YamlConfig = YamlConfig()
-): DataReader {
+) : DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
 	}
@@ -20,7 +20,7 @@ internal class YamlReader @PublishedApi internal constructor(
 		TODO()
 	}
 
-	fun readAll(value:String):List<Any>{
+	fun readAll(value: String): List<Any> {
 		TODO()
 	}
 }

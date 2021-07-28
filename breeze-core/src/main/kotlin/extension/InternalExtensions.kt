@@ -5,6 +5,7 @@
 
 package icu.windea.breezeframework.core.extension
 
+import icu.windea.breezeframework.core.component.*
 import java.lang.reflect.*
 import java.math.*
 import java.text.*
@@ -23,8 +24,8 @@ internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
 internal val calendar: Calendar = Calendar.getInstance()
 internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap()
-internal val enumValuesCache:MutableMap<Class<out Enum<*>>,List<Enum<*>>> = ConcurrentHashMap()
-internal val enumValueMapCache:MutableMap<Class<out Enum<*>>,Map<String,Enum<*>>> = ConcurrentHashMap()
+internal val enumValuesCache: MutableMap<Class<out Enum<*>>, List<Enum<*>>> = ConcurrentHashMap()
+internal val enumValueMapCache: MutableMap<Class<out Enum<*>>, Map<String, Enum<*>>> = ConcurrentHashMap()
 
 //internal number extensions
 
@@ -41,14 +42,14 @@ internal fun BigDecimal.toDoubleOrMax(): Double {
 internal fun CharSequence.firstCharToUpperCase(): String {
 	return when {
 		isEmpty() -> this.toString()
-		else -> this[0].toUpperCase() + this.substring(1)
+		else -> this[0].uppercaseChar() + this.substring(1)
 	}
 }
 
 internal fun CharSequence.firstCharToLowerCase(): String {
 	return when {
 		isEmpty() -> this.toString()
-		else -> this[0].toLowerCase() + this.substring(1)
+		else -> this[0].lowercaseChar() + this.substring(1)
 	}
 }
 
@@ -60,44 +61,44 @@ internal fun CharSequence.splitWords(): String {
 
 //internal convert extensions
 
-internal fun Any?.convertToBooleanOrTrue():Boolean{
+internal fun Any?.convertToBooleanOrTrue(): Boolean {
 	return this == null || (this == true || this.toString() == "true")
 }
 
-internal fun Any?.convertToBooleanOrFalse():Boolean{
+internal fun Any?.convertToBooleanOrFalse(): Boolean {
 	return this != null && (this == true || this.toString() == "true")
 }
 
-internal fun Any?.convertToStringOrNull():String?{
+internal fun Any?.convertToStringOrNull(): String? {
 	return this?.toString()
 }
 
-internal fun <T> Collection<T>.convertToList():List<T>{
+internal fun <T> Collection<T>.convertToList(): List<T> {
 	return when {
 		size == 0 -> emptyList()
-		size == 1 -> listOf(if (this is List) get(0) else iterator().next())
+		size == 1 -> listOf(if(this is List) get(0) else iterator().next())
 		this is List -> this
 		else -> this.toMutableList()
 	}
 }
 
-internal fun <T> Collection<T>.convertToMutableList():MutableList<T>{
+internal fun <T> Collection<T>.convertToMutableList(): MutableList<T> {
 	return when {
 		this is MutableList -> this
 		else -> this.toMutableList()
 	}
 }
 
-internal fun <T> Collection<T>.convertToSet():Set<T>{
+internal fun <T> Collection<T>.convertToSet(): Set<T> {
 	return when {
 		size == 0 -> emptySet()
-		size == 1 -> setOf(if (this is List) get(0) else iterator().next())
+		size == 1 -> setOf(if(this is List) get(0) else iterator().next())
 		this is Set -> this
 		else -> this.toMutableSet()
 	}
 }
 
-internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
+internal fun <T> Collection<T>.convertToMutableSet(): MutableSet<T> {
 	return when {
 		this is MutableSet -> this
 		else -> this.toMutableSet()
@@ -106,9 +107,8 @@ internal fun <T> Collection<T>.convertToMutableSet():MutableSet<T>{
 
 //internal reflect extensions
 
-
-internal fun inferClass(targetType:Type):Class<*>{
-	return when{
+internal fun inferClass(targetType: Type): Class<*> {
+	return when {
 		targetType is Class<*> -> targetType
 		targetType is ParameterizedType -> targetType.rawType as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
 		targetType is WildcardType -> targetType.upperBounds?.firstOrNull() as? Class<*> ?: error("Cannot infer class for target type '$targetType'")
@@ -117,8 +117,8 @@ internal fun inferClass(targetType:Type):Class<*>{
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
-	return when{
+internal fun inferEnumClass(targetType: Type): Class<out Enum<*>> {
+	return when {
 		targetType is Class<*> && targetType.isEnum -> targetType as Class<out Enum<*>>
 		else -> error("Cannot infer enum class for target type '$targetType'")
 	}
@@ -127,8 +127,8 @@ internal fun inferEnumClass(targetType:Type):Class<out Enum<*>>{
 internal fun inferTypeArgument(targetType: Type): Type {
 	if(targetType is ParameterizedType) {
 		return targetType.actualTypeArguments?.firstOrNull()
-			?:  error("Cannot infer class for target type '$targetType'")
-	}else if(targetType is Class<*> && targetType.isArray){
+			?: error("Cannot infer class for target type '$targetType'")
+	} else if(targetType is Class<*> && targetType.isArray) {
 		return targetType.componentType
 	}
 	error("Cannot infer class for target type '$targetType'")
@@ -140,7 +140,7 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 		val rawClass = inferClass(rawType)
 		if(rawClass == targetClass) return targetType.actualTypeArguments
 			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
-	}else if(targetType is Class<*> && targetType.isArray){
+	} else if(targetType is Class<*> && targetType.isArray) {
 		return arrayOf(targetType.componentType)
 	}
 	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
@@ -150,9 +150,18 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 
 private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
 
-/**
- * 推断组件的目标类型。`IntConverter: Converter<Int> -> Int`
- */
+internal fun inferComponentId(component: Component): String {
+	return when {
+		component.componentParams.isEmpty() -> component.javaClass.name
+		else -> component.javaClass.name + '@' + component.componentParams.toString()
+	}
+}
+
+@Suppress("UNCHECKED_CAST")
+internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {
+	return inferComponentTargetType(type, componentType) as? Class<T> ?: error("Cannot infer target type for type '$type'.")
+}
+
 @Suppress("UNCHECKED_CAST")
 internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): Type {
 	val targetMap = componentTargetTypeMapCache.getOrPut(componentType) { ConcurrentHashMap() }
@@ -188,25 +197,35 @@ internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): 
 	}
 }
 
-@Suppress("UNCHECKED_CAST")
-internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {
-	return inferComponentTargetType(type, componentType) as? Class<T> ?: error("Cannot infer target type for type '$type'.")
-}
-
-internal fun filterConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
-	if(configParams.isEmpty()) return emptyMap()
+internal fun filterComponentParams(componentParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(componentParams.isEmpty()) return emptyMap()
 	val result = mutableMapOf<String, Any?>()
-	for((name, configParam) in configParams) {
-		if(name in names) result.put(name,configParam)
+	for((name, configParam) in componentParams) {
+		if(name in names) result.put(name, configParam)
 	}
 	return result
 }
 
-internal fun filterNotConfigParams(configParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
-	if(configParams.isEmpty()) return emptyMap()
+internal fun filterNotComponentParams(componentParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
+	if(componentParams.isEmpty()) return emptyMap()
 	val result = mutableMapOf<String, Any?>()
-	for((name,configParam) in configParams){
-		if(name !in names) result.put(name,configParam)
+	for((name, configParam) in componentParams) {
+		if(name !in names) result.put(name, configParam)
 	}
 	return result
+}
+
+internal fun componentEquals(component: Component, other: Any?): Boolean {
+	if(component === other) return true
+	if(other == null || component.javaClass != other.javaClass) return false
+	other as Component
+	return component.componentParams.toString() == other.componentParams.toString()
+}
+
+internal fun componentHashcode(component: Component): Int {
+	return if(component.componentParams.isEmpty()) 0 else component.componentParams.toString().hashCode()
+}
+
+internal fun componentToString(component: Component): String {
+	return inferComponentId(component)
 }

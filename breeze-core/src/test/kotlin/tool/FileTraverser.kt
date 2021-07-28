@@ -26,7 +26,7 @@ object FileTraverser {
 	val childMatchedSuffix = ")"
 	val childSeparator = ","
 	val fieldSeparator = "="
-	val fieldSorts = arrayOf("name","value","paramType","dataType","required")
+	val fieldSorts = arrayOf("name", "value", "paramType", "dataType", "required")
 
 	fun traverse(file: File) {
 		val newLines = mutableListOf<String>()

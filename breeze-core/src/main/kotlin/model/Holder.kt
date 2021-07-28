@@ -3,10 +3,10 @@
 
 package icu.windea.breezeframework.core.model
 
-import java.io.Serializable
+import java.io.*
 
 data class Holder<out T>(
-	val value:T
-): Serializable {
+	val value: T
+) : Serializable {
 	override fun toString(): String = value.toString()
 }

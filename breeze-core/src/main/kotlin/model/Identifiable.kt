@@ -27,7 +27,7 @@ interface Identifiable<T : Serializable> : Serializable {
 		return id.hashCode()
 	}
 
-	override fun toString(): String{
+	override fun toString(): String {
 		return "${javaClass.name}@${id}"
 	}
 

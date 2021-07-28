@@ -68,7 +68,7 @@ class ColorfulLogger(
 
 	private val currentClassNameAbbreviation
 		get() = currentClassName.split(".").joinToString(".") { it.take(1) } +
-		        currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
+			currentClassName.substring(currentClassName.lastIndexOf('.') + 2, currentClassName.length)
 
 	private val LogLevel.colorCommandPair
 		get() = when(this) {

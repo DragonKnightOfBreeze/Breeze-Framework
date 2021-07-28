@@ -10,7 +10,7 @@ import icu.windea.breezeframework.serialization.*
  */
 internal class PropertiesWriter @PublishedApi internal constructor(
 	override val config: PropertiesConfig = PropertiesConfig()
-): DataWriter {
+) : DataWriter {
 	override fun <T> write(value: T): String {
 		TODO()
 	}

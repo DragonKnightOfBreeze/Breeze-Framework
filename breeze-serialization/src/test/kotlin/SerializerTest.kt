@@ -10,13 +10,13 @@ class SerializerTest {
 	fun test1() {
 		val a = mapOf("name" to "Windea", "gender" to "Female")
 		val b = """{"name":"Windea","gender":"Female"}""".trimIndent()
-		assertEquals(a, b.deserializeDataBy(DataFormat.Json))
+		assertEquals(a, b.deserializeDataBy(DataFormats.Json))
 	}
 
 	@Test
-	fun test2(){
+	fun test2() {
 		val a = mapOf("name" to "Windea", "gender" to "Female")
 		val b = """{"name":"Windea","gender":"Female"}""".trimIndent()
-		assertEquals(b, a.serializeDataBy<Map<*,*>>(DataFormat.Json))
+		assertEquals(b, a.serializeDataBy<Map<*, *>>(DataFormats.Json))
 	}
 }

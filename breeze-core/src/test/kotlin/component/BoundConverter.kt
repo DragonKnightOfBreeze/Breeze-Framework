@@ -3,9 +3,9 @@
 
 package icu.windea.breezeframework.core.component
 
-import java.lang.reflect.*
-
-interface BoundConverter<T> : Converter<T>, BoundComponent {
-	override fun bindingActualTargetType(actualTargetType: Type): BoundConverter<T>
-}
+//import java.lang.reflect.*
+//
+//interface BoundConverter<T> : Converter<T>, BoundComponent {
+//	override fun bindingActualTargetType(actualTargetType: Type): BoundConverter<T>
+//}
 

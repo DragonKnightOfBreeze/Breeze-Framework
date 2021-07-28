@@ -3,8 +3,8 @@
 
 package icu.windea.breezeframework.core.expression
 
-interface Expression:CharSequence {
-	val expression:String
+interface Expression : CharSequence {
+	val expression: String
 
 	override val length: Int get() = expression.length
 

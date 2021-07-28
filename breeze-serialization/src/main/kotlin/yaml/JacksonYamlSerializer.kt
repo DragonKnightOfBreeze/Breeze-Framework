@@ -13,7 +13,7 @@ import java.lang.reflect.*
  * @see com.fasterxml.jackson.dataformat.yaml.YAMLMapper
  */
 class JacksonYamlSerializer(
-	val mapper:YAMLMapper = YAMLMapper()
+	val mapper: YAMLMapper = YAMLMapper()
 ) : YamlSerializer, JacksonSerializer {
 	init {
 		mapper.findAndRegisterModules()

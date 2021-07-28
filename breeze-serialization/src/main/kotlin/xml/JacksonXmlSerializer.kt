@@ -12,9 +12,9 @@ import java.lang.reflect.*
  *
  * @see com.fasterxml.jackson.dataformat.xml.XmlMapper
  */
- class JacksonXmlSerializer(
-	val mapper:XmlMapper = XmlMapper()
- ) : XmlSerializer, JacksonSerializer {
+class JacksonXmlSerializer(
+	val mapper: XmlMapper = XmlMapper()
+) : XmlSerializer, JacksonSerializer {
 	init {
 		mapper.findAndRegisterModules()
 	}

@@ -7,13 +7,13 @@ import icu.windea.breezeframework.core.extension.*
 import org.junit.*
 
 class ReifiedTest {
-	inline fun <reified T> test(){
+	inline fun <reified T> test() {
 		println(T::class.java)
 		println(javaTypeOf<T>())
 	}
 
 	@Test
-	fun test1(){
+	fun test1() {
 		test<Int>()
 		test<List<Int>>()
 		val a = javaTypeOf<Int>()
@@ -27,7 +27,7 @@ class ReifiedTest {
 	}
 
 	@Test
-	fun test2(){
-		val clz:Class<Int> = javaClassOf()
+	fun test2() {
+		val clz: Class<Int> = javaClassOf()
 	}
 }

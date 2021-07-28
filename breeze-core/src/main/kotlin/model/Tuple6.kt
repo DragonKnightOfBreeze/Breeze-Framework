@@ -3,7 +3,7 @@
 
 package icu.windea.breezeframework.core.model
 
-import java.io.Serializable
+import java.io.*
 
 /**
  * 代表了一个六元素元组。

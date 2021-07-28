@@ -12,7 +12,7 @@ import java.util.*
  */
 internal class JsonWriter @PublishedApi internal constructor(
 	override val config: JsonConfig = JsonConfig()
-): DataWriter {
+) : DataWriter {
 	companion object {
 		private const val space = ' '
 		private const val doubleQuote = '\"'

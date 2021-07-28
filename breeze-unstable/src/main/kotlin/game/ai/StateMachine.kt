@@ -82,7 +82,8 @@ open class StateMachine<S : State<S>>(
 		if(currentSubStates.isEmpty()) return false
 
 		val previousState = currentState
-		val nextState = if(currentSubStates.size == 1) currentParentState else currentSubStates.elementAt(currentSubStates.size - 2)
+		val nextState =
+			if(currentSubStates.size == 1) currentParentState else currentSubStates.elementAt(currentSubStates.size - 2)
 
 		previousState.onExit(nextState)
 		currentSubStates.removeLast()

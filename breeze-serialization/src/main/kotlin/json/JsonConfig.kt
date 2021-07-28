@@ -15,4 +15,4 @@ data class JsonConfig(
 	val unquoteKey: Boolean = false,
 	val unquoteValue: Boolean = false,
 	val prettyPrint: Boolean = false
-): DataConfig
+) : DataConfig

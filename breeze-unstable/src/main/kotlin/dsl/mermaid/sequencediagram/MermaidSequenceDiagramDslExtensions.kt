@@ -42,7 +42,9 @@ fun DslEntry.message(fromParticipantId: String, toParticipantId: String): Messag
 
 @MermaidSequenceDiagramDslMarker
 fun DslEntry.message(fromParticipantId: String, arrowShape: ArrowShape, isActivated: Boolean = false, toParticipantId: String): Message {
-	return Message(fromParticipantId, toParticipantId).apply { this.arrowShape = arrowShape; this.isActivated = isActivated }.also { messages += it }
+	return Message(fromParticipantId, toParticipantId).apply {
+		this.arrowShape = arrowShape; this.isActivated = isActivated
+	}.also { messages += it }
 }
 
 @MermaidSequenceDiagramDslMarker

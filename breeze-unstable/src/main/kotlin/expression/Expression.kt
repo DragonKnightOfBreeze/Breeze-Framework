@@ -15,12 +15,12 @@ interface ExpressionContext {
 
 annotation class ExtendedExpression
 
-object ExpressionParser{
-	fun parseExpression(expressionString:String):Any?{
+object ExpressionParser {
+	fun parseExpression(expressionString: String): Any? {
 		val chars = expressionString.toCharArray()
 		val size = chars.size
 		var index = 0;
-		while(index < size){
+		while(index < size) {
 			val char = chars[index]
 
 			index++;
@@ -30,15 +30,15 @@ object ExpressionParser{
 }
 
 
-interface VariableExpression<T>:Expression<T>{
-	val variableName:String
+interface VariableExpression<T> : Expression<T> {
+	val variableName: String
 }
 
 @Suppress("UNCHECKED_CAST")
 class VariableExpressionImpl<T>(
 	override val context: ExpressionContext,
 	override val variableName: String
-):VariableExpression<T>{
+) : VariableExpression<T> {
 	override fun interpreter(): T {
 		return context.variables.getValue(variableName) as T
 	}
@@ -49,63 +49,63 @@ interface UExpression<T, O> : Expression<T> {
 	val other: Expression<O>
 }
 
-interface UnaryPlusExpression<T,O> : UExpression<T, O>
+interface UnaryPlusExpression<T, O> : UExpression<T, O>
 
 class IntUnaryPlusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Int>
-): UnaryPlusExpression<Int,Int>{
+) : UnaryPlusExpression<Int, Int> {
 	override fun interpreter() = other.interpreter().unaryPlus()
 }
 
 class LongUnaryPlusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Long>
-): UnaryPlusExpression<Long,Long>{
+) : UnaryPlusExpression<Long, Long> {
 	override fun interpreter() = other.interpreter().unaryPlus()
 }
 
 class FloatUnaryPlusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Float>
-):UnaryPlusExpression<Float,Float>{
+) : UnaryPlusExpression<Float, Float> {
 	override fun interpreter() = other.interpreter().unaryPlus()
 }
 
 class DoubleUnaryPlusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Double>
-):UnaryPlusExpression<Double,Double>{
+) : UnaryPlusExpression<Double, Double> {
 	override fun interpreter() = other.interpreter().unaryPlus()
 }
 
-interface UnaryMinusExpression<T,O> : UExpression<T,O>
+interface UnaryMinusExpression<T, O> : UExpression<T, O>
 
 class IntUnaryMinusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Int>
-): UnaryMinusExpression<Int,Int>{
+) : UnaryMinusExpression<Int, Int> {
 	override fun interpreter() = other.interpreter().unaryMinus()
 }
 
 class LongUnaryMinusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Long>
-): UnaryMinusExpression<Long,Long>{
+) : UnaryMinusExpression<Long, Long> {
 	override fun interpreter() = other.interpreter().unaryMinus()
 }
 
 class FloatUnaryMinusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Float>
-):UnaryMinusExpression<Float,Float>{
+) : UnaryMinusExpression<Float, Float> {
 	override fun interpreter() = other.interpreter().unaryMinus()
 }
 
 class DoubleUnaryMinusExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Double>
-):UnaryMinusExpression<Double,Double>{
+) : UnaryMinusExpression<Double, Double> {
 	override fun interpreter() = other.interpreter().unaryMinus()
 }
 
@@ -114,7 +114,7 @@ interface NotExpression<T, O> : UExpression<T, O>
 class BooleanNotExpression(
 	override val context: ExpressionContext,
 	override val other: Expression<Boolean>
-):UExpression<Boolean,Boolean>{
+) : UExpression<Boolean, Boolean> {
 	override fun interpreter(): Boolean {
 		return other.interpreter().not()
 	}
@@ -158,29 +158,30 @@ abstract class AbstractExpression<T>(
 ) : Expression<T>
 
 
-internal fun Any.isNullLike():Boolean{
-	return when(this){
+internal fun Any.isNullLike(): Boolean {
+	return when(this) {
 		is Boolean -> !this
-		is Number -> toString().let{ it=="0" || it=="0.0" }
+		is Number -> toString().let { it == "0" || it == "0.0" }
 		is CharSequence -> isEmpty()
 		is Array<*> -> isEmpty()
 		is Collection<*> -> isEmpty()
 		is Iterable<*> -> none()
 		is Sequence<*> -> none()
-		is Map<*,*> -> isEmpty()
+		is Map<*, *> -> isEmpty()
 		else -> false
 	}
 }
-internal fun Any.isNotNullLike():Boolean{
-	return when(this){
+
+internal fun Any.isNotNullLike(): Boolean {
+	return when(this) {
 		is Boolean -> this
-		is Number -> toString().let{ it!="0" || it!="0.0" }
+		is Number -> toString().let { it != "0" || it != "0.0" }
 		is CharSequence -> isNotEmpty()
 		is Array<*> -> isNotEmpty()
 		is Collection<*> -> isNotEmpty()
 		is Iterable<*> -> any()
 		is Sequence<*> -> any()
-		is Map<*,*> -> isNotEmpty()
+		is Map<*, *> -> isNotEmpty()
 		else -> false
 	}
 }

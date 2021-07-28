@@ -10,7 +10,7 @@ import icu.windea.breezeframework.serialization.*
  */
 internal class XmlWriter @PublishedApi internal constructor(
 	override val config: XmlConfig = XmlConfig()
-): DataWriter {
+) : DataWriter {
 	override fun <T> write(value: T): String {
 		TODO()
 	}

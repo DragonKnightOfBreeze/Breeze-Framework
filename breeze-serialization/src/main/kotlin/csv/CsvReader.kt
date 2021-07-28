@@ -11,7 +11,7 @@ import java.lang.reflect.*
  */
 internal class CsvReader @PublishedApi internal constructor(
 	override val config: CsvConfig = CsvConfig()
-): DataReader {
+) : DataReader {
 	override fun <T> read(value: String, type: Class<T>): T {
 		TODO()
 	}

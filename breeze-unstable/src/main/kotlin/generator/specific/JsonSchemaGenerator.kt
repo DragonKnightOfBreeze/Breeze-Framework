@@ -79,7 +79,7 @@ object JsonSchemaGenerator : Generator {
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputText: String, inputType: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml): String {
+	fun generateExtendedSchema(inputText: String, inputType: DataFormat = DataFormats.Yaml, outputFormat: DataFormat = DataFormats.Yaml): String {
 		val inputMap = inputType.serializer.read<MutableMap<String, Any?>>(inputText)
 		convertRules(inputMap)
 		return outputFormat.serializer.write(inputMap)
@@ -90,7 +90,7 @@ object JsonSchemaGenerator : Generator {
 	 *
 	 * 输入文本的格式：扩展的Json Schema。
 	 */
-	fun generateExtendedSchema(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormat.Yaml, outputFormat: DataFormat = DataFormat.Yaml) {
+	fun generateExtendedSchema(inputFile: File, outputFile: File, inputFormat: DataFormat = DataFormats.Yaml, outputFormat: DataFormat = DataFormats.Yaml) {
 		val inputMap = inputFormat.serializer.read<MutableMap<String, Any?>>(inputFile)
 		convertRules(inputMap)
 		outputFormat.serializer.write(inputMap, outputFile)

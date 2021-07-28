@@ -9,17 +9,18 @@ class LinqTest {
 	fun test1() {
 		val source = listOf("foo", "Bar", "FooBar", "abc", "DDD", "Windea", "BreezesLanding", "Maple", "Kotlin")
 
-		val linq1 = from<String>() where { it.length <= 5 } orderBy { it.first() } limit 1..5 select { it.toLowerCase() }
+		val linq1 = from<String>() where { it.length <= 5 } orderBy { it.first() } limit 1..5 select { it.lowercase() }
 		println(source linq linq1)
 
-		val linq2 = from<String>(ByStream) where { it.length <= 5 } orderBy { it.first() } limit 1..5 select { it.toLowerCase() }
+		val linq2 =
+			from<String>(ByStream) where { it.length <= 5 } orderBy { it.first() } limit 1..5 select { it.lowercase() }
 		println(source linq linq2)
 	}
 
 	@Test
 	fun test2() {
 		val source = listOf("foo", "Bar", "FooBar", "abc", "DDD", "Windea", "BreezesLanding", "Maple", "Kotlin")
-		val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.toLowerCase() }
+		val linq = from<String>() where { it.length <= 5 } limit 1..5 orderBy { it.first() } select { it.lowercase() }
 		println(source linq linq)
 	}
 
