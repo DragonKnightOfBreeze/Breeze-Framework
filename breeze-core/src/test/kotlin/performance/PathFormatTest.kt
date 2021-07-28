@@ -9,7 +9,7 @@ import java.util.concurrent.*
 import kotlin.system.*
 import kotlin.test.*
 
-class PathPatternTest {
+class PathFormatTest {
 	//3519328300    splitToSequence
 	//2992920300    split
 	//5065847100    regex
@@ -134,10 +134,10 @@ class PathPatternTest {
 	fun matchesByVsMatchesTest() {
 		val n = 1000000
 		val executor = Executors.newFixedThreadPool(3)
-		val f1 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathPattern.AntPath) } } })
+		val f1 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormat.AntPath) } } })
 		val f2 = executor.submit(Callable { measureNanoTime { repeat(n) { "/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()) } } })
 
-		println("/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathPattern.AntPath))
+		println("/foo/bar/bar/bar".matchesBy("/foo/*/b?r/**", PathFormat.AntPath))
 		println("/foo/bar/bar/bar".matches("/foo/[^/?]*/b.r/.*".toRegex()))
 
 		println(f1.get())

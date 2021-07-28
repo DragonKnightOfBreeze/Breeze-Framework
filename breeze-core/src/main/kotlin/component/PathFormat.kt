@@ -9,12 +9,12 @@ import icu.windea.breezeframework.core.extension.*
 //pathMatcher *.kt https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 
 /**
- * 路径模式。
+ * 路径格式。
  *
- * 路径模式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
+ * 路径格式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
 @Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
-interface PathPattern:Component {
+interface PathFormat : Component {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
 	 */
@@ -85,7 +85,7 @@ interface PathPattern:Component {
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
 
-	companion object Registry: AbstractComponentRegistry<PathPattern>(){
+	companion object Registry : AbstractComponentRegistry<PathFormat>() {
 		override fun registerDefault() {
 			register(StandardPath)
 			register(JsonPointerPath)
@@ -95,12 +95,12 @@ interface PathPattern:Component {
 	}
 
 	//region Path Patterns
-	abstract class AbstractPathPattern(
+	abstract class AbstractPathFormat(
 		protected val delimiter: Char = '/',
 		protected val prefix: String = "/",
 		protected val variablePrefix: Char = '{',
 		protected val variableSuffix: Char? = '}',
-	) : PathPattern {
+	) : PathFormat {
 		private val delimiterString: String = delimiter.toString()
 
 		override fun normalize(path: String): String {
@@ -242,7 +242,8 @@ interface PathPattern:Component {
 			if(metaPaths.none()) return value as T
 			var currentValue = value
 			for(metaPath in metaPaths) {
-				currentValue = metaGet(currentValue, metaPath) ?: throw IllegalArgumentException("Cannot query by path '$path'.")
+				currentValue =
+					metaGet(currentValue, metaPath) ?: throw IllegalArgumentException("Cannot query by path '$path'.")
 			}
 			return currentValue as T
 		}
@@ -287,7 +288,7 @@ interface PathPattern:Component {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object StandardPath : AbstractPathPattern()
+	object StandardPath : AbstractPathFormat()
 
 	/**
 	 * Json指针路径。
@@ -299,7 +300,7 @@ interface PathPattern:Component {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object JsonPointerPath : AbstractPathPattern()
+	object JsonPointerPath : AbstractPathFormat()
 
 	/**
 	 * Ant路径。
@@ -313,7 +314,7 @@ interface PathPattern:Component {
 	 * * `index` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object AntPath : AbstractPathPattern() {
+	object AntPath : AbstractPathFormat() {
 		private const val singleWildcard = '?'
 		private const val wildCard = '*'
 
@@ -456,7 +457,7 @@ interface PathPattern:Component {
 	 * * `[index]` 匹配索引`index`，`index`是整数。
 	 * * `name` 匹配名字、键`name`。
 	 */
-	object ReferencePath : AbstractPathPattern('.', "") {
+	object ReferencePath : AbstractPathFormat('.', "") {
 		private const val indexPrefix = '['
 		private const val indexSuffix = ']'
 
