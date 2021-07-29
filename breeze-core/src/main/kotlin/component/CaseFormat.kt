@@ -4,7 +4,7 @@
 package icu.windea.breezeframework.core.component
 
 /**
- * 大小写格式
+ * 大小写格式。
  *
  * 大小写格式用于表示单词组的显示格式，基于字母的大小写和单词的分割方式。
  */

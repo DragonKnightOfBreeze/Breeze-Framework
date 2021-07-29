@@ -33,6 +33,9 @@
       <module name="Breeze-Framework.breeze-expression.main" target="8" />
       <module name="Breeze-Framework.breeze-expression.test" target="8" />
       <module name="Breeze-Framework.breeze-tool" target="11" />
+      <module name="Breeze-Framework.breeze-tool.jmh" target="11" />
+      <module name="Breeze-Framework.breeze-tool.main" target="11" />
+      <module name="Breeze-Framework.breeze-tool.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -849,8 +849,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingComponentParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
@@ -1809,8 +1808,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingComponentParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
@@ -1866,8 +1864,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingComponentParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
@@ -1923,8 +1920,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingComponentParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
@@ -1980,8 +1976,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingComponentParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
 	}
