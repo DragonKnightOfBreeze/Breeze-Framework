@@ -1,7 +1,5 @@
-package icu.windea.breezeframework.dsl.commandline
+package icu.windea.breezeframework.dsl.cmdtext
 
-
-import icu.windea.breezeframework.dsl.cmdtext.*
 import icu.windea.breezeframework.dsl.cmdtext.CmdTextDsl.*
 import kotlin.test.*
 

@@ -5,6 +5,7 @@
 
 package icu.windea.breezeframework.generator.specific
 
+import icu.windea.breezeframework.core.component.*
 import icu.windea.breezeframework.core.extension.*
 import icu.windea.breezeframework.generator.*
 import icu.windea.breezeframework.serializer.*

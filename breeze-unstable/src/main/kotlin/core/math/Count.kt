@@ -3,7 +3,7 @@
 
 @file:NotTested
 
-package icu.windea.breezeframework.core.model.math
+package icu.windea.breezeframework.core.math
 
 import icu.windea.breezeframework.core.annotation.*
 

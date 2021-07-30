@@ -1,5 +1,6 @@
 package icu.windea.breezeframework.core.extension
 
+import icu.windea.breezeframework.core.component.*
 import kotlin.system.*
 
 /**

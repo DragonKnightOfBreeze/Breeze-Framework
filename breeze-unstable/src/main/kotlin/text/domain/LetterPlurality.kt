@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package icu.windea.breezeframework.text.enums
+package icu.windea.breezeframework.text.domain
 
 /**单词的单复数格式。*/
 enum class LetterPlurality {

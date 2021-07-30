@@ -230,7 +230,7 @@ fun CharSequence.isMultiline(): Boolean {
 @Deprecated(
 	"Use String.matchesBy(StringMatcher.NumericMatcher)", ReplaceWith(
 		"this.matchesBy(StringMatcher.NumericMatcher)",
-		"icu.windea.breezeframework.core.component.StringMatcher"
+		"icu.windea.breezeframework.component.StringMatcher"
 	)
 )
 fun CharSequence.isNumeric(): Boolean {
@@ -244,7 +244,7 @@ fun CharSequence.isNumeric(): Boolean {
 @Deprecated(
 	"Use String.matchesBy(StringMatcher.AlphaMatcher)", ReplaceWith(
 		"this.matchesBy(StringMatcher.AlphaMatcher)",
-		"icu.windea.breezeframework.core.component.StringMatcher"
+		"icu.windea.breezeframework.component.StringMatcher"
 	)
 )
 fun CharSequence.isAlpha(): Boolean {
@@ -258,7 +258,7 @@ fun CharSequence.isAlpha(): Boolean {
 @Deprecated(
 	"Use String.matchesBy(StringMatcher.AlphanumericMatcher)", ReplaceWith(
 		"this.matchesBy(StringMatcher.AlphanumericMatcher)",
-		"icu.windea.breezeframework.core.component.StringMatcher"
+		"icu.windea.breezeframework.component.StringMatcher"
 	)
 )
 fun CharSequence.isAlphanumeric(): Boolean {

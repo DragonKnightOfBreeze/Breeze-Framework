@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package icu.windea.breezeframework.core.model.collections
+package icu.windea.breezeframework.core.collections
 
 import icu.windea.breezeframework.core.annotation.*
 

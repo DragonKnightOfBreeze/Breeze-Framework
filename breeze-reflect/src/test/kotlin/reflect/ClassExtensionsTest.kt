@@ -1,4 +1,4 @@
-package icu.windea.breezeframework.game
+package icu.windea.breezeframework.reflect
 
 import icu.windea.breezeframework.reflect.extension.*
 import org.junit.*
