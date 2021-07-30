@@ -5,7 +5,7 @@ package icu.windea.breezeframework.core.model
 
 import icu.windea.breezeframework.core.extension.*
 
-//注意：这里不要使用String.replace(regex, replacement)方法，因为replacement中的"\Q"会变成"Q"
+//这里不要使用String.replace(regex, replacement)方法，因为replacement中的"\Q"会变成"Q"
 
 /**匹配类型。*/
 enum class MatchType(

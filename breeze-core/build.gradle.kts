@@ -1,5 +1,5 @@
 jmh {
-	this.includes.add("DefaultGeneratorBenchmark")
+	this.includes.add("StringBenchmark")
 }
 
 dependencies {

@@ -11,10 +11,9 @@ plugins {
 
 val groupName = "icu.windea.breezeframework"
 val versionName = "3.0.0"
-val packageRootPrefix = "icu.windea.breezeframework"
+val packagePrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",
-	"-Xjvm-default=all",
 	"-Xopt-in=kotlin.RequiresOptIn",
 	"-Xopt-in=kotlin.ExperimentalStdlibApi",
 	"-Xopt-in=kotlin.contracts.ExperimentalContracts",
@@ -22,7 +21,6 @@ val compilerArgs = listOf(
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi",
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
-val flatModuleNames = arrayOf("breeze-unstable")
 val noPublishModuleNames = arrayOf("breeze-unstable")
 val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
 
@@ -33,14 +31,7 @@ allprojects {
 		in java11ModuleNames -> "11"
 		else -> "1.8"
 	}
-	val projectPackageName = when {
-		project.parent != rootProject -> project.name.removePrefix("breeze-").replaceFirst("-", ".").replace("-", "")
-		else -> project.name.removePrefix("breeze-").replace("-", "")
-	}
-	val projectPackagePrefix = when {
-		project != rootProject && project.name !in flatModuleNames -> "$packageRootPrefix.$projectPackageName"
-		else -> packageRootPrefix
-	}
+	val projectPackagePrefix = packagePrefix
 
 	group = groupName
 	version = versionName
