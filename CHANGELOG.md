@@ -502,6 +502,7 @@
 * [X] `LetterCase`重命名为`CaseFormat` `PathPattern`重命名为`PathFormat`
 * [X] 重构组件相关代码
 * [X] 更改项目目录结构
+* [X] 清理breeze-unstable模块
 * [ ] 并发迭代的集合（ParallelCollection）
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
