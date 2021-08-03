@@ -2,7 +2,8 @@
 // Breeze is blowing...
 
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY",
+	"BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY", "ReplaceIsEmptyWithIfEmpty")
 
 package icu.windea.breezeframework.core.extension
 
@@ -163,6 +164,7 @@ inline val <reified T> Sequence<T>.elementType: Type
  */
 @UselessCallOnNotNullType
 @JvmSynthetic
+@InlineOnly
 inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
@@ -175,6 +177,7 @@ inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
  */
 @UselessCallOnNotNullType
 @JvmSynthetic
+@InlineOnly
 inline fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
@@ -187,6 +190,7 @@ inline fun <T> Collection<T>?.isNotNullOrEmpty(): Boolean {
  */
 @UselessCallOnNotNullType
 @JvmSynthetic
+@InlineOnly
 inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 	contract {
 		returns(true) implies (this@isNotNullOrEmpty != null)
@@ -198,6 +202,8 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
  * 判断当前序列是否为空。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@JvmSynthetic
+@InlineOnly
 inline fun <T> Sequence<T>.isEmpty(): Boolean {
 	return !this.iterator().hasNext()
 }
@@ -206,6 +212,8 @@ inline fun <T> Sequence<T>.isEmpty(): Boolean {
  * 判断当前序列是否不为空。
  */
 @Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@JvmSynthetic
+@InlineOnly
 inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
 	return this.iterator().hasNext()
 }
@@ -215,6 +223,7 @@ inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
  * 如果当前数组不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
+@InlineOnly
 inline fun <T> Array<out T>.orNull(): Array<out T>? {
 	return if(this.isEmpty()) null else this
 }
@@ -223,6 +232,7 @@ inline fun <T> Array<out T>.orNull(): Array<out T>? {
  * 如果当前集合不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
+@InlineOnly
 inline fun <T> Collection<T>.orNull(): Collection<T>? {
 	return if(this.isEmpty()) null else this
 }
@@ -231,6 +241,7 @@ inline fun <T> Collection<T>.orNull(): Collection<T>? {
  * 如果当前映射不为空，则返回本身，否则返回null。
  */
 @JvmSynthetic
+@InlineOnly
 inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? {
 	return if(this.isEmpty()) null else this
 }
@@ -240,7 +251,7 @@ inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? {
  * 如果当前数组不为空，则返回转化后的值，否则返回本身。
  */
 @JvmSynthetic
-@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
+@InlineOnly
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R {
 	return if(this.isEmpty()) this else transform(this)
 }
@@ -249,7 +260,7 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R
  * 如果当前集合不为空，则返回转化后的值，否则返回本身。
  */
 @JvmSynthetic
-@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+@InlineOnly
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, C : R {
 	return if(this.isEmpty()) this else transform(this)
 }
@@ -258,7 +269,7 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, 
  * 如果当前映射不为空，则返回转化后的值，否则返回本身。
  */
 @JvmSynthetic
-@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+@InlineOnly
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R {
 	return if(this.isEmpty()) this else transform(this)
 }
@@ -941,7 +952,7 @@ fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 }
 //endregion
 
-//region Specific Operations
+//region Specific Extensions
 /**
  * 得到指定索引的字符串，如果索引越界，则返回空字符串。
  */

@@ -3,9 +3,10 @@
 
 @file:JvmName("ComponentExtensions")
 
-package icu.windea.breezeframework.core.component
+package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.component.*
 import java.lang.reflect.*
 import java.nio.charset.*
 

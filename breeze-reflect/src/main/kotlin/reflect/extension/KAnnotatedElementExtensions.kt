@@ -3,6 +3,7 @@
 
 package icu.windea.breezeframework.reflect.extension
 
+import icu.windea.breezeframework.core.annotation.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
@@ -12,6 +13,7 @@ import kotlin.reflect.jvm.*
  *
  * 查找的范围包括：属性对应的字段、主构造参数等。
  */
+@UnstableApi
 inline fun <reified T : Annotation> KAnnotatedElement.findExtraAnnotation(): T? {
 	return findAnnotation<T>() ?: when(this) {
 		is KProperty<*> -> javaField?.getAnnotation(T::class.java)
@@ -25,6 +27,7 @@ inline fun <reified T : Annotation> KAnnotatedElement.findExtraAnnotation(): T? 
  *
  * 查找的范围包括：属性对应的字段、主构造参数等。
  */
+@UnstableApi
 inline fun <reified T : Annotation> KAnnotatedElement.hasExtraAnnotation(): Boolean {
 	return hasAnnotation<T>() || when(this) {
 		is KProperty<*> -> javaField?.isAnnotationPresent(T::class.java) ?: false

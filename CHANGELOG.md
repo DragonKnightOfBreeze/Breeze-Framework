@@ -503,7 +503,9 @@
 * [X] 重构组件相关代码
 * [X] 更改项目目录结构
 * [X] 清理breeze-unstable模块
-* [ ] 并发迭代的集合（ParallelCollection）
+* [ ] 基于kotlin协程的并发高阶函数（如`forEachAsync``）
+* [ ] 优化`CaseFormat`组件
+* [ ] ~~并发迭代的集合（ParallelCollection）~~
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 
 # 长期
@@ -514,4 +516,5 @@
 * [X] 将项目的目标java版本从11改为1.8，部分模块的java版本仍然保持在11
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
+* [ ] 使用`breeze-unstable`模块进行测试和调研
 

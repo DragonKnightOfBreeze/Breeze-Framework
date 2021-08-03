@@ -73,9 +73,8 @@ allprojects {
 
 	//配置依赖
 	dependencies {
-		implementation(kotlin("stdlib"))
-		testImplementation(kotlin("test-junit"))
-		//testImplementation("org.openjdk.jmh:jmh-core:1.29")
+		implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
+		testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.5.21")
 	}
 
 	java {

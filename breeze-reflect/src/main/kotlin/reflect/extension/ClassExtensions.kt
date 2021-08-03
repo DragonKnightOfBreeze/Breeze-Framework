@@ -5,6 +5,7 @@
 
 package icu.windea.breezeframework.reflect.extension
 
+import icu.windea.breezeframework.core.annotation.*
 import java.io.*
 import java.lang.reflect.*
 
@@ -16,21 +17,27 @@ val <T> Class<T>.isBoxed: Boolean
 		java.lang.Character::class.java == this || java.lang.Boolean::class.java == this
 
 /**判断当前类型是否是字符序列类型。*/
+@UnstableApi
 val <T> Class<T>.isCharSequence: Boolean get() = CharSequence::class.java.isAssignableFrom(this)
 
 /**判断当前类型是否是可迭代类型。*/
+@UnstableApi
 val <T> Class<T>.isIterable: Boolean get() = Iterable::class.java.isAssignableFrom(this)
 
 /**判断当前类型是否是列表类型。*/
+@UnstableApi
 val <T> Class<T>.isList: Boolean get() = List::class.java.isAssignableFrom(this)
 
 /**判断当前类型是否是集类型。*/
+@UnstableApi
 val <T> Class<T>.isSet: Boolean get() = Set::class.java.isAssignableFrom(this)
 
 /**判断当前类型是否是映射类型。*/
+@UnstableApi
 val <T> Class<T>.isMap: Boolean get() = Map::class.java.isAssignableFrom(this)
 
 /**判断当前类型是否是可序列化类型。*/
+@UnstableApi
 val <T> Class<T>.isSerializable: Boolean get() = Serializable::class.java.isAssignableFrom(this)
 
 
