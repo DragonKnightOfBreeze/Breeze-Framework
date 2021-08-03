@@ -2060,7 +2060,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		private fun doConvert(value: String): IntRange {
-			return value.split("", limit = 2).let { it[0].convert<Int>()..it[1].convert<Int>() }
+			return value.split("..", limit = 2).let { it[0].convert<Int>()..it[1].convert<Int>() }
 		}
 	}
 
@@ -2083,7 +2083,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		private fun doConvert(value: String): LongRange {
-			return value.split("", limit = 2).let { it[0].convert<Long>()..it[1].convert<Long>() }
+			return value.split("..", limit = 2).let { it[0].convert<Long>()..it[1].convert<Long>() }
 		}
 	}
 
@@ -2106,7 +2106,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		private fun doConvert(value: String): CharRange {
-			return value.split("", limit = 2).let { it[0].convert<Char>()..it[1].convert<Char>() }
+			return value.split("..", limit = 2).let { it[0].convert<Char>()..it[1].convert<Char>() }
 		}
 	}
 
@@ -2129,7 +2129,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		private fun doConvert(value: String): UIntRange {
-			return value.split("", limit = 2).let { it[0].convert<UInt>()..it[1].convert<UInt>() }
+			return value.split("..", limit = 2).let { it[0].convert<UInt>()..it[1].convert<UInt>() }
 		}
 	}
 
@@ -2152,7 +2152,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		private fun doConvert(value: String): ULongRange {
-			return value.split("", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
+			return value.split("..", limit = 2).let { it[0].convert<ULong>()..it[1].convert<ULong>() }
 		}
 	}
 

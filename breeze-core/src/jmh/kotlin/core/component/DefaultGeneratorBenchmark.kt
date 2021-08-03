@@ -3,6 +3,7 @@
 
 package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.extension.*
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.*
 

@@ -1,0 +1,3 @@
+jmh {
+	includes.add("StringBenchmark")
+}
