@@ -850,8 +850,8 @@ fun String.alignCenter(padChar: Char = ' '): String {
  * 偏移默认为0，截断符默认为`"..."`。
  */
 fun String.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
-	require(limit > 0) { "Limit must be non-negative." }
-	require(offset > 0) { "Limit must be non-negative." }
+	require(limit >= 0) { "Limit must be non-negative." }
+	require(offset >= 0) { "Limit must be non-negative." }
 	return when {
 		limit == 0 -> ""
 		limit >= length -> this
@@ -865,8 +865,8 @@ fun String.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = 
  * 偏移默认为0，截断符默认为`"..."`。
  */
 fun String.truncateEnd(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
-	require(limit > 0) { "Limit must be non-negative." }
-	require(offset > 0) { "Limit must be non-negative." }
+	require(limit >= 0) { "Limit must be non-negative." }
+	require(offset >= 0) { "Limit must be non-negative." }
 	return when {
 		limit == 0 -> ""
 		limit >= length -> this
