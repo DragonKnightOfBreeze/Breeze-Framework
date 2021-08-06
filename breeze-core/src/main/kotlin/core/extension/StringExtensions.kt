@@ -807,10 +807,10 @@ fun String.splitToStrings(separator: CharSequence = ", ", prefix: CharSequence =
  * 逐行向左对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
  */
 @JvmOverloads
-fun String.alignStart(padChar: Char = ' '): String {
+fun CharSequence.alignStart(padChar: Char = ' '): String {
 	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.maxOrNull()!!
+	if(lines.size <= 1) return this.toString()
+	val maxLength = lines.maxOf { it.length }
 	return lines.joinToString("\n") { it.trimStart().padEnd(maxLength, padChar) }
 }
 
@@ -818,10 +818,10 @@ fun String.alignStart(padChar: Char = ' '): String {
  * 逐行向右对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
  */
 @JvmOverloads
-fun String.alignEnd(padChar: Char = ' '): String {
+fun CharSequence.alignEnd(padChar: Char = ' '): String {
 	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.maxOrNull()!!
+	if(lines.size <= 1) return this.toString()
+	val maxLength = lines.maxOf { it.length }
 	return lines.joinToString("\n") { it.trimEnd().padStart(maxLength, padChar) }
 }
 
@@ -829,10 +829,10 @@ fun String.alignEnd(padChar: Char = ' '): String {
  * 逐行中心对齐当前字符串，并保证每行长度一致，用指定字符填充。默认为空格。
  */
 @JvmOverloads
-fun String.alignCenter(padChar: Char = ' '): String {
+fun CharSequence.alignCenter(padChar: Char = ' '): String {
 	val lines = this.lines()
-	if(lines.size <= 1) return this
-	val maxLength = lines.map { it.length }.maxOrNull()!!
+	if(lines.size <= 1) return this.toString()
+	val maxLength = lines.maxOf { it.length }
 	return lines.joinToString("\n") {
 		val trimmedString = it.trim()
 		val deltaLength = maxLength - trimmedString.length
@@ -849,12 +849,12 @@ fun String.alignCenter(padChar: Char = ' '): String {
  * 根据指定的限定长度、偏移和截断符，截断当前字符串的开始部分。如果未到限定长度，则返回自身。
  * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
-	require(limit >= 0) { "Limit must be non-negative." }
-	require(offset >= 0) { "Limit must be non-negative." }
+fun CharSequence.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
+	require(limit >= 0) { "Limit must be non-negative, but was $limit." }
+	require(offset >= 0) { "Offset must be non-negative, but was $offset." }
 	return when {
 		limit == 0 -> ""
-		limit >= length -> this
+		limit >= length -> this.toString()
 		offset == 0 -> "$truncated${this.takeLast(limit)}"
 		else -> "${this.take(offset)}$truncated${this.takeLast(limit - offset)}"
 	}
@@ -864,12 +864,12 @@ fun String.truncateStart(limit: Int, offset: Int = 0, truncated: CharSequence = 
  * 根据指定的限定长度、偏移和截断符，截断当前字符串的结尾部分。如果未到限定长度，则返回自身。
  * 偏移默认为0，截断符默认为`"..."`。
  */
-fun String.truncateEnd(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
-	require(limit >= 0) { "Limit must be non-negative." }
-	require(offset >= 0) { "Limit must be non-negative." }
+fun CharSequence.truncateEnd(limit: Int, offset: Int = 0, truncated: CharSequence = "..."): String {
+	require(limit >= 0) { "Limit must be non-negative, but was $limit." }
+	require(offset >= 0) { "Offset must be non-negative, but was $offset." }
 	return when {
 		limit == 0 -> ""
-		limit >= length -> this
+		limit >= length -> this.toString()
 		offset == 0 -> "${this.take(limit)}$truncated"
 		else -> "${this.take(limit - offset)}$truncated${this.takeLast(offset)}"
 	}
