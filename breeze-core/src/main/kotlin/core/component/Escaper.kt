@@ -47,8 +47,7 @@ object Escapers : ComponentRegistry<Escaper>() {
 		override fun escape(value: String): String {
 			//这里直接遍历字符数组以提高性能
 			return buildString {
-				val chars = value.toCharArray()
-				for(char in chars) {
+				for(char in value) {
 					val index = escapeChars.indexOf(char)
 					when {
 						index != -1 -> append(escapedStrings[index])

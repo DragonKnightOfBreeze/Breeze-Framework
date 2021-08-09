@@ -97,7 +97,7 @@ abstract class AbstractPathFormat(
 
 	override fun normalize(path: String): String {
 		return buildString {
-			for(char in path.trim().toCharArray()) {
+			for(char in path.trim()) {
 				if(!char.isWhitespace()) append(char)
 			}
 		}.trimEnd(delimiter)
@@ -464,7 +464,7 @@ object PathFormats : ComponentRegistry<PathFormat>() {
 
 		override fun normalize(path: String): String {
 			return buildString {
-				for(char in path.toCharArray()) {
+				for(char in path) {
 					if(char == '[') append('.').append(char) else if(!char.isWhitespace()) append(char)
 				}
 			}.trimStart('.')

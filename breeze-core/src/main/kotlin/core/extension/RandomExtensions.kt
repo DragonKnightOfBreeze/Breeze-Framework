@@ -155,15 +155,14 @@ fun Random.nextUShort(from: UShort, until: UShort): UShort {
  * 得到由[source]中的字符组成的长度为[length]的字符串。
  */
 fun Random.nextString(source: String, length: Int): String {
-	val chars = source.toCharArray()
-	val size = chars.size
+	val sourceLength = source.length
 	return when {
 		length < 0 -> throw IllegalArgumentException("Length cannot be negetive.")
 		length == 0 -> ""
 		else -> {
 			buildString {
 				repeat(length) {
-					append(chars[nextInt(size)])
+					append(source[nextInt(sourceLength)])
 				}
 			}
 		}

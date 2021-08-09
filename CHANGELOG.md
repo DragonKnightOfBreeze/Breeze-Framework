@@ -507,6 +507,7 @@
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 * [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
 * [ ] 优化`CaseFormat`组件
+* [X] 移除`string.toCharArray()`，直接迭代字符串
 
 # 长期
 
