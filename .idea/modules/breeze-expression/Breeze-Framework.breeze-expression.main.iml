@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../../breeze-expression/build/classes/java/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../breeze-expression/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../../breeze-expression/src/main/kotlin" isTestSource="false" packagePrefix="icu.windea.breezeframework.expression" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../breeze-expression/src/main/kotlin" isTestSource="false" packagePrefix="icu.windea.breezeframework.expression" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../breeze-expression/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../breeze-expression/src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.4.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.30" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+  </component>
+</module>

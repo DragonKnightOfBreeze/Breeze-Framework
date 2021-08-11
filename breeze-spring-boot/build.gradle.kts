@@ -6,7 +6,7 @@ plugins {
 dependencies {
 	api(project(":breeze-core"))
 
-	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.3.3.RELEASE"))
+	implementation(platform("org.springframework.boot:spring-boot-dependencies:2.5.0"))
 	implementation("org.springframework.boot:spring-boot-starter")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 

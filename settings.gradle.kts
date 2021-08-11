@@ -1,16 +1,6 @@
 include(
 	"breeze-core",
 	"breeze-dsl",
-	"breeze-dsl:breeze-dsl-bbcode",
-	"breeze-dsl:breeze-dsl-cmd-text",
-	"breeze-dsl:breeze-dsl-creole",
-	"breeze-dsl:breeze-dsl-critic-markup",
-	"breeze-dsl:breeze-dsl-flow",
-	"breeze-dsl:breeze-dsl-markdown",
-	"breeze-dsl:breeze-dsl-mermaid",
-	"breeze-dsl:breeze-dsl-sequence",
-	"breeze-dsl:breeze-dsl-xml",
-	"breeze-expression",
 	"breeze-functional",
 	"breeze-http",
 	"breeze-javafx",
@@ -18,7 +8,7 @@ include(
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-spring-boot",
+	"breeze-sql",
 	"breeze-time",
-	"breeze-unstable",
-	"breeze-tool"
+	"breeze-unstable"
 )
