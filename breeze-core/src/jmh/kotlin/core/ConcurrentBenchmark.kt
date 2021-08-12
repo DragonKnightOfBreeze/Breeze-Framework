@@ -3,12 +3,9 @@
 
 package icu.windea.breezeframework.core
 
-import com.google.common.collect.*
 import icu.windea.breezeframework.core.extension.*
 import org.openjdk.jmh.annotations.*
-import java.util.*
 import java.util.concurrent.*
-import kotlin.coroutines.*
 
 @BenchmarkMode(Mode.AverageTime)
 @State(value = Scope.Benchmark)
@@ -36,6 +33,8 @@ class ConcurrentBenchmark {
 	}
 
 	@Benchmark fun forEachAsyncByCoroutine() = run{
-
+		//runBlocking{
+		//
+		//}
 	}
 }

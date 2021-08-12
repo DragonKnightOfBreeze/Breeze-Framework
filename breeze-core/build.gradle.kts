@@ -2,25 +2,18 @@ jmh {
 	includes.add("ConcurrentBenchmark")
 }
 
-dependencies{
-	jmh("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
-	jmh("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-	jmh("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
-	jmh("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
-	jmh("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
-	jmh("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4")
-	jmh("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.4")
-	jmh("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.12.4")
-	jmh("com.google.code.gson:gson:2.8.7")
-	jmh("com.alibaba:fastjson:1.2.76")
-	jmh("org.yaml:snakeyaml:1.29")
-	jmh("com.google.guava:guava:30.1.1-jre")
-	jmh("org.apache.commons:commons-lang3:3.12.0")
-	jmh("commons-beanutils:commons-beanutils:1.9.4")
-	jmh("com.github.fangjinuo.langx:langx:3.6.2")
+//benchmark {
+//	configurations{
+//		named("main"){
+//			include("ConcurrentBenchmark")
+//		}
+//	}
+//}
 
+dependencies{
 	testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
@@ -34,4 +27,39 @@ dependencies{
 	testImplementation("org.apache.commons:commons-lang3:3.12.0")
 	testImplementation("commons-beanutils:commons-beanutils:1.9.4")
 	testImplementation("com.github.fangjinuo.langx:langx:3.6.2")
+
+	jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	jmhImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+	jmhImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+	jmhImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
+	jmhImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+	jmhImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
+	jmhImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4")
+	jmhImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.4")
+	jmhImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.12.4")
+	jmhImplementation("com.google.code.gson:gson:2.8.7")
+	jmhImplementation("com.alibaba:fastjson:1.2.76")
+	jmhImplementation("org.yaml:snakeyaml:1.29")
+	jmhImplementation("com.google.guava:guava:30.1.1-jre")
+	jmhImplementation("org.apache.commons:commons-lang3:3.12.0")
+	jmhImplementation("commons-beanutils:commons-beanutils:1.9.4")
+	jmhImplementation("com.github.fangjinuo.langx:langx:3.6.2")
+
+	//benchmarksImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
+	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+	//benchmarksImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
+	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4")
+	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.4")
+	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.12.4")
+	//benchmarksImplementation("com.google.code.gson:gson:2.8.7")
+	//benchmarksImplementation("com.alibaba:fastjson:1.2.76")
+	//benchmarksImplementation("org.yaml:snakeyaml:1.29")
+	//benchmarksImplementation("com.google.guava:guava:30.1.1-jre")
+	//benchmarksImplementation("org.apache.commons:commons-lang3:3.12.0")
+	//benchmarksImplementation("commons-beanutils:commons-beanutils:1.9.4")
+	//benchmarksImplementation("com.github.fangjinuo.langx:langx:3.6.2")
+	//benchmarksImplementation(sourceSets.test.get().output + sourceSets.test.get().runtimeClasspath)
 }

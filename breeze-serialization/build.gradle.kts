@@ -43,21 +43,3 @@ dependencies {
 	//Protobuf (Protobuf format)
 	//Smile (Smile format)
 }
-
-buildscript {
-	//配置插件仓库
-	repositories {
-		maven("https://dl.bintray.com/kotlin/kotlin-eap")
-		maven("https://maven.aliyun.com/nexus/content/groups/public")
-		mavenCentral()
-		jcenter()
-	}
-}
-
-//配置依赖仓库
-repositories {
-	maven("https://dl.bintray.com/kotlin/kotlin-eap")
-	maven("https://maven.aliyun.com/nexus/content/groups/public")
-	mavenCentral()
-	jcenter()
-}

@@ -7,6 +7,7 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.0"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.0"
 	id("me.champeau.jmh") version "0.6.4"
+	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" //未成功执行benchmark
 }
 
 val groupName = "icu.windea.breezeframework"
@@ -43,6 +44,7 @@ allprojects {
 		plugin("org.jetbrains.kotlin.plugin.noarg")
 		plugin("org.jetbrains.kotlin.plugin.allopen")
 		plugin("me.champeau.jmh")
+		//plugin("org.jetbrains.kotlinx.benchmark")
 	}
 
 	kotlin {
@@ -63,6 +65,14 @@ allprojects {
 	jmh {
 
 	}
+
+	//sourceSets.create("benchmarks")
+	//
+	//benchmark {
+	//	targets {
+	//		register("benchmarks")
+	//	}
+	//}
 
 	//配置依赖仓库
 	repositories {
@@ -116,6 +126,9 @@ allprojects {
 		compileJmhJava {
 			javaCompiler.set(projectCompiler)
 		}
+		//named<JavaCompile>("compileBenchmarksJava"){
+		//	javaCompiler.set(projectCompiler)
+		//}
 		compileKotlin {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
@@ -132,7 +145,7 @@ allprojects {
 				freeCompilerArgs = compilerArgs
 			}
 		}
-		compileJmhKotlin {
+		compileJmhKotlin{
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
@@ -140,6 +153,14 @@ allprojects {
 				freeCompilerArgs = compilerArgs
 			}
 		}
+		//named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileBenchmarksKotlin"){
+		//	javaPackagePrefix = projectPackagePrefix
+		//	kotlinOptions {
+		//		jvmTarget = projectJavaVersion
+		//		jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
+		//		freeCompilerArgs = compilerArgs
+		//	}
+		//}
 
 		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
@@ -148,7 +169,6 @@ allprojects {
 					//includes.from("README.md")
 				}
 			}
-
 		}
 	}
 
