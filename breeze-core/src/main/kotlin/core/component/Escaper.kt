@@ -23,14 +23,18 @@ interface Escaper : Component {
 	 * 反转义指定的字符串。
 	 */
 	fun unescape(value: String): String
+
+	override fun componentCopy(componentParams: Map<String, Any?>): Escaper {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractEscaper : Escaper {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 @NotOptimized

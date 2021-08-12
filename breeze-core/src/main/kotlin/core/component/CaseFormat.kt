@@ -41,14 +41,18 @@ interface CaseFormat : Component {
 	 * 基于单词格式，拼接字符串。
 	 */
 	fun joinToString(value: Sequence<String>): String
+
+	override fun componentCopy(componentParams: Map<String, Any?>): CaseFormat {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractCaseFormat : CaseFormat {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 @NotOptimized

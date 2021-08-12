@@ -2,6 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("InternalExtensions")
+@file:Suppress("UNCHECKED_CAST")
 
 package icu.windea.breezeframework.core.extension
 
@@ -150,13 +151,6 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 
 private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
 
-internal fun inferComponentId(component: Component): String {
-	return when {
-		component.componentParams.isEmpty() -> component.javaClass.name
-		else -> component.javaClass.name + '@' + component.componentParams.toString()
-	}
-}
-
 @Suppress("UNCHECKED_CAST")
 internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {
 	return inferComponentTargetType(type, componentType) as? Class<T> ?: error("Cannot infer target type for type '$type'.")
@@ -213,19 +207,4 @@ internal fun filterNotComponentParams(componentParams: Map<String, Any?>, vararg
 		if(name !in names) result.put(name, configParam)
 	}
 	return result
-}
-
-internal fun componentEquals(component: Component, other: Any?): Boolean {
-	if(component === other) return true
-	if(other == null || component.javaClass != other.javaClass) return false
-	other as Component
-	return component.componentParams.toString() == other.componentParams.toString()
-}
-
-internal fun componentHashcode(component: Component): Int {
-	return if(component.componentParams.isEmpty()) 0 else component.componentParams.toString().hashCode()
-}
-
-internal fun componentToString(component: Component): String {
-	return inferComponentId(component)
 }

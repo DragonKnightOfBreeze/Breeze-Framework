@@ -1,6 +1,8 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
+@file:Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
+
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.*
@@ -13,7 +15,6 @@ import icu.windea.breezeframework.core.extension.*
  *
  * 路径格式用于表示查询对象在其结构中的位置，可以包含多个元路径和变量，可以用于匹配和查询。
  */
-@Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
 interface PathFormat : Component {
 	/**
 	 * 标准化指定的路径。将会去除其中的空白以及尾随的分隔符。
@@ -84,6 +85,10 @@ interface PathFormat : Component {
 	 * 如果指定路径为空路径，则返回查询对象本身。
 	 */
 	fun <T> getOrElse(value: Any, path: String, defaultValue: () -> T): T
+
+	override fun componentCopy(componentParams: Map<String, Any?>): PathFormat {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -270,11 +275,11 @@ abstract class AbstractPathFormat(
 		return currentValue as T
 	}
 
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 @Suppress("UNCHECKED_CAST")

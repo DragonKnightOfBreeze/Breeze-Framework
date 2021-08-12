@@ -509,12 +509,12 @@
 * [X] 重构组件相关代码
 * [X] 更改项目目录结构
 * [X] 清理breeze-unstable模块
-* [ ] ~~并发迭代的集合（ParallelCollection）~~（难以实现，可考虑使用`Sequence`）
-* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
-* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
-* [ ] 优化`CaseFormat`组件
 * [X] 移除`string.toCharArray()`，直接迭代字符串
 * [X] 删除`breeze-sql`模块
+* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
+* [ ] 优化`CaseFormat`组件
+* [ ] ~~并发迭代的集合（ParallelCollection）~~（难以实现，可考虑使用`Sequence`）
+* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
 
 # 长期
 

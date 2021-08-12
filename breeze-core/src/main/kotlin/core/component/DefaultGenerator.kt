@@ -23,15 +23,15 @@ import java.util.stream.*
  *
  * 默认值生成器用于生成默认值。
  */
-interface DefaultGenerator<T> : Component {
+interface DefaultGenerator<T> : Generator<T> {
 	val targetType: Class<T>
 
 	/**
 	 * 生成默认值。
 	 */
-	fun generate(): T
+	override fun generate(): T
 
-	override fun copy(componentParams: Map<String, Any?>): DefaultGenerator<T> {
+	override fun componentCopy(componentParams: Map<String, Any?>): DefaultGenerator<T> {
 		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
 	}
 }
@@ -47,11 +47,11 @@ interface GenericDefaultGenerator<T> : DefaultGenerator<T> {
 abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, DefaultGenerator::class.java)
 
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -482,7 +482,7 @@ object DefaultGenerators : ComponentRegistry<DefaultGenerator<*>>() {
 	private fun infer(targetType: Class<*>, componentParams: Map<String, Any?>): DefaultGenerator<*>? {
 		var result = components.values.findLast { it.targetType.isAssignableFrom(targetType) } ?: return null
 		if(result.componentParams.toString() != componentParams.toString()) {
-			result = result.copy(componentParams)
+			result = result.componentCopy(componentParams)
 		}
 		return result
 	}

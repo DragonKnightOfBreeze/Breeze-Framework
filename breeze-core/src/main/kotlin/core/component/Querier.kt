@@ -39,14 +39,18 @@ interface Querier<T : Any, R> : Component {
 	fun queryOrElse(value: Any, queryObject: T, defaultValue: (Any, T) -> R): R? {
 		return queryOrNull(value, queryObject) ?: defaultValue(value, queryObject)
 	}
+
+	override fun componentCopy(componentParams: Map<String, Any?>): Querier<T,R> {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractQuerier<T : Any, R> : Querier<T, R> {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object Queriers : ComponentRegistry<Querier<*, *>>() {
