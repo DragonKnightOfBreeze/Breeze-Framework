@@ -14,7 +14,6 @@ import java.util.concurrent.*
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 5, time = 1)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
 class BuildSingletonListBenchmark {
 	//Benchmark                          Mode  Cnt   Score   Error  Units
 	//BuildSingletonListBenchmark.test1  avgt    5   6.168 ± 0.340  ns/op    Collections.singletonList(...)

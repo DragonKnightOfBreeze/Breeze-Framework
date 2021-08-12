@@ -15,8 +15,8 @@ import java.util.concurrent.*
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class NewObjectBenchmark {
 	//Benchmark                        Mode  Cnt    Score    Error  Units
-	//NewObjectMapper.newObject        avgt    5    5.256 ±  0.132  ns/op
-	//NewObjectMapper.newObjectMapper  avgt    5  613.648 ± 17.907  ns/op
+	//NewObjectMapper.newObject        avgt    5    5.256 ±  0.132  ns/op   Any()
+	//NewObjectMapper.newObjectMapper  avgt    5  613.648 ± 17.907  ns/op   ObjectMapper()
 
 	@Benchmark fun newObject() = Any()
 

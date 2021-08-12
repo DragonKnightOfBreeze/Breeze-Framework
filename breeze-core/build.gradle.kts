@@ -1,9 +1,10 @@
 jmh {
-	includes.add("StringBenchmark")
+	includes.add("ConcurrentBenchmark")
 }
 
 dependencies{
 	jmh("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	jmh("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 	jmh("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
 	jmh("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	jmh("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
@@ -19,6 +20,7 @@ dependencies{
 	jmh("com.github.fangjinuo.langx:langx:3.6.2")
 
 	testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
