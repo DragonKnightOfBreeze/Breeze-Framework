@@ -8,7 +8,6 @@ include(
 	"breeze-reflect",
 	"breeze-serialization",
 	"breeze-spring-boot",
-	"breeze-sql",
 	"breeze-time",
 	"breeze-unstable"
 )

@@ -514,6 +514,7 @@
 * [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
 * [ ] 优化`CaseFormat`组件
 * [X] 移除`string.toCharArray()`，直接迭代字符串
+* [X] 删除`breeze-sql`模块
 
 # 长期
 
