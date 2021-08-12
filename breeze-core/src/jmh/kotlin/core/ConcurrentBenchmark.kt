@@ -35,9 +35,7 @@ class ConcurrentBenchmark {
 		}
 	}
 
-	//@Benchmark fun forEachAsyncByCoroutine() = run{
-	//	runBlocking{
-	//
-	//	}
-	//}
+	@Benchmark fun forEachAsyncByCoroutine() = run{
+
+	}
 }

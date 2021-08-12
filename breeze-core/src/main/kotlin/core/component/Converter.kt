@@ -43,7 +43,7 @@ interface Converter<T> : Component {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
-	override fun componentCopy(componentParams: Map<String, Any?>): Converter {
+	override fun componentCopy(componentParams: Map<String, Any?>): Converter<T> {
 		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
 	}
 }

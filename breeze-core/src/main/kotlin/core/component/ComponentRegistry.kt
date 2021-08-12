@@ -33,7 +33,7 @@ abstract class ComponentRegistry<T : Component> {
 	 */
 	fun register(component: T) {
 		val components = if(registerDefaultFinished) components else backendComponents
-		components[inferComponentId(component)] = component
+		components[component.componentId] = component
 	}
 
 	/**
