@@ -23,12 +23,3 @@ internal fun String.prependIndentIf(condition: Boolean, indentFirstLine: Boolean
 	}
 	return this
 }
-
-//internal dsl type aliases
-
-internal typealias IDslConfig = DslConfig
-internal typealias IDslDocument = DslDocument
-internal typealias IDslEntry = DslContent
-internal typealias IDslElement = DslElement
-internal typealias IDslInlineElement = DslInlineElement
-internal typealias IDslInlineEntry = DslInlinePoint
