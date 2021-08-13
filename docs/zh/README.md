@@ -10,7 +10,7 @@
 * 这个框架是为Kotlin Jvm设计的，但是你自然可以在Java中使用它的一部分功能。
 * 这个框架仍在更新中，未来会提供更多的模块和功能。
 
-Kotlin版本：Kotlin Jvm 1.5.0
+Kotlin版本：Kotlin Jvm 1.5.21
 
 # 模块
 
@@ -54,17 +54,13 @@ Kotlin版本：Kotlin Jvm 1.5.0
 
 可以进行充分的配置。
 
-## breeze-spring-boot
-
-为Spring Boot框架提供工具和扩展。
-
 ## breeze-time
 
 为Java的时间api提供工具和扩展。
 
 # 参考
 
-## 依赖 & 可选依赖
+## 框架 & 库 & 实现
 
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
 * [Spring Cloud](https://github.com/spring-cloud)
@@ -78,9 +74,6 @@ Kotlin版本：Kotlin Jvm 1.5.0
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
-
-## 实现参考
-
 * [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
@@ -103,7 +96,7 @@ Kotlin版本：Kotlin Jvm 1.5.0
 ## Maven
 
 在`pom.xml`中：
-  
+
 ```xml
 <dependencies>
   <dependency>

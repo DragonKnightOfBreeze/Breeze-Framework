@@ -15,7 +15,7 @@ import java.util.concurrent.*
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class ConcurrentBenchmark {
 	companion object{
-		private val list = listOf(1000L,1500L,2000L)
+		private val list = listOf(1000L,1100L,1200L,1300L,1400L,1500L)
 	}
 
 	@Benchmark fun forEachAsyncByStream() = run{

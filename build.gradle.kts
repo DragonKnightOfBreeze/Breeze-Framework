@@ -2,10 +2,10 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.5.0"
-	id("org.jetbrains.dokka") version "1.5.0"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.0"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.0"
+	id("org.jetbrains.kotlin.jvm") version "1.5.21"
+	id("org.jetbrains.dokka") version "1.5.21"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
 	id("me.champeau.jmh") version "0.6.4"
 	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" //未成功执行benchmark
 }
@@ -28,8 +28,8 @@ val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable
 allprojects {
 	val projectName = project.name
 	val projectTitle = projectName.split("-").joinToString(" ") { it.capitalize() }
-	val projectJavaVersion = when(projectName) {
-		in java11ModuleNames -> "11"
+	val projectJavaVersion = when {
+		project == rootProject || projectName in java11ModuleNames -> "11"
 		else -> "1.8"
 	}
 	val projectPackagePrefix = packagePrefix
@@ -172,6 +172,8 @@ allprojects {
 		}
 	}
 
+	//配置是否需要发布
+	if(!property("publish").toString().toBoolean()) return@allprojects
 	//配置需要发布的模块
 	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
 

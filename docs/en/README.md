@@ -10,7 +10,7 @@ NOTE：
 * This framework is designed to be used by Kotlin Jvm, but you can obviously use it in Java.
 * This framework is updating, and will provide more modules and functions in future.
 
-Kotlin Version: Kotlin Jvm 1.5.0
+Kotlin Version: Kotlin Jvm 1.5.21
 
 # Modules
 
@@ -54,17 +54,13 @@ Provides a concise and unified serializer api, based on third-party libraries, f
 
 Can be sufficient configured.
 
-## breeze-spring-boot
-
-Provide utilities and extensions for the Spring Boot Framework.
-
 ## breeze-time
 
 Provide utilities and extensions for Java's time api.
 
 # Reference
 
-## Dependencies & Optional dependencies
+## Frameworks & Libraries & Implementations
 
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
 * [Spring Cloud](https://github.com/spring-cloud)
@@ -78,9 +74,6 @@ Provide utilities and extensions for Java's time api.
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
-
-## Implementation References
-
 * [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
@@ -104,7 +97,7 @@ This project has been published on [Maven Central](https://repo1.maven.org/maven
 ## Maven
 
 In `pom.xml`:
-  
+
 ```xml
 <dependencies>
   <dependency>
