@@ -1,11 +1,11 @@
 jmh {
-	includes.add("ConcurrentBenchmark")
+	includes.add("ForEachAsyncBenchmark")
 }
 
 //benchmark {
 //	configurations{
 //		named("main"){
-//			include("ConcurrentBenchmark")
+//			include("ForEachAsyncBenchmark")
 //		}
 //	}
 //}

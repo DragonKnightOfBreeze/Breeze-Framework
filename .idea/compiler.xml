@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
+      <module name="Breeze-Framework.breeze-core.benchmarks" target="8" />
       <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.jmh" target="8" />
       <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.main" target="8" />
       <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.test" target="8" />
@@ -32,6 +33,9 @@
       <module name="Breeze-Framework.breeze-expression.jmh" target="8" />
       <module name="Breeze-Framework.breeze-expression.main" target="8" />
       <module name="Breeze-Framework.breeze-expression.test" target="8" />
+      <module name="Breeze-Framework.breeze-spring-boot.jmh" target="8" />
+      <module name="Breeze-Framework.breeze-spring-boot.main" target="8" />
+      <module name="Breeze-Framework.breeze-spring-boot.test" target="8" />
       <module name="Breeze-Framework.breeze-sql.jmh" target="8" />
       <module name="Breeze-Framework.breeze-sql.main" target="8" />
       <module name="Breeze-Framework.breeze-sql.test" target="8" />

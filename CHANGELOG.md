@@ -515,7 +515,7 @@
 * [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
 * [ ] 优化`CaseFormat`组件
 * [ ] ~~并发迭代的集合（ParallelCollection）~~（难以实现，可考虑使用`Sequence`）
-* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
+* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync`）~~（可考虑使用`Sequence`）
 
 # 长期
 

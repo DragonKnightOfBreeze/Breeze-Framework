@@ -900,6 +900,15 @@ fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
 	return if(orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
 }
 
+/**
+ * 将当前映射入口转化为单例映射。
+ *
+ * 如果当前映射入口其中对应的键或值为`null`且参数[orEmpty]为`true`，则会返回空映射。
+ */
+fun <K, V> Map.Entry<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
+	return if(orEmpty && (key == null || value == null)) Collections.emptyMap() else Collections.singletonMap(key, value)
+}
+
 
 /**
  * 将当前键值对数组转化为新的可变映射。
