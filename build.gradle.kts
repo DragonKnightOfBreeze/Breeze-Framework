@@ -3,9 +3,9 @@ plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
 	id("org.jetbrains.kotlin.jvm") version "1.5.21"
-	id("org.jetbrains.dokka") version "1.5.21"
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
+	id("org.jetbrains.dokka") version "1.5.0"
 	id("me.champeau.jmh") version "0.6.4"
 	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" //未成功执行benchmark
 }
@@ -56,9 +56,8 @@ allprojects {
 	}
 
 	allOpen {
-		//jmh压测类需要开放
 		annotation("icu.windea.breezeframework.core.annotation.AllOpen")
-		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
+		annotation("org.openjdk.jmh.annotations.BenchmarkMode") //jmh压测类需要开放
 	}
 
 	//配置jmh
@@ -161,7 +160,6 @@ allprojects {
 		//		freeCompilerArgs = compilerArgs
 		//	}
 		//}
-
 		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
 				named("main") {
