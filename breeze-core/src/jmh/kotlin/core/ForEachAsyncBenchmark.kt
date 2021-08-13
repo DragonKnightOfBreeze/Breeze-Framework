@@ -20,9 +20,9 @@ class ForEachAsyncBenchmark {
 	}
 
 	//Benchmark                                       Mode  Cnt           Score          Error  Units
-	//ForEachAsyncBenchmark.forEachAsync1ByExecutor   avgt    5  1508144420.000 ± 20858702.922  ns/op
-	//ForEachAsyncBenchmark.forEachAsync2ByStream     avgt    5  1509301320.000 ± 19319054.006  ns/op
-	//ForEachAsyncBenchmark.forEachAsync3ByCoroutine  avgt    5  1513109500.000 ±  7588277.508  ns/op
+	//ForEachAsyncBenchmark.forEachAsync1ByExecutor   avgt    5  1508733400.000 ± 25944850.938  ns/op
+	//ForEachAsyncBenchmark.forEachAsync2ByStream     avgt    5  1503318360.000 ±  8880047.301  ns/op
+	//ForEachAsyncBenchmark.forEachAsync3ByCoroutine  avgt    5  1510761540.000 ± 14791192.121  ns/op
 
 	@Benchmark fun forEachAsync1ByExecutor() = run{
 		list.parallelForEach { //其中的操作将会并发执行
