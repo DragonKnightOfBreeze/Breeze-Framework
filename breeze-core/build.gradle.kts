@@ -1,5 +1,5 @@
 jmh {
-	includes.add("ForEachAsyncBenchmark")
+	includes.add("BuildMapBenchmark")
 }
 
 //benchmark {

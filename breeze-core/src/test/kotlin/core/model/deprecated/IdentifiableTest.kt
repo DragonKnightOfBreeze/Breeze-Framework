@@ -1,5 +1,9 @@
-package icu.windea.breezeframework.core.model
+// Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
+// Breeze is blowing...
 
+package icu.windea.breezeframework.core.model.deprecated
+
+import icu.windea.breezeframework.core.model.Identifiable
 import icu.windea.breezeframework.core.model.Identifiable.Companion.delegate
 import org.junit.*
 

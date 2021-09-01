@@ -11,7 +11,8 @@ class PageTest {
 	@Test
 	fun test1(){
 		val p1 = emptyPage<String>()
-		val p2 = (0..12).toList().toPage()
+		val p2 = (0..12).toList().toPage(1,10)
+		val p3 = (0..12).toList().toPage(2,10)
 		println()
 	}
 }

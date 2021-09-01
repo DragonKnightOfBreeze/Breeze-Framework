@@ -5,9 +5,11 @@
 
 package icu.windea.breezeframework.core.extension
 
-import icu.windea.breezeframework.core.model.*
+import icu.windea.breezeframework.core.model.EmptyPage
+import icu.windea.breezeframework.core.model.Page
+import icu.windea.breezeframework.core.model.PageImpl
 
-fun <T> emptyPage() :Page<T>{
+fun <T> emptyPage(): Page<T> {
 	return EmptyPage
 }
 
