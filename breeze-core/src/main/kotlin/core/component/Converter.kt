@@ -2282,52 +2282,50 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
 	inline fun <reified T> convert(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T {
 		return convert(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
 	fun <T> convert(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
 	fun <T> convert(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
 	inline fun <reified T> convertOrNull(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return convertOrNull(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
 	fun <T> convertOrNull(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
 	fun <T> convertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
 	private fun <T> doConvert(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T {
-		//如果value是null，则要判断targetType是否是可空类型，如果是则直接返回null，否则报错
-		if(value == null){
-			return runCatching{ value as T }.getOrElse{ throw IllegalArgumentException("Cannot convert null value to a non-null type.")}
-		}
+		//如果value是null，则直接抛出异常（因为无法判断targetType是否是可空类型）
+		if(value == null) throw IllegalArgumentException("Cannot convert null value to a specified type.")
 		val targetClass = inferClass(targetType)
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as T
@@ -2354,7 +2352,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 	private fun <T, > doConvertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T? {
 		//如果value是null，则直接返回null
-		if(value == null) return value
+		if(value == null) return null
 		val targetClass = inferClass(targetType)
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as? T?

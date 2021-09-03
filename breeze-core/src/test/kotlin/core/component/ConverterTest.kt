@@ -95,14 +95,6 @@ class ConverterTest {
 		return this as T
 	}
 
-	@Test
-	fun testNull() {
-		assertFailsWith<IllegalArgumentException> { prettyPrintln(null.convert<String>().get(1)) }
-		assertNull(null.convert<String?>())
-		assertNull(null.convertOrNull<String>())
-		assertNull(null.convertOrNull<String?>())
-	}
-
 	enum class NV {
 		Name, Value
 	}
