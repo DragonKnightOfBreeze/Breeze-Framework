@@ -3,6 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.component.extension.convert
+import icu.windea.breezeframework.core.component.extension.convertOrNull
 import icu.windea.breezeframework.core.extension.*
 import java.io.*
 import java.lang.reflect.*
@@ -2283,9 +2285,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
 	inline fun <reified T> convert(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T {
-		if (value == null) return runCatching { this as T }.getOrElse {
-			throw IllegalArgumentException("Cannot convert null value to a non-null type.")
-		}
 		return convert(value, javaTypeOf<T>(), componentParams)
 	}
 
@@ -2293,7 +2292,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
 	fun <T> convert(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
-		if (value == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 		return doConvert(value, targetType, componentParams)
 	}
 
@@ -2301,7 +2299,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
 	fun <T> convert(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
-		if (value == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 		return doConvert(value, targetType, componentParams)
 	}
 
@@ -2309,7 +2306,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
 	inline fun <reified T> convertOrNull(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T? {
-		if (value == null) return value
 		return convertOrNull(value, javaTypeOf<T>(), componentParams)
 	}
 
@@ -2317,7 +2313,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
 	fun <T> convertOrNull(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
-		if(value == null) return value
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
@@ -2325,15 +2320,18 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
 	fun <T> convertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
-		if(value == null) return value
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
-	private fun <T> doConvert(value: Any, targetType: Type, componentParams: Map<String, Any?>): T {
-		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
+	private fun <T> doConvert(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T {
+		//如果value是null，则要判断targetType是否是可空类型，如果是则直接返回null，否则报错
+		if(value == null){
+			return runCatching{ value as T }.getOrElse{ throw IllegalArgumentException("Cannot convert null value to a non-null type.")}
+		}
 		val targetClass = inferClass(targetType)
+		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as T
+		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		val key = inferKey(targetClass, componentParams)
 		val converter = components.getOrPut(key) {
 			val result = infer(targetClass, componentParams)
@@ -2354,9 +2352,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 	}
 
-	private fun <T, V : Any> doConvertOrNull(value: V, targetType: Type, componentParams: Map<String, Any?>): T? {
+	private fun <T, > doConvertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T? {
+		//如果value是null，则直接返回null
+		if(value == null) return value
 		val targetClass = inferClass(targetType)
-		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
+		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as? T?
 		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		val key = inferKey(targetClass, componentParams)
@@ -2419,3 +2419,4 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 	}
 }
+

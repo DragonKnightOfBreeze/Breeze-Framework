@@ -4,10 +4,10 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.component.extension.*
 import org.junit.*
 import java.nio.charset.*
 import java.util.*
-import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
@@ -97,7 +97,7 @@ class ConverterTest {
 
 	@Test
 	fun testNull() {
-		assertFailsWith<IllegalArgumentException> { prettyPrintln(null.convert<String>()) }
+		assertFailsWith<IllegalArgumentException> { prettyPrintln(null.convert<String>().get(1)) }
 		assertNull(null.convert<String?>())
 		assertNull(null.convertOrNull<String>())
 		assertNull(null.convertOrNull<String?>())

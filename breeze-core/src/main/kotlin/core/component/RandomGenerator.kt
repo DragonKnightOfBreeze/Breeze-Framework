@@ -6,6 +6,7 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.component.extension.*
 import icu.windea.breezeframework.core.extension.*
 import java.lang.reflect.*
 import java.math.*
