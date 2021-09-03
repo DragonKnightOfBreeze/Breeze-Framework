@@ -221,7 +221,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		val relaxConvert: Boolean = componentParams.get("relaxConvert").convertToBooleanOrFalse()
 
 		override fun convert(value: Any): Boolean {
-			return if(relaxConvert) doRelaxConvert(value) else doConvert(value)
+			return if (relaxConvert) doRelaxConvert(value) else doConvert(value)
 		}
 
 		private fun doConvert(value: Any): Boolean {
@@ -481,7 +481,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Regex -> value
 				value is Pattern -> value.toRegex()
 				else -> {
-					when(regexOptions.size) {
+					when (regexOptions.size) {
 						0 -> value.toString().toRegex()
 						1 -> value.toString().toRegex(regexOptions.first())
 						else -> value.toString().toRegex(regexOptions)
@@ -704,7 +704,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is TemporalAmount -> Duration.from(value)
 				value is Pair<*, *> -> {
 					val (start, end) = value
-					if(start is Temporal && end is Temporal) {
+					if (start is Temporal && end is Temporal) {
 						Duration.between(start, end)
 					} else {
 						throw IllegalArgumentException("Cannot convert '$value' to Duration.")
@@ -729,7 +729,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is TemporalAmount -> Period.from(value)
 				value is Pair<*, *> -> {
 					val (start, end) = value
-					if(start is LocalDate && end is LocalDate) {
+					if (start is LocalDate && end is LocalDate) {
 						Period.between(start, end)
 					} else {
 						throw IllegalArgumentException("Cannot convert '$value' to Period.")
@@ -794,14 +794,15 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	object EnumConverter : AbstractConverter<Enum<*>>(), GenericConverter<Enum<*>> {
 		override fun convert(value: Any, targetType: Type): Enum<*> {
 			val enumClass = inferEnumClass(targetType)
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			if (enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
 					val enumValues = enumValuesCache.getOrPut(enumClass) {
 						enumClass.enumConstants?.toList() ?: emptyList()
 					}
-					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
+					enumValues.getOrNull(index)
+						?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
 				}
 				else -> {
 					val name = value.toString()
@@ -815,7 +816,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		override fun convertOrNull(value: Any, targetType: Type): Enum<*>? {
 			val enumClass = inferEnumClass(targetType)
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			if (enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
@@ -847,7 +848,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	@ComponentParam("suffix", "String", "")
 	open class ArrayConverter(
 		final override val componentParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<Array<*>>(), GenericConverter<Array<*>>{
+	) : AbstractConverter<Array<*>>(), GenericConverter<Array<*>> {
 		companion object Default : ArrayConverter()
 
 		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
@@ -872,12 +873,20 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is UIntArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is ULongArray -> Array(value.size) { convertElement(value[it], elementType) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Iterable<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Sequence<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Stream<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is String -> splitValue(value).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
-				value is CharSequence -> splitValue(value.toString()).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is CharSequence -> splitValue(value.toString()).let { v ->
+					Array(v.size) {
+						convertElement(
+							v[it],
+							elementType
+						)
+					}
+				}
 				else -> arrayOf(convertElement(value, elementType))
 			}
 		}
@@ -926,7 +935,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ByteArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ByteArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ByteArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
@@ -979,7 +989,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ShortArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ShortArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ShortArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
@@ -1032,7 +1043,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> IntArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> IntArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> IntArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
@@ -1061,7 +1073,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	@ComponentParam("suffix", "String", "")
 	open class LongArrayConverter(
 		final override val componentParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<LongArray>(){
+	) : AbstractConverter<LongArray>() {
 		companion object Default : LongArrayConverter()
 
 		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
@@ -1085,7 +1097,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> LongArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> LongArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> LongArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
@@ -1114,7 +1127,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	@ComponentParam("suffix", "String", "")
 	open class FloatArrayConverter(
 		final override val componentParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<FloatArray>(){
+	) : AbstractConverter<FloatArray>() {
 		companion object Default : FloatArrayConverter()
 
 		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
@@ -1138,7 +1151,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> FloatArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> FloatArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> FloatArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
@@ -1191,7 +1205,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> DoubleArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> DoubleArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> DoubleArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
@@ -1220,7 +1235,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	@ComponentParam("suffix", "String", "")
 	open class BooleanArrayConverter(
 		final override val componentParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<BooleanArray>(){
+	) : AbstractConverter<BooleanArray>() {
 		companion object Default : BooleanArrayConverter()
 
 		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
@@ -1244,7 +1259,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> BooleanArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> BooleanArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> BooleanArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
@@ -1297,7 +1313,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> CharArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> CharArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> CharArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
@@ -1326,7 +1343,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	@ComponentParam("suffix", "String", "")
 	open class UByteArrayConverter(
 		final override val componentParams: Map<String, Any?> = emptyMap()
-	) : AbstractConverter<UByteArray>(){
+	) : AbstractConverter<UByteArray>() {
 		companion object Default : UByteArrayConverter()
 
 		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
@@ -1350,7 +1367,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UByteArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UByteArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UByteArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
@@ -1403,7 +1421,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UShortArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UShortArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UShortArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
@@ -1456,7 +1475,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UIntArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UIntArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UIntArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
@@ -1509,7 +1529,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ULongArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ULongArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ULongArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
@@ -1692,7 +1713,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		val delegate: String = componentParams.get("delegate")?.toString() ?: "list"
 
 		override fun convert(value: Any, targetType: Type): Collection<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convert(value, targetType)
 				"set" -> setConverter.convert(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1700,7 +1721,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): Collection<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convertOrNull(value, targetType)
 				"set" -> setConverter.convertOrNull(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1739,7 +1760,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		val delegate: String = componentParams.get("delegate")?.toString() ?: "list"
 
 		override fun convert(value: Any, targetType: Type): MutableCollection<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> mutableListConverter.convert(value, targetType)
 				"set" -> mutableSetConverter.convert(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1747,7 +1768,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): MutableCollection<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> mutableListConverter.convertOrNull(value, targetType)
 				"set" -> mutableSetConverter.convertOrNull(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1799,7 +1820,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toList()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toList()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToList()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToList()
 				else -> listOf(value.convert(elementType, passingParams))
 			}
 		}
@@ -1848,12 +1870,14 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
-				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }
+					.convertToMutableList()
 				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableList()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableList()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableList()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableList()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToMutableList()
 				else -> mutableListOf(value.convert(elementType, passingParams))
 			}
 		}
@@ -1908,7 +1932,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toSet()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toSet()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToSet()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToSet()
 				else -> setOf(value.convert(elementType, passingParams))
 			}
 		}
@@ -1962,7 +1987,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableSet()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableSet()
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToMutableSet()
 				else -> mutableSetOf(value.convert(elementType, passingParams))
 			}
 		}
@@ -2151,7 +2177,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		val delegate: String = componentParams.get("delegate").convertToStringOrNull() ?: "list"
 
 		override fun convert(value: Any, targetType: Type): Stream<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convert(value, targetType).stream()
 				"set" -> setConverter.convert(value, targetType).stream()
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -2159,7 +2185,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): Stream<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convertOrNull(value, targetType)?.stream()
 				"set" -> setConverter.convertOrNull(value, targetType)?.stream()
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -2256,42 +2282,50 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
-	inline fun <reified T> convert(value: Any, componentParams: Map<String, Any?> = emptyMap()): T {
+	inline fun <reified T> convert(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T {
+		if (value == null) return runCatching { this as T }.getOrElse {
+			throw IllegalArgumentException("Cannot convert null value to a non-null type.")
+		}
 		return convert(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
-	fun <T> convert(value: Any, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
+	fun <T> convert(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
+		if (value == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
 	 */
-	fun <T> convert(value: Any, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
+	fun <T> convert(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
+		if (value == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
-	inline fun <reified T> convertOrNull(value: Any, componentParams: Map<String, Any?> = emptyMap()): T? {
+	inline fun <reified T> convertOrNull(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T? {
+		if (value == null) return value
 		return convertOrNull(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
-	fun <T> convertOrNull(value: Any, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
+	fun <T> convertOrNull(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
+		if(value == null) return value
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
 	/**
 	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
 	 */
-	fun <T> convertOrNull(value: Any, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
+	fun <T> convertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
+		if(value == null) return value
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
@@ -2299,22 +2333,22 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
 		val targetClass = inferClass(targetType)
-		if(targetClass == targetType && targetClass.isInstance(value)) return value as T
+		if (targetClass == targetType && targetClass.isInstance(value)) return value as T
 		val key = inferKey(targetClass, componentParams)
 		val converter = components.getOrPut(key) {
 			val result = infer(targetClass, componentParams)
-			if(result == null) {
+			if (result == null) {
 				//如果目标类型是字符串，则尝试转化为字符串
-				if(targetType == String::class.java) return value.toString() as T
-				if(useFallbackStrategy) {
+				if (targetType == String::class.java) return value.toString() as T
+				if (useFallbackStrategy) {
 					val fallback = fallbackConvert(value, targetClass)
-					if(fallback != null) return fallback as T
+					if (fallback != null) return fallback as T
 				}
 				throw IllegalArgumentException("No matched converter found for target type '$targetType'.")
 			}
 			result
 		}
-		when(converter) {
+		when (converter) {
 			is GenericConverter<*> -> return converter.convert(value, targetType) as T
 			else -> return converter.convert(value) as T
 		}
@@ -2323,35 +2357,35 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	private fun <T, V : Any> doConvertOrNull(value: V, targetType: Type, componentParams: Map<String, Any?>): T? {
 		val targetClass = inferClass(targetType)
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
-		if(targetClass == targetType && targetClass.isInstance(value)) return value as? T?
+		if (targetClass == targetType && targetClass.isInstance(value)) return value as? T?
 		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		val key = inferKey(targetClass, componentParams)
 		val converter = components.getOrPut(key) {
 			val result = infer(targetClass, componentParams)
-			if(result == null) {
+			if (result == null) {
 				//如果目标类型是字符串，则尝试转化为字符串
-				if(targetType == String::class.java) return value.toString() as T
-				if(useFallbackStrategy) {
+				if (targetType == String::class.java) return value.toString() as T
+				if (useFallbackStrategy) {
 					val fallback = fallbackConvert(value, targetClass)
-					if(fallback != null) return fallback as? T?
+					if (fallback != null) return fallback as? T?
 				}
 				return null
 			}
 			result
 		}
-		return when(converter) {
+		return when (converter) {
 			is GenericConverter<*> -> converter.convertOrNull(value, targetType) as? T?
 			else -> converter.convertOrNull(value) as? T?
 		}
 	}
 
 	private fun inferKey(targetType: Class<*>, componentParams: Map<String, Any?>): String {
-		return if(componentParams.isEmpty()) targetType.name else "${targetType.name}@$componentParams"
+		return if (componentParams.isEmpty()) targetType.name else "${targetType.name}@$componentParams"
 	}
 
 	private fun infer(targetType: Class<*>, componentParams: Map<String, Any?>): Converter<*>? {
 		var result = components.values.findLast { it.targetType.isAssignableFrom(targetType) } ?: return null
-		if(result.componentParams.toString() != componentParams.toString()) {
+		if (result.componentParams.toString() != componentParams.toString()) {
 			result = result.componentCopy(componentParams)
 		}
 		return result
@@ -2360,27 +2394,27 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	private fun <T> fallbackConvert(value: Any, targetType: Class<T>): T? {
 		try {
 			//尝试调用目标类型的第一个拥有匹配的唯一参数的构造方法生成转化后的值
-			for(constructor in targetType.declaredConstructors) {
-				if(constructor.parameterCount == 1) {
+			for (constructor in targetType.declaredConstructors) {
+				if (constructor.parameterCount == 1) {
 					try {
 						constructor.isAccessible = true
 						return constructor.newInstance(value) as T
-					} catch(e: Exception) {
+					} catch (e: Exception) {
 					}
 				}
 			}
 			//尝试调用目标类型的第一个拥有匹配的唯一参数的方法生成转化后的值
-			for(method in targetType.declaredMethods) {
-				if(method.parameterCount == 1) {
+			for (method in targetType.declaredMethods) {
+				if (method.parameterCount == 1) {
 					try {
 						method.isAccessible = true
 						return method.invoke(value) as T
-					} catch(e: Exception) {
+					} catch (e: Exception) {
 					}
 				}
 			}
 			return null
-		} catch(e: Exception) {
+		} catch (e: Exception) {
 			return null
 		}
 	}

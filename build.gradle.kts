@@ -2,12 +2,12 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.5.21"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.21"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.21"
+	id("org.jetbrains.kotlin.jvm") version "1.5.30"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.30"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.30"
 	id("org.jetbrains.dokka") version "1.5.0"
-	id("me.champeau.jmh") version "0.6.4"
-	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" //未成功执行benchmark
+	id("me.champeau.jmh") version "0.6.6"
+	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" apply false //未成功执行benchmark
 }
 
 val groupName = "icu.windea.breezeframework"
@@ -47,7 +47,28 @@ allprojects {
 		//plugin("org.jetbrains.kotlinx.benchmark")
 	}
 
+	runCatching {
+		apply{
+			from("$projectDir/jmh.gradle")
+		}
+	}
+
+	java {
+		toolchain {
+			when(project.name) {
+				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+				else -> languageVersion.set(JavaLanguageVersion.of(8))
+			}
+		}
+	}
+
 	kotlin {
+//		toolchain {
+//			when(project.name) {
+//				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+//				else -> languageVersion.set(JavaLanguageVersion.of(8))
+//			}
+//		}
 		explicitApi()
 	}
 
@@ -69,7 +90,7 @@ allprojects {
 	//
 	//benchmark {
 	//	targets {
-	//		register("benchmarks")
+	//		register("jmh")
 	//	}
 	//}
 
@@ -82,31 +103,9 @@ allprojects {
 
 	//配置依赖
 	dependencies {
-		implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
-		testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.5.21")
+		implementation("org.jetbrains.kotlin:kotlin-stdlib")
+		testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 	}
-
-	java {
-		toolchain {
-			when(project.name) {
-				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
-				else -> languageVersion.set(JavaLanguageVersion.of(8))
-			}
-		}
-	}
-
-	//java{
-	//	when(project.name){
-	//		in java11ModuleNames ->{
-	//			sourceCompatibility = JavaVersion.VERSION_11
-	//			targetCompatibility = JavaVersion.VERSION_11
-	//		}
-	//		else ->{
-	//			sourceCompatibility = JavaVersion.VERSION_1_8
-	//			targetCompatibility = JavaVersion.VERSION_1_8
-	//		}
-	//	}
-	//}
 
 	val projectCompiler = javaToolchains.compilerFor {
 		when(project.name) {
@@ -125,9 +124,6 @@ allprojects {
 		compileJmhJava {
 			javaCompiler.set(projectCompiler)
 		}
-		//named<JavaCompile>("compileBenchmarksJava"){
-		//	javaCompiler.set(projectCompiler)
-		//}
 		compileKotlin {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
@@ -152,14 +148,14 @@ allprojects {
 				freeCompilerArgs = compilerArgs
 			}
 		}
-		//named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileBenchmarksKotlin"){
-		//	javaPackagePrefix = projectPackagePrefix
-		//	kotlinOptions {
-		//		jvmTarget = projectJavaVersion
-		//		jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
-		//		freeCompilerArgs = compilerArgs
-		//	}
-		//}
+	}
+
+	//配置是否需要发布
+	if(!property("publish").toString().toBoolean()) return@allprojects
+	//配置需要发布的模块
+	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
+
+	tasks{
 		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
 				named("main") {
@@ -169,11 +165,6 @@ allprojects {
 			}
 		}
 	}
-
-	//配置是否需要发布
-	if(!property("publish").toString().toBoolean()) return@allprojects
-	//配置需要发布的模块
-	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
 
 	//准备发布模块
 

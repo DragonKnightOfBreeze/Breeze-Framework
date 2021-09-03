@@ -17,9 +17,6 @@ import java.nio.charset.*
  * @see Converter
  */
 inline fun <reified T> Any?.convert(componentParams: Map<String, Any?> = emptyMap()): T {
-	if(this == null) return runCatching { this as T }.getOrElse {
-		throw IllegalArgumentException("Cannot convert null value to a non-null type.")
-	}
 	return Converters.convert(this, componentParams)
 }
 
@@ -30,7 +27,6 @@ inline fun <reified T> Any?.convert(componentParams: Map<String, Any?> = emptyMa
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> Any?.convert(targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
-	if(this == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 	return Converters.convert(this, targetType, componentParams)
 }
 
@@ -41,7 +37,6 @@ fun <T> Any?.convert(targetType: Class<T>, componentParams: Map<String, Any?> = 
  */
 @Suppress("UNCHECKED_CAST")
 fun Any?.convert(targetType: Type, componentParams: Map<String, Any?> = emptyMap()): Any {
-	if(this == null) throw IllegalArgumentException("Cannot convert null value to a non-null type.")
 	return Converters.convert(this, targetType, componentParams)
 }
 
@@ -51,7 +46,6 @@ fun Any?.convert(targetType: Type, componentParams: Map<String, Any?> = emptyMap
  * @see Converter
  */
 inline fun <reified T> Any?.convertOrNull(componentParams: Map<String, Any?> = emptyMap()): T? {
-	if(this == null) return this
 	return Converters.convertOrNull(this, componentParams)
 }
 
@@ -61,7 +55,6 @@ inline fun <reified T> Any?.convertOrNull(componentParams: Map<String, Any?> = e
  * @see Converter
  */
 fun <T> Any?.convertOrNull(targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
-	if(this == null) return this
 	return Converters.convertOrNull(this, targetType, componentParams)
 }
 
@@ -71,7 +64,6 @@ fun <T> Any?.convertOrNull(targetType: Class<T>, componentParams: Map<String, An
  * @see Converter
  */
 fun Any?.convertOrNull(targetType: Type, componentParams: Map<String, Any?> = emptyMap()): Any? {
-	if(this == null) return this
 	return Converters.convertOrNull(this, targetType, componentParams)
 }
 //endregion

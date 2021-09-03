@@ -7,6 +7,9 @@ import icu.windea.breezeframework.core.extension.*
 import org.junit.*
 import java.nio.charset.*
 import java.util.*
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class ConverterTest {
 	@Test
@@ -94,26 +97,10 @@ class ConverterTest {
 
 	@Test
 	fun testNull() {
-		try {
-			prettyPrintln(null.convert<String>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convert<String?>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convertOrNull<String>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convertOrNull<String?>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
+		assertFailsWith<IllegalArgumentException> { prettyPrintln(null.convert<String>()) }
+		assertNull(null.convert<String?>())
+		assertNull(null.convertOrNull<String>())
+		assertNull(null.convertOrNull<String?>())
 	}
 
 	enum class NV {

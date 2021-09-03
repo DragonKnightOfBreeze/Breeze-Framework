@@ -1,17 +1,5 @@
-jmh {
-	includes.add("BuildMapBenchmark")
-}
-
-//benchmark {
-//	configurations{
-//		named("main"){
-//			include("ForEachAsyncBenchmark")
-//		}
-//	}
-//}
-
-dependencies{
-	testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+dependencies {
+	testImplementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
@@ -28,7 +16,7 @@ dependencies{
 	testImplementation("commons-beanutils:commons-beanutils:1.9.4")
 	testImplementation("com.github.fangjinuo.langx:langx:3.6.6")
 
-	jmhImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	jmhImplementation("org.jetbrains.kotlin:kotlin-reflect")
 	jmhImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 	jmhImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
 	jmhImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
@@ -44,22 +32,4 @@ dependencies{
 	jmhImplementation("org.apache.commons:commons-lang3:3.12.0")
 	jmhImplementation("commons-beanutils:commons-beanutils:1.9.4")
 	jmhImplementation("com.github.fangjinuo.langx:langx:3.6.6")
-
-	//benchmarksImplementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
-	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
-	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
-	//benchmarksImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
-	//benchmarksImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.4")
-	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4")
-	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.4")
-	//benchmarksImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.12.4")
-	//benchmarksImplementation("com.google.code.gson:gson:2.8.7")
-	//benchmarksImplementation("com.alibaba:fastjson:1.2.78")
-	//benchmarksImplementation("org.yaml:snakeyaml:1.29")
-	//benchmarksImplementation("com.google.guava:guava:30.1.1-jre")
-	//benchmarksImplementation("org.apache.commons:commons-lang3:3.12.0")
-	//benchmarksImplementation("commons-beanutils:commons-beanutils:1.9.4")
-	//benchmarksImplementation("com.github.fangjinuo.langx:langx:3.6.6")
-	//benchmarksImplementation(sourceSets.test.get().output + sourceSets.test.get().runtimeClasspath)
 }

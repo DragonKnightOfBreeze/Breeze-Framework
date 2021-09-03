@@ -1,7 +1,7 @@
 dependencies {
 	api(project(":breeze-core"))
 	api(project(":breeze-reflect"))
-	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2")
 	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
