@@ -4,6 +4,7 @@
 package icu.windea.breezeframework.dsl.xml
 
 import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.component.extension.escapeBy
 import icu.windea.breezeframework.core.extension.*
 import icu.windea.breezeframework.core.type.*
 import icu.windea.breezeframework.dsl.*

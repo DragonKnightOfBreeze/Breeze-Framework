@@ -498,7 +498,7 @@
 
 * [X] Boolean类型的属性的getter的特殊处理
 * [X] 完善元组扩展
-* [X] 实现Renderable
+* [X] 实现`Renderable`
 * [X] 不做任何处理的`pass()`方法
 * [X] `coalesce()`和`coalesceOrNull()`
 * [X] `CharMatcher`和`StringMatcher`
@@ -515,7 +515,7 @@
 * [X] `Page`以及相关扩展方法
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
-* [ ] ~~并发迭代的集合（ParallelCollection）~~（难以实现，可考虑使用`Sequence`）
+* [ ] ~~并发迭代的集合（`ParallelCollection`）~~（难以实现，可考虑使用`Sequence`）
 * [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync`）~~（可考虑使用`Sequence`）
 
 # 长期

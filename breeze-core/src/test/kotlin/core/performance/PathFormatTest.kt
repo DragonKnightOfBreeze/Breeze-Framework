@@ -4,6 +4,7 @@
 package icu.windea.breezeframework.core.performance
 
 import icu.windea.breezeframework.core.component.*
+import icu.windea.breezeframework.core.component.extension.*
 import icu.windea.breezeframework.core.extension.*
 import java.util.concurrent.*
 import kotlin.system.*

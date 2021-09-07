@@ -63,13 +63,14 @@ allprojects {
 	}
 
 	kotlin {
-//		toolchain {
-//			when(project.name) {
-//				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
-//				else -> languageVersion.set(JavaLanguageVersion.of(8))
-//			}
-//		}
-		explicitApi()
+		//explicitApiWarning()
+		jvmToolchain{
+			this as JavaToolchainSpec
+			when(project.name) {
+				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+				else -> languageVersion.set(JavaLanguageVersion.of(8))
+			}
+		}
 	}
 
 	noArg {
@@ -128,7 +129,6 @@ allprojects {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
@@ -136,7 +136,6 @@ allprojects {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
@@ -144,7 +143,6 @@ allprojects {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
