@@ -15,6 +15,7 @@ dependencies {
 	testImplementation("org.apache.commons:commons-lang3:3.12.0")
 	testImplementation("commons-beanutils:commons-beanutils:1.9.4")
 	testImplementation("com.github.fangjinuo.langx:langx:3.6.6")
+	testImplementation("com.googlecode.aviator:aviator:5.2.7")
 
 	jmhImplementation("org.jetbrains.kotlin:kotlin-reflect")
 	jmhImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
@@ -32,4 +33,5 @@ dependencies {
 	jmhImplementation("org.apache.commons:commons-lang3:3.12.0")
 	jmhImplementation("commons-beanutils:commons-beanutils:1.9.4")
 	jmhImplementation("com.github.fangjinuo.langx:langx:3.6.6")
+	jmhImplementation("com.googlecode.aviator:aviator:5.2.7")
 }
