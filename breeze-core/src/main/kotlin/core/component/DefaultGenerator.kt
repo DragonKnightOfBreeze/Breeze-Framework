@@ -4,10 +4,10 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.*
-import icu.windea.breezeframework.core.model.EmptyIterator
-import icu.windea.breezeframework.core.model.EmptyMutableIterator
-import icu.windea.breezeframework.core.model.EmptyIterable
-import icu.windea.breezeframework.core.model.EmptyMutableIterable
+import icu.windea.breezeframework.core.model.collections.EmptyIterator
+import icu.windea.breezeframework.core.model.collections.EmptyMutableIterator
+import icu.windea.breezeframework.core.model.collections.EmptyIterable
+import icu.windea.breezeframework.core.model.collections.EmptyMutableIterable
 import java.lang.reflect.*
 import java.math.*
 import java.nio.charset.*

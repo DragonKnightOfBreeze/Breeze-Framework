@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-package icu.windea.breezeframework.core.model
+package icu.windea.breezeframework.core.model.collections
 
 internal class PageImpl<T>(
 	source: List<T> = emptyList(),
