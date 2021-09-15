@@ -513,6 +513,7 @@
 * [X] 删除`breeze-sql`模块
 * [X] 删除`breeze-springboot`模块
 * [X] `Page`以及相关扩展方法
+* [X] 更改`Iterable<T>.pin()`的实现方式
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
 * [ ] ~~并发迭代的集合（`ParallelCollection`）~~（难以实现，可考虑使用`Sequence`）
