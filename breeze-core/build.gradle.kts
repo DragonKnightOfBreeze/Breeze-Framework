@@ -14,7 +14,8 @@ dependencies {
 	testImplementation("com.google.guava:guava:30.1.1-jre")
 	testImplementation("org.apache.commons:commons-lang3:3.12.0")
 	testImplementation("commons-beanutils:commons-beanutils:1.9.4")
-	testImplementation("com.github.fangjinuo.langx:langx:3.6.6")
+	testImplementation("com.github.fangjinuo.langx:langx-java:4.0.0")
+	testImplementation("com.github.fangjinuo.langx:langx-java8:4.0.0")
 	testImplementation("com.googlecode.aviator:aviator:5.2.7")
 
 	jmhImplementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -32,6 +33,7 @@ dependencies {
 	jmhImplementation("com.google.guava:guava:30.1.1-jre")
 	jmhImplementation("org.apache.commons:commons-lang3:3.12.0")
 	jmhImplementation("commons-beanutils:commons-beanutils:1.9.4")
-	jmhImplementation("com.github.fangjinuo.langx:langx:3.6.6")
+	jmhImplementation("com.github.fangjinuo.langx:langx-java:4.0.0")
+	jmhImplementation("com.github.fangjinuo.langx:langx-java8:4.0.0")
 	jmhImplementation("com.googlecode.aviator:aviator:5.2.7")
 }

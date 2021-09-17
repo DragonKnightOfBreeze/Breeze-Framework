@@ -6,15 +6,13 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
 
-基于Kotlin的整合代码框架。
-
-为标准库和部分框架提供各种有用的扩展。
+基于Kotlin的整合代码框架。为标准库和部分框架提供各种有用的扩展。
 
 注意：
 
-* 这个框架仍然有待完善，但是你现在就可以使用它的一些有用的功能。
-* 这个框架是为Kotlin Jvm设计的，但是你自然可以在Java中使用它的一部分功能。
-* 这个框架仍在更新中，未来会提供更多的模块和功能。
+* 这个框架是为Kotlin Jvm设计的，可以在Java中使用它的一部分功能。
+* 这个框架仍在更新中，未来会提供更多的功能。
+* 这个框架尚未确定模块、目录和文件结构，未来它们可能会发生较大的变动。
 
 Kotlin版本：Kotlin Jvm 1.5.30
 
@@ -22,7 +20,15 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 ## breeze-core
 
-为Kotlin标准库和常见功能需求提供工具和扩展。
+提供基础的扩展。
+
+* 提供额外的顶级方法。如`pass()`、`javaTypeOf()`、`Any?.cast()`。
+* 提供额外的入口方法。如`enumMapOf()`、`concurrentMapOf()`。
+* 提供额外的操作符方法。如`String.times()`、`List.times()`。
+* 为常用类提供各种各样的扩展方法。如`String.truncate()`、`List.swap()`、`Map.asConcurrent()`。
+* 为数据类提供各种各样的扩展方法。如`Any?.smartEquals()`、`equalsBy()`。
+* 提供各种各样的组件，用于实现特定的功能。如`Converter`、`DefaultGenerator`、`RandomGenerator`、`CaseFormat`。
+* 支持1到6个参数的元组。
 
 ## breeze-dsl
 
@@ -30,7 +36,7 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 ## breeze-functional
 
-为函数式编程中提供工具和扩展。支持0到11个参数的函数。
+提供函数式编程的扩展。
 
 ## breeze-http
 
@@ -38,7 +44,7 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 ## breeze-javafx
 
-为JavaFX提供工具和扩展。
+提供javafx的扩展
 
 ## breeze-logger
 
@@ -46,7 +52,7 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 ## breeze-reflect
 
-为Java反射和Kotlin反射提供工具和扩展。
+提供java反射和kotlin反射的扩展。
 
 ## breeze-serialization
 
@@ -54,7 +60,7 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 ## breeze-time
 
-为Java的时间api提供工具和扩展。
+提供java时间api的扩展。
 
 # 参考
 
@@ -86,6 +92,7 @@ Kotlin版本：Kotlin Jvm 1.5.30
 * [MarioAriasC/funKTionale](https://github.com/MarioAriasC/funKTionale/tree/master/funktionale-composition)
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 * [Json Path](https://github.com/json-path/JsonPath)
+* [langx-java](https://github.com/fangjinuo/langx-java)
 
 # 用法
 

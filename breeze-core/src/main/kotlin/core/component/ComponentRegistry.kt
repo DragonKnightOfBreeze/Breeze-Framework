@@ -3,7 +3,9 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.extension.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.MutableMap
+import kotlin.collections.set
 
 /**
  * 组件注册中心用于注册和检索组件。
@@ -11,7 +13,7 @@ import icu.windea.breezeframework.core.extension.*
  * Component Registry can be used to register and index components.
  */
 abstract class ComponentRegistry<T : Component> {
-	private val backendComponents = mutableMapOf<String, T>()
+	private val backendComponents: MutableMap<String, T> = ConcurrentHashMap()
 	@Volatile private var registerDefaultFinished = false
 
 	/**
@@ -32,7 +34,7 @@ abstract class ComponentRegistry<T : Component> {
 	 * Register specific component.
 	 */
 	fun register(component: T) {
-		val components = if(registerDefaultFinished) components else backendComponents
+		val components = if (registerDefaultFinished) components else backendComponents
 		components[component.componentId] = component
 	}
 
