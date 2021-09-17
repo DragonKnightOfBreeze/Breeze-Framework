@@ -2,40 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-bbcode.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-cmd-text.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-cmd-text.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-cmd-text.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-creole.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-creole.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-creole.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-critic-markup.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-critic-markup.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-critic-markup.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-flow.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-flow.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-flow.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-markdown.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-markdown.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-markdown.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-mermaid.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-mermaid.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-mermaid.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-sequence.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-sequence.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-sequence.test" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-xml.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-xml.main" target="8" />
-      <module name="Breeze-Framework.breeze-dsl.breeze-dsl-xml.test" target="8" />
-      <module name="Breeze-Framework.breeze-expression.jmh" target="8" />
-      <module name="Breeze-Framework.breeze-expression.main" target="8" />
-      <module name="Breeze-Framework.breeze-expression.test" target="8" />
-      <module name="Breeze-Framework.breeze-tool" target="11" />
-      <module name="Breeze-Framework.breeze-tool.jmh" target="11" />
-      <module name="Breeze-Framework.breeze-tool.main" target="11" />
-      <module name="Breeze-Framework.breeze-tool.test" target="11" />
+      <module name="Breeze-Framework.breeze-sql.jmh" target="8" />
+      <module name="Breeze-Framework.breeze-sql.main" target="8" />
+      <module name="Breeze-Framework.breeze-sql.test" target="8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="DEBUGGING_INFO" value="false" />
   </component>
 </project>

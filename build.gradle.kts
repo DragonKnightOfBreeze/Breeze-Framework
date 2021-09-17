@@ -2,15 +2,16 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.5.0"
+	id("org.jetbrains.kotlin.jvm") version "1.5.30"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.30"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.30"
 	id("org.jetbrains.dokka") version "1.5.0"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.0"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.0"
-	id("me.champeau.jmh") version "0.6.4"
+	id("me.champeau.jmh") version "0.6.6"
+	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" apply false //未成功执行benchmark
 }
 
 val groupName = "icu.windea.breezeframework"
-val versionName = "3.0.1"
+val versionName = "3.1.0"
 val packagePrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",
@@ -27,8 +28,8 @@ val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable
 allprojects {
 	val projectName = project.name
 	val projectTitle = projectName.split("-").joinToString(" ") { it.capitalize() }
-	val projectJavaVersion = when(projectName) {
-		in java11ModuleNames -> "11"
+	val projectJavaVersion = when {
+		project == rootProject || projectName in java11ModuleNames -> "11"
 		else -> "1.8"
 	}
 	val projectPackagePrefix = packagePrefix
@@ -43,38 +44,13 @@ allprojects {
 		plugin("org.jetbrains.kotlin.plugin.noarg")
 		plugin("org.jetbrains.kotlin.plugin.allopen")
 		plugin("me.champeau.jmh")
+		//plugin("org.jetbrains.kotlinx.benchmark")
 	}
 
-	kotlin {
-		explicitApi()
-	}
-
-	noArg {
-		annotation("icu.windea.breezeframework.core.annotation.NoArg")
-	}
-
-	allOpen {
-		//jmh压测类需要开放
-		annotation("icu.windea.breezeframework.core.annotation.AllOpen")
-		annotation("org.openjdk.jmh.annotations.BenchmarkMode")
-	}
-
-	//配置jmh
-	jmh {
-
-	}
-
-	//配置依赖仓库
-	repositories {
-		maven("https://dl.bintray.com/kotlin/kotlin-eap")
-		maven("https://maven.aliyun.com/nexus/content/groups/public")
-		mavenCentral()
-	}
-
-	//配置依赖
-	dependencies {
-		implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
-		testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.5.21")
+	runCatching {
+		apply{
+			from("$projectDir/jmh.gradle")
+		}
 	}
 
 	java {
@@ -86,18 +62,51 @@ allprojects {
 		}
 	}
 
-	//java{
-	//	when(project.name){
-	//		in java11ModuleNames ->{
-	//			sourceCompatibility = JavaVersion.VERSION_11
-	//			targetCompatibility = JavaVersion.VERSION_11
-	//		}
-	//		else ->{
-	//			sourceCompatibility = JavaVersion.VERSION_1_8
-	//			targetCompatibility = JavaVersion.VERSION_1_8
-	//		}
+	kotlin {
+		//explicitApiWarning()
+		jvmToolchain{
+			this as JavaToolchainSpec
+			when(project.name) {
+				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
+				else -> languageVersion.set(JavaLanguageVersion.of(8))
+			}
+		}
+	}
+
+	noArg {
+		annotation("icu.windea.breezeframework.core.annotation.NoArg")
+	}
+
+	allOpen {
+		annotation("icu.windea.breezeframework.core.annotation.AllOpen")
+		annotation("org.openjdk.jmh.annotations.BenchmarkMode") //jmh压测类需要开放
+	}
+
+	//配置jmh
+	jmh {
+
+	}
+
+	//sourceSets.create("benchmarks")
+	//
+	//benchmark {
+	//	targets {
+	//		register("jmh")
 	//	}
 	//}
+
+	//配置依赖仓库
+	repositories {
+		maven("https://dl.bintray.com/kotlin/kotlin-eap")
+		maven("https://maven.aliyun.com/nexus/content/groups/public")
+		mavenCentral()
+	}
+
+	//配置依赖
+	dependencies {
+		implementation("org.jetbrains.kotlin:kotlin-stdlib")
+		testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+	}
 
 	val projectCompiler = javaToolchains.compilerFor {
 		when(project.name) {
@@ -120,7 +129,6 @@ allprojects {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
@@ -128,19 +136,24 @@ allprojects {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
-		compileJmhKotlin {
+		compileJmhKotlin{
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
-				jdkHome = projectCompiler.get().metadata.installationPath.asFile.absolutePath
 				freeCompilerArgs = compilerArgs
 			}
 		}
+	}
 
+	//配置是否需要发布
+	if(!property("publish").toString().toBoolean()) return@allprojects
+	//配置需要发布的模块
+	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
+
+	tasks{
 		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
 				named("main") {
@@ -148,12 +161,8 @@ allprojects {
 					//includes.from("README.md")
 				}
 			}
-
 		}
 	}
-
-	//配置需要发布的模块
-	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
 
 	//准备发布模块
 

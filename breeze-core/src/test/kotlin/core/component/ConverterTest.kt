@@ -4,9 +4,12 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.extension.*
+import icu.windea.breezeframework.core.component.extension.*
 import org.junit.*
 import java.nio.charset.*
 import java.util.*
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class ConverterTest {
 	@Test
@@ -90,30 +93,6 @@ class ConverterTest {
 
 	inline fun <reified T> Any?.convertAAA(): T {
 		return this as T
-	}
-
-	@Test
-	fun testNull() {
-		try {
-			prettyPrintln(null.convert<String>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convert<String?>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convertOrNull<String>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
-		try {
-			prettyPrintln(null.convertOrNull<String?>())
-		} catch(e: Exception) {
-			e.printStackTrace()
-		}
 	}
 
 	enum class NV {

@@ -25,14 +25,18 @@ interface Encoder : Component {
 	 * 解码指定的字符串，以指定的字符集显示。
 	 */
 	fun decode(value: String, charset: Charset = Charsets.UTF_8): String
+
+	override fun componentCopy(componentParams: Map<String, Any?>): Encoder {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractEncoder : Encoder {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object Encoders : ComponentRegistry<Encoder>() {

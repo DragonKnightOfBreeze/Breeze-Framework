@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.jmh.iml" filepath="$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.jmh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.main.iml" filepath="$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.test.iml" filepath="$PROJECT_DIR$/.idea/modules/breeze-sql/Breeze-Framework.breeze-sql.test.iml" />
+    </modules>
+  </component>
+</project>

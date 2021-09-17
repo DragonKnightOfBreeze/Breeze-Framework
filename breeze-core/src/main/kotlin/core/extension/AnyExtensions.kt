@@ -11,8 +11,9 @@ import icu.windea.breezeframework.core.model.*
 import java.lang.reflect.*
 import kotlin.reflect.*
 
-fun Any.isNullLike(): Boolean {
+fun Any?.isNullLike(): Boolean {
 	return when(this) {
+		null -> true
 		is Boolean -> !this
 		is Number -> toString().let { it == "0" || it == "0.0" }
 		is CharSequence -> isEmpty()
@@ -25,8 +26,9 @@ fun Any.isNullLike(): Boolean {
 	}
 }
 
-fun Any.isNotNullLike(): Boolean {
+fun Any?.isNotNullLike(): Boolean {
 	return when(this) {
+		null -> false
 		is Boolean -> this
 		is Number -> toString().let { it != "0" && it != "0.0" }
 		is CharSequence -> isNotEmpty()
@@ -51,6 +53,26 @@ inline fun <reified T> Any?.cast(): T {
  */
 inline fun <reified T> Any?.castOrNull(): T? {
 	return this as? T
+}
+
+/**
+ * 得到指定的一组值中第一个不为null的值，或者抛出异常。
+ */
+fun <T> coalesce(vararg values: T?): T {
+	for(value in values) {
+		if(value != null) return value
+	}
+	throw IllegalArgumentException("No non-null value in values.")
+}
+
+/**
+ * 得到指定的一组值中第一个不为null的值，或者返回null。
+ */
+fun <T> coalesceOrNull(vararg values: T?): T? {
+	for(value in values) {
+		if(value != null) return value
+	}
+	return null
 }
 
 /**

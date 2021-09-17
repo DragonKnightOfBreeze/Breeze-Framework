@@ -478,6 +478,10 @@
 
 * [X] 重新发布
 
+# 3.x.x
+
+### 3.0.x
+
 #### 3.0.0
 
 * [X] 更改groupId
@@ -488,11 +492,13 @@
 * [X] 补充组件`DefaultGenerator`
 * [X] 可配置组件的快速命中缓存（ConcurrentHashMap），而不是总是迭代List
 
-#### 3.0.1
+### 3.1.x
+
+#### 3.1.0
 
 * [X] Boolean类型的属性的getter的特殊处理
 * [X] 完善元组扩展
-* [X] 实现Renderable
+* [X] 实现`Renderable`
 * [X] 不做任何处理的`pass()`方法
 * [X] `coalesce()`和`coalesceOrNull()`
 * [X] `CharMatcher`和`StringMatcher`
@@ -503,11 +509,15 @@
 * [X] 重构组件相关代码
 * [X] 更改项目目录结构
 * [X] 清理breeze-unstable模块
-* [ ] ~~并发迭代的集合（ParallelCollection）~~（难以实现，可考虑使用`Sequence`）
-* [ ] 多级列表和树的上钻下钻操作（drillUp drillDown）
-* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync``）~~（可考虑使用`Sequence`）
-* [ ] 优化`CaseFormat`组件
 * [X] 移除`string.toCharArray()`，直接迭代字符串
+* [X] 删除`breeze-sql`模块
+* [X] 删除`breeze-springboot`模块
+* [X] `Page`以及相关扩展方法
+* [X] 更改`Iterable<T>.pin()`的实现方式
+* [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
+* [ ] 优化`CaseFormat`组件
+* [ ] ~~并发迭代的集合（`ParallelCollection`）~~（难以实现，可考虑使用`Sequence`）
+* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync`）~~（可考虑使用`Sequence`）
 
 # 长期
 

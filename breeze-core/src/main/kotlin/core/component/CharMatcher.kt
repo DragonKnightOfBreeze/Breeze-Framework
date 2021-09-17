@@ -3,8 +3,6 @@
 
 package icu.windea.breezeframework.core.component
 
-import icu.windea.breezeframework.core.extension.*
-
 /**
  * 字符匹配器。
  *
@@ -42,14 +40,18 @@ interface CharMatcher : Matcher<Char> {
 			}
 		}
 	}
+
+	override fun componentCopy(componentParams: Map<String, Any?>): CharMatcher {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractCharMatcher : CharMatcher {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object CharMatchers : ComponentRegistry<CharMatcher>() {

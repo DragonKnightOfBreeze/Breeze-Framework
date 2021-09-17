@@ -6,45 +6,44 @@
 
 [Github](https://github.com/DragonKnightOfBreeze/Breeze-Framework)
 
-Integrated code framework based on Kotlin.
-
-Provides many useful extensions for standard library and some frameworks.
+Integrated code framework based on Kotlin. Provides many useful extensions for standard library and some frameworks.
 
 NOTE：
 
-* This framework is not fully implemented, but you can instantly use some of it's useful features.
-* This framework is designed to be used by Kotlin Jvm, but you can obviously use it in Java.
-* This framework is updating, and will provide more modules and functions in future.
+* This framework is designed to be used by Kotlin Jvm, and can use part of it's functions in Java.
+* This framework is still on updating, and will provide more functions in the future.
+* This framework has not yet determine it's module, directory and file structure, and may happen large changes in the future.
 
-Kotlin Version: Kotlin Jvm 1.5.0
+Kotlin Version: Kotlin Jvm 1.5.30
 
 # Modules
 
 ## breeze-core
 
-Provide utilities and extensions for the Kotlin standard library and common functional requirements.
+Provide basic extensions.
+
+* Provide extra top functions. e.g. `pass()`, `javaTypeOf()`, `Any?.cast()`.
+* Provide extra entry functions. e.g. `enumMapOF()`, `concurrentMapOf()`.
+* Provide various extension functions for common classes. e.g. `String.trucnate()`, `List.swap()`, `Map.asConcurrent`.
+* Provide various extension functions for data classes. e.g. `Any?.smartEquals`, `equalsBy()`.
+* Provide various components for implementing specific functions. e.g. `Converter`, `DefaultGenerator`, `RandomGenerator`, `CaseFormat`.
+* Support tuples from 1 argument to 6 arguments.
 
 ## breeze-dsl
 
 Provides a concise and flexible dsl api, used to generate text of markup languages by code.
 
-Can be sufficient configured.
-
 ## breeze-functional
 
-Provide utilities and extensions for functional programming.
-
-Support functions with 0 to 11 parameters.
+Provide extensions for functional programming.
 
 ## breeze-http
 
 Provide a concise and intuitive http api, based on the Java native http api, used to send http requests.
 
-Can be sufficient configured.
-
 ## breeze-javafx
 
-Provide tools and extensions for Java FX.
+Provide extensions for javafx.
 
 ## breeze-logger
 
@@ -52,25 +51,19 @@ Provide a simple logger api.
 
 ## breeze-reflect
 
-Provide utilities and extensions for Java reflection and Kotlin reflection.
+Provide extensions for java reflection and kotlin reflection.
 
 ## breeze-serialization
 
 Provides a concise and unified serializer api, based on third-party libraries, for serialize and deserialize data.
 
-Can be sufficient configured.
-
-## breeze-spring-boot
-
-Provide utilities and extensions for the Spring Boot Framework.
-
 ## breeze-time
 
-Provide utilities and extensions for Java's time api.
+Provide extensions for java time api.
 
 # Reference
 
-## Dependencies & Optional dependencies
+## Frameworks & Libraries & Implementations
 
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
 * [Spring Cloud](https://github.com/spring-cloud)
@@ -84,9 +77,6 @@ Provide utilities and extensions for Java's time api.
 * [MicroUtils/kotlin-logging](https://github.com/MicroUtils/kotlin-logging)
 * [pmwmedia/tinylog](https://github.com/pmwmedia/tinylog)
 * [MiloszKrajewski/stateful4k](https://github.com/MiloszKrajewski/stateful4k)
-
-## Implementation References
-
 * [Awesome Kotlin](https://github.com/KotlinBy/awesome-kotlin)
 * [Google Guava](https://github.com/google/guava)
 * [MehdiK/Humanizer.jvm](https://github.com/MehdiK/Humanizer.jvm)
@@ -102,6 +92,7 @@ Provide utilities and extensions for Java's time api.
 * [KotlinTuples](https://github.com/enbandari/KotlinTuples)
 * [Json Pointer](https://tools.ietf.org/html/rfc6901)
 * [Json Path](https://github.com/json-path/JsonPath)
+* [langx-java](https://github.com/fangjinuo/langx-java)
 
 # Usage
 

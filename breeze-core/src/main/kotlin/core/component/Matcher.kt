@@ -14,3 +14,4 @@ interface Matcher<T> : Component {
 	 */
 	fun matches(value: T): Boolean
 }
+

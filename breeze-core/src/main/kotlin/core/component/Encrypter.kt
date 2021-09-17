@@ -27,14 +27,18 @@ interface Encrypter : Component {
 	 * 解密指定的字节数组。某些加密算法可能不支持解密。
 	 */
 	fun decrypt(value: ByteArray, secret: ByteArray? = null): ByteArray
+
+	override fun componentCopy(componentParams: Map<String, Any?>): Encrypter {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
 }
 
 abstract class AbstractEncrypter : Encrypter {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object Encrypters : ComponentRegistry<Encrypter>() {

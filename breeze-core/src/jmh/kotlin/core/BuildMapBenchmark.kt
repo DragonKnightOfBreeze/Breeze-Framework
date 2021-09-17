@@ -15,27 +15,36 @@ import java.util.concurrent.*
 @Measurement(iterations = 5, time = 1)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class BuildMapBenchmark {
-	//Benchmark                Mode  Cnt    Score   Error  Units
-	//BuildMapBenchmark.test1  avgt    5   50.862 ± 1.306  ns/op
-	//BuildMapBenchmark.test2  avgt    5   63.678 ± 1.769  ns/op
-	//BuildMapBenchmark.test3  avgt    5   47.417 ± 2.914  ns/op
-	//BuildMapBenchmark.test4  avgt    5  150.116 ± 6.008  ns/op
-	//BuildMapBenchmark.test5  avgt    5   73.322 ± 6.741  ns/op
-	//BuildMapBenchmark.test6  avgt    5   67.481 ± 7.106  ns/op
+	//Benchmark                Mode  Cnt    Score    Error  Units
+	//BuildMapBenchmark.test1  avgt    5   44.707 ±  1.253  ns/op    HashMap().apply{ ... }
+	//BuildMapBenchmark.test2  avgt    5   70.900 ± 12.724  ns/op    LinkedHashMap().apply{ ... }
+	//BuildMapBenchmark.test3  avgt    5   73.258 ±  7.930  ns/op    Collections.unmodifiableMap(LinkedHashMap().apply{ ... })
+	//BuildMapBenchmark.test4  avgt    5  135.810 ±  6.153  ns/op    ImmutableMap.copyOf(LinkedHashMap().apply{ ... })
+	//BuildMapBenchmark.test5  avgt    5   71.563 ±  7.220  ns/op    mapOf(...)
+	//BuildMapBenchmark.test6  avgt    5   79.752 ±  7.877  ns/op    mutableMapOf(...)
+	//BuildMapBenchmark.test7  avgt    5   48.432 ±  1.484  ns/op    buildMap{ ... }
+	//BuildMapBenchmark.test8  avgt    5   49.905 ±  1.627  ns/op    ImmutableMap.of(...)
+	//BuildMapBenchmark.test9  avgt    5   59.035 ±  3.054  ns/op    ImmutableMap.copyOf(pairs)
 
 	@Benchmark fun test1() = HashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") }
 
 	@Benchmark fun test2() = LinkedHashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") }
 
-	@Benchmark fun test3() =
-		Collections.unmodifiableMap(HashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") })
+	@Benchmark fun test3() = Collections.unmodifiableMap(LinkedHashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") })
 
-	@Benchmark fun test4() =
-		ImmutableMap.copyOf(HashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") })
+	@Benchmark fun test4() = ImmutableMap.copyOf(LinkedHashMap<String, String>().apply { put("1", "a");put("2", "b");put("3", "c") })
 
 	@Benchmark fun test5() = mapOf("a" to "1", "b" to "2", "c" to "3")
 
 	@Benchmark fun test6() = mutableMapOf("a" to "1", "b" to "2", "c" to "3")
 
-	@Benchmark fun test7() = ImmutableMap.of("a", "1", "b", "2", "c", "3")
+	@Benchmark fun test7() = buildMap<String,String> { put("1", "a");put("2", "b");put("3", "c") }
+
+	@Benchmark fun test8() = ImmutableMap.of("a", "1", "b", "2", "c", "3")
+
+	@Benchmark fun test9() = arrayOf("a" to "1", "b" to "2", "c" to "3").let {
+		val builder = ImmutableMap.builder<String, String>()
+		for ((k,v) in it) builder.put(k,v)
+		builder.build()
+	}
 }

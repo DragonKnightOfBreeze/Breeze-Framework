@@ -59,12 +59,12 @@ fun IntArray.asAtomic() = AtomicIntegerArray(this)
 fun LongArray.asAtomic() = AtomicLongArray(this)
 
 /**
- * 将当前引用转化为原子类型。
+ * 将当前引用转化为原子引用。
  */
-fun <T> T.asAtomic() = AtomicReference(this)
+fun <T> T.asAtomicReference() = AtomicReference(this)
 
 /**
- * 将当前引用数组转化为原子类型。
+ * 将当前引用数组转化为原子引用数组。
  */
-fun <T> Array<out T>.asAtomic() = AtomicReferenceArray(this)
+fun <T> Array<out T>.asAtomicReferenceArray() = AtomicReferenceArray(this)
 //endregion

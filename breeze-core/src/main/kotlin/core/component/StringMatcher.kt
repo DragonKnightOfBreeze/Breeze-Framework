@@ -10,14 +10,18 @@ import icu.windea.breezeframework.core.extension.*
  *
  * 字符串匹配器用于表示字符串是否匹配某种格式。
  */
-interface StringMatcher : Matcher<String>
+interface StringMatcher : Matcher<String>{
+	override fun componentCopy(componentParams: Map<String, Any?>): StringMatcher {
+		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
+	}
+}
 
 abstract class AbstractStringMatcher : StringMatcher {
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object StringMatchers : ComponentRegistry<StringMatcher>() {

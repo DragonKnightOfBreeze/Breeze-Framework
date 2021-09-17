@@ -3,6 +3,8 @@
 
 package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.component.extension.convert
+import icu.windea.breezeframework.core.component.extension.convertOrNull
 import icu.windea.breezeframework.core.extension.*
 import java.io.*
 import java.lang.reflect.*
@@ -43,7 +45,7 @@ interface Converter<T> : Component {
 		return runCatching { convert(value) }.getOrNull()
 	}
 
-	override fun copy(componentParams: Map<String, Any?>): Converter<T> {
+	override fun componentCopy(componentParams: Map<String, Any?>): Converter<T> {
 		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
 	}
 }
@@ -67,11 +69,11 @@ interface GenericConverter<T> : Converter<T> {
 abstract class AbstractConverter<T> : Converter<T> {
 	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, Converter::class.java)
 
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 @Suppress("UNCHECKED_CAST", "RemoveExplicitTypeArguments")
@@ -220,12 +222,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		val relaxConvert: Boolean = componentParams.get("relaxConvert").convertToBooleanOrFalse()
 
-		override fun copy(componentParams: Map<String, Any?>): BooleanConverter {
-			return BooleanConverter(componentParams)
-		}
-
 		override fun convert(value: Any): Boolean {
-			return if(relaxConvert) doRelaxConvert(value) else doConvert(value)
+			return if (relaxConvert) doRelaxConvert(value) else doConvert(value)
 		}
 
 		private fun doConvert(value: Any): Boolean {
@@ -245,6 +243,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> false
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = BooleanConverter(componentParams)
 	}
 
 	object CharConverter : AbstractConverter<Char>() {
@@ -455,10 +455,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		private val dateTimeFormatter =
 			DateTimeFormatter.ofPattern(dateTimeFormat, locale).withZone(timeZone.toZoneId())
 
-		override fun copy(componentParams: Map<String, Any?>): StringConverter {
-			return StringConverter(componentParams)
-		}
-
 		override fun convert(value: Any): String {
 			return when {
 				raw -> value.toString()
@@ -470,6 +466,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> value.smartToString()
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = StringConverter(componentParams)
 	}
 
 	@ComponentParam("regexOptions", "Array<RegexOption> | Iterable<RegexOption> | Sequence<RegexOption>", "<empty>")
@@ -480,16 +478,12 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		val regexOptions: Set<RegexOption> = componentParams.get("regexOptions").convertOrNull() ?: emptySet()
 
-		override fun copy(componentParams: Map<String, Any?>): RegexConverter {
-			return RegexConverter(componentParams)
-		}
-
 		override fun convert(value: Any): Regex {
 			return when {
 				value is Regex -> value
 				value is Pattern -> value.toRegex()
 				else -> {
-					when(regexOptions.size) {
+					when (regexOptions.size) {
 						0 -> value.toString().toRegex()
 						1 -> value.toString().toRegex(regexOptions.first())
 						else -> value.toString().toRegex(regexOptions)
@@ -497,6 +491,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				}
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = RegexConverter(componentParams)
 	}
 
 	object PatternConverter : AbstractConverter<Pattern>() {
@@ -594,10 +590,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		private val threadLocalDateFormat =
 			ThreadLocal.withInitial { SimpleDateFormat(format, locale).also { it.timeZone = timeZone } }
 
-		override fun copy(componentParams: Map<String, Any?>): DateConverter {
-			return DateConverter(componentParams)
-		}
-
 		override fun convert(value: Any): Date {
 			return when {
 				value is Date -> value
@@ -606,6 +598,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> threadLocalDateFormat.get().parse(value.toString())
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = DateConverter(componentParams)
 	}
 
 	@ComponentParam("format", "String", "yyyy-MM-dd")
@@ -622,10 +616,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		override fun copy(componentParams: Map<String, Any?>): LocalDateConverter {
-			return LocalDateConverter(componentParams)
-		}
-
 		override fun convert(value: Any): LocalDate {
 			return when {
 				value is LocalDate -> value
@@ -635,6 +625,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> LocalDate.parse(value.toString(), formatter)
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = LocalDateConverter(componentParams)
 	}
 
 	@ComponentParam("format", "String", "HH:mm:ss")
@@ -651,10 +643,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		override fun copy(componentParams: Map<String, Any?>): LocalTimeConverter {
-			return LocalTimeConverter(componentParams)
-		}
-
 		override fun convert(value: Any): LocalTime {
 			return when {
 				value is LocalTime -> value
@@ -664,6 +652,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> LocalTime.parse(value.toString(), formatter)
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = LocalTimeConverter(componentParams)
 	}
 
 	@ComponentParam("format", "String", "yyyy-MM-dd HH:mm:ss")
@@ -680,10 +670,6 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		private val formatter = DateTimeFormatter.ofPattern(format, locale).withZone(timeZone.toZoneId())
 
-		override fun copy(componentParams: Map<String, Any?>): LocalDateTimeConverter {
-			return LocalDateTimeConverter(componentParams)
-		}
-
 		override fun convert(value: Any): LocalDateTime {
 			return when {
 				value is LocalDateTime -> value
@@ -693,6 +679,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> LocalDateTime.parse(value.toString(), formatter)
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = LocalDateTimeConverter(componentParams)
 	}
 
 	object InstantConverter : AbstractConverter<Instant>() {
@@ -712,17 +700,13 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<Duration>() {
 		companion object Default : DurationConverter()
 
-		override fun copy(componentParams: Map<String, Any?>): DurationConverter {
-			return DurationConverter(componentParams)
-		}
-
 		override fun convert(value: Any): Duration {
 			return when {
 				value is Duration -> value
 				value is TemporalAmount -> Duration.from(value)
 				value is Pair<*, *> -> {
 					val (start, end) = value
-					if(start is Temporal && end is Temporal) {
+					if (start is Temporal && end is Temporal) {
 						Duration.between(start, end)
 					} else {
 						throw IllegalArgumentException("Cannot convert '$value' to Duration.")
@@ -731,6 +715,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> Duration.parse(value.toString())
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = DurationConverter(componentParams)
 	}
 
 	//TODO
@@ -739,17 +725,13 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<Period>() {
 		companion object Default : PeriodConverter()
 
-		override fun copy(componentParams: Map<String, Any?>): PeriodConverter {
-			return PeriodConverter(componentParams)
-		}
-
 		override fun convert(value: Any): Period {
 			return when {
 				value is Period -> value
 				value is TemporalAmount -> Period.from(value)
 				value is Pair<*, *> -> {
 					val (start, end) = value
-					if(start is LocalDate && end is LocalDate) {
+					if (start is LocalDate && end is LocalDate) {
 						Period.between(start, end)
 					} else {
 						throw IllegalArgumentException("Cannot convert '$value' to Period.")
@@ -759,6 +741,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				else -> Period.parse(value.toString())
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = PeriodConverter(componentParams)
 	}
 
 	object FileConverter : AbstractConverter<File>() {
@@ -812,14 +796,15 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	object EnumConverter : AbstractConverter<Enum<*>>(), GenericConverter<Enum<*>> {
 		override fun convert(value: Any, targetType: Type): Enum<*> {
 			val enumClass = inferEnumClass(targetType)
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			if (enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
 					val enumValues = enumValuesCache.getOrPut(enumClass) {
 						enumClass.enumConstants?.toList() ?: emptyList()
 					}
-					enumValues.getOrNull(index) ?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
+					enumValues.getOrNull(index)
+						?: throw IllegalArgumentException("Cannot find enum constant by index '$index'.")
 				}
 				else -> {
 					val name = value.toString()
@@ -833,7 +818,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 		override fun convertOrNull(value: Any, targetType: Type): Enum<*>? {
 			val enumClass = inferEnumClass(targetType)
-			if(enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
+			if (enumClass == Enum::class.java) throw IllegalArgumentException("Cannot get actual enum class.")
 			return when {
 				value is Number -> {
 					val index = value.toInt()
@@ -868,15 +853,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<Array<*>>(), GenericConverter<Array<*>> {
 		companion object Default : ArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): ArrayConverter {
-			return ArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any, targetType: Type): Array<*> {
 			val elementType = inferTypeArgument(targetType)
@@ -894,20 +875,30 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is UIntArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is ULongArray -> Array(value.size) { convertElement(value[it], elementType) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Iterable<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Sequence<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Stream<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is String -> splitValue(value).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
-				value is CharSequence -> splitValue(value.toString()).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is CharSequence -> splitValue(value.toString()).let { v ->
+					Array(v.size) {
+						convertElement(
+							v[it],
+							elementType
+						)
+					}
+				}
 				else -> arrayOf(convertElement(value, elementType))
 			}
 		}
 
 		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+			element.convert(elementType, passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = ArrayConverter(componentParams)
 	}
 
 	/**
@@ -925,15 +916,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<ByteArray>() {
 		companion object Default : ByteArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): ByteArrayConverter {
-			return ByteArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): ByteArray {
 			return when {
@@ -950,7 +937,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ByteArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ByteArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ByteArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ByteArray(v.size) { convertElement(v[it]) } }
@@ -960,9 +948,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Byte>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Byte>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = ByteArrayConverter(componentParams)
 	}
 
 	/**
@@ -980,15 +970,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<ShortArray>() {
 		companion object Default : ShortArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): ShortArrayConverter {
-			return ShortArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): ShortArray {
 			return when {
@@ -1005,7 +991,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ShortArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ShortArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ShortArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ShortArray(v.size) { convertElement(v[it]) } }
@@ -1015,9 +1002,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Short>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Short>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = ShortArrayConverter(componentParams)
 	}
 
 	/**
@@ -1035,15 +1024,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<IntArray>() {
 		companion object Default : IntArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): IntArrayConverter {
-			return IntArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): IntArray {
 			return when {
@@ -1060,7 +1045,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> IntArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> IntArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> IntArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> IntArray(v.size) { convertElement(v[it]) } }
@@ -1070,9 +1056,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Int>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Int>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = IntArrayConverter(componentParams)
 	}
 
 	/**
@@ -1090,15 +1078,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<LongArray>() {
 		companion object Default : LongArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): LongArrayConverter {
-			return LongArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): LongArray {
 			return when {
@@ -1115,7 +1099,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> LongArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> LongArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> LongArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> LongArray(v.size) { convertElement(v[it]) } }
@@ -1125,9 +1110,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Long>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Long>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = LongArrayConverter(componentParams)
 	}
 
 	/**
@@ -1145,15 +1132,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<FloatArray>() {
 		companion object Default : FloatArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): FloatArrayConverter {
-			return FloatArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): FloatArray {
 			return when {
@@ -1170,7 +1153,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> FloatArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> FloatArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> FloatArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> FloatArray(v.size) { convertElement(v[it]) } }
@@ -1180,9 +1164,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Float>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Float>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = FloatArrayConverter(componentParams)
 	}
 
 	/**
@@ -1200,15 +1186,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<DoubleArray>() {
 		companion object Default : DoubleArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): DoubleArrayConverter {
-			return DoubleArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): DoubleArray {
 			return when {
@@ -1225,7 +1207,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> DoubleArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> DoubleArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> DoubleArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> DoubleArray(v.size) { convertElement(v[it]) } }
@@ -1235,9 +1218,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Double>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Double>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = DoubleArrayConverter(componentParams)
 	}
 
 	/**
@@ -1255,15 +1240,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<BooleanArray>() {
 		companion object Default : BooleanArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): BooleanArrayConverter {
-			return BooleanArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): BooleanArray {
 			return when {
@@ -1280,7 +1261,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> BooleanArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> BooleanArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> BooleanArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> BooleanArray(v.size) { convertElement(v[it]) } }
@@ -1290,9 +1272,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Boolean>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Boolean>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = BooleanArrayConverter(componentParams)
 	}
 
 	/**
@@ -1310,15 +1294,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<CharArray>() {
 		companion object Default : CharArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): CharArrayConverter {
-			return CharArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): CharArray {
 			return when {
@@ -1335,7 +1315,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> CharArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> CharArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> CharArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> CharArray(v.size) { convertElement(v[it]) } }
@@ -1345,9 +1326,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<Char>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<Char>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = CharArrayConverter(componentParams)
 	}
 
 	/**
@@ -1365,15 +1348,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<UByteArray>() {
 		companion object Default : UByteArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): UByteArrayConverter {
-			return UByteArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): UByteArray {
 			return when {
@@ -1390,7 +1369,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UByteArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UByteArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UByteArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UByteArray(v.size) { convertElement(v[it]) } }
@@ -1400,9 +1380,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<UByte>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<UByte>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = UByteArrayConverter(componentParams)
 	}
 
 	/**
@@ -1420,15 +1402,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<UShortArray>() {
 		companion object Default : UShortArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): UShortArrayConverter {
-			return UShortArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): UShortArray {
 			return when {
@@ -1445,7 +1423,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UShortArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UShortArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UShortArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UShortArray(v.size) { convertElement(v[it]) } }
@@ -1455,9 +1434,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<UShort>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<UShort>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = UShortArrayConverter(componentParams)
 	}
 
 	/**
@@ -1475,15 +1456,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<UIntArray>() {
 		companion object Default : UIntArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): UIntArrayConverter {
-			return UIntArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): UIntArray {
 			return when {
@@ -1500,7 +1477,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> UIntArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> UIntArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> UIntArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> UIntArray(v.size) { convertElement(v[it]) } }
@@ -1510,9 +1488,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<UInt>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<UInt>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = UIntArrayConverter(componentParams)
 	}
 
 	/**
@@ -1530,15 +1510,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<ULongArray>() {
 		companion object Default : ULongArrayConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): ULongArrayConverter {
-			return ULongArrayConverter(componentParams)
-		}
 
 		override fun convert(value: Any): ULongArray {
 			return when {
@@ -1555,7 +1531,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> ULongArray(value.size) { convertElement(value[it]) }
 				value is UIntArray -> ULongArray(value.size) { convertElement(value[it]) }
 				value is ULongArray -> ULongArray(value.size) { convertElement(value[it]) }
-				value is Iterator<*> -> Iterable { value }.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
+				value is Iterator<*> -> Iterable { value }.toList()
+					.let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Iterable<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Sequence<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
 				value is Stream<*> -> value.toList().let { v -> ULongArray(v.size) { convertElement(v[it]) } }
@@ -1565,9 +1542,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 			}
 		}
 
-		private fun convertElement(element: Any?) = element.convert<ULong>(passingComponentParams)
+		private fun convertElement(element: Any?) = element.convert<ULong>(passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = ULongArrayConverter(componentParams)
 	}
 
 	/**
@@ -1588,14 +1567,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : IteratorConverter()
 
 		private val iterableConverter by lazy {
-			get(Iterable::class.java, passingComponentParams) { IterableConverter(passingComponentParams) }
+			get(Iterable::class.java, passingParams) { IterableConverter(passingParams) }
 		}
 
-		private val passingComponentParams = componentParams
-
-		override fun copy(componentParams: Map<String, Any?>): IteratorConverter {
-			return IteratorConverter(componentParams)
-		}
+		private val passingParams = componentParams
 
 		override fun convert(value: Any, targetType: Type): Iterator<*> {
 			return iterableConverter.convert(value, targetType).iterator()
@@ -1604,6 +1579,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		override fun convertOrNull(value: Any, targetType: Type): Iterator<*>? {
 			return iterableConverter.convertOrNull(value, targetType)?.iterator()
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = IteratorConverter(componentParams)
 	}
 
 	/**
@@ -1624,14 +1601,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : MutableIteratorConverter()
 
 		private val mutableIterableConverter by lazy {
-			get(MutableIterable::class.java, passingComponentParams) { MutableIterableConverter(passingComponentParams) }
+			get(MutableIterable::class.java, passingParams) { MutableIterableConverter(passingParams) }
 		}
 
-		private val passingComponentParams = componentParams
-
-		override fun copy(componentParams: Map<String, Any?>): MutableIteratorConverter {
-			return MutableIteratorConverter(componentParams)
-		}
+		private val passingParams = componentParams
 
 		override fun convert(value: Any, targetType: Type): MutableIterator<*> {
 			return mutableIterableConverter.convert(value, targetType).iterator()
@@ -1640,6 +1613,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		override fun convertOrNull(value: Any, targetType: Type): MutableIterator<*>? {
 			return mutableIterableConverter.convertOrNull(value, targetType)?.iterator()
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = MutableIteratorConverter(componentParams)
 	}
 
 	/**
@@ -1660,14 +1635,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : IterableConverter()
 
 		private val collectionConverter by lazy {
-			get(Collection::class.java, passingComponentParams) { CollectionConverter(passingComponentParams) }
+			get(Collection::class.java, passingParams) { CollectionConverter(passingParams) }
 		}
 
-		private val passingComponentParams = componentParams
-
-		override fun copy(componentParams: Map<String, Any?>): IterableConverter {
-			return IterableConverter(componentParams)
-		}
+		private val passingParams = componentParams
 
 		override fun convert(value: Any, targetType: Type): Iterable<*> {
 			return collectionConverter.convert(value, targetType)
@@ -1676,6 +1647,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		override fun convertOrNull(value: Any, targetType: Type): Iterable<*>? {
 			return collectionConverter.convertOrNull(value, targetType)
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = IterableConverter(componentParams)
 	}
 
 	/**
@@ -1697,14 +1670,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : MutableIterableConverter()
 
 		private val mutableCollectionConverter by lazy {
-			get(MutableCollection::class.java, passingComponentParams) { MutableCollectionConverter(passingComponentParams) }
+			get(MutableCollection::class.java, passingParams) { MutableCollectionConverter(passingParams) }
 		}
 
-		private val passingComponentParams = componentParams
-
-		override fun copy(componentParams: Map<String, Any?>): MutableIterableConverter {
-			return MutableIterableConverter(componentParams)
-		}
+		private val passingParams = componentParams
 
 		override fun convert(value: Any, targetType: Type): MutableIterable<*> {
 			return mutableCollectionConverter.convert(value, targetType)
@@ -1713,6 +1682,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		override fun convertOrNull(value: Any, targetType: Type): MutableIterable<*>? {
 			return mutableCollectionConverter.convertOrNull(value, targetType)
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = MutableIterableConverter(componentParams)
 	}
 
 	/**
@@ -1733,22 +1704,18 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : CollectionConverter()
 
 		private val listConverter by lazy {
-			get(List::class.java, passingComponentParams) { ListConverter(passingComponentParams) }
+			get(List::class.java, passingParams) { ListConverter(passingParams) }
 		}
 		private val setConverter by lazy {
-			get(Set::class.java, passingComponentParams) { SetConverter(passingComponentParams) }
+			get(Set::class.java, passingParams) { SetConverter(passingParams) }
 		}
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "delegate")
+		private val passingParams = filterNotComponentParams(componentParams, "delegate")
 
 		val delegate: String = componentParams.get("delegate")?.toString() ?: "list"
 
-		override fun copy(componentParams: Map<String, Any?>): CollectionConverter {
-			return CollectionConverter(componentParams)
-		}
-
 		override fun convert(value: Any, targetType: Type): Collection<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convert(value, targetType)
 				"set" -> setConverter.convert(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1756,12 +1723,14 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): Collection<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convertOrNull(value, targetType)
 				"set" -> setConverter.convertOrNull(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = CollectionConverter(componentParams)
 	}
 
 	/**
@@ -1782,22 +1751,18 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : MutableCollectionConverter()
 
 		private val mutableListConverter by lazy {
-			get(MutableList::class.java, passingComponentParams) { MutableListConverter(passingComponentParams) }
+			get(MutableList::class.java, passingParams) { MutableListConverter(passingParams) }
 		}
 		private val mutableSetConverter by lazy {
-			get(MutableSet::class.java, passingComponentParams) { MutableSetConverter(passingComponentParams) }
+			get(MutableSet::class.java, passingParams) { MutableSetConverter(passingParams) }
 		}
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "delegate")
+		private val passingParams = filterNotComponentParams(componentParams, "delegate")
 
 		val delegate: String = componentParams.get("delegate")?.toString() ?: "list"
 
-		override fun copy(componentParams: Map<String, Any?>): MutableCollectionConverter {
-			return MutableCollectionConverter(componentParams)
-		}
-
 		override fun convert(value: Any, targetType: Type): MutableCollection<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> mutableListConverter.convert(value, targetType)
 				"set" -> mutableSetConverter.convert(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -1805,12 +1770,14 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): MutableCollection<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> mutableListConverter.convertOrNull(value, targetType)
 				"set" -> mutableSetConverter.convertOrNull(value, targetType)
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = MutableCollectionConverter(componentParams)
 	}
 
 	/**
@@ -1828,15 +1795,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<List<*>>(), GenericConverter<List<*>> {
 		companion object Default : ListConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): ListConverter {
-			return ListConverter(componentParams)
-		}
 
 		override fun convert(value: Any, targetType: Type): List<*> {
 			val elementType = inferTypeArgument(targetType)
@@ -1859,15 +1822,17 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toList()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toList()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToList()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToList()
-				else -> listOf(value.convert(elementType, passingComponentParams))
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToList()
+				else -> listOf(value.convert(elementType, passingParams))
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = ListConverter(componentParams)
 	}
 
 	/**
@@ -1885,15 +1850,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<MutableList<*>>(), GenericConverter<MutableList<*>> {
 		companion object Default : MutableListConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): MutableListConverter {
-			return MutableListConverter(componentParams)
-		}
 
 		override fun convert(value: Any, targetType: Type): MutableList<*> {
 			val elementType = inferTypeArgument(targetType)
@@ -1911,20 +1872,24 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is UIntArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is ULongArray -> value.map { convertElement(it, elementType) }.convertToMutableList()
-				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }.convertToMutableList()
+				value is Iterator<*> -> Iterable { value }.map { convertElement(it, elementType) }
+					.convertToMutableList()
 				value is Iterable<*> -> value.map { convertElement(it, elementType) }.convertToMutableList()
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableList()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableList()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableList()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableList()
-				else -> mutableListOf(value.convert(elementType, passingComponentParams))
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToMutableList()
+				else -> mutableListOf(value.convert(elementType, passingParams))
 			}
 		}
 
 		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+			element.convert(elementType, passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = MutableListConverter(componentParams)
 	}
 
 	/**
@@ -1942,15 +1907,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<Set<*>>(), GenericConverter<Set<*>> {
 		companion object Default : SetConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): SetConverter {
-			return SetConverter(componentParams)
-		}
 
 		override fun convert(value: Any, targetType: Type): Set<*> {
 			val elementType = inferTypeArgument(targetType)
@@ -1973,15 +1934,17 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toSet()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toSet()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToSet()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToSet()
-				else -> setOf(value.convert(elementType, passingComponentParams))
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToSet()
+				else -> setOf(value.convert(elementType, passingParams))
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = SetConverter(componentParams)
 	}
 
 	/**
@@ -1999,15 +1962,11 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	) : AbstractConverter<MutableSet<*>>(), GenericConverter<MutableSet<*>> {
 		companion object Default : MutableSetConverter()
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
+		private val passingParams = filterNotComponentParams(componentParams, "separator", "prefix", "suffix")
 
 		val separator = componentParams.get("separator")?.toString() ?: ","
 		val prefix = componentParams.get("prefix")?.toString() ?: ""
 		val suffix = componentParams.get("suffix")?.toString() ?: ""
-
-		override fun copy(componentParams: Map<String, Any?>): MutableSetConverter {
-			return MutableSetConverter(componentParams)
-		}
 
 		override fun convert(value: Any, targetType: Type): MutableSet<*> {
 			val elementType = inferTypeArgument(targetType)
@@ -2030,15 +1989,17 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is Sequence<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
 				value is Stream<*> -> value.map { convertElement(it, elementType) }.toMutableSet()
 				value is String -> splitValue(value).map { convertElement(it, elementType) }.convertToMutableSet()
-				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }.convertToMutableSet()
-				else -> mutableSetOf(value.convert(elementType, passingComponentParams))
+				value is CharSequence -> splitValue(value.toString()).map { convertElement(it, elementType) }
+					.convertToMutableSet()
+				else -> mutableSetOf(value.convert(elementType, passingParams))
 			}
 		}
 
-		private fun convertElement(element: Any?, elementType: Type) =
-			element.convert(elementType, passingComponentParams)
+		private fun convertElement(element: Any?, elementType: Type) = element.convert(elementType, passingParams)
 
 		private fun splitValue(value: String) = value.splitToStrings(separator, prefix, suffix)
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = MutableSetConverter(componentParams)
 	}
 
 	@OptIn(ExperimentalUnsignedTypes::class)
@@ -2173,14 +2134,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : SequenceConverter()
 
 		private val iterableConverter by lazy {
-			get(Iterable::class.java, passingComponentParams) { IterableConverter(passingComponentParams) }
+			get(Iterable::class.java, passingParams) { IterableConverter(passingParams) }
 		}
 
-		private val passingComponentParams = componentParams
-
-		override fun copy(componentParams: Map<String, Any?>): SequenceConverter {
-			return SequenceConverter(componentParams)
-		}
+		private val passingParams = componentParams
 
 		override fun convert(value: Any, targetType: Type): Sequence<*> {
 			return iterableConverter.convert(value, targetType).asSequence()
@@ -2189,6 +2146,8 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		override fun convertOrNull(value: Any, targetType: Type): Sequence<*>? {
 			return iterableConverter.convertOrNull(value, targetType)?.asSequence()
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = SequenceConverter(componentParams)
 	}
 
 	/**
@@ -2209,22 +2168,18 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : StreamConverter()
 
 		private val listConverter by lazy {
-			get(List::class.java, passingComponentParams) { ListConverter(passingComponentParams) }
+			get(List::class.java, passingParams) { ListConverter(passingParams) }
 		}
 		private val setConverter by lazy {
-			get(Set::class.java, passingComponentParams) { SetConverter(passingComponentParams) }
+			get(Set::class.java, passingParams) { SetConverter(passingParams) }
 		}
 
-		private val passingComponentParams = filterNotComponentParams(componentParams, "delegate")
+		private val passingParams = filterNotComponentParams(componentParams, "delegate")
 
 		val delegate: String = componentParams.get("delegate").convertToStringOrNull() ?: "list"
 
-		override fun copy(componentParams: Map<String, Any?>): StreamConverter {
-			return StreamConverter(componentParams)
-		}
-
 		override fun convert(value: Any, targetType: Type): Stream<*> {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convert(value, targetType).stream()
 				"set" -> setConverter.convert(value, targetType).stream()
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
@@ -2232,12 +2187,14 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 
 		override fun convertOrNull(value: Any, targetType: Type): Stream<*>? {
-			return when(delegate) {
+			return when (delegate) {
 				"list" -> listConverter.convertOrNull(value, targetType)?.stream()
 				"set" -> setConverter.convertOrNull(value, targetType)?.stream()
 				else -> throw IllegalArgumentException("Config param 'delegate' must be one of: list, set.")
 			}
 		}
+
+		override fun componentCopy(componentParams: Map<String, Any?>) = StreamConverter(componentParams)
 	}
 	//endregion
 
@@ -2325,105 +2282,109 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
-	inline fun <reified T> convert(value: Any, componentParams: Map<String, Any?> = emptyMap()): T {
+	inline fun <reified T> convert(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T {
 		return convert(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
-	fun <T> convert(value: Any, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
+	fun <T> convert(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T {
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则抛出异常。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则抛出异常。
 	 */
-	fun <T> convert(value: Any, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
+	fun <T> convert(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T {
 		return doConvert(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
-	inline fun <reified T> convertOrNull(value: Any, componentParams: Map<String, Any?> = emptyMap()): T? {
+	inline fun <reified T> convertOrNull(value: Any?, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return convertOrNull(value, javaTypeOf<T>(), componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
-	fun <T> convertOrNull(value: Any, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
+	fun <T> convertOrNull(value: Any?, targetType: Class<T>, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
 	/**
-	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果转化失败，则返回null。
+	 * 根据可选的配置参数，将指定的对象转化为另一个类型。如果指定的对象是null，或者转化失败，则返回null。
 	 */
-	fun <T> convertOrNull(value: Any, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
+	fun <T> convertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?> = emptyMap()): T? {
 		return doConvertOrNull(value, targetType, componentParams)
 	}
 
-	private fun <T> doConvert(value: Any, targetType: Type, componentParams: Map<String, Any?>): T {
-		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
-		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
+	private fun <T> doConvert(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T {
+		//如果value是null，则直接抛出异常（因为无法判断targetType是否是可空类型）
+		if(value == null) throw IllegalArgumentException("Cannot convert null value to a specified type.")
 		val targetClass = inferClass(targetType)
-		if(targetClass == targetType && targetClass.isInstance(value)) return value as T
+		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
+		if (targetClass == targetType && targetClass.isInstance(value)) return value as T
+		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		val key = inferKey(targetClass, componentParams)
 		val converter = components.getOrPut(key) {
 			val result = infer(targetClass, componentParams)
-			if(result == null) {
+			if (result == null) {
 				//如果目标类型是字符串，则尝试转化为字符串
-				if(targetType == String::class.java) return value.toString() as T
-				if(useFallbackStrategy) {
+				if (targetType == String::class.java) return value.toString() as T
+				if (useFallbackStrategy) {
 					val fallback = fallbackConvert(value, targetClass)
-					if(fallback != null) return fallback as T
+					if (fallback != null) return fallback as T
 				}
 				throw IllegalArgumentException("No matched converter found for target type '$targetType'.")
 			}
 			result
 		}
-		when(converter) {
+		when (converter) {
 			is GenericConverter<*> -> return converter.convert(value, targetType) as T
 			else -> return converter.convert(value) as T
 		}
 	}
 
-	private fun <T, V : Any> doConvertOrNull(value: V, targetType: Type, componentParams: Map<String, Any?>): T? {
+	private fun <T, > doConvertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T? {
+		//如果value是null，则直接返回null
+		if(value == null) return null
 		val targetClass = inferClass(targetType)
-		//如果value的类型不是泛型类型，且兼容targetType，则直接返回
-		if(targetClass == targetType && targetClass.isInstance(value)) return value as? T?
+		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
+		if (targetClass == targetType && targetClass.isInstance(value)) return value as? T?
 		//遍历已注册的转化器，如果匹配目标类型，则尝试用它转化，并加入缓存
 		val key = inferKey(targetClass, componentParams)
 		val converter = components.getOrPut(key) {
 			val result = infer(targetClass, componentParams)
-			if(result == null) {
+			if (result == null) {
 				//如果目标类型是字符串，则尝试转化为字符串
-				if(targetType == String::class.java) return value.toString() as T
-				if(useFallbackStrategy) {
+				if (targetType == String::class.java) return value.toString() as T
+				if (useFallbackStrategy) {
 					val fallback = fallbackConvert(value, targetClass)
-					if(fallback != null) return fallback as? T?
+					if (fallback != null) return fallback as? T?
 				}
 				return null
 			}
 			result
 		}
-		return when(converter) {
+		return when (converter) {
 			is GenericConverter<*> -> converter.convertOrNull(value, targetType) as? T?
 			else -> converter.convertOrNull(value) as? T?
 		}
 	}
 
 	private fun inferKey(targetType: Class<*>, componentParams: Map<String, Any?>): String {
-		return if(componentParams.isEmpty()) targetType.name else "${targetType.name}@$componentParams"
+		return if (componentParams.isEmpty()) targetType.name else "${targetType.name}@$componentParams"
 	}
 
 	private fun infer(targetType: Class<*>, componentParams: Map<String, Any?>): Converter<*>? {
 		var result = components.values.findLast { it.targetType.isAssignableFrom(targetType) } ?: return null
-		if(result.componentParams.toString() != componentParams.toString()) {
-			result = result.copy(componentParams)
+		if (result.componentParams.toString() != componentParams.toString()) {
+			result = result.componentCopy(componentParams)
 		}
 		return result
 	}
@@ -2431,28 +2392,29 @@ object Converters : ComponentRegistry<Converter<*>>() {
 	private fun <T> fallbackConvert(value: Any, targetType: Class<T>): T? {
 		try {
 			//尝试调用目标类型的第一个拥有匹配的唯一参数的构造方法生成转化后的值
-			for(constructor in targetType.declaredConstructors) {
-				if(constructor.parameterCount == 1) {
+			for (constructor in targetType.declaredConstructors) {
+				if (constructor.parameterCount == 1) {
 					try {
 						constructor.isAccessible = true
 						return constructor.newInstance(value) as T
-					} catch(e: Exception) {
+					} catch (e: Exception) {
 					}
 				}
 			}
 			//尝试调用目标类型的第一个拥有匹配的唯一参数的方法生成转化后的值
-			for(method in targetType.declaredMethods) {
-				if(method.parameterCount == 1) {
+			for (method in targetType.declaredMethods) {
+				if (method.parameterCount == 1) {
 					try {
 						method.isAccessible = true
 						return method.invoke(value) as T
-					} catch(e: Exception) {
+					} catch (e: Exception) {
 					}
 				}
 			}
 			return null
-		} catch(e: Exception) {
+		} catch (e: Exception) {
 			return null
 		}
 	}
 }
+

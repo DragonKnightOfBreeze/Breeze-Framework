@@ -6,6 +6,7 @@
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.component.extension.*
 import icu.windea.breezeframework.core.extension.*
 import java.lang.reflect.*
 import java.math.*
@@ -19,16 +20,16 @@ import kotlin.random.Random
  *
  * 随机值生成器用于基于给定的参数生成随机值。
  */
-interface RandomGenerator<T> : Component {
+interface RandomGenerator<T> : Generator<T> {
 	/**目标类型。*/
 	val targetType: Class<T>
 
 	/**
 	 * 生成随机值。
 	 */
-	fun generate(): T
+	override fun generate(): T
 
-	override fun copy(componentParams: Map<String, Any?>): RandomGenerator<T> {
+	override fun componentCopy(componentParams: Map<String, Any?>): RandomGenerator<T> {
 		throw UnsupportedOperationException("Cannot copy component of type: ${javaClass.name}.")
 	}
 }
@@ -44,11 +45,11 @@ interface GenericRandomGenerator<T> : RandomGenerator<T> {
 abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
 	override val targetType: Class<T> = inferComponentTargetClass(this::class.javaObjectType, RandomGenerator::class.java)
 
-	override fun equals(other: Any?) = componentEquals(this, other)
+	override fun equals(other: Any?) = componentEquals(other)
 
-	override fun hashCode() = componentHashcode(this)
+	override fun hashCode() = componentHashcode()
 
-	override fun toString() = componentToString(this)
+	override fun toString() = componentToString()
 }
 
 object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
@@ -63,7 +64,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Byte = componentParams.get("min").convertOrNull() ?: 0
 		val max: Byte = componentParams.get("max").convertOrNull() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomByteGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomByteGenerator {
 			return RandomByteGenerator(componentParams)
 		}
 
@@ -87,7 +88,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Short = componentParams.get("min").convertOrNull() ?: 0
 		val max: Short = componentParams.get("max").convertOrNull() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomShortGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomShortGenerator {
 			return RandomShortGenerator(componentParams)
 		}
 
@@ -111,7 +112,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Int = componentParams.get("min").convertOrNull() ?: 0
 		val max: Int = componentParams.get("max").convertOrNull() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomIntGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomIntGenerator {
 			return RandomIntGenerator(componentParams)
 		}
 
@@ -135,7 +136,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Long = componentParams.get("min").convertOrNull() ?: 0
 		val max: Long = componentParams.get("max").convertOrNull() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomLongGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomLongGenerator {
 			return RandomLongGenerator(componentParams)
 		}
 
@@ -159,7 +160,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Float = componentParams.get("min").convertOrNull() ?: 0F
 		val max: Float = componentParams.get("max").convertOrNull() ?: 0F
 
-		override fun copy(componentParams: Map<String, Any?>): RandomFloatGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomFloatGenerator {
 			return RandomFloatGenerator(componentParams)
 		}
 
@@ -183,7 +184,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Double = componentParams.get("min").convertOrNull() ?: 0.0
 		val max: Double = componentParams.get("max").convertOrNull() ?: 0.0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomDoubleGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomDoubleGenerator {
 			return RandomDoubleGenerator(componentParams)
 		}
 
@@ -208,7 +209,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: BigInteger = componentParams.get("min").convertOrNull() ?: BigInteger.ZERO
 		val max: BigInteger = componentParams.get("max").convertOrNull() ?: BigInteger.ZERO
 
-		override fun copy(componentParams: Map<String, Any?>): RandomBigIntegerGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomBigIntegerGenerator {
 			return RandomBigIntegerGenerator(componentParams)
 		}
 
@@ -233,7 +234,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: BigDecimal = componentParams.get("min").convertOrNull() ?: BigDecimal.ZERO
 		val max: BigDecimal = componentParams.get("max").convertOrNull() ?: BigDecimal.ZERO
 
-		override fun copy(componentParams: Map<String, Any?>): RandomBigDecimalGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomBigDecimalGenerator {
 			return RandomBigDecimalGenerator(componentParams)
 		}
 
@@ -258,7 +259,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: UByte = componentParams.get("min").convertOrNull() ?: 0.toUByte()
 		val max: UByte = componentParams.get("max").convertOrNull() ?: 0.toUByte()
 
-		override fun copy(componentParams: Map<String, Any?>): RandomUByteGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomUByteGenerator {
 			return RandomUByteGenerator(componentParams)
 		}
 
@@ -283,7 +284,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: UShort = componentParams.get("min").convertOrNull() ?: 0.toUShort()
 		val max: UShort = componentParams.get("max").convertOrNull() ?: 0.toUShort()
 
-		override fun copy(componentParams: Map<String, Any?>): RandomUShortGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomUShortGenerator {
 			return RandomUShortGenerator(componentParams)
 		}
 
@@ -308,7 +309,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: UInt = componentParams.get("min").convertOrNull() ?: 0.toUInt()
 		val max: UInt = componentParams.get("max").convertOrNull() ?: 0.toUInt()
 
-		override fun copy(componentParams: Map<String, Any?>): RandomUIntGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomUIntGenerator {
 			return RandomUIntGenerator(componentParams)
 		}
 
@@ -333,7 +334,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: ULong = componentParams.get("min").convertOrNull() ?: 0.toULong()
 		val max: ULong = componentParams.get("max").convertOrNull() ?: 0.toULong()
 
-		override fun copy(componentParams: Map<String, Any?>): RandomULongGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomULongGenerator {
 			return RandomULongGenerator(componentParams)
 		}
 
@@ -358,7 +359,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		val min: Char = componentParams.get("min").convertOrNull() ?: Char.MIN_VALUE
 		val max: Char = componentParams.get("max").convertOrNull() ?: Char.MIN_VALUE
 
-		override fun copy(componentParams: Map<String, Any?>): RandomCharGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomCharGenerator {
 			return RandomCharGenerator(componentParams)
 		}
 
@@ -400,7 +401,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 		/**
 		 * 根据可选的配置参数，生成指定类型的随机值。
 		 */
-		override fun copy(componentParams: Map<String, Any?>): RandomStringGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomStringGenerator {
 			return RandomStringGenerator(componentParams)
 		}
 
@@ -440,15 +441,15 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 	) : AbstractRandomGenerator<Date>() {
 		companion object Default : RandomDateGenerator()
 
-		private val passingComponentParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
+		private val passingParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
 
-		val min: Date? = componentParams.get("min").convertOrNull(passingComponentParams)
-		val max: Date? = componentParams.get("max").convertOrNull(passingComponentParams)
+		val min: Date? = componentParams.get("min").convertOrNull(passingParams)
+		val max: Date? = componentParams.get("max").convertOrNull(passingParams)
 
 		private val minEpochSecond = min?.toInstant()?.epochSecond ?: 0
 		private val maxEpochSecond = max?.toInstant()?.epochSecond ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomDateGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomDateGenerator {
 			return RandomDateGenerator(componentParams)
 		}
 
@@ -469,15 +470,15 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 	) : AbstractRandomGenerator<LocalDate>() {
 		companion object Default : RandomLocalDateGenerator()
 
-		private val passingComponentParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
+		private val passingParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
 
-		val min: LocalDate? = componentParams.get("min").convertOrNull(passingComponentParams)
-		val max: LocalDate? = componentParams.get("max").convertOrNull(passingComponentParams)
+		val min: LocalDate? = componentParams.get("min").convertOrNull(passingParams)
+		val max: LocalDate? = componentParams.get("max").convertOrNull(passingParams)
 
 		private val minEpochDay = min?.toEpochDay() ?: 0
 		private val maxEpochDay = max?.toEpochDay() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomLocalDateGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomLocalDateGenerator {
 			return RandomLocalDateGenerator(componentParams)
 		}
 
@@ -498,15 +499,15 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 	) : AbstractRandomGenerator<LocalTime>() {
 		companion object Default : RandomLocalTimeGenerator()
 
-		private val passingComponentParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
+		private val passingParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
 
-		val min: LocalTime? = componentParams.get("min").convertOrNull(passingComponentParams)
-		val max: LocalTime? = componentParams.get("max").convertOrNull(passingComponentParams)
+		val min: LocalTime? = componentParams.get("min").convertOrNull(passingParams)
+		val max: LocalTime? = componentParams.get("max").convertOrNull(passingParams)
 
 		private val minNanoOfDay = min?.toNanoOfDay() ?: 0
 		private val maxNanoOfDay = max?.toNanoOfDay() ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomLocalTimeGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomLocalTimeGenerator {
 			return RandomLocalTimeGenerator(componentParams)
 		}
 
@@ -527,15 +528,15 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 	) : AbstractRandomGenerator<LocalDateTime>() {
 		companion object Default : RandomLocalDateTimeGenerator()
 
-		private val passingComponentParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
+		private val passingParams = filterComponentParams(componentParams, "format", "locale", "timeZone")
 
-		val min: LocalDateTime? = componentParams.get("min").convertOrNull(passingComponentParams)
-		val max: LocalDateTime? = componentParams.get("max").convertOrNull(passingComponentParams)
+		val min: LocalDateTime? = componentParams.get("min").convertOrNull(passingParams)
+		val max: LocalDateTime? = componentParams.get("max").convertOrNull(passingParams)
 
 		private val minEpochSecond = min?.toEpochSecond(ZoneOffset.UTC) ?: 0
 		private val maxEpochSecond = max?.toEpochSecond(ZoneOffset.UTC) ?: 0
 
-		override fun copy(componentParams: Map<String, Any?>): RandomLocalDateTimeGenerator {
+		override fun componentCopy(componentParams: Map<String, Any?>): RandomLocalDateTimeGenerator {
 			return RandomLocalDateTimeGenerator(componentParams)
 		}
 
@@ -668,7 +669,7 @@ object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
 	private fun infer(targetType: Class<*>, componentParams: Map<String, Any?>): RandomGenerator<*>? {
 		var result = components.values.findLast { it.targetType.isAssignableFrom(targetType) } ?: return null
 		if(result.componentParams.toString() != componentParams.toString()) {
-			result = result.copy(componentParams)
+			result = result.componentCopy(componentParams)
 		}
 		return result
 	}
