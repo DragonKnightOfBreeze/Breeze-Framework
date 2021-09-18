@@ -516,8 +516,6 @@
 * [X] 更改`Iterable<T>.pin()`的实现方式
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
-* [ ] ~~并发迭代的集合（`ParallelCollection`）~~（难以实现，可考虑使用`Sequence`）
-* [ ] ~~基于kotlin协程的并发高阶函数（如`forEachAsync`）~~（可考虑使用`Sequence`）
 
 # 长期
 
@@ -527,4 +525,3 @@
 * [X] 将项目的目标java版本从11改为1.8，部分模块的java版本仍然保持在11
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
-
