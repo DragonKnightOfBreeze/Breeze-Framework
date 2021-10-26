@@ -37,6 +37,15 @@ Provides a concise and flexible dsl api, used to generate text of markup languag
 
 Provide extensions for functional programming.
 
+## breeze-generator
+
+Provide a generator api。
+
+* `RandomGenerator`: To generate random value by specific type and parameters.
+* `DefaultGenerator`: To generate default value by specific type and parameters.
+* `ContextGenerator`: To generate expected value by the context and specific logic.
+* `ScriptingGenerator`: To generate expected value by specific script content.
+
 ## breeze-http
 
 Provide a concise and intuitive http api, based on the Java native http api, used to send http requests.

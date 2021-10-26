@@ -514,6 +514,10 @@
 * [X] 删除`breeze-springboot`模块
 * [X] `Page`以及相关扩展方法
 * [X] 更改`Iterable<T>.pin()`的实现方式
+
+#### 3.2.0
+
+* [ ] 添加模块`breeze-generator`并将`breeze-core`中的相关代码移走
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
 

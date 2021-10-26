@@ -2,6 +2,7 @@ include(
 	"breeze-core",
 	"breeze-dsl",
 	"breeze-functional",
+	"breeze-generator",
 	"breeze-http",
 	"breeze-javafx",
 	"breeze-logger",

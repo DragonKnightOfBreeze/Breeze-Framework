@@ -38,6 +38,15 @@ Kotlin版本：Kotlin Jvm 1.5.30
 
 提供函数式编程的扩展。
 
+## breeze-generator
+
+提供生成器的api。
+
+* `RandomGenerator`：用于根据指定的类型与参数生成随机值。
+* `DefaultGenerator`：用于根据指定的类型与参数生成默认值。
+* `ContextGenerator`：用于根据上下文与指定的逻辑生成期望的值。
+* `ScriptingGenerator`：用于基于指定的脚本内容生成期望的值。
+
 ## breeze-http
 
 提供简洁而直观的http api，基于Java原生的http api，用于发起http请求。
