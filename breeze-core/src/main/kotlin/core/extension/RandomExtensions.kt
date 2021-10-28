@@ -5,10 +5,10 @@
 
 package icu.windea.breezeframework.core.extension
 
-import icu.windea.breezeframework.core.annotation.*
+import icu.windea.breezeframework.core.annotation.UnstableApi
 import java.math.*
 import java.util.*
-import kotlin.math.*
+import kotlin.math.nextDown
 import kotlin.random.Random
 
 /**得到随机的字节。*/
@@ -50,13 +50,13 @@ fun Random.nextFloat(until: Float): Float {
 fun Random.nextFloat(from: Float, until: Float): Float {
 	checkRangeBounds(from, until)
 	val size = until - from
-	val r = if(size.isInfinite() && from.isFinite() && until.isFinite()) {
+	val r = if (size.isInfinite() && from.isFinite() && until.isFinite()) {
 		val r1 = nextFloat() * (until / 2 - from / 2)
 		from + r1 + r1
 	} else {
 		from + nextFloat() * size
 	}
-	return if(r >= until) until.nextDown() else r
+	return if (r >= until) until.nextDown() else r
 }
 
 internal fun checkRangeBounds(from: Float, until: Float) = require(until > from) { boundsErrorMessage(from, until) }
@@ -115,45 +115,36 @@ fun Random.nextBigDecimal(from: BigDecimal, until: BigDecimal, mathContext: Math
 }
 
 /**得到随机的无符号字节。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUByte(): UByte {
 	return nextInt(UByte.MIN_VALUE.toInt(), UByte.MAX_VALUE.toInt()).toUByte()
 }
 
 /**得到随机的无符号字节。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUByte(until: UByte): UByte {
 	return nextInt(until.toInt()).toUByte()
 }
 
 /**得到随机的无符号字节。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUByte(from: UByte, until: UByte): UByte {
 	return nextInt(from.toInt(), until.toInt()).toUByte()
 }
 
 /**得到随机的无符号短整数。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUShort(): UShort {
 	return nextInt(UShort.MIN_VALUE.toInt(), UShort.MAX_VALUE.toInt()).toUShort()
 }
 
 /**得到随机的无符号短整数。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUShort(until: UShort): UShort {
 	return nextInt(until.toInt()).toUShort()
 }
 
 /**得到随机的无符号短整数。*/
-@ExperimentalUnsignedTypes
 fun Random.nextUShort(from: UShort, until: UShort): UShort {
 	return nextInt(from.toInt(), until.toInt()).toUShort()
 }
 
-
-/**
- * 得到由[source]中的字符组成的长度为[length]的字符串。
- */
+/**得到由[source]中的字符组成的长度为[length]的字符串。*/
 fun Random.nextString(source: String, length: Int): String {
 	val sourceLength = source.length
 	return when {
@@ -169,63 +160,45 @@ fun Random.nextString(source: String, length: Int): String {
 	}
 }
 
-/**
- * 得到随机的UUID。
- */
+/**得到随机的UUID。*/
 fun Random.nextUuid(): UUID {
 	return UUID.randomUUID()
 }
 
-/**
- * 得到随机的UUID字符串。
- */
+/**得到基于指定字符串的随机的UUID。*/
+fun Random.nextUuid(name: String): UUID {
+	return UUID.nameUUIDFromBytes(name.toByteArray())
+}
+
+/**得到随机的UUID字符串。*/
 fun Random.nextUuidString(): String {
 	return nextUuid().toString()
 }
 
-
-/**
- * 得到随机的字符。
- */
+/**得到随机的字符。*/
 fun Random.nextElement(string: String): Char {
 	val length = string.length
-	return when(length) {
+	return when (length) {
 		0 -> throw IllegalArgumentException("Elements cannot be empty.")
 		1 -> string[0]
 		else -> string[nextInt(length)]
 	}
 }
 
-/**
- * 得到随机的元素。
- */
-fun Random.nextElement(elements: CharArray): Char {
-	val size = elements.size
-	return when(size) {
-		0 -> throw IllegalArgumentException("Elements cannot be empty.")
-		1 -> elements[0]
-		else -> elements[nextInt(size)]
-	}
-}
-
-/**
- * 得到随机的元素。
- */
+/**得到随机的元素。*/
 fun <T> Random.nextElement(elements: Array<out T>): T {
 	val size = elements.size
-	return when(size) {
+	return when (size) {
 		0 -> throw IllegalArgumentException("Elements cannot be empty.")
 		1 -> elements[0]
 		else -> elements[nextInt(size)]
 	}
 }
 
-/**
- * 得到随机的元素。
- */
+/**得到随机的元素。*/
 fun <T> Random.nextElement(elements: List<T>): T {
 	val size = elements.size
-	return when(size) {
+	return when (size) {
 		0 -> throw IllegalArgumentException("Elements cannot be empty.")
 		1 -> elements[0]
 		else -> elements[nextInt(size)]
