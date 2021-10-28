@@ -6,20 +6,22 @@ package icu.windea.breezeframework.core.component
 import icu.windea.breezeframework.core.component.extension.convert
 import icu.windea.breezeframework.core.component.extension.convertOrNull
 import icu.windea.breezeframework.core.extension.*
-import java.io.*
-import java.lang.reflect.*
-import java.math.*
-import java.net.*
-import java.nio.charset.*
-import java.nio.file.*
-import java.text.*
+import java.io.File
+import java.lang.reflect.Type
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.net.URI
+import java.net.URL
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.text.SimpleDateFormat
 import java.time.*
-import java.time.format.*
+import java.time.format.DateTimeFormatter
 import java.time.temporal.*
 import java.util.*
 import java.util.concurrent.atomic.*
-import java.util.regex.*
-import java.util.stream.*
+import java.util.regex.Pattern
+import java.util.stream.Stream
 
 /**
  * 转化器。
@@ -875,20 +877,12 @@ object Converters : ComponentRegistry<Converter<*>>() {
 				value is UShortArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is UIntArray -> Array(value.size) { convertElement(value[it], elementType) }
 				value is ULongArray -> Array(value.size) { convertElement(value[it], elementType) }
-				value is Iterator<*> -> Iterable { value }.toList()
-					.let { v -> Array(v.size) { convertElement(v[it], elementType) } }
+				value is Iterator<*> -> Iterable { value }.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Iterable<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Sequence<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is Stream<*> -> value.toList().let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				value is String -> splitValue(value).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
-				value is CharSequence -> splitValue(value.toString()).let { v ->
-					Array(v.size) {
-						convertElement(
-							v[it],
-							elementType
-						)
-					}
-				}
+				value is CharSequence -> splitValue(value.toString()).let { v -> Array(v.size) { convertElement(v[it], elementType) } }
 				else -> arrayOf(convertElement(value, elementType))
 			}
 		}
@@ -2325,7 +2319,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 
 	private fun <T> doConvert(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T {
 		//如果value是null，则直接抛出异常（因为无法判断targetType是否是可空类型）
-		if(value == null) throw IllegalArgumentException("Cannot convert null value to a specified type.")
+		if (value == null) throw IllegalArgumentException("Cannot convert null value to a specified type.")
 		val targetClass = inferClass(targetType)
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as T
@@ -2350,9 +2344,9 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		}
 	}
 
-	private fun <T, > doConvertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T? {
+	private fun <T> doConvertOrNull(value: Any?, targetType: Type, componentParams: Map<String, Any?>): T? {
 		//如果value是null，则直接返回null
-		if(value == null) return null
+		if (value == null) return null
 		val targetClass = inferClass(targetType)
 		//如果value的类型不是泛型类型，且兼容targetType，则直接返回value
 		if (targetClass == targetType && targetClass.isInstance(value)) return value as? T?

@@ -517,6 +517,9 @@
 
 #### 3.2.0
 
+* [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
+* [ ] 将`Component.componentParams`改为`params: ParamMap`
+* [ ] 实现`AbstractComponent`
 * [ ] 添加模块`breeze-generator`并将`breeze-core`中的相关代码移走
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
