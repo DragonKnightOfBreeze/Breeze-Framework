@@ -881,30 +881,30 @@ private val quotes = charArrayOf('\'', '\"', '`')
 /**
  * 尝试使用指定的引号包围当前字符串。
  * 适用于单引号、双引号、反引号。
- * 默认对其中的引号进行必要的转义。
+ * 默认不转义其中的对应的引号。
  */
-fun String.quote(quote: Char, escapeQuotes: Boolean = true): String {
+fun String.quote(quote: Char, escapeQuotes: Boolean = false): String {
 	return when {
 		quote !in quotes -> throw IllegalArgumentException("Invalid quote: $quote.")
 		this.surroundsWith(quote) -> this
-		escapeQuotes -> this.addSurrounding(quote.toString())
-		else -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
+		escapeQuotes -> this.replace(quote.toString(), "\\$quote").addSurrounding(quote.toString())
+		else -> this.addSurrounding(quote.toString())
 	}
 }
 
 /**
  * 尝试去除当前字符串两侧的引号。如果没有，则返回自身。
  * 适用于单引号、双引号、反引号。
- * 默认忽略其中的引号，不对其进行反转义。
+ * 默认不反转义其中的对应的引号。
  */
-fun String.unquote(omitQuotes: Boolean = true): String {
+fun String.unquote(unescapeQuotes: Boolean = false): String {
 	val quote = this.firstOrNull()
 	return when {
 		quote == null -> this
 		quote !in quotes -> this
 		!this.surroundsWith(quote) -> this
-		omitQuotes -> this.removeSurrounding(quote.toString())
-		else -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
+		unescapeQuotes -> this.removeSurrounding(quote.toString()).replace("\\$quote", quote.toString())
+		else -> this.removeSurrounding(quote.toString())
 	}
 }
 

@@ -514,6 +514,7 @@
 * [X] 删除`breeze-springboot`模块
 * [X] `Page`以及相关扩展方法
 * [X] 更改`Iterable<T>.pin()`的实现方式
+* [X] 完善`String.quote()` `String.unquote()`
 
 #### 3.2.0
 
