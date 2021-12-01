@@ -1,4 +1,4 @@
-更新README文档# 版本
+# 更新日志
 
 ## 1.x.x
 
@@ -478,7 +478,7 @@
 
 * [X] 重新发布
 
-# 3.x.x
+## 3.x.x
 
 ### 3.0.x
 
@@ -516,8 +516,12 @@
 * [X] 更改`Iterable<T>.pin()`的实现方式
 * [X] 完善`String.quote()` `String.unquote()`
 
+### 3.2.x
+
 #### 3.2.0
 
+* [X] 更新RandomExtensions
+* [X] 完善`String.quote()` `String.unquote()`
 * [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
 * [ ] 将`Component.componentParams`改为`params: ParamMap`
 * [ ] 实现`AbstractComponent`
@@ -525,7 +529,7 @@
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
 
-# 长期
+## 长期计划
 
 * [X] 尽量移除对非框架类的第三方库的依赖
 * [X] 上传到Github Pages
