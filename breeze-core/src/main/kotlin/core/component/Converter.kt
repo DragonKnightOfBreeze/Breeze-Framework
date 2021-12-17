@@ -1561,7 +1561,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : IteratorConverter()
 
 		private val iterableConverter by lazy {
-			get(Iterable::class.java, passingParams) { IterableConverter(passingParams) }
+			get(MutableIterable::class.java, passingParams) { MutableIterableConverter(passingParams) }
 		}
 
 		private val passingParams = componentParams
@@ -1629,7 +1629,7 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : IterableConverter()
 
 		private val collectionConverter by lazy {
-			get(Collection::class.java, passingParams) { CollectionConverter(passingParams) }
+			get(MutableCollection::class.java, passingParams) { MutableCollectionConverter(passingParams) }
 		}
 
 		private val passingParams = componentParams
@@ -1698,10 +1698,10 @@ object Converters : ComponentRegistry<Converter<*>>() {
 		companion object Default : CollectionConverter()
 
 		private val listConverter by lazy {
-			get(List::class.java, passingParams) { ListConverter(passingParams) }
+			get(MutableList::class.java, passingParams) { MutableListConverter(passingParams) }
 		}
 		private val setConverter by lazy {
-			get(Set::class.java, passingParams) { SetConverter(passingParams) }
+			get(MutableSet::class.java, passingParams) { MutableSetConverter(passingParams) }
 		}
 
 		private val passingParams = filterNotComponentParams(componentParams, "delegate")
