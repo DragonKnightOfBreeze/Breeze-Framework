@@ -629,18 +629,6 @@ fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullT
 }
 
 
-///**
-// * 根据指定的预测，将当前集合中的指定数量的符合条件的元素置于集合顶部。
-// * @return 列表中是否存在符合条件的元素。
-// */
-//inline fun <T> MutableList<T>.pin(count:Int = 1, predicate: (T) -> Boolean): Boolean {
-//	var i = 0
-//	for(e in this) {
-//		if(i < count && predicate(e)) result.add(i++, e) else result.add(e)
-//	}
-//}
-
-
 /**
  * 根据指定的条件，绑定当前数组和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。
  */

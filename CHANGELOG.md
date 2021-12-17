@@ -9,7 +9,7 @@
 * [ ] 完善各个模块的README文档
 * [ ] 按照功能而非类型更改项目代码的目录结构
 
-## 3.0.1 TODO
+## 3.1.1 TODO
 
 * [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
 * [ ] 将`Component.componentParams`改为`params: ParamMap`
@@ -17,6 +17,10 @@
 * [ ] 添加模块`breeze-generator`并将`breeze-core`中的相关代码移走
 * [ ] 多级列表和树的上钻下钻操作（`drillUp` `drillDown`）
 * [ ] 优化`CaseFormat`组件
+
+## 3.1.0 
+
+* [X] 重新整理项目
 
 ## 3.0.0
 
