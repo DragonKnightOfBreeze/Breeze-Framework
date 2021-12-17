@@ -11,7 +11,7 @@ plugins {
 }
 
 val groupName = "icu.windea.breezeframework"
-val versionName = "3.0.0"
+val versionName = "3.1.0"
 val packagePrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",
