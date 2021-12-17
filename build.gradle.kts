@@ -2,16 +2,16 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.5.30"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.30"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.30"
+	id("org.jetbrains.kotlin.jvm") version "1.6.0"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.6.0"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
 	id("org.jetbrains.dokka") version "1.5.0"
 	id("me.champeau.jmh") version "0.6.6"
 	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" apply false //未成功执行benchmark
 }
 
 val groupName = "icu.windea.breezeframework"
-val versionName = "3.2.0"
+val versionName = "3.0.0"
 val packagePrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
 	"-Xinline-classes",

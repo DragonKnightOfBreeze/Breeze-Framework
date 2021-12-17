@@ -14,7 +14,7 @@ NOTE：
 * This framework is still on updating, and will provide more functions in the future.
 * This framework has not yet determine it's module, directory and file structure, and may happen large changes in the future.
 
-Kotlin Version: Kotlin Jvm 1.5.30
+Kotlin Version: Kotlin Jvm 1.6.0
 
 # Modules
 
