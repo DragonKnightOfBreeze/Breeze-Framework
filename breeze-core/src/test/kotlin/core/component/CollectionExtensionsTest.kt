@@ -1,5 +1,6 @@
-package icu.windea.breezeframework.core.extension
+package icu.windea.breezeframework.core.component
 
+import icu.windea.breezeframework.core.extension.*
 import kotlin.test.*
 
 class CollectionExtensionsTest {
@@ -55,7 +56,7 @@ class CollectionExtensionsTest {
 		println(list2)
 	}
 
-	@Test //DONE
+	@Test
 	fun expandTest() {
 		val list = listOf<Any?>(1, listOf(2, 3, 4), listOf(5, listOf(6, listOf(7))), 8)
 		val flatList = list.flatMap { if(it is List<*>) it else listOf(it) }
