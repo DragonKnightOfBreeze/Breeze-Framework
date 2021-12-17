@@ -474,10 +474,6 @@
 * [X] 重构组件相关代码
 * [X] 更新README文档
 
-#### 2.0.2
-
-* [X] 重新发布
-
 ## 3.x.x
 
 ### 3.0.x
@@ -491,11 +487,6 @@
 * [X] 补充组件`RandomGenerator`
 * [X] 补充组件`DefaultGenerator`
 * [X] 可配置组件的快速命中缓存（ConcurrentHashMap），而不是总是迭代List
-
-### 3.1.x
-
-#### 3.1.0
-
 * [X] Boolean类型的属性的getter的特殊处理
 * [X] 完善元组扩展
 * [X] 实现`Renderable`
@@ -516,6 +507,9 @@
 * [X] 更改`Iterable<T>.pin()`的实现方式
 * [X] 更新RandomExtensions
 * [X] 完善`String.quote()` `String.unquote()`
+
+### 3.0.1 TODO
+
 * [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
 * [ ] 将`Component.componentParams`改为`params: ParamMap`
 * [ ] 实现`AbstractComponent`
