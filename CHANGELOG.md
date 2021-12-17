@@ -514,12 +514,6 @@
 * [X] 删除`breeze-springboot`模块
 * [X] `Page`以及相关扩展方法
 * [X] 更改`Iterable<T>.pin()`的实现方式
-* [X] 完善`String.quote()` `String.unquote()`
-
-### 3.2.x
-
-#### 3.2.0
-
 * [X] 更新RandomExtensions
 * [X] 完善`String.quote()` `String.unquote()`
 * [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
