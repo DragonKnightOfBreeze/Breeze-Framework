@@ -20,6 +20,6 @@ class AviatorTest {
 
 	@Test
 	fun test1(){
-		println(engine.eval("""1+1""").cast<Int>())
+		println(engine.eval("""1+1""").cast<Long>())
 	}
 }

@@ -715,20 +715,6 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 }
 
 /**
- * 根据指定的预测，置顶当前集合中的指定数量的符合条件的元素，返回置顶后的新列表。
- * 数量默认为1。
- */
-@UnstableApi
-inline fun <T> Iterable<T>.pin(count:Int = 1, predicate: (T) -> Boolean): List<T> {
-	val result = mutableListOf<T>()
-	var i = 0
-	for(e in this) {
-		if(i < count && predicate(e)) result.add(i++, e) else result.add(e)
-	}
-	return result
-}
-
-/**
  * 根据指定的一组键以及键选择器，选择当前集合中的元素，返回选择后的新列表。保持原有顺序，并覆盖先选择的元素。
  */
 @UnstableApi

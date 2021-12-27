@@ -37,8 +37,8 @@ class StringExtensionsTest {
 
 	@Test
 	fun quoteTest() {
-		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"', false))
-		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(false))
+		assertEquals(""""'1\"2'"""", """'1"2'""".quote('"', true))
+		assertEquals("""'1"2'""", """"'1\"2'"""".unquote(true))
 	}
 
 	@Test

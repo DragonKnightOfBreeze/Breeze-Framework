@@ -2,10 +2,10 @@
 plugins {
 	id("org.gradle.maven-publish")
 	id("org.gradle.signing")
-	id("org.jetbrains.kotlin.jvm") version "1.5.30"
-	id("org.jetbrains.kotlin.plugin.noarg") version "1.5.30"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.5.30"
-	id("org.jetbrains.dokka") version "1.5.0"
+	id("org.jetbrains.kotlin.jvm") version "1.6.0"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.6.0"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
+	id("org.jetbrains.dokka") version "1.6.0"
 	id("me.champeau.jmh") version "0.6.6"
 	//id("org.jetbrains.kotlinx.benchmark") version "0.3.1" apply false //未成功执行benchmark
 }
@@ -22,7 +22,7 @@ val compilerArgs = listOf(
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi",
 	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
-val noPublishModuleNames = arrayOf("breeze-unstable")
+val noPublishModuleNames = arrayOf("breeze-unstable", "breeze-generator")
 val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
 
 allprojects {
@@ -97,9 +97,9 @@ allprojects {
 
 	//配置依赖仓库
 	repositories {
-		maven("https://dl.bintray.com/kotlin/kotlin-eap")
 		maven("https://maven.aliyun.com/nexus/content/groups/public")
 		mavenCentral()
+		maven("https://dl.bintray.com/kotlin/kotlin-eap")
 	}
 
 	//配置依赖
@@ -243,7 +243,6 @@ allprojects {
 			}
 			//sonatype repository
 			maven {
-
 				name = "sonatypeRepository"
 				url = uri("https://s01.oss.sonatype.org//service/local/staging/deploy/maven2")
 				credentials {

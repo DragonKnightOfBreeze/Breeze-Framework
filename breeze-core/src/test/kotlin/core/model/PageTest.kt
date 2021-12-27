@@ -3,8 +3,6 @@
 
 package icu.windea.breezeframework.core.model
 
-import icu.windea.breezeframework.core.extension.emptyPage
-import icu.windea.breezeframework.core.extension.toPage
 import org.junit.Test
 
 class PageTest {

@@ -10,7 +10,9 @@
 * 这个框架仍在更新中，未来会提供更多的功能。
 * 这个框架尚未确定模块、目录和文件结构，未来它们可能会发生较大的变动。
 
-Kotlin版本：Kotlin Jvm 1.5.30
+最新版本：3.1.0
+
+Kotlin版本：Kotlin Jvm 1.6.0
 
 # 模块
 
@@ -33,6 +35,15 @@ Kotlin版本：Kotlin Jvm 1.5.30
 ## breeze-functional
 
 提供函数式编程的扩展。
+
+## breeze-generator
+
+提供生成器的api。
+
+* `RandomGenerator`：用于根据指定的类型与参数生成随机值。
+* `DefaultGenerator`：用于根据指定的类型与参数生成默认值。
+* `ContextGenerator`：用于根据上下文与指定的逻辑生成期望的值。
+* `ScriptingGenerator`：用于基于指定的脚本内容生成期望的值。
 
 ## breeze-http
 

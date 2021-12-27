@@ -6,12 +6,12 @@
 
 package icu.windea.breezeframework.core.extension
 
-import icu.windea.breezeframework.core.component.*
 import java.lang.reflect.*
-import java.math.*
-import java.text.*
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.text.DateFormat
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
 
 //internal default values
 
@@ -31,11 +31,11 @@ internal val enumValueMapCache: MutableMap<Class<out Enum<*>>, Map<String, Enum<
 //internal number extensions
 
 internal fun BigInteger.toLongOrMax(): Long {
-	return if(this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
+	return if (this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
 }
 
 internal fun BigDecimal.toDoubleOrMax(): Double {
-	return if(this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
+	return if (this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
 }
 
 //internal string extensions
@@ -77,7 +77,7 @@ internal fun Any?.convertToStringOrNull(): String? {
 internal fun <T> Collection<T>.convertToList(): List<T> {
 	return when {
 		size == 0 -> emptyList()
-		size == 1 -> listOf(if(this is List) get(0) else iterator().next())
+		size == 1 -> listOf(if (this is List) get(0) else iterator().next())
 		this is List -> this
 		else -> this.toMutableList()
 	}
@@ -93,7 +93,7 @@ internal fun <T> Collection<T>.convertToMutableList(): MutableList<T> {
 internal fun <T> Collection<T>.convertToSet(): Set<T> {
 	return when {
 		size == 0 -> emptySet()
-		size == 1 -> setOf(if(this is List) get(0) else iterator().next())
+		size == 1 -> setOf(if (this is List) get(0) else iterator().next())
 		this is Set -> this
 		else -> this.toMutableSet()
 	}
@@ -126,22 +126,22 @@ internal fun inferEnumClass(targetType: Type): Class<out Enum<*>> {
 }
 
 internal fun inferTypeArgument(targetType: Type): Type {
-	if(targetType is ParameterizedType) {
+	if (targetType is ParameterizedType) {
 		return targetType.actualTypeArguments?.firstOrNull()
 			?: error("Cannot infer class for target type '$targetType'")
-	} else if(targetType is Class<*> && targetType.isArray) {
+	} else if (targetType is Class<*> && targetType.isArray) {
 		return targetType.componentType
 	}
 	error("Cannot infer class for target type '$targetType'")
 }
 
 internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<out Type> {
-	if(targetType is ParameterizedType) {
+	if (targetType is ParameterizedType) {
 		val rawType = targetType.rawType
 		val rawClass = inferClass(rawType)
-		if(rawClass == targetClass) return targetType.actualTypeArguments
+		if (rawClass == targetClass) return targetType.actualTypeArguments
 			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
-	} else if(targetType is Class<*> && targetType.isArray) {
+	} else if (targetType is Class<*> && targetType.isArray) {
 		return arrayOf(targetType.componentType)
 	}
 	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
@@ -161,27 +161,27 @@ internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): 
 	val targetMap = componentTargetTypeMapCache.getOrPut(componentType) { ConcurrentHashMap() }
 	return targetMap.getOrPut(type) {
 		var currentType: Type = type
-		while(currentType != Any::class.java) {
+		while (currentType != Any::class.java) {
 			val currentClass = when {
 				currentType is Class<*> -> currentType
 				currentType is ParameterizedType -> currentType.rawType as? Class<*> ?: error("Cannot infer target type for type '$type'.")
 				else -> error("Cannot infer target type for type '$type'.")
 			}
 			val genericSuperClass = currentClass.genericSuperclass
-			if(genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()) {
+			if (genericSuperClass is ParameterizedType && genericSuperClass.actualTypeArguments.isNotEmpty()) {
 				val genericType = genericSuperClass.actualTypeArguments[0]
-				if(genericType is Class<*>) return@getOrPut genericType
-				if(genericType is ParameterizedType) {
+				if (genericType is Class<*>) return@getOrPut genericType
+				if (genericType is ParameterizedType) {
 					return genericType.rawType
 				}
 			}
 			val genericInterfaces = currentClass.genericInterfaces
 			val genericInterface =
 				genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
-			if(genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()) {
+			if (genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()) {
 				val genericType = genericInterface.actualTypeArguments[0]
-				if(genericType is Class<*>) return@getOrPut genericType
-				if(genericType is ParameterizedType) {
+				if (genericType is Class<*>) return@getOrPut genericType
+				if (genericType is ParameterizedType) {
 					return genericType.rawType
 				}
 			}
@@ -192,19 +192,19 @@ internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): 
 }
 
 internal fun filterComponentParams(componentParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
-	if(componentParams.isEmpty()) return emptyMap()
+	if (componentParams.isEmpty()) return emptyMap()
 	val result = mutableMapOf<String, Any?>()
-	for((name, configParam) in componentParams) {
-		if(name in names) result.put(name, configParam)
+	for ((name, configParam) in componentParams) {
+		if (name in names) result.put(name, configParam)
 	}
 	return result
 }
 
 internal fun filterNotComponentParams(componentParams: Map<String, Any?>, vararg names: String): Map<String, Any?> {
-	if(componentParams.isEmpty()) return emptyMap()
+	if (componentParams.isEmpty()) return emptyMap()
 	val result = mutableMapOf<String, Any?>()
-	for((name, configParam) in componentParams) {
-		if(name !in names) result.put(name, configParam)
+	for ((name, configParam) in componentParams) {
+		if (name !in names) result.put(name, configParam)
 	}
 	return result
 }

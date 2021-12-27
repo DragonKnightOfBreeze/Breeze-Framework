@@ -57,11 +57,11 @@ fun File.zip(fileName: String = "$name.zip"): File {
 
 @UnstableApi
 @Throws(IOException::class)
-fun File.unzip(fileName: String){
+fun File.unzip() {
 	val source = this
 	check(source.exists()) { "Source file does not exist." }
 	val inputStream = ZipInputStream(BufferedInputStream(FileInputStream(source)))
-	var entry: ZipEntry? = null
+	var entry: ZipEntry?
 	while(inputStream.nextEntry.also { entry = it } != null && !entry!!.isDirectory) {
 		val target = File(source.parent, entry!!.name)
 		if(!target.parentFile.exists()) {
