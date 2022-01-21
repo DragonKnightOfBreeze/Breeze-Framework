@@ -14,13 +14,7 @@ val groupName = "icu.windea.breezeframework"
 val versionName = "3.1.1"
 val packagePrefix = "icu.windea.breezeframework"
 val compilerArgs = listOf(
-	"-Xinline-classes",
-	"-Xopt-in=kotlin.RequiresOptIn",
-	"-Xopt-in=kotlin.ExperimentalStdlibApi",
-	"-Xopt-in=kotlin.contracts.ExperimentalContracts",
-	"-Xopt-in=icu.windea.breezeframework.core.annotation.InternalApi",
-	"-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi",
-	"-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
+	"-Xinline-classes", "-Xopt-in=kotlin.RequiresOptIn", "-Xopt-in=kotlin.ExperimentalStdlibApi", "-Xopt-in=kotlin.contracts.ExperimentalContracts", "-Xopt-in=icu.windea.breezeframework.core.annotation.InternalApi", "-Xopt-in=icu.windea.breezeframework.core.annotation.UnstableApi", "-Xopt-in=icu.windea.breezeframework.core.annotation.TrickApi"
 )
 val noPublishModuleNames = arrayOf("breeze-unstable", "breeze-generator")
 val java11ModuleNames = arrayOf("breeze-http", "breeze-javafx", "breeze-unstable")
@@ -48,14 +42,14 @@ allprojects {
 	}
 
 	runCatching {
-		apply{
+		apply {
 			from("$projectDir/jmh.gradle")
 		}
 	}
 
 	java {
 		toolchain {
-			when(project.name) {
+			when (project.name) {
 				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
 				else -> languageVersion.set(JavaLanguageVersion.of(8))
 			}
@@ -64,9 +58,9 @@ allprojects {
 
 	kotlin {
 		//explicitApiWarning()
-		jvmToolchain{
+		jvmToolchain {
 			this as JavaToolchainSpec
-			when(project.name) {
+			when (project.name) {
 				in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
 				else -> languageVersion.set(JavaLanguageVersion.of(8))
 			}
@@ -109,13 +103,16 @@ allprojects {
 	}
 
 	val projectCompiler = javaToolchains.compilerFor {
-		when(project.name) {
+		when (project.name) {
 			in java11ModuleNames -> languageVersion.set(JavaLanguageVersion.of(11))
 			else -> languageVersion.set(JavaLanguageVersion.of(8))
 		}
 	}
 
 	tasks {
+		jar {
+			from("README.md", "README_en.md", "LICENSE")
+		}
 		compileJava {
 			javaCompiler.set(projectCompiler)
 		}
@@ -139,7 +136,7 @@ allprojects {
 				freeCompilerArgs = compilerArgs
 			}
 		}
-		compileJmhKotlin{
+		compileJmhKotlin {
 			javaPackagePrefix = projectPackagePrefix
 			kotlinOptions {
 				jvmTarget = projectJavaVersion
@@ -149,11 +146,11 @@ allprojects {
 	}
 
 	//配置是否需要发布
-	if(!property("publish").toString().toBoolean()) return@allprojects
+	if (!property("publish").toString().toBoolean()) return@allprojects
 	//配置需要发布的模块
-	if(project == rootProject || project.name in noPublishModuleNames) return@allprojects
+	if (project == rootProject || project.name in noPublishModuleNames) return@allprojects
 
-	tasks{
+	tasks {
 		withType<org.jetbrains.dokka.gradle.DokkaTask> {
 			dokkaSourceSets {
 				named("main") {

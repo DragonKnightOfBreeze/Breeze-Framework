@@ -37,7 +37,7 @@ Provide extensions for functional programming.
 
 ## breeze-generator
 
-Provide a generator api。
+TODO Provide a generator api。
 
 * `RandomGenerator`: To generate random value by specific type and parameters.
 * `DefaultGenerator`: To generate default value by specific type and parameters.
