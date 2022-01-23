@@ -2,7 +2,6 @@
 // Breeze is blowing...
 
 @file:JvmName("RandomExtensions")
-@file:Suppress("unused")
 
 package icu.windea.breezeframework.javafx.extension
 

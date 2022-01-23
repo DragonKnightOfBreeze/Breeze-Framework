@@ -54,7 +54,7 @@ abstract class AbstractQuerier<T : Any, R> : Querier<T, R> {
 }
 
 object Queriers : ComponentRegistry<Querier<*, *>>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * 查询所有结果的查询器。
 	 *

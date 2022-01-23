@@ -12,7 +12,7 @@ import icu.windea.breezeframework.core.type.*
 //* 元组的元素类型可以不同，并且元素个数应当是有限的
 //* 元组应当是data class，继承自Serializable，实现自定义的toString方法，并且实现toList扩展方法。
 
-//region Entry Extensions
+//region entry extensions
 /**
  * 构建一个二元素元组。
  *
@@ -59,7 +59,7 @@ fun <A, B, C, D, E, F> tupleOf(first: A, second: B, third: C, fourth: D, fifth: 
 }
 //endregion
 
-//region Build extensions
+//region build extensions
 /**从二元素元组构造三元素元组。*/
 infix fun <A, B, C> Tuple2<A, B>.fromTo(that: C): Tuple3<A, B, C> {
 	return Tuple3(first, second, that)
@@ -81,7 +81,7 @@ infix fun <A, B, C, D, E, F> Tuple5<A, B, C, D, F>.fromTo(that: F): Tuple6<A, B,
 }
 //endregion
 
-//region Common Extensions
+//region common extensions
 /**映射单一元素类型的二元素元组的元素。*/
 inline fun <T, R> TypedTuple2<T>.map(transform: (T) -> R): TypedTuple2<R> {
 	return TypedTuple2(transform(first), transform(second))
@@ -108,7 +108,7 @@ inline fun <T, R> TypedTuple6<T>.map(transform: (T) -> R): TypedTuple6<R> {
 }
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 /**将单一元素类型的三元素元组转化为列表。*/
 fun <T> TypedTuple3<T>.toList() = listOf(first, second, third)
 

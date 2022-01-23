@@ -40,7 +40,7 @@ abstract class AbstractEncoder : Encoder {
 }
 
 object Encoders : ComponentRegistry<Encoder>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * Base64编码器。
 	 */

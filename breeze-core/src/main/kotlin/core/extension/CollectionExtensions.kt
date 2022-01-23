@@ -2,26 +2,25 @@
 // Breeze is blowing...
 
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY",
-	"BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY", "ReplaceIsEmptyWithIfEmpty")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY", "BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
 
 package icu.windea.breezeframework.core.extension
 
 import icu.windea.breezeframework.core.annotation.*
-import java.lang.reflect.*
+import java.lang.reflect.Type
 import java.util.*
 import java.util.concurrent.*
-import kotlin.contracts.*
+import kotlin.contracts.contract
 
-//region Entry Extensions
+//region entry extensions
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(pair: Pair<K, V?>): Map<K, V?> {
-	return if(pair.second != null) mapOf(pair) else emptyMap()
+	return if (pair.second != null) mapOf(pair) else emptyMap()
 }
 
 /**构建一个映射并事先过滤值为空的键值对。*/
 fun <K, V : Any> mapOfValuesNotNull(vararg pairs: Pair<K, V?>): Map<K, V> {
-	return LinkedHashMap<K, V>().apply { for((key, value) in pairs) if(value != null) put(key, value) }
+	return LinkedHashMap<K, V>().apply { for ((key, value) in pairs) if (value != null) put(key, value) }
 }
 
 
@@ -82,7 +81,7 @@ fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentHashMap<K, V> {
 }
 //endregion
 
-//region Operator Extensions
+//region operator extensions
 /**
  * 重复当前列表中的元素到指定次数。
  *
@@ -120,7 +119,7 @@ operator fun <T> List<T>.get(startIndex: Int, endIndex: Int): List<T> {
 }
 //endregion
 
-//region Common Extensions
+//region common extensions
 /**
  * 得到当前数组的最为适配的元素类型。
  */
@@ -129,7 +128,7 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
 /**
  * 得到当前集合的最为适配的元素类型。
  */
-@TrickApi
+@TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified T> Iterable<T>.elementType: Type
 	get() = javaTypeOf<T>()
@@ -137,7 +136,7 @@ inline val <reified T> Iterable<T>.elementType: Type
 /**
  * 得到当前映射的最为适配的键类型。
  */
-@TrickApi
+@TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified K> Map<K, *>.keyType: Type
 	get() = javaTypeOf<K>()
@@ -145,7 +144,7 @@ inline val <reified K> Map<K, *>.keyType: Type
 /**
  * 得到当前映射的最为适配的值类型。
  */
-@TrickApi
+@TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified V> Map<*, V>.valueType: Type
 	get() = javaTypeOf<V>()
@@ -153,7 +152,7 @@ inline val <reified V> Map<*, V>.valueType: Type
 /**
  * 得到当前序列的最为适配的键类型。
  */
-@TrickApi
+@TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
 inline val <reified T> Sequence<T>.elementType: Type
 	get() = javaTypeOf<T>()
@@ -201,7 +200,7 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 /**
  * 判断当前序列是否为空。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 @JvmSynthetic
 @InlineOnly
 inline fun <T> Sequence<T>.isEmpty(): Boolean {
@@ -211,7 +210,7 @@ inline fun <T> Sequence<T>.isEmpty(): Boolean {
 /**
  * 判断当前序列是否不为空。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 @JvmSynthetic
 @InlineOnly
 inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
@@ -225,7 +224,7 @@ inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
 @JvmSynthetic
 @InlineOnly
 inline fun <T> Array<out T>.orNull(): Array<out T>? {
-	return if(this.isEmpty()) null else this
+	return if (this.isEmpty()) null else this
 }
 
 /**
@@ -234,7 +233,7 @@ inline fun <T> Array<out T>.orNull(): Array<out T>? {
 @JvmSynthetic
 @InlineOnly
 inline fun <T> Collection<T>.orNull(): Collection<T>? {
-	return if(this.isEmpty()) null else this
+	return if (this.isEmpty()) null else this
 }
 
 /**
@@ -243,7 +242,7 @@ inline fun <T> Collection<T>.orNull(): Collection<T>? {
 @JvmSynthetic
 @InlineOnly
 inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? {
-	return if(this.isEmpty()) null else this
+	return if (this.isEmpty()) null else this
 }
 
 
@@ -253,7 +252,7 @@ inline fun <K, V> Map<K, V>.orNull(): Map<K, V>? {
 @JvmSynthetic
 @InlineOnly
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R {
-	return if(this.isEmpty()) this else transform(this)
+	return if (this.isEmpty()) this else transform(this)
 }
 
 /**
@@ -262,7 +261,7 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Array<*>, C : R
 @JvmSynthetic
 @InlineOnly
 inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, C : R {
-	return if(this.isEmpty()) this else transform(this)
+	return if (this.isEmpty()) this else transform(this)
 }
 
 /**
@@ -271,7 +270,7 @@ inline fun <C, R> C.ifNotEmpty(transform: (C) -> R): R where C : Collection<*>, 
 @JvmSynthetic
 @InlineOnly
 inline fun <M, R> M.ifNotEmpty(transform: (M) -> R): R where M : Map<*, *>, M : R {
-	return if(this.isEmpty()) this else transform(this)
+	return if (this.isEmpty()) this else transform(this)
 }
 
 /**
@@ -371,68 +370,68 @@ infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean {
 /**
  * 判断当前数组是否以指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前序列是否以指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
 
 /**
  * 判断当前序列是否以任意指定元素开始。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前数组是否以指定元素结束。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前数组是否以任意指定元素结束。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Array<out T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 /**
  * 判断当前集合是否以指定元素结束。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(element: T): Boolean = this.lastOrNull() == element
 
 /**
  * 判断当前集合是否以任意指定元素结束。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.endsWith(elements: Array<out T>): Boolean = this.lastOrNull() in elements
 
 
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -440,7 +439,7 @@ fun <T> Array<out T>.getOrDefault(index: Int, defaultValue: T): T {
 /**
  * 得到指定索引的元素，发生异常则得到默认值。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
 	return this.getOrElse(index) { defaultValue }
 }
@@ -487,7 +486,7 @@ fun <T> List<T>.repeat(n: Int): List<T> {
  */
 fun <T> List<T>.repeatOrdinal(n: Int): List<T> {
 	require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
-	return ArrayList<T>(this.size * n).also { list -> for(e in this) repeat(n) { list += e } }
+	return ArrayList<T>(this.size * n).also { list -> for (e in this) repeat(n) { list += e } }
 }
 
 
@@ -497,7 +496,7 @@ fun <T> List<T>.repeatOrdinal(n: Int): List<T> {
 fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
 	val fromIndex = indices.first.coerceIn(0, this.size)
 	val toIndex = indices.last.coerceIn(fromIndex, this.size)
-	for(index in fromIndex..toIndex) this[index] = value
+	for (index in fromIndex..toIndex) this[index] = value
 }
 
 /**
@@ -506,7 +505,7 @@ fun <T> MutableList<T>.fillRange(indices: IntRange, value: T) {
 fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
 	require(size >= 0) { "Desired size must be non-negative, but was $size." }
 
-	if(size <= this.size) return this.subList(0, size)
+	if (size <= this.size) return this.subList(0, size)
 	return List(size - this.size) { value } + this
 }
 
@@ -516,7 +515,7 @@ fun <T> List<T>.fillStart(size: Int, value: T): List<T> {
 fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
 	require(size >= 0) { "Desired size must be non-negative, but was $size." }
 
-	if(size <= this.size) return this.subList(0, size)
+	if (size <= this.size) return this.subList(0, size)
 	return this + List(size - this.size) { value }
 }
 
@@ -525,7 +524,7 @@ fun <T> List<T>.fillEnd(size: Int, value: T): List<T> {
  * 移除指定范围内的元素。
  */
 fun <T> MutableList<T>.removeAllAt(indices: IntRange) {
-	for(index in indices.reversed()) this.removeAt(index)
+	for (index in indices.reversed()) this.removeAt(index)
 }
 
 
@@ -546,9 +545,8 @@ fun <T> MutableList<T>.moveAllAt(fromIndices: IntRange, toIndex: Int) {
 	this.addAll(toIndex, elements)
 	this.removeAllAt(fromIndices)
 }
-//endregion
 
-//region Lambda Extensions
+
 /**
  * Appends the string from all the entries separated using [separator] and using the given [prefix] and [postfix] if supplied.
  *
@@ -608,7 +606,7 @@ inline fun <K, V, R : Any> Map<out K, V>.mapValuesNotNull(transform: (V) -> R?):
  * 映射当前映射中的值，并过滤转化后为null的值，然后加入指定的映射。
  */
 inline fun <K, V, R : Any, M : MutableMap<in K, in R>> Map<K, V>.mapValuesNotNullTo(destination: M, transform: (V) -> R?): M {
-	for((key, value) in this) transform(value)?.let { destination[key] = it }
+	for ((key, value) in this) transform(value)?.let { destination[key] = it }
 	return destination
 }
 
@@ -624,8 +622,80 @@ fun <K, V : Any> Map<out K, V?>.filterValuesNotNull(): Map<K, V> {
  * 过滤当前映射中值为null的键值对，然后加入指定的映射。
  */
 fun <K, V : Any, M : MutableMap<in K, in V>> Map<out K, V?>.filterValuesNotNullTo(destination: M): M {
-	for((key, value) in this) if(value != null) destination[key] = value
+	for ((key, value) in this) if (value != null) destination[key] = value
 	return destination
+}
+
+
+/**
+ * 根据指定的列表以及选择器排序当前列表，未匹配的元素将会排在开始或末尾，默认排在末尾。
+ */
+@UnstableApi
+fun <T, E> List<T>.sortedByList(list: List<E>, unsortedAtLast: Boolean = true, selector: (T) -> E): List<T> {
+	return sortedBy {
+		val index = list.indexOf(selector(it))
+		if (unsortedAtLast && index == -1) size else index
+	}
+}
+
+/**
+ * 根据指定的列表以及选择器倒序排序当前列表，未匹配的元素将会排在开始或末尾，默认排在末尾。
+ */
+@UnstableApi
+fun <T, E> List<T>.sortedByListDescending(list: List<E>, unsortedAtLast: Boolean = true, selector: (T) -> E): List<T> {
+	return sortedByDescending {
+		val index = list.indexOf(selector(it))
+		if (!unsortedAtLast && index == -1) size else index
+	}
+}
+
+
+/**
+ * 将符合指定条件的元素置于当前列表的最前面。
+ * @return 当前列表中是否存在符合指定条件的元素。
+ */
+inline fun <T> MutableList<T>.pin(predicate: (T) -> Boolean): Boolean {
+	if (isEmpty()) return false
+	if (size == 1) return predicate(this[0])
+	var index = -1
+	var element: T? = null
+	for (i in indices) {
+		val e = this[i]
+		if (predicate(e)) {
+			index = i
+			element = e
+			break
+		}
+	}
+	if (index != -1 && element != null) {
+		removeAt(index)
+		add(0, element)
+	}
+	return index != -1
+}
+
+/**
+ * 将符合指定条件的元素置于当前列表的最后面。
+ * @return 当前列表中是否存在符合指定条件的元素。
+ */
+inline fun <T> MutableList<T>.pinLast(predicate: (T) -> Boolean): Boolean {
+	if (isEmpty()) return false
+	if (size == 1) return predicate(this[0])
+	var index = -1
+	var element: T? = null
+	for (i in indices) {
+		val e = this[i]
+		if (predicate(e)) {
+			index = i
+			element = e
+			break
+		}
+	}
+	if (index != -1 && element != null) {
+		removeAt(index)
+		add(element)
+	}
+	return index != -1
 }
 
 
@@ -676,11 +746,11 @@ fun <T, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List<List<
 	val parents = mutableListOf<T>()
 	val parentLevels = mutableListOf<L>()
 	elementAndLevels.forEachIndexed { index, (element, level) ->
-		if(index == this.lastIndex) {
+		if (index == this.lastIndex) {
 			result += parents + element
 		} else {
 			val (_, nextLevel) = elementAndLevels[index + 1]
-			if(nextLevel <= level) {
+			if (nextLevel <= level) {
 				result += parents + element
 				repeat(parentLevels.count { it >= nextLevel }) {
 					parents.removeLast()
@@ -703,12 +773,12 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 	val result = mutableListOf<T>()
 	var nextResult = this
 	//递归进行操作，直到结果中不再有数据
-	while(nextResult.any()) {
+	while (nextResult.any()) {
 		result += nextResult
 		nextResult = nextResult.flatMap { e ->
 			val r = operation(e)
 			//如果进行操作后得到的结果只有1个且与原元素相等，则跳过
-			if(r.singleOrNull() != e) r else emptyList()
+			if (r.singleOrNull() != e) r else emptyList()
 		}
 	}
 	return result
@@ -720,9 +790,9 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 @UnstableApi
 inline fun <T, K> Iterable<T>.select(vararg keys: K, keySelector: (T) -> K): List<T> {
 	val result = ArrayList<T>(keys.size)
-	for(e in this) {
+	for (e in this) {
 		val keyIndex = keys.indexOf(keySelector(e))
-		if(keyIndex != -1) result[keyIndex] = e
+		if (keyIndex != -1) result[keyIndex] = e
 	}
 	return result
 }
@@ -765,11 +835,11 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 	require(depth == -1 || depth > 0) { "Flatten depth '$depth' cannot be non-positive." }
 	var values = listOf(this)
 	var currentDepth = depth
-	while(currentDepth != 0) {
+	while (currentDepth != 0) {
 		//用来判断这次循环中是否找到集合类型的数据，以判断是否需要进行下一次循环
 		var hasNoneCollectionElement = true
 		values = values.flatMap { value ->
-			when(value) {
+			when (value) {
 				is Array<*> -> {
 					hasNoneCollectionElement = false
 					value.asIterable()
@@ -785,14 +855,14 @@ private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
 				else -> listOf(value)
 			}
 		}
-		if(hasNoneCollectionElement) break
+		if (hasNoneCollectionElement) break
 		currentDepth--
 	}
 	return values as List<T>
 }
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 /**
  * 将当前列表转化为新的并发列表。
  */
@@ -817,7 +887,7 @@ fun <K, V> Map<K, V>.asConcurrent(): ConcurrentMap<K, V> {
 /**
  * 将当前列表转化为可变列表。如果当前列表本身就是可变列表，则直接返回。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> List<T>.asMutable(): MutableList<T> {
 	return when {
 		this is MutableList<*> -> this as MutableList<T>
@@ -828,9 +898,9 @@ fun <T> List<T>.asMutable(): MutableList<T> {
 /**
  * 将当前列表转化为不可变列表。如果当前列表的元素数量大于1，则直接返回。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> MutableList<T>.asImmutable(): List<T> {
-	return when(size) {
+	return when (size) {
 		0 -> emptyList()
 		1 -> listOf(this.get(0))
 		else -> this
@@ -840,7 +910,7 @@ fun <T> MutableList<T>.asImmutable(): List<T> {
 /**
  * 将当前集转化为可变集。如果当前集本身就是可变集，则直接返回。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> Set<T>.asMutable(): MutableSet<T> {
 	return when {
 		this is MutableSet<*> -> this as MutableSet<T>
@@ -851,9 +921,9 @@ fun <T> Set<T>.asMutable(): MutableSet<T> {
 /**
  * 将当前集转化为不可变集。如果当前集的元素数量大于1，则直接返回。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 fun <T> MutableSet<T>.asImmutable(): Set<T> {
-	return when(size) {
+	return when (size) {
 		0 -> emptySet()
 		1 -> setOf(iterator().next())
 		else -> this
@@ -867,7 +937,7 @@ fun <T> MutableSet<T>.asImmutable(): Set<T> {
  * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空列表。
  */
 fun <T> T.toSingletonList(orEmpty: Boolean = false): List<T> {
-	return if(orEmpty && this == null) Collections.emptyList() else Collections.singletonList(this)
+	return if (orEmpty && this == null) Collections.emptyList() else Collections.singletonList(this)
 }
 
 /**
@@ -876,7 +946,7 @@ fun <T> T.toSingletonList(orEmpty: Boolean = false): List<T> {
  * 如果当前对象为`null`且参数[orEmpty]为`true`，则会返回空集。
  */
 fun <T> T.toSingletonSet(orEmpty: Boolean = false): Set<T> {
-	return if(orEmpty && this == null) Collections.emptySet() else Collections.singleton(this)
+	return if (orEmpty && this == null) Collections.emptySet() else Collections.singleton(this)
 }
 
 /**
@@ -885,7 +955,7 @@ fun <T> T.toSingletonSet(orEmpty: Boolean = false): Set<T> {
  * 如果当前二元素元组其中对应的键或值为`null`且参数[orEmpty]为`true`，则会返回空映射。
  */
 fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
-	return if(orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
+	return if (orEmpty && (first == null || second == null)) Collections.emptyMap() else Collections.singletonMap(first, second)
 }
 
 /**
@@ -894,7 +964,7 @@ fun <K, V> Pair<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
  * 如果当前映射入口其中对应的键或值为`null`且参数[orEmpty]为`true`，则会返回空映射。
  */
 fun <K, V> Map.Entry<K, V>.toSingletonMap(orEmpty: Boolean = false): Map<K, V> {
-	return if(orEmpty && (key == null || value == null)) Collections.emptyMap() else Collections.singletonMap(key, value)
+	return if (orEmpty && (key == null || value == null)) Collections.emptyMap() else Collections.singletonMap(key, value)
 }
 
 
@@ -949,7 +1019,7 @@ fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
 }
 //endregion
 
-//region Specific Extensions
+//region specific extensions
 /**
  * 得到指定索引的字符串，如果索引越界，则返回空字符串。
  */
@@ -1063,7 +1133,7 @@ inline fun <T : CharSequence> Iterable<T>.filterNotEmpty(): List<T> {
  */
 inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotEmpty(): Map<K, V> {
 	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value.isNotEmpty()) result[key] = value
+	for ((key, value) in this) if (value.isNotEmpty()) result[key] = value
 	return result
 }
 
@@ -1079,7 +1149,7 @@ inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> {
  * 过滤当前数组中为空字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotEmptyTo(destination: C): C {
-	for(element in this) if(element.isNotEmpty()) destination += element
+	for (element in this) if (element.isNotEmpty()) destination += element
 	return destination
 }
 
@@ -1087,7 +1157,7 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNo
  * 过滤当前集合中为空字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNotEmptyTo(destination: C): C {
-	for(element in this) if(element.isNotEmpty()) destination += element
+	for (element in this) if (element.isNotEmpty()) destination += element
 	return destination
 }
 
@@ -1111,7 +1181,7 @@ inline fun <T : CharSequence> Iterable<T>.filterNotBlank(): List<T> {
  */
 inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotBlank(): Map<K, V> {
 	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value.isNotBlank()) result[key] = value
+	for ((key, value) in this) if (value.isNotBlank()) result[key] = value
 	return result
 }
 
@@ -1127,7 +1197,7 @@ inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> {
  * 过滤当前数组中为空白字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotBlankTo(destination: C): C {
-	for(element in this) if(element.isNotBlank()) destination += element
+	for (element in this) if (element.isNotBlank()) destination += element
 	return destination
 }
 
@@ -1135,7 +1205,7 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNo
  * 过滤当前集合中为空白字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNotBlankTo(destination: C): C {
-	for(element in this) if(element.isNotBlank()) destination += element
+	for (element in this) if (element.isNotBlank()) destination += element
 	return destination
 }
 
@@ -1162,7 +1232,7 @@ inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrEmpty(): List<T> {
 @UselessCallOnNotNullType
 inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrEmpty(): Map<K, V> {
 	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value.isNotNullOrEmpty()) result[key] = value
+	for ((key, value) in this) if (value.isNotNullOrEmpty()) result[key] = value
 	return result
 }
 
@@ -1180,7 +1250,7 @@ inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrEmpty(): Sequence<T> {
  */
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterNotNullOrEmptyTo(destination: C): C {
-	for(element in this) if(element.isNotNullOrEmpty()) destination += element
+	for (element in this) if (element.isNotNullOrEmpty()) destination += element
 	return destination
 }
 
@@ -1189,7 +1259,7 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterN
  */
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNotNullOrEmptyTo(destination: C): C {
-	for(element in this) if(element.isNotNullOrEmpty()) destination += element
+	for (element in this) if (element.isNotNullOrEmpty()) destination += element
 	return destination
 }
 
@@ -1216,7 +1286,7 @@ inline fun <T : CharSequence> Iterable<T?>.filterNotNullOrBlank(): List<T> {
 @UselessCallOnNotNullType
 inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrBlank(): Map<K, V> {
 	val result = LinkedHashMap<K, V>()
-	for((key, value) in this) if(value.isNotNullOrBlank()) result[key] = value
+	for ((key, value) in this) if (value.isNotNullOrBlank()) result[key] = value
 	return result
 }
 
@@ -1234,7 +1304,7 @@ inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrBlank(): Sequence<T> {
  */
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterNotNullOrBlankTo(destination: C): C {
-	for(element in this) if(element.isNotNullOrBlank()) destination += element
+	for (element in this) if (element.isNotNullOrBlank()) destination += element
 	return destination
 }
 
@@ -1243,7 +1313,136 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T?>.filterN
  */
 @UselessCallOnNotNullType
 inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNotNullOrBlankTo(destination: C): C {
-	for(element in this) if(element.isNotNullOrBlank()) destination += element
+	for (element in this) if (element.isNotNullOrBlank()) destination += element
 	return destination
+}
+//endregion
+
+//region parallel extensions
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <T> Array<out T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历数组中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <T> Array<out T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作。
+ *
+ * Performs the given [action] on each element in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <T> List<T>.parallelForEach(crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历列表中的每个元素，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each element in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <T> List<T>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (T) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (element in this) {
+		parallelExecutor.execute {
+			action(element)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作。
+ *
+ * Performs the given [action] on each entry in parallel.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <K, V> Map<out K, V>.parallelForEach(crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (entry in this) {
+		parallelExecutor.execute {
+			action(entry)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await()
+}
+
+/**
+ * 并行遍历映射中的每个键值对，执行指定的操作，带有超时时间。
+ *
+ * Performs the given [action] on each entry in parallel with timeout.
+ *
+ * @see kotlin.collections.forEach
+ */
+@UnstableApi
+@Deprecated("Unnecessary extension. Use parallel stream instead.", level = DeprecationLevel.HIDDEN)
+@Throws(InterruptedException::class)
+inline fun <K, V> Map<out K, V>.parallelForEach(timeout: Long, timeUnit: TimeUnit, crossinline action: (Map.Entry<K, V>) -> Unit) {
+	val countDownLatch = CountDownLatch(size)
+	for (entry in this) {
+		parallelExecutor.execute {
+			action(entry)
+			countDownLatch.countDown()
+		}
+	}
+	countDownLatch.await(timeout, timeUnit)
 }
 //endregion

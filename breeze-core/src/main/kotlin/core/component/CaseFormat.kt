@@ -57,7 +57,7 @@ abstract class AbstractCaseFormat : CaseFormat {
 
 @NotOptimized
 object CaseFormats : ComponentRegistry<CaseFormat>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * 全小写。
 	 *

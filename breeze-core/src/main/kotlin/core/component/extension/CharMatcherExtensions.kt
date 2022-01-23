@@ -18,7 +18,7 @@ fun Char.matchesBy(charMatcher: CharMatcher): Boolean {
 }
 //endregion
 
-//region String Matcher Extensions
+//region string matcher extensions
 /**
  * 判断指定的字符串是否匹配指定的字符串匹配器。
  *

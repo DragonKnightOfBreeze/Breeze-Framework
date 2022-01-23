@@ -53,7 +53,7 @@ abstract class AbstractRandomGenerator<T> : RandomGenerator<T> {
 }
 
 object RandomGenerators : ComponentRegistry<RandomGenerator<*>>() {
-	//region Implementations
+	//region implementations
 	@ComponentParam("min", "Byte")
 	@ComponentParam("max", "Byte")
 	open class RandomByteGenerator(

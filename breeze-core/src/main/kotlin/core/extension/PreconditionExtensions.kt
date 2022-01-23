@@ -1,13 +1,12 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:JvmName("PreconditionExtensions")
-@file:Suppress("NOTHING_TO_INLINE")
+@file:JvmName("PreconditionExtensions") @file:Suppress("NOTHING_TO_INLINE")
 
 package icu.windea.breezeframework.core.extension
 
-import icu.windea.breezeframework.core.annotation.*
-import kotlin.contracts.*
+import icu.windea.breezeframework.core.annotation.InlineOnly
+import kotlin.contracts.contract
 
 /**如果判定失败，则抛出一个[UnsupportedOperationException]。*/
 @InlineOnly
@@ -26,7 +25,7 @@ inline fun accept(value: Boolean, lazyMessage: () -> Any) {
 	contract {
 		returns() implies value
 	}
-	if(!value) {
+	if (!value) {
 		val message = lazyMessage()
 		throw UnsupportedOperationException(message.toString())
 	}
@@ -49,7 +48,7 @@ inline fun <T> acceptNotNull(value: T?, lazyMessage: () -> Any): T {
 	contract {
 		returns() implies (value != null)
 	}
-	if(value == null) {
+	if (value == null) {
 		val message = lazyMessage()
 		throw UnsupportedOperationException(message.toString())
 	} else {

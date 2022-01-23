@@ -9,7 +9,7 @@ package icu.windea.breezeframework.core.extension
 import icu.windea.breezeframework.core.annotation.*
 import kotlin.math.*
 
-//region Common Extensions
+//region common extensions
 /**如果为null，则返回0，否则返回自身。*/
 @UselessCallOnNotNullType
 @JvmSynthetic
@@ -181,7 +181,7 @@ fun Number?.nearlyEquals(other: Number?, precision: Float): Boolean {
 }
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 /**将当前数字转化为指定的数字类型。如果转化失败或者不支持指定的数字类型，则抛出异常。*/
 @Deprecated("Use this.convert<T>()", ReplaceWith("this.convert<T>()"))
 inline fun <reified T : Number> Number.toNumber(): T {
