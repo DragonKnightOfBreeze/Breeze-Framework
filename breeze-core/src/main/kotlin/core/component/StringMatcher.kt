@@ -25,7 +25,7 @@ abstract class AbstractStringMatcher : StringMatcher {
 }
 
 object StringMatchers : ComponentRegistry<StringMatcher>() {
-	//region Implementations
+	//region implementations
 	object AnyMatcher : AbstractStringMatcher() {
 		override fun matches(value: String): Boolean {
 			return true

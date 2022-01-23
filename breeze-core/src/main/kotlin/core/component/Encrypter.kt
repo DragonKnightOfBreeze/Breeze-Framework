@@ -1,12 +1,9 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("ClassName")
-
 package icu.windea.breezeframework.core.component
 
 import icu.windea.breezeframework.core.annotation.*
-import icu.windea.breezeframework.core.extension.*
 import java.security.*
 import javax.crypto.*
 import javax.crypto.spec.*
@@ -42,7 +39,7 @@ abstract class AbstractEncrypter : Encrypter {
 }
 
 object Encrypters : ComponentRegistry<Encrypter>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * 基于密码器的加密器。支持解密。需要指定密钥。
 	 */
@@ -114,42 +111,42 @@ object Encrypters : ComponentRegistry<Encrypter>() {
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Md5Encrypter : MessageDigestEncrypter("MD5")
+	object MD5Encrypter : MessageDigestEncrypter("MD5")
 
 	/**
 	 * 基于SHA-1加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha_1Encrypter : MessageDigestEncrypter("SHA-1")
+	object SHA1Encrypter : MessageDigestEncrypter("SHA-1")
 
 	/**
 	 * 基于SHA-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha_256Encrypter : MessageDigestEncrypter("SHA-256")
+	object SHA256Encrypter : MessageDigestEncrypter("SHA-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha_512Encrypter : MessageDigestEncrypter("SHA3-512")
+	object SHA512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	/**
 	 * 基于SHA3-256加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3_256Encrypter : MessageDigestEncrypter("SHA3-256")
+	object SHA3256Encrypter : MessageDigestEncrypter("SHA3-256")
 
 	/**
 	 * 基于SHA3-512加密算法的加密器。
 	 *
 	 * @see MessageDigestEncrypter
 	 */
-	object Sha3_512Encrypter : MessageDigestEncrypter("SHA3-512")
+	object SHA3512Encrypter : MessageDigestEncrypter("SHA3-512")
 
 	//TODO 数字签名
 	//endregion
@@ -157,12 +154,12 @@ object Encrypters : ComponentRegistry<Encrypter>() {
 	override fun registerDefault() {
 		register(DesEncrypter)
 		register(AesEncrypter)
-		register(Md5Encrypter)
-		register(Sha_1Encrypter)
-		register(Sha_256Encrypter)
-		register(Sha_512Encrypter)
-		register(Sha3_256Encrypter)
-		register(Sha3_512Encrypter)
+		register(MD5Encrypter)
+		register(SHA1Encrypter)
+		register(SHA256Encrypter)
+		register(SHA512Encrypter)
+		register(SHA3256Encrypter)
+		register(SHA3512Encrypter)
 	}
 }
 

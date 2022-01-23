@@ -39,7 +39,7 @@ abstract class AbstractEscaper : Escaper {
 
 @NotOptimized
 object Escapers : ComponentRegistry<Escaper>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * 特定语言的转义器。
 	 */

@@ -6,10 +6,21 @@
 package icu.windea.breezeframework.core.extension
 
 import java.util.*
+import java.util.function.Function
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-//region Misc Extensions
+//region common extensions
+@Suppress("UNCHECKED_CAST")
+fun <T: Any,R> Stream<T?>.mapNotNull(mapper: (T) -> R): Stream<R>{
+	return (filter{ it != null} as Stream<T>).map(mapper)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T: Any,R> Stream<T?>.mapNotNull(mapper: Function<in T,out R>): Stream<R>{
+	return (filter{ it != null} as Stream<T>).map(mapper)
+}
+
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> Stream<T?>.filterNotNull(): Stream<T> {
 	return filter { it != null } as Stream<T>
@@ -19,9 +30,14 @@ fun <T, R> Stream<T>.distinctBy(selector: (T) -> R): Stream<T> {
 	val keys = HashSet<R>()
 	return filter { keys.add(selector(it)) }
 }
+
+fun <T, R> Stream<T>.distinctBy(selector: Function<in T,out R>): Stream<T> {
+	val keys = HashSet<R>()
+	return filter { keys.add(selector.apply(it)) }
+}
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 fun <T> Stream<T>.toCollection(): Collection<T> {
 	return toSet()
 }

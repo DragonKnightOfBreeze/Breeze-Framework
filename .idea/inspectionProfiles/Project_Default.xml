@@ -2,7 +2,7 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="BashSimpleVarUsage" enabled="true" level="INFORMATION" enabled_by_default="true" />
-    <inspection_tool class="CanBeParameter" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="CanBeParameter" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="CanBePrimaryConstructorProperty" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="CascadeIf" enabled="false" level="INFO" enabled_by_default="false" />
     <inspection_tool class="ComplexRedundantLet" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
@@ -80,7 +80,7 @@
     <inspection_tool class="UnusedReceiverParameter" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="UnusedSymbol" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="UseWithIndex" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="false">
+    <inspection_tool class="unused" enabled="false" level="WARNING" enabled_by_default="false" checkParameterExcludingHierarchy="false" isSelected="false">
       <option name="LOCAL_VARIABLE" value="true" />
       <option name="FIELD" value="true" />
       <option name="METHOD" value="true" />

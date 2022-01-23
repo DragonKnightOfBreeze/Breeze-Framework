@@ -80,7 +80,7 @@ abstract class AbstractConverter<T> : Converter<T> {
 
 @Suppress("UNCHECKED_CAST", "RemoveExplicitTypeArguments")
 object Converters : ComponentRegistry<Converter<*>>() {
-	//region Implementations
+	//region implementations
 	object ByteConverter : AbstractConverter<Byte>() {
 		override fun convert(value: Any): Byte {
 			return when {

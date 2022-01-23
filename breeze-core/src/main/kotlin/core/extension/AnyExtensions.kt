@@ -295,7 +295,7 @@ inline fun <T> javaTypeOf(target: T): Type {
 /**
  * 得到指定类型的名字。
  */
-@TrickApi
+@TrickyApi
 inline fun <reified T> nameOf(): String? {
 	return T::class.java.simpleName
 }
@@ -307,7 +307,7 @@ inline fun <reified T> nameOf(): String? {
  *
  * 不适用于：类型参数，参数，局部变量。
  */
-@TrickApi
+@TrickyApi
 @JvmSynthetic
 inline fun nameOf(target: Any?): String? {
 	return when(target) {

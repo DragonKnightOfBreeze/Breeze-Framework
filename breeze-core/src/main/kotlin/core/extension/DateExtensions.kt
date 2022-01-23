@@ -9,7 +9,7 @@ import icu.windea.breezeframework.core.model.*
 import java.text.*
 import java.util.*
 
-//region Operator Extensions
+//region operator extensions
 /** @see java.util.Calendar.add*/
 operator fun Date.plus(calendarField: CalendarField): Date {
 	calendar.time = this
@@ -25,7 +25,7 @@ operator fun Date.minus(calendarField: CalendarField): Date {
 }
 //endregion
 
-//region Common Extensions
+//region common extensions
 val Date.beginningOfYear: Date get() = this.modify(month = 1, day = 1, hour = 0, minute = 0, second = 0)
 
 val Date.endOfYear: Date get() = this.modify(month = 12, day = 31, hour = 23, minute = 59, second = 59)
@@ -83,7 +83,7 @@ fun Date.modify(
 }
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 /**
  * 将当前日期转化为字符串。
  */

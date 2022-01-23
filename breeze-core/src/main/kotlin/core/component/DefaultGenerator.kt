@@ -57,7 +57,7 @@ abstract class AbstractDefaultGenerator<T> : DefaultGenerator<T> {
 
 @Suppress("UNCHECKED_CAST")
 object DefaultGenerators : ComponentRegistry<DefaultGenerator<*>>() {
-	//region Implementations
+	//region implementations
 	object DefaultByteGenerator : AbstractDefaultGenerator<Byte>() {
 		private const val value: Byte = 0
 		override fun generate(): Byte = value

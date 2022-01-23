@@ -22,7 +22,7 @@ import kotlin.contracts.*
 //org.apache.commons.lang3.StringUtils
 //org.springframework.util.StringUtils
 
-//region Operator Override Extensions
+//region operator extensions
 /**
  * 移除当前字符串中的指定子字符串。
  *
@@ -69,7 +69,7 @@ operator fun String.get(startIndex: Int, endIndex: Int): String {
 }
 //endregion
 
-//region Common Extensions
+//region common extensions
 /**
  * 如果当前字符串不为空，则返回本身，否则返回null。
  */
@@ -146,7 +146,7 @@ inline fun CharSequence?.isNotNullOrBlank(): Boolean {
 /**
  * 判断两个字符串是否相等，忽略大小写。
  */
-@Deprecated("Duplicate extension.", level = DeprecationLevel.HIDDEN)
+@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 infix fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, true)
 
 
@@ -931,9 +931,32 @@ fun String.unhex(charset: Charset = Charsets.UTF_8): String {
 	val bytes = ByteArray(hexStrings.size) { hexStrings[it].toByte(16) }
 	return String(bytes, charset)
 }
+
+
+/**
+ * 判断指定的关键字是否模糊匹配当前字符串。
+ *
+ * * 指定的关键字中的字符是否被当前字符串按顺序全部包含。
+ * * 如果指定的一组分隔符不为空，则被跳过的子字符串需要以分隔符结束。
+ */
+@UnstableApi
+fun String.fuzzyMatches(keyword: String, vararg delimiters: Char, ignoreCase: Boolean = false): Boolean {
+	var index = -1
+	var lastIndex = -2
+	for(c in keyword) {
+		index = indexOf(c, index + 1, ignoreCase)
+		println(index)
+		when {
+			index == -1 -> return false
+			c !in delimiters && index != 0 && lastIndex != index - 1 && this[index - 1] !in delimiters -> return false
+		}
+		lastIndex = index
+	}
+	return true
+}
 //endregion
 
-//region Convert Extensions
+//region convert extensions
 /**
  * 将当前字符串转化为字符。如果转化失败，则抛出异常。
  */
@@ -1279,7 +1302,7 @@ fun String.decodeToBase64ByteArray(): ByteArray {
 }
 //endregion
 
-//region Raw String Convert Extensions
+//region raw string convert extensions
 /**
  * 将当前字符串转为内联文本。
  *
@@ -1321,7 +1344,7 @@ fun String.trimRelativeIndent(relativeIndentSize: Int = 0): String {
 }
 //endregion
 
-//region Text Extensions
+//region text extensions
 /**
  * 将当前对象转化成文本。
  * * 如果当前对象是空值，则返回空字符串。

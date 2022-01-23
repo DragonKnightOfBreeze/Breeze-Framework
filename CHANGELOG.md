@@ -11,7 +11,8 @@
 
 ## 3.1.1 TODO
 
-* [ ] 优化实现`List<T>.pinnedLast()` `Iterable<T>.pinned()` `MutableIterable<T>.pin()` `MutableList<T>.pinLast()`
+* [X] 补充`CollectionUtils`，实现`sleep()` `trySleep()` `forceSleep()` `retryUntil()` `retryUntilTimes()`
+* [X] 优化和实现`MutableList<T>.pin()` `MutableList<T>.pinLast()`
 * [ ] 实现`ParamMap`（通过kotlin委托语法绑定属性时可以自动转化为需要的类型）
 * [ ] 将`Component.componentParams`改为`params: ParamMap`
 * [ ] 实现`AbstractComponent`

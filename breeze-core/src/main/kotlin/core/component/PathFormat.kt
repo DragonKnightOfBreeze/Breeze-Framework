@@ -1,7 +1,7 @@
 // Copyright (c) 2020-2021 DragonKnightOfBreeze Windea
 // Breeze is blowing...
 
-@file:Suppress("UNCHECKED_CAST", "KDocUnresolvedReference")
+@file:Suppress("UNCHECKED_CAST")
 
 package icu.windea.breezeframework.core.component
 
@@ -284,7 +284,7 @@ abstract class AbstractPathFormat(
 
 @Suppress("UNCHECKED_CAST")
 object PathFormats : ComponentRegistry<PathFormat>() {
-	//region Implementations
+	//region implementations
 	/**
 	 * 标准路径。
 	 *

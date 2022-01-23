@@ -7,7 +7,7 @@ package icu.windea.breezeframework.core.extension
 
 import java.time.*
 
-//region Operator Extensions
+//region operator extensions
 /**
  * @see java.time.Year.plusYears
  */

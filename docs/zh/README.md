@@ -38,7 +38,7 @@ Kotlin版本：Kotlin Jvm 1.6.0
 
 ## breeze-generator
 
-提供生成器的api。
+TODO 提供生成器的api。
 
 * `RandomGenerator`：用于根据指定的类型与参数生成随机值。
 * `DefaultGenerator`：用于根据指定的类型与参数生成默认值。

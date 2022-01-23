@@ -9,7 +9,7 @@ package icu.windea.breezeframework.time.extension
 import java.time.*
 import java.time.temporal.*
 
-//region Build Extensions
+//region build extensions
 /**得到距今当前时长之前的本地日期时间。*/
 inline val Duration.ago: LocalDateTime get() = LocalDateTime.now() - this
 

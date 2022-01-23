@@ -55,7 +55,7 @@ abstract class AbstractCharMatcher : CharMatcher {
 }
 
 object CharMatchers : ComponentRegistry<CharMatcher>() {
-	//region Implementations
+	//region implementations
 	object AnyMatcher : AbstractCharMatcher() {
 		override fun matches(value: Char): Boolean {
 			return true

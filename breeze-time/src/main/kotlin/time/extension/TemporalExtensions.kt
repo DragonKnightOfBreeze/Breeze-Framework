@@ -8,7 +8,7 @@ package icu.windea.breezeframework.time.extension
 import java.time.*
 import java.time.temporal.*
 
-//region Build Extensions
+//region build extensions
 /**得到当前月开始时的时间。*/
 inline val <T : Temporal> T.atStartOfMonth: Temporal get() = with(TemporalAdjusters.firstDayOfMonth())
 
@@ -28,7 +28,7 @@ inline val <T : Temporal> T.atEndOfYear: Temporal get() = with(TemporalAdjusters
 inline val <T : Temporal> T.atStartOfNextYear: Temporal get() = with(TemporalAdjusters.firstDayOfNextYear())
 //endregion
 
-//region Common Extensions
+//region common extensions
 /**判断是否是今天。*/
 val LocalDate.isToday: Boolean get() = LocalDate.now().let { this.year == it.year && this.dayOfYear == it.dayOfYear }
 

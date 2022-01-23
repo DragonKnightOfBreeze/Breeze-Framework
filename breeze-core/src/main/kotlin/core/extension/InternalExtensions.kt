@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("InternalExtensions")
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "ReplaceSizeZeroCheckWithIsEmpty")
 
 package icu.windea.breezeframework.core.extension
 
@@ -12,34 +12,24 @@ import java.math.BigInteger
 import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 
-//internal default values
+//region internal variables
+@PublishedApi internal const val defaultDateFormat = "yyyy-MM-dd"
+@PublishedApi internal const val defaultTimeFormat = "HH:mm:ss"
+@PublishedApi internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
+@PublishedApi internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
+@PublishedApi internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
 
-internal const val defaultDateFormat = "yyyy-MM-dd"
-internal const val defaultTimeFormat = "HH:mm:ss"
-internal const val defaultDateTimeFormat = "$defaultDateFormat $defaultTimeFormat"
-internal val defaultLocale = Locale.getDefault(Locale.Category.FORMAT)
-internal val defaultTimeZone = TimeZone.getTimeZone("UTC")
+@PublishedApi internal val calendar: Calendar by lazy { Calendar.getInstance() }
+@PublishedApi internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> by lazy { ConcurrentHashMap() }
+@PublishedApi internal val enumValuesCache: MutableMap<Class<out Enum<*>>, List<Enum<*>>> by lazy { ConcurrentHashMap() }
+@PublishedApi internal val enumValueMapCache: MutableMap<Class<out Enum<*>>, Map<String, Enum<*>>> by lazy { ConcurrentHashMap() }
 
-//internal caches
+@PublishedApi internal val parallelExecutor by lazy { Executors.newCachedThreadPool() }
+//endregion
 
-internal val calendar: Calendar = Calendar.getInstance()
-internal val threadLocalDateFormatMapCache: MutableMap<String, ThreadLocal<DateFormat>> = ConcurrentHashMap()
-internal val enumValuesCache: MutableMap<Class<out Enum<*>>, List<Enum<*>>> = ConcurrentHashMap()
-internal val enumValueMapCache: MutableMap<Class<out Enum<*>>, Map<String, Enum<*>>> = ConcurrentHashMap()
-
-//internal number extensions
-
-internal fun BigInteger.toLongOrMax(): Long {
-	return if (this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
-}
-
-internal fun BigDecimal.toDoubleOrMax(): Double {
-	return if (this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
-}
-
-//internal string extensions
-
+//region internal common extensions
 internal fun CharSequence.firstCharToUpperCase(): String {
 	return when {
 		isEmpty() -> this.toString()
@@ -59,8 +49,16 @@ private val splitWordsRegex = """\B([A-Z][a-z])""".toRegex()
 internal fun CharSequence.splitWords(): String {
 	return this.replace(splitWordsRegex, " $1")
 }
+//endregion
 
-//internal convert extensions
+//region internal convert extensions
+internal fun BigInteger.toLongOrMax(): Long {
+	return if (this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
+}
+
+internal fun BigDecimal.toDoubleOrMax(): Double {
+	return if (this >= BigDecimal.valueOf(Double.MAX_VALUE)) Double.MAX_VALUE else this.toDouble()
+}
 
 internal fun Any?.convertToBooleanOrTrue(): Boolean {
 	return this == null || (this == true || this.toString() == "true")
@@ -105,9 +103,9 @@ internal fun <T> Collection<T>.convertToMutableSet(): MutableSet<T> {
 		else -> this.toMutableSet()
 	}
 }
+//endregion
 
-//internal reflect extensions
-
+//region internal reflect extensions
 internal fun inferClass(targetType: Type): Class<*> {
 	return when {
 		targetType is Class<*> -> targetType
@@ -127,8 +125,7 @@ internal fun inferEnumClass(targetType: Type): Class<out Enum<*>> {
 
 internal fun inferTypeArgument(targetType: Type): Type {
 	if (targetType is ParameterizedType) {
-		return targetType.actualTypeArguments?.firstOrNull()
-			?: error("Cannot infer class for target type '$targetType'")
+		return targetType.actualTypeArguments?.firstOrNull() ?: error("Cannot infer class for target type '$targetType'")
 	} else if (targetType is Class<*> && targetType.isArray) {
 		return targetType.componentType
 	}
@@ -139,16 +136,15 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 	if (targetType is ParameterizedType) {
 		val rawType = targetType.rawType
 		val rawClass = inferClass(rawType)
-		if (rawClass == targetClass) return targetType.actualTypeArguments
-			?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
+		if (rawClass == targetClass) return targetType.actualTypeArguments ?: error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
 	} else if (targetType is Class<*> && targetType.isArray) {
 		return arrayOf(targetType.componentType)
 	}
 	error("Target type '$targetType' should be a ParameterizedType of class '$targetClass'")
 }
+//endregion
 
-//internal component extensions
-
+//region internal component extensions
 private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
 
 @Suppress("UNCHECKED_CAST")
@@ -176,8 +172,7 @@ internal fun inferComponentTargetType(type: Class<*>, componentType: Class<*>): 
 				}
 			}
 			val genericInterfaces = currentClass.genericInterfaces
-			val genericInterface =
-				genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
+			val genericInterface = genericInterfaces.find { it is ParameterizedType && (it.rawType as? Class<*>) == componentType }
 			if (genericInterface is ParameterizedType && genericInterface.actualTypeArguments.isNotEmpty()) {
 				val genericType = genericInterface.actualTypeArguments[0]
 				if (genericType is Class<*>) return@getOrPut genericType
@@ -208,3 +203,4 @@ internal fun filterNotComponentParams(componentParams: Map<String, Any?>, vararg
 	}
 	return result
 }
+//endregion
