@@ -51,6 +51,39 @@ internal fun CharSequence.splitWords(): String {
 }
 //endregion
 
+//region internal implementation extensions
+
+internal fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
+	require(depth == -1 || depth > 0) { "Flatten depth '$depth' cannot be non-positive." }
+	var values = listOf(this)
+	var currentDepth = depth
+	while (currentDepth != 0) {
+		//用来判断这次循环中是否找到集合类型的数据，以判断是否需要进行下一次循环
+		var hasNoneCollectionElement = true
+		values = values.flatMap { value ->
+			when (value) {
+				is Array<*> -> {
+					hasNoneCollectionElement = false
+					value.asIterable()
+				}
+				is Iterable<*> -> {
+					hasNoneCollectionElement = false
+					value
+				}
+				is Sequence<*> -> {
+					hasNoneCollectionElement = false
+					value.asIterable()
+				}
+				else -> listOf(value)
+			}
+		}
+		if (hasNoneCollectionElement) break
+		currentDepth--
+	}
+	return values as List<T>
+}
+//endregion
+
 //region internal convert extensions
 internal fun BigInteger.toLongOrMax(): Long {
 	return if (this >= BigInteger.valueOf(Long.MAX_VALUE)) Long.MAX_VALUE else this.toLong()
@@ -145,7 +178,7 @@ internal fun inferTypeArguments(targetType: Type, targetClass: Class<*>): Array<
 //endregion
 
 //region internal component extensions
-private val componentTargetTypeMapCache = ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>()
+private val componentTargetTypeMapCache by lazy { ConcurrentHashMap<Class<*>, ConcurrentHashMap<Class<*>, Type>>() }
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T> inferComponentTargetClass(type: Class<*>, componentType: Class<*>): Class<T> {

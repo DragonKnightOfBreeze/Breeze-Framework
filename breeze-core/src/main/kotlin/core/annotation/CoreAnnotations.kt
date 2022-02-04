@@ -45,7 +45,7 @@ annotation class InlineOnly
 
 /**
  * 注明这个注解对应的项（在通常情况下）已废弃。
- * 相比[Deprecated]，这个注解不会附带警告。
+ * 相比[Deprecated]，这个注解不会附带IDE警告。
  *
  * Marks the annotated declaration as deprecated in common situations.
  * While comparing to [Deprecated], this annotation do not get an IDE warning.

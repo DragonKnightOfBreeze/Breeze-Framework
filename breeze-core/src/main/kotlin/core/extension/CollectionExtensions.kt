@@ -2,7 +2,7 @@
 // Breeze is blowing...
 
 @file:JvmName("CollectionExtensions")
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "IMPLICIT_CAST_TO_ANY", "BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER", "UPPER_BOUND_CANNOT_BE_ARRAY", "ReplaceIsEmptyWithIfEmpty")
 
 package icu.windea.breezeframework.core.extension
 
@@ -130,32 +130,22 @@ inline val Array<*>.elementType: Type get() = this::class.java.componentType
  */
 @TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified T> Iterable<T>.elementType: Type
-	get() = javaTypeOf<T>()
+inline val <reified T> Iterable<T>.elementType: Type get() = javaTypeOf<T>()
 
 /**
  * 得到当前映射的最为适配的键类型。
  */
 @TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified K> Map<K, *>.keyType: Type
-	get() = javaTypeOf<K>()
+inline val <reified K> Map<K, *>.keyType: Type get() = javaTypeOf<K>()
 
 /**
  * 得到当前映射的最为适配的值类型。
  */
 @TrickyApi
 @Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified V> Map<*, V>.valueType: Type
-	get() = javaTypeOf<V>()
+inline val <reified V> Map<*, V>.valueType: Type get() = javaTypeOf<V>()
 
-/**
- * 得到当前序列的最为适配的键类型。
- */
-@TrickyApi
-@Deprecated("Tricky implementation.", level = DeprecationLevel.HIDDEN)
-inline val <reified T> Sequence<T>.elementType: Type
-	get() = javaTypeOf<T>()
 
 
 /**
@@ -195,26 +185,6 @@ inline fun <K, V> Map<out K, V>?.isNotNullOrEmpty(): Boolean {
 		returns(true) implies (this@isNotNullOrEmpty != null)
 	}
 	return this != null && this.isNotEmpty()
-}
-
-/**
- * 判断当前序列是否为空。
- */
-@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
-@JvmSynthetic
-@InlineOnly
-inline fun <T> Sequence<T>.isEmpty(): Boolean {
-	return !this.iterator().hasNext()
-}
-
-/**
- * 判断当前序列是否不为空。
- */
-@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
-@JvmSynthetic
-@InlineOnly
-inline fun <T> Sequence<T>.isNotEmpty(): Boolean {
-	return this.iterator().hasNext()
 }
 
 
@@ -325,13 +295,6 @@ infix fun <T> Iterable<T>.allIn(other: Iterable<T>): Boolean {
 }
 
 /**
- * 判断当前序列中的所有元素是否被另一序列包含。
- */
-infix fun <T> Sequence<T>.allIn(other: Sequence<T>): Boolean {
-	return this.all { it in other }
-}
-
-/**
  * 判断当前数组中的任意元素是否被另一数组包含。
  */
 infix fun <T> Array<out T>.anyIn(other: Array<out T>): Boolean {
@@ -359,13 +322,6 @@ infix fun <T> Iterable<T>.anyIn(other: Iterable<T>): Boolean {
 	return this.any { it in other }
 }
 
-/**
- * 判断当前序列中的任意元素是否被另一序列包含。
- */
-infix fun <T> Sequence<T>.anyIn(other: Sequence<T>): Boolean {
-	return this.any { it in other }
-}
-
 
 /**
  * 判断当前数组是否以指定元素开始。
@@ -390,18 +346,6 @@ inline infix fun <T> Iterable<T>.startsWith(element: T): Boolean = this.firstOrN
  */
 @Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
 inline infix fun <T> Iterable<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
-
-/**
- * 判断当前序列是否以指定元素开始。
- */
-@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
-inline infix fun <T> Sequence<T>.startsWith(element: T): Boolean = this.firstOrNull() == element
-
-/**
- * 判断当前序列是否以任意指定元素开始。
- */
-@Deprecated("Unnecessary extension.", level = DeprecationLevel.HIDDEN)
-inline infix fun <T> Sequence<T>.startsWith(elements: Array<out T>): Boolean = this.firstOrNull() in elements
 
 /**
  * 判断当前数组是否以指定元素结束。
@@ -700,43 +644,50 @@ inline fun <T> MutableList<T>.pinLast(predicate: (T) -> Boolean): Boolean {
 
 
 /**
- * 根据指定的条件，绑定当前数组和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。
+ * 根据指定的一组键以及键选择器，选择当前集合中的元素，返回选择后的新列表。保持原有顺序，并覆盖先选择的元素。
  */
-inline fun <T, R> Array<out T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
-	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
-}
-
-/**
- * 根据指定的条件，绑定当前数组和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。
- */
-inline fun <T, R : Any> Array<out T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
-	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
-}
-
-/**
- * 根据指定的条件，绑定当前集合和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。
- */
-inline fun <T, R> Iterable<T>.bind(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
-	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
-}
-
-/**
- * 根据指定的条件，绑定当前集合和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。
- */
-inline fun <T, R> Iterable<T>.bind(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
-	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
-}
-
-/**
- * 根据指定的条件，绑定当前序列和另一个序列中的元素，以当前数组长度为准，过滤不满足的情况。
- */
-inline fun <T, R> Sequence<T>.bind(other: Sequence<R>, crossinline predicate: (T, R) -> Boolean): Sequence<Pair<T, R>> {
-	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+@UnstableApi
+inline fun <T, K> Iterable<T>.select(vararg keys: K, keySelector: (T) -> K): List<T> {
+	val result = ArrayList<T>(keys.size)
+	for (e in this) {
+		val keyIndex = keys.indexOf(keySelector(e))
+		if (keyIndex != -1) result[keyIndex] = e
+	}
+	return result
 }
 
 
 /**
- * 根据指定的级别选择器，按级别从低到高向下折叠集合中的元素，返回包含完整的级别从低到高的元素组的列表。
+ * 根据指定的条件，内连接当前数组和另一个数组中的元素，以当前数组长度为准，忽略不满足的情况。
+ */
+inline fun <T, R> Array<out T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+/**
+ * 根据指定的条件，内连接当前数组和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。
+ */
+inline fun <T, R : Any> Array<out T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+/**
+ * 根据指定的条件，内连接当前集合和另一个数组中的元素，以当前数组长度为准，过滤不满足的情况。
+ */
+inline fun <T, R> Iterable<T>.innerJoin(other: Array<out R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+/**
+ * 根据指定的条件，内连接当前集合和另一个集合中的元素，以当前数组长度为准，过滤不满足的情况。
+ */
+inline fun <T, R> Iterable<T>.innerJoin(other: Iterable<R>, predicate: (T, R) -> Boolean): List<Pair<T, R>> {
+	return this.mapNotNull { e1 -> other.firstOrNull { e2 -> predicate(e1, e2) }?.let { e1 to it } }
+}
+
+
+/**
+ * 根据指定的级别选择器，按级别从低到高向下折叠当前列表中的元素，返回包含完整的级别从低到高的元素组的列表。
  * 级别从1开始。
  */
 @UnstableApi
@@ -766,7 +717,7 @@ fun <T, L : Comparable<L>> List<T>.collapse(levelSelector: (T) -> L): List<List<
 }
 
 /**
- * 根据指定的操作，遍历当前列表，递归展开并收集遍历过程中的每一个元素，直到结果为空为止，返回收集到的元素的列表。
+ * 根据指定的操作，遍历当前列表，递归展开并收集遍历过程中的每一个元素，直到收集结果为空为止，返回包含收集到的所有元素的列表。
  */
 @UnstableApi
 fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
@@ -780,19 +731,6 @@ fun <T> List<T>.expand(operation: (T) -> Iterable<T>): List<T> {
 			//如果进行操作后得到的结果只有1个且与原元素相等，则跳过
 			if (r.singleOrNull() != e) r else emptyList()
 		}
-	}
-	return result
-}
-
-/**
- * 根据指定的一组键以及键选择器，选择当前集合中的元素，返回选择后的新列表。保持原有顺序，并覆盖先选择的元素。
- */
-@UnstableApi
-inline fun <T, K> Iterable<T>.select(vararg keys: K, keySelector: (T) -> K): List<T> {
-	val result = ArrayList<T>(keys.size)
-	for (e in this) {
-		val keyIndex = keys.indexOf(keySelector(e))
-		if (keyIndex != -1) result[keyIndex] = e
 	}
 	return result
 }
@@ -818,47 +756,6 @@ fun <T> Array<*>.deepFlatten(depth: Int = -1): List<T> {
 @JvmOverloads
 fun <T> Iterable<*>.deepFlatten(depth: Int = -1): List<T> {
 	return this.doDeepFlatten(depth)
-}
-
-/**
- * 根据指定的深度递归平滑化当前序列。
- * 如果指定了深度，则会递归映射到该深度，或者直到找不到集合类型的元素为止。默认不指定深度。
- *
- * 支持[Array]、[Iterable]和[Sequence]。
- */
-@JvmOverloads
-fun <T> Sequence<*>.deepFlatten(depth: Int = -1): List<T> {
-	return this.doDeepFlatten(depth)
-}
-
-private fun <T> Any?.doDeepFlatten(depth: Int): List<T> {
-	require(depth == -1 || depth > 0) { "Flatten depth '$depth' cannot be non-positive." }
-	var values = listOf(this)
-	var currentDepth = depth
-	while (currentDepth != 0) {
-		//用来判断这次循环中是否找到集合类型的数据，以判断是否需要进行下一次循环
-		var hasNoneCollectionElement = true
-		values = values.flatMap { value ->
-			when (value) {
-				is Array<*> -> {
-					hasNoneCollectionElement = false
-					value.asIterable()
-				}
-				is Iterable<*> -> {
-					hasNoneCollectionElement = false
-					value
-				}
-				is Sequence<*> -> {
-					hasNoneCollectionElement = false
-					value.asIterable()
-				}
-				else -> listOf(value)
-			}
-		}
-		if (hasNoneCollectionElement) break
-		currentDepth--
-	}
-	return values as List<T>
 }
 //endregion
 
@@ -982,13 +879,6 @@ fun <K, V> Iterable<Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
 	return this.toMap(LinkedHashMap())
 }
 
-/**
- * 将当前键值对序列转化为新的可变映射。
- */
-fun <K, V> Sequence<Pair<K, V>>.toMutableMap(): MutableMap<K, V> {
-	return this.toMap(LinkedHashMap())
-}
-
 
 /**
  * 将当前数组转化为新的以键为值的映射。
@@ -1009,13 +899,6 @@ fun <T> Iterable<T>.toIndexKeyMap(): Map<String, T> {
  */
 fun <K, V> Map<K, V>.toStringKeyMap(): Map<String, V> {
 	return this.mapKeys { (k, _) -> k.toString() }
-}
-
-/**
- * 将当前序列转化为新的以键为值的映射。
- */
-fun <T> Sequence<T>.toIndexKeyMap(): Map<String, T> {
-	return this.withIndex().associateBy({ it.index.toString() }, { it.value })
 }
 //endregion
 
@@ -1057,13 +940,6 @@ inline fun <T : CharSequence> Iterable<T>.dropEmpty(): List<T> {
 }
 
 /**
- * 去除起始的空字符串。
- */
-inline fun <T : CharSequence> Sequence<T>.dropEmpty(): Sequence<T> {
-	return this.dropWhile { it.isEmpty() }
-}
-
-/**
  * 去除尾随的空字符串。
  */
 inline fun <T : CharSequence> Array<out T>.dropLastEmpty(): List<T> {
@@ -1077,7 +953,6 @@ inline fun <T : CharSequence> List<T>.dropLastEmpty(): List<T> {
 	return this.dropLastWhile { it.isEmpty() }
 }
 
-
 /**
  * 去除起始的空白字符串。
  */
@@ -1089,13 +964,6 @@ inline fun <T : CharSequence> Array<out T>.dropBlank(): List<T> {
  * 去除起始的空白字符串。
  */
 inline fun <T : CharSequence> Iterable<T>.dropBlank(): List<T> {
-	return this.dropWhile { it.isBlank() }
-}
-
-/**
- * 去除起始的空白字符串。
- */
-inline fun <T : CharSequence> Sequence<T>.dropBlank(): Sequence<T> {
 	return this.dropWhile { it.isBlank() }
 }
 
@@ -1138,14 +1006,6 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotEmpty(): Map<K, V>
 }
 
 /**
- * 过滤当前序列中为空字符串的元素。
- */
-inline fun <T : CharSequence> Sequence<T>.filterNotEmpty(): Sequence<T> {
-	return this.filter { it.isNotEmpty() }
-}
-
-
-/**
  * 过滤当前数组中为空字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotEmptyTo(destination: C): C {
@@ -1160,7 +1020,6 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNot
 	for (element in this) if (element.isNotEmpty()) destination += element
 	return destination
 }
-
 
 /**
  * 过滤当前数组中为空白字符串的元素。
@@ -1186,14 +1045,6 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotBlank(): Map<K, V>
 }
 
 /**
- * 过滤当前序列中为空白字符串的元素。
- */
-inline fun <T : CharSequence> Sequence<T>.filterNotBlank(): Sequence<T> {
-	return this.filter { it.isNotBlank() }
-}
-
-
-/**
  * 过滤当前数组中为空白字符串的元素，然后加入到指定的集合。
  */
 inline fun <T : CharSequence, C : MutableCollection<in T>> Array<out T>.filterNotBlankTo(destination: C): C {
@@ -1208,7 +1059,6 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T>.filterNot
 	for (element in this) if (element.isNotBlank()) destination += element
 	return destination
 }
-
 
 /**
  * 过滤当前数组中为null或空字符串的元素。
@@ -1237,15 +1087,6 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrEmpty(): Map
 }
 
 /**
- * 过滤当前序列中为null或空字符串的元素。
- */
-@UselessCallOnNotNullType
-inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrEmpty(): Sequence<T> {
-	return this.filter { it.isNotNullOrEmpty() } as Sequence<T>
-}
-
-
-/**
  * 过滤当前数组中为null或空字符串的元素，然后加入到指定的集合。
  */
 @UselessCallOnNotNullType
@@ -1262,7 +1103,6 @@ inline fun <T : CharSequence, C : MutableCollection<in T>> Iterable<T?>.filterNo
 	for (element in this) if (element.isNotNullOrEmpty()) destination += element
 	return destination
 }
-
 
 /**
  * 过滤当前数组中为null或空白字符串的元素。
@@ -1289,15 +1129,6 @@ inline fun <K, V : CharSequence> Map<out K, V>.filterValuesNotNullOrBlank(): Map
 	for ((key, value) in this) if (value.isNotNullOrBlank()) result[key] = value
 	return result
 }
-
-/**
- * 过滤当前序列中为null或空白字符串的元素。
- */
-@UselessCallOnNotNullType
-inline fun <T : CharSequence> Sequence<T?>.filterNotNullOrBlank(): Sequence<T> {
-	return this.filter { it.isNotNullOrBlank() } as Sequence<T>
-}
-
 
 /**
  * 过滤当前数组中为null或空白字符串的元素，然后加入到指定的集合。

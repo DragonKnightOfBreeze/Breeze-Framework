@@ -53,6 +53,3 @@ typealias TypedTuple5<T> = Tuple5<T, T, T, T, T>
  * Represents a typed tuple of six values.
  */
 typealias TypedTuple6<T> = Tuple6<T, T, T, T, T, T>
-
-
-
